@@ -9,8 +9,8 @@
 #' @param id_ref (`character`) id of reference Treatment input ui element
 #' @param id_comp (`character`) id of comparison group input ui element
 #' @param id_arm_var (`character`) id of Treatment variable input ui element
-#' @param datasets (`FilteredData`) object from the module
-#' @param dataname (`character`) dataset name
+#' @param data (`reactive` or `data.frame`) dataset used to validate Treatment reference inputs and
+#'   set `id_ref` input.
 #' @param arm_ref_comp (`unknown`) Treatment reference and compare variables provided as a
 #'   nested list where each Treatment variable corresponds a list specifying the default levels for the
 #'   reference and comparison treatments.

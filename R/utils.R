@@ -45,6 +45,7 @@ count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars 
 
 #' Get variable labels
 #'
+#' @description `r lifecycle::badge("deprecated")`
 #' @param datasets (`teal::FilteredData`) Data built up by teal
 #' @param dataname (`character`) name of the dataset
 #' @param vars (`character`) Column names in the data
@@ -53,6 +54,13 @@ count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars 
 #'
 #' @export
 get_var_labels <- function(datasets, dataname, vars) {
+  lifecycle::deprecate_warn(
+    when = "0.8.14",
+    what = "get_var_labels()",
+    with = "formatters::var_labels()",
+    details = "teal.modules.clinical won't export any utility functions except those which
+      are necessary to prepare shiny app."
+  )
   labels <- datasets$get_varlabels(dataname, vars)
   labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
   return(labels)
@@ -787,10 +795,6 @@ color_lab_values <- function(x,
       }
     }, character(1))
   }
-}
-
-is_cdisc_data <- function(datasets) {
-  inherits(datasets, "CDISCFilteredData")
 }
 
 #' Clean a categorical variable descriptions
