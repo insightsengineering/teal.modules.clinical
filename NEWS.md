@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.13.9020
+# teal.modules.clinical 0.8.13.9021
 
 ### Enhancements
 * Updated all test files in `tests/testthat/` to `synthetic_cdisc_data("2022_02_28")` 
@@ -11,6 +11,7 @@
 
 ### Bug fixes
 * Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
+* Fixed broken example for `tm_t_abnormality_by_worst_grade`.
 
 ### Miscellaneous
 * Added `nestcolor` dependency and replaced deprecated function `tern::color_palette` with `nestcolor::color_palette`
