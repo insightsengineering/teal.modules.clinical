@@ -113,7 +113,8 @@ NULL
 #' @param arm_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices
 #'   and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
+#'   It defines the grouping variable(s) in the results table.
+#'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
 #' @param arm_ref_comp optional, (`list`)\cr
 #'   If specified it must be a named list with each element corresponding to

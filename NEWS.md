@@ -1,6 +1,12 @@
 # teal.modules.clinical 0.8.13.9021
 
+### Breaking changes
+
+* Replaced `chunks` with simpler `Quosure` class.
+* Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (list of reactive datasets) and `filter_panel_api` (`FilterPanelAPI`).
+
 ### Enhancements
+
 * Updated all test files in `tests/testthat/` to `synthetic_cdisc_data("2022_02_28")` 
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
@@ -10,10 +16,12 @@
 * Added more descriptive title/labels to `tm_g_ci`.
 
 ### Bug fixes
+
 * Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
 * Fixed broken example for `tm_t_abnormality_by_worst_grade`.
 
 ### Miscellaneous
+
 * Added `nestcolor` dependency and replaced deprecated function `tern::color_palette` with `nestcolor::color_palette`
 
 # teal.modules.clinical 0.8.13

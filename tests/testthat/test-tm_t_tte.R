@@ -94,8 +94,8 @@ testthat::test_that("template_tte produces healthy standard output", {
         )
     ),
     table = quote({
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
+      table
     })
   )
 
@@ -254,8 +254,8 @@ testthat::test_that("template_tte produces correct data expression when comparin
         )
     ),
     table = quote({
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
+      table
     })
   )
   testthat::expect_equal(result, expected)
@@ -365,8 +365,8 @@ testthat::test_that("template_tte produces correct data expression when comparin
         )
     ),
     table = quote({
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
+      table
     })
   )
   testthat::expect_equal(result, expected)

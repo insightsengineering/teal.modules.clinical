@@ -97,7 +97,7 @@ template_adverse_events <- function(dataname = "ANL",
   chart_list <- add_expr(
     list(),
     substitute(
-      expr = chart <- dataname %>%
+      expr = plot <- dataname %>%
         dplyr::select(aeterm, time, tox_grade, causality) %>%
         dplyr::mutate(ATOXGR = as.character(tox_grade)) %>%
         dplyr::arrange(dplyr::desc(ATOXGR)) %>%
@@ -145,7 +145,7 @@ template_adverse_events <- function(dataname = "ANL",
 
   chart_list <- add_expr(
     expr_ls = chart_list,
-    new_expr = quote(print(chart))
+    new_expr = quote(print(plot))
   )
 
   y$table <- bracket_expr(table_list)
@@ -388,7 +388,7 @@ ui_g_adverse_events <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -396,7 +396,8 @@ ui_g_adverse_events <- function(id, ...) {
 
 
 srv_g_adverse_events <- function(id,
-                                 datasets,
+                                 data,
+                                 filter_panel_api,
                                  reporter,
                                  dataname,
                                  parentname,
@@ -412,16 +413,13 @@ srv_g_adverse_events <- function(id,
                                  plot_width,
                                  label,
                                  ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -446,25 +444,32 @@ srv_g_adverse_events <- function(id,
     )
 
     # Adverse events tab ----
-    ae_merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
-      data_extract = list(
-        aeterm = aeterm,
-        tox_grade = tox_grade,
-        causality = causality,
-        outcome = outcome,
-        action = action,
-        time = time,
-        decod = decod
-      )
+    anl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
+      data_extract = Filter(
+        Negate(is.null),
+        list(
+          aeterm = aeterm,
+          tox_grade = tox_grade,
+          causality = causality,
+          outcome = outcome,
+          action = action,
+          time = time,
+          decod = decod
+        )
+      ),
+      join_keys = attr(data, "join_keys")
     )
 
-    calls <- shiny::reactive({
+    anl_merged_q <- reactive(teal.code::eval_code(teal.code::new_quosure(data), as.expression(anl_merged()$expr)))
+
+    outputs_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-      teal::validate_has_data(
-        ae_merged_data()$data()[ae_merged_data()$data()[[patient_col]] == input$patient_id, ],
-        1
-      )
+      anl_m <- anl_merged()
+      q1 <- anl_merged_q()
+      ANL <- q1[["ANL"]] # nolint
+
+      teal::validate_has_data(ANL[ANL[[patient_col]] == input$patient_id, ], min_nrow = 1)
 
       shiny::validate(
         shiny::need(
@@ -493,12 +498,8 @@ srv_g_adverse_events <- function(id,
         )
       )
 
-      stack <- teal.code::chunks_new()
-      stack$reset()
-
-      teal.code::chunks_push_data_merge(ae_merged_data(), chunks = stack)
-
-      stack$push(
+      q2 <- teal.code::eval_code(
+        q1,
         substitute(
           expr = ANL <- ANL[ANL[[patient_col]] == patient_id, ], # nolint
           env = list(
@@ -506,7 +507,7 @@ srv_g_adverse_events <- function(id,
             patient_id = patient_id()
           )
         ),
-        id = "filter_patient_id_call"
+        name = "filter_patient_id_call"
       )
 
 
@@ -524,29 +525,14 @@ srv_g_adverse_events <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      lapply(
-        names(calls),
-        function(call_name) {
-          teal.code::chunks_push(expression = calls[[call_name]], id = paste0(call_name, "_call"), chunks = stack)
-        }
-      )
-      teal.code::chunks_safe_eval(chunks = stack)
-      stack
+      teal.code::eval_code(q2, as.expression(calls))
     })
     output$table <- DT::renderDataTable(
-      expr = {
-        teal.code::chunks_reset()
-        teal.code::chunks_push_chunks(calls())
-        teal.code::chunks_get_var("table")
-      },
+      expr = outputs_q()[["table"]],
       options = list(pageLength = input$table_rows)
     )
 
-    plot_r <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(calls())
-      teal.code::chunks_get_var("chart")
-    })
+    plot_r <- shiny::reactive(outputs_q()[["plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "chart",
@@ -555,13 +541,10 @@ srv_g_adverse_events <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(
-        aeterm, tox_grade, causality, outcome, action, time, decod
-      )),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(outputs_q())),
+      title = label
     )
 
     ### REPORTER
@@ -570,19 +553,16 @@ srv_g_adverse_events <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Adverse Events Plot")
         card$append_text("Patient Profile Adverse Events Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(outputs_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

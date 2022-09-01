@@ -108,11 +108,11 @@ template_events_by_grade <- function(dataname,
 
   layout_list <- list()
 
-  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+  basic_title <- if (is.null(hlt) && !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
-  } else if (!is.null(hlt) & is.null(llt)) {
+  } else if (!is.null(hlt) && is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
-  } else if (!is.null(hlt) & !is.null(llt)) {
+  } else if (!is.null(hlt) && !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
   } else {
     paste0("Adverse Event summary by ", label_grade)
@@ -500,11 +500,11 @@ template_events_col_by_grade <- function(dataname,
   y$data <- bracket_expr(data_list)
 
   layout_list <- list()
-  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+  basic_title <- if (is.null(hlt) && !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
-  } else if (!is.null(hlt) & is.null(llt)) {
+  } else if (!is.null(hlt) && is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
-  } else if (!is.null(hlt) & !is.null(llt)) {
+  } else if (!is.null(hlt) && !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
   } else {
     paste0("Adverse Event summary by ", label_grade)
@@ -732,17 +732,17 @@ template_events_col_by_grade <- function(dataname,
     )
   )
 
-  if (prune_freq > 0 & prune_diff > 0) {
+  if (prune_freq > 0 && prune_diff > 0) {
     prune_pipe <- add_expr(
       prune_pipe,
       quote(rtables::prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
     )
-  } else if (prune_freq > 0 & prune_diff == 0) {
+  } else if (prune_freq > 0 && prune_diff == 0) {
     prune_pipe <- add_expr(
       prune_pipe,
       quote(rtables::prune_table(keep_rows(at_least_percent_any)))
     )
-  } else if (prune_freq == 0 & prune_diff > 0) {
+  } else if (prune_freq == 0 && prune_diff > 0) {
     prune_pipe <- add_expr(
       prune_pipe,
       quote(rtables::prune_table(keep_rows(at_least_percent_diff)))
@@ -958,7 +958,7 @@ ui_t_events_by_grade <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -966,8 +966,9 @@ ui_t_events_by_grade <- function(id, ...) {
 
 #' @noRd
 srv_t_events_by_grade <- function(id,
-                                  datasets,
+                                  data,
                                   reporter,
+                                  filter_panel_api,
                                   dataname,
                                   parentname,
                                   label,
@@ -979,36 +980,46 @@ srv_t_events_by_grade <- function(id,
                                   grading_groups,
                                   drop_arm_levels,
                                   basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),
+      join_keys = attr(data, "join_keys"),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(arm_var = arm_var),
+      join_keys = attr(data, "join_keys"),
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-      adsl_keys <- datasets$get_keys(parentname)
+    anl_merged_q <- reactive({
+      teal.code::new_quosure(env = data) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+    })
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
+
+    validate_checks <- shiny::reactive({
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
+      adsl_keys <- merged$adsl_input_r()$keys
+
+      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_level_term <- c(
-        as.vector(anl_m$columns_source$hlt),
-        as.vector(anl_m$columns_source$llt)
+        as.vector(merged$anl_input_r()$columns_source$hlt),
+        as.vector(merged$anl_input_r()$columns_source$llt)
       )
-      input_grade <- as.vector(anl_m$columns_source$grade)
+      input_grade <- as.vector(merged$anl_input_r()$columns_source$grade)
 
       shiny::validate(
         shiny::need(input_arm_var, "Please select a treatment variable"),
@@ -1050,7 +1061,7 @@ srv_t_events_by_grade <- function(id,
       if (input$col_by_grade) {
         shiny::validate(
           shiny::need(
-            as.vector(anl_m$columns_source$llt),
+            as.vector(merged$anl_input_r()$columns_source$llt),
             "Low Level Term must be present for nested grade grouping display."
           )
         )
@@ -1067,23 +1078,17 @@ srv_t_events_by_grade <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- shiny::reactive({
+    output_table <- shiny::reactive({
       validate_checks()
+      ANL <- merged$anl_q_r()[["ANL"]] # nolint
+      adsl_keys <- merged$adsl_input_r()$keys
 
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-      input_hlt <- as.vector(anl_m$columns_source$hlt)
-      input_llt <- as.vector(anl_m$columns_source$llt)
-      input_grade <- as.vector(anl_m$columns_source$grade)
-      label_hlt <- if (length(input_hlt) != 0) attributes(anl_m$data()[[input_hlt]])$label else NULL
-      label_llt <- if (length(input_llt) != 0) attributes(anl_m$data()[[input_llt]])$label else NULL
-      label_grade <- if (length(input_grade) != 0) attributes(anl_m$data()[[input_grade]])$label else NULL
+      input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
+      input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
+      input_grade <- as.vector(merged$anl_input_r()$columns_source$grade)
+      label_hlt <- if (length(input_hlt) != 0) attributes(ANL[[input_hlt]])$label else NULL
+      label_llt <- if (length(input_llt) != 0) attributes(ANL[[input_llt]])$label else NULL
+      label_grade <- if (length(input_grade) != 0) attributes(ANL[[input_grade]])$label else NULL
       label_grade <- if (is.null(label_grade)) input_grade else NULL
 
       my_calls <- if (input$col_by_grade) {
@@ -1092,8 +1097,8 @@ srv_t_events_by_grade <- function(id,
           parentname = "ANL_ADSL",
           add_total = input$add_total,
           grading_groups = grading_groups,
-          arm_var = as.vector(anl_m$columns_source$arm_var),
-          id = datasets$get_keys(parentname)[2],
+          arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
+          id = adsl_keys[2],
           hlt = if (length(input_hlt) != 0) input_hlt else NULL,
           llt = if (length(input_llt) != 0) input_llt else NULL,
           label_hlt = label_hlt,
@@ -1109,8 +1114,8 @@ srv_t_events_by_grade <- function(id,
         template_events_by_grade(
           dataname = "ANL",
           parentname = "ANL_ADSL",
-          arm_var = as.vector(anl_m$columns_source$arm_var),
-          id = datasets$get_keys(parentname)[2],
+          arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
+          id = adsl_keys[2],
           hlt = if (length(input_hlt) != 0) input_hlt else NULL,
           llt = if (length(input_llt) != 0) input_llt else NULL,
           label_hlt = label_hlt,
@@ -1124,14 +1129,12 @@ srv_t_events_by_grade <- function(id,
           basic_table_args = basic_table_args
         )
       }
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_events_by_grade call")
     })
 
     # Outputs to render.
     table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("pruned_and_sorted_result")
+      output_table()[["pruned_and_sorted_result"]]
     })
 
     teal.widgets::table_with_settings_srv(
@@ -1140,14 +1143,10 @@ srv_t_events_by_grade <- function(id,
     )
 
     # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, hlt, llt, grade)
-      ),
-      modal_title = "AE by Grade Table",
-      code_header = label
+      verbatim_content = reactive(teal.code::get_code(output_table())),
+      title = label
     )
 
     ### REPORTER
@@ -1156,19 +1155,16 @@ srv_t_events_by_grade <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Events by Grade Table")
         card$append_text("Events by Grade Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_table()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
