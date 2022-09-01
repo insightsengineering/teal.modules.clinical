@@ -415,7 +415,11 @@ srv_g_ci <- function(id, # nolint
 
       x_label <- column_annotation_label(data[[attr(x, "dataname")]](), x)
       y_label <- column_annotation_label(data[[attr(y, "dataname")]](), y)
-      color_label <- column_annotation_label(data[[attr(color, "dataname")]](), color)
+      color_label <- if (length(color)) {
+        column_annotation_label(data[[attr(color, "dataname")]](), color)
+      } else {
+        NULL
+      }
 
       ggplot2_args$labs$title <- paste("Confidence Interval Plot by", x_label)
       ggplot2_args$labs$x <- x_label
