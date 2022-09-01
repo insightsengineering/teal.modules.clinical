@@ -493,14 +493,6 @@ srv_t_abnormality <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   shiny::moduleServer(id, function(input, output, session) {
-    # Update UI choices depending on selection of previous options
-    shiny::observeEvent(input$grade, {
-      anl <- data[[dataname]]()
-
-      validate_has_elements(input$grade, "Please select a grade variable")
-      choices <- unique(anl[[input$grade]][!is.na(anl[[input$grade]])])
-    })
-
     anl_selectors <- teal.transform::data_extract_multiple_srv(
       list(
         arm_var = arm_var,
