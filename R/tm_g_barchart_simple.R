@@ -339,6 +339,7 @@ srv_g_barchart_simple <- function(id,
     })
 
     count_q <- shiny::reactive({
+      req(merged_data_q())
       quo <- merged_data_q()
       groupby_vars <- r_groupby_vars()
 
@@ -388,6 +389,7 @@ srv_g_barchart_simple <- function(id,
     })
 
     output_q <- shiny::reactive({
+      req(count_q())
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
       quo2 <- teal.code::eval_code(count_q(), substitute(
