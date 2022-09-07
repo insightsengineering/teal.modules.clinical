@@ -199,6 +199,7 @@ template_mmrm_tables <- function(parentname,
         substitute(
           expr = rtables::add_colcounts() %>%
             rtables::split_rows_by(visit_var) %>%
+            append_varlabels(dataname, visit_var) %>%
             tern.mmrm::summarize_lsmeans(
               .stats = c(
                 "n",
@@ -208,8 +209,13 @@ template_mmrm_tables <- function(parentname,
                 "diff_mean_ci",
                 "p_value"
               )
-            ),
-          env = list(visit_var = visit_var)
+            ) %>%
+            rtables::append_topleft(paste0("  ", paramcd)),
+          env = list(
+            dataname = as.name(dataname),
+            visit_var = visit_var,
+            paramcd = paramcd
+          )
         )
       )
     } else {
