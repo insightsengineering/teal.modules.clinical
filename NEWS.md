@@ -178,7 +178,7 @@
 * Updated `tm_a_mmrm` so that it can work when treatment variable is not selected.
 * Updated `tm_g_forest_tte` so that total number of events are also shown in the table.
 * Updated `tm_t_events_summary` to work with pooled studies.
-* Updated validatio for the `at` level of `tm_t_coxreg`.
+* Updated validation for the `at` level of `tm_t_coxreg`.
 * Updated validation for the `at` level of `tm_t_logistic`.
 * Added a validation for `tm_t_binary_outcome` and `tm_t_rsp` to ensure strata variable contains more than one level when selecting one strata variable.
 * Updated the warning message when deselecting all statistics in `tm_t_summary` and `tm_t_summary_by` to explain need to select at least one statistic.
