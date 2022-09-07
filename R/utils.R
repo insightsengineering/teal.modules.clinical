@@ -32,23 +32,20 @@ call_concatenate <- function(args, bin_op = "+") {
 }
 
 # needs columns like n_, n_ARM etc. to get count from
-add_count_str_to_column <- function(chunk, column, n_column = NULL) {
-  n_column <- `if`(is.null(n_column), get_n_name(groupby_vars = column), n_column)
+count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars = column)) {
   checkmate::assert_string(column)
 
-  chunk$push(
-    substitute(
-      counts <- counts %>% dplyr::mutate(
-        column_name := paste0(column_name, " (n = ", n_column_name, ")")
-      ),
-      env = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))
+  substitute_names(
+    expr = counts <- counts %>% dplyr::mutate(
+      column_name = paste0(column_name, " (n = ", n_column_name, ")")
     ),
-    id = paste0(column, "_add_count_str_to_column_call")
+    names = list(column_name = as.symbol(column), n_column_name = as.symbol(n_column))
   )
 }
 
 #' Get variable labels
 #'
+#' @description `r lifecycle::badge("deprecated")`
 #' @param datasets (`teal::FilteredData`) Data built up by teal
 #' @param dataname (`character`) name of the dataset
 #' @param vars (`character`) Column names in the data
@@ -57,6 +54,13 @@ add_count_str_to_column <- function(chunk, column, n_column = NULL) {
 #'
 #' @export
 get_var_labels <- function(datasets, dataname, vars) {
+  lifecycle::deprecate_warn(
+    when = "0.8.14",
+    what = "get_var_labels()",
+    with = "formatters::var_labels()",
+    details = "teal.modules.clinical won't export any utility functions except those which
+      are necessary to prepare shiny app."
+  )
   labels <- datasets$get_varlabels(dataname, vars)
   labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
   return(labels)
@@ -791,10 +795,6 @@ color_lab_values <- function(x,
       }
     }, character(1))
   }
-}
-
-is_cdisc_data <- function(datasets) {
-  inherits(datasets, "CDISCFilteredData")
 }
 
 #' Clean a categorical variable descriptions
