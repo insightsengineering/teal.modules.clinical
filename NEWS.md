@@ -212,7 +212,7 @@
 * Fixed the `font_size` default of the templates to be 12L instead of a vector of 3 integers and cleaned associated unnecessary code.
 * Fixed deprecated function warning in `tm_g_barchart_simple`.
 * Fixed `subgroup_var` definition truncation in `tm_g_forest_rsp` and `tm_g_forest_tte`.
-* Clarified labelling related to regression type in the encoding panel from `tm_t_coxreg`.
+* Clarified labeling related to regression type in the encoding panel from `tm_t_coxreg`.
 
 ### Bug fixes
 * Added a validation for the case when filtering out all rows in the therapy tab of `tm_g_patient_profile`.
@@ -251,7 +251,7 @@
 ### New Features
 * Added new module `tm_g_ci` for confidence interval plots.
 * Added new module `tm_t_ancova` for analysis of variance summary tables.
-* Added multiple events by term module, `tm_t_mult_events`.
+* Added new module `tm_t_mult_events` for multi-event tables.
 
 ### Enhancements
 * Refactored all modules using the redesigned `rtables` and `tern` packages.
