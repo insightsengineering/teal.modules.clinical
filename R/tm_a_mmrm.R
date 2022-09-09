@@ -199,6 +199,7 @@ template_mmrm_tables <- function(parentname,
         substitute(
           expr = rtables::add_colcounts() %>%
             rtables::split_rows_by(visit_var) %>%
+            append_varlabels(dataname, visit_var) %>%
             tern.mmrm::summarize_lsmeans(
               .stats = c(
                 "n",
@@ -208,8 +209,13 @@ template_mmrm_tables <- function(parentname,
                 "diff_mean_ci",
                 "p_value"
               )
-            ),
-          env = list(visit_var = visit_var)
+            ) %>%
+            rtables::append_topleft(paste0("  ", paramcd)),
+          env = list(
+            dataname = as.name(dataname),
+            visit_var = visit_var,
+            paramcd = paramcd
+          )
         )
       )
     } else {
@@ -1213,20 +1219,20 @@ srv_mmrm <- function(id,
       g_mmrm_lsmeans_select <- input$g_mmrm_lsmeans_select
 
       output_title <- switch(output_function,
-        "t_mmrm_cov" = "Residual covariance matrix estimate",
-        "t_mmrm_diagnostic" = "Model fit statistics",
-        "t_mmrm_fixed" = "Fixed effects estimates",
-        "t_mmrm_lsmeans" = "LS means and contrasts estimates",
+        "t_mmrm_cov" = "Residual Covariance Matrix Estimate",
+        "t_mmrm_diagnostic" = "Model Fit Statistics",
+        "t_mmrm_fixed" = "Fixed Effects Estimates",
+        "t_mmrm_lsmeans" = "LS Means and Contrasts Estimates",
         "g_mmrm_diagnostic" = switch(g_mmrm_diagnostic_type,
-          "fit-residual" = "Marginal fitted values vs. residuals",
-          "q-q-residual" = "Q-Q normal plot for standardized residuals"
+          "fit-residual" = "Marginal Fitted Values vs. Residuals",
+          "q-q-residual" = "Q-Q Normal Plot for Standardized Residuals"
         ),
         "g_mmrm_lsmeans" = if (setequal(g_mmrm_lsmeans_select, c("estimates", "contrasts"))) {
-          "LS means estimates and contrasts"
+          "LS Means Estimates and Contrasts"
         } else if (identical(g_mmrm_lsmeans_select, "estimates")) {
-          "LS means estimates"
+          "LS Means Estimates"
         } else {
-          "LS means contrasts"
+          "LS Means Contrasts"
         }
       )
       output_title
@@ -1412,7 +1418,7 @@ srv_mmrm <- function(id,
       card_fun <- function(comment) {
         card <- teal.reporter::TealReportCard$new()
         card$set_name("MMRM")
-        card$append_text("Mixed Model Repeated Measurements (MMRM) analysis", "header2")
+        card$append_text("Mixed Model Repeated Measurements (MMRM) Analysis", "header2")
         card$append_text(
           paste0(
             "Mixed Models procedure analyzes results from repeated measures designs",
