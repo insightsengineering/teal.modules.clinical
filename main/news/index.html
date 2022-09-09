@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9021</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.13.9022</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,12 +33,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -60,9 +54,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.8.13.9021" id="tealmodulesclinical-08139021">teal.modules.clinical 0.8.13.9021<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08139021"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.13.9022" id="tealmodulesclinical-08139022">teal.modules.clinical 0.8.13.9022<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08139022"></a></h2>
 <div class="section level4">
-<h4 id="enhancements-0-8-13-9021">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-13-9021"></a></h4>
+<h4 id="enhancements-0-8-13-9022">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-13-9022"></a></h4>
 <ul><li>Updated all test files in <code>tests/testthat/</code> to <code>synthetic_cdisc_data("2022_02_28")</code>
 </li>
 <li>Reverted missing data checkbox in <code>tm_t_summary</code> (encoding and filtering should be separate).</li>
@@ -73,14 +67,15 @@
 <li>Added more descriptive title/labels to <code>tm_g_ci</code>.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-8-13-9021">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-13-9021"></a></h4>
-<ul><li>Fixed bug in <code>tm_g_barchart_simple</code> which prevented graph from being shown.</li>
-<li>Fixed bug in <code>tm_g_forest_rsp</code> when endpoint was deselected.</li>
+<h4 id="bug-fixes-0-8-13-9022">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-13-9022"></a></h4>
+<ul><li>Fixed bug in <code>tm_g_barchart_simple</code> which prevented graph from showing.</li>
 <li>Fixed broken example for <code>tm_t_abnormality_by_worst_grade</code>.</li>
+<li>Fixed bug in <code>tm_a_mmrm</code> which prevented table headers from displaying.</li>
+<li>Fixed bug in <code>tm_g_forest_rsp</code> when endpoint was deselected.</li>
 <li>Fixed bug in the <code>tm_t_binary_outcome</code>, crashed the app when deselecting all <code>paramcd</code>.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="miscellaneous-0-8-13-9021">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-13-9021"></a></h4>
+<h4 id="miscellaneous-0-8-13-9022">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-13-9022"></a></h4>
 <ul><li>Added <code>nestcolor</code> dependency and replaced deprecated function <code><a href="https://rdrr.io/pkg/tern/man/color_palette.html" class="external-link">tern::color_palette</a></code> with <code><a href="https://rdrr.io/pkg/nestcolor/man/color_palette.html" class="external-link">nestcolor::color_palette</a></code>
 </li>
 </ul></div>
@@ -102,13 +97,13 @@
 <h5 id="tm_t_summary-0-8-13"><code>tm_t_summary</code><a class="anchor" aria-label="anchor" href="#tm_t_summary-0-8-13"></a></h5>
 <ul><li>Updated and added a footnote.</li>
 <li>Enhanced the module to support geometric mean in the encoding panel.</li>
-<li>Updated the module to display the checkboxes for numeric variables statistics only when numeric variables are part of the selected.</li>
+<li>Updated the module to display the checkboxes for numeric variables statistics when numeric variables are part of the selected.</li>
 <li>Updated validations to warn users when using a dataset with non unique identifiers or when selecting variables with non supported types (i.e. <code>Date</code>, <code>POSIXt</code>).</li>
 <li>Added a checkbox to remove the column generated by missing values.</li>
 </ul></div>
 <div class="section level5">
 <h5 id="other-modules-0-8-13">Other modules<a class="anchor" aria-label="anchor" href="#other-modules-0-8-13"></a></h5>
-<ul><li>Updated <code>tm_t_binary_outcome</code> to enable an option to apply a continuity correction in the Newcombe method</li>
+<ul><li>Updated <code>tm_t_binary_outcome</code> to enable an option to apply a continuity correction in the Newcombe method.</li>
 <li>Simplified the show R code for <code>tm_g_pp_patient_timeline</code> module.</li>
 <li>Improved the names of the code chunks shown in <code>Debug Info</code>.</li>
 <li>Improved the validation if treatment variable is not a factor.</li>
@@ -116,9 +111,9 @@
 </div>
 <div class="section level4">
 <h4 id="bug-fixes-0-8-13">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-13"></a></h4>
-<ul><li>Fixed <code>summarize_logistic</code> implementation that was broken by empty string error that was recently reinstated in <code>rtables</code> upstream. <code>_NA_</code> is the new standard flag to allow it to pivot over empty entries in data frames.</li>
+<ul><li>Fixed <code>summarize_logistic</code> implementation broken by empty string error. upstream. <code>_NA_</code> is the new standard flag to allow it to pivot over empty entries in data frames.</li>
 <li>Took out <code>@title</code> from <code>tm_t_binary_outcome.R</code> that was producing a warning.</li>
-<li>Updated the validation to account for the error when multiple variables are not selected in <code>tm_g_pp_patient_timeline</code> module.</li>
+<li>Updated validation to account for the error when selecting a single variable in <code>tm_g_pp_patient_timeline</code> module.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="miscellaneous-0-8-13">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-13"></a></h4>
@@ -137,23 +132,23 @@
 <h2 class="pkg-version" data-toc-text="0.8.12" id="tealmodulesclinical-0812-1">teal.modules.clinical 0.8.12<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-0812-1"></a></h2>
 <div class="section level4">
 <h4 id="new-features-0-8-12">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-12"></a></h4>
-<ul><li>New module <code>tm_t_shift_by_arm_by_worst</code> was added for the analysis of the laboratory abnormalities with the most severe grade flag.</li>
+<ul><li>Added new module <code>tm_t_shift_by_arm_by_worst</code> for the analysis of the laboratory abnormalities with the most severe grade flag.</li>
 <li>Enhanced <code>tm_t_events_patyear</code> to include selected parameter in title of the table.</li>
 <li>Enhanced <code>tm_t_mult_events</code> to include selected parameter in title of the table.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="enhancements-0-8-12">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-12"></a></h4>
-<ul><li>Rewrote modules to use <code>moduleServer</code> and updated calls to <code>teal.devel</code> modules which have also been written to use <code>moduleServer</code>.</li>
+<ul><li>Rewrote modules to use <code>moduleServer</code> and updated calls to <code>teal.devel</code> modules which were also written to use <code>moduleServer</code>.</li>
 <li>Changed the way of obtaining of selection ordered after changes in <code>teal.devel</code>. Use <code>ordered = TRUE</code> in <code>cs_to_des_select</code> or <code>cs_to_select_spec</code> to return ordered selection.</li>
 <li>Replaced calls to <code><a href="https://rdrr.io/pkg/teal/man/root_modules.html" class="external-link">teal::root_modules</a></code> with <code><a href="https://rdrr.io/pkg/teal/man/modules.html" class="external-link">teal::modules</a></code> following deprecation of <code><a href="https://rdrr.io/pkg/teal/man/root_modules.html" class="external-link">teal::root_modules</a></code>.</li>
 <li>
 <code>tm_t_events_summary</code> now allows nested <code>arm_var</code> columns matching other outputs such as <code>tm_t_events</code>.</li>
 <li>Added validation in <code>tm_t_abnormality_by_worst_grade</code> when <code>arm_var</code> is not selected.</li>
-<li>Enhanced <code>tm_t_binary_outcome</code>, all responders are included in the response table by default now.</li>
+<li>Enhanced <code>tm_t_binary_outcome</code> to include all responders in the response table by default.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-8-12">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-12"></a></h4>
-<ul><li>Fixed a bug where an empty set of data could be processed by <code>tm_g_forest_rsp.R</code> causing <code>shiny</code> errors during the runtime.</li>
+<ul><li>Fixed a bug to prevent processing of empty sets of data by <code>tm_g_forest_rsp.R</code> causing <code>shiny</code> errors during the runtime.</li>
 <li>Fixed a bug where a closed <code>Compare Treatments</code> conditional panel with a marked <code>Combine all comparison groups?</code> option conflicted with adding a column with all patients to tables in <code>tm_t_binary_outcome.R</code> and <code>tm_t_tte.R</code>.</li>
 </ul></div>
 <div class="section level4">
@@ -173,9 +168,9 @@
 </ul></div>
 <div class="section level4">
 <h4 id="new-features-0-8-11">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-11"></a></h4>
-<ul><li>New module <code>tm_t_abnormality_by_worst_grade</code> was added for the analysis of laboratory test results with highest grade post-baseline.</li>
+<ul><li>Added new module <code>tm_t_abnormality_by_worst_grade</code> for the analysis of laboratory test results with highest grade post-baseline.</li>
 <li>Enhanced <code>tm_t_ancova</code> to include selected parameter(s), visit(s) and the analysis variable in title of the table.</li>
-<li>New module <code>tm_g_lineplot</code> was added for creating line plots.</li>
+<li>Added new module <code>tm_g_lineplot</code> for creating line plots.</li>
 <li>Enhanced <code>tm_t_logistic</code> to include selected parameter in title of the table.</li>
 <li>Enhanced <code>tm_g_forest_rsp</code> to include selected parameter in title of the table.</li>
 <li>Enhanced <code>tm_g_forest_tte</code> to include selected parameter in title of the table.</li>
@@ -186,7 +181,7 @@
 <h4 id="enhancements-0-8-11">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-11"></a></h4>
 <ul><li>Added support for logging with the <code>logger</code> package and added info level logs upon initialization of a module.</li>
 <li>Added <code>default_responses</code> argument to <code>tm_t_binary_outcome</code> and <code>tm_g_forest_rsp</code> to allow the user to specify default selected responses and possible response levels.</li>
-<li>Updated <code>tm_t_binary_outcome</code> to show only the selected responses in the output table when “Show All Selected Response Categories” is checked.</li>
+<li>Updated <code>tm_t_binary_outcome</code> to show selected responses in the output table when selecting “Show All Selected Response Categories”.</li>
 <li>Added <code>rsp_table</code> argument to <code>tm_t_binary_outcome</code> to allow the user to initialize the module matching the <code>RSPT01</code> STREAM template.</li>
 <li>Added support for custom arguments for <code><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggplot2::labs</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">ggplot2::theme</a></code> in plot based modules.</li>
 <li>Added support for custom arguments for <code><a href="https://roche.github.io/rtables/reference/basic_table.html" class="external-link">rtables::basic_table</a></code> in table based modules.</li>
@@ -194,7 +189,7 @@
 </ul></div>
 <div class="section level4">
 <h4 id="miscellaneous-0-8-11">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-11"></a></h4>
-<ul><li>Updated R version requirement to &gt;= 3.6.</li>
+<ul><li>Updated required R version to &gt;= 3.6.</li>
 <li>Refactored calls to the defunct <code>teal.devel::data_extract_input</code> into calls to its replacement <code>teal.devel::data_extract_ui</code>.</li>
 <li>Updated modules to use new <code>data_merge_module</code> interface provided by <code>teal.devel</code> and removed usage of the now deprecated function <code>teal.devel::get_input_order</code>.</li>
 <li>Updated <code>tm_t_binary_outcome</code> module to add a template and removed the now deprecated module <code>tm_t_rsp</code>.</li>
@@ -209,26 +204,25 @@
 <h2 class="pkg-version" data-toc-text="0.8.10" id="tealmodulesclinical-0810">teal.modules.clinical 0.8.10<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-0810"></a></h2>
 <div class="section level4">
 <h4 id="new-features-0-8-10">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-10"></a></h4>
-<ul><li>New module <code>tm_t_smq</code> was added for the analysis of adverse events by Standardized <code>MedDRA</code> Query.</li>
-<li>New module <code>tm_t_shift_by_grade</code> was added for the analysis of grade laboratory abnormalities.</li>
-<li>New module <code>tm_t_exposure</code> was added for the analysis of duration of exposure for risk management plan.</li>
-<li>New module <code>tm_t_shift_by_arm</code> that can display shift table of ECG interval data.</li>
+<ul><li>Added new module <code>tm_t_smq</code> for the analysis of adverse events by Standardized <code>MedDRA</code> Query.</li>
+<li>Added new module <code>tm_t_shift_by_grade</code> for the analysis of grade laboratory abnormalities.</li>
+<li>Added new module <code>tm_t_exposure</code> for the analysis of duration of exposure for risk management plan.</li>
+<li>Added new module <code>tm_t_shift_by_arm</code> that can display shift table of ECG interval data.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-8-10">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-10"></a></h4>
-<ul><li>Corrected <code>tm_a_mmrm</code> to be able to consider the treatment variable in additional interactions.</li>
-<li>Fixed <code>tm_t_binary_outcome</code> and <code>tm_t_rsp</code> so that correct CI estimation method is chosen for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).</li>
+<ul><li>Corrected <code>tm_a_mmrm</code> to be able to consider the treatment variable in all interactions.</li>
+<li>Fixed <code>tm_t_binary_outcome</code> and <code>tm_t_rsp</code> to choose the correct CI estimation method for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).</li>
 </ul></div>
 <div class="section level4">
 <h4 id="enhancements-0-8-10">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-10"></a></h4>
-<ul><li>Added validation checks to <code>tm_t_rsp</code> and <code>tm_t_binary_outcome</code> for stratification errors when filters are applied.</li>
+<ul><li>Added validation checks to <code>tm_t_rsp</code> and <code>tm_t_binary_outcome</code> for stratification errors from applied filters.</li>
 <li>Added <code>tm_g_km</code> validation check for plot tables font size.</li>
 <li>Enhanced <code>tm_g_km</code> to add the selected <code>paramcd</code> in the plot title.</li>
 <li>
-<code>tm_t_events</code> now can display layouts with two nested column as treatment variables. The same pruning and sorting options can be applied.</li>
-<li>Previously package helper functions were never exported. These functions have now been exported so they can be utilized.</li>
-<li>
-<code>tm_t_events_by_grade</code> now can display grading groups in nested columns with <code>col_by_grade</code> option. In addition, module now supports pruning and sorting options similar to <code>tm_t_events</code>.</li>
+<code>tm_t_events</code> now can display layouts with two nested column as treatment variables. The same options for pruning and sorting are available.</li>
+<li>Exported package helper functions.</li>
+<li>Updated <code>tm_t_events_by_grade</code> to display grading groups in nested columns with <code>col_by_grade</code> option and support pruning and sorting options like <code>tm_t_events</code>.</li>
 <li>Used <code>format_count_fraction</code> to fix formatting inconsistency in <code>tm_t_events_summary</code>.</li>
 <li>Updated <code>count_occurrences</code> <code>vars</code> argument in <code>tm_t_shift_by_grade</code>.</li>
 <li>Updated <code>tm_t_pp_laboratory</code> to display 4 decimals by default.</li>
@@ -248,42 +242,42 @@
 <h2 class="pkg-version" data-toc-text="0.8.9" id="tealmodulesclinical-089">teal.modules.clinical 0.8.9<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-089"></a></h2>
 <div class="section level4">
 <h4 id="new-features-0-8-9">New features<a class="anchor" aria-label="anchor" href="#new-features-0-8-9"></a></h4>
-<ul><li>Added a capability to remember the order of user input to some encoding UI elements. The inputs with tracking enabled are marked with a double arrow icon. The affected modules are: <code>tm_t_summary</code>, <code>tm_t_summary_by</code>, <code>tm_g_forest_rsp</code>, <code>tm_g_forest_tte</code>, <code>tm_t_events_summary</code>, <code>tm_t_abnormality</code>, <code>tm_t_mult_events</code>.</li>
+<ul><li>Added capability to remember the order of user input to some encoding UI elements. Inputs marked with a double arrow icon have tracking enabled. The affected modules are: <code>tm_t_summary</code>, <code>tm_t_summary_by</code>, <code>tm_g_forest_rsp</code>, <code>tm_g_forest_tte</code>, <code>tm_t_events_summary</code>, <code>tm_t_abnormality</code>, <code>tm_t_mult_events</code>.</li>
 <li>Added a new argument <code>numeric_stats</code> to <code>tm_t_summary</code> and <code>tm_t_summary_by</code> to control displayed summary statistics for numeric variables.</li>
-<li>Added a new argument <code>drop_zero_levels</code> to <code>tm_t_summary_by</code> so that rows with all zeros can be dropped from result table.</li>
+<li>Added a new argument <code>drop_zero_levels</code> to <code>tm_t_summary_by</code> so that you can drop rows with all zeros from result table.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="enhancements-0-8-9">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-9"></a></h4>
 <ul><li>Split <code>tm_g_patient_profile</code> tabs into 8 separate new modules.</li>
 <li>Added the option to select patient ID from the filter panel for all the modules of patient profile.</li>
-<li>Added an additional validation for <code>tm_g_patient_timeline</code> when the plot is empty.</li>
+<li>Added a validation for <code>tm_g_patient_timeline</code> when the plot is empty.</li>
 <li>Enhanced <code>tm_a_mmrm</code> to work without the treatment variable.</li>
 <li>Added the option to choose the number of decimal places for rounding in <code>tm_t_pp_laboratory</code>.</li>
 <li>Added a check box to <code>tm_g_pp_patient_timeline</code> hiding/showing relative study days on the x-axis.</li>
 <li>Added a title with patient’s id to plots in patient profile modules.</li>
-<li>Made the grey error message in <code>tm_g_forest_tte</code> more informative when the <code>Endpoint</code> column was deselected in the left-hand encoding panel.</li>
+<li>Made the grey error message in <code>tm_g_forest_tte</code> more informative when deselecting the <code>Endpoint</code> column in the left-hand encoding panel.</li>
 <li>Added the twenty-fifth and seventy-fifth quantile to summary statistics in <code>tm_t_summary</code>.</li>
 <li>Added an interaction p-value column for <code>tm_t_coxreg</code>.</li>
-<li>Added an additional validation for <code>tm_t_ancova</code> when selected covariate variables contain just one level.</li>
-<li>Added an additional validation for <code>tm_t_events_patyear</code> when the events variable is empty.</li>
-<li>Changed the description of the font size input in <code>Additional plot settings</code> (<code>tm_g_km</code>) to more precisely represent what it controls.</li>
+<li>Added a validation for <code>tm_t_ancova</code> when selected covariate variables contain one level.</li>
+<li>Added a validation for <code>tm_t_events_patyear</code> when the events variable is empty.</li>
+<li>Changed the font size input description for <code>tm_g_km</code> to more precisely describe what it controls.</li>
 <li>Enhanced <code>tm_t_logistic</code> so that interaction choices depend on the selected covariates.</li>
-<li>Enhanced <code>tm_t_rsp</code> so that strata input is only visible when treatments are compared.</li>
+<li>Enhanced <code>tm_t_rsp</code> so that strata input is visible when comparing treatments.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-8-9">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-9"></a></h4>
 <ul><li>Fixed Get R Code output of <code>tm_t_pp_laboratory</code> to return identical HTML formatted table as displayed in the app.</li>
-<li>Added an additional validation for <code>tm_t_coxreg</code> to ensure treatment, strata and covariate variables do not overlap.</li>
+<li>Added a validation for <code>tm_t_coxreg</code> to ensure treatment, strata and covariate variables do not overlap.</li>
 <li>Limited the label repel feature in <code>tm_g_pp_patient_timeline</code> to X-axis for a more consistent look.</li>
 <li>Updated <code>tm_t_summary_by</code> so that <code>paramcd</code> is not required when analyzing <code>ADSL</code> variables.</li>
 <li>Updated <code>tm_t_coxreg</code> so that it can work when there is no covariate selected.</li>
 <li>Updated <code>tm_a_mmrm</code> so that it can work when treatment variable is not selected.</li>
 <li>Updated <code>tm_g_forest_tte</code> so that total number of events are also shown in the table.</li>
 <li>Updated <code>tm_t_events_summary</code> to work with pooled studies.</li>
-<li>Updated <code>tm_t_coxreg</code> to validate the <code>at</code> level.</li>
-<li>Updated <code>tm_t_logistic</code> to validate the <code>at</code> level.</li>
-<li>Added an additional validation for <code>tm_t_binary_outcome</code> and <code>tm_t_rsp</code> to ensure strata variable contains more than one level when just one strata variable is selected.</li>
-<li>Updated the warning message when all statistics are deselected in <code>tm_t_summary</code> and <code>tm_t_summary_by</code> explaining at least one statistic has to be selected.</li>
+<li>Updated validation for the <code>at</code> level of <code>tm_t_coxreg</code>.</li>
+<li>Updated validation for the <code>at</code> level of <code>tm_t_logistic</code>.</li>
+<li>Added a validation for <code>tm_t_binary_outcome</code> and <code>tm_t_rsp</code> to ensure strata variable contains more than one level when selecting one strata variable.</li>
+<li>Updated the warning message when deselecting all statistics in <code>tm_t_summary</code> and <code>tm_t_summary_by</code> to explain need to select at least one statistic.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -291,7 +285,7 @@
 <div class="section level4">
 <h4 id="enhancements-0-8-8">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-8"></a></h4>
 <ul><li>Added the option to download and expand tables.</li>
-<li>In <code>tm_g_km</code> added support for downloading images and updated x-axis label to be shown in title case.</li>
+<li>In <code>tm_g_km</code> added support for downloading images and updated x-axis label to show in title case.</li>
 <li>For <code>tm_g_patient_profile</code>:
 <ul><li>Added a slider for the font size in plots.</li>
 <li>Added persistence for selected table lengths.</li>
@@ -305,14 +299,14 @@
 <li>Updated code to use correct denominator for duration of response endpoints.</li>
 </ul></li>
 <li>For <code>tm_t_summary</code>:
-<ul><li>Modified the parameter <code>arm_var</code> to accept more than one column. When two columns are selected for <code>arm_var</code>, then the second variable will be nested under the first one.</li>
-<li>Added argument <code>show_labels</code> to <code>template_summary</code> so that the label for a single summary variable is shown in the table.</li>
+<ul><li>Modified the parameter <code>arm_var</code> to accept more than one column. When selecting two columns for <code>arm_var</code>, the second variable will nest under the first one.</li>
+<li>Added argument <code>show_labels</code> to <code>template_summary</code> to show the label for a single summary variable in the table.</li>
 </ul></li>
 <li>Added a new parameter <code>conf_arg</code> to <code>tm_t_rsp</code> to be consistent with other efficacy modules.</li>
-<li>Added validate statement in <code>tm_g_ipp</code> module to print message when <code>Timepoint Variable</code> drop down is deselected.</li>
+<li>Added validation statement in <code>tm_g_ipp</code> module to print message when deselecting <code>Timepoint Variable</code> drop-down.</li>
 <li>Removed header definition in <code>tm_g_forest_rsp</code> and <code>tm_g_forest_tte</code> as there is now a default header in <code>g_forest</code>.</li>
-<li>Fixed validate statement in <code>tm_t_coxreg</code> so that models without strata and using likelihood tests return a result.</li>
-<li>Clarified functionality of <code>drop_arm_levels</code> for <code>tm_t_summary</code> and <code>tm_t_summary_by</code>. In the encodings panel, the checkbox will only be shown when the parent dataset and analysis dataset are different.</li>
+<li>Fixed validation statement in <code>tm_t_coxreg</code> so that models without strata and using likelihood tests return a result.</li>
+<li>Clarified functionality of <code>drop_arm_levels</code> for <code>tm_t_summary</code> and <code>tm_t_summary_by</code>. In the encodings panel, the checkbox will show when the parent dataset and analysis dataset are different.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="miscellaneous-0-8-8">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-8"></a></h4>
@@ -321,16 +315,16 @@
 <li>Fixed the <code>font_size</code> default of the templates to be 12L instead of a vector of 3 integers and cleaned associated unnecessary code.</li>
 <li>Fixed deprecated function warning in <code>tm_g_barchart_simple</code>.</li>
 <li>Fixed <code>subgroup_var</code> definition truncation in <code>tm_g_forest_rsp</code> and <code>tm_g_forest_tte</code>.</li>
-<li>Clarified “Type of Regression” related labeling in the encoding panel from <code>tm_t_coxreg</code>.</li>
+<li>Clarified labeling related to regression type in the encoding panel from <code>tm_t_coxreg</code>.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-8-8">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-8"></a></h4>
-<ul><li>Added a validation for the case when all rows are filtered out in the therapy tab of <code>tm_g_patient_profile</code>.</li>
+<ul><li>Added a validation for the case when filtering out all rows in the therapy tab of <code>tm_g_patient_profile</code>.</li>
 <li>Updated the internals of the modules to read data from the correct field of the <code>filter_spec</code> objects.</li>
 <li>Fixed the reactivity between the filter panel and the PARAMCD variable levels input in <code>tm_g_patient_profile</code> vitals tab so that the plot does not get reset when filtering.</li>
 <li>Updated the vitals plot tab in <code>tm_g_patient_profile</code> to drop NA entries in the plot.</li>
 <li>Updated <code>tm_t_coxreg</code> to take at values into account.</li>
-<li>Added a check in <code>tm_t_coxreg</code> to only have interactions for univariate models.</li>
+<li>Added a check in <code>tm_t_coxreg</code> to have interactions in univariate models but not in multivariate models.</li>
 <li>Updated <code>tm_t_events_summary</code> to work with pooled studies.</li>
 </ul></div>
 </div>
@@ -338,21 +332,20 @@
 <h2 class="pkg-version" data-toc-text="0.8.7" id="tealmodulesclinical-087">teal.modules.clinical 0.8.7<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-087"></a></h2>
 <div class="section level4">
 <h4 id="new-module-0-8-7">New Module<a class="anchor" aria-label="anchor" href="#new-module-0-8-7"></a></h4>
-<ul><li>New module <code>tm_g_patient_profile</code> was added to profile patients based on predefined categories.</li>
-<li>New module <code>tm_g_ipp</code> was added for individual patient plots.</li>
+<ul><li>Added new module <code>tm_g_patient_profile</code> to profile patients based on predefined categories.</li>
+<li>Added new module <code>tm_g_ipp</code> for individual patient plots.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="enhancements-0-8-7">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-7"></a></h4>
-<ul><li>The argument <code>drop_arm_levels</code> was added to all safety modules. This allows removal of columns based on factor levels not found in filtered data.</li>
-<li>
-<code>tm_g_km</code> updated to allow plot of failure probability on y-axis, tick interval selection on x-axis and option to create plot without confidence interval ribbon (new default).</li>
-<li>The argument <code>time_unit_var</code> was added to <code>template_g_km</code> to add the time unit to the x-axis label.</li>
+<ul><li>Added the argument <code>drop_arm_levels</code> to all safety modules. This allows removal of columns based on factor levels not found in filtered data.</li>
+<li>Updated <code>tm_g_km</code> to allow plot of failure probability on y-axis, tick interval selection on x-axis and option to create plot without confidence interval ribbon (new default).</li>
+<li>Added the argument <code>time_unit_var</code> to <code>template_g_km</code> to add the time unit to the x-axis label.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="miscellaneous-0-8-7">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-7"></a></h4>
 <ul><li>Removed redundant <code>Analysis Data:</code> label from Encodings Panel.</li>
-<li>Removed limit requiring 15 or fewer columns for tabulation modules. New maximum threshold is 100 columns.</li>
-<li>Lowered limit for minimum number of observations required by modules. Safety tables require at least one record. For efficacy outputs the requirement is per treatment group: <code>tm_a_mmrm</code> requires five records, <code>tm_t_logistic</code> and <code>tm_t_coxreg</code> require two records and the remaining modules require at least one record per treatment group. For graphs, the minimum threshold is two records.</li>
+<li>Removed limit requiring 15 or fewer columns for tabulation modules. New upper threshold is 100 columns.</li>
+<li>Decreased the lower limit for number of observations required by modules. Safety tables require at least one record. Requirements for efficacy outputs per treatment group: <code>tm_a_mmrm</code> requires five records, <code>tm_t_logistic</code> and <code>tm_t_coxreg</code> require two records, and the remaining modules require at least one record per treatment group. For graphs, the lower threshold is two records.</li>
 <li>Removed argument <code>cnsr_val</code> from <code>tm_t_events_patyear</code> and added new argument <code>events_var</code>.</li>
 <li>
 <code>arm_ref_comp_observer</code> to include <code>parentname</code> argument.</li>
@@ -365,9 +358,9 @@
 <h2 class="pkg-version" data-toc-text="0.8.6" id="tealmodulesclinical-086">teal.modules.clinical 0.8.6<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-086"></a></h2>
 <div class="section level4">
 <h4 id="new-features-0-8-6">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-8-6"></a></h4>
-<ul><li>New module <code>tm_g_ci</code> was added for confidence interval plots.</li>
-<li>New module <code>tm_t_ancova</code> was added for analysis of variance summary tables.</li>
-<li>New module <code>tm_t_mult_events</code> was added for multiple events by term.</li>
+<ul><li>Added new module <code>tm_g_ci</code> for confidence interval plots.</li>
+<li>Added new module <code>tm_t_ancova</code> for analysis of variance summary tables.</li>
+<li>Added new module <code>tm_t_mult_events</code> for multi-event tables.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="enhancements-0-8-6">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-6"></a></h4>
@@ -382,7 +375,7 @@
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-8-6">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-6"></a></h4>
-<ul><li>Updated <code>tm_t_events</code> module to use user’s choices for <code>prune_freq</code> and <code>prune_diff</code> when non-default is used</li>
+<ul><li>Updated <code>tm_t_events</code> module to use user’s non-default choices for <code>prune_freq</code> and <code>prune_diff</code>.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -399,7 +392,7 @@
 <li>Updated <code>tm_t_binary_outcome</code> to display Odds Ratio estimates, include new methods for CIs and p-values and display a summary for individual response categories.</li>
 <li>Updated <code>tm_t_tte</code> to optionally compare between arms, removed <code>conf_level</code> argument.</li>
 <li>Updated <code>tm_g_km</code> to optionally compare between arms.</li>
-<li>Extend <code>tm_g_km</code> to optionally scale X axis range in case of multiple plots.</li>
+<li>Extend <code>tm_g_km</code> to optionally scale X axis range in case of more than one plot.</li>
 <li>New <code>tm_a_mmrm</code> for MMRM analysis.</li>
 <li>Deprecated <code>tm_t_mmrm</code> (superseded by <code>tm_a_mmrm</code>).</li>
 </ul></div>
@@ -409,14 +402,14 @@
 <li>New <code>tm_t_binary_outcome</code> module.</li>
 <li>New <code>tm_t_events_patyear</code> module: events rate adjusted for patient-year at risk table.</li>
 <li>Remove <code>grade_levels</code> argument from <code>tm_t_events_by_grade</code>.</li>
-<li>Response table is updated for single arm.</li>
+<li>Updated response table for single arm.</li>
 <li>New <code>tm_t_abnormality</code> module.</li>
 <li>Removed <code>get_relabel_call</code> and <code>get_relabel_call2</code> in favor of <code>teal.devel::get_relabel_call</code> and <code>teal.devel::get_anl_relabel_call</code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.2" id="tealmodulesclinical-082">teal.modules.clinical 0.8.2<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-082"></a></h2>
 <ul><li>Add confidence level for <code>survfit</code>, <code>coxph</code>, <code>ztest</code>; add confidence type, ties, percentiles to <code>tm_t_tte</code>.</li>
-<li>Optionally use only single term in <code>tm_t_events</code> and <code>tm_t_events_by_grade</code> modules.</li>
+<li>Optionally use a single term in <code>tm_t_events</code> and <code>tm_t_events_by_grade</code> modules.</li>
 <li>New <code>tm_t_logistic</code> module.</li>
 <li>New <code>tm_t_mmrm</code> module.</li>
 <li>New modules <code>tm_t_summary_by</code> and <code>tm_t_events_summary</code>.</li>
@@ -439,7 +432,7 @@
 <h2 class="pkg-version" data-toc-text="0.6.0" id="tealmodulesclinical-060">teal.modules.clinical 0.6.0<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-060"></a></h2>
 <ul><li>Package renamed to <code>teal.modules.clinical</code>.</li>
 <li>Rename <code>tm_t_summarize_variables</code> to <code>tm_t_summary</code>.</li>
-<li>Usage of <code>teal::choices_selected()</code> function instead of <code>*_var</code> and <code>*_var_choices</code> type of arguments.</li>
+<li>Usage of <code>teal::choices_selected()</code> function instead of <code>*_var</code> and <code>*_var_choices</code> arguments.</li>
 </ul></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
