@@ -53,8 +53,8 @@ testthat::test_that("template_forest_tte generates correct expressions", {
     }),
     plot = quote({
       p <- decorate_grob(g_forest(tbl = result, col_symbol_size = NULL),
-        titles = "Forest plot of survival duration for ", footnotes = "",
-        gp_footnotes = grid::gpar(fontsize = 12)
+        titles = c("Forest Plot of Survival Duration for ", "Stratified by STRATA2"),
+        footnotes = "", gp_footnotes = grid::gpar(fontsize = 12)
       )
       grid::grid.newpage()
       grid::grid.draw(p)
