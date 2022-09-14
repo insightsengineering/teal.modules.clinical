@@ -180,9 +180,9 @@ template_forest_tte <- function(dataname = "ANL",
   plot_call <- substitute(
     decorate_grob(p, titles = title, footnotes = caption, gp_footnotes = grid::gpar(fontsize = 12)),
     env = list(
-      title = if (all_ggplot2_args$labs$subtitle == "") {
-        all_ggplot2_args$labs$title
-        } else {c(all_ggplot2_args$labs$title, all_ggplot2_args$labs$subtitle)},
+      title = `if`(all_ggplot2_args$labs$subtitle == "",
+                   all_ggplot2_args$labs$title,
+                   c(all_ggplot2_args$labs$title, all_ggplot2_args$labs$subtitle)),
       caption = all_ggplot2_args$labs$caption,
       p = plot_call)
   )

@@ -972,12 +972,17 @@ srv_t_coxreg <- function(id,
       ANL <- teal.code::chunks_get_var("ANL") # nolint
       paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
       multivariate <- input$type == "Multivariate"
+      strata_var <- as.vector(anl_m$columns_source$strata_var)
 
       if (input$type == "Multivariate") {
-        main_title <- paste0("Multi-Variable Cox Regression for ", paramcd)
+        main_title <- paste("Multi-Variable Cox Regression for", paramcd)
+        subtitle <- ifelse(length(strata_var) == 0, "", paste("Stratified by", paste(strata_var, collapse = " and ")))
         all_basic_table_args <- teal.widgets::resolve_basic_table_args(
           user_table = basic_table_args,
-          module_table = teal.widgets::basic_table_args(title = main_title)
+          module_table = teal.widgets::basic_table_args(
+            title = main_title,
+            subtitles = subtitle
+          )
         )
         expr <- call_template(unlist(input$buckets$Comp), anl_m, paramcd, multivariate, all_basic_table_args)
         mapply(
@@ -988,10 +993,14 @@ srv_t_coxreg <- function(id,
         teal.code::chunks_safe_eval()
         teal.code::chunks_get_var("result")
       } else {
-        main_title <- paste0("Cox Regression for ", paramcd)
+        main_title <- paste("Cox Regression for", paramcd)
+        subtitle <- ifelse(length(strata_var) == 0, "", paste("Stratified by", paste(strata_var, collapse = " and ")))
         all_basic_table_args <- teal.widgets::resolve_basic_table_args(
           user_table = basic_table_args,
-          module_table = teal.widgets::basic_table_args(title = main_title)
+          module_table = teal.widgets::basic_table_args(
+            title = main_title,
+            subtitles = subtitle
+          )
         )
         teal.code::chunks_push(expression = quote(result <- list()), id = "result_initiation_call")
         lapply(unlist(input$buckets$Comp), function(x) {
