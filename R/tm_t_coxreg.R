@@ -25,7 +25,7 @@ template_coxreg_u <- function(dataname,
                               control = control_coxreg(),
                               append = FALSE,
                               basic_table_args = teal.widgets::basic_table_args(
-                                title = paste0("Multi-Variable Cox Regression for ", paramcd)
+                                title = paste("Multi-Variable Cox Regression for", paramcd)
                               )) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
