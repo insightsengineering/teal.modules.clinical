@@ -526,7 +526,6 @@ srv_g_forest_rsp <- function(id,
         req(anl_merged_q())
         anl <- anl_merged_q()[["ANL"]]
         aval_var <- anl_merged()$columns_source$aval_var
-
         paramcd_level <- unlist(anl_merged()$filter_info$paramcd[[1]]$selected)
         if (length(paramcd_level) == 0) {
           return(NULL)
@@ -537,6 +536,8 @@ srv_g_forest_rsp <- function(id,
         } else {
           default_responses
         }
+
+
         common_rsp <- if (is.list(sel_param)) {
           sel_param$rsp
         } else {
