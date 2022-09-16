@@ -138,6 +138,7 @@ testthat::test_that("template_mmrm_tables works as expected when arm is not cons
   expected <- list(
     layout = quote(
       lyt <- rtables::basic_table() %>%
+        rtables::add_overall_col("All Patients") %>%
         rtables::split_rows_by("AVISIT") %>%
         tern.mmrm::summarize_lsmeans(
           arms = FALSE
