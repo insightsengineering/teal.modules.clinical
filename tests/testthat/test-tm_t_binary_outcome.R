@@ -28,7 +28,8 @@ testthat::test_that("template_binary_outcome generates standard expressions", {
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders",
+        subtitles = ""
       ) %>%
         rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>%
         rtables::add_colcounts() %>%
@@ -101,7 +102,10 @@ testthat::test_that("template_binary_outcome generates right expressions with no
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Table of BESRSPI for PR and SD Responders") %>%
+      lyt <- rtables::basic_table(
+        title = "Table of BESRSPI for PR and SD Responders",
+        subtitles = ""
+      ) %>%
         rtables::split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         rtables::add_colcounts() %>%
         estimate_proportion(
@@ -163,7 +167,8 @@ testthat::test_that("template_binary_outcome generates expression without arm co
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders",
+        subtitles = ""
       ) %>%
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
@@ -219,7 +224,8 @@ testthat::test_that("template_binary_outcome generates expression with non-defau
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders",
+        subtitles = "Stratified by SEX"
       ) %>%
         rtables::split_cols_by(var = "ARM", ref_group = "B: Placebo") %>%
         rtables::add_colcounts() %>%
@@ -311,7 +317,8 @@ testthat::test_that("template_binary_outcome can combine comparison arms", {
     ),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders",
+        subtitles = ""
       ) %>%
         split_cols_by_groups(
           var = "ARMCD", groups_list = groups, ref_group = names(groups)[1]
@@ -385,7 +392,8 @@ testthat::test_that("template_binary_outcome can combine comparison arms when co
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders",
+        subtitles = ""
       ) %>%
         rtables::split_cols_by(var = "ARMCD") %>%
         rtables::add_colcounts() %>%
@@ -454,7 +462,8 @@ testthat::test_that("template_binary_outcome can combine refs", {
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders"
+        title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders",
+        subtitles = ""
       ) %>%
         rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A/ARM B") %>%
         rtables::add_colcounts() %>%

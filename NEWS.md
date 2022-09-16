@@ -74,6 +74,7 @@
 * `tm_t_events_summary` now allows nested `arm_var` columns matching other outputs such as `tm_t_events`.
 * Added validation in `tm_t_abnormality_by_worst_grade` when `arm_var` is not selected.
 * Enhanced `tm_t_binary_outcome` to include all responders in the response table by default.
+* Added a subtitle to `tm_g_forest_tte`, `tm_t_coxreg`, and `tm_t_binary_outcome` listing stratification factors.
 
 ### Bug fixes
 * Fixed a bug to prevent processing of empty sets of data by `tm_g_forest_rsp.R` causing `shiny` errors during the runtime.
