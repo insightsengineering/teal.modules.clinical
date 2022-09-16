@@ -609,7 +609,7 @@ srv_g_forest_tte <- function(id,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(q1, as.expression(my_calls), name = "g_forest_tte call")
+      teal.code::eval_code(q1, as.expression(my_calls))
     })
 
     # Outputs to render.

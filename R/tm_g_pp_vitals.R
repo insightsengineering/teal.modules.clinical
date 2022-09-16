@@ -128,7 +128,6 @@ template_vitals <- function(dataname = "ANL",
         ) +
         ggplot2::scale_y_continuous(
           breaks = seq(0, max(vitals[[xaxis_char]], na.rm = TRUE), 50),
-          name = "Vitals",
           minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = TRUE), 10)
         ) +
         ggplot2::geom_text(
@@ -490,10 +489,9 @@ srv_g_vitals <- function(id,
             patient_col = patient_col,
             patient_id = patient_id()
           )
-        ),
-        name = "patient_id_filter_call"
+        )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls), name = "patient_call")
+        teal.code::eval_code(as.expression(my_calls))
     })
 
     plot_r <- shiny::reactive(output_q()[["result_plot"]])

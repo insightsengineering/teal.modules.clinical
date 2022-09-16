@@ -593,7 +593,7 @@ srv_t_abnormality <- function(id,
         tbl_title = tbl_title
       )
 
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_abnormality call")
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Outputs to render.

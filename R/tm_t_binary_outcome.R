@@ -946,7 +946,7 @@ srv_t_binary_outcome <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(q1, as.expression(my_calls), name = "tm_t_binary_outcome call")
+      teal.code::eval_code(q1, as.expression(my_calls))
     })
 
     # Outputs to render.

@@ -831,7 +831,7 @@ srv_t_shift_by_grade <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_shift_by_grade call")
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Outputs to render.

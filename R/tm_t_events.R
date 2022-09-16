@@ -745,7 +745,7 @@ srv_t_events_byterm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_events call")
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Outputs to render.

@@ -616,7 +616,7 @@ srv_t_smq <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls), name = "tm_t_smq call")
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Outputs to render.

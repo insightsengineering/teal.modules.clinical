@@ -660,7 +660,7 @@ srv_t_logistic <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q_r(), as.expression(calls), name = "summarize_logistic call")
+      teal.code::eval_code(merged$anl_q_r(), as.expression(calls))
     })
 
     table_r <- shiny::reactive(output_q()[["result"]])
