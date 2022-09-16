@@ -153,10 +153,16 @@ template_binary_outcome <- function(dataname,
     paste("Table of", paramcd, "for", responder_val, "Responders")
   }
 
+  strata_var <- control$strat$strat
+  subtitle <- ifelse(length(strata_var) == 0, "", paste("Stratified by", paste(strata_var, collapse = " and ")))
+
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(title = table_title)
+      module_table = teal.widgets::basic_table_args(
+        title = table_title,
+        subtitles = subtitle
+      )
     )
   )
 
