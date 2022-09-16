@@ -8,6 +8,7 @@
 * Enhanced the `tm_t_pp_medical_history` module to use the `table_with_settings` module and return the `rtables` object.
 * Implemented `nestcolor` in examples, refactored `tm_g_barchart_simple` to allow use of `nestcolor`.
 * Added more descriptive title/labels to `tm_g_ci`.
+* Updated `tm_a_mmrm` column name when no treatment is selected from "all obs" to "All Patients".
 
 ### Bug fixes
 
