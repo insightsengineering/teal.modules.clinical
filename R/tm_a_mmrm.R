@@ -242,7 +242,7 @@ template_mmrm_tables <- function(parentname,
       substitute(
         expr =
           rtables::add_overall_col("All Patients") %>%
-          rtables::split_rows_by(visit_var) %>%
+            rtables::split_rows_by(visit_var) %>%
             tern.mmrm::summarize_lsmeans(arms = FALSE) %>%
             rtables::append_topleft(paste0("  ", paramcd)),
         env = list(
