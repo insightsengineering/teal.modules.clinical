@@ -10,6 +10,7 @@
 * Added more descriptive title/labels to `tm_g_ci`.
 * Updated `tm_a_mmrm` column name when no treatment is selected from "all obs" to "All Patients".
 * Added a subtitle to `tm_g_ci` with visit name.
+* Added a title and parameter category subtitle to `tm_t_exposure`, cleaned up labels.
 
 ### Bug fixes
 
