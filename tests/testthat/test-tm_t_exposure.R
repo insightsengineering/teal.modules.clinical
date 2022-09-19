@@ -19,7 +19,7 @@ testthat::test_that("template_exposure generates correct expressions with defaul
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(main_footer = "* Person time is the sum of TDURD") %>%
+      lyt <- rtables::basic_table(main_footer = "* Patient time is the sum of TDURD") %>%
         rtables::split_cols_by("SEX") %>%
         rtables::add_colcounts() %>%
         summarize_patients_exposure_in_cols(
@@ -68,7 +68,7 @@ testthat::test_that("template_exposure generates correct expressions with custom
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(main_footer = "* Person time is the sum of myTDURD") %>%
+      lyt <- rtables::basic_table(main_footer = "* Patient time is the sum of myTDURD") %>%
         rtables::split_cols_by("SEX") %>%
         rtables::add_colcounts() %>%
         summarize_patients_exposure_in_cols(
@@ -118,7 +118,7 @@ testthat::test_that("template_exposure generates correct expressions with paramc
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table(main_footer = "* Person time is the sum of Total Duration (Days)") %>%
+      lyt <- rtables::basic_table(main_footer = "* Patient time is the sum of Total Duration (Days)") %>%
         rtables::split_cols_by("SEX") %>%
         rtables::add_colcounts() %>%
         summarize_patients_exposure_in_cols(
