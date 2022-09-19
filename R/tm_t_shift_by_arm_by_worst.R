@@ -205,12 +205,12 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'         selected = "Y", fixed = TRUE
 #'       ),
 #'       aval_var = choices_selected(
-#'         variable_choices(adeg, subset = "AVALC"),
-#'         selected = "AVALC", fixed = TRUE
+#'         variable_choices(adeg, c("AVALC", "ANRIND")),
+#'         selected = "AVALC"
 #'       ),
 #'       base_var = choices_selected(
-#'         variable_choices(adeg, subset = "BASEC"),
-#'         selected = "BASEC", fixed = TRUE
+#'         variable_choices(adeg, c("BASEC", "BNRIND")),
+#'         selected = "BASEC"
 #'       ),
 #'       useNA = "ifany"
 #'     )
@@ -453,8 +453,21 @@ srv_shift_by_arm_by_worst <- function(id,
         ),
         shiny::need(input_treatment_flag_var, "Please select an on treatment flag variable."),
         shiny::need(input$treatment_flag, "Please select indicator value for on treatment records."),
-        shiny::need(input_worst_flag_var, "Please select a worst flag variable.")
-      )
+        shiny::need(input_worst_flag_var, "Please select a worst flag variable."),
+        shiny::need(
+          length(unique(anl_m$data()[[input_aval_var]])) < 50,
+          paste(
+            "There are too many values of", input_aval_var, "for the selected endpoint.",
+            "Please select either a different endpoint or a different analysis value."
+          )
+        ),
+        shiny::need(
+          length(unique(anl_m$data()[[input_base_var]])) < 50,
+          paste(
+            "There are too many values of", input_base_var, "for the selected endpoint.",
+            "Please select either a different endpoint or a different baseline value."
+          )
+        ))
 
       validate_standard_inputs(
         adsl = adsl_filtered,
@@ -478,6 +491,11 @@ srv_shift_by_arm_by_worst <- function(id,
       teal.code::chunks_push_data_merge(anl_adsl)
       teal.code::chunks_push_new_line()
 
+      basic_table_args$title <- "Shift by Arm by Worst Table"
+      basic_table_args$subtitles <- c(
+        paste("Endpoint:", anl_m$filter_info$paramcd[[1]]$selected[[1]]),
+        paste("Worst Flag Variable:", anl_m$columns_source$worst_flag_var)
+      )
 
       my_calls <- template_shift_by_arm_by_worst(
         dataname = "ANL",
