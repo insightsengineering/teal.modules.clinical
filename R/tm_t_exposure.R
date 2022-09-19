@@ -77,7 +77,7 @@ template_exposure <- function(parentname,
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(main_footer = paste0("* Person time is the sum of ", paramcd_label))
+      module_table = teal.widgets::basic_table_args(main_footer = paste0("* Patient Time is the sum of ", paramcd_label))
     )
   )
 
@@ -122,9 +122,10 @@ template_exposure <- function(parentname,
       summarize_patients_exposure_in_cols(
         var = aval_var, col_split = TRUE,
         .labels = c(
-          n_patients = "Patient time*",
+          n_patients = "Number of Patients",
           sum_exposure = paste("Sum of", paramcd, sprintf("(%s)", avalu_var))
-        )
+        ),
+        custom_label = "Total Number of Patients and Patient Time*"
       ),
       env = list(
         aval_var = aval_var,
@@ -576,6 +577,9 @@ srv_t_exposure <- function(id,
         paramcd_map <- unique(anl_filtered[paramcd_map_list])
         input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd, 2])
       }
+
+      basic_table_args$title <- "Duration of Exposure Table"
+      basic_table_args$subtitles <- paste("Parameter Category:", anl_m$filter_info$parcat[[1]]$selected[[1]])
 
       my_calls <- template_exposure(
         parentname = "ANL_ADSL",
