@@ -403,6 +403,7 @@ srv_g_ci <- function(id, # nolint
       y <- merged_data()$columns_source$y_var
       color <- merged_data()$columns_source$color
       ggplot2_args$labs$title <- paste("Confidence Interval Plot by", datasets$get_varlabels(attr(x, "dataname"), x))
+      ggplot2_args$labs$subtitle <- paste("Visit:", merged_data()$filter_info$y_var[[2]]$selected[[1]])
       ggplot2_args$labs$x <- datasets$get_varlabels(attr(x, "dataname"), x)
       ggplot2_args$labs$y <- paste(
         merged_data()$filter_info$y_var[[1]]$selected[[1]],
