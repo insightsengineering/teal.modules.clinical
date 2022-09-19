@@ -9,6 +9,7 @@
 * Implemented `nestcolor` in examples, refactored `tm_g_barchart_simple` to allow use of `nestcolor`.
 * Added more descriptive title/labels to `tm_g_ci`.
 * Updated `tm_a_mmrm` column name when no treatment is selected from "all obs" to "All Patients".
+* Added a subtitle to `tm_g_ci` with visit name.
 
 ### Bug fixes
 
