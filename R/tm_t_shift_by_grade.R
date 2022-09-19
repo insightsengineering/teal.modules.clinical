@@ -814,7 +814,9 @@ srv_t_shift_by_grade <- function(id,
       teal.code::chunks_push_new_line()
       anl_adsl <- adsl_merged()
       teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
+
+      basic_table_args$title <- "Grade Summary Table"
+      basic_table_args$subtitles <- paste("Worst Flag Variable:", anl_m$columns_source$worst_flag_var)
 
       my_calls <- template_shift_by_grade(
         parentname = "ANL_ADSL",
