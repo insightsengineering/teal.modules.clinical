@@ -104,7 +104,6 @@ template_shift_by_grade <- function(parentname,
     )
   )
 
-
   # Create new grouping variables ATOXGR_GP, BTOXGR_GP
   if (!code_missing_baseline) {
     if (worst_flag_var %in% c("WGRLOVFL", "WGRLOFL")) {
