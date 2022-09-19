@@ -467,7 +467,8 @@ srv_shift_by_arm_by_worst <- function(id,
             "There are too many values of", input_base_var, "for the selected endpoint.",
             "Please select either a different endpoint or a different baseline value."
           )
-        ))
+        )
+      )
 
       validate_standard_inputs(
         adsl = adsl_filtered,
