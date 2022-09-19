@@ -10,6 +10,7 @@
 * Added more descriptive title/labels to `tm_g_ci`.
 * Updated `tm_a_mmrm` column name when no treatment is selected from "all obs" to "All Patients".
 * Added a subtitle to `tm_g_ci` with visit name.
+* Added titles and worse flag variable subtitles to `tm_t_shift_by_grade` and `tm_t_shift_by_arm_by_worst`.
 
 ### Bug fixes
 
@@ -18,6 +19,7 @@
 * Fixed bug in `tm_a_mmrm` which prevented table headers from displaying.
 * Fixed bug in `tm_g_forest_rsp` when endpoint was deselected.
 * Fixed bug in the `tm_t_binary_outcome`, crashed the app when deselecting all `paramcd`.
+* Fixed bug in `tm_t_shift_by_arm_by_worst` by adding validations for choosing different endpoint values.
 
 
 ### Miscellaneous
