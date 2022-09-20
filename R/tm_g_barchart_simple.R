@@ -356,7 +356,7 @@ srv_g_barchart_simple <- function(id,
         count_str_to_col_exprs <- sapply(groupby_vars[-1], count_str_to_column_expr)
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
-      quo2 <- teal.code::eval_code(quo, code = count_exprs, name = "groupvar counts")
+      quo2 <- teal.code::eval_code(quo, code = count_exprs)
 
       # add label and slice(1) as all patients in the same subgroup have same n_'s
       quo3 <- teal.code::eval_code(
@@ -383,8 +383,7 @@ srv_g_barchart_simple <- function(id,
           columns_source = merge_inputs()$columns_source,
           datasets = data,
           anl_name = "counts"
-        ),
-        name = "get_anl_relabel_call"
+        )
       )
     })
 
@@ -399,9 +398,7 @@ srv_g_barchart_simple <- function(id,
           nrow(ANL),
           groupby_vars
         )
-      ),
-      name = "plot_title_call"
-      )
+      ))
 
       y_lab <- substitute(
         column_annotation_label(counts, y_name),
@@ -435,11 +432,11 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      quo3 <- teal.code::eval_code(quo2, code = plot_call, name = "plot_call")
+      quo3 <- teal.code::eval_code(quo2, code = plot_call,)
 
       # explicitly calling print on the plot inside the quosure evaluates
       # the ggplot call and therefore catches errors
-      teal.code::eval_code(quo3, code = quote(print(plot)), name = "print_plot_call")
+      teal.code::eval_code(quo3, code = quote(print(plot)))
     })
 
     plot_r <- shiny::reactive(output_q()[["plot"]])

@@ -307,10 +307,9 @@ srv_t_medical_history <- function(id,
             patient_col = patient_col,
             patient_id = patient_id()
           )
-        ),
-        name = "patient_id_filter_call"
+        )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls), name = "call")
+        teal.code::eval_code(as.expression(my_calls))
     })
 
     table_r <- shiny::reactive(output_q()[["result"]])

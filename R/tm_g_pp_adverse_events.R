@@ -506,10 +506,8 @@ srv_g_adverse_events <- function(id,
             patient_col = patient_col,
             patient_id = patient_id()
           )
-        ),
-        name = "filter_patient_id_call"
+        )
       )
-
 
       calls <- template_adverse_events(
         dataname = "ANL",

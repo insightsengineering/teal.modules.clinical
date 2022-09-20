@@ -404,8 +404,7 @@ srv_g_laboratory <- function(id,
             patient_col = patient_col,
             patient_id = patient_id()
           )
-        ),
-        name = "patient_id_filter_call"
+        )
       ) %>%
         teal.code::eval_code(as.expression(labor_calls))
     })

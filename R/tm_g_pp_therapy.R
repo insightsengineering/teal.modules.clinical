@@ -690,10 +690,9 @@ srv_g_therapy <- function(id,
             patient_col = patient_col,
             patient_id = patient_id()
           )
-        ),
-        name = "patient_id_filter_call"
+        )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls), name = "patient_call")
+        teal.code::eval_code(as.expression(my_calls))
     })
 
     output$therapy_table <- DT::renderDataTable(

@@ -981,7 +981,7 @@ srv_t_coxreg <- function(id,
           unlist(input$buckets$Comp), merged$anl_input_r(),
           paramcd, multivariate, all_basic_table_args
         )
-        teal.code::eval_code(merged$anl_q_r(), as.expression(expr), name = "call")
+        teal.code::eval_code(merged$anl_q_r(), as.expression(expr))
       } else {
         main_title <- paste0("Cox Regression for ", paramcd)
         all_basic_table_args <- teal.widgets::resolve_basic_table_args(
@@ -990,7 +990,7 @@ srv_t_coxreg <- function(id,
         )
 
         merged$anl_q_r() %>%
-          teal.code::eval_code(quote(result <- list()), name = "result_initiation_call") %>%
+          teal.code::eval_code(quote(result <- list())) %>%
           teal.code::eval_code(
             as.expression(lapply(
               unlist(input$buckets$Comp),
@@ -1016,8 +1016,7 @@ srv_t_coxreg <- function(id,
                 p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
                 subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
               )
-            ),
-            name = "rbindl_rtables_call"
+            )
           )
       }
     })

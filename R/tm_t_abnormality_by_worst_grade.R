@@ -573,9 +573,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls),
-        name = "tm_t_abnormality_by_worst_grade call"
-      )
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Outputs to render.
