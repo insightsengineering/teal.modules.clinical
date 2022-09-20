@@ -472,7 +472,8 @@ template_mmrm_plots <- function(fit_name,
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
 #'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'               ADSL <- synthetic_cdisc_data_latest$adsl"),
+#'               ADSL <- synthetic_cdisc_data_latest$adsl"
+#'     ),
 #'     cdisc_dataset("ADQS", ADQS,
 #'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
 #'               ADQS <- synthetic_cdisc_data("latest")$adqs %>%
