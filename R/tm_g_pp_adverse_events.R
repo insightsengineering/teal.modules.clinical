@@ -183,7 +183,7 @@ template_adverse_events <- function(dataname = "ANL",
 #' library(scda)
 #' library(nestcolor)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
 #' ADSL <- synthetic_cdisc_data_latest$adsl
 #' ADAE <- synthetic_cdisc_data_latest$adae
 #'
@@ -191,10 +191,12 @@ template_adverse_events <- function(dataname = "ANL",
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
 #'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"),
+#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'     ),
 #'     cdisc_dataset("ADAE", ADAE,
 #'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADAE <- synthetic_cdisc_data_latest$adae")
+#'         ADAE <- synthetic_cdisc_data_latest$adae"
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_adverse_events(

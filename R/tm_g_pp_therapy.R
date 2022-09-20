@@ -256,8 +256,8 @@ template_therapy <- function(dataname = "ANL",
 #' library(scda)
 #' library(nestcolor)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#' ADSL <-synthetic_cdisc_data_latest$adsl
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#' ADSL <- synthetic_cdisc_data_latest$adsl
 #' ADCM <- synthetic_cdisc_data_latest$adcm
 #'
 #' #' Modify ADCM
@@ -283,7 +283,8 @@ template_therapy <- function(dataname = "ANL",
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
 #'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"),
+#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'     ),
 #'     cdisc_dataset("ADCM", ADCM,
 #'       code = "ADCM <- synthetic_cdisc_data('latest')$adcm
 #'         ADCM$CMINDC <- paste0('Indication_', as.numeric(ADCM$CMDECOD))

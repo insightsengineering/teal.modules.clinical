@@ -73,7 +73,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(scda)
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
 #' ADSL <- synthetic_cdisc_data_latest$adsl
 #' ADCM <- synthetic_cdisc_data_latest$adcm
 #'
@@ -99,7 +99,8 @@ template_prior_medication <- function(dataname = "ANL",
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
 #'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"),
+#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'     ),
 #'     cdisc_dataset("ADCM", ADCM,
 #'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
 #'         ADCM <- synthetic_cdisc_data_latest$adcm

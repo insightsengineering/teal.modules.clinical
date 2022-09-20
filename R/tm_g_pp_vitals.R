@@ -194,7 +194,7 @@ template_vitals <- function(dataname = "ANL",
 #' @examples
 #' library(scda)
 #' library(nestcolor)
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
 #' ADSL <- synthetic_cdisc_data_latest$adsl
 #' ADVS <- synthetic_cdisc_data_latest$advs
 #'
@@ -202,10 +202,12 @@ template_vitals <- function(dataname = "ANL",
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
 #'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"),
+#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'     ),
 #'     cdisc_dataset("ADVS", ADVS,
 #'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADVS <- synthetic_cdisc_data_latest$advs")
+#'         ADVS <- synthetic_cdisc_data_latest$advs"
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_vitals(
