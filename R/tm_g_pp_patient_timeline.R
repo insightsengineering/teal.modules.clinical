@@ -390,21 +390,21 @@ template_patient_timeline <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#'         ADSL <- synthetic_cdisc_data_latest$adsl'
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADSL <- synthetic_cdisc_data_latest$adsl"
 #'     ),
 #'     cdisc_dataset("ADAE", ADAE,
-#'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#'         ADAE <- synthetic_cdisc_data_latest$adae'
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADAE <- synthetic_cdisc_data_latest$adae"
 #'     ),
 #'     cdisc_dataset("ADCM", ADCM,
-#'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#'         ADCM <- synthetic_cdisc_data("latest")$adcm
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADCM <- synthetic_cdisc_data_latest$adcm
 #'         ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'         ADCM$CMDOSE <- 1
-#'         ADCM$CMDOSU <- "U"
-#'         ADCM$CMROUTE <- "CMROUTE"
-#'         ADCM$CMDOSFRQ <- "CMDOSFRQ"
+#'         ADCM$CMDOSU <- 'U'
+#'         ADCM$CMROUTE <- 'CMROUTE'
+#'         ADCM$CMDOSFRQ <- 'CMDOSFRQ'
 #'         ADCM$CMSTDY <- 1
 #'         ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
 #'         ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
@@ -415,10 +415,10 @@ template_patient_timeline <- function(dataname = "ANL",
 #'         ADCM$CMAENDTM <- ADCM$AENDTM
 #'         formatters::var_labels(
 #'           ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
-#'             "Indication",
-#'             "Reported Name of Drug, Med, or Therapy",
-#'             "Study Day of Start of Medication",
-#'             "Study Day of End of Medication")',
+#'             'Indication',
+#'             'Reported Name of Drug, Med, or Therapy',
+#'             'Study Day of Start of Medication',
+#'             'Study Day of End of Medication')",
 #'       keys = adcm_keys
 #'     )
 #'   ),
