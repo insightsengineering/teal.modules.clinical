@@ -14,30 +14,30 @@
 #' @seealso [tm_t_binary_outcome()]
 #' @keywords internal
 #' @examples
-#' \dontrun{
-#' # Preparation of the test case.
-#' library(dplyr)
-#' library(scda)
-#' library(tern)
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adrs <- synthetic_cdisc_data("latest")$adrs
+#' if (interactive()) {
+#'   # Preparation of the test case.
+#'   library(dplyr)
+#'   library(scda)
+#'   library(tern)
+#'   adsl <- synthetic_cdisc_data("latest")$adsl
+#'   adrs <- synthetic_cdisc_data("latest")$adrs
 #'
-#' # Generate an expression for the analysis of responders.
-#' a <- template_binary_outcome(
-#'   dataname = "adrs",
-#'   parentname = "adsl",
-#'   arm_var = "ARMCD",
-#'   paramcd = "BESRSPI",
-#'   ref_arm = "ARM A",
-#'   comp_arm = c("ARM B"),
-#'   compare_arm = TRUE,
-#'   show_rsp_cat = TRUE
-#' )
+#'   # Generate an expression for the analysis of responders.
+#'   a <- template_binary_outcome(
+#'     dataname = "adrs",
+#'     parentname = "adsl",
+#'     arm_var = "ARMCD",
+#'     paramcd = "BESRSPI",
+#'     ref_arm = "ARM A",
+#'     comp_arm = c("ARM B"),
+#'     compare_arm = TRUE,
+#'     show_rsp_cat = TRUE
+#'   )
 #'
-#' b <- mapply(expr = a, FUN = eval)
-#' b$data
-#' b$layout
-#' b$table
+#'   b <- mapply(expr = a, FUN = eval)
+#'   b$data
+#'   b$layout
+#'   b$table
 #' }
 #'
 template_binary_outcome <- function(dataname,
@@ -449,8 +449,8 @@ template_binary_outcome <- function(dataname,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_binary_outcome <- function(label,

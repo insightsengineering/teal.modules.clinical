@@ -500,8 +500,8 @@ template_mmrm_plots <- function(fit_name,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_a_mmrm <- function(label,
@@ -869,7 +869,7 @@ srv_mmrm <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q1 <- teal.code::new_quosure(data)
+      q1 <- teal.code::new_qenv(data)
       q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
       teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
     })

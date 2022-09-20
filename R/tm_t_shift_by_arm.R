@@ -207,8 +207,8 @@ template_shift_by_arm <- function(dataname,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_shift_by_arm <- function(label,

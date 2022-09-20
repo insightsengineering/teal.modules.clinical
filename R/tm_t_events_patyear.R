@@ -179,8 +179,8 @@ template_events_patyear <- function(dataname,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_events_patyear <- function(label,

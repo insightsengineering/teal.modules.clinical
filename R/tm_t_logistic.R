@@ -274,8 +274,8 @@ template_logistic <- function(dataname,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(ui = app$ui, server = app$server)
+#' if (interactive()) {
+#'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_t_logistic <- function(label,

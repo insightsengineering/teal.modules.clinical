@@ -238,8 +238,8 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(ui = app$ui, server = app$server)
+#' if (interactive()) {
+#'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_g_lineplot <- function(label,
@@ -519,7 +519,7 @@ srv_g_lineplot <- function(id,
     )
 
     anl_merged_q <- reactive({
-      teal.code::new_quosure(data) %>% teal.code::eval_code(as.expression(anl_merged_input()$expr))
+      teal.code::new_qenv(data) %>% teal.code::eval_code(as.expression(anl_merged_input()$expr))
     })
 
     merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_merged_q)

@@ -265,8 +265,8 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_abnormality_by_worst_grade <- function(label, # nolint

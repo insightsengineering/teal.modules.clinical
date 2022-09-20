@@ -599,8 +599,8 @@ template_events_summary <- function(anl_name,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_events_summary <- function(label,

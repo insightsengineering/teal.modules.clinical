@@ -2,7 +2,7 @@
 
 ### Breaking changes
 
-* Replaced `chunks` with simpler `Quosure` class.
+* Replaced `chunks` with simpler `qenv` class.
 * Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (list of reactive datasets) and `filter_panel_api` (`FilterPanelAPI`).
 
 ### Enhancements

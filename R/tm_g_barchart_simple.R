@@ -133,8 +133,8 @@
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_barchart_simple <- function(x = NULL,
                                  fill = NULL,
@@ -332,7 +332,7 @@ srv_g_barchart_simple <- function(id,
       shiny::validate({
         shiny::need(merge_inputs()$columns_source$x, "Please select an x-variable")
       })
-      quo <- teal.code::new_quosure(env = data)
+      quo <- teal.code::new_qenv(env = data)
       quo <- teal.code::eval_code(quo, as.expression(merge_inputs()$expr))
       quo
     })
@@ -432,9 +432,9 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      quo3 <- teal.code::eval_code(quo2, code = plot_call,)
+      quo3 <- teal.code::eval_code(quo2, code = plot_call, )
 
-      # explicitly calling print on the plot inside the quosure evaluates
+      # explicitly calling print on the plot inside the qenv evaluates
       # the ggplot call and therefore catches errors
       teal.code::eval_code(quo3, code = quote(print(plot)))
     })
@@ -513,7 +513,7 @@ srv_g_barchart_simple <- function(id,
 
 
 
-# Helper functions for quosure ----
+# Helper functions for qenv ----
 
 #' `ggplot2` call to generate simple barchart
 #'

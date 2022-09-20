@@ -257,8 +257,8 @@ template_g_ci <- function(dataname, # nolint
 #'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_g_ci <- function(label,
