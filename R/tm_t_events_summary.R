@@ -814,6 +814,8 @@ srv_t_events_summary <- function(id,
                                  basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     data_extract_vars <- list(
       arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
@@ -836,19 +838,19 @@ srv_t_events_summary <- function(id,
     anl_merged_input <- teal.transform::merge_expression_srv(
       selector_list = anl_selectors,
       datasets = data,
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = Filter(Negate(is.null), list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)),
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
     anl_merged_q <- reactive({
-      teal.code::new_quosure(env = data) %>%
+      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>%
         teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_merged_input()$expr))
     })

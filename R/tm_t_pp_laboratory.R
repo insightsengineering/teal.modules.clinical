@@ -295,6 +295,8 @@ srv_g_laboratory <- function(id,
                              label) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     patient_id <- shiny::reactive(input$patient_id)
 
@@ -338,7 +340,7 @@ srv_g_laboratory <- function(id,
     # Laboratory values tab ----
     merge_input_r <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       data_extract = list(
         timepoints = timepoints,
         aval = aval,
@@ -350,7 +352,7 @@ srv_g_laboratory <- function(id,
     )
 
     merge_q_r <- reactive({
-      teal.code::new_quosure(env = data) %>%
+      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>%
         teal.code::eval_code(as.expression(merge_input_r()$expr))
     })
 

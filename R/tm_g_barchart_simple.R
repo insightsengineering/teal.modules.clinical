@@ -321,10 +321,12 @@ srv_g_barchart_simple <- function(id,
                                   ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       data_extract = list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
     )
 
@@ -332,7 +334,7 @@ srv_g_barchart_simple <- function(id,
       shiny::validate({
         shiny::need(merge_inputs()$columns_source$x, "Please select an x-variable")
       })
-      quo <- teal.code::new_qenv(env = data)
+      quo <- teal.code::new_qenv(tdata2env(data), code = get_code(data))
       quo <- teal.code::eval_code(quo, as.expression(merge_inputs()$expr))
       quo
     })

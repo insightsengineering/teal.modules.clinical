@@ -468,6 +468,8 @@ srv_g_ipp <- function(id,
                       ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     anl_merged <- teal.transform::merge_expression_module(
       datasets = data,
@@ -481,18 +483,18 @@ srv_g_ipp <- function(id,
         base_var = base_var
       ),
       merge_function = "dplyr::inner_join",
-      join_keys = attr(data, "join_keys")
+      join_keys = get_join_keys(data)
     )
 
     adsl_merged <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var, id_var = id_var),
       anl_name = "ANL_ADSL"
     )
 
     anl_merged_q <- reactive({
-      q <- teal.code::new_quosure(env = data)
+      q <- teal.code::new_qenv(tdata2env(data), code = get_code(data))
       q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
       teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
     })

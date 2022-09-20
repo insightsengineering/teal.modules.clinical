@@ -415,6 +415,8 @@ srv_g_adverse_events <- function(id,
                                  ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     patient_id <- shiny::reactive(input$patient_id)
 
@@ -458,10 +460,10 @@ srv_g_adverse_events <- function(id,
           decod = decod
         )
       ),
-      join_keys = attr(data, "join_keys")
+      join_keys = get_join_keys(data)
     )
 
-    anl_merged_q <- reactive(teal.code::eval_code(teal.code::new_quosure(data), as.expression(anl_merged()$expr)))
+    anl_merged_q <- reactive(teal.code::eval_code(teal.code::new_qenv(tdata2env(data), code = get_code(data)), as.expression(anl_merged()$expr)))
 
     outputs_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))

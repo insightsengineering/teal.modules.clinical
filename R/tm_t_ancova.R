@@ -533,6 +533,8 @@ srv_ancova <- function(id,
                        basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
@@ -556,18 +558,18 @@ srv_ancova <- function(id,
         paramcd = paramcd
       ),
       merge_function = "dplyr::inner_join",
-      join_keys = attr(data, "join_keys")
+      join_keys = get_join_keys(data)
     )
 
     adsl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL",
-      join_keys = attr(data, "join_keys")
+      join_keys = get_join_keys(data)
     )
 
     anl_merged_q <- reactive({
-      teal.code::new_quosure(env = data) %>%
+      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>%
         teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_merged_input()$expr))
     })
