@@ -1358,7 +1358,9 @@ srv_mmrm <- function(id,
         labs <- list(
           subtitle = paste0(
             "Endpoint: ", fit$fit$data$PARAMCD[1],
-            ifelse(is.null(fit$vars$covariates), "", paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", ")))
+            ifelse(is.null(fit$vars$covariates), "",
+              paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
+            )
           ),
           caption = paste(
             paste("Weights for LS Means:", input$weights_emmeans),
