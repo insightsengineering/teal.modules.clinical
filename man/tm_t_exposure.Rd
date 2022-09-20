@@ -115,7 +115,8 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl,
       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-      ADSL <- synthetic_cdisc_data_latest$adsl'),
+      ADSL <- synthetic_cdisc_data_latest$adsl'
+    ),
     cdisc_dataset("ADEX", adex,
       code = 'set.seed(1, kind = "Mersenne-Twister")
       synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")

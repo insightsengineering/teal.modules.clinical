@@ -139,10 +139,12 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-        ADSL <- synthetic_cdisc_data_latest$adsl'),
+        ADSL <- synthetic_cdisc_data_latest$adsl'
+    ),
     cdisc_dataset("ADAE", ADAE,
       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-        ADAE <- synthetic_cdisc_data_latest$adae'),
+        ADAE <- synthetic_cdisc_data_latest$adae'
+    ),
     cdisc_dataset("ADCM", ADCM,
       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
         ADCM <- synthetic_cdisc_data("latest")$adcm
