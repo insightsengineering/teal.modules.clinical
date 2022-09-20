@@ -207,20 +207,22 @@ template_g_lineplot <- function(dataname = "ANL",
 #' library(scda)
 #' library(nestcolor)
 #'
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADLB <- synthetic_cdisc_data("latest")$adlb
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#' ADSL <- synthetic_cdisc_data_latest$adsl
+#' ADLB <- synthetic_cdisc_data_latest$adlb
 #'
 #' ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
-#'     cdisc_dataset(
-#'       "ADLB", ADLB,
-#'       code = "ADLB <- synthetic_cdisc_data('latest')$adlb
-#'               ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))"
-#'     ),
-#'     check = TRUE
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADSL <- synthetic_cdisc_data_latest$adsl"),
+#'     cdisc_dataset("ADLB", ADLB,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADLB <- synthetic_cdisc_data_latest$adlb
+#'         ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))"
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_g_lineplot(
