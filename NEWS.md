@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.13.9023
+# teal.modules.clinical 0.8.13.9025
 
 ### Enhancements
 * Updated all test files in `tests/testthat/` to `synthetic_cdisc_data("2022_02_28")` 
@@ -8,6 +8,8 @@
 * Enhanced the `tm_t_pp_medical_history` module to use the `table_with_settings` module and return the `rtables` object.
 * Implemented `nestcolor` in examples, refactored `tm_g_barchart_simple` to allow use of `nestcolor`.
 * Added more descriptive title/labels to `tm_g_ci`.
+* Updated `tm_a_mmrm` column name when no treatment is selected from "all obs" to "All Patients".
+* Added a subtitle to `tm_g_ci` with visit name.
 
 ### Bug fixes
 
@@ -73,6 +75,7 @@
 * `tm_t_events_summary` now allows nested `arm_var` columns matching other outputs such as `tm_t_events`.
 * Added validation in `tm_t_abnormality_by_worst_grade` when `arm_var` is not selected.
 * Enhanced `tm_t_binary_outcome` to include all responders in the response table by default.
+* Added a subtitle to `tm_g_forest_tte`, `tm_t_coxreg`, and `tm_t_binary_outcome` listing stratification factors.
 
 ### Bug fixes
 * Fixed a bug to prevent processing of empty sets of data by `tm_g_forest_rsp.R` causing `shiny` errors during the runtime.

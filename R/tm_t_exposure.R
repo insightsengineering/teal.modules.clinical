@@ -77,7 +77,7 @@ template_exposure <- function(parentname,
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(main_footer = paste0("* Person time is the sum of ", paramcd_label))
+      module_table = teal.widgets::basic_table_args(main_footer = paste0("* Patient time is the sum of ", paramcd_label))
     )
   )
 
