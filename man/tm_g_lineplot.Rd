@@ -135,8 +135,11 @@ ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min)
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADLB", ADLB, code = 'ADLB <- synthetic_cdisc_data("latest")$adlb
-                   ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))'),
+    cdisc_dataset(
+      "ADLB", ADLB,
+      code = 'ADLB <- synthetic_cdisc_data("latest")$adlb
+              ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))'
+    ),
     check = TRUE
   ),
   modules = modules(

@@ -19,9 +19,15 @@
 #' call_concatenate(list(quote(f), quote(g), quote(h)))
 #' call_concatenate(list(quote(f)))
 #' call_concatenate(list())
-#' call_concatenate(list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg)))))
+#' call_concatenate(
+#'   list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+#' )
 #'
-#' eval(call_concatenate(list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))))
+#' eval(
+#'   call_concatenate(
+#'     list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+#'   )
+#' )
 #' }
 call_concatenate <- function(args, bin_op = "+") {
   checkmate::assert_string(bin_op)

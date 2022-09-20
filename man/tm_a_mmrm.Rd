@@ -117,8 +117,9 @@ numerical precision.
 
 library(scda)
 
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADQS <- synthetic_cdisc_data("latest")$adqs \%>\%
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+ADSL <- synthetic_cdisc_data_latest$adsl
+ADQS <- synthetic_cdisc_data_latest$adqs \%>\%
   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
   dplyr::filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
   dplyr::mutate(
@@ -138,9 +139,12 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
+    cdisc_dataset("ADSL", ADSL,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+              ADSL <- synthetic_cdisc_data_latest$adsl"),
     cdisc_dataset("ADQS", ADQS,
-      code = 'ADQS <- synthetic_cdisc_data("latest")$adqs \%>\%
+      code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+              ADQS <- synthetic_cdisc_data("latest")$adqs \%>\%
               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
               dplyr::filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
               dplyr::mutate(
@@ -150,8 +154,7 @@ app <- init(
                   as.numeric() \%>\%
                   as.factor() # making consecutive numeric factor
               )'
-    ),
-    check = TRUE
+    )
   ),
   modules = modules(
     tm_a_mmrm(
