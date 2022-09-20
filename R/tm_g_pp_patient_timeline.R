@@ -356,9 +356,12 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @examples
 #' library(scda)
 #' library(nestcolor)
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADAE <- synthetic_cdisc_data("latest")$adae
-#' ADCM <- synthetic_cdisc_data("latest")$adcm
+#'
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#'
+#' ADSL <- synthetic_cdisc_data_latest$adsl
+#' ADAE <- synthetic_cdisc_data_latest$adae
+#' ADCM <- synthetic_cdisc_data_latest$adcm
 #'
 #' #' Modify ADCM
 #' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
@@ -386,10 +389,15 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_data("latest")$adae'),
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#'         ADSL <- synthetic_cdisc_data_latest$adsl'),
+#'     cdisc_dataset("ADAE", ADAE,
+#'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#'         ADAE <- synthetic_cdisc_data_latest$adae'),
 #'     cdisc_dataset("ADCM", ADCM,
-#'       code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
+#'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#'         ADCM <- synthetic_cdisc_data("latest")$adcm
 #'         ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #'         ADCM$CMDOSE <- 1
 #'         ADCM$CMDOSU <- "U"
@@ -410,8 +418,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'             "Study Day of Start of Medication",
 #'             "Study Day of End of Medication")',
 #'       keys = adcm_keys
-#'     ),
-#'     check = TRUE
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_patient_timeline(

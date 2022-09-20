@@ -80,8 +80,11 @@ Creates a valid expression for binary outcome analysis.
 library(dplyr)
 library(scda)
 library(tern)
-adsl <- synthetic_cdisc_data("latest")$adsl
-adrs <- synthetic_cdisc_data("latest")$adrs
+
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+
+adsl <- synthetic_cdisc_data_latest$adsl
+adrs <- synthetic_cdisc_data_latest$adrs
 
 # Generate an expression for the analysis of responders.
 a <- template_binary_outcome(
