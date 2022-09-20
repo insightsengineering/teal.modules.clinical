@@ -118,7 +118,6 @@ testthat::test_that("template_mmrm_tables works as expected", {
     ),
     cov_matrix = quote({
       cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
-      subtitles(cov_matrix) <- NULL
       cov_matrix
     })
   )
@@ -148,7 +147,6 @@ testthat::test_that("template_mmrm_tables works as expected when arm is not cons
     ),
     cov_matrix = quote({
       cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
-      subtitles(cov_matrix) <- NULL
       cov_matrix
     })
   )

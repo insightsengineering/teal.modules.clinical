@@ -11,7 +11,6 @@
 * Updated `tm_a_mmrm` column name when no treatment is selected from "all obs" to "All Patients".
 * Added a subtitle to `tm_g_ci` with visit name.
 * Added titles and worse flag variable subtitles to `tm_t_shift_by_grade` and `tm_t_shift_by_arm_by_worst`.
-* Added subtitles and footnotes to `tm_a_mmrm` tables and plots.
 
 ### Bug fixes
 
