@@ -434,7 +434,7 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      quo3 <- teal.code::eval_code(quo2, code = plot_call, )
+      quo3 <- teal.code::eval_code(quo2, code = plot_call)
 
       # explicitly calling print on the plot inside the qenv evaluates
       # the ggplot call and therefore catches errors
