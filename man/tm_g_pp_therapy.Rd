@@ -103,8 +103,9 @@ This teal module produces a patient profile therapy plot using ADaM datasets.
 library(scda)
 library(nestcolor)
 
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADCM <- synthetic_cdisc_data("latest")$adcm
+synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+ADSL <-synthetic_cdisc_data_latest$adsl
+ADCM <- synthetic_cdisc_data_latest$adcm
 
 #' Modify ADCM
 ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
@@ -127,27 +128,28 @@ adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", 
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADSL", ADSL,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADSL <- synthetic_cdisc_data_latest$adsl"),
     cdisc_dataset("ADCM", ADCM,
-      code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
-        ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
+      code = "ADCM <- synthetic_cdisc_data('latest')$adcm
+        ADCM$CMINDC <- paste0('Indication_', as.numeric(ADCM$CMDECOD))
         ADCM$CMDOSE <- 1
         ADCM$CMTRT <- ADCM$CMCAT
-        ADCM$CMDOSU <- "U"
-        ADCM$CMROUTE <- "CMROUTE"
-        ADCM$CMDOSFRQ <- "CMDOSFRQ"
+        ADCM$CMDOSU <- 'U'
+        ADCM$CMROUTE <- 'CMROUTE'
+        ADCM$CMDOSFRQ <- 'CMDOSFRQ'
         ADCM$CMASTDTM <- ADCM$ASTDTM
         ADCM$CMAENDTM <- ADCM$AENDTM
         formatters::var_labels(
-          ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]) <- c(
-            "Indication",
-            "Reported Name of Drug, Med, or Therapy",
-            "Study Day of Start of Medication",
-            "Study Day of End of Medication")
-        ADCM',
+          ADCM[c('CMINDC', 'CMTRT', 'ASTDY', 'AENDY')]) <- c(
+            'Indication',
+            'Reported Name of Drug, Med, or Therapy',
+            'Study Day of Start of Medication',
+            'Study Day of End of Medication')
+        ADCM",
       keys = adcm_keys
-    ),
-    check = TRUE
+    )
   ),
   modules = modules(
     tm_g_pp_therapy(

@@ -83,8 +83,10 @@ STREAM template \code{lgrt02}.
 
 library(scda)
 library(dplyr)
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
+
+synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+ADSL <- synthetic_cdisc_data_latest$adsl
+ADRS <- synthetic_cdisc_data_latest$adrs \%>\%
   filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
 
 arm_ref_comp <- list(
@@ -100,10 +102,13 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADRS", ADRS, code = 'ADRS <- synthetic_cdisc_data("latest")$adrs \%>\%
-      filter(PARAMCD \%in\% c("BESRSPI", "INVET"))'),
-    check = TRUE
+    cdisc_dataset("ADSL", ADSL,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADSL <- synthetic_cdisc_data_latest$adsl"),
+    cdisc_dataset("ADRS", ADRS,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADRS <- synthetic_cdisc_data_latest$adrs \%>\%
+        filter(PARAMCD \%in\% c('BESRSPI', 'INVET'))")
   ),
   modules = modules(
     tm_t_logistic(

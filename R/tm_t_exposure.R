@@ -77,7 +77,9 @@ template_exposure <- function(parentname,
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(main_footer = paste0("* Patient time is the sum of ", paramcd_label))
+      module_table = teal.widgets::basic_table_args(
+        main_footer = paste0("* Patient time is the sum of ", paramcd_label)
+      )
     )
   )
 
@@ -226,12 +228,12 @@ template_exposure <- function(parentname,
 #' @export
 #'
 #' @examples
-#'
 #' library(scda)
 #' library(dplyr)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adex <- synthetic_cdisc_data("latest")$adex
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#' adsl <- synthetic_cdisc_data_latest$adsl
+#' adex <- synthetic_cdisc_data_latest$adex
 #'
 #' set.seed(1, kind = "Mersenne-Twister")
 #' labels <- formatters::var_labels(adex, fill = FALSE)
@@ -248,21 +250,24 @@ template_exposure <- function(parentname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADSL", adsl,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'       ADSL <- synthetic_cdisc_data_latest$adsl"
+#'     ),
 #'     cdisc_dataset("ADEX", adex,
-#'       code = 'set.seed(1, kind = "Mersenne-Twister")
-#'       ADEX <- synthetic_cdisc_data("latest")$adex
+#'       code = "set.seed(1, kind = 'Mersenne-Twister')
+#'       synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'       ADEX <- synthetic_cdisc_data_latest$adex
 #'       labels <- formatters::var_labels(ADEX, fill = FALSE)
 #'       ADEX <- ADEX %>%
 #'        distinct(USUBJID, .keep_all = TRUE) %>%
-#'        mutate(PARAMCD = "TDURD",
-#'               PARAM = "Overall duration (days)",
+#'        mutate(PARAMCD = 'TDURD',
+#'               PARAM = 'Overall duration (days)',
 #'               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
-#'               AVALU = "Days") %>%
+#'               AVALU = 'Days') %>%
 #'               bind_rows(ADEX)
-#'       formatters::var_labels(ADEX) <- labels' # nolint
-#'     ),
-#'     check = TRUE
+#'       formatters::var_labels(ADEX) <- labels" # nolint
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_t_exposure(

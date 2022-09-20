@@ -62,14 +62,18 @@ This teal module produces a patient profile laboratory table using ADaM datasets
 }
 \examples{
 library(scda)
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADLB <- synthetic_cdisc_data("latest")$adlb
+synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+ADSL <- synthetic_cdisc_data_latest$adsl
+ADLB <- synthetic_cdisc_data_latest$adlb
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
-    cdisc_dataset("ADLB", ADLB, code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'),
-    check = TRUE
+    cdisc_dataset("ADSL", ADSL,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADSL <- synthetic_cdisc_data_latest$adsl"),
+    cdisc_dataset("ADLB", ADLB,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADLB <- synthetic_cdisc_data_latest$adlb")
   ),
   modules = modules(
     tm_t_pp_laboratory(
