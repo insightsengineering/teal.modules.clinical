@@ -288,6 +288,9 @@ template_shift_by_grade <- function(parentname,
   # layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
 
+  basic_table_args$title <- "Grade Summary Table"
+  basic_table_args$subtitles <- paste("Worst Flag Variable:", worst_flag_var)
+
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args
@@ -813,9 +816,6 @@ srv_t_shift_by_grade <- function(id,
       teal.code::chunks_push_new_line()
       anl_adsl <- adsl_merged()
       teal.code::chunks_push_data_merge(anl_adsl)
-
-      basic_table_args$title <- "Grade Summary Table"
-      basic_table_args$subtitles <- paste("Worst Flag Variable:", anl_m$columns_source$worst_flag_var)
 
       my_calls <- template_shift_by_grade(
         parentname = "ANL_ADSL",

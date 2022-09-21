@@ -78,6 +78,8 @@ template_shift_by_arm_by_worst <- function(dataname,
 
   y$data <- bracket_expr(data_list)
 
+  basic_table_args$title <- "Shift by Arm by Worst Table"
+
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args
@@ -492,7 +494,6 @@ srv_shift_by_arm_by_worst <- function(id,
       teal.code::chunks_push_data_merge(anl_adsl)
       teal.code::chunks_push_new_line()
 
-      basic_table_args$title <- "Shift by Arm by Worst Table"
       basic_table_args$subtitles <- c(
         paste("Endpoint:", anl_m$filter_info$paramcd[[1]]$selected[[1]]),
         paste("Worst Flag Variable:", anl_m$columns_source$worst_flag_var)

@@ -75,7 +75,7 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL") %>%
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
@@ -184,7 +184,7 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
     }),
     layout_prep = quote(split_fun <- drop_split_levels),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL") %>%
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         rtables::split_rows_by(
