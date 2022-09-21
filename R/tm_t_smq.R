@@ -646,7 +646,7 @@ srv_t_smq <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal.reporter::TealReportCard$new()
-        card$set_name("SMQ Table Table")
+        card$set_name("SMQ Table")
         card$append_text("Adverse Events Table by Standardized `MedDRA` Query (SMQ)", "header2")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Table", "header3")
