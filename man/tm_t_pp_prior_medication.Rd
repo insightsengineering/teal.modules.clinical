@@ -54,7 +54,7 @@ This teal module produces a patient prior medication report using ADaM datasets.
 }
 \examples{
 library(scda)
-synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
 ADSL <- synthetic_cdisc_data_latest$adsl
 ADCM <- synthetic_cdisc_data_latest$adcm
 
@@ -80,7 +80,8 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"),
+        ADSL <- synthetic_cdisc_data_latest$adsl"
+    ),
     cdisc_dataset("ADCM", ADCM,
       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
         ADCM <- synthetic_cdisc_data_latest$adcm

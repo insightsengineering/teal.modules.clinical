@@ -108,7 +108,7 @@ Teal Module: Grade Summary Table
 library(scda)
 library(dplyr)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
 adsl <- synthetic_cdisc_data_latest$adsl
 adlb <- synthetic_cdisc_data_latest$adlb
 
@@ -116,7 +116,8 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl,
       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"),
+        ADSL <- synthetic_cdisc_data_latest$adsl"
+    ),
     cdisc_dataset("ADLB", adlb,
       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
         ADLB <- synthetic_cdisc_data_latest$adlb"

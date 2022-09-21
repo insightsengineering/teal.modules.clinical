@@ -127,7 +127,7 @@ ADaM structure.
 library(scda)
 library(nestcolor)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
 ADSL <- synthetic_cdisc_data_latest$adsl
 ADLB <- synthetic_cdisc_data_latest$adlb
 
@@ -137,7 +137,8 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"),
+        ADSL <- synthetic_cdisc_data_latest$adsl"
+    ),
     cdisc_dataset("ADLB", ADLB,
       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
         ADLB <- synthetic_cdisc_data_latest$adlb

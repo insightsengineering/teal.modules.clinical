@@ -119,7 +119,7 @@ with ADaM structure
 library(scda)
 library(nestcolor)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
 
 ADSL <- synthetic_cdisc_data_latest$adsl
 ADTTE <- synthetic_cdisc_data_latest$adtte
@@ -148,7 +148,8 @@ app <- init(
     cdisc_dataset(
       "ADTTE", ADTTE,
       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADTTE <- synthetic_cdisc_data_latest$adtte")
+        ADTTE <- synthetic_cdisc_data_latest$adtte"
+    )
   ),
   modules = modules(
     tm_g_forest_tte(

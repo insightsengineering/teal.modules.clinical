@@ -91,7 +91,7 @@ Adverse Events Table by Standardized \code{MedDRA} Query.
 \examples{
 library(scda)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
 adsl <- synthetic_cdisc_data_latest$adsl
 adae <- synthetic_cdisc_data_latest$adae
 
@@ -113,10 +113,12 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl,
       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"),
+        ADSL <- synthetic_cdisc_data_latest$adsl"
+    ),
     cdisc_dataset("ADAE", adae,
       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADAE <- synthetic_cdisc_data_latest$adae")
+        ADAE <- synthetic_cdisc_data_latest$adae"
+    )
   ),
   modules = modules(
     tm_t_smq(
