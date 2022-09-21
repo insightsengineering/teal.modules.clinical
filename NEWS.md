@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.13.9025
+# teal.modules.clinical 0.8.13.9026
 
 ### Enhancements
 * Updated all test files in `tests/testthat/` to `synthetic_cdisc_data("2022_02_28")` 
@@ -19,6 +19,7 @@
 * Fixed bug in `tm_a_mmrm` which prevented table headers from displaying.
 * Fixed bug in `tm_g_forest_rsp` when endpoint was deselected.
 * Fixed bug in the `tm_t_binary_outcome`, crashed the app when deselecting all `paramcd`.
+* Fixed `teal.reporter` card names for `tm_t_smq`.
 
 
 ### Miscellaneous
