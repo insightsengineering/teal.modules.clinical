@@ -18,6 +18,7 @@
 * Fixed bug in `tm_a_mmrm` which prevented table headers from displaying.
 * Fixed bug in `tm_g_forest_rsp` when endpoint was deselected.
 * Fixed bug in the `tm_t_binary_outcome`, crashed the app when deselecting all `paramcd`.
+* Fixed `teal.reporter` card names for `tm_t_smq`.
 
 
 ### Miscellaneous
