@@ -406,7 +406,7 @@ is.cs_or_des <- function(x) { # nolint
 #'
 #' @export
 split_col_expr <- function(compare, combine, ref, arm_var) {
-  if (compare & combine) {
+  if (compare && combine) {
     substitute(
       expr = split_cols_by_groups(
         var = arm_var,
@@ -417,7 +417,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
         arm_var = arm_var
       )
     )
-  } else if (compare & !combine) {
+  } else if (compare && !combine) {
     substitute(
       expr = rtables::split_cols_by(
         var = arm_var,
