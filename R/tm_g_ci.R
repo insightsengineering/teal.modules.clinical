@@ -424,6 +424,7 @@ srv_g_ci <- function(id, # nolint
 
       ggplot2_args$labs$title <- paste("Confidence Interval Plot by", x_label)
       ggplot2_args$labs$x <- x_label
+      ggplot2_args$labs$subtitle <- paste("Visit:", merged_data()$filter_info$y_var[[2]]$selected[[1]])
       ggplot2_args$labs$y <- paste(
         merged_data()$filter_info$y_var[[1]]$selected[[1]],
         y_label

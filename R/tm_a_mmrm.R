@@ -241,7 +241,8 @@ template_mmrm_tables <- function(parentname,
       layout_list,
       substitute(
         expr =
-          rtables::split_rows_by(visit_var) %>%
+          rtables::add_overall_col("All Patients") %>%
+            rtables::split_rows_by(visit_var) %>%
             tern.mmrm::summarize_lsmeans(arms = FALSE) %>%
             rtables::append_topleft(paste0("  ", paramcd)),
         env = list(
@@ -278,10 +279,12 @@ template_mmrm_tables <- function(parentname,
       y$cov_matrix <- substitute(
         expr = {
           cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
+          subtitles(cov_matrix) <- st
           cov_matrix
         },
         env = list(
-          fit_mmrm = as.name(fit_name)
+          fit_mmrm = as.name(fit_name),
+          st = basic_table_args$subtitles
         )
       )
     },
@@ -289,10 +292,12 @@ template_mmrm_tables <- function(parentname,
       y$fixed_effects <- substitute(
         expr = {
           fixed_effects <- tern.mmrm::as.rtable(fit_mmrm, type = "fixed")
+          subtitles(fixed_effects) <- st
           fixed_effects
         },
         env = list(
-          fit_mmrm = as.name(fit_name)
+          fit_mmrm = as.name(fit_name),
+          st = basic_table_args$subtitles
         )
       )
     },
@@ -300,10 +305,12 @@ template_mmrm_tables <- function(parentname,
       y$diagnostic_table <- substitute(
         expr = {
           diagnostic_table <- tern.mmrm::as.rtable(fit_mmrm, type = "diagnostic")
+          subtitles(diagnostic_table) <- st
           diagnostic_table
         },
         env = list(
-          fit_mmrm = as.name(fit_name)
+          fit_mmrm = as.name(fit_name),
+          st = basic_table_args$subtitles
         )
       )
     }
@@ -1254,6 +1261,17 @@ srv_mmrm <- function(id,
       ANL_ADSL <- q1[["ANL_ADSL"]] # nolint
       paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
+      basic_table_args$subtitles <- paste0(
+        "Analysis Variable: ", anl_m$columns_source$aval_var,
+        ",  Endpoint: ", anl_m$filter_info$paramcd[[1]]$selected[[1]],
+        ifelse(is.null(fit$vars$covariates), "", paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", ")))
+      )
+      basic_table_args$main_footer <- c(
+        paste("Weights for LS Means:", input$weights_emmeans),
+        paste("Correlation Structure:", input$cor_struct),
+        paste("Optimization Algorithm:", attr(fit$fit, "optimizer"))
+      )
+
       mmrm_table <- template_mmrm_tables(
         parentname = "ANL_ADSL",
         dataname = "ANL",
@@ -1314,6 +1332,31 @@ srv_mmrm <- function(id,
       teal.code::eval_code(q1, as.expression(mmrm_plot_expr))
     })
 
+      ggplot2_args[["lsmeans"]] <- teal.widgets::ggplot2_args(
+        labs <- list(
+          subtitle = paste0(
+            "Endpoint: ", fit$fit$data$PARAMCD[1],
+            ifelse(is.null(fit$vars$covariates), "",
+              paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
+            )
+          ),
+          caption = paste(
+            paste("Weights for LS Means:", input$weights_emmeans),
+            paste("Correlation Structure:", input$cor_struct),
+            paste("Optimization Algorithm:", attr(fit$fit, "optimizer")),
+          )
+            sep = "\n"
+        )
+
+      )
+      )
+        )
+          )
+            ",  Endpoint: ", fit$fit$data$PARAMCD[1]
+            "Analysis Variable: ", fit$vars$response,
+          subtitle = paste0(
+        labs <- list(
+      ggplot2_args[["default"]] <- teal.widgets::ggplot2_args(
     all_code <- shiny::reactive({
       if (!is.null(plot_q()) && !is.null(table_q())) {
         join(plot_q(), table_q())

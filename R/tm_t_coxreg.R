@@ -25,7 +25,7 @@ template_coxreg_u <- function(dataname,
                               control = control_coxreg(),
                               append = FALSE,
                               basic_table_args = teal.widgets::basic_table_args(
-                                title = paste0("Multi-Variable Cox Regression for ", paramcd)
+                                title = paste("Multi-Variable Cox Regression for", paramcd)
                               )) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -972,12 +972,17 @@ srv_t_coxreg <- function(id,
       ANL <- merged$anl_q_r()[["ANL"]] # nolint
       paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
       multivariate <- input$type == "Multivariate"
+      strata_var <- as.vector(anl_m$columns_source$strata_var)
 
       if (input$type == "Multivariate") {
-        main_title <- paste0("Multi-Variable Cox Regression for ", paramcd)
+        main_title <- paste("Multi-Variable Cox Regression for", paramcd)
+        subtitle <- ifelse(length(strata_var) == 0, "", paste("Stratified by", paste(strata_var, collapse = " and ")))
         all_basic_table_args <- teal.widgets::resolve_basic_table_args(
           user_table = basic_table_args,
-          module_table = teal.widgets::basic_table_args(title = main_title)
+          module_table = teal.widgets::basic_table_args(
+            title = main_title,
+            subtitles = subtitle
+          )
         )
         expr <- call_template(
           unlist(input$buckets$Comp), merged$anl_input_r(),
@@ -985,10 +990,14 @@ srv_t_coxreg <- function(id,
         )
         teal.code::eval_code(merged$anl_q_r(), as.expression(expr))
       } else {
-        main_title <- paste0("Cox Regression for ", paramcd)
+        main_title <- paste("Cox Regression for", paramcd)
+        subtitle <- ifelse(length(strata_var) == 0, "", paste("Stratified by", paste(strata_var, collapse = " and ")))
         all_basic_table_args <- teal.widgets::resolve_basic_table_args(
           user_table = basic_table_args,
-          module_table = teal.widgets::basic_table_args(title = main_title)
+          module_table = teal.widgets::basic_table_args(
+            title = main_title,
+            subtitles = subtitle
+          )
         )
 
         merged$anl_q_r() %>%

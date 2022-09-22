@@ -161,7 +161,11 @@ template_forest_tte <- function(dataname = "ANL",
   all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
     user_plot = ggplot2_args,
     module_plot = teal.widgets::ggplot2_args(
-      labs = list(title = paste0("Forest plot of survival duration for ", obj_var_name), caption = "")
+      labs = list(
+        title = paste("Forest Plot of Survival Duration for", obj_var_name),
+        subtitle = ifelse(is.null(strata_var), "", paste("Stratified by", paste(strata_var, collapse = " and "))),
+        caption = ""
+      )
     )
   )
 
@@ -175,7 +179,15 @@ template_forest_tte <- function(dataname = "ANL",
 
   plot_call <- substitute(
     decorate_grob(p, titles = title, footnotes = caption, gp_footnotes = grid::gpar(fontsize = 12)),
-    env = list(title = all_ggplot2_args$labs$title, caption = all_ggplot2_args$labs$caption, p = plot_call)
+    env = list(
+      title = `if`(
+        all_ggplot2_args$labs$subtitle == "",
+        all_ggplot2_args$labs$title,
+        c(all_ggplot2_args$labs$title, all_ggplot2_args$labs$subtitle)
+      ),
+      caption = all_ggplot2_args$labs$caption,
+      p = plot_call
+    )
   )
 
   plot_call <- substitute(
