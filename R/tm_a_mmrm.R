@@ -1262,8 +1262,8 @@ srv_mmrm <- function(id,
       paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
       basic_table_args$subtitles <- paste0(
-        "Analysis Variable: ", anl_m$columns_source$aval_var,
-        ",  Endpoint: ", anl_m$filter_info$paramcd[[1]]$selected[[1]],
+        "Analysis Variable: ", anl_m_inputs$columns_source$aval_var,
+        ",  Endpoint: ", anl_m_inputs$filter_info$paramcd[[1]]$selected[[1]],
         ifelse(is.null(fit$vars$covariates), "", paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", ")))
       )
       basic_table_args$main_footer <- c(
@@ -1308,6 +1308,32 @@ srv_mmrm <- function(id,
       q1 <- mmrm_fit()
       fit <- q1[["fit"]]
 
+      ggplot2_args[["lsmeans"]] <- teal.widgets::ggplot2_args(
+        labs <- list(
+          subtitle = paste0(
+            "Endpoint: ", fit$fit$data$PARAMCD[1],
+            ifelse(is.null(fit$vars$covariates), "",
+                   paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
+            )
+          ),
+          caption = paste(
+            paste("Weights for LS Means:", input$weights_emmeans),
+            paste("Correlation Structure:", input$cor_struct),
+            paste("Optimization Algorithm:", attr(fit$fit, "optimizer")),
+            sep = "\n"
+          )
+        )
+      )
+
+      ggplot2_args[["default"]] <- teal.widgets::ggplot2_args(
+        labs <- list(
+          subtitle = paste0(
+            "Analysis Variable: ", fit$vars$response,
+            ",  Endpoint: ", fit$fit$data$PARAMCD[1]
+          )
+        )
+      )
+
       lsmeans_args <- if (output_function == "g_mmrm_lsmeans") {
         list(
           select = input$g_mmrm_lsmeans_select,
@@ -1332,33 +1358,8 @@ srv_mmrm <- function(id,
       teal.code::eval_code(q1, as.expression(mmrm_plot_expr))
     })
 
-      ggplot2_args[["lsmeans"]] <- teal.widgets::ggplot2_args(
-        labs <- list(
-          subtitle = paste0(
-            "Endpoint: ", fit$fit$data$PARAMCD[1],
-            ifelse(is.null(fit$vars$covariates), "",
-              paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
-            )
-          ),
-          caption = paste(
-            paste("Weights for LS Means:", input$weights_emmeans),
-            paste("Correlation Structure:", input$cor_struct),
-            paste("Optimization Algorithm:", attr(fit$fit, "optimizer")),
-          )
-            sep = "\n"
-        )
-
-      )
-      )
-        )
-          )
-            ",  Endpoint: ", fit$fit$data$PARAMCD[1]
-            "Analysis Variable: ", fit$vars$response,
-          subtitle = paste0(
-        labs <- list(
-      ggplot2_args[["default"]] <- teal.widgets::ggplot2_args(
     all_code <- shiny::reactive({
-      if (!is.null(plot_q()) && !is.null(table_q())) {
+    if (!is.null(plot_q()) && !is.null(table_q())) {
         join(plot_q(), table_q())
       } else if (!is.null(plot_q())) {
         plot_q()
