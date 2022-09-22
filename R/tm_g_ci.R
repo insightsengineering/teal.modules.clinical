@@ -257,8 +257,8 @@ template_g_ci <- function(dataname, # nolint
 #'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_g_ci <- function(label,
@@ -371,16 +371,18 @@ srv_g_ci <- function(id, # nolint
                      ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     merged_data <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(x_var = x_var, y_var = y_var, color = color),
-      join_keys = attr(data, "join_keys")
+      join_keys = get_join_keys(data)
     )
 
     merged_data_q <- reactive(
       teal.code::eval_code(
-        object = teal.code::new_quosure(data),
+        object = teal.code::new_qenv(tdata2env(data), code = get_code(data)),
         code = as.expression(merged_data()$expr)
       )
     )

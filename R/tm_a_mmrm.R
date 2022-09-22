@@ -500,8 +500,8 @@ template_mmrm_plots <- function(fit_name,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_a_mmrm <- function(label,
@@ -824,6 +824,7 @@ srv_mmrm <- function(id,
                      ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
     # Reactive responsible for sending a disable/enable signal
@@ -857,19 +858,19 @@ srv_mmrm <- function(id,
         split_covariates = split_covariates,
         aval_var = aval_var
       ),
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
     anl_merged_q <- reactive({
-      q1 <- teal.code::new_quosure(data)
+      q1 <- teal.code::new_qenv(tdata2env(data), code = get_code(data))
       q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
       teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
     })

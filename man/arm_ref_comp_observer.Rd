@@ -58,31 +58,31 @@ ds <- teal:::get_dummy_datasets()
 
 arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
-\dontrun{
-shinyApp(
-  ui = fluidPage(
-    teal.widgets::optionalSelectInput(
-      "arm",
-      "Treatment Variable",
-      choices = arm_var$choices,
-      selected = arm_var$selected
+if (interactive()) {
+  shinyApp(
+    ui = fluidPage(
+      teal.widgets::optionalSelectInput(
+        "arm",
+        "Treatment Variable",
+        choices = arm_var$choices,
+        selected = arm_var$selected
+      ),
+      shiny::uiOutput("arms_buckets"),
     ),
-    shiny::uiOutput("arms_buckets"),
-  ),
-  server = function(input, output, session) {
-    shiny::isolate({
-      teal.modules.clinical:::arm_ref_comp_observer(
-        session,
-        input,
-        output,
-        id_arm_var = "arm",
-        datasets = ds,
-        arm_ref_comp = arm_ref_comp,
-        module = "example"
-      )
-    })
-  }
-)
+    server = function(input, output, session) {
+      shiny::isolate({
+        teal.modules.clinical:::arm_ref_comp_observer(
+          session,
+          input,
+          output,
+          id_arm_var = "arm",
+          datasets = ds,
+          arm_ref_comp = arm_ref_comp,
+          module = "example"
+        )
+      })
+    }
+  )
 }
 }
 \keyword{internal}

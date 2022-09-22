@@ -238,8 +238,8 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(ui = app$ui, server = app$server)
+#' if (interactive()) {
+#'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_g_lineplot <- function(label,
@@ -510,16 +510,18 @@ srv_g_lineplot <- function(id,
                            ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     anl_merged_q <- reactive({
-      teal.code::new_quosure(data) %>% teal.code::eval_code(as.expression(anl_merged_input()$expr))
+      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>% teal.code::eval_code(as.expression(anl_merged_input()$expr))
     })
 
     merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_merged_q)

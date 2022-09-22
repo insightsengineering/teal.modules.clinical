@@ -228,8 +228,8 @@ template_vitals <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_g_pp_vitals <- function(label,
@@ -369,6 +369,8 @@ srv_g_vitals <- function(id,
                          ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     patient_id <- shiny::reactive(input$patient_id)
 
@@ -400,13 +402,13 @@ srv_g_vitals <- function(id,
     # Vitals tab ----
     anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
       merge_function = "dplyr::left_join"
     )
 
     anl_q_r <- reactive({
-      teal.code::new_quosure(env = data) %>%
+      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>%
         teal.code::eval_code(as.expression(anl_merged_input()$expr))
     })
 

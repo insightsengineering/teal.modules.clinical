@@ -59,8 +59,8 @@
 #'     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
 #'   })
 #' }
-#' \dontrun{
-#' shinyApp(ui, server)
+#' if (interactive()) {
+#'   shinyApp(ui, server)
 #' }
 #'
 #' server2 <- function(input, output) {
@@ -111,8 +111,8 @@
 #'     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
 #'   })
 #' }
-#' \dontrun{
-#' shinyApp(ui, server3)
+#' if (interactive()) {
+#'   shinyApp(ui, server3)
 #' }
 #'
 validate_standard_inputs <- function(adsl,

@@ -314,8 +314,8 @@ template_g_km <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(ui = app$ui, server = app$server)
+#' if (interactive()) {
+#'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_g_km <- function(label,
@@ -601,6 +601,8 @@ srv_g_km <- function(id,
                      plot_width) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
 
     # Setup arm variable selection, default reference arms and default
@@ -628,12 +630,12 @@ srv_g_km <- function(id,
         time_unit_var = time_unit_var
       ),
       merge_function = "dplyr::inner_join",
-      join_keys = attr(data, "join_keys")
+      join_keys = get_join_keys(data)
     )
 
     anl_merged_q <- reactive({
       teal.code::eval_code(
-        teal.code::new_quosure(data),
+        teal.code::new_qenv(tdata2env(data), code = get_code(data)),
         code = as.expression(anl_merged()$expr)
       )
     })

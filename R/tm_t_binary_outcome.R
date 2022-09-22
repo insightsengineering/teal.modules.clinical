@@ -14,30 +14,30 @@
 #' @seealso [tm_t_binary_outcome()]
 #' @keywords internal
 #' @examples
-#' \dontrun{
-#' # Preparation of the test case.
-#' library(dplyr)
-#' library(scda)
-#' library(tern)
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adrs <- synthetic_cdisc_data("latest")$adrs
+#' if (interactive()) {
+#'   # Preparation of the test case.
+#'   library(dplyr)
+#'   library(scda)
+#'   library(tern)
+#'   adsl <- synthetic_cdisc_data("latest")$adsl
+#'   adrs <- synthetic_cdisc_data("latest")$adrs
 #'
-#' # Generate an expression for the analysis of responders.
-#' a <- template_binary_outcome(
-#'   dataname = "adrs",
-#'   parentname = "adsl",
-#'   arm_var = "ARMCD",
-#'   paramcd = "BESRSPI",
-#'   ref_arm = "ARM A",
-#'   comp_arm = c("ARM B"),
-#'   compare_arm = TRUE,
-#'   show_rsp_cat = TRUE
-#' )
+#'   # Generate an expression for the analysis of responders.
+#'   a <- template_binary_outcome(
+#'     dataname = "adrs",
+#'     parentname = "adsl",
+#'     arm_var = "ARMCD",
+#'     paramcd = "BESRSPI",
+#'     ref_arm = "ARM A",
+#'     comp_arm = c("ARM B"),
+#'     compare_arm = TRUE,
+#'     show_rsp_cat = TRUE
+#'   )
 #'
-#' b <- mapply(expr = a, FUN = eval)
-#' b$data
-#' b$layout
-#' b$table
+#'   b <- mapply(expr = a, FUN = eval)
+#'   b$data
+#'   b$layout
+#'   b$table
 #' }
 #'
 template_binary_outcome <- function(dataname,
@@ -449,8 +449,8 @@ template_binary_outcome <- function(dataname,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_binary_outcome <- function(label,
@@ -723,6 +723,8 @@ srv_t_binary_outcome <- function(id,
                                  basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
@@ -741,18 +743,18 @@ srv_t_binary_outcome <- function(id,
       datasets = data,
       data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
       merge_function = "dplyr::inner_join",
-      join_keys = attr(data, "join_keys")
+      join_keys = get_join_keys(data)
     )
 
     adsl_merged <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var, strata_var = strata_var),
-      join_keys = attr(data, "join_keys"),
+      join_keys = get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
     anl_merged_q <- reactive({
-      q <- teal.code::new_quosure(env = data)
+      q <- teal.code::new_qenv(tdata2env(data), code = get_code(data))
       q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
       teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
     })
