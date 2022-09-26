@@ -59,12 +59,25 @@ template_events_patyear <- function(dataname,
   # layout
   layout_list <- list()
 
-  basic_title <- paste0("Event rates adjusted for patient-years by: ", label_paramcd)
+  basic_title <- tools::toTitleCase(paste("Event Rates Adjusted for Patient-Years by", label_paramcd))
+  basic_footer <- paste("CI Method:",
+    if (control$conf_type == "normal") {
+      "Normal (rate)"
+    } else if (control$conf_type == "normal_log") {
+      "Normal (log rate)"
+    } else if (control$conf_type == "exact") {
+      "Exact"
+    } else {
+      "Byar's method"
+  })
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(title = basic_title)
+      module_table = teal.widgets::basic_table_args(
+        title = basic_title,
+        main_footer = basic_footer
+      )
     )
   )
 
@@ -139,8 +152,8 @@ template_events_patyear <- function(dataname,
 #' library(dplyr)
 #' library(scda)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adaette <- synthetic_cdisc_data("latest")$adaette
+#' adsl <- synthetic_cdisc_data("rcd_2022_06_27")$adsl
+#' adaette <- synthetic_cdisc_data("rcd_2022_06_27")$adaette
 #' adaette <- adaette %>%
 #'   dplyr::filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
 #'   dplyr::mutate(is_event = CNSR == 0) %>%
@@ -151,8 +164,8 @@ template_events_patyear <- function(dataname,
 #'     cdisc_dataset("ADSL", adsl),
 #'     cdisc_dataset("ADAETTE", adaette),
 #'     code =
-#'       "adsl <- synthetic_cdisc_data('latest')$adsl
-#'       adaette <- synthetic_cdisc_data('latest')$adaette
+#'       "adsl <- synthetic_cdisc_data('rcd_2022_06_27')$adsl
+#'       adaette <- synthetic_cdisc_data('rcd_2022_06_27')$adaette
 #'       adaette <- adaette %>%
 #'         dplyr::filter(PARAMCD %in% c('AETTE1', 'AETTE2', 'AETTE3')) %>%
 #'         dplyr::mutate(is_event = CNSR == 0) %>%
@@ -160,7 +173,7 @@ template_events_patyear <- function(dataname,
 #'   ),
 #'   modules = modules(
 #'     tm_t_events_patyear(
-#'       label = "AE rate adjusted for patient-years at risk Table",
+#'       label = "AE Rate Adjusted for Patient-Years At Risk Table",
 #'       dataname = "ADAETTE",
 #'       arm_var = choices_selected(
 #'         choices = variable_choices(adsl, c("ARM", "ARMCD")),
@@ -276,7 +289,7 @@ ui_events_patyear <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select an Event Type Parameter",
@@ -312,7 +325,7 @@ ui_events_patyear <- function(id, ...) {
       teal.widgets::optionalSelectInput(
         ns("conf_method"),
         "CI Method",
-        choices = c("Normal (rate)", "Normal (log rate)", "Exact", "Bayr's method"),
+        choices = c("Normal (rate)", "Normal (log rate)", "Exact", "Byar's method"),
         selected = "Normal (rate)",
         multiple = FALSE,
         fixed = FALSE
