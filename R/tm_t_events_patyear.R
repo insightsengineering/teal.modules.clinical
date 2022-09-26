@@ -60,7 +60,8 @@ template_events_patyear <- function(dataname,
   layout_list <- list()
 
   basic_title <- tools::toTitleCase(paste("Event Rates Adjusted for Patient-Years by", label_paramcd))
-  basic_footer <- paste("CI Method:",
+  basic_footer <- paste(
+    "CI Method:",
     if (control$conf_type == "normal") {
       "Normal (rate)"
     } else if (control$conf_type == "normal_log") {
@@ -69,7 +70,8 @@ template_events_patyear <- function(dataname,
       "Exact"
     } else {
       "Byar's method"
-  })
+    }
+  )
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
