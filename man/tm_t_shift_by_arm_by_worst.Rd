@@ -126,12 +126,12 @@ app <- init(
         selected = "Y", fixed = TRUE
       ),
       aval_var = choices_selected(
-        variable_choices(adeg, subset = "AVALC"),
-        selected = "AVALC", fixed = TRUE
+        variable_choices(adeg, c("AVALC", "ANRIND")),
+        selected = "AVALC"
       ),
       base_var = choices_selected(
-        variable_choices(adeg, subset = "BASEC"),
-        selected = "BASEC", fixed = TRUE
+        variable_choices(adeg, c("BASEC", "BNRIND")),
+        selected = "BASEC"
       ),
       useNA = "ifany"
     )
