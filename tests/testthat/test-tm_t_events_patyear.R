@@ -23,7 +23,8 @@ testthat::test_that("template_events_patyear generates standard expressions", {
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event"
+        title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event",
+        main_footer = "CI Method: Normal (rate)"
       ) %>% # nolint
         rtables::split_cols_by(var = "ARMCD") %>%
         rtables::add_colcounts() %>%
@@ -76,7 +77,8 @@ testthat::test_that("template_events_patyear generates right expressions with no
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event"
+        title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event",
+        main_footer = "CI Method: Normal (rate)"
       ) %>% # nolint
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
@@ -134,7 +136,8 @@ testthat::test_that("template_events_patyear generates right expressions with no
     }),
     layout = quote(
       lyt <- rtables::basic_table(
-        title = "Event rates adjusted for patient-years by: Time to first occurrence of any adverse event"
+        title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event",
+        main_footer = "CI Method: Exact"
       ) %>% # nolint
         rtables::split_cols_by(var = "ARMCD") %>%
         rtables::add_colcounts() %>%
