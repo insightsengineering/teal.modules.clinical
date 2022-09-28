@@ -168,8 +168,10 @@ template_g_km <- function(dataname = "ANL",
                       sep = "\n"
                     )
                   ),
-                  footnotes = paste("Ties for Coxph (Hazard Ratio):", ties, "\n",
-                                    "p-value Method for Coxph (Hazard Ratio):", pval_method),
+                  footnotes = paste(
+                    "Ties for Coxph (Hazard Ratio):", ties, "\n",
+                    "p-value Method for Coxph (Hazard Ratio):", pval_method
+                  ),
                   ggtheme = ggplot2::theme_minimal(),
                   annot_surv_med = annot_surv_med,
                   annot_coxph = annot_coxph,
@@ -238,8 +240,10 @@ template_g_km <- function(dataname = "ANL",
               title,
               paste(title, paste("Stratified by", paste(strata_var, collapse = ", ")), sep = "\n")
             ),
-            footnotes = paste("Ties for Coxph (Hazard Ratio):", ties, "\n",
-                              "p-value Method for Coxph (Hazard Ratio):", pval_method),
+            footnotes = paste(
+              "Ties for Coxph (Hazard Ratio):", ties, "\n",
+              "p-value Method for Coxph (Hazard Ratio):", pval_method
+            ),
           )
           result
         },
