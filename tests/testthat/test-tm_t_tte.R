@@ -327,7 +327,7 @@ testthat::test_that("template_tte produces correct data expression when comparin
       lyt <- rtables::basic_table(
         title = "Time-To-Event Table for OS",
         main_footer =
-          "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio), Confidence Level Type for Survfit"
+"p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio), Confidence Level Type for Survfit"
       ) %>%
         rtables::split_cols_by(var = "ARM", ref_group = "") %>%
         rtables::add_colcounts() %>%
