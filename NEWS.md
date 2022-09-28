@@ -14,6 +14,7 @@
 * Added a title and parameter category subtitle to `tm_t_exposure`, cleaned up labels.
 * Added titles and worse flag variable subtitles to `tm_t_shift_by_grade` and `tm_t_shift_by_arm_by_worst`.
 * Added a footnote to `tm_t_events_patyear` with CI method.
+* Added a subtitle and footnotes to `tm_g_km`.
 
 ### Bug fixes
 
