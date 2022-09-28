@@ -38,9 +38,15 @@ testthat::test_that("template_g_km works as expected with default arguments", {
                 ),
                 ")"
               ), yval = "Survival", xticks = NULL, newpage = FALSE,
-              title = paste(
-                "KM Plot", ",", quote(SEX), "=", as.character(unique(df_i$SEX))
+              title = ifelse(
+                length(NULL) == 0,
+                paste0("KM Plot", ", ", quote(SEX), " = ", as.character(unique(df_i$SEX))),
+                paste(paste0("KM Plot", ", ", quote(SEX), " = ", as.character(unique(df_i$SEX))),
+                  paste("Stratified by", paste(NULL, collapse = ", ")),
+                  sep = "\n"
+                )
               ),
+              footnotes = paste("Ties for Coxph (Hazard Ratio):", "efron"),
               ggtheme = ggplot2::theme_minimal(), annot_surv_med = TRUE,
               annot_coxph = TRUE, control_surv = control_surv_timepoint(conf_level = 0.95),
               control_coxph_pw = control_coxph(
