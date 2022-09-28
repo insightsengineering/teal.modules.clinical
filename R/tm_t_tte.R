@@ -148,7 +148,13 @@ template_tte <- function(dataname = "ANL",
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(title = paste("Time-To-Event Table for", paramcd))
+      module_table = teal.widgets::basic_table_args(
+        title = paste("Time-To-Event Table for", paramcd),
+        main_footer = paste0(
+          "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio), ",
+          "Confidence Level Type for Survfit"
+        )
+      )
     )
   )
 
