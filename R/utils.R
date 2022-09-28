@@ -19,9 +19,15 @@
 #' call_concatenate(list(quote(f), quote(g), quote(h)))
 #' call_concatenate(list(quote(f)))
 #' call_concatenate(list())
-#' call_concatenate(list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg)))))
+#' call_concatenate(
+#'   list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+#' )
 #'
-#' eval(call_concatenate(list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))))
+#' eval(
+#'   call_concatenate(
+#'     list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+#'   )
+#' )
 #' }
 call_concatenate <- function(args, bin_op = "+") {
   checkmate::assert_string(bin_op)
@@ -400,7 +406,7 @@ is.cs_or_des <- function(x) { # nolint
 #'
 #' @export
 split_col_expr <- function(compare, combine, ref, arm_var) {
-  if (compare & combine) {
+  if (compare && combine) {
     substitute(
       expr = split_cols_by_groups(
         var = arm_var,
@@ -411,7 +417,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
         arm_var = arm_var
       )
     )
-  } else if (compare & !combine) {
+  } else if (compare && !combine) {
     substitute(
       expr = rtables::split_cols_by(
         var = arm_var,
