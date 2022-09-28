@@ -46,8 +46,10 @@ testthat::test_that("template_g_km works as expected with default arguments", {
                   sep = "\n"
                 )
               ),
-              footnotes = paste("Ties for Coxph (Hazard Ratio):", "efron", "\n",
-                                "p-value Method for Coxph (Hazard Ratio):", "log-rank"),
+              footnotes = paste(
+                "Ties for Coxph (Hazard Ratio):", "efron", "\n",
+                "p-value Method for Coxph (Hazard Ratio):", "log-rank"
+              ),
               ggtheme = ggplot2::theme_minimal(), annot_surv_med = TRUE,
               annot_coxph = TRUE, control_surv = control_surv_timepoint(conf_level = 0.95),
               control_coxph_pw = control_coxph(
