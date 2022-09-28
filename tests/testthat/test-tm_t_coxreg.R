@@ -42,7 +42,10 @@ testthat::test_that("template_coxreg generates correct univariate cox regression
       df <- broom::tidy(model)
     }),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS") %>%
+      lyt <- rtables::basic_table(
+        title = "Multi-Variable Cox Regression for OS",
+        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+      ) %>%
         rtables::split_rows_by("effect") %>%
         rtables::append_topleft("OS") %>%
         rtables::split_rows_by("term", child_labels = "hidden") %>%
@@ -99,7 +102,10 @@ testthat::test_that("template_coxreg generates correct univariate cox regression
       df <- broom::tidy(model)
     }),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS") %>%
+      lyt <- rtables::basic_table(
+        title = "Multi-Variable Cox Regression for OS",
+        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+      ) %>%
         rtables::split_rows_by("effect") %>%
         rtables::append_topleft("OS") %>%
         rtables::split_rows_by("term", child_labels = "hidden") %>%
@@ -147,7 +153,10 @@ testthat::test_that("template_coxreg generates correct multivariate cox regressi
       df <- broom::tidy(model)
     }),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Cox Regression for OS") %>%
+      lyt <- rtables::basic_table(
+        title = "Cox Regression for OS",
+        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+      ) %>%
         rtables::append_topleft("OS") %>%
         rtables::split_rows_by("term", child_labels = "hidden") %>%
         summarize_coxreg(multivar = TRUE, conf_level = 0.95, vars = c("n", "hr", "ci", "pval"))

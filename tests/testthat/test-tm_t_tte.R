@@ -43,7 +43,11 @@ testthat::test_that("template_tte produces healthy standard output", {
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Time-To-Event Table for OS") %>%
+      lyt <- rtables::basic_table(
+        title = "Time-To-Event Table for OS",
+        main_footer =
+"p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio), Confidence Level Type for Survfit"
+      ) %>%
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
         summarize_vars(
@@ -205,7 +209,11 @@ testthat::test_that("template_tte produces correct data expression when comparin
       groups <- combine_groups(fct = ANL_ADSL[["ARM"]], ref = "")
     ),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Time-To-Event Table for OS") %>%
+      lyt <- rtables::basic_table(
+        title = "Time-To-Event Table for OS",
+        main_footer =
+"p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio), Confidence Level Type for Survfit"
+      ) %>%
         split_cols_by_groups(var = "ARM", groups_list = groups, ref_group = names(groups)[1]) %>%
         rtables::add_colcounts() %>%
         summarize_vars("is_event",
@@ -316,7 +324,11 @@ testthat::test_that("template_tte produces correct data expression when comparin
         df_explicit_na()
     }),
     layout = quote(
-      lyt <- rtables::basic_table(title = "Time-To-Event Table for OS") %>%
+      lyt <- rtables::basic_table(
+        title = "Time-To-Event Table for OS",
+        main_footer =
+"p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio), Confidence Level Type for Survfit"
+      ) %>%
         rtables::split_cols_by(var = "ARM", ref_group = "") %>%
         rtables::add_colcounts() %>%
         summarize_vars("is_event",
