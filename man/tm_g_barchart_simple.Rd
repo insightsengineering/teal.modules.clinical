@@ -87,8 +87,7 @@ app <- init(
                 dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
               formatters::var_labels(ADAE) <- adae_labels
               ADAE"
-    ),
-    check = TRUE
+    )
   ),
   modules = modules(
     tm_g_barchart_simple(

@@ -91,8 +91,9 @@ Adverse Events Table by Standardized \code{MedDRA} Query.
 \examples{
 library(scda)
 
-adsl <- synthetic_cdisc_data("latest")$adsl
-adae <- synthetic_cdisc_data("latest")$adae
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+adsl <- synthetic_cdisc_data_latest$adsl
+adae <- synthetic_cdisc_data_latest$adae
 
 names_baskets <- grep("^(SMQ|CQ).*NAM$", names(adae), value = TRUE)
 names_scopes <- grep("^SMQ.*SC$", names(adae), value = TRUE)
@@ -111,12 +112,13 @@ cs_scopes <- choices_selected(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl,
-      code = "ADSL <- synthetic_cdisc_data('latest')$adsl"
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADSL <- synthetic_cdisc_data_latest$adsl"
     ),
     cdisc_dataset("ADAE", adae,
-      code = "ADAE <- synthetic_cdisc_data('latest')$adae"
-    ),
-    check = TRUE
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADAE <- synthetic_cdisc_data_latest$adae"
+    )
   ),
   modules = modules(
     tm_t_smq(
