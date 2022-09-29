@@ -242,7 +242,10 @@ ui_t_prior_medication <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -302,7 +305,7 @@ srv_t_prior_medication <- function(id,
     )
 
     merge_q_r <- reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>%
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(merge_input_r()$expr))
     })
 
@@ -355,6 +358,12 @@ srv_t_prior_medication <- function(id,
     output$prior_medication_table <- DT::renderDataTable(
       expr = table_r(),
       options = list(pageLength = input$prior_medication_table_rows)
+    )
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning"
     )
 
     teal.widgets::verbatim_popup_srv(

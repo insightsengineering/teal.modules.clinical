@@ -803,7 +803,10 @@ ui_mmrm <- function(id, ...) {
         )
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -877,7 +880,7 @@ srv_mmrm <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q1 <- teal.code::new_qenv(tdata2env(data), code = get_code(data))
+      q1 <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
       teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
     })
@@ -1423,6 +1426,12 @@ srv_mmrm <- function(id,
 
       return(what_to_return)
     })
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(all_code())),
+      title = "Warning"
+    )
 
     # Show R code once button is pressed.
     teal.widgets::verbatim_popup_srv(

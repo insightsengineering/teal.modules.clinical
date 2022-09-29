@@ -482,7 +482,10 @@ ui_g_lineplot <- function(id, ...) {
         )
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -521,7 +524,7 @@ srv_g_lineplot <- function(id,
     )
 
     anl_merged_q <- reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>% teal.code::eval_code(as.expression(anl_merged_input()$expr))
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>% teal.code::eval_code(as.expression(anl_merged_input()$expr))
     })
 
     merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_merged_q)
@@ -609,6 +612,12 @@ srv_g_lineplot <- function(id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
+    )
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning"
     )
 
     teal.widgets::verbatim_popup_srv(

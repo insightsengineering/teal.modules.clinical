@@ -302,7 +302,10 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = args$pre_output,
     post_output = args$post_output
   )
@@ -334,7 +337,7 @@ srv_g_barchart_simple <- function(id,
       shiny::validate({
         shiny::need(merge_inputs()$columns_source$x, "Please select an x-variable")
       })
-      quo <- teal.code::new_qenv(tdata2env(data), code = get_code(data))
+      quo <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       quo <- teal.code::eval_code(quo, as.expression(merge_inputs()$expr))
       quo
     })
@@ -481,6 +484,12 @@ srv_g_barchart_simple <- function(id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
+    )
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning"
     )
 
     teal.widgets::verbatim_popup_srv(
