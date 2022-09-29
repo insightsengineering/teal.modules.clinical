@@ -634,7 +634,8 @@ srv_t_smq <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "warning",
       verbatim_content = reactive(teal.code::get_warnings(output_q())),
-      title = "Warning"
+      title = "Warning",
+      disabled = reactive(is.null(output_q()) || is.null(teal.code::get_warnings(output_q())))
     )
 
     # Render R code.

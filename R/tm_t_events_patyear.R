@@ -516,7 +516,8 @@ srv_events_patyear <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "warning",
       verbatim_content = reactive(teal.code::get_warnings(output_table())),
-      title = "Warning"
+      title = "Warning",
+      disabled = reactive(is.null(output_table()) || is.null(teal.code::get_warnings(output_table())))
     )
 
     # Render R code.

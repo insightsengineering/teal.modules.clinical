@@ -1430,7 +1430,8 @@ srv_mmrm <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "warning",
       verbatim_content = reactive(teal.code::get_warnings(all_code())),
-      title = "Warning"
+      title = "Warning",
+      disabled = reactive(is.null(all_code()) || is.null(teal.code::get_warnings(all_code())))
     )
 
     # Show R code once button is pressed.
