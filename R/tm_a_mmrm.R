@@ -279,10 +279,12 @@ template_mmrm_tables <- function(parentname,
       y$cov_matrix <- substitute(
         expr = {
           cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
+          subtitles(cov_matrix) <- st
           cov_matrix
         },
         env = list(
-          fit_mmrm = as.name(fit_name)
+          fit_mmrm = as.name(fit_name),
+          st = basic_table_args$subtitles
         )
       )
     },
@@ -290,10 +292,12 @@ template_mmrm_tables <- function(parentname,
       y$fixed_effects <- substitute(
         expr = {
           fixed_effects <- tern.mmrm::as.rtable(fit_mmrm, type = "fixed")
+          subtitles(fixed_effects) <- st
           fixed_effects
         },
         env = list(
-          fit_mmrm = as.name(fit_name)
+          fit_mmrm = as.name(fit_name),
+          st = basic_table_args$subtitles
         )
       )
     },
@@ -301,10 +305,12 @@ template_mmrm_tables <- function(parentname,
       y$diagnostic_table <- substitute(
         expr = {
           diagnostic_table <- tern.mmrm::as.rtable(fit_mmrm, type = "diagnostic")
+          subtitles(diagnostic_table) <- st
           diagnostic_table
         },
         env = list(
-          fit_mmrm = as.name(fit_name)
+          fit_mmrm = as.name(fit_name),
+          st = basic_table_args$subtitles
         )
       )
     }
@@ -448,8 +454,9 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' library(scda)
 #'
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADQS <- synthetic_cdisc_data("latest")$adqs %>%
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#' ADSL <- synthetic_cdisc_data_latest$adsl
+#' ADQS <- synthetic_cdisc_data_latest$adqs %>%
 #'   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'   dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'   dplyr::mutate(
@@ -469,9 +476,13 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'               ADSL <- synthetic_cdisc_data_latest$adsl"
+#'     ),
 #'     cdisc_dataset("ADQS", ADQS,
-#'       code = 'ADQS <- synthetic_cdisc_data("latest")$adqs %>%
+#'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#'               ADQS <- synthetic_cdisc_data("latest")$adqs %>%
 #'               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'               dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'               dplyr::mutate(
@@ -481,8 +492,7 @@ template_mmrm_plots <- function(fit_name,
 #'                   as.numeric() %>%
 #'                   as.factor() # making consecutive numeric factor
 #'               )'
-#'     ),
-#'     check = TRUE
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_a_mmrm(
@@ -1271,6 +1281,17 @@ srv_mmrm <- function(id,
       ANL_ADSL <- teal.code::chunks_get_var("ANL_ADSL", chunks = fit_stack) # nolint
       paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
+      basic_table_args$subtitles <- paste0(
+        "Analysis Variable: ", anl_m$columns_source$aval_var,
+        ",  Endpoint: ", anl_m$filter_info$paramcd[[1]]$selected[[1]],
+        ifelse(is.null(fit$vars$covariates), "", paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", ")))
+      )
+      basic_table_args$main_footer <- c(
+        paste("Weights for LS Means:", input$weights_emmeans),
+        paste("Correlation Structure:", input$cor_struct),
+        paste("Optimization Algorithm:", attr(fit$fit, "optimizer"))
+      )
+
       mmrm_table <- function(table_type) {
         res <- template_mmrm_tables(
           parentname = "ANL_ADSL",
@@ -1335,6 +1356,32 @@ srv_mmrm <- function(id,
       diagnostic_args <- list(
         type = input$g_mmrm_diagnostic_type,
         z_threshold = input$g_mmrm_diagnostic_z_threshold
+      )
+
+      ggplot2_args[["lsmeans"]] <- teal.widgets::ggplot2_args(
+        labs <- list(
+          subtitle = paste0(
+            "Endpoint: ", fit$fit$data$PARAMCD[1],
+            ifelse(is.null(fit$vars$covariates), "",
+              paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
+            )
+          ),
+          caption = paste(
+            paste("Weights for LS Means:", input$weights_emmeans),
+            paste("Correlation Structure:", input$cor_struct),
+            paste("Optimization Algorithm:", attr(fit$fit, "optimizer")),
+            sep = "\n"
+          )
+        )
+      )
+
+      ggplot2_args[["default"]] <- teal.widgets::ggplot2_args(
+        labs <- list(
+          subtitle = paste0(
+            "Analysis Variable: ", fit$vars$response,
+            ",  Endpoint: ", fit$fit$data$PARAMCD[1]
+          )
+        )
       )
 
       mmrm_plot <- function(lsmeans_plot = lsmeans_args,

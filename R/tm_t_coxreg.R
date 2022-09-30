@@ -125,7 +125,23 @@ template_coxreg_u <- function(dataname,
 
   layout_list <- list()
 
-  layout_list <- add_expr(layout_list, teal.widgets::parse_basic_table_args(basic_table_args))
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = teal.widgets::basic_table_args(
+        title = paste0("Multi-Variable Cox Regression for ", paramcd),
+        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+      )
+    )
+  )
+
+
+  layout_list <- add_expr(
+    layout_list,
+    parsed_basic_table_args
+  )
+
+
   layout_list <- add_expr(
     layout_list,
     quote(rtables::split_rows_by("effect"))
@@ -198,9 +214,7 @@ template_coxreg_m <- function(dataname,
                               strata_var = NULL,
                               combine_comp_arms = FALSE,
                               control = control_coxreg(),
-                              basic_table_args = teal.widgets::basic_table_args(
-                                title = paste0("Cox Regression for ", paramcd)
-                              )) {
+                              basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
@@ -292,7 +306,21 @@ template_coxreg_m <- function(dataname,
 
   layout_list <- list()
 
-  layout_list <- add_expr(layout_list, teal.widgets::parse_basic_table_args(basic_table_args))
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = teal.widgets::basic_table_args(
+        title = paste0("Cox Regression for ", paramcd),
+        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+      )
+    )
+  )
+
+
+  layout_list <- add_expr(
+    layout_list,
+    parsed_basic_table_args
+  )
 
   layout_list <- add_expr(
     layout_list,
@@ -382,8 +410,9 @@ template_coxreg_m <- function(dataname,
 #'
 #' library(scda)
 #'
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADTTE <- synthetic_cdisc_data("latest")$adtte
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#' ADSL <- synthetic_cdisc_data_latest$adsl
+#' ADTTE <- synthetic_cdisc_data_latest$adtte
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
@@ -397,9 +426,14 @@ template_coxreg_m <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL  <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
-#'     check = TRUE
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'     ),
+#'     cdisc_dataset("ADTTE", ADTTE,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADTTE <- synthetic_cdisc_data_latest$adtte"
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_t_coxreg(

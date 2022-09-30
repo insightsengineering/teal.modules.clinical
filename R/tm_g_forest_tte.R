@@ -227,8 +227,10 @@ template_forest_tte <- function(dataname = "ANL",
 #' library(scda)
 #' library(nestcolor)
 #'
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADTTE <- synthetic_cdisc_data("latest")$adtte
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#'
+#' ADSL <- synthetic_cdisc_data_latest$adsl
+#' ADTTE <- synthetic_cdisc_data_latest$adtte
 #'
 #' ADSL$RACE <- droplevels(ADSL$RACE)
 #'
@@ -246,13 +248,16 @@ template_forest_tte <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset(
-#'       "ADSL",
-#'       ADSL,
-#'       code = "ADSL <- synthetic_cdisc_data('latest')$adsl
+#'       "ADSL", ADSL,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADSL <- synthetic_cdisc_data_latest$adsl
 #'         ADSL$RACE <- droplevels(ADSL$RACE)"
 #'     ),
-#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
-#'     check = TRUE
+#'     cdisc_dataset(
+#'       "ADTTE", ADTTE,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADTTE <- synthetic_cdisc_data_latest$adtte"
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_g_forest_tte(

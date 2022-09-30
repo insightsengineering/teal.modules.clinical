@@ -108,16 +108,20 @@ Teal Module: Grade Summary Table
 library(scda)
 library(dplyr)
 
-adsl <- synthetic_cdisc_data("latest")$adsl
-adlb <- synthetic_cdisc_data("latest")$adlb
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+adsl <- synthetic_cdisc_data_latest$adsl
+adlb <- synthetic_cdisc_data_latest$adlb
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADLB", adlb,
-      code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'
+    cdisc_dataset("ADSL", adsl,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADSL <- synthetic_cdisc_data_latest$adsl"
     ),
-    check = TRUE
+    cdisc_dataset("ADLB", adlb,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADLB <- synthetic_cdisc_data_latest$adlb"
+    )
   ),
   modules = modules(
     tm_t_shift_by_grade(
