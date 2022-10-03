@@ -44,7 +44,10 @@ testthat::test_that("template_coxreg generates correct univariate cox regression
     layout = quote(
       lyt <- rtables::basic_table(
         title = "Multi-Variable Cox Regression for OS",
-        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+        main_footer = c(
+          "p-value method for Coxph (Hazard Ratio): wald",
+          "Ties for Coxph (Hazard Ratio): efron"
+        )
       ) %>%
         rtables::split_rows_by("effect") %>%
         rtables::append_topleft("OS") %>%
@@ -104,7 +107,10 @@ testthat::test_that("template_coxreg generates correct univariate cox regression
     layout = quote(
       lyt <- rtables::basic_table(
         title = "Multi-Variable Cox Regression for OS",
-        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+        main_footer = c(
+          "p-value method for Coxph (Hazard Ratio): wald",
+          "Ties for Coxph (Hazard Ratio): efron"
+        )
       ) %>%
         rtables::split_rows_by("effect") %>%
         rtables::append_topleft("OS") %>%
@@ -155,7 +161,10 @@ testthat::test_that("template_coxreg generates correct multivariate cox regressi
     layout = quote(
       lyt <- rtables::basic_table(
         title = "Cox Regression for OS",
-        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+        main_footer = c(
+          "p-value method for Coxph (Hazard Ratio): wald",
+          "Ties for Coxph (Hazard Ratio): exact"
+        )
       ) %>%
         rtables::append_topleft("OS") %>%
         rtables::split_rows_by("term", child_labels = "hidden") %>%

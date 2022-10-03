@@ -45,8 +45,11 @@ testthat::test_that("template_tte produces healthy standard output", {
     layout = quote(
       lyt <- rtables::basic_table(
         title = "Time-To-Event Table for OS",
-        main_footer =
-          "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio), Confidence Level Type for Survfit"
+        main_footer = c(
+          "p-value method for Coxph (Hazard Ratio): log-rank",
+          "Ties for Coxph (Hazard Ratio): efron",
+          "Confidence Level Type for Survfit: plain"
+        )
       ) %>%
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%
@@ -211,8 +214,11 @@ testthat::test_that("template_tte produces correct data expression when comparin
     layout = quote(
       lyt <- rtables::basic_table(
         title = "Time-To-Event Table for OS",
-        main_footer =
-          "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio), Confidence Level Type for Survfit"
+        main_footer = c(
+          "p-value method for Coxph (Hazard Ratio): log-rank",
+          "Ties for Coxph (Hazard Ratio): efron",
+          "Confidence Level Type for Survfit: plain"
+        )
       ) %>%
         split_cols_by_groups(var = "ARM", groups_list = groups, ref_group = names(groups)[1]) %>%
         rtables::add_colcounts() %>%
@@ -326,8 +332,11 @@ testthat::test_that("template_tte produces correct data expression when comparin
     layout = quote(
       lyt <- rtables::basic_table(
         title = "Time-To-Event Table for OS",
-        main_footer =
-          "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio), Confidence Level Type for Survfit"
+        main_footer = c(
+          "p-value method for Coxph (Hazard Ratio): log-rank",
+          "Ties for Coxph (Hazard Ratio): efron",
+          "Confidence Level Type for Survfit: plain"
+        )
       ) %>%
         rtables::split_cols_by(var = "ARM", ref_group = "") %>%
         rtables::add_colcounts() %>%
