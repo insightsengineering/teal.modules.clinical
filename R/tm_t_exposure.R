@@ -587,7 +587,8 @@ srv_t_exposure <- function(id,
       }
 
       basic_table_args$title <- "Duration of Exposure Table"
-      basic_table_args$subtitles <- paste("Parameter Category:", anl_m$filter_info$parcat[[1]]$selected[[1]])
+      basic_table_args$subtitles <-
+        paste("Parameter Category:", merged$anl_input_r()$filter_info$parcat[[1]]$selected[[1]])
 
       my_calls <- template_exposure(
         parentname = "ANL_ADSL",

@@ -975,7 +975,7 @@ srv_t_coxreg <- function(id,
       ANL <- merged$anl_q_r()[["ANL"]] # nolint
       paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
       multivariate <- input$type == "Multivariate"
-      strata_var <- as.vector(anl_m$columns_source$strata_var)
+      strata_var <- as.vector(merged$anl_input_r()$columns_source$strata_var)
 
       if (input$type == "Multivariate") {
         main_title <- paste("Multi-Variable Cox Regression for", paramcd)

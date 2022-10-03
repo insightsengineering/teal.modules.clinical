@@ -524,27 +524,41 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         shiny::need(input_arm_var, "Please select a treatment variable."),
         shiny::need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
         shiny::need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
-        shiny::need(
-          length(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]) > 0,
-          "Please select at least one Laboratory parameter."
-        ),
+
         shiny::need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
         shiny::need(input_id_var, "Please select a Subject Identifier."),
         shiny::need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-        shiny::need(
-          all(as.character(unique(merged$anl_q_r()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
-          "All grade values should be within -4:4 range."
-        )
+
       )
 
-      shiny::validate(
-        shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_arm_var]]), "Treatment variable should be a factor."),
-        shiny::need(
-          is.factor(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]),
-          "Parameter variable should be a factor."
-        ),
-        shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Grade variable should be a factor.")
-      )
+      if (length(input_paramcd_var) > 0){
+        shiny::validate(
+          shiny::need(
+            length(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]) > 0,
+            "Please select at least one Laboratory parameter."
+          ),
+          shiny::need(
+            is.factor(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]),
+            "Parameter variable should be a factor."
+          )
+        )
+      }
+
+      if (length(input_atoxgr) > 0){
+        shiny::validate(
+          shiny::need(
+            all(as.character(unique(merged$anl_q_r()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
+            "All grade values should be within -4:4 range."
+          ),
+          shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Grade variable should be a factor.")
+        )
+      }
+
+      if (length(input_atoxgr) > 0){
+        shiny::validate(
+          shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Treatment variable should be a factor."),
+        )
+      }
 
       # validate inputs
       validate_standard_inputs(
