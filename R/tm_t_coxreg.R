@@ -129,8 +129,11 @@ template_coxreg_u <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
-        title = paste0("Multi-Variable Cox Regression for ", paramcd),
-        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+        title = paste("Multi-Variable Cox Regression for", paramcd),
+        main_footer = c(
+          paste("p-value method for Coxph (Hazard Ratio):", control$pval_method),
+          paste("Ties for Coxph (Hazard Ratio):", control$ties)
+        )
       )
     )
   )
@@ -310,12 +313,14 @@ template_coxreg_m <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
-        title = paste0("Cox Regression for ", paramcd),
-        main_footer = "p-value method for Coxph (Hazard Ratio), Ties for Coxph (Hazard Ratio)"
+        title = paste("Cox Regression for", paramcd),
+        main_footer = c(
+          paste("p-value method for Coxph (Hazard Ratio):", control$pval_method),
+          paste("Ties for Coxph (Hazard Ratio):", control$ties)
+        )
       )
     )
   )
-
 
   layout_list <- add_expr(
     layout_list,
