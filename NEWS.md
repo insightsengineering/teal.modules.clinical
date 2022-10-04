@@ -1,16 +1,14 @@
 # teal.modules.clinical 0.8.13.9032
 
 ### Enhancements
-* Updated all test files in `tests/testthat/` to `synthetic_cdisc_data("2022_02_28")` 
+* Updated all scda data for tests to version `rcd_2022_02_28`.
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
 * Added the `teal.reporter` functionality to all modules.
-* Enhanced the `tm_t_pp_medical_history` module to use the `table_with_settings` module and return the `rtables` object.
+* Enhanced the `tm_t_pp_medical_history` module to use the `table_with_settings` module and return an `rtables` object.
 * Implemented `nestcolor` in examples, refactored `tm_g_barchart_simple` to allow use of `nestcolor`.
-* Added more descriptive title/labels to `tm_g_ci`.
-* Updated `tm_a_mmrm` column name when no treatment is selected from "all obs" to "All Patients".
-* Added a subtitle to `tm_g_ci` with visit name.
-* Added subtitles and footnotes to `tm_a_mmrm` tables and plots.
+* Added more descriptive title/labels and visit name subtitle to `tm_g_ci`.
+* Updated `tm_a_mmrm` column name when no treatment is selected from "all obs" to "All Patients", added subtitles and footnotes.
 * Added a title and parameter category subtitle to `tm_t_exposure`, cleaned up labels.
 * Added titles and worse flag variable subtitles to `tm_t_shift_by_grade` and `tm_t_shift_by_arm_by_worst`.
 * Added a footnote to `tm_t_events_patyear` with CI method.
@@ -23,13 +21,12 @@
 * Fixed broken example for `tm_t_abnormality_by_worst_grade`.
 * Fixed bug in `tm_a_mmrm` which prevented table headers from displaying.
 * Fixed bug in `tm_g_forest_rsp` when endpoint was deselected.
-* Fixed bug in the `tm_t_binary_outcome`, crashed the app when deselecting all `paramcd`.
+* Fixed bug in `tm_t_binary_outcome` that crashed the app when deselecting all `paramcd`.
 * Fixed `teal.reporter` card names for `tm_t_smq`.
 * Fixed bug in `tm_t_shift_by_arm_by_worst` by adding validations for choosing different endpoint values.
 
-
 ### Miscellaneous
-* Added `nestcolor` dependency and replaced deprecated function `tern::color_palette` with `nestcolor::color_palette`
+* Added `nestcolor` dependency and replaced deprecated function `tern::color_palette` with `nestcolor::color_palette`.
 
 # teal.modules.clinical 0.8.13
 
