@@ -20,7 +20,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with de
       attr(adeg$BASEC, "label") <- "Baseline Assessment"
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Shift by Arm by Worst Table") %>%
         rtables::split_cols_by("postbaseline_label", split_fun = drop_split_levels) %>%
         rtables::split_cols_by("AVALC") %>%
         rtables::split_rows_by(
@@ -64,7 +64,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with ad
       attr(adeg$BASEC, "label") <- "Baseline Assessment"
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Shift by Arm by Worst Table") %>%
         rtables::split_cols_by("postbaseline_label", split_fun = drop_split_levels) %>%
         rtables::split_cols_by("AVALC") %>%
         rtables::split_rows_by(
@@ -108,7 +108,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with na
       attr(adeg$BASEC, "label") <- "Baseline Assessment"
     }),
     layout = quote(
-      lyt <- rtables::basic_table() %>%
+      lyt <- rtables::basic_table(title = "Shift by Arm by Worst Table") %>%
         rtables::split_cols_by("postbaseline_label", split_fun = drop_split_levels) %>%
         rtables::split_cols_by("AVALC") %>%
         rtables::split_rows_by(

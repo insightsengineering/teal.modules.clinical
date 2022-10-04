@@ -317,8 +317,9 @@ template_smq <- function(dataname,
 #' @examples
 #' library(scda)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adae <- synthetic_cdisc_data("latest")$adae
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#' adsl <- synthetic_cdisc_data_latest$adsl
+#' adae <- synthetic_cdisc_data_latest$adae
 #'
 #' names_baskets <- grep("^(SMQ|CQ).*NAM$", names(adae), value = TRUE)
 #' names_scopes <- grep("^SMQ.*SC$", names(adae), value = TRUE)
@@ -337,12 +338,13 @@ template_smq <- function(dataname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl,
-#'       code = "ADSL <- synthetic_cdisc_data('latest')$adsl"
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADSL <- synthetic_cdisc_data_latest$adsl"
 #'     ),
 #'     cdisc_dataset("ADAE", adae,
-#'       code = "ADAE <- synthetic_cdisc_data('latest')$adae"
-#'     ),
-#'     check = TRUE
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADAE <- synthetic_cdisc_data_latest$adae"
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_t_smq(
@@ -644,7 +646,7 @@ srv_t_smq <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal.reporter::TealReportCard$new()
-        card$set_name("SMQ Table Table")
+        card$set_name("SMQ Table")
         card$append_text("Adverse Events Table by Standardized `MedDRA` Query (SMQ)", "header2")
         card$append_fs(datasets$get_filter_state())
         card$append_text("Table", "header3")

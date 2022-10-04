@@ -19,8 +19,11 @@
 #' library(dplyr)
 #' library(scda)
 #' library(tern)
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adrs <- synthetic_cdisc_data("latest")$adrs
+#'
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#'
+#' adsl <- synthetic_cdisc_data_latest$adsl
+#' adrs <- synthetic_cdisc_data_latest$adrs
 #'
 #' # Generate an expression for the analysis of responders.
 #' a <- template_binary_outcome(
@@ -396,8 +399,10 @@ template_binary_outcome <- function(dataname,
 #' @examples
 #' library(dplyr)
 #' library(scda)
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADRS <- synthetic_cdisc_data("latest")$adrs %>%
+#'
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#' ADSL <- synthetic_cdisc_data_latest$adsl
+#' ADRS <- synthetic_cdisc_data_latest$adrs %>%
 #'   mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
 #'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #' arm_ref_comp <- list(
@@ -409,11 +414,11 @@ template_binary_outcome <- function(dataname,
 #'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADRS", ADRS),
 #'     code =
-#'       "ADSL <- synthetic_cdisc_data('latest')$adsl
-#'        ADRS <- synthetic_cdisc_data('latest')$adrs %>%
+#'       "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'        ADSL <- synthetic_cdisc_data_latest$adsl
+#'        ADRS <- synthetic_cdisc_data_latest$adrs %>%
 #'        mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
-#'        filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')",
-#'     check = TRUE
+#'        filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')"
 #'   ),
 #'   modules = modules(
 #'     tm_t_binary_outcome(
@@ -644,10 +649,16 @@ ui_t_binary_outcome <- function(id, ...) {
             teal.widgets::optionalSelectInput(
               ns("s_diff_ci"),
               label = "Method for Difference of Proportions CI",
-              choices = c("CMH, without correction" = "cmh"),
+              choices = c(
+                "Wald, without correction" = "wald",
+                "Wald, with correction" = "waldcc",
+                "CMH, without correction" = "cmh",
+                "Anderson-Hauck" = "ha",
+                "Stratified Newcombe, without correction" = "strat_newcombe",
+                "Stratified Newcombe, with correction" = "strat_newcombecc"
+              ),
               selected = "cmh",
-              multiple = FALSE,
-              fixed = TRUE
+              multiple = FALSE
             ),
             teal.widgets::optionalSelectInput(
               ns("s_diff_test"),
