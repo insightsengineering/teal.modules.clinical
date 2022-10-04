@@ -1,7 +1,7 @@
 # teal.modules.clinical 0.8.13.9032
 
 ### Enhancements
-* Updated all scda data for tests to version `rcd_2022_02_28`.
+* Updated all synthetic data for tests to version `rcd_2022_02_28`.
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
 * Added the `teal.reporter` functionality to all modules.
