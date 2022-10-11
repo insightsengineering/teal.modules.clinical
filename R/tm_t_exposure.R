@@ -125,7 +125,11 @@ template_exposure <- function(parentname,
         var = aval_var, col_split = TRUE,
         .labels = c(
           n_patients = "Number of Patients",
-          sum_exposure = paste("Sum of", paramcd, sprintf("(%s)", avalu_var))
+          sum_exposure = ifelse(
+            avalu_var == " ",
+            paste("Sum of", paramcd),
+            paste("Sum of", paramcd, sprintf("(%s)", avalu_var))
+          )
         ),
         custom_label = "Total Number of Patients and Patient Time*"
       ),
