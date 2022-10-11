@@ -14,6 +14,7 @@
 * Added a footnote to `tm_t_events_patyear` with CI method.
 * Added a subtitle and footnotes to `tm_g_km`.
 * Added Stratified Analysis CI method option panel to `tm_t_binary_outcome`.
+* Added validation for covariate/visit conflicts to `tm_a_mmrm`.
 
 ### Bug fixes
 
