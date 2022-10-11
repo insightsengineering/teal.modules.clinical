@@ -690,8 +690,7 @@ ui_mmrm <- function(id, ...) {
             shiny::selectInput(
               ns("cor_struct"),
               "Correlation Structure",
-              choices = c("unstructured"),
-              selected = "unstructured",
+              choices = eval(formals(tern.mmrm::build_formula)$cor_struct),
               multiple = FALSE
             ),
             teal.widgets::optionalSelectInput(
