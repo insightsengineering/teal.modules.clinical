@@ -26,9 +26,10 @@ testthat::test_that("template_exposure generates correct expressions with defaul
           var = "AVAL", col_split = TRUE,
           .labels = c(
             n_patients = "Number of Patients",
-            sum_exposure = ifelse("Days" == " ",
-                                  paste("Sum of", "TDURD"),
-                                  paste("Sum of", "TDURD", sprintf("(%s)", "Days")))
+            sum_exposure = ifelse(
+              "Days" == " ",
+              paste("Sum of", "TDURD"),
+              paste("Sum of", "TDURD", sprintf("(%s)", "Days")))
             ),
           custom_label = "Total Number of Patients and Patient Time*"
         ) %>%
@@ -78,9 +79,10 @@ testthat::test_that("template_exposure generates correct expressions with custom
           var = "myAVAL", col_split = TRUE,
           .labels = c(
             n_patients = "Number of Patients",
-            sum_exposure = ifelse("Days" == " ",
-                                  paste("Sum of", "myTDURD"),
-                                  paste("Sum of", "myTDURD", sprintf("(%s)", "Days")))
+            sum_exposure = ifelse(
+              "Days" == " ",
+              paste("Sum of", "myTDURD"),
+              paste("Sum of", "myTDURD", sprintf("(%s)", "Days")))
             ),
           custom_label = "Total Number of Patients and Patient Time*"
         ) %>%
@@ -132,9 +134,10 @@ testthat::test_that("template_exposure generates correct expressions with paramc
           var = "AVAL", col_split = TRUE,
           .labels = c(
             n_patients = "Number of Patients",
-            sum_exposure = ifelse("Days" == " ",
-                                  paste("Sum of", "TDURD"),
-                                  paste("Sum of", "TDURD", sprintf("(%s)", "Days")))
+            sum_exposure = ifelse(
+              "Days" == " ",
+              paste("Sum of", "TDURD"),
+              paste("Sum of", "TDURD", sprintf("(%s)", "Days")))
             ),
           custom_label = "Total Number of Patients and Patient Time*"
         ) %>%
