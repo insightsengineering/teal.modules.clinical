@@ -26,13 +26,16 @@ testthat::test_that("template_exposure generates correct expressions with defaul
           var = "AVAL", col_split = TRUE,
           .labels = c(
             n_patients = "Number of Patients",
-            sum_exposure = ifelse("Days" == " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", sprintf("(%s)", "Days")))),
+            sum_exposure = ifelse("Days" == " ",
+                                  paste("Sum of", "TDURD"),
+                                  paste("Sum of", "TDURD", sprintf("(%s)", "Days")))
+            ),
           custom_label = "Total Number of Patients and Patient Time*"
         ) %>%
         rtables::split_rows_by("RACE",
-          label_pos = "topleft", split_fun = split_fun,
-          split_label = formatters::var_labels(adex["RACE"], fill = TRUE),
-          nested = FALSE
+                               label_pos = "topleft", split_fun = split_fun,
+                               split_label = formatters::var_labels(adex["RACE"], fill = TRUE),
+                               nested = FALSE
         ) %>%
         summarize_patients_exposure_in_cols(
           var = "AVAL",
@@ -75,14 +78,17 @@ testthat::test_that("template_exposure generates correct expressions with custom
           var = "myAVAL", col_split = TRUE,
           .labels = c(
             n_patients = "Number of Patients",
-            sum_exposure = ifelse("Days" == " ", paste("Sum of", "myTDURD"), paste("Sum of", "myTDURD", sprintf("(%s)", "Days")))),
+            sum_exposure = ifelse("Days" == " ",
+                                  paste("Sum of", "myTDURD"),
+                                  paste("Sum of", "myTDURD", sprintf("(%s)", "Days")))
+            ),
           custom_label = "Total Number of Patients and Patient Time*"
         ) %>%
         rtables::split_rows_by("myRACE",
-          label_pos = "topleft", split_fun = split_fun,
-          split_label = formatters::var_labels(myadex["myRACE"],
-            fill = TRUE
-          ), nested = FALSE
+                               label_pos = "topleft", split_fun = split_fun,
+                               split_label = formatters::var_labels(myadex["myRACE"],
+                                                                    fill = TRUE
+                               ), nested = FALSE
         ) %>%
         summarize_patients_exposure_in_cols(
           var = "myAVAL",
@@ -126,13 +132,16 @@ testthat::test_that("template_exposure generates correct expressions with paramc
           var = "AVAL", col_split = TRUE,
           .labels = c(
             n_patients = "Number of Patients",
-            sum_exposure = ifelse("Days" == " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", sprintf("(%s)", "Days")))),
+            sum_exposure = ifelse("Days" == " ",
+                                  paste("Sum of", "TDURD"),
+                                  paste("Sum of", "TDURD", sprintf("(%s)", "Days")))
+            ),
           custom_label = "Total Number of Patients and Patient Time*"
         ) %>%
         rtables::split_rows_by("RACE",
-          label_pos = "topleft", split_fun = split_fun,
-          split_label = formatters::var_labels(adex["RACE"], fill = TRUE),
-          nested = FALSE
+                               label_pos = "topleft", split_fun = split_fun,
+                               split_label = formatters::var_labels(adex["RACE"], fill = TRUE),
+                               nested = FALSE
         ) %>%
         summarize_patients_exposure_in_cols(
           var = "AVAL",
