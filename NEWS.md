@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.13.9035
+# teal.modules.clinical 0.8.13.9037
 
 ### Enhancements
 * Updated all synthetic data for tests to version `rcd_2022_02_28`.
@@ -14,6 +14,7 @@
 * Added a footnote to `tm_t_events_patyear` with CI method.
 * Added a subtitle and footnotes to `tm_g_km`.
 * Added Stratified Analysis CI method option panel to `tm_t_binary_outcome`.
+* Added validation for covariate/visit conflicts to `tm_a_mmrm`.
 * Remove unnecessary brackets from header in `tm_t_exposure`.
 
 ### Bug fixes

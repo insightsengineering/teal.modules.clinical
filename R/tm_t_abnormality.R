@@ -117,7 +117,7 @@ template_abnormality <- function(parentname,
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
         title = tbl_title,
-        main_footer = "by variables without observed abnormalities are excluded."
+        main_footer = "Variables without observed abnormalities are excluded."
       )
     )
   )
