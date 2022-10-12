@@ -108,11 +108,11 @@ template_events_by_grade <- function(dataname,
 
   layout_list <- list()
 
-  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+  basic_title <- if (is.null(hlt) && !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
-  } else if (!is.null(hlt) & is.null(llt)) {
+  } else if (!is.null(hlt) && is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
-  } else if (!is.null(hlt) & !is.null(llt)) {
+  } else if (!is.null(hlt) && !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
   } else {
     paste0("Adverse Event summary by ", label_grade)
@@ -500,11 +500,11 @@ template_events_col_by_grade <- function(dataname,
   y$data <- bracket_expr(data_list)
 
   layout_list <- list()
-  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+  basic_title <- if (is.null(hlt) && !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_llt)
-  } else if (!is.null(hlt) & is.null(llt)) {
+  } else if (!is.null(hlt) && is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt)
-  } else if (!is.null(hlt) & !is.null(llt)) {
+  } else if (!is.null(hlt) && !is.null(llt)) {
     paste0("Adverse Event summary by ", label_grade, ": ", label_hlt, " and ", label_llt)
   } else {
     paste0("Adverse Event summary by ", label_grade)
@@ -732,17 +732,17 @@ template_events_col_by_grade <- function(dataname,
     )
   )
 
-  if (prune_freq > 0 & prune_diff > 0) {
+  if (prune_freq > 0 && prune_diff > 0) {
     prune_pipe <- add_expr(
       prune_pipe,
       quote(rtables::prune_table(keep_rows(at_least_percent_any & at_least_percent_diff)))
     )
-  } else if (prune_freq > 0 & prune_diff == 0) {
+  } else if (prune_freq > 0 && prune_diff == 0) {
     prune_pipe <- add_expr(
       prune_pipe,
       quote(rtables::prune_table(keep_rows(at_least_percent_any)))
     )
-  } else if (prune_freq == 0 & prune_diff > 0) {
+  } else if (prune_freq == 0 && prune_diff > 0) {
     prune_pipe <- add_expr(
       prune_pipe,
       quote(rtables::prune_table(keep_rows(at_least_percent_diff)))
@@ -787,8 +787,8 @@ template_events_col_by_grade <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'adsl <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADAE", adae, code = 'adae <- synthetic_cdisc_data("latest")$adae')
+#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_data("latest")$adae')
 #'   ),
 #'   modules = modules(
 #'     tm_t_events_by_grade(

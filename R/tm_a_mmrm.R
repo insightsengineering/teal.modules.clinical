@@ -1054,7 +1054,23 @@ srv_mmrm <- function(id,
         shiny::need(encoding_inputs[[extract_input("visit_var", dataname)]], "`Visit Variable` field is not selected"),
         shiny::need(encoding_inputs[[extract_input("id_var", dataname)]], "`Subject Identifier` field is not selected"),
         shiny::need(encoding_inputs[["conf_level"]], "`Confidence Level` field is not selected"),
-        shiny::need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows")
+        shiny::need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows"),
+        shiny::need(
+          !("BASE:AVISIT" %in% encoding_inputs[[extract_input("cov_var", dataname)]] &
+            encoding_inputs[[extract_input("visit_var", dataname)]] != "AVISIT"),
+          paste(
+            "`BASE:AVISIT` is not a valid covariate when `AVISITN` is selected as visit variable.",
+            "Please deselect `BASE:AVISIT` as a covariate or change visit variable to `AVISIT`."
+          )
+        ),
+        shiny::need(
+          !("BASE:AVISITN" %in% encoding_inputs[[extract_input("cov_var", dataname)]] &
+            encoding_inputs[[extract_input("visit_var", dataname)]] != "AVISITN"),
+          paste(
+            "`BASE:AVISITN` is not a valid covariate when `AVISIT` is selected as visit variable.",
+            "Please deselect `BASE:AVISITN` as a covariate or change visit variable to `AVISITN`."
+          )
+        )
       )
       validate_checks()
       c(list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered), encoding_inputs)
