@@ -53,13 +53,13 @@ library(scda)
 library(teal.modules.clinical)
 library(nestcolor)
 
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADAE <- synthetic_cdisc_data("latest")$adae
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADAE <- synthetic_cdisc_dataset("latest", "adae")
 
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
-    teal.data::cdisc_dataset("ADAE", ADAE, code = "ADAE <- synthetic_cdisc_data('latest')$adae"),
+    teal.data::cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
+    teal.data::cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")'),
     check = FALSE
   ),
   modules = list(
@@ -94,8 +94,8 @@ library(nestcolor)
 The above lines load the libraries used in this example. `scda` is a package containing sample data in the `ADaM`
 format. We use `scda` to load data into two R objects:
 ```r
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADAE <- synthetic_cdisc_data("latest")$adae
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADAE <- synthetic_cdisc_dataset("latest", "adae")
 ```
 `nestcolor` is an optional package that can be loaded in to apply the standardized NEST color palette to all module plots.
 
@@ -107,8 +107,8 @@ argument indicates the modules included in the application. Here, we include onl
 ```r
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
-    teal.data::cdisc_dataset("ADAE", ADAE, code = "ADAE <- synthetic_cdisc_data('latest')$adae"),
+    teal.data::cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
+    teal.data::cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")'),
     check = FALSE
   ),
   modules = list(
@@ -131,10 +131,10 @@ if (interactive()) shiny::shinyApp(app$ui, app$server)
 Some of `teal.modules.clinical` modules allow specifying arguments using `teal.transform::choices_selected` such as
 `tm_t_summary` module in this example:
 ```r
-adsl <- scda::synthetic_cdisc_data("latest")$adsl
+adsl <- synthetic_cdisc_dataset("latest", "adsl")
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl')
+    teal.data::cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")')
   ),
   modules = list(
     tm_t_summary(

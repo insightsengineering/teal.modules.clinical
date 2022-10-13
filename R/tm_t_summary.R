@@ -224,7 +224,7 @@ template_summary <- function(dataname,
 #' library(scda)
 #' library(tern)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
 #'
 #' # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
 #' stopifnot(
@@ -235,7 +235,7 @@ template_summary <- function(dataname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl),
-#'     code = 'ADSL <- synthetic_cdisc_data("latest")$adsl',
+#'     code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")',
 #'     check = TRUE
 #'   ),
 #'   modules = modules(

@@ -415,9 +415,8 @@ template_coxreg_m <- function(dataname,
 #'
 #' library(scda)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' ADSL <- synthetic_cdisc_data_latest$adsl
-#' ADTTE <- synthetic_cdisc_data_latest$adtte
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADTTE <- synthetic_cdisc_dataset("latest", "adtte")
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
@@ -432,12 +431,10 @@ template_coxreg_m <- function(dataname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADTTE", ADTTE,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADTTE <- synthetic_cdisc_data_latest$adtte"
+#'       code = 'ADTTE <- synthetic_cdisc_dataset("latest", "adtte")'
 #'     )
 #'   ),
 #'   modules = modules(

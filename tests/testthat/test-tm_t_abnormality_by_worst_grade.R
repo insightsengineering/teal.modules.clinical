@@ -178,8 +178,8 @@ testthat::test_that("template_abnormality_by_worst_grade generates correct expre
 })
 
 testthat::test_that("template_abnormality_by_worst_grade throws an error when ATOXGR contains NA values", {
-  adsl <- synthetic_cdisc_data("rcd_2022_02_28")$adsl
-  adlb <- synthetic_cdisc_data("rcd_2022_02_28")$adlb
+  adsl <- synthetic_cdisc_dataset("rcd_2022_06_27", "adsl")
+  adlb <- synthetic_cdisc_dataset("rcd_2022_06_27", "adlb")
 
   adlb$ATOXGR[1:100] <- NA
 

@@ -230,21 +230,18 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #' library(scda)
 #' library(dplyr)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' adsl <- synthetic_cdisc_data_latest$adsl
-#' adlb <- synthetic_cdisc_data_latest$adlb %>%
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
+#' adlb <- synthetic_cdisc_dataset("latest", "adlb") %>%
 #'   filter(!AVISIT %in% c("SCREENING", "BASELINE"))
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADLB", adlb,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADLB <- synthetic_cdisc_data('latest')$adlb %>%
-#'         filter(!AVISIT %in% c('SCREENING', 'BASELINE'))"
+#'       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb") %>%
+#'         filter(!AVISIT %in% c("SCREENING", "BASELINE"))'
 #'     )
 #'   ),
 #'   modules = modules(
