@@ -80,13 +80,11 @@ This module produces a multi-variable logistic regression table that matches the
 STREAM template \code{lgrt02}.
 }
 \examples{
-
 library(scda)
 library(dplyr)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-ADSL <- synthetic_cdisc_data_latest$adsl
-ADRS <- synthetic_cdisc_data_latest$adrs \%>\%
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADRS <- synthetic_cdisc_dataset("latest", "adrs") \%>\%
   filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
 
 arm_ref_comp <- list(
@@ -103,13 +101,11 @@ arm_ref_comp <- list(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"
+      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
     ),
     cdisc_dataset("ADRS", ADRS,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADRS <- synthetic_cdisc_data_latest$adrs \%>\%
-        filter(PARAMCD \%in\% c('BESRSPI', 'INVET'))"
+      code = 'ADRS <- synthetic_cdisc_dataset("latest", "adrs") \%>\%
+        filter(PARAMCD \%in\% c("BESRSPI", "INVET"))'
     )
   ),
   modules = modules(

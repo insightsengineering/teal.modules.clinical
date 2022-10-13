@@ -68,15 +68,15 @@ The module generates the R code and returns the corresponding output.
 
 library(scda)
 library(nestcolor)
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADLB <- synthetic_cdisc_data("latest")$adlb
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADLB <- synthetic_cdisc_dataset("latest", "adlb")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADLB", ADLB),
-    code = "ADSL <- synthetic_cdisc_data('latest')$adsl
-    ADLB <- synthetic_cdisc_data('latest')$adlb"
+    code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+    ADLB <- synthetic_cdisc_dataset("latest", "adlb")'
   ),
   modules = modules(
     tm_g_ci(

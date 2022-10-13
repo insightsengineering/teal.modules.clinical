@@ -94,9 +94,8 @@ Teal module: Exposure Table for Risk management plan
 library(scda)
 library(dplyr)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-adsl <- synthetic_cdisc_data_latest$adsl
-adex <- synthetic_cdisc_data_latest$adex
+adsl <- synthetic_cdisc_dataset("latest", "adsl")
+adex <- synthetic_cdisc_dataset("latest", "adex")
 
 set.seed(1, kind = "Mersenne-Twister")
 labels <- formatters::var_labels(adex, fill = FALSE)
@@ -114,22 +113,20 @@ formatters::var_labels(adex) <- labels
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-      ADSL <- synthetic_cdisc_data_latest$adsl"
+      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
     ),
     cdisc_dataset("ADEX", adex,
-      code = "set.seed(1, kind = 'Mersenne-Twister')
-      synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-      ADEX <- synthetic_cdisc_data_latest$adex
+      code = 'set.seed(1, kind = "Mersenne-Twister")
+      ADEX <- synthetic_cdisc_dataset("latest", "adsl")
       labels <- formatters::var_labels(ADEX, fill = FALSE)
       ADEX <- ADEX \%>\%
        distinct(USUBJID, .keep_all = TRUE) \%>\%
-       mutate(PARAMCD = 'TDURD',
-              PARAM = 'Overall duration (days)',
+       mutate(PARAMCD = "TDURD",
+              PARAM = "Overall duration (days)",
               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
-              AVALU = 'Days') \%>\%
+              AVALU = "Days") \%>\%
               bind_rows(ADEX)
-      formatters::var_labels(ADEX) <- labels" # nolint
+      formatters::var_labels(ADEX) <- labels' # nolint
     )
   ),
   modules = modules(
