@@ -104,7 +104,6 @@ template_shift_by_grade <- function(parentname,
     )
   )
 
-
   # Create new grouping variables ATOXGR_GP, BTOXGR_GP
   if (!code_missing_baseline) {
     if (worst_flag_var %in% c("WGRLOVFL", "WGRLOFL")) {
@@ -288,6 +287,9 @@ template_shift_by_grade <- function(parentname,
 
   # layout start
   y$layout_prep <- quote(split_fun <- drop_split_levels)
+
+  basic_table_args$title <- "Grade Summary Table"
+  basic_table_args$subtitles <- paste("Worst Flag Variable:", worst_flag_var)
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
@@ -473,16 +475,20 @@ template_shift_by_grade <- function(parentname,
 #' library(scda)
 #' library(dplyr)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adlb <- synthetic_cdisc_data("latest")$adlb
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#' adsl <- synthetic_cdisc_data_latest$adsl
+#' adlb <- synthetic_cdisc_data_latest$adlb
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADLB", adlb,
-#'       code = 'ADLB <- synthetic_cdisc_data("latest")$adlb'
+#'     cdisc_dataset("ADSL", adsl,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADSL <- synthetic_cdisc_data_latest$adsl"
 #'     ),
-#'     check = TRUE
+#'     cdisc_dataset("ADLB", adlb,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'         ADLB <- synthetic_cdisc_data_latest$adlb"
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_t_shift_by_grade(

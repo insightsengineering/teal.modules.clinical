@@ -338,7 +338,7 @@ ui_summary <- function(id, ...) {
       teal.transform::datanames_input(a[c("arm_var", "summarize_vars")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
-        label = "Select Treatment Variable",
+        label = "Select Column Variable(s)",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
@@ -493,7 +493,7 @@ srv_summary <- function(id,
           )),
           "Date and POSIXt variables are not supported, please select other variables"
         ),
-        shiny::need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
+        shiny::need(length(input_arm_var) <= 2, "Please limit column variables within two"),
         if (length(input_arm_var) == 2) {
           shiny::need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(

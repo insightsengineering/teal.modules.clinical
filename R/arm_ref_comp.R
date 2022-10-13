@@ -24,6 +24,7 @@
 #' @keywords internal
 #'
 #' @examples
+#' \dontrun{
 #' ds <- teal:::get_dummy_datasets()
 #'
 #' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))

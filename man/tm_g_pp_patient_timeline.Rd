@@ -104,9 +104,12 @@ This teal module produces a patient profile timeline plot using ADaM datasets.
 \examples{
 library(scda)
 library(nestcolor)
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADAE <- synthetic_cdisc_data("latest")$adae
-ADCM <- synthetic_cdisc_data("latest")$adcm
+
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+
+ADSL <- synthetic_cdisc_data_latest$adsl
+ADAE <- synthetic_cdisc_data_latest$adae
+ADCM <- synthetic_cdisc_data_latest$adcm
 
 #' Modify ADCM
 ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
@@ -134,32 +137,38 @@ adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", 
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_data("latest")$adae'),
+    cdisc_dataset("ADSL", ADSL,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADSL <- synthetic_cdisc_data_latest$adsl"
+    ),
+    cdisc_dataset("ADAE", ADAE,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADAE <- synthetic_cdisc_data_latest$adae"
+    ),
     cdisc_dataset("ADCM", ADCM,
-      code = 'ADCM <- synthetic_cdisc_data("latest")$adcm
-        ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADCM <- synthetic_cdisc_data_latest$adcm
+        ADCM$CMINDC <- paste0('Indication_', as.numeric(ADCM$CMDECOD))
         ADCM$CMDOSE <- 1
-        ADCM$CMDOSU <- "U"
-        ADCM$CMROUTE <- "CMROUTE"
-        ADCM$CMDOSFRQ <- "CMDOSFRQ"
+        ADCM$CMDOSU <- 'U'
+        ADCM$CMROUTE <- 'CMROUTE'
+        ADCM$CMDOSFRQ <- 'CMDOSFRQ'
         ADCM$CMSTDY <- 1
-        ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
-        ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
+        ADCM[ADCM$CMCAT == 'medcl B', ]$CMSTDY <- 20
+        ADCM[ADCM$CMCAT == 'medcl C', ]$CMSTDY <- 150
         ADCM$CMENDY <- 500
-        ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
-        ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
+        ADCM[ADCM$CMCAT == 'medcl B', ]$CMENDY <- 700
+        ADCM[ADCM$CMCAT == 'medcl C', ]$CMENDY <- 1000
         ADCM$CMASTDTM <- ADCM$ASTDTM
         ADCM$CMAENDTM <- ADCM$AENDTM
         formatters::var_labels(
-          ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
-            "Indication",
-            "Reported Name of Drug, Med, or Therapy",
-            "Study Day of Start of Medication",
-            "Study Day of End of Medication")',
+          ADCM[c('CMINDC', 'CMDECOD', 'CMSTDY', 'CMENDY')]) <- c(
+            'Indication',
+            'Reported Name of Drug, Med, or Therapy',
+            'Study Day of Start of Medication',
+            'Study Day of End of Medication')",
       keys = adcm_keys
-    ),
-    check = TRUE
+    )
   ),
   modules = modules(
     tm_g_pp_patient_timeline(

@@ -89,8 +89,8 @@ Teal module: Event rates adjusted for patient-years
 library(dplyr)
 library(scda)
 
-adsl <- synthetic_cdisc_data("latest")$adsl
-adaette <- synthetic_cdisc_data("latest")$adaette
+adsl <- synthetic_cdisc_data("rcd_2022_06_27")$adsl
+adaette <- synthetic_cdisc_data("rcd_2022_06_27")$adaette
 adaette <- adaette \%>\%
   dplyr::filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
   dplyr::mutate(is_event = CNSR == 0) \%>\%
@@ -101,16 +101,16 @@ app <- init(
     cdisc_dataset("ADSL", adsl),
     cdisc_dataset("ADAETTE", adaette),
     code =
-      "adsl <- synthetic_cdisc_data('latest')$adsl
-      adaette <- synthetic_cdisc_data('latest')$adaette
-      adaette <- adaette \%>\%
+      "ADSL <- synthetic_cdisc_data('rcd_2022_06_27')$adsl
+      ADAETTE <- synthetic_cdisc_data('rcd_2022_06_27')$adaette
+      ADAETTE <- ADAETTE \%>\%
         dplyr::filter(PARAMCD \%in\% c('AETTE1', 'AETTE2', 'AETTE3')) \%>\%
         dplyr::mutate(is_event = CNSR == 0) \%>\%
         dplyr::mutate(n_events = as.integer(is_event))"
   ),
   modules = modules(
     tm_t_events_patyear(
-      label = "AE rate adjusted for patient-years at risk Table",
+      label = "AE Rate Adjusted for Patient-Years At Risk Table",
       dataname = "ADAETTE",
       arm_var = choices_selected(
         choices = variable_choices(adsl, c("ARM", "ARMCD")),
