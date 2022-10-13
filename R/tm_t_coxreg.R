@@ -1043,7 +1043,7 @@ srv_t_coxreg <- function(id,
         )
         teal.code::chunks_push(expression = quote(result <- list()), id = "result_initiation_call")
         lapply(unlist(input$buckets$Comp), function(x) {
-          expr <- call_template(x, anl_m, paramcd, multivariate, NULL)
+          expr <- call_template(x, anl_m, paramcd, multivariate, all_basic_table_args)
           mapply(expression = expr, id = paste(names(expr), "call", sep = "_"), teal.code::chunks_push)
         })
         teal.code::chunks_push(
@@ -1051,14 +1051,16 @@ srv_t_coxreg <- function(id,
             expr = {
               final_table <- rtables::rbindl_rtables(result, check_headers = TRUE)
               rtables::main_title(final_table) <- title
-              rtables::main_footer(final_table) <- footer
+              rtables::main_footer(final_table) <- c(
+                paste("p-value method for Coxph (Hazard Ratio):", model$control$pval_method),
+                paste("Ties for Coxph (Hazard Ratio):", model$control$ties)
+              )
               rtables::prov_footer(final_table) <- p_footer
               rtables::subtitles(final_table) <- subtitle
               final_table
             },
             env = list(
               title = all_basic_table_args$title,
-              footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
               p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
               subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
             )

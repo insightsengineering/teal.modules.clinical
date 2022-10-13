@@ -150,11 +150,15 @@ template_tte <- function(dataname = "ANL",
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
         title = paste("Time-To-Event Table for", paramcd),
-        main_footer = c(
-          paste("p-value method for Coxph (Hazard Ratio):", control$coxph$pval_method),
-          paste("Ties for Coxph (Hazard Ratio):", control$coxph$ties),
+        main_footer = if (compare_arm) {
+          c(
+            paste("p-value method for Coxph (Hazard Ratio):", control$coxph$pval_method),
+            paste("Ties for Coxph (Hazard Ratio):", control$coxph$ties),
+            paste("Confidence Level Type for Survfit:", control$surv_time$conf_type)
+          )
+        } else {
           paste("Confidence Level Type for Survfit:", control$surv_time$conf_type)
-        )
+        }
       )
     )
   )
