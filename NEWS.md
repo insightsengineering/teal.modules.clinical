@@ -17,6 +17,7 @@
 * Added validation for covariate/visit conflicts to `tm_a_mmrm`.
 * Remove unnecessary brackets from header in `tm_t_exposure`.
 * Hid footnotes in `tm_g_km` and `tm_t_tte` when "Compare Treatments" is off.
+* Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
 
 ### Bug fixes
 
