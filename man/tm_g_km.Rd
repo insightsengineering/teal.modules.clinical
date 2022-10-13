@@ -123,8 +123,7 @@ arm_ref_comp <- list(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
-    check = TRUE
+    cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte')
   ),
   modules = modules(
     tm_g_km(

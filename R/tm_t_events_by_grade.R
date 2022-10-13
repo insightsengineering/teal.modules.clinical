@@ -787,8 +787,8 @@ template_events_col_by_grade <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'adsl <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADAE", adae, code = 'adae <- synthetic_cdisc_data("latest")$adae')
+#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_data("latest")$adae')
 #'   ),
 #'   modules = modules(
 #'     tm_t_events_by_grade(

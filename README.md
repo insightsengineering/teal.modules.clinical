@@ -25,7 +25,7 @@ These modules include, but are not limited to:
      -    `tm_g_pp_patient_timeline`: general timeline for individual patients
      -    ...
 <!-- markdownlint-enable MD007 MD030 -->
-Most of the modules in `teal.modules.clinical` use functions from the R package [tern](https://insightsengineering.github.io/tern) in order to produce their output.
+Most of the modules in `teal.modules.clinical` use functions from the R package [tern](https://insightsengineering.github.io/tern/) in order to produce their output.
 
 ## Installation
 

@@ -454,8 +454,9 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' library(scda)
 #'
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADQS <- synthetic_cdisc_data("latest")$adqs %>%
+#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#' ADSL <- synthetic_cdisc_data_latest$adsl
+#' ADQS <- synthetic_cdisc_data_latest$adqs %>%
 #'   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'   dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'   dplyr::mutate(
@@ -475,9 +476,13 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+#'               ADSL <- synthetic_cdisc_data_latest$adsl"
+#'     ),
 #'     cdisc_dataset("ADQS", ADQS,
-#'       code = 'ADQS <- synthetic_cdisc_data("latest")$adqs %>%
+#'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+#'               ADQS <- synthetic_cdisc_data("latest")$adqs %>%
 #'               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'               dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'               dplyr::mutate(
@@ -487,8 +492,7 @@ template_mmrm_plots <- function(fit_name,
 #'                   as.numeric() %>%
 #'                   as.factor() # making consecutive numeric factor
 #'               )'
-#'     ),
-#'     check = TRUE
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_a_mmrm(
@@ -686,8 +690,7 @@ ui_mmrm <- function(id, ...) {
             shiny::selectInput(
               ns("cor_struct"),
               "Correlation Structure",
-              choices = c("unstructured"),
-              selected = "unstructured",
+              choices = eval(formals(tern.mmrm::build_formula)$cor_struct),
               multiple = FALSE
             ),
             teal.widgets::optionalSelectInput(
@@ -1062,7 +1065,23 @@ srv_mmrm <- function(id,
         shiny::need(encoding_inputs[[extract_input("visit_var", dataname)]], "`Visit Variable` field is not selected"),
         shiny::need(encoding_inputs[[extract_input("id_var", dataname)]], "`Subject Identifier` field is not selected"),
         shiny::need(encoding_inputs[["conf_level"]], "`Confidence Level` field is not selected"),
-        shiny::need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows")
+        shiny::need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows"),
+        shiny::need(
+          !("BASE:AVISIT" %in% encoding_inputs[[extract_input("cov_var", dataname)]] &
+            encoding_inputs[[extract_input("visit_var", dataname)]] != "AVISIT"),
+          paste(
+            "`BASE:AVISIT` is not a valid covariate when `AVISITN` is selected as visit variable.",
+            "Please deselect `BASE:AVISIT` as a covariate or change visit variable to `AVISIT`."
+          )
+        ),
+        shiny::need(
+          !("BASE:AVISITN" %in% encoding_inputs[[extract_input("cov_var", dataname)]] &
+            encoding_inputs[[extract_input("visit_var", dataname)]] != "AVISITN"),
+          paste(
+            "`BASE:AVISITN` is not a valid covariate when `AVISIT` is selected as visit variable.",
+            "Please deselect `BASE:AVISITN` as a covariate or change visit variable to `AVISITN`."
+          )
+        )
       )
       validate_checks()
       c(list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered), encoding_inputs)

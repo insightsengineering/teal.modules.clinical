@@ -159,9 +159,18 @@ template_g_km <- function(dataname = "ANL",
                   yval = yval,
                   xticks = xticks,
                   newpage = FALSE,
-                  title = paste(
-                    title, ",", quote(facet_var),
-                    "=", as.character(unique(df_i$facet_var))
+                  title = ifelse(
+                    length(strata_var) == 0,
+                    paste0(title, ", ", quote(facet_var), " = ", as.character(unique(df_i$facet_var))),
+                    paste(
+                      paste0(title, ", ", quote(facet_var), " = ", as.character(unique(df_i$facet_var))),
+                      paste("Stratified by", paste(strata_var, collapse = ", ")),
+                      sep = "\n"
+                    )
+                  ),
+                  footnotes = paste(
+                    "Ties for Coxph (Hazard Ratio):", ties, "\n",
+                    "p-value Method for Coxph (Hazard Ratio):", pval_method
                   ),
                   ggtheme = ggplot2::theme_minimal(),
                   annot_surv_med = annot_surv_med,
@@ -182,6 +191,7 @@ template_g_km <- function(dataname = "ANL",
         env = list(
           font_size = font_size,
           facet_var = as.name(facet_var),
+          strata_var = strata_var,
           xticks = xticks,
           xlab = xlab,
           time_unit_var = as.name(time_unit_var),
@@ -225,7 +235,15 @@ template_g_km <- function(dataname = "ANL",
             annot_surv_med = annot_surv_med,
             annot_coxph = annot_coxph,
             ci_ribbon = ci_ribbon,
-            title = title,
+            title = ifelse(
+              length(strata_var) == 0,
+              title,
+              paste(title, paste("Stratified by", paste(strata_var, collapse = ", ")), sep = "\n")
+            ),
+            footnotes = paste(
+              "Ties for Coxph (Hazard Ratio):", ties, "\n",
+              "p-value Method for Coxph (Hazard Ratio):", pval_method
+            ),
           )
           plot
         },
@@ -233,6 +251,7 @@ template_g_km <- function(dataname = "ANL",
           font_size = font_size,
           xticks = xticks,
           xlab = xlab,
+          strata_var = strata_var,
           time_unit_var = as.name(time_unit_var),
           yval = yval,
           conf_level = conf_level,
@@ -287,8 +306,7 @@ template_g_km <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte'),
-#'     check = TRUE
+#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte')
 #'   ),
 #'   modules = modules(
 #'     tm_g_km(

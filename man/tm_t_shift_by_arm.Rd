@@ -96,15 +96,20 @@ Teal Module: Shift by Arm
 library(dplyr)
 library(tern)
 library(scda)
-
-adsl <- synthetic_cdisc_data("latest")$adsl
-adeg <- synthetic_cdisc_data("latest")$adeg
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+adsl <- synthetic_cdisc_data_latest$adsl
+adeg <- synthetic_cdisc_data_latest$adeg
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADEG", adeg, code = 'ADEG <- synthetic_cdisc_data("latest")$adeg'),
-    check = TRUE
+    cdisc_dataset("ADSL", adsl,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADSL <- synthetic_cdisc_data_latest$adsl"
+    ),
+    cdisc_dataset("ADEG", adeg,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADEG <- synthetic_cdisc_data_latest$adeg"
+    )
   ),
   modules = modules(
     tm_t_shift_by_arm(

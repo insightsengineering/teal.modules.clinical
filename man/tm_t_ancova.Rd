@@ -121,8 +121,8 @@ app <- init(
     cdisc_dataset("ADQS", adqs),
     code =
       '
-      adsl <- synthetic_cdisc_data("latest")$adsl
-      adqs <- synthetic_cdisc_data("latest")$adqs
+      ADSL <- synthetic_cdisc_data("latest")$adsl
+      ADQS <- synthetic_cdisc_data("latest")$adqs
       '
   ),
   modules = modules(

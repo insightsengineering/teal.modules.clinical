@@ -97,14 +97,20 @@ library(dplyr)
 library(tern)
 library(scda)
 
-adsl <- synthetic_cdisc_data("latest")$adsl
-adeg <- synthetic_cdisc_data("latest")$adeg
+synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
+adsl <- synthetic_cdisc_data_latest$adsl
+adeg <- synthetic_cdisc_data_latest$adeg
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADEG", adeg, code = 'ADEG <- synthetic_cdisc_data("latest")$adeg'),
-    check = TRUE
+    cdisc_dataset("ADSL", adsl,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADSL <- synthetic_cdisc_data_latest$adsl"
+    ),
+    cdisc_dataset("ADEG", adeg,
+      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
+        ADEG <- synthetic_cdisc_data_latest$adeg"
+    )
   ),
   modules = modules(
     tm_t_shift_by_arm_by_worst(
@@ -127,12 +133,12 @@ app <- init(
         selected = "Y", fixed = TRUE
       ),
       aval_var = choices_selected(
-        variable_choices(adeg, subset = "AVALC"),
-        selected = "AVALC", fixed = TRUE
+        variable_choices(adeg, c("AVALC", "ANRIND")),
+        selected = "AVALC"
       ),
       base_var = choices_selected(
-        variable_choices(adeg, subset = "BASEC"),
-        selected = "BASEC", fixed = TRUE
+        variable_choices(adeg, c("BASEC", "BNRIND")),
+        selected = "BASEC"
       ),
       useNA = "ifany"
     )
