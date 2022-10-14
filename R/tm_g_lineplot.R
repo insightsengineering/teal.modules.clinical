@@ -218,7 +218,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     ),
 #'     cdisc_dataset("ADLB", ADLB,
 #'       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")
-#'         ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))'
+#'         ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))' # nolint
 #'     )
 #'   ),
 #'   modules = modules(

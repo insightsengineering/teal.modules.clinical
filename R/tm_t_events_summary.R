@@ -572,7 +572,7 @@ template_events_summary <- function(anl_name,
 #'           dat
 #'         }
 #'         # Generating user-defined event flags.
-#'         ADAE <- ADAE %>% add_event_flags()'
+#'         ADAE <- ADAE %>% add_event_flags()' # nolint
 #'     )
 #'   ),
 #'   modules = modules(

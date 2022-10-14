@@ -200,7 +200,7 @@ template_g_ci <- function(dataname, # nolint
 #'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADLB", ADLB),
 #'     code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#'     ADLB <- synthetic_cdisc_dataset("latest", "adlb")'
+#'     ADLB <- synthetic_cdisc_dataset("latest", "adlb")' # nolint
 #'   ),
 #'   modules = modules(
 #'     tm_g_ci(

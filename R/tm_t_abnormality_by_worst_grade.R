@@ -241,7 +241,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'     ),
 #'     cdisc_dataset("ADLB", adlb,
 #'       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb") %>%
-#'         filter(!AVISIT %in% c("SCREENING", "BASELINE"))'
+#'         filter(!AVISIT %in% c("SCREENING", "BASELINE"))' # nolint
 #'     )
 #'   ),
 #'   modules = modules(

@@ -414,7 +414,7 @@ template_binary_outcome <- function(dataname,
 #'       'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
 #'        ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
 #'        mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
-#'        filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")'
+#'        filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")' # nolint
 #'   ),
 #'   modules = modules(
 #'     tm_t_binary_outcome(

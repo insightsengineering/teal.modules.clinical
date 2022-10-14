@@ -254,7 +254,7 @@ template_logistic <- function(dataname,
 #'     ),
 #'     cdisc_dataset("ADRS", ADRS,
 #'       code = 'ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
-#'         filter(PARAMCD %in% c("BESRSPI", "INVET"))'
+#'         filter(PARAMCD %in% c("BESRSPI", "INVET"))' # nolint
 #'     )
 #'   ),
 #'   modules = modules(

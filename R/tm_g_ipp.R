@@ -204,14 +204,14 @@ template_g_ipp <- function(dataname = "ANL",
 #'       "ADSL",
 #'       adsl,
 #'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl") %>% slice(1:20)
-#'       ADSL <- df_explicit_na(ADSL)'
+#'       ADSL <- df_explicit_na(ADSL)' # nolint
 #'     ),
 #'     cdisc_dataset(
 #'       "ADLB",
 #'       adlb,
 #'       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")
 #'       ADLB <- df_explicit_na(ADLB) %>%
-#'       dplyr::filter(AVISIT != "SCREENING")'
+#'       dplyr::filter(AVISIT != "SCREENING")' # nolint
 #'     )
 #'   ),
 #'   modules = modules(
