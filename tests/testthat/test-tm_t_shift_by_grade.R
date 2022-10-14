@@ -239,8 +239,8 @@ testthat::test_that("template_shift_by_grade throws an error when worst_flag_var
 
 testthat::test_that("template_shift_by_grade is keeping the same number of missing data
   (as 'Missing') at the end of preprocessing steps", {
-  adsl <- synthetic_cdisc_dataset("latest", "adsl")
-  adlb <- synthetic_cdisc_dataset("latest", "adlb")
+  adsl <- synthetic_cdisc_dataset("rcd_2022_06_27", "adsl")
+  adlb <- synthetic_cdisc_dataset("rcd_2022_06_27", "adlb")
   adlb <- adlb %>% dplyr::filter(WGRLOVFL == "Y")
   adlb$ATOXGR[1] <- NA
   adlb <- df_explicit_na(adlb)
