@@ -105,7 +105,7 @@ app <- init(
       ADAETTE <- ADAETTE \%>\%
         dplyr::filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
         dplyr::mutate(is_event = CNSR == 0) \%>\%
-        dplyr::mutate(n_events = as.integer(is_event))'
+        dplyr::mutate(n_events = as.integer(is_event))' # nolint
   ),
   modules = modules(
     tm_t_events_patyear(
