@@ -64,7 +64,7 @@ app <- init(
     cdisc_dataset("ADMH", ADMH,
       code = 'ADMH <- synthetic_cdisc_dataset("latest", "admh")
         ADMH[["MHDISTAT"]] <- "ONGOING"
-        formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")'
+        formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")' # nolint
     )
   ),
   modules = modules(

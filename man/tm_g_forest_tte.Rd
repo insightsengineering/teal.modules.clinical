@@ -140,7 +140,7 @@ app <- init(
     cdisc_dataset(
       "ADSL", ADSL,
       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-        ADSL$RACE <- droplevels(ADSL$RACE)'
+        ADSL$RACE <- droplevels(ADSL$RACE)' # nolint
     ),
     cdisc_dataset(
       "ADTTE", ADTTE,

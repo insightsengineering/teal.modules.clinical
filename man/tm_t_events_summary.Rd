@@ -186,7 +186,7 @@ app <- init(
           dat
         }
         # Generating user-defined event flags.
-        ADAE <- ADAE \%>\% add_event_flags()'
+        ADAE <- ADAE \%>\% add_event_flags()' # nolint
     )
   ),
   modules = modules(

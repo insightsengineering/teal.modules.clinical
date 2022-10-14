@@ -109,7 +109,7 @@ app <- init(
     ),
     cdisc_dataset("ADLB", adlb,
       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb") \%>\%
-        filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))'
+        filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))' # nolint
     )
   ),
   modules = modules(

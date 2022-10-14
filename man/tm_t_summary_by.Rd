@@ -121,7 +121,7 @@ app <- init(
     cdisc_dataset("ADSL", adsl),
     cdisc_dataset("ADLB", adlb),
     code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-      ADLB <- synthetic_cdisc_dataset("latest", "adlb")'
+      ADLB <- synthetic_cdisc_dataset("latest", "adlb")' # nolint
   ),
   modules = modules(
     tm_t_summary_by(
