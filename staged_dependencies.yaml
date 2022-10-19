@@ -11,9 +11,6 @@ upstream_repos:
   insightsengineering/scda:
     repo: insightsengineering/scda
     host: https://github.com
-  insightsengineering/scda.2021:
-    repo: insightsengineering/scda.2021
-    host: https://github.com
   Roche/rtables:
     repo: Roche/rtables
     host: https://github.com

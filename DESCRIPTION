@@ -64,13 +64,11 @@ Suggests:
     knitr,
     nestcolor (>= 0.1.0),
     scda (>= 0.1.5),
-    scda.2021 (>= 0.1.5),
     teal.data (>= 0.1.2),
     testthat (>= 2.0)
 VignetteBuilder:
     knitr
 Remotes:
-    insightsengineering/scda.2021@*release,
     insightsengineering/scda@*release,
     insightsengineering/teal.code@*release,
     insightsengineering/teal.data@*release,
