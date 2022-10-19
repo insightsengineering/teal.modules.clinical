@@ -1,3 +1,9 @@
+# teal.modules.clinical 0.8.14.9000
+
+### Enhancements
+
+* Updated to 2022 synthetic CDISC data.
+
 # teal.modules.clinical 0.8.14
 
 ### Enhancements
