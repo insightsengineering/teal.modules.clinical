@@ -54,9 +54,8 @@ This teal module produces a patient prior medication report using ADaM datasets.
 }
 \examples{
 library(scda)
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-ADSL <- synthetic_cdisc_data_latest$adsl
-ADCM <- synthetic_cdisc_data_latest$adcm
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADCM <- synthetic_cdisc_dataset("latest", "adcm")
 
 #' Modify ADCM
 ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
@@ -79,26 +78,24 @@ adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"
+      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
     ),
     cdisc_dataset("ADCM", ADCM,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADCM <- synthetic_cdisc_data_latest$adcm
-        ADCM$CMINDC <- paste0('Indication_', as.numeric(ADCM$CMDECOD))
+      code = 'ADCM <- synthetic_cdisc_dataset("latest", "adcm")
+        ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
         ADCM$CMDOSE <- 1
         ADCM$CMTRT <- ADCM$CMCAT
-        ADCM$CMDOSU <- 'U'
-        ADCM$CMROUTE <- 'CMROUTE'
-        ADCM$CMDOSFRQ <- 'CMDOSFRQ'
+        ADCM$CMDOSU <- "U"
+        ADCM$CMROUTE <- "CMROUTE"
+        ADCM$CMDOSFRQ <- "CMDOSFRQ"
         ADCM$CMASTDTM <- ADCM$ASTDTM
         ADCM$CMAENDTM <- ADCM$AENDTM
         formatters::var_labels(
-          ADCM[c('CMINDC', 'CMTRT', 'ASTDY')]) <- c(
-            'Indication',
-            'Reported Name of Drug, Med, or Therapy',
-            'Study Day of Start of Medication'
-           )",
+          ADCM[c("CMINDC", "CMTRT", "ASTDY")]) <- c(
+            "Indication",
+            "Reported Name of Drug, Med, or Therapy",
+            "Study Day of Start of Medication"
+           )',
       keys = adcm_keys
     )
   ),

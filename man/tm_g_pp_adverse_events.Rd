@@ -91,19 +91,16 @@ This teal module produces a patient profile adverse events table and plot using 
 library(scda)
 library(nestcolor)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-ADSL <- synthetic_cdisc_data_latest$adsl
-ADAE <- synthetic_cdisc_data_latest$adae
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADAE <- synthetic_cdisc_dataset("latest", "adae")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"
+      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
     ),
     cdisc_dataset("ADAE", ADAE,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADAE <- synthetic_cdisc_data_latest$adae"
+      code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")'
     )
   ),
   modules = modules(

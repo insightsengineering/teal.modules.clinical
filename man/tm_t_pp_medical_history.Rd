@@ -51,23 +51,20 @@ This teal module produces a patient medical history report using ADaM datasets.
 \examples{
 library(scda)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-ADSL <- synthetic_cdisc_data_latest$adsl
-ADMH <- synthetic_cdisc_data_latest$admh
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADMH <- synthetic_cdisc_dataset("latest", "admh")
 ADMH[["MHDISTAT"]] <- "ONGOING"
 formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"
+      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
     ),
     cdisc_dataset("ADMH", ADMH,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADMH <- synthetic_cdisc_data_latest$admh
-        ADMH[['MHDISTAT']] <- 'ONGOING'
-        formatters::var_labels(ADMH[c('MHDISTAT')]) <- c('Status of Disease')"
+      code = 'ADMH <- synthetic_cdisc_dataset("latest", "admh")
+        ADMH[["MHDISTAT"]] <- "ONGOING"
+        formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")' # nolint
     )
   ),
   modules = modules(

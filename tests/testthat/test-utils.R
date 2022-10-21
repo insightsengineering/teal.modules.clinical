@@ -87,7 +87,7 @@ testthat::test_that("add_expr manages expression list which can be used by pipe_
   testthat::expect_identical(result, expected)
 })
 
-adrs <- synthetic_cdisc_data("rcd_2022_02_28")$adrs
+adrs <- synthetic_cdisc_dataset("rcd_2022_06_27", "adrs")
 expr1 <- substitute(
   expr = anl <- subset(df, PARAMCD == param),
   env = list(df = as.name("adrs"), param = "INVET")
@@ -133,7 +133,6 @@ testthat::test_that("bracket_expr returns a single evaluable expression", {
   )
   testthat::expect_identical(result, expected)
 })
-
 
 # prepare_arm ----
 testthat::test_that("prepare_arm with standard inputs", {

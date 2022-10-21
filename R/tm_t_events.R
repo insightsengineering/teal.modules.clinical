@@ -127,11 +127,11 @@ template_events <- function(dataname,
   # Start layout steps.
   layout_list <- list()
 
-  basic_title <- if (is.null(hlt) & !is.null(llt)) {
+  basic_title <- if (is.null(hlt) && !is.null(llt)) {
     paste0("Event Summary by Term : ", label_llt)
-  } else if (!is.null(hlt) & is.null(llt)) {
+  } else if (!is.null(hlt) && is.null(llt)) {
     paste0("Event Summary by Term : ", label_hlt)
-  } else if (!is.null(hlt) & !is.null(llt)) {
+  } else if (!is.null(hlt) && !is.null(llt)) {
     paste0("Event Summary by Term : ", label_hlt, " and ", label_llt)
   } else {
     "Event Summary by Term"
@@ -450,13 +450,13 @@ template_events <- function(dataname,
 #' library(dplyr)
 #' library(scda)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adae <- synthetic_cdisc_data("latest")$adae
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
+#' adae <- synthetic_cdisc_dataset("latest", "adae")
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_data("latest")$adae')
+#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
+#'     cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")')
 #'   ),
 #'   modules = modules(
 #'     tm_t_events(
