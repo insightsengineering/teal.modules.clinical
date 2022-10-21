@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9000</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,14 +33,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -204,11 +196,9 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scda</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/nestcolor/" class="external-link">nestcolor</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">synthetic_cdisc_data_latest</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">synthetic_cdisc_data_latest</span><span class="op">$</span><span class="va">adsl</span></span></span>
-<span class="r-in"><span><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="va">synthetic_cdisc_data_latest</span><span class="op">$</span><span class="va">adae</span></span></span>
-<span class="r-in"><span><span class="va">ADCM</span> <span class="op">&lt;-</span> <span class="va">synthetic_cdisc_data_latest</span><span class="op">$</span><span class="va">adcm</span></span></span>
+<span class="r-in"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_dataset.html" class="external-link">synthetic_cdisc_dataset</a></span><span class="op">(</span><span class="st">"latest"</span>, <span class="st">"adsl"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_dataset.html" class="external-link">synthetic_cdisc_dataset</a></span><span class="op">(</span><span class="st">"latest"</span>, <span class="st">"adae"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ADCM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_dataset.html" class="external-link">synthetic_cdisc_dataset</a></span><span class="op">(</span><span class="st">"latest"</span>, <span class="st">"adcm"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#' Modify ADCM</span></span></span>
 <span class="r-in"><span><span class="va">ADCM</span><span class="op">$</span><span class="va">CMINDC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Indication_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">ADCM</span><span class="op">$</span><span class="va">CMDECOD</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -237,35 +227,32 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">ADSL</span>,</span></span>
-<span class="r-in"><span>      code <span class="op">=</span> <span class="st">"synthetic_cdisc_data_latest &lt;- synthetic_cdisc_data('latest')</span></span></span>
-<span class="r-in"><span><span class="st">        ADSL &lt;- synthetic_cdisc_data_latest$adsl"</span></span></span>
+<span class="r-in"><span>      code <span class="op">=</span> <span class="st">'ADSL &lt;- synthetic_cdisc_dataset("latest", "adsl")'</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span>,</span></span>
 <span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">ADAE</span>,</span></span>
-<span class="r-in"><span>      code <span class="op">=</span> <span class="st">"synthetic_cdisc_data_latest &lt;- synthetic_cdisc_data('latest')</span></span></span>
-<span class="r-in"><span><span class="st">        ADAE &lt;- synthetic_cdisc_data_latest$adae"</span></span></span>
+<span class="r-in"><span>      code <span class="op">=</span> <span class="st">'ADAE &lt;- synthetic_cdisc_dataset("latest", "adae")'</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span>,</span></span>
 <span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADCM"</span>, <span class="va">ADCM</span>,</span></span>
-<span class="r-in"><span>      code <span class="op">=</span> <span class="st">"synthetic_cdisc_data_latest &lt;- synthetic_cdisc_data('latest')</span></span></span>
-<span class="r-in"><span><span class="st">        ADCM &lt;- synthetic_cdisc_data_latest$adcm</span></span></span>
-<span class="r-in"><span><span class="st">        ADCM$CMINDC &lt;- paste0('Indication_', as.numeric(ADCM$CMDECOD))</span></span></span>
+<span class="r-in"><span>      code <span class="op">=</span> <span class="st">'ADCM &lt;- synthetic_cdisc_dataset("latest", "adcm")</span></span></span>
+<span class="r-in"><span><span class="st">        ADCM$CMINDC &lt;- paste0("Indication_", as.numeric(ADCM$CMDECOD))</span></span></span>
 <span class="r-in"><span><span class="st">        ADCM$CMDOSE &lt;- 1</span></span></span>
-<span class="r-in"><span><span class="st">        ADCM$CMDOSU &lt;- 'U'</span></span></span>
-<span class="r-in"><span><span class="st">        ADCM$CMROUTE &lt;- 'CMROUTE'</span></span></span>
-<span class="r-in"><span><span class="st">        ADCM$CMDOSFRQ &lt;- 'CMDOSFRQ'</span></span></span>
+<span class="r-in"><span><span class="st">        ADCM$CMDOSU &lt;- "U"</span></span></span>
+<span class="r-in"><span><span class="st">        ADCM$CMROUTE &lt;- "CMROUTE"</span></span></span>
+<span class="r-in"><span><span class="st">        ADCM$CMDOSFRQ &lt;- "CMDOSFRQ"</span></span></span>
 <span class="r-in"><span><span class="st">        ADCM$CMSTDY &lt;- 1</span></span></span>
-<span class="r-in"><span><span class="st">        ADCM[ADCM$CMCAT == 'medcl B', ]$CMSTDY &lt;- 20</span></span></span>
-<span class="r-in"><span><span class="st">        ADCM[ADCM$CMCAT == 'medcl C', ]$CMSTDY &lt;- 150</span></span></span>
+<span class="r-in"><span><span class="st">        ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY &lt;- 20</span></span></span>
+<span class="r-in"><span><span class="st">        ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY &lt;- 150</span></span></span>
 <span class="r-in"><span><span class="st">        ADCM$CMENDY &lt;- 500</span></span></span>
-<span class="r-in"><span><span class="st">        ADCM[ADCM$CMCAT == 'medcl B', ]$CMENDY &lt;- 700</span></span></span>
-<span class="r-in"><span><span class="st">        ADCM[ADCM$CMCAT == 'medcl C', ]$CMENDY &lt;- 1000</span></span></span>
+<span class="r-in"><span><span class="st">        ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY &lt;- 700</span></span></span>
+<span class="r-in"><span><span class="st">        ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY &lt;- 1000</span></span></span>
 <span class="r-in"><span><span class="st">        ADCM$CMASTDTM &lt;- ADCM$ASTDTM</span></span></span>
 <span class="r-in"><span><span class="st">        ADCM$CMAENDTM &lt;- ADCM$AENDTM</span></span></span>
 <span class="r-in"><span><span class="st">        formatters::var_labels(</span></span></span>
-<span class="r-in"><span><span class="st">          ADCM[c('CMINDC', 'CMDECOD', 'CMSTDY', 'CMENDY')]) &lt;- c(</span></span></span>
-<span class="r-in"><span><span class="st">            'Indication',</span></span></span>
-<span class="r-in"><span><span class="st">            'Reported Name of Drug, Med, or Therapy',</span></span></span>
-<span class="r-in"><span><span class="st">            'Study Day of Start of Medication',</span></span></span>
-<span class="r-in"><span><span class="st">            'Study Day of End of Medication')"</span>,</span></span>
+<span class="r-in"><span><span class="st">          ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) &lt;- c(</span></span></span>
+<span class="r-in"><span><span class="st">            "Indication",</span></span></span>
+<span class="r-in"><span><span class="st">            "Reported Name of Drug, Med, or Therapy",</span></span></span>
+<span class="r-in"><span><span class="st">            "Study Day of Start of Medication",</span></span></span>
+<span class="r-in"><span><span class="st">            "Study Day of End of Medication")'</span>,</span></span>
 <span class="r-in"><span>      keys <span class="op">=</span> <span class="va">adcm_keys</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
@@ -320,7 +307,7 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-10-14 01:16:47.0672 pid:1443 token:[] teal.modules.clinical Initializing tm_g_pp_patient_timeline</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2022-10-21 19:25:04.2040 pid:1447 token:[] teal.modules.clinical Initializing tm_g_pp_patient_timeline</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

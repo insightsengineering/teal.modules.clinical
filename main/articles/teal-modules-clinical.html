@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9000</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,14 +51,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -164,13 +156,13 @@ like this:</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/teal.modules.clinical" class="external-link">teal.modules.clinical</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/nestcolor/" class="external-link">nestcolor</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adsl</span></span>
-<span><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adae</span></span>
+<span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_dataset.html" class="external-link">synthetic_cdisc_dataset</a></span><span class="op">(</span><span class="st">"latest"</span>, <span class="st">"adsl"</span><span class="op">)</span></span>
+<span><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_dataset.html" class="external-link">synthetic_cdisc_dataset</a></span><span class="op">(</span><span class="st">"latest"</span>, <span class="st">"adae"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">teal</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html" class="external-link">init</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_data.html" class="external-link">cdisc_data</a></span><span class="op">(</span></span>
-<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">ADSL</span>, code <span class="op">=</span> <span class="st">"ADSL &lt;- synthetic_cdisc_data('latest')$adsl"</span><span class="op">)</span>,</span>
-<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">ADAE</span>, code <span class="op">=</span> <span class="st">"ADAE &lt;- synthetic_cdisc_data('latest')$adae"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">ADSL</span>, code <span class="op">=</span> <span class="st">'ADSL &lt;- synthetic_cdisc_dataset("latest", "adsl")'</span><span class="op">)</span>,</span>
+<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">ADAE</span>, code <span class="op">=</span> <span class="st">'ADAE &lt;- synthetic_cdisc_dataset("latest", "adae")'</span><span class="op">)</span>,</span>
 <span>    check <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -207,8 +199,8 @@ and <code>cdisc_dataset</code> and <code>cdisc_data</code> are
 <code>ADaM</code> format. We use <code>scda</code> to load data into two
 R objects:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adsl</span></span>
-<span><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adae</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_dataset.html" class="external-link">synthetic_cdisc_dataset</a></span><span class="op">(</span><span class="st">"latest"</span>, <span class="st">"adsl"</span><span class="op">)</span></span>
+<span><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_dataset.html" class="external-link">synthetic_cdisc_dataset</a></span><span class="op">(</span><span class="st">"latest"</span>, <span class="st">"adae"</span><span class="op">)</span></span></code></pre></div>
 <p><code>nestcolor</code> is an optional package that can be loaded in
 to apply the standardized NEST color palette to all module plots.</p>
 <p>There is no need to load <code>teal</code> as
@@ -224,8 +216,8 @@ application. Here, we include only one -
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">teal</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html" class="external-link">init</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_data.html" class="external-link">cdisc_data</a></span><span class="op">(</span></span>
-<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">ADSL</span>, code <span class="op">=</span> <span class="st">"ADSL &lt;- synthetic_cdisc_data('latest')$adsl"</span><span class="op">)</span>,</span>
-<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">ADAE</span>, code <span class="op">=</span> <span class="st">"ADAE &lt;- synthetic_cdisc_data('latest')$adae"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">ADSL</span>, code <span class="op">=</span> <span class="st">'ADSL &lt;- synthetic_cdisc_dataset("latest", "adsl")'</span><span class="op">)</span>,</span>
+<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">ADAE</span>, code <span class="op">=</span> <span class="st">'ADAE &lt;- synthetic_cdisc_dataset("latest", "adae")'</span><span class="op">)</span>,</span>
 <span>    check <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -246,10 +238,10 @@ application:</p>
 arguments using <code><a href="https://rdrr.io/pkg/teal.transform/man/choices_selected.html" class="external-link">teal.transform::choices_selected</a></code> such as
 <code>tm_t_summary</code> module in this example:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu">scda</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_data.html" class="external-link">synthetic_cdisc_data</a></span><span class="op">(</span><span class="st">"latest"</span><span class="op">)</span><span class="op">$</span><span class="va">adsl</span></span>
+<code class="sourceCode R"><span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scda/man/synthetic_cdisc_dataset.html" class="external-link">synthetic_cdisc_dataset</a></span><span class="op">(</span><span class="st">"latest"</span>, <span class="st">"adsl"</span><span class="op">)</span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">teal</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal/man/init.html" class="external-link">init</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_data.html" class="external-link">cdisc_data</a></span><span class="op">(</span></span>
-<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">adsl</span>, code <span class="op">=</span> <span class="st">'ADSL &lt;- synthetic_cdisc_data("latest")$adsl'</span><span class="op">)</span></span>
+<span>    <span class="fu">teal.data</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.data/man/cdisc_dataset.html" class="external-link">cdisc_dataset</a></span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">adsl</span>, code <span class="op">=</span> <span class="st">'ADSL &lt;- synthetic_cdisc_dataset("latest", "adsl")'</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="../reference/tm_t_summary.html">tm_t_summary</a></span><span class="op">(</span></span>
