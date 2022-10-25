@@ -1,4 +1,9 @@
-# teal.modules.clinical 0.8.13.9040
+# teal.modules.clinical 0.8.14.9001
+
+### Enhancements
+* Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
+
+# teal.modules.clinical 0.8.14
 
 ### Breaking changes
 
@@ -22,6 +27,7 @@
 * Added Stratified Analysis CI method option panel to `tm_t_binary_outcome`.
 * Added validation for covariate/visit conflicts to `tm_a_mmrm`.
 * Remove unnecessary brackets from header in `tm_t_exposure`.
+* Hid footnotes in `tm_g_km` and `tm_t_tte` when "Compare Treatments" is off.
 
 ### Bug fixes
 
@@ -32,6 +38,7 @@
 * Fixed bug in `tm_t_binary_outcome` that crashed the app when deselecting all `paramcd`.
 * Fixed `teal.reporter` card names for `tm_t_smq`.
 * Fixed bug in `tm_t_shift_by_arm_by_worst` by adding validations for choosing different endpoint values.
+* Fixed bug in `tm_t_coxreg` preventing footnotes from displaying for univariate models.
 
 ### Miscellaneous
 * Added `nestcolor` dependency and replaced deprecated function `tern::color_palette` with `nestcolor::color_palette`.

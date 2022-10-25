@@ -45,11 +45,7 @@ testthat::test_that("template_tte produces healthy standard output", {
     layout = quote(
       lyt <- rtables::basic_table(
         title = "Time-To-Event Table for OS",
-        main_footer = c(
-          "p-value method for Coxph (Hazard Ratio): log-rank",
-          "Ties for Coxph (Hazard Ratio): efron",
-          "Confidence Level Type for Survfit: plain"
-        )
+        main_footer = "Confidence Level Type for Survfit: plain"
       ) %>%
         rtables::split_cols_by(var = "ARM") %>%
         rtables::add_colcounts() %>%

@@ -52,8 +52,8 @@ Use \code{NULL} for no maximum.}
 
 library(scda)
 library(shiny)
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADAE <- synthetic_cdisc_data("latest")$adae
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADAE <- synthetic_cdisc_dataset("latest", "adae")
 
 ui <- fluidPage(
   shiny::sliderInput("obs", "Max Age",

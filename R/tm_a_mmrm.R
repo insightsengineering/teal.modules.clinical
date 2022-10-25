@@ -454,9 +454,8 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' library(scda)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' ADSL <- synthetic_cdisc_data_latest$adsl
-#' ADQS <- synthetic_cdisc_data_latest$adqs %>%
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADQS <- synthetic_cdisc_dataset("latest", "adqs") %>%
 #'   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'   dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'   dplyr::mutate(
@@ -477,12 +476,10 @@ template_mmrm_plots <- function(fit_name,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'               ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADQS", ADQS,
-#'       code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#'               ADQS <- synthetic_cdisc_data("latest")$adqs %>%
+#'       code = 'ADQS <- synthetic_cdisc_dataset("latest", "adqs") %>%
 #'               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'               dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'               dplyr::mutate(

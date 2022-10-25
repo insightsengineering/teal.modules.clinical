@@ -165,23 +165,20 @@ template_shift_by_arm <- function(dataname,
 #'
 #' @export
 #' @examples
-#'
 #' library(dplyr)
 #' library(tern)
 #' library(scda)
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' adsl <- synthetic_cdisc_data_latest$adsl
-#' adeg <- synthetic_cdisc_data_latest$adeg
+#'
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
+#' adeg <- synthetic_cdisc_dataset("latest", "adeg")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADEG", adeg,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADEG <- synthetic_cdisc_data_latest$adeg"
+#'       code = 'ADEG <- synthetic_cdisc_dataset("latest", "adeg")'
 #'     )
 #'   ),
 #'   modules = modules(

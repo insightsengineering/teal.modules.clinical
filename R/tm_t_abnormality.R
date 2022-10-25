@@ -235,9 +235,8 @@ template_abnormality <- function(parentname,
 #' library(scda)
 #' library(dplyr)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' adsl <- synthetic_cdisc_data_latest$adsl
-#' adlb <- synthetic_cdisc_data_latest$adlb %>%
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
+#' adlb <- synthetic_cdisc_dataset("latest", "adlb") %>%
 #'   mutate(
 #'     ONTRTFL = case_when(
 #'       AVISIT %in% c("SCREENING", "BASELINE") ~ "",
@@ -249,20 +248,18 @@ template_abnormality <- function(parentname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADLB", adlb,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'               ADLB <- synthetic_cdisc_data_latest$adlb %>%
+#'       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb") %>%
 #'                 mutate(
 #'                   ONTRTFL = case_when(
-#'                     AVISIT %in% c('SCREENING', 'BASELINE') ~ '',
-#'                     TRUE ~ 'Y'
+#'                     AVISIT %in% c("SCREENING", "BASELINE") ~ "",
+#'                     TRUE ~ "Y"
 #'                   )
 #'                 )
-#'               attr(ADLB[['ONTRTFL']], 'label') <- 'On Treatment Record Flag'
-#'               ADLB"
+#'               attr(ADLB[["ONTRTFL"]], "label") <- "On Treatment Record Flag"
+#'               ADLB'
 #'     )
 #'   ),
 #'   modules = modules(
