@@ -154,8 +154,8 @@ template_events_patyear <- function(dataname,
 #' library(dplyr)
 #' library(scda)
 #'
-#' adsl <- synthetic_cdisc_data("rcd_2022_06_27")$adsl
-#' adaette <- synthetic_cdisc_data("rcd_2022_06_27")$adaette
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
+#' adaette <- synthetic_cdisc_dataset("latest", "adaette")
 #' adaette <- adaette %>%
 #'   dplyr::filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
 #'   dplyr::mutate(is_event = CNSR == 0) %>%
@@ -166,12 +166,12 @@ template_events_patyear <- function(dataname,
 #'     cdisc_dataset("ADSL", adsl),
 #'     cdisc_dataset("ADAETTE", adaette),
 #'     code =
-#'       "ADSL <- synthetic_cdisc_data('rcd_2022_06_27')$adsl
-#'       ADAETTE <- synthetic_cdisc_data('rcd_2022_06_27')$adaette
+#'       'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#'       ADAETTE <- synthetic_cdisc_dataset("latest", "adaette")
 #'       ADAETTE <- ADAETTE %>%
-#'         dplyr::filter(PARAMCD %in% c('AETTE1', 'AETTE2', 'AETTE3')) %>%
+#'         dplyr::filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
 #'         dplyr::mutate(is_event = CNSR == 0) %>%
-#'         dplyr::mutate(n_events = as.integer(is_event))"
+#'         dplyr::mutate(n_events = as.integer(is_event))' # nolint
 #'   ),
 #'   modules = modules(
 #'     tm_t_events_patyear(

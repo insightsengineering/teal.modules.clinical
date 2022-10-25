@@ -317,9 +317,8 @@ template_smq <- function(dataname,
 #' @examples
 #' library(scda)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' adsl <- synthetic_cdisc_data_latest$adsl
-#' adae <- synthetic_cdisc_data_latest$adae
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
+#' adae <- synthetic_cdisc_dataset("latest", "adae")
 #'
 #' names_baskets <- grep("^(SMQ|CQ).*NAM$", names(adae), value = TRUE)
 #' names_scopes <- grep("^SMQ.*SC$", names(adae), value = TRUE)
@@ -338,12 +337,10 @@ template_smq <- function(dataname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADAE", adae,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADAE <- synthetic_cdisc_data_latest$adae"
+#'       code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")'
 #'     )
 #'   ),
 #'   modules = modules(

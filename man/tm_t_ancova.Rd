@@ -101,8 +101,8 @@ to be meaningful.
 # Preparation of the test case.
 library(dplyr)
 library(scda)
-adsl <- synthetic_cdisc_data("latest")$adsl
-adqs <- synthetic_cdisc_data("latest")$adqs
+adsl <- synthetic_cdisc_dataset("latest", "adsl")
+adqs <- synthetic_cdisc_dataset("latest", "adqs")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -121,8 +121,8 @@ app <- init(
     cdisc_dataset("ADQS", adqs),
     code =
       '
-      ADSL <- synthetic_cdisc_data("latest")$adsl
-      ADQS <- synthetic_cdisc_data("latest")$adqs
+      ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+      ADQS <- synthetic_cdisc_dataset("latest", "adqs")
       '
   ),
   modules = modules(

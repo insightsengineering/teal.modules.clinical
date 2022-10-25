@@ -415,9 +415,8 @@ template_coxreg_m <- function(dataname,
 #'
 #' library(scda)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' ADSL <- synthetic_cdisc_data_latest$adsl
-#' ADTTE <- synthetic_cdisc_data_latest$adtte
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADTTE <- synthetic_cdisc_dataset("latest", "adtte")
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
@@ -432,12 +431,10 @@ template_coxreg_m <- function(dataname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADTTE", ADTTE,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADTTE <- synthetic_cdisc_data_latest$adtte"
+#'       code = 'ADTTE <- synthetic_cdisc_dataset("latest", "adtte")'
 #'     )
 #'   ),
 #'   modules = modules(
@@ -1048,7 +1045,7 @@ srv_t_coxreg <- function(id,
             as.expression(lapply(
               unlist(input$buckets$Comp),
               function(x) {
-                call_template(x, merged$anl_input_r(), paramcd, multivariate, NULL)
+                call_template(x, merged$anl_input_r(), paramcd, multivariate, all_basic_table_args)
               }
             )),
             "Model fitting and table generation"
@@ -1065,7 +1062,10 @@ srv_t_coxreg <- function(id,
               },
               env = list(
                 title = all_basic_table_args$title,
-                footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+                footer = c(
+                  paste("p-value method for Coxph (Hazard Ratio):", model$control$pval_method),
+                  paste("Ties for Coxph (Hazard Ratio):", model$control$ties)
+                ),
                 p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
                 subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
               )

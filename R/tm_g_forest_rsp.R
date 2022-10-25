@@ -220,9 +220,8 @@ template_forest_rsp <- function(dataname = "ANL",
 #' library(dplyr)
 #' library(nestcolor)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' ADSL <- synthetic_cdisc_data_latest$adsl
-#' ADRS <- synthetic_cdisc_data_latest$adrs %>%
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
 #'   mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
 #'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
@@ -242,11 +241,10 @@ template_forest_rsp <- function(dataname = "ANL",
 #'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADRS", ADRS),
 #'     code =
-#'       "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'        ADSL <- synthetic_cdisc_data_latest$adsl
-#'        ADRS <- synthetic_cdisc_data_latest$adrs %>%
+#'       'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#'        ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
 #'        mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
-#'        filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')"
+#'        filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")' # nolint
 #'   ),
 #'   modules = modules(
 #'     tm_g_forest_rsp(

@@ -190,8 +190,8 @@ template_g_ipp <- function(dataname = "ANL",
 #' library(scda)
 #' library(nestcolor)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl %>% slice(1:20)
-#' adlb <- synthetic_cdisc_data("latest")$adlb
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl") %>% slice(1:20)
+#' adlb <- synthetic_cdisc_dataset("latest", "adlb")
 #' adlb <- adlb %>% filter(USUBJID %in% adsl$USUBJID)
 #'
 #' adsl <- df_explicit_na(adsl)
@@ -203,15 +203,15 @@ template_g_ipp <- function(dataname = "ANL",
 #'     cdisc_dataset(
 #'       "ADSL",
 #'       adsl,
-#'       code = "ADSL <- synthetic_cdisc_data('latest')$adsl %>% slice(1:20)
-#'       ADSL <- df_explicit_na(ADSL)"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl") %>% slice(1:20)
+#'       ADSL <- df_explicit_na(ADSL)' # nolint
 #'     ),
 #'     cdisc_dataset(
 #'       "ADLB",
 #'       adlb,
-#'       code = "ADLB <- synthetic_cdisc_data('latest')$adlb
+#'       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")
 #'       ADLB <- df_explicit_na(ADLB) %>%
-#'       dplyr::filter(AVISIT != 'SCREENING')"
+#'       dplyr::filter(AVISIT != "SCREENING")' # nolint
 #'     )
 #'   ),
 #'   modules = modules(

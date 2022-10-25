@@ -56,11 +56,11 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(scda)
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
 #'     check = TRUE
 #'   ),
 #'   modules = modules(

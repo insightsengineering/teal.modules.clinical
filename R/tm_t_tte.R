@@ -150,11 +150,15 @@ template_tte <- function(dataname = "ANL",
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
         title = paste("Time-To-Event Table for", paramcd),
-        main_footer = c(
-          paste("p-value method for Coxph (Hazard Ratio):", control$coxph$pval_method),
-          paste("Ties for Coxph (Hazard Ratio):", control$coxph$ties),
+        main_footer = if (compare_arm) {
+          c(
+            paste("p-value method for Coxph (Hazard Ratio):", control$coxph$pval_method),
+            paste("Ties for Coxph (Hazard Ratio):", control$coxph$ties),
+            paste("Confidence Level Type for Survfit:", control$surv_time$conf_type)
+          )
+        } else {
           paste("Confidence Level Type for Survfit:", control$surv_time$conf_type)
-        )
+        }
       )
     )
   )
@@ -376,11 +380,9 @@ template_tte <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#'
 #' library(scda)
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' ADSL <- synthetic_cdisc_data_latest$adsl
-#' ADTTE <- synthetic_cdisc_data_latest$adtte
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADTTE <- synthetic_cdisc_dataset("latest", "adtte")
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -396,12 +398,10 @@ template_tte <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADTTE", ADTTE,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADTTE <- synthetic_cdisc_data_latest$adtte"
+#'       code = 'ADTTE <- synthetic_cdisc_dataset("latest", "adtte")'
 #'     )
 #'   ),
 #'   modules = modules(

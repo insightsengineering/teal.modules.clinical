@@ -220,8 +220,8 @@ add_expr <- function(expr_ls, new_expr) {
 #' library(dplyr)
 #' library(scda)
 #' library(tern)
-#' adsl <- synthetic_cdisc_data("latest")$adsl
-#' adrs <- synthetic_cdisc_data("latest")$adrs
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
+#' adrs <- synthetic_cdisc_dataset("latest", "adrs")
 #'
 #' expr1 <- substitute(
 #'   expr = anl <- subset(df, PARAMCD == param),

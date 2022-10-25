@@ -168,10 +168,14 @@ template_g_km <- function(dataname = "ANL",
                       sep = "\n"
                     )
                   ),
-                  footnotes = paste(
-                    "Ties for Coxph (Hazard Ratio):", ties, "\n",
-                    "p-value Method for Coxph (Hazard Ratio):", pval_method
-                  ),
+                  footnotes = if (annot_coxph) {
+                    paste(
+                      "Ties for Coxph (Hazard Ratio):", ties, "\n",
+                      "p-value Method for Coxph (Hazard Ratio):", pval_method
+                    )
+                  } else {
+                    NULL
+                  },
                   ggtheme = ggplot2::theme_minimal(),
                   annot_surv_med = annot_surv_med,
                   annot_coxph = annot_coxph,
@@ -240,10 +244,14 @@ template_g_km <- function(dataname = "ANL",
               title,
               paste(title, paste("Stratified by", paste(strata_var, collapse = ", ")), sep = "\n")
             ),
-            footnotes = paste(
-              "Ties for Coxph (Hazard Ratio):", ties, "\n",
-              "p-value Method for Coxph (Hazard Ratio):", pval_method
-            ),
+            footnotes = if (annot_coxph) {
+              paste(
+                "Ties for Coxph (Hazard Ratio):", ties, "\n",
+                "p-value Method for Coxph (Hazard Ratio):", pval_method
+              )
+            } else {
+              NULL
+            },
           )
           plot
         },
@@ -285,12 +293,11 @@ template_g_km <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#'
 #' library(scda)
 #' library(nestcolor)
 #'
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADTTE <- synthetic_cdisc_data("latest")$adtte
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADTTE <- synthetic_cdisc_dataset("latest", "adtte")
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -305,8 +312,8 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte')
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
+#'     cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_dataset("latest", "adtte")')
 #'   ),
 #'   modules = modules(
 #'     tm_g_km(
