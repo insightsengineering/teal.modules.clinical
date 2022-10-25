@@ -83,7 +83,6 @@ if (interactive()) {
   adsl <- synthetic_cdisc_data("latest")$adsl
   adrs <- synthetic_cdisc_data("latest")$adrs
 
-<<<<<<< HEAD
   # Generate an expression for the analysis of responders.
   a <- template_binary_outcome(
     dataname = "adrs",
@@ -100,27 +99,6 @@ if (interactive()) {
   b$data
   b$layout
   b$table
-=======
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
-adrs <- synthetic_cdisc_dataset("latest", "adrs")
-
-# Generate an expression for the analysis of responders.
-a <- template_binary_outcome(
-  dataname = "adrs",
-  parentname = "adsl",
-  arm_var = "ARMCD",
-  paramcd = "BESRSPI",
-  ref_arm = "ARM A",
-  comp_arm = c("ARM B"),
-  compare_arm = TRUE,
-  show_rsp_cat = TRUE
-)
-
-b <- mapply(expr = a, FUN = eval)
-b$data
-b$layout
-b$table
->>>>>>> main
 }
 
 }
