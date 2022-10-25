@@ -611,7 +611,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       id = "warning",
       verbatim_content = reactive(teal.code::get_warnings(output_q())),
       title = "Warning",
-      disabled = reactive(is.null(output_q()) || is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
     )
 
     # Render R code.

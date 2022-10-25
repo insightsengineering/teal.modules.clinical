@@ -555,7 +555,7 @@ srv_g_adverse_events <- function(id,
       id = "warning",
       verbatim_content = reactive(teal.code::get_warnings(outputs_q())),
       title = "Warning",
-      disabled = reactive(is.null(outputs_q()) || is.null(teal.code::get_warnings(outputs_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(outputs_q())))
     )
 
     teal.widgets::verbatim_popup_srv(

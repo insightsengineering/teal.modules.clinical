@@ -976,7 +976,7 @@ srv_t_events_summary <- function(id,
       id = "warning",
       verbatim_content = reactive(teal.code::get_warnings(output_table())),
       title = "Warning",
-      disabled = reactive(is.null(output_table()) || is.null(teal.code::get_warnings(output_table())))
+      disabled = reactive(is.null(teal.code::get_warnings(output_table())))
     )
 
     teal.widgets::verbatim_popup_srv(
