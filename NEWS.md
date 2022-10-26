@@ -3,6 +3,9 @@
 ### Enhancements
 * Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
 
+### Miscellaneous
+* Package now uses `scda.2022` rather nthan `scda.2021` in SUGGESTS. 
+
 # teal.modules.clinical 0.8.14
 
 ### Enhancements
