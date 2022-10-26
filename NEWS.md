@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.14.9001
+# teal.modules.clinical 0.8.14.9002
 
 ### Enhancements
 * Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
