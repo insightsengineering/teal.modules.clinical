@@ -710,7 +710,10 @@ ui_t_binary_outcome <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -766,7 +769,7 @@ srv_t_binary_outcome <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q <- teal.code::new_qenv(tdata2env(data), code = get_code(data))
+      q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
       teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
     })
@@ -834,7 +837,7 @@ srv_t_binary_outcome <- function(id,
       if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
         validate_args <- c(validate_args, list(min_n_levels_armvar = NULL))
       }
-      if (input$compare_arms) {
+      if (isTRUE(input$compare_arms)) {
         validate_args <- c(
           validate_args,
           list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
@@ -969,6 +972,13 @@ srv_t_binary_outcome <- function(id,
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
+    )
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_table())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_table())))
     )
 
     # Render R code.

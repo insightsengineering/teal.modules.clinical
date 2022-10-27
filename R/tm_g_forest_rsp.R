@@ -446,7 +446,10 @@ ui_g_forest_rsp <- function(id, ...) {
         )
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -513,7 +516,7 @@ srv_g_forest_rsp <- function(id,
     )
 
     anl_merged_q <- reactive({
-      q <- teal.code::new_qenv(tdata2env(data), code = get_code(data))
+      q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
       teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
     })
@@ -705,6 +708,13 @@ srv_g_forest_rsp <- function(id,
     )
 
     teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = reactive(teal.code::get_code(output_q())),
       title = label
@@ -725,7 +735,7 @@ srv_g_forest_rsp <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"), dd = "")
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

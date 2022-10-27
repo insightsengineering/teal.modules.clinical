@@ -358,7 +358,10 @@ ui_events_patyear <- function(id, ...) {
         )
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -422,7 +425,7 @@ srv_events_patyear <- function(id,
     )
 
     anl_merged_q <- reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>%
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_merged_input()$expr))
     })
@@ -523,6 +526,13 @@ srv_events_patyear <- function(id,
     teal.widgets::table_with_settings_srv(
       id = "patyear_table",
       table_r = table_r
+    )
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_table())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_table())))
     )
 
     # Render R code.

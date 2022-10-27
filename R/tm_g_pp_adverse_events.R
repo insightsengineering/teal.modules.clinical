@@ -392,7 +392,10 @@ ui_g_adverse_events <- function(id, ...) {
         )
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -467,7 +470,7 @@ srv_g_adverse_events <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    anl_merged_q <- reactive(teal.code::eval_code(teal.code::new_qenv(tdata2env(data), code = get_code(data)), as.expression(anl_merged()$expr)))
+    anl_merged_q <- reactive(teal.code::eval_code(teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)), as.expression(anl_merged()$expr)))
 
     outputs_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
@@ -543,6 +546,13 @@ srv_g_adverse_events <- function(id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
+    )
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(outputs_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(outputs_q())))
     )
 
     teal.widgets::verbatim_popup_srv(

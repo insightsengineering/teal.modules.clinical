@@ -429,7 +429,10 @@ ui_t_mult_events_byterm <- function(id, ...) {
         )
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -478,7 +481,7 @@ srv_t_mult_events_byterm <- function(id,
     )
 
     merged_data_q <- reactive({
-      q1 <- teal.code::new_qenv(tdata2env(data), code = get_code(data))
+      q1 <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
       teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
     })
@@ -557,6 +560,13 @@ srv_t_mult_events_byterm <- function(id,
     table_r <- shiny::reactive(output_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(

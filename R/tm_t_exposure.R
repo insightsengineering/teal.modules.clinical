@@ -460,7 +460,10 @@ ui_t_exposure <- function(id, ...) {
         )
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -511,7 +514,7 @@ srv_t_exposure <- function(id,
     )
 
     anl_merged_q <- reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>%
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_merged_input()$expr))
     })
@@ -588,7 +591,8 @@ srv_t_exposure <- function(id,
       }
 
       basic_table_args$title <- "Duration of Exposure Table"
-      basic_table_args$subtitles <- paste("Parameter Category:", anl_m$filter_info$parcat[[1]]$selected[[1]])
+      basic_table_args$subtitles <-
+        paste("Parameter Category:", merged$anl_input_r()$filter_info$parcat[[1]]$selected[[1]])
 
       my_calls <- template_exposure(
         parentname = "ANL_ADSL",
@@ -614,6 +618,13 @@ srv_t_exposure <- function(id,
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
+    )
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
     )
 
     # Render R code.

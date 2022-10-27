@@ -448,7 +448,10 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
         )
       )
     ),
-    forms = teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code"),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -495,7 +498,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
     )
 
     anl_merged_q <- reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code(data)) %>%
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_merged_input()$expr))
     })
@@ -522,27 +525,41 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         shiny::need(input_arm_var, "Please select a treatment variable."),
         shiny::need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
         shiny::need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
-        shiny::need(
-          length(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]) > 0,
-          "Please select at least one Laboratory parameter."
-        ),
+
         shiny::need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
         shiny::need(input_id_var, "Please select a Subject Identifier."),
         shiny::need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-        shiny::need(
-          all(as.character(unique(merged$anl_q_r()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
-          "All grade values should be within -4:4 range."
-        )
+
       )
 
-      shiny::validate(
-        shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_arm_var]]), "Treatment variable should be a factor."),
-        shiny::need(
-          is.factor(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]),
-          "Parameter variable should be a factor."
-        ),
-        shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Grade variable should be a factor.")
-      )
+      if (length(input_paramcd_var) > 0){
+        shiny::validate(
+          shiny::need(
+            length(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]) > 0,
+            "Please select at least one Laboratory parameter."
+          ),
+          shiny::need(
+            is.factor(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]),
+            "Parameter variable should be a factor."
+          )
+        )
+      }
+
+      if (length(input_atoxgr) > 0){
+        shiny::validate(
+          shiny::need(
+            all(as.character(unique(merged$anl_q_r()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
+            "All grade values should be within -4:4 range."
+          ),
+          shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Grade variable should be a factor.")
+        )
+      }
+
+      if (length(input_atoxgr) > 0){
+        shiny::validate(
+          shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Treatment variable should be a factor."),
+        )
+      }
 
       # validate inputs
       validate_standard_inputs(
@@ -585,6 +602,13 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
+    )
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
     )
 
     # Render R code.
