@@ -100,7 +100,6 @@ template_vitals <- function(dataname = "ANL",
         color = paramcd_levels_e
       )
 
-      warning("This is a warrning!")
       result_plot <- ggplot2::ggplot(data = vitals, mapping = ggplot2::aes(x = xaxis)) + # replaced VSDY
         ggplot2::geom_line(
           data = vitals,

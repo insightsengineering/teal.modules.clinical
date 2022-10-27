@@ -699,7 +699,7 @@ srv_g_km <- function(id,
       if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
-      if (!is.null(input$compare_arms) && input$compare_arms) {
+      if (isTRUE(input$compare_arms)) {
         validate_args <- append(
           validate_args,
           list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
