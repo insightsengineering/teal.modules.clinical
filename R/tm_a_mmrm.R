@@ -1332,7 +1332,7 @@ srv_mmrm <- function(id,
           subtitle = paste0(
             "Endpoint: ", fit$fit$data$PARAMCD[1],
             ifelse(is.null(fit$vars$covariates), "",
-                   paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
+              paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
             )
           ),
           caption = paste(
@@ -1378,7 +1378,7 @@ srv_mmrm <- function(id,
     })
 
     all_code <- shiny::reactive({
-    if (!is.null(plot_q()) && !is.null(table_q())) {
+      if (!is.null(plot_q()) && !is.null(table_q())) {
         join(plot_q(), table_q())
       } else if (!is.null(plot_q())) {
         plot_q()
