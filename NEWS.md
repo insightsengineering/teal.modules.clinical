@@ -1,5 +1,10 @@
 # teal.modules.clinical 0.8.14.9002
 
+### Breaking changes
+
+* Replaced `chunks` with simpler `qenv` class.
+* Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (`tdata` object) and `filter_panel_api` (`FilterPanelAPI`).
+
 ### Enhancements
 * Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
 
@@ -7,11 +12,6 @@
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS. 
 
 # teal.modules.clinical 0.8.14
-
-### Breaking changes
-
-* Replaced `chunks` with simpler `qenv` class.
-* Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (list of reactive datasets) and `filter_panel_api` (`FilterPanelAPI`).
 
 ### Enhancements
 * Updated all synthetic data for tests to version `rcd_2022_02_28`.
