@@ -496,6 +496,13 @@ srv_shift_by_arm <- function(id,
       title = label
     )
 
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
