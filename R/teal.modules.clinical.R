@@ -25,5 +25,6 @@ if (getRversion() >= "2.15.1") {
 #' Avoiding R CMD check notes
 #' @importFrom methods is
 #' @importFrom rlang .data
+#' @importFrom tern.gee lsmeans
 #' @noRd
 NULL
