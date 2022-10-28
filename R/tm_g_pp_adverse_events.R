@@ -470,7 +470,11 @@ srv_g_adverse_events <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    anl_merged_q <- reactive(teal.code::eval_code(teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)), as.expression(anl_merged()$expr)))
+    anl_merged_q <- reactive(
+      teal.code::eval_code(
+        teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)), as.expression(anl_merged()$expr)
+      )
+    )
 
     outputs_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))

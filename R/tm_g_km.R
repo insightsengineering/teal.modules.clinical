@@ -632,7 +632,6 @@ srv_g_km <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
     arm_ref_comp_observer(

@@ -237,7 +237,6 @@ template_ancova <- function(dataname = "ANL",
       )
     }
   } else {
-
     # Only one entry in `paramcd_levels` here.
     layout_list <- add_expr(
       layout_list,

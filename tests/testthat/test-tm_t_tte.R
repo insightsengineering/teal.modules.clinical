@@ -134,11 +134,12 @@ testthat::test_that("template_tte produces correct data expression when not comp
       dplyr::mutate(
         is_event = CNSR == 0,
         is_not_event = CNSR == 1,
-        EVNT1 = factor(dplyr::case_when(
-          is_event == TRUE ~ "Patients with event (%)",
-          is_event == FALSE ~ "Patients without event (%)"
-        ),
-        levels = c("Patients with event (%)", "Patients without event (%)")
+        EVNT1 = factor(
+          dplyr::case_when(
+            is_event == TRUE ~ "Patients with event (%)",
+            is_event == FALSE ~ "Patients without event (%)"
+          ),
+          levels = c("Patients with event (%)", "Patients without event (%)")
         ),
         EVNTDESC = factor(EVNTDESC)
       ) %>%
@@ -186,9 +187,10 @@ testthat::test_that("template_tte produces correct data expression when comparin
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         dplyr::mutate(
           is_event = CNSR == 0, is_not_event = CNSR ==
-            1, EVNT1 = factor(dplyr::case_when(is_event == TRUE ~
-            "Patients with event (%)", is_event == FALSE ~ "Patients without event (%)"),
-          levels = c("Patients with event (%)", "Patients without event (%)")
+            1, EVNT1 = factor(
+            dplyr::case_when(is_event == TRUE ~
+              "Patients with event (%)", is_event == FALSE ~ "Patients without event (%)"),
+            levels = c("Patients with event (%)", "Patients without event (%)")
           ),
           EVNTDESC = factor(EVNTDESC)
         ) %>%
@@ -307,9 +309,10 @@ testthat::test_that("template_tte produces correct data expression when comparin
         dplyr::mutate(ARM = droplevels(ARM)) %>%
         dplyr::mutate(
           is_event = CNSR == 0, is_not_event = CNSR ==
-            1, EVNT1 = factor(dplyr::case_when(is_event == TRUE ~
-            "Patients with event (%)", is_event == FALSE ~ "Patients without event (%)"),
-          levels = c("Patients with event (%)", "Patients without event (%)")
+            1, EVNT1 = factor(
+            dplyr::case_when(is_event == TRUE ~
+              "Patients with event (%)", is_event == FALSE ~ "Patients without event (%)"),
+            levels = c("Patients with event (%)", "Patients without event (%)")
           ),
           EVNTDESC = factor(EVNTDESC)
         ) %>%

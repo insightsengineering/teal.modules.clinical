@@ -526,7 +526,8 @@ srv_g_lineplot <- function(id,
     )
 
     anl_merged_q <- reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>% teal.code::eval_code(as.expression(anl_merged_input()$expr))
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+      teal.code::eval_code(as.expression(anl_merged_input()$expr))
     })
 
     merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_merged_q)

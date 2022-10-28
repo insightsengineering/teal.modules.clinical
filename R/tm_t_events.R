@@ -277,7 +277,6 @@ template_events <- function(dataname,
   )
 
   if (prune_freq > 0 || prune_diff > 0) {
-
     # Do not use "All Patients" column for pruning conditions.
     prune_list <- add_expr(
       prune_list,
@@ -330,7 +329,6 @@ template_events <- function(dataname,
 
   if (sort_criteria == "alpha") {
     if (prune_freq == 0 && prune_diff == 0) {
-
       # This is just a dummy step to get the right variable result.
       # No additional sorting is needed because during the data pre-processing step,
       # llt and/or hlt are converted to factors with alphabetically sorted levels.

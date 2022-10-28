@@ -477,11 +477,12 @@ ui_t_smq <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional Variables Info",
-          shiny::checkboxInput(ns(
-            "drop_arm_levels"
-          ),
-          "Drop arm levels not in filtered analysis dataset",
-          value = a$drop_arm_levels
+          shiny::checkboxInput(
+            ns(
+              "drop_arm_levels"
+            ),
+            "Drop arm levels not in filtered analysis dataset",
+            value = a$drop_arm_levels
           ),
           teal.transform::data_extract_ui(
             id = ns("id_var"),

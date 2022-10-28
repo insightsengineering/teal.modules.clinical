@@ -666,7 +666,6 @@ prepare_arm_levels <- function(dataname,
   data_list <- list()
 
   if (drop_arm_levels) {
-
     # Keep only levels that exist in `dataname` dataset
     data_list <- add_expr(
       data_list,
@@ -718,7 +717,6 @@ prepare_arm_levels <- function(dataname,
       )
     )
   } else {
-
     # Keep only levels that exist in `parentname` dataset
     data_list <- add_expr(
       data_list,
