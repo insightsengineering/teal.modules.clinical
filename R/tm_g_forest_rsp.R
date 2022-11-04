@@ -501,24 +501,24 @@ srv_g_forest_rsp <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    anl_merged <- teal.transform::merge_expression_srv(
+    anl_merge_inputs <- teal.transform::merge_expression_srv(
       selector_list = anl_selectors,
       datasets = data,
       merge_function = "dplyr::inner_join",
       join_keys = get_join_keys(data)
     )
 
-    adsl_merged <- teal.transform::merge_expression_module(
+    adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
       join_keys = get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
-    anl_merged_q <- reactive({
-      q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
-      teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
+    anl_q <- reactive({
+      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      qenv1 <- teal.code::eval_code(qenv, as.expression(anl_merge_inputs()$expr))
+      teal.code::eval_code(qenv1, as.expression(adsl_merge_inputs()$expr))
     })
 
     shiny::observeEvent(
@@ -527,10 +527,10 @@ srv_g_forest_rsp <- function(id,
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
       ),
       handlerExpr = {
-        req(anl_merged_q())
-        anl <- anl_merged_q()[["ANL"]]
-        aval_var <- anl_merged()$columns_source$aval_var
-        paramcd_level <- unlist(anl_merged()$filter_info$paramcd[[1]]$selected)
+        req(anl_q())
+        anl <- anl_q()[["ANL"]]
+        aval_var <- anl_merge_inputs()$columns_source$aval_var
+        paramcd_level <- unlist(anl_merge_inputs()$filter_info$paramcd[[1]]$selected)
         if (length(paramcd_level) == 0) {
           return(NULL)
         }
@@ -570,13 +570,13 @@ srv_g_forest_rsp <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      req(anl_merged_q())
-      q1 <- anl_merged_q()
+      req(anl_q())
+      q1 <- anl_q()
       adsl_filtered <- q1[[parentname]]
       anl_filtered <- q1[[dataname]]
       anl <- q1[["ANL"]]
 
-      anl_m <- anl_merged()
+      anl_m <- anl_merge_inputs()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
       input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
@@ -671,8 +671,8 @@ srv_g_forest_rsp <- function(id,
     # The R-code corresponding to the analysis.
     output_q <- shiny::reactive({
       validate_checks()
-      q1 <- anl_merged_q()
-      anl_m <- anl_merged()
+      q1 <- anl_q()
+      anl_m <- anl_merge_inputs()
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)

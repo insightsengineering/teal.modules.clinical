@@ -838,30 +838,30 @@ srv_t_events_summary <- function(id,
       datasets = data
     )
 
-    anl_merged_input <- teal.transform::merge_expression_srv(
+    anl_merge_inputs <- teal.transform::merge_expression_srv(
       selector_list = anl_selectors,
       datasets = data,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged_input <- teal.transform::merge_expression_module(
+    adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = Filter(Negate(is.null), list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)),
       join_keys = get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+        teal.code::eval_code(as.expression(anl_merge_inputs()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
     })
 
     merged <- list(
-      anl_input_r = anl_merged_input,
-      adsl_input_r = adsl_merged_input,
-      anl_q_r = anl_merged_q
+      anl_input_r = anl_merge_inputs,
+      adsl_input_r = adsl_merge_inputs,
+      anl_q = anl_q
     )
 
     validate_checks <- shiny::reactive({
@@ -911,7 +911,7 @@ srv_t_events_summary <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    output_table <- shiny::reactive({
+    table_q <- shiny::reactive({
       validate_checks()
 
       input_flag_var_anl <- if (!is.null(flag_var_anl)) {
@@ -943,7 +943,7 @@ srv_t_events_summary <- function(id,
 
       all_basic_table_args <- teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
       teal.code::eval_code(
-        merged$anl_q_r(),
+        merged$anl_q(),
         as.expression(my_calls)
       ) %>%
         teal.code::eval_code(
@@ -965,7 +965,7 @@ srv_t_events_summary <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(output_table()[["result"]])
+    table_r <- shiny::reactive(table_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -974,14 +974,14 @@ srv_t_events_summary <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_table())),
+      verbatim_content = reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_table())))
+      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_table())),
+      verbatim_content = reactive(teal.code::get_code(table_q())),
       title = label
     )
 
@@ -1000,7 +1000,7 @@ srv_t_events_summary <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_table()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(table_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

@@ -474,7 +474,7 @@ srv_g_ipp <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_merged <- teal.transform::merge_expression_module(
+    anl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(
         arm_var = arm_var,
@@ -489,26 +489,26 @@ srv_g_ipp <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    adsl_merged <- teal.transform::merge_expression_module(
+    adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var, id_var = id_var),
       anl_name = "ANL_ADSL"
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
-      teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
+      qenv <- teal.code::eval_code(q, as.expression(anl_merge_inputs()$expr))
+      teal.code::eval_code(qenv, as.expression(adsl_merge_inputs()$expr))
     })
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      q1 <- anl_merged_q()
-      adsl_filtered <- q1[[parentname]]
-      anl_filtered <- q1[[dataname]]
+      qenv <- anl_q()
+      adsl_filtered <- qenv[[parentname]]
+      anl_filtered <- qenv[[dataname]]
 
-      anl_m <- anl_merged()
+      anl_m <- anl_merge_inputs()
       input_arm_var <- unlist(arm_var$filter)["vars_selected"]
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
       input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
@@ -551,10 +551,10 @@ srv_g_ipp <- function(id,
     # The R-code corresponding to the analysis.
     output_q <- shiny::reactive({
       validate_checks()
-      q1 <- anl_merged_q()
-      anl_m <- anl_merged()
+      qenv <- anl_q()
+      anl_m <- anl_merge_inputs()
 
-      ANL <- q1[["ANL"]] # nolint
+      ANL <- qenv[["ANL"]] # nolint
       teal::validate_has_data(ANL, 2)
 
       arm_var <- unlist(arm_var$filter)["vars_selected"]
@@ -583,7 +583,7 @@ srv_g_ipp <- function(id,
         ggplot2_args = ggplot2_args,
         add_avalu = input$add_avalu
       )
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     # Outputs to render.

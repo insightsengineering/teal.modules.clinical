@@ -298,16 +298,16 @@ srv_t_prior_medication <- function(id,
     )
 
     # Prior medication tab ----
-    merge_input_r <- teal.transform::merge_expression_module(
+    anl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(atirel = atirel, cmdecod = cmdecod, cmindc = cmindc, cmstdy = cmstdy),
       merge_function = "dplyr::left_join"
     )
 
-    merge_q_r <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(merge_input_r()$expr))
+        teal.code::eval_code(as.expression(anl_merge_inputs()$expr))
     })
 
     output_q <- shiny::reactive({
@@ -341,7 +341,7 @@ srv_t_prior_medication <- function(id,
       )
 
       teal.code::eval_code(
-        merge_q_r(),
+        anl_q(),
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint

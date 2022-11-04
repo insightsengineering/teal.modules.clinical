@@ -601,7 +601,7 @@ srv_g_therapy <- function(id,
     )
 
     # Therapy tab ----
-    anl_merged_input <- teal.transform::merge_expression_module(
+    anl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(
@@ -612,16 +612,16 @@ srv_g_therapy <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    anl_q_r <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(anl_merged_input()$expr))
+        teal.code::eval_code(as.expression(anl_merge_inputs()$expr))
     })
 
-    merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_q_r)
+    merged <- list(anl_input_r = anl_merge_inputs, anl_q = anl_q)
 
     output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-      teal::validate_has_data(merged$anl_q_r()[["ANL"]], 1)
+      teal::validate_has_data(merged$anl_q()[["ANL"]], 1)
 
       shiny::validate(
         shiny::need(
@@ -665,7 +665,7 @@ srv_g_therapy <- function(id,
           "Please select CMENDY variable."
         ),
         shiny::need(
-          nrow(merged$anl_q_r()[["ANL"]][input$patient_id == merged$anl_q_r()[["ANL"]][, patient_col], ]) > 0,
+          nrow(merged$anl_q()[["ANL"]][input$patient_id == merged$anl_q()[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )
@@ -688,7 +688,7 @@ srv_g_therapy <- function(id,
       )
 
       teal.code::eval_code(
-        merged$anl_q_r(),
+        merged$anl_q(),
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint

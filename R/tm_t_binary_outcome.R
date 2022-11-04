@@ -768,10 +768,10 @@ srv_t_binary_outcome <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
-      teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
+      qenv <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
+      teal.code::eval_code(qenv, as.expression(adsl_merged()$expr))
     })
 
     shiny::observeEvent(
@@ -780,7 +780,7 @@ srv_t_binary_outcome <- function(id,
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
       ),
       handlerExpr = {
-        anl <- anl_merged_q()[["ANL"]]
+        anl <- anl_q()[["ANL"]]
         aval_var <- anl_merged()$columns_source$aval_var
         paramcd <- input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
         sel_param <- if (is.list(default_responses) && (!is.null(paramcd))) {
@@ -815,10 +815,10 @@ srv_t_binary_outcome <- function(id,
     )
 
     validate_check <- shiny::reactive({
-      q1 <- anl_merged_q()
+      qenv <- anl_q()
       adsl_filtered <- data[[parentname]]()
       anl_filtered <- data[[dataname]]()
-      anl <- q1[["ANL"]]
+      anl <- qenv[["ANL"]]
 
       anl_m <- anl_merged()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -912,9 +912,9 @@ srv_t_binary_outcome <- function(id,
     output_table <- shiny::reactive({
       validate_check()
 
-      q1 <- anl_merged_q()
+      qenv <- anl_q()
       anl_m <- anl_merged()
-      anl <- q1[["ANL"]]
+      anl <- qenv[["ANL"]]
 
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
       shiny::req(input$responders %in% anl[[input_aval_var]])
@@ -963,7 +963,7 @@ srv_t_binary_outcome <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     # Outputs to render.

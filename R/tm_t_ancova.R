@@ -550,7 +550,7 @@ srv_ancova <- function(id,
       module = "tm_ancova"
     )
 
-    anl_merged_input <- teal.transform::merge_expression_module(
+    anl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(
         arm_var = arm_var,
@@ -563,23 +563,23 @@ srv_ancova <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    adsl_merged_input <- teal.transform::merge_expression_module(
+    adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL",
       join_keys = get_join_keys(data)
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+        teal.code::eval_code(as.expression(anl_merge_inputs()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
     })
 
     merged <- list(
-      anl_input_r = anl_merged_input,
-      adsl_input_r = adsl_merged_input,
-      anl_q_r = anl_merged_q
+      anl_input_r = anl_merge_inputs,
+      adsl_input_r = adsl_merge_inputs,
+      anl_q = anl_q
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
@@ -618,11 +618,11 @@ srv_ancova <- function(id,
       ))
       # check that there is at least one record with no missing data
       shiny::validate(shiny::need(
-        !all(is.na(merged$anl_q_r()[["ANL"]][[input_aval_var]])),
+        !all(is.na(merged$anl_q()[["ANL"]][[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))
       # check that for each visit there is at least one record with no missing data
-      all_NA_dataset <- merged$anl_q_r()[["ANL"]] %>% # nolint
+      all_NA_dataset <- merged$anl_q()[["ANL"]] %>% # nolint
         dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
         dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
       shiny::validate(shiny::need(
@@ -658,7 +658,7 @@ srv_ancova <- function(id,
     # The R-code corresponding to the analysis.
     output_table <- shiny::reactive({
       validate_checks()
-      ANL <- merged$anl_q_r()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]] # nolint
 
       label_paramcd <- get_paramcd_label(ANL, paramcd)
       input_aval <- as.vector(merged$anl_input_r()$columns_source$aval_var)
@@ -684,7 +684,7 @@ srv_ancova <- function(id,
         conf_level = as.numeric(input$conf_level),
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
     })
 
     # Output to render.

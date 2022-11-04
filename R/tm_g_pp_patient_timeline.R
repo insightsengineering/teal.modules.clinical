@@ -752,7 +752,7 @@ srv_g_patient_timeline <- function(id,
     )
 
     # Patient timeline tab ----
-    merge_input_r <- teal.transform::merge_expression_module(
+    anl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(
@@ -763,9 +763,9 @@ srv_g_patient_timeline <- function(id,
       )
     )
 
-    merge_q_r <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(merge_input_r()$expr))
+        teal.code::eval_code(as.expression(anl_merge_inputs()$expr))
     })
 
     output_q <- shiny::reactive({
@@ -786,7 +786,7 @@ srv_g_patient_timeline <- function(id,
       ae_chart_vars_null <- any(vapply(list(aeterm, aetime_start, aetime_end), is.null, FUN.VALUE = logical(1)))
       ds_chart_vars_null <- any(vapply(list(cmdecod, dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
 
-      p_timeline_data <- merge_q_r()[["ANL"]]
+      p_timeline_data <- anl_q()[["ANL"]]
       # time variables can not be NA
       p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
 
@@ -811,22 +811,22 @@ srv_g_patient_timeline <- function(id,
       # AENDY columns to data_merge_module call above.
       aerelday_start_name <- `if`(
         length(aerelday_start),
-        merge_input_r()$columns_source$aerelday_start[[1]],
+        anl_merge_inputs()$columns_source$aerelday_start[[1]],
         aerelday_start
       )
       aerelday_end_name <- `if`(
         length(aerelday_end),
-        merge_input_r()$columns_source$aerelday_end[[1]],
+        anl_merge_inputs()$columns_source$aerelday_end[[1]],
         aerelday_end
       )
       dsrelday_start_name <- `if`(
         length(dsrelday_start),
-        merge_input_r()$columns_source$dsrelday_start[[1]],
+        anl_merge_inputs()$columns_source$dsrelday_start[[1]],
         dsrelday_start
       )
       dsrelday_end_name <- `if`(
         length(dsrelday_end),
-        merge_input_r()$columns_source$dsrelday_end[[1]],
+        anl_merge_inputs()$columns_source$dsrelday_end[[1]],
         dsrelday_end
       )
 
@@ -863,7 +863,7 @@ srv_g_patient_timeline <- function(id,
       )
 
       teal.code::eval_code(
-        merge_q_r(),
+        anl_q(),
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint

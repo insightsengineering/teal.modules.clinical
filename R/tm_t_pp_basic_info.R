@@ -194,34 +194,34 @@ srv_t_basic_info <- function(id,
     )
 
     # Basic Info tab ----
-    merge_input_r <- teal.transform::merge_expression_module(
+    anl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(vars = vars),
       merge_function = "dplyr::left_join"
     )
 
-    merge_q_r <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(merge_input_r()$expr))
+        teal.code::eval_code(as.expression(anl_merge_inputs()$expr))
     })
 
     output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       shiny::validate(
         shiny::need(
-          merge_input_r()$columns_source$vars,
+          anl_merge_inputs()$columns_source$vars,
           "Please select basic info variables."
         )
       )
 
       my_calls <- template_basic_info(
         dataname = "ANL",
-        vars = merge_input_r()$columns_source$vars
+        vars = anl_merge_inputs()$columns_source$vars
       )
 
       teal.code::eval_code(
-        merge_q_r(),
+        anl_q(),
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint

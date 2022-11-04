@@ -481,9 +481,9 @@ srv_t_mult_events_byterm <- function(id,
     )
 
     merged_data_q <- reactive({
-      q1 <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
-      teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
+      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      qenv1 <- teal.code::eval_code(qenv, as.expression(anl_merge_inputs()$expr))
+      teal.code::eval_code(qenv1, as.expression(adsl_merge_inputs()$expr))
     })
 
     validate_checks <- shiny::reactive({
@@ -521,14 +521,14 @@ srv_t_mult_events_byterm <- function(id,
     output_q <- shiny::reactive({
       validate_checks()
 
-      q1 <- merged_data_q()
+      qenv <- merged_data_q()
       anl_m <- anl_merge_inputs()
 
       input_hlt <- names(anl_m$columns_source$hlt)
       input_llt <- names(anl_m$columns_source$llt)
 
-      hlt_labels <- mapply(function(x) rtables::obj_label(q1[["ANL"]][[x]]), input_hlt)
-      llt_labels <- mapply(function(x) rtables::obj_label(q1[["ANL"]][[x]]), input_llt)
+      hlt_labels <- mapply(function(x) rtables::obj_label(qenv[["ANL"]][[x]]), input_hlt)
+      llt_labels <- mapply(function(x) rtables::obj_label(qenv[["ANL"]][[x]]), input_llt)
 
       basic_table_args$title <- ifelse(
         is.null(basic_table_args$title),
@@ -553,7 +553,7 @@ srv_t_mult_events_byterm <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     # Outputs to render.

@@ -753,7 +753,7 @@ srv_t_tte <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    merged_q <- reactive({
+    anl_q <- reactive({
       quo <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       quo1 <- teal.code::eval_code(quo, as.expression(anl_merge_inputs()$expr))
       teal.code::eval_code(quo1, as.expression(adsl_merge_inputs()$expr))
@@ -763,7 +763,7 @@ srv_t_tte <- function(id,
     validate_checks <- shiny::reactive({
       adsl_filtered <- data[[parentname]]()
       anl_filtered <- data[[dataname]]()
-      anl <- merged_q()[["ANL"]]
+      anl <- anl_q()[["ANL"]]
 
       anl_m <- anl_merge_inputs()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -838,7 +838,7 @@ srv_t_tte <- function(id,
       validate_checks()
 
       anl_m <- anl_merge_inputs()
-      q1 <- merged_q()
+      qenv <- anl_q()
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
 
@@ -877,7 +877,7 @@ srv_t_tte <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     table_r <- shiny::reactive(output_q()[["table"]])

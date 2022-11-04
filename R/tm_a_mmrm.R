@@ -879,10 +879,10 @@ srv_mmrm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_merged_q <- reactive({
-      q1 <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
-      teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
+    anl_q <- reactive({
+      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      qenv2 <- teal.code::eval_code(qenv, as.expression(anl_merge_inputs()$expr))
+      teal.code::eval_code(qenv2, as.expression(adsl_merge_inputs()$expr))
     })
 
     # Initially hide the output title because there is no output yet.
@@ -1048,8 +1048,8 @@ srv_mmrm <- function(id,
       )
       names(encoding_inputs) <- sync_inputs
 
-      adsl_filtered <- anl_merged_q()[["ADSL"]]
-      anl_filtered <- anl_merged_q()[[dataname]]
+      adsl_filtered <- anl_q()[["ADSL"]]
+      anl_filtered <- anl_q()[[dataname]]
 
       shiny::validate(
         shiny::need(
@@ -1139,9 +1139,9 @@ srv_mmrm <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- anl_merged_q()[[parentname]]
-      anl_filtered <- anl_merged_q()[[dataname]]
-      anl_data <- anl_merged_q()[["ANL"]]
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
+      anl_data <- anl_q()[["ANL"]]
 
       anl_m_inputs <- anl_merge_inputs()
       if (!is.null(input[[extract_input("arm_var", parentname)]])) {
@@ -1202,8 +1202,8 @@ srv_mmrm <- function(id,
 
     # Connector:
     # Fit the MMRM, once the user clicks on the start button.
-    mmrm_fit <- shiny::eventReactive(input$button_start, {
-      q1 <- anl_merged_q()
+    mmrm_fit_q <- shiny::eventReactive(input$button_start, {
+      qenv <- anl_q()
       anl_m_inputs <- anl_merge_inputs()
 
       my_calls <- template_fit_mmrm(
@@ -1223,7 +1223,7 @@ srv_mmrm <- function(id,
         optimizer = input$optimizer,
         parallel = input$parallel
       )
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     output$mmrm_title <- shiny::renderText({
@@ -1271,13 +1271,13 @@ srv_mmrm <- function(id,
         return(NULL)
       }
       # Get the fit stack while evaluating the fit code at the same time.
-      q1 <- mmrm_fit()
-      fit <- q1[["fit"]]
+      qenv <- mmrm_fit_q()
+      fit <- qenv[["fit"]]
 
       anl_m_inputs <- anl_merge_inputs()
 
-      ANL <- q1[["ANL"]] # nolint
-      ANL_ADSL <- q1[["ANL_ADSL"]] # nolint
+      ANL <- qenv[["ANL"]] # nolint
+      ANL_ADSL <- qenv[["ANL_ADSL"]] # nolint
       paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
       basic_table_args$subtitles <- paste0(
@@ -1304,7 +1304,7 @@ srv_mmrm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(q1, as.expression(mmrm_table))
+      teal.code::eval_code(qenv, as.expression(mmrm_table))
     })
 
     # Endpoint:
@@ -1324,8 +1324,8 @@ srv_mmrm <- function(id,
         return(NULL)
       }
 
-      q1 <- mmrm_fit()
-      fit <- q1[["fit"]]
+      qenv <- mmrm_fit()
+      fit <- qenv[["fit"]]
 
       ggplot2_args[["lsmeans"]] <- teal.widgets::ggplot2_args(
         labs <- list(
@@ -1374,10 +1374,10 @@ srv_mmrm <- function(id,
         diagnostic_plot = diagnostic_args,
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(q1, as.expression(mmrm_plot_expr))
+      teal.code::eval_code(qenv, as.expression(mmrm_plot_expr))
     })
 
-    all_code <- shiny::reactive({
+    joined_q <- shiny::reactive({
       if (!is.null(plot_q()) && !is.null(table_q())) {
         join(plot_q(), table_q())
       } else if (!is.null(plot_q())) {
@@ -1445,15 +1445,15 @@ srv_mmrm <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_code())),
+      verbatim_content = reactive(teal.code::get_warnings(joined_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_code())))
+      disabled = reactive(is.null(teal.code::get_warnings(joined_q())))
     )
 
     # Show R code once button is pressed.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_code())),
+      verbatim_content = reactive(teal.code::get_code(joined_q())),
       disabled = disable_r_code,
       title = "R Code for the Current MMRM Analysis"
     )
@@ -1486,7 +1486,7 @@ srv_mmrm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_code()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(joined_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

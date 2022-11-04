@@ -479,7 +479,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_merged_input <- teal.transform::merge_expression_module(
+    anl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(
@@ -490,29 +490,29 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged_input <- teal.transform::merge_expression_module(
+    adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+        teal.code::eval_code(as.expression(anl_merge_inputs()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
     })
 
     merged <- list(
-      anl_input_r = anl_merged_input,
-      adsl_input_r = adsl_merged_input,
-      anl_q_r = anl_merged_q
+      anl_input_r = anl_merge_inputs,
+      adsl_input_r = adsl_merge_inputs,
+      anl_q = anl_q
     )
 
     validate_checks <- shiny::reactive({
       adsl_filtered <- data[[parentname]]()
       anl_filtered <- data[[dataname]]()
-      anl <- merged$anl_q_r()[["ANL"]]
+      anl <- merged$anl_q()[["ANL"]]
 
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
@@ -533,11 +533,11 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       if (length(input_paramcd_var) > 0) {
         shiny::validate(
           shiny::need(
-            length(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]) > 0,
+            length(merged$anl_q()[["ANL"]][[input_paramcd_var]]) > 0,
             "Please select at least one Laboratory parameter."
           ),
           shiny::need(
-            is.factor(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]),
+            is.factor(merged$anl_q()[["ANL"]][[input_paramcd_var]]),
             "Parameter variable should be a factor."
           )
         )
@@ -546,16 +546,16 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       if (length(input_atoxgr) > 0) {
         shiny::validate(
           shiny::need(
-            all(as.character(unique(merged$anl_q_r()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
+            all(as.character(unique(merged$anl_q()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
             "All grade values should be within -4:4 range."
           ),
-          shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Grade variable should be a factor.")
+          shiny::need(is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]), "Grade variable should be a factor.")
         )
       }
 
       if (length(input_atoxgr) > 0) {
         shiny::validate(
-          shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Treatment variable should be a factor."),
+          shiny::need(is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]), "Treatment variable should be a factor."),
         )
       }
 
@@ -591,7 +591,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
     })
 
     # Outputs to render.
