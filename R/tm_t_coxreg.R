@@ -1042,29 +1042,28 @@ srv_t_coxreg <- function(id,
         merged$anl_q_r() %>%
           teal.code::eval_code(quote(result <- list())) %>%
           teal.code::eval_code(
-            as.expression(lapply(
+            as.expression(unlist(lapply(
               unlist(input$buckets$Comp),
               function(x) {
                 call_template(x, merged$anl_input_r(), paramcd, multivariate, all_basic_table_args)
               }
             ))
-          ) %>%
+          )) %>%
           teal.code::eval_code(
             substitute(
               expr = {
                 result <- rtables::rbindl_rtables(result, check_headers = TRUE)
                 rtables::main_title(result) <- title
-                rtables::main_footer(result) <- footer
+                rtables::main_footer(result) <- c(
+                  paste("p-value method for Coxph (Hazard Ratio):", model$control$pval_method),
+                  paste("Ties for Coxph (Hazard Ratio):", model$control$ties)
+                )
                 rtables::prov_footer(result) <- p_footer
                 rtables::subtitles(result) <- subtitle
                 result
               },
               env = list(
                 title = all_basic_table_args$title,
-                footer = c(
-                  paste("p-value method for Coxph (Hazard Ratio):", model$control$pval_method),
-                  paste("Ties for Coxph (Hazard Ratio):", model$control$ties)
-                ),
                 p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
                 subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
               )
