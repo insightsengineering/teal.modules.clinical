@@ -237,7 +237,6 @@ template_ancova <- function(dataname = "ANL",
       )
     }
   } else {
-
     # Only one entry in `paramcd_levels` here.
     layout_list <- add_expr(
       layout_list,
@@ -382,8 +381,8 @@ template_ancova <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_ancova <- function(label,
@@ -510,7 +509,10 @@ ui_ancova <- function(id, ...) {
         fixed = a$conf_level$fixed
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -518,8 +520,9 @@ ui_ancova <- function(id, ...) {
 
 #' @noRd
 srv_ancova <- function(id,
-                       datasets,
+                       data,
                        reporter,
+                       filter_panel_api,
                        dataname,
                        parentname,
                        arm_var,
@@ -530,12 +533,11 @@ srv_ancova <- function(id,
                        avisit,
                        label,
                        basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
     arm_ref_comp_observer(
@@ -543,14 +545,13 @@ srv_ancova <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_ancova"
     )
 
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(
         arm_var = arm_var,
         aval_var = aval_var,
@@ -558,24 +559,37 @@ srv_ancova <- function(id,
         avisit = avisit,
         paramcd = paramcd
       ),
-      merge_function = "dplyr::inner_join"
+      merge_function = "dplyr::inner_join",
+      join_keys = get_join_keys(data)
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
+      anl_name = "ANL_ADSL",
+      join_keys = get_join_keys(data)
+    )
+
+    anl_merged_q <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+    })
+
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
+      input_aval_var <- as.vector(merged$anl_input_r()$columns_source$aval_var)
+      input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       input_avisit <- unlist(avisit$filter)["vars_selected"]
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
@@ -604,11 +618,11 @@ srv_ancova <- function(id,
       ))
       # check that there is at least one record with no missing data
       shiny::validate(shiny::need(
-        !all(is.na(anl_m$data()[[input_aval_var]])),
+        !all(is.na(merged$anl_q_r()[["ANL"]][[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))
       # check that for each visit there is at least one record with no missing data
-      all_NA_dataset <- anl_m$data() %>% # nolint
+      all_NA_dataset <- merged$anl_q_r()[["ANL"]] %>% # nolint
         dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
         dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
       shiny::validate(shiny::need(
@@ -642,35 +656,26 @@ srv_ancova <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- shiny::reactive({
+    output_table <- shiny::reactive({
       validate_checks()
+      ANL <- merged$anl_q_r()[["ANL"]] # nolint
 
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
       label_paramcd <- get_paramcd_label(ANL, paramcd)
-      input_aval <- as.vector(anl_m$columns_source$aval_var)
-      label_aval <- if (length(input_aval) != 0) attributes(anl_m$data()[[input_aval]])$label else NULL
+      input_aval <- as.vector(merged$anl_input_r()$columns_source$aval_var)
+      label_aval <- if (length(input_aval) != 0) attributes(ANL[[input_aval]])$label else NULL
       paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
       visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
       my_calls <- template_ancova(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
+        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
         ref_arm = unlist(input$buckets$Ref),
         comp_arm = unlist(input$buckets$Comp),
         combine_comp_arms = input$combine_comp_arms,
-        aval_var = as.vector(anl_m$columns_source$aval_var),
+        aval_var = as.vector(merged$anl_input_r()$columns_source$aval_var),
         label_aval = label_aval,
-        cov_var = as.vector(anl_m$columns_source$cov_var),
+        cov_var = as.vector(merged$anl_input_r()$columns_source$cov_var),
         paramcd_levels = paramcd_levels,
         paramcd_var = unlist(paramcd$filter)["vars_selected"],
         label_paramcd = label_paramcd,
@@ -679,14 +684,12 @@ srv_ancova <- function(id,
         conf_level = as.numeric(input$conf_level),
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Output to render.
     table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
+      output_table()[["result"]]
     })
 
     teal.widgets::table_with_settings_srv(
@@ -694,14 +697,18 @@ srv_ancova <- function(id,
       table_r = table_r
     )
 
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_table())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_table())))
+    )
+
     # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, aval_var, cov_var, avisit, paramcd)
-      ),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_table())),
+      title = label
     )
 
     ### REPORTER
@@ -711,19 +718,16 @@ srv_ancova <- function(id,
         card$set_name("ANCOVA")
         card$append_text("ANCOVA", "header2")
         card$append_text("Analysis of Covariance", "header3")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_table()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

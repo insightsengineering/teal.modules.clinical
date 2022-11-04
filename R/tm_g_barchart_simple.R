@@ -131,8 +131,8 @@
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 tm_g_barchart_simple <- function(x = NULL,
                                  fill = NULL,
@@ -298,17 +298,21 @@ ui_g_barchart_simple <- function(id, ...) {
             )
           )
         )
-      ),
-      forms = teal::get_rcode_ui(ns("rcode")),
-      pre_output = args$pre_output,
-      post_output = args$post_output
-    )
+      )
+    ),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
+    pre_output = args$pre_output,
+    post_output = args$post_output
   )
 }
 
 srv_g_barchart_simple <- function(id,
-                                  datasets,
+                                  data,
                                   reporter,
+                                  filter_panel_api,
                                   x,
                                   fill,
                                   x_facet,
@@ -316,114 +320,87 @@ srv_g_barchart_simple <- function(id,
                                   plot_height,
                                   plot_width,
                                   ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
+
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
-    data_extract <- list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
-    data_extract <- data_extract[!vapply(data_extract, is.null, logical(1))]
-
-    selector_list <- teal.transform::data_extract_multiple_srv(data_extract, datasets)
-
-    reactive_select_input <- shiny::reactive({
-      selectors <- selector_list()
-      extract_names <- names(selectors)
-      for (extract in extract_names) {
-        if (is.null(selectors[[extract]]) || length(selectors[[extract]]()$select) == 0) {
-          selectors <- selectors[-which(names(selectors) == extract)]
-        }
-      }
-      selectors
-    })
-
-    merged_data <- teal.transform::data_merge_srv(
-      selector_list = reactive_select_input,
-      datasets = datasets
+    merge_inputs <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      data_extract = list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
     )
 
-    data_chunk <- shiny::reactive({
+    merged_data_q <- shiny::reactive({
       shiny::validate({
-        shiny::need("x" %in% names(reactive_select_input()), "Please select an x-variable")
+        shiny::need(merge_inputs()$columns_source$x, "Please select an x-variable")
       })
-      ANL <- merged_data()$data() # nolint
-      teal::validate_has_data(ANL, 2)
-      chunk <- teal.code::chunks_new()
-      teal.code::chunks_push_data_merge(merged_data(), chunks = chunk)
-      chunk
+      quo <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      quo <- teal.code::eval_code(quo, as.expression(merge_inputs()$expr))
+      quo
     })
 
-    count_chunk <- shiny::reactive({
-      chunk <- teal.code::chunks_deep_clone(data_chunk())
+    count_q <- shiny::reactive({
+      req(merged_data_q())
+      quo <- merged_data_q()
+      teal::validate_has_data(quo[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
-      groupby_vars_l <- as.list(groupby_vars) # atomic -> list #nolintr
 
       # count
-      n_names <- c()
-      count_by_group <- function(groupby_vars, ...) {
-        # chunk and n_names are modified
+      count_by_group <- function(groupby_vars, data_name) {
         n_name <- get_n_name(groupby_vars)
-        n_names <- c(n_names, n_name)
-        count_by_group_chunk(chunk, groupby_vars = groupby_vars, n_name = n_name, ...)
+        count_by_group_expr(groupby_vars = groupby_vars, data_name = data_name)
       }
 
-      count_by_group(groupby_vars, data_name = "ANL") # may be repeated by statements below
+      count_exprs <- count_by_group(groupby_vars, data_name = "ANL")
 
       if (input$show_n) {
-        # count for each group
-        # x_name: more complicated, done below
-        if (!is.null(groupby_vars_l$fill_name)) count_by_group(groupby_vars_l$fill_name)
-        if (!is.null(groupby_vars_l$x_facet_name)) count_by_group(groupby_vars_l$x_facet_name)
-        if (!is.null(groupby_vars_l$y_facet_name)) count_by_group(groupby_vars_l$y_facet_name)
-
-        if (!is.null(groupby_vars_l$fill_name)) add_count_str_to_column(chunk, column = groupby_vars_l$fill_name)
-        if (!is.null(groupby_vars_l$x_facet_name)) add_count_str_to_column(chunk, column = groupby_vars_l$x_facet_name)
-        if (!is.null(groupby_vars_l$y_facet_name)) add_count_str_to_column(chunk, column = groupby_vars_l$y_facet_name)
+        count_exprs2 <- sapply(groupby_vars[-1], count_by_group, data_name = "counts")
+        count_str_to_col_exprs <- sapply(groupby_vars[-1], count_str_to_column_expr)
+        count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
+      quo2 <- teal.code::eval_code(quo, code = count_exprs)
 
       # add label and slice(1) as all patients in the same subgroup have same n_'s
-      chunk$push(
-        bquote({
-          attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count" # for plot
-          counts <- counts %>%
-            dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
-            dplyr::slice(1) %>%
-            dplyr::ungroup() %>%
-            dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
-        }),
-        id = "add_label_n_group_by_call"
+      quo3 <- teal.code::eval_code(
+        quo2,
+        as.expression(
+          c(
+            bquote(attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count"),
+            bquote(
+              counts <- counts %>%
+                dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
+                dplyr::slice(1) %>%
+                dplyr::ungroup() %>%
+                dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
+            )
+          )
+        )
       )
 
       # dplyr::select loses labels
-      chunk$push(
+      teal.code::eval_code(
+        quo3,
         teal.transform::get_anl_relabel_call(
-          columns_source = merged_data()$columns_source,
-          datasets = sapply(datasets$datanames(), function(x) shiny::reactive(datasets$get_data(x, filtered = TRUE))),
+          columns_source = merge_inputs()$columns_source,
+          datasets = data,
           anl_name = "counts"
-        ),
-        id = "get_anl_relabel_call"
+        )
       )
-
-      teal.code::chunks_safe_eval(chunk)
-      chunk
     })
 
-    plot_chunk <- shiny::reactive({
-      chunk <- teal.code::chunks_deep_clone(count_chunk())
-
+    output_q <- shiny::reactive({
+      req(count_q())
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
-      chunk$push(
-        substitute(
-          env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
-          plot_title <- sprintf(
-            "Number of patients (total N = %s) for each combination of (%s)",
-            nrow(ANL),
-            groupby_vars
-          )
-        ),
-        id = "plot_title_call"
-      )
+      quo2 <- teal.code::eval_code(count_q(), substitute(
+        env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
+        plot_title <- sprintf(
+          "Number of patients (total N = %s) for each combination of (%s)",
+          nrow(ANL),
+          groupby_vars
+        )
+      ))
 
       y_lab <- substitute(
         column_annotation_label(counts, y_name),
@@ -457,41 +434,26 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      chunk$push(plot_call, id = "plot_call")
+      quo3 <- teal.code::eval_code(quo2, code = plot_call)
 
-      # explicitly calling print on the plot inside the chunk evaluates
+      # explicitly calling print on the plot inside the qenv evaluates
       # the ggplot call and therefore catches errors
-      chunk$push(quote(print(plot)), "print_plot_call")
-
-      teal.code::chunks_safe_eval(chunk)
-      chunk
+      teal.code::eval_code(quo3, code = quote(print(plot)))
     })
 
-    generate_code <- shiny::reactive({
-      chunk <- plot_chunk()
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(chunk) # set session chunks for ShowRCode
+    plot_r <- shiny::reactive(output_q()[["plot"]])
 
-      chunk
-    })
-
-    plot_r <- shiny::reactive({
-      generate_code()$get("plot")
-    })
-
-    output$table <- shiny::renderTable({
-      generate_code()$get("counts")
-    })
+    output$table <- shiny::renderTable(output_q()[["counts"]])
 
     # reactive vars
     # NULL: not present in UI, vs character(0): no selection
 
     # returns named vector of non-NULL variables to group by
     r_groupby_vars <- function() {
-      x_name <- if (is.null(x)) NULL else as.vector(merged_data()$columns_source$x)
-      fill_name <- if (is.null(fill)) NULL else as.vector(merged_data()$columns_source$fill)
-      x_facet_name <- if (is.null(x_facet)) NULL else as.vector(merged_data()$columns_source$x_facet)
-      y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merged_data()$columns_source$y_facet)
+      x_name <- if (is.null(x)) NULL else as.vector(merge_inputs()$columns_source$x)
+      fill_name <- if (is.null(fill)) NULL else as.vector(merge_inputs()$columns_source$fill)
+      x_facet_name <- if (is.null(x_facet)) NULL else as.vector(merge_inputs()$columns_source$x_facet)
+      y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merge_inputs()$columns_source$y_facet)
 
       # set to NULL when empty character
       if (identical(x_name, character(0))) x_name <- NULL
@@ -521,11 +483,17 @@ srv_g_barchart_simple <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(x, fill, x_facet, y_facet)),
-      modal_title = "Bar Chart"
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = "Bar Chart"
     )
 
     ### REPORTER
@@ -534,19 +502,16 @@ srv_g_barchart_simple <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Barchart Plot")
         card$append_text("Barchart Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
@@ -557,7 +522,7 @@ srv_g_barchart_simple <- function(id,
 
 
 
-# Helper functions for chunks ----
+# Helper functions for qenv ----
 
 #' `ggplot2` call to generate simple barchart
 #'
@@ -659,15 +624,16 @@ make_barchart_simple_call <- function(y_name,
     # nothing to put side-by-side, so put fill to one color only
     # setting color via aesthetics does not work for some reason (but x = 0 above works)
     plot_args <- c(plot_args, bquote(
-      ggplot2::geom_col(ggplot2::aes_string(
-        y = .(y_name)
-      ),
-      position = .(position),
-      fill = .(ifelse(
-        !is.null(getOption("ggplot2.discrete.colour")),
-        getOption("ggplot2.discrete.colour")[1],
-        "#b6cae9"
-      ))
+      ggplot2::geom_col(
+        ggplot2::aes_string(
+          y = .(y_name)
+        ),
+        position = .(position),
+        fill = .(ifelse(
+          !is.null(getOption("ggplot2.discrete.colour")),
+          getOption("ggplot2.discrete.colour")[1],
+          "#b6cae9"
+        ))
       )
     ))
   } else {
@@ -738,20 +704,19 @@ get_n_name <- function(groupby_vars) {
   paste0("n_", paste(groupby_vars, collapse = "_"))
 }
 
-# chunk that counts by specified group
+# expression that counts by specified group
 # n_name: name of column to add counts to, by default determined from groupby_vars
-count_by_group_chunk <- function(chunk, groupby_vars, n_name = NULL, data_name = "counts") {
-  groupby_vars <- as.vector(groupby_vars) # as.vector unnames
+count_by_group_expr <- function(groupby_vars, data_name = "counts") {
   checkmate::assert_character(groupby_vars)
+  n_name <- get_n_name(groupby_vars)
 
-  n_name <- `if`(is.null(n_name), get_n_name(groupby_vars), n_name)
-  chunk$push(
-    bquote({
-      counts <- .(as.symbol(data_name)) %>%
-        dplyr::group_by_at(.(groupby_vars)) %>%
-        dplyr::mutate(.(as.symbol(n_name)) := dplyr::n()) %>%
-        dplyr::ungroup()
-    }),
-    id = paste(c(groupby_vars, "counts_group_by_at_call"), collapse = "_")
+  parse(
+    text = sprintf(
+      "counts <- %s %%>%% dplyr::group_by(%s) %%>%% dplyr::mutate(%s = dplyr::n()) %%>%% dplyr::ungroup()",
+      data_name,
+      paste(groupby_vars, collapse = ","),
+      n_name
+    ),
+    keep.source = FALSE
   )
 }

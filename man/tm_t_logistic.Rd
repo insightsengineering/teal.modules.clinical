@@ -128,8 +128,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(ui = app$ui, server = app$server)
+if (interactive()) {
+  shinyApp(ui = app$ui, server = app$server)
 }
 
 }

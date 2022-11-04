@@ -38,6 +38,7 @@ Imports:
     ggplot2,
     ggrepel,
     grid,
+    lifecycle,
     logger (>= 0.2.0),
     magrittr,
     methods,
