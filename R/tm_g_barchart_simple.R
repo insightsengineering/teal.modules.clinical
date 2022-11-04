@@ -358,7 +358,7 @@ srv_g_barchart_simple <- function(id,
         count_str_to_col_exprs <- sapply(groupby_vars[-1], count_str_to_column_expr)
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
-      qenv2 <- teal.code::eval_code(quo, code = count_exprs)
+      qenv2 <- teal.code::eval_code(qenv, code = count_exprs)
 
       # add label and slice(1) as all patients in the same subgroup have same n_'s
       qenv3 <- teal.code::eval_code(
