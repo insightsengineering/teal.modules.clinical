@@ -1447,7 +1447,7 @@ srv_mmrm <- function(id,
       id = "warning",
       verbatim_content = reactive(teal.code::get_warnings(all_code())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_code())))
+      disabled = reactive(disable_r_code() || is.null(teal.code::get_warnings(all_code())))
     )
 
     # Show R code once button is pressed.
