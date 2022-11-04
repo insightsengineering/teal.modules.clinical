@@ -1047,8 +1047,8 @@ srv_t_coxreg <- function(id,
               function(x) {
                 call_template(x, merged$anl_input_r(), paramcd, multivariate, all_basic_table_args)
               }
-            ))
-          )) %>%
+            )))
+          ) %>%
           teal.code::eval_code(
             substitute(
               expr = {
