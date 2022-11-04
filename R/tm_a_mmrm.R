@@ -1021,7 +1021,7 @@ srv_mmrm <- function(id,
       state$input <- mmrm_inputs_reactive()
       shinyjs::hide("null_input_msg")
       shinyjs::disable("button_start")
-      success <- try(mmrm_fit(), silent = TRUE)
+      success <- try(mmrm_fit_q(), silent = TRUE)
       if (!inherits(success, "try-error")) {
         shinyjs::show("mmrm_title")
         disable_r_code(FALSE)
@@ -1324,7 +1324,7 @@ srv_mmrm <- function(id,
         return(NULL)
       }
 
-      qenv <- mmrm_fit()
+      qenv <- mmrm_fit_q()
       fit <- qenv[["fit"]]
 
       ggplot2_args[["lsmeans"]] <- teal.widgets::ggplot2_args(
@@ -1421,7 +1421,7 @@ srv_mmrm <- function(id,
     # Optimizer that was selected.
     output$optimizer_selected <- shiny::renderText({
       # First reassign reactive sources:
-      fit_stack <- try(mmrm_fit(), silent = TRUE)
+      fit_stack <- try(mmrm_fit_q(), silent = TRUE)
       result <- if (!inherits(fit_stack, "try-error")) {
         fit <- fit_stack[["fit"]]
         if (input$optimizer == "automatic") {
