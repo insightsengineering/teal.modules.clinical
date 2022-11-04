@@ -375,8 +375,7 @@ srv_g_barchart_simple <- function(id,
                 dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
             )
           )
-        ),
-        name = "add_label_n_group_by_call"
+        )
       )
 
       # dplyr::select loses labels
