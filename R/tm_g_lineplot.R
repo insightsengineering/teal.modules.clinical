@@ -533,8 +533,8 @@ srv_g_lineplot <- function(id,
     merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
     validate_checks <- shiny::reactive({
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
+      adsl_filtered <- merged$anl_q()[[parentname]]
+      anl_filtered <- merged$anl_q()[[dataname]]
 
       input_strata <- names(merged$anl_input_r()$columns_source$strata)
       input_x_var <- names(merged$anl_input_r()$columns_source$x)

@@ -544,8 +544,8 @@ srv_t_logistic <- function(id,
     })
 
     validate_checks <- shiny::reactive({
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
 
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_avalc_var <- as.vector(merged$anl_input_r()$columns_source$avalc_var)

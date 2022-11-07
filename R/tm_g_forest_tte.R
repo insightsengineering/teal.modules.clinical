@@ -518,15 +518,15 @@ srv_g_forest_tte <- function(id,
 
     anl_q <- reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q1 <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
-      teal.code::eval_code(q1, as.expression(adsl_inputs()$expr))
+      qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
+      teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
     })
 
     validate_checks <- shiny::reactive({
-      q1 <- anl_q()
-      adsl_filtered <- q1[[parentname]]
-      anl_filtered <- q1[[dataname]]
-      anl <- q1[["ANL"]]
+      qenv <- anl_q()
+      adsl_filtered <- qenv[[parentname]]
+      anl_filtered <- qenv[[dataname]]
+      anl <- qenv[["ANL"]]
 
       anl_m <- anl_inputs()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -597,7 +597,7 @@ srv_g_forest_tte <- function(id,
     all_q <- shiny::reactive({
       validate_checks()
 
-      q1 <- anl_q()
+      qenv <- anl_q()
       anl_m <- anl_inputs()
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
@@ -621,7 +621,7 @@ srv_g_forest_tte <- function(id,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     # Outputs to render.

@@ -666,8 +666,8 @@ srv_t_events_byterm <- function(id,
     )
 
     validate_checks <- shiny::reactive({
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
+      adsl_filtered <- merged$anl_q()[[parentname]]
+      anl_filtered <- merged$anl_q()[[dataname]]
 
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_level_term <- c(

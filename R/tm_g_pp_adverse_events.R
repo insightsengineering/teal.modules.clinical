@@ -479,8 +479,8 @@ srv_g_adverse_events <- function(id,
     outputs_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       anl_m <- anl_inputs()
-      q1 <- anl_q()
-      ANL <- q1[["ANL"]] # nolint
+      qenv <- anl_q()
+      ANL <- qenv[["ANL"]] # nolint
 
       teal::validate_has_data(ANL[ANL[[patient_col]] == input$patient_id, ], min_nrow = 1)
 
@@ -511,8 +511,8 @@ srv_g_adverse_events <- function(id,
         )
       )
 
-      q2 <- teal.code::eval_code(
-        q1,
+      qenv2 <- teal.code::eval_code(
+        qenv,
         substitute(
           expr = ANL <- ANL[ANL[[patient_col]] == patient_id, ], # nolint
           env = list(
@@ -536,7 +536,7 @@ srv_g_adverse_events <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      teal.code::eval_code(q2, as.expression(calls))
+      teal.code::eval_code(qenv2, as.expression(calls))
     })
     output$table <- DT::renderDataTable(
       expr = outputs_q()[["table"]],

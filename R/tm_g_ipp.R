@@ -498,15 +498,15 @@ srv_g_ipp <- function(id,
 
     anl_q <- reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q1 <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
-      teal.code::eval_code(q1, as.expression(adsl_inputs()$expr))
+      qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
+      teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
     })
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      q1 <- anl_q()
-      adsl_filtered <- q1[[parentname]]
-      anl_filtered <- q1[[dataname]]
+      qenv <- anl_q()
+      adsl_filtered <- qenv[[parentname]]
+      anl_filtered <- qenv[[dataname]]
 
       anl_m <- anl_inputs()
       input_arm_var <- unlist(arm_var$filter)["vars_selected"]
@@ -551,10 +551,10 @@ srv_g_ipp <- function(id,
     # The R-code corresponding to the analysis.
     all_q <- shiny::reactive({
       validate_checks()
-      q1 <- anl_q()
+      qenv <- anl_q()
       anl_m <- anl_inputs()
 
-      ANL <- q1[["ANL"]] # nolint
+      ANL <- qenv[["ANL"]] # nolint
       teal::validate_has_data(ANL, 2)
 
       arm_var <- unlist(arm_var$filter)["vars_selected"]
@@ -583,7 +583,7 @@ srv_g_ipp <- function(id,
         ggplot2_args = ggplot2_args,
         add_avalu = input$add_avalu
       )
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     # Outputs to render.

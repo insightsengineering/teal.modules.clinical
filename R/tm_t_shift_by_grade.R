@@ -786,8 +786,8 @@ srv_t_shift_by_grade <- function(id,
     )
 
     validate_checks <- shiny::reactive({
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
+      adsl_filtered <- merged$anl_q()[[parentname]]
+      anl_filtered <- merged$anl_q()[[dataname]]
 
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_id_var <- names(merged$anl_input_r()$columns_source$id_var)

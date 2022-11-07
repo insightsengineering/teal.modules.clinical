@@ -880,9 +880,9 @@ srv_mmrm <- function(id,
     )
 
     anl_q <- reactive({
-      q1 <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q2 <- teal.code::eval_code(q1, as.expression(anl_inputs()$expr))
-      teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
+      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      qenv2 <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
+      teal.code::eval_code(qenv2, as.expression(adsl_merge_inputs()$expr))
     })
 
     # Initially hide the output title because there is no output yet.
@@ -1203,7 +1203,7 @@ srv_mmrm <- function(id,
     # Connector:
     # Fit the MMRM, once the user clicks on the start button.
     mmrm_fit <- shiny::eventReactive(input$button_start, {
-      q1 <- anl_q()
+      qenv <- anl_q()
       anl_m_inputs <- anl_inputs()
 
       my_calls <- template_fit_mmrm(
@@ -1223,7 +1223,7 @@ srv_mmrm <- function(id,
         optimizer = input$optimizer,
         parallel = input$parallel
       )
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     output$mmrm_title <- shiny::renderText({
@@ -1271,13 +1271,13 @@ srv_mmrm <- function(id,
         return(NULL)
       }
       # Get the fit stack while evaluating the fit code at the same time.
-      q1 <- mmrm_fit()
-      fit <- q1[["fit"]]
+      qenv <- mmrm_fit()
+      fit <- qenv[["fit"]]
 
       anl_m_inputs <- anl_inputs()
 
-      ANL <- q1[["ANL"]] # nolint
-      ANL_ADSL <- q1[["ANL_ADSL"]] # nolint
+      ANL <- qenv[["ANL"]] # nolint
+      ANL_ADSL <- qenv[["ANL_ADSL"]] # nolint
       paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
       basic_table_args$subtitles <- paste0(
@@ -1304,7 +1304,7 @@ srv_mmrm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(q1, as.expression(mmrm_table))
+      teal.code::eval_code(qenv, as.expression(mmrm_table))
     })
 
     # Endpoint:
@@ -1324,8 +1324,8 @@ srv_mmrm <- function(id,
         return(NULL)
       }
 
-      q1 <- mmrm_fit()
-      fit <- q1[["fit"]]
+      qenv <- mmrm_fit()
+      fit <- qenv[["fit"]]
 
       ggplot2_args[["lsmeans"]] <- teal.widgets::ggplot2_args(
         labs <- list(
@@ -1374,7 +1374,7 @@ srv_mmrm <- function(id,
         diagnostic_plot = diagnostic_args,
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(q1, as.expression(mmrm_plot_expr))
+      teal.code::eval_code(qenv, as.expression(mmrm_plot_expr))
     })
 
     all_q <- shiny::reactive({

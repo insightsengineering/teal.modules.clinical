@@ -624,8 +624,8 @@ srv_summary_by <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
+      adsl_filtered <- merged$anl_q()[[parentname]]
+      anl_filtered <- merged$anl_q()[[dataname]]
 
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
@@ -666,7 +666,7 @@ srv_summary_by <- function(id,
     all_q <- shiny::reactive({
       validate_checks()
       summarize_vars <- as.vector(merged$anl_input_r()$columns_source$summarize_vars)
-      var_labels <- formatters::var_labels(data[[dataname]]()[, summarize_vars, drop = FALSE])
+      var_labels <- formatters::var_labels(merged$anl_q()[[dataname]][, summarize_vars, drop = FALSE])
 
       my_calls <- template_summary_by(
         parentname = "ANL_ADSL",

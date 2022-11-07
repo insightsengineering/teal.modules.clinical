@@ -770,8 +770,8 @@ srv_t_binary_outcome <- function(id,
 
     anl_q <- reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q1 <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
-      teal.code::eval_code(q1, as.expression(adsl_inputs()$expr))
+      qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
+      teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
     })
 
     shiny::observeEvent(
@@ -815,10 +815,9 @@ srv_t_binary_outcome <- function(id,
     )
 
     validate_check <- shiny::reactive({
-      q1 <- anl_q()
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
-      anl <- q1[["ANL"]]
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
+      anl <- anl_q()[["ANL"]]
 
       anl_m <- anl_inputs()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -912,9 +911,9 @@ srv_t_binary_outcome <- function(id,
     table_q <- shiny::reactive({
       validate_check()
 
-      q1 <- anl_q()
+      qenv <- anl_q()
       anl_m <- anl_inputs()
-      anl <- q1[["ANL"]]
+      anl <- qenv[["ANL"]]
 
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
       shiny::req(input$responders %in% anl[[input_aval_var]])
@@ -963,7 +962,7 @@ srv_t_binary_outcome <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     # Outputs to render.

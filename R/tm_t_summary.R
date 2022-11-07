@@ -471,8 +471,8 @@ srv_summary <- function(id,
 
     # validate inputs
     validate_checks <- shiny::reactive({
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
+      adsl_filtered <- merged$anl_q()[[parentname]]
+      anl_filtered <- merged$anl_q()[[dataname]]
       anl <- merged$anl_q()[["ANL"]]
 
       # we take names of the columns source as they match names of the input data in merge_datasets

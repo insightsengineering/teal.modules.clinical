@@ -511,8 +511,8 @@ srv_g_forest_rsp <- function(id,
 
     anl_q <- reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q1 <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
-      teal.code::eval_code(q1, as.expression(adsl_inputs()$expr))
+      qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
+      teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
     })
 
     shiny::observeEvent(
@@ -565,10 +565,10 @@ srv_g_forest_rsp <- function(id,
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
       req(anl_q())
-      q1 <- anl_q()
-      adsl_filtered <- q1[[parentname]]
-      anl_filtered <- q1[[dataname]]
-      anl <- q1[["ANL"]]
+      qenv <- anl_q()
+      adsl_filtered <- qenv[[parentname]]
+      anl_filtered <- qenv[[dataname]]
+      anl <- qenv[["ANL"]]
 
       anl_m <- anl_inputs()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -592,7 +592,7 @@ srv_g_forest_rsp <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      teal::validate_one_row_per_id(q1[["ANL"]], key = c("USUBJID", "STUDYID", input_paramcd))
+      teal::validate_one_row_per_id(qenv[["ANL"]], key = c("USUBJID", "STUDYID", input_paramcd))
 
       if (length(input_subgroup_var) > 0) {
         shiny::validate(
@@ -658,14 +658,14 @@ srv_g_forest_rsp <- function(id,
         )
       )
 
-      validate_has_data(q1[["ANL"]], min_nrow = 1)
+      validate_has_data(qenv[["ANL"]], min_nrow = 1)
       NULL
     })
 
     # The R-code corresponding to the analysis.
     all_q <- shiny::reactive({
       validate_checks()
-      q1 <- anl_q()
+      qenv <- anl_q()
       anl_m <- anl_inputs()
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
@@ -689,7 +689,7 @@ srv_g_forest_rsp <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     plot_r <- reactive(all_q()[["p"]])

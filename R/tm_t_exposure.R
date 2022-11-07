@@ -526,8 +526,8 @@ srv_t_exposure <- function(id,
     )
 
     validate_checks <- shiny::reactive({
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
+      adsl_filtered <- merged$anl_q()[[parentname]]
+      anl_filtered <- merged$anl_q()[[dataname]]
 
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
       input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
@@ -573,7 +573,7 @@ srv_t_exposure <- function(id,
     all_q <- shiny::reactive({
       validate_checks()
 
-      anl_filtered <- data[[dataname]]()
+      anl_filtered <- merged$anl_q()[[dataname]]
       input_avalu_var <- as.character(
         unique(merged$anl_q()[["ANL"]][[names(merged$anl_input_r()$columns_source$avalu_var)[1]]])
       )

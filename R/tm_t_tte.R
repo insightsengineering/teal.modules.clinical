@@ -761,8 +761,8 @@ srv_t_tte <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
 
       anl_m <- anl_merge_inputs()
@@ -838,7 +838,7 @@ srv_t_tte <- function(id,
       validate_checks()
 
       anl_m <- anl_merge_inputs()
-      q1 <- anl_q()
+      qenv <- anl_q()
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
 
@@ -877,7 +877,7 @@ srv_t_tte <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     table_r <- shiny::reactive(all_q()[["table"]])

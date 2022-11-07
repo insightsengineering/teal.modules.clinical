@@ -668,9 +668,9 @@ srv_g_km <- function(id,
     })
 
     validate_checks <- shiny::reactive({
-      q1 <- anl_q()
-      adsl_filtered <- q1[[parentname]]
-      anl_filtered <- q1[[dataname]]
+      qenv <- anl_q()
+      adsl_filtered <- qenv[[parentname]]
+      anl_filtered <- qenv[[dataname]]
 
       anl_m <- anl_inputs()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -734,10 +734,10 @@ srv_g_km <- function(id,
     all_q <- shiny::reactive({
       validate_checks()
 
-      q1 <- anl_q()
+      qenv <- anl_q()
       anl_m <- anl_inputs()
 
-      anl <- q1[["ANL"]] # nolint
+      anl <- qenv[["ANL"]] # nolint
       teal::validate_has_data(anl, 2)
 
       input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
@@ -777,7 +777,7 @@ srv_g_km <- function(id,
         ci_ribbon = input$show_ci_ribbon,
         title = title
       )
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     plot_r <- shiny::reactive(all_q()[["plot"]])
