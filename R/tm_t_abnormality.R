@@ -499,7 +499,6 @@ srv_t_abnormality <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(
