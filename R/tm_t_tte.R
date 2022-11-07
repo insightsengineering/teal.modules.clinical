@@ -754,9 +754,9 @@ srv_t_tte <- function(id,
     )
 
     anl_q <- reactive({
-      quo <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      quo1 <- teal.code::eval_code(quo, as.expression(anl_merge_inputs()$expr))
-      teal.code::eval_code(quo1, as.expression(adsl_merge_inputs()$expr))
+      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      qenv1 <- teal.code::eval_code(qenv, as.expression(anl_merge_inputs()$expr))
+      teal.code::eval_code(qenv1, as.expression(adsl_merge_inputs()$expr))
     })
 
     # Prepare the analysis environment (filter data, check data, populate envir).

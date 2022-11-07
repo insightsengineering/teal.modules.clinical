@@ -335,15 +335,15 @@ srv_g_barchart_simple <- function(id,
       shiny::validate({
         shiny::need(anl_inputs()$columns_source$x, "Please select an x-variable")
       })
-      quo <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      quo <- teal.code::eval_code(quo, as.expression(anl_inputs()$expr))
-      quo
+      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      qenvv <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
+      qenv
     })
 
     count_q <- shiny::reactive({
       req(anl_q())
-      quo <- anl_q()
-      teal::validate_has_data(quo[["ANL"]], 2)
+      qenv <- anl_q()
+      teal::validate_has_data(qenv[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
 
       # count
@@ -359,11 +359,11 @@ srv_g_barchart_simple <- function(id,
         count_str_to_col_exprs <- sapply(groupby_vars[-1], count_str_to_column_expr)
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
-      quo2 <- teal.code::eval_code(quo, code = count_exprs)
+      qenv2 <- teal.code::eval_code(qenv, code = count_exprs)
 
       # add label and slice(1) as all patients in the same subgroup have same n_'s
-      quo3 <- teal.code::eval_code(
-        quo2,
+      qenv3 <- teal.code::eval_code(
+        qenv2,
         as.expression(
           c(
             bquote(attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count"),
@@ -380,7 +380,7 @@ srv_g_barchart_simple <- function(id,
 
       # dplyr::select loses labels
       teal.code::eval_code(
-        quo3,
+        qenv3,
         teal.transform::get_anl_relabel_call(
           columns_source = anl_inputs()$columns_source,
           datasets = data,
@@ -393,7 +393,7 @@ srv_g_barchart_simple <- function(id,
       req(count_q())
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
-      quo2 <- teal.code::eval_code(count_q(), substitute(
+      qenv2 <- teal.code::eval_code(count_q(), substitute(
         env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
         plot_title <- sprintf(
           "Number of patients (total N = %s) for each combination of (%s)",
@@ -434,11 +434,11 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      quo3 <- teal.code::eval_code(quo2, code = plot_call)
+      qenv3 <- teal.code::eval_code(qenv2, code = plot_call)
 
       # explicitly calling print on the plot inside the qenv evaluates
       # the ggplot call and therefore catches errors
-      teal.code::eval_code(quo3, code = quote(print(plot)))
+      teal.code::eval_code(qenv3, code = quote(print(plot)))
     })
 
     plot_r <- shiny::reactive(all_q()[["plot"]])
