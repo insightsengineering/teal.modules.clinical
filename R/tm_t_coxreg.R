@@ -766,7 +766,7 @@ srv_t_coxreg <- function(id,
       module = "tm_t_coxreg"
     )
 
-    anl_merged_input <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(
@@ -780,14 +780,14 @@ srv_t_coxreg <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(anl_merged_input()$expr))
+        teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     merged <- list(
-      anl_input_r = anl_merged_input,
-      anl_q_r = anl_merged_q
+      anl_input_r = anl_inputs,
+      anl_q = anl_q
     )
 
     ## render conditional strata levels input UI  ----
@@ -1005,10 +1005,10 @@ srv_t_coxreg <- function(id,
     }
 
     ## generate table call with template and render table ----
-    output_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       validate_checks()
 
-      ANL <- merged$anl_q_r()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]] # nolint
       paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
       multivariate <- input$type == "Multivariate"
       strata_var <- as.vector(merged$anl_input_r()$columns_source$strata_var)
@@ -1027,7 +1027,7 @@ srv_t_coxreg <- function(id,
           unlist(input$buckets$Comp), merged$anl_input_r(),
           paramcd, multivariate, all_basic_table_args
         )
-        teal.code::eval_code(merged$anl_q_r(), as.expression(expr))
+        teal.code::eval_code(merged$anl_q(), as.expression(expr))
       } else {
         main_title <- paste("Cox Regression for", paramcd)
         subtitle <- ifelse(length(strata_var) == 0, "", paste("Stratified by", paste(strata_var, collapse = " and ")))
@@ -1039,7 +1039,7 @@ srv_t_coxreg <- function(id,
           )
         )
 
-        merged$anl_q_r() %>%
+        merged$anl_q() %>%
           teal.code::eval_code(quote(result <- list())) %>%
           teal.code::eval_code(
             as.expression(unlist(lapply(
@@ -1072,7 +1072,7 @@ srv_t_coxreg <- function(id,
       }
     })
 
-    table_r <- shiny::reactive(output_q()[["result"]])
+    table_r <- shiny::reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -1081,14 +1081,14 @@ srv_t_coxreg <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model"
     )
 
@@ -1107,7 +1107,7 @@ srv_t_coxreg <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

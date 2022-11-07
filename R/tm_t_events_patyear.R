@@ -388,8 +388,8 @@ srv_events_patyear <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    shiny::observeEvent(anl_merged_q(), {
-      data <- merged$anl_q_r()[["ANL"]]
+    shiny::observeEvent(anl_q(), {
+      data <- merged$anl_q()[["ANL"]]
       aval_unit_var <- merged$anl_input_r()$columns_source$avalu_var
       if (length(aval_unit_var) > 0) {
         choices <- stats::na.omit(unique(data[[aval_unit_var]]))
@@ -404,7 +404,7 @@ srv_events_patyear <- function(id,
       }
     })
 
-    anl_merged_input <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(
         arm_var = arm_var,
@@ -417,23 +417,23 @@ srv_events_patyear <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged_input <- teal.transform::merge_expression_module(
+    adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
       join_keys = get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
     merged <- list(
-      anl_input_r = anl_merged_input,
-      adsl_input_r = adsl_merged_input,
-      anl_q_r = anl_merged_q
+      anl_input_r = anl_inputs,
+      adsl_input_r = adsl_inputs,
+      anl_q = anl_q
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
@@ -471,7 +471,7 @@ srv_events_patyear <- function(id,
           "`Select an Event Type Parameter is not selected."
         ),
         shiny::need(
-          !any(is.na(merged$anl_q_r()[["ANL"]][[input_events_var]])),
+          !any(is.na(merged$anl_q()[["ANL"]][[input_events_var]])),
           "`Event Variable` for selected parameter includes NA values."
         )
       )
@@ -480,10 +480,10 @@ srv_events_patyear <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    output_table <- shiny::reactive({
+    table_q <- shiny::reactive({
       validate_checks()
 
-      ANL <- merged$anl_q_r()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]] # nolint
       label_paramcd <- get_paramcd_label(ANL, paramcd)
 
       my_calls <- template_events_patyear(
@@ -515,12 +515,12 @@ srv_events_patyear <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
     })
 
     # Outputs to render.
     table_r <- shiny::reactive({
-      output_table()[["result"]]
+      table_q()[["result"]]
     })
 
     teal.widgets::table_with_settings_srv(
@@ -530,15 +530,15 @@ srv_events_patyear <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_table())),
+      verbatim_content = reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_table())))
+      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_table())),
+      verbatim_content = reactive(teal.code::get_code(table_q())),
       title = label
     )
 
@@ -557,7 +557,7 @@ srv_events_patyear <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_table()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(table_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

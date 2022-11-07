@@ -453,7 +453,7 @@ srv_g_adverse_events <- function(id,
     )
 
     # Adverse events tab ----
-    anl_merged <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = Filter(
         Negate(is.null),
@@ -470,16 +470,16 @@ srv_g_adverse_events <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    anl_merged_q <- reactive(
+    anl_q <- reactive(
       teal.code::eval_code(
-        teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)), as.expression(anl_merged()$expr)
+        teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)), as.expression(anl_inputs()$expr)
       )
     )
 
     outputs_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-      anl_m <- anl_merged()
-      q1 <- anl_merged_q()
+      anl_m <- anl_inputs()
+      q1 <- anl_q()
       ANL <- q1[["ANL"]] # nolint
 
       teal::validate_has_data(ANL[ANL[[patient_col]] == input$patient_id, ], min_nrow = 1)

@@ -480,7 +480,7 @@ srv_t_mult_events_byterm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    merged_data_q <- reactive({
+    anl_q <- reactive({
       q1 <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       q2 <- teal.code::eval_code(q1, as.expression(anl_merge_inputs()$expr))
       teal.code::eval_code(q2, as.expression(adsl_merge_inputs()$expr))
@@ -518,10 +518,10 @@ srv_t_mult_events_byterm <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    output_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       validate_checks()
 
-      q1 <- merged_data_q()
+      q1 <- anl_q()
       anl_m <- anl_merge_inputs()
 
       input_hlt <- names(anl_m$columns_source$hlt)
@@ -557,21 +557,21 @@ srv_t_mult_events_byterm <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(output_q()[["result"]])
+    table_r <- shiny::reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
@@ -590,7 +590,7 @@ srv_t_mult_events_byterm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(teal.code::get_code(output_q())), collapse = "\n"))
+        card$append_src(paste(get_rcode(teal.code::get_code(all_q())), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

@@ -751,7 +751,7 @@ srv_t_shift_by_grade <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_merged_input <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(
@@ -766,23 +766,23 @@ srv_t_shift_by_grade <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged_input <- teal.transform::merge_expression_module(
+    adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
     merged <- list(
-      anl_input_r = anl_merged_input,
-      adsl_input_r = adsl_merged_input,
-      anl_q_r = anl_merged_q
+      anl_input_r = anl_inputs,
+      adsl_input_r = adsl_inputs,
+      anl_q = anl_q
     )
 
     validate_checks <- shiny::reactive({
@@ -818,7 +818,7 @@ srv_t_shift_by_grade <- function(id,
       )
     })
 
-    output_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       validate_checks()
 
       my_calls <- template_shift_by_grade(
@@ -839,11 +839,11 @@ srv_t_shift_by_grade <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(output_q()[["result"]])
+    table_r <- shiny::reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -852,15 +852,15 @@ srv_t_shift_by_grade <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
@@ -879,7 +879,7 @@ srv_t_shift_by_grade <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

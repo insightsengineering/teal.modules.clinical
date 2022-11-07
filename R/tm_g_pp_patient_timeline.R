@@ -752,7 +752,7 @@ srv_g_patient_timeline <- function(id,
     )
 
     # Patient timeline tab ----
-    merge_input_r <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(
@@ -763,12 +763,12 @@ srv_g_patient_timeline <- function(id,
       )
     )
 
-    merge_q_r <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(merge_input_r()$expr))
+        teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    output_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       aeterm <- input[[extract_input("aeterm", dataname_adae)]]
@@ -786,7 +786,7 @@ srv_g_patient_timeline <- function(id,
       ae_chart_vars_null <- any(vapply(list(aeterm, aetime_start, aetime_end), is.null, FUN.VALUE = logical(1)))
       ds_chart_vars_null <- any(vapply(list(cmdecod, dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
 
-      p_timeline_data <- merge_q_r()[["ANL"]]
+      p_timeline_data <- anl_q()[["ANL"]]
       # time variables can not be NA
       p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
 
@@ -811,22 +811,22 @@ srv_g_patient_timeline <- function(id,
       # AENDY columns to data_merge_module call above.
       aerelday_start_name <- `if`(
         length(aerelday_start),
-        merge_input_r()$columns_source$aerelday_start[[1]],
+        anl_inputs()$columns_source$aerelday_start[[1]],
         aerelday_start
       )
       aerelday_end_name <- `if`(
         length(aerelday_end),
-        merge_input_r()$columns_source$aerelday_end[[1]],
+        anl_inputs()$columns_source$aerelday_end[[1]],
         aerelday_end
       )
       dsrelday_start_name <- `if`(
         length(dsrelday_start),
-        merge_input_r()$columns_source$dsrelday_start[[1]],
+        anl_inputs()$columns_source$dsrelday_start[[1]],
         dsrelday_start
       )
       dsrelday_end_name <- `if`(
         length(dsrelday_end),
-        merge_input_r()$columns_source$dsrelday_end[[1]],
+        anl_inputs()$columns_source$dsrelday_end[[1]],
         dsrelday_end
       )
 
@@ -863,7 +863,7 @@ srv_g_patient_timeline <- function(id,
       )
 
       teal.code::eval_code(
-        merge_q_r(),
+        anl_q(),
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
@@ -876,7 +876,7 @@ srv_g_patient_timeline <- function(id,
         teal.code::eval_code(as.expression(patient_timeline_calls))
     })
 
-    plot_r <- shiny::reactive(output_q()[["patient_timeline_plot"]])
+    plot_r <- shiny::reactive(all_q()[["patient_timeline_plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "patient_timeline_plot",
@@ -887,14 +887,14 @@ srv_g_patient_timeline <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
@@ -913,7 +913,7 @@ srv_g_patient_timeline <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
