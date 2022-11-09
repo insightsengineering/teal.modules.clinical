@@ -25,6 +25,9 @@ template_ancova <- function(dataname = "ANL",
                             aval_var,
                             label_aval = NULL,
                             cov_var,
+                            int_y,
+                            int_item,
+                            cov_int,
                             paramcd_levels = "",
                             paramcd_var = "PARAMCD",
                             label_paramcd = NULL,
@@ -43,6 +46,10 @@ template_ancova <- function(dataname = "ANL",
   )
 
   y <- list()
+  interact_fl <- (grepl("*",cov_int)) & (length(int_item) > 0) & (length(int_y) > 0)
+  if (interact_fl == TRUE) {
+    cov_var <- c(cov_var,cov_int)
+  }
 
   # Data processing.
   data_list <- list()
@@ -209,35 +216,68 @@ template_ancova <- function(dataname = "ANL",
         )
       )
     } else {
-      layout_list <- add_expr(
-        layout_list,
-        substitute(
-          rtables::split_rows_by(
-            paramcd_var,
-            split_fun = split_fun,
-            label_pos = "topleft",
-            split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
-          ) %>%
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = cov_var),
+      if (interact_fl == FALSE) {
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            rtables::split_rows_by(
+              paramcd_var,
+              split_fun = split_fun,
+              label_pos = "topleft",
+              split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
+            ) %>%
+              summarize_ancova(
+                vars = aval_var,
+                variables = list(arm = arm_var, covariates = cov_var),
+                conf_level = conf_level,
+                var_labels = "Adjusted mean",
+                show_labels = "hidden"
+              ),
+            env = list(
+              paramcd_var = paramcd_var,
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
               conf_level = conf_level,
-              var_labels = "Adjusted mean",
-              show_labels = "hidden"
-            ),
-          env = list(
-            paramcd_var = paramcd_var,
-            aval_var = aval_var,
-            arm_var = arm_var,
-            cov_var = cov_var,
-            conf_level = conf_level,
-            dataname = as.name(dataname)
+              dataname = as.name(dataname)
+            )
           )
         )
-      )
-    }
-  } else {
+      }
+      if (interact_fl == TRUE) {
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            rtables::split_rows_by(
+              paramcd_var,
+              split_fun = split_fun,
+              label_pos = "topleft",
+              split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
+            ) %>%
+              summarize_ancova(
+                vars = aval_var,
+                variables = list(arm = arm_var, covariates = cov_var),
+                interaction_y = int_y,
+                interaction_item = int_item,
+                conf_level = conf_level,
+                var_labels = "Adjusted mean",
+                show_labels = "hidden"
+              ),
+            env = list(
+              paramcd_var = paramcd_var,
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
+              conf_level = conf_level,
+              dataname = as.name(dataname)
+            )
+          )
+        )
+      }}
+  else {
     # Only one entry in `paramcd_levels` here.
+
+    if (interact_fl == FALSE) {
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -258,9 +298,35 @@ template_ancova <- function(dataname = "ANL",
           dataname = as.name(dataname)
         )
       )
-    )
+    )}
+    if (interact_fl == TRUE) {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = NULL),
+              interaction_y = int_y,
+              interaction_item = int_item,
+              conf_level = conf_level,
+              var_labels = "Unadjusted comparison",
+              .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+              table_names = "unadjusted_comparison"
+            ),
+          env = list(
+            paramcd_levels = paramcd_levels,
+            aval_var = aval_var,
+            arm_var = arm_var,
+            conf_level = conf_level,
+            dataname = as.name(dataname)
+          )
+        )
+      )}}
 
     if (length(cov_var) > 0) {
+
+      if (interact_fl == FALSE) {
       layout_list <- add_expr(
         layout_list,
         substitute(
@@ -282,6 +348,32 @@ template_ancova <- function(dataname = "ANL",
           )
         )
       )
+      }
+      if (interact_fl == TRUE) {
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              interaction_y = int_y,
+              interaction_item = int_item,
+              conf_level = conf_level,
+              var_labels = paste0(
+                "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
+              ),
+              table_names = "adjusted_comparison"
+            ),
+            env = list(
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
+              conf_level = conf_level,
+              dataname = as.name(dataname)
+            )
+          )
+        )
+      }
     }
   }
 
@@ -396,6 +488,9 @@ tm_t_ancova <- function(label,
                         arm_ref_comp = NULL,
                         aval_var,
                         cov_var,
+                        int_y,
+                        int_item,
+                        cov_int,
                         avisit,
                         paramcd,
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
