@@ -56,11 +56,11 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(scda)
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
 #'     check = TRUE
 #'   ),
 #'   modules = modules(
@@ -75,8 +75,8 @@ template_basic_info <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_pp_basic_info <- function(label,
@@ -143,7 +143,10 @@ ui_t_basic_info <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -151,22 +154,22 @@ ui_t_basic_info <- function(id, ...) {
 
 
 srv_t_basic_info <- function(id,
-                             datasets,
+                             data,
                              reporter,
+                             filter_panel_api,
                              dataname,
                              patient_col,
                              vars,
                              label) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(dataname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[dataname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -191,64 +194,64 @@ srv_t_basic_info <- function(id,
     )
 
     # Basic Info tab ----
-    binf_merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
+    merge_input_r <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(vars = vars),
       merge_function = "dplyr::left_join"
     )
 
-    basic_info_call <- shiny::reactive({
+    merge_q_r <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(merge_input_r()$expr))
+    })
+
+    output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       shiny::validate(
         shiny::need(
-          input[[extract_input("vars", dataname)]],
+          merge_input_r()$columns_source$vars,
           "Please select basic info variables."
         )
       )
 
-      call_stack <- teal.code::chunks_new()
-      call_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = call_stack)
-      }
-      teal.code::chunks_push_data_merge(binf_merged_data(), chunks = call_stack)
+      my_calls <- template_basic_info(
+        dataname = "ANL",
+        vars = merge_input_r()$columns_source$vars
+      )
 
-      call_stack_push(
-        expression = substitute(
+      teal.code::eval_code(
+        merge_q_r(),
+        substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
           )
-        ),
-        id = "patient_id_filter_call"
-      )
-
-      my_calls <- template_basic_info(
-        dataname = "ANL",
-        vars = input[[extract_input("vars", dataname)]]
-      )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), call_stack_push)
-      teal.code::chunks_safe_eval(chunks = call_stack)
-      call_stack
+        )
+      ) %>%
+        teal.code::eval_code(as.expression(my_calls))
     })
 
-    table_r <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(basic_info_call())
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     output$basic_info_table <- DT::renderDataTable(
       expr = table_r(),
       options = list(pageLength = input$basic_info_table_rows)
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(vars)),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -257,19 +260,16 @@ srv_t_basic_info <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Basic Info Table")
         card$append_text("Patient Profile Basic Info Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

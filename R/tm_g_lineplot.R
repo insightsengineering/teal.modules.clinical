@@ -171,8 +171,8 @@ template_g_lineplot <- function(dataname = "ANL",
     graph_list,
     substitute(
       expr = {
-        result <- plot_call
-        result
+        plot <- plot_call
+        plot
       },
       env = list(plot_call = plot_call)
     )
@@ -203,26 +203,22 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#'
 #' library(scda)
 #' library(nestcolor)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' ADSL <- synthetic_cdisc_data_latest$adsl
-#' ADLB <- synthetic_cdisc_data_latest$adlb
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADLB <- synthetic_cdisc_dataset("latest", "adlb")
 #'
 #' ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADLB", ADLB,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADLB <- synthetic_cdisc_data_latest$adlb
-#'         ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))"
+#'       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")
+#'         ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))' # nolint
 #'     )
 #'   ),
 #'   modules = modules(
@@ -244,8 +240,8 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(ui = app$ui, server = app$server)
+#' if (interactive()) {
+#'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_g_lineplot <- function(label,
@@ -488,7 +484,10 @@ ui_g_lineplot <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -499,8 +498,9 @@ ui_g_lineplot <- function(id, ...) {
 #' @noRd
 #'
 srv_g_lineplot <- function(id,
-                           datasets,
+                           data,
                            reporter,
+                           filter_panel_api,
                            dataname,
                            parentname,
                            paramcd,
@@ -513,29 +513,35 @@ srv_g_lineplot <- function(id,
                            plot_height,
                            plot_width,
                            ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
-    validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+    anl_merged_q <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr))
+    })
 
-      anl_m <- anl_merged()
-      input_strata <- as.vector(anl_m$columns_source$strata)
-      input_x_var <- as.vector(anl_m$columns_source$x)
-      input_y <- as.vector(anl_m$columns_source$y)
+    merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_merged_q)
+
+    validate_checks <- shiny::reactive({
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
+
+      input_strata <- names(merged$anl_input_r()$columns_source$strata)
+      input_x_var <- names(merged$anl_input_r()$columns_source$x)
+      input_y <- names(merged$anl_input_r()$columns_source$y)
       input_param <- unlist(param$filter)["vars_selected"]
-      input_paramcd <- as.vector(anl_m$columns_source$paramcd)
-      input_y_unit <- as.vector(anl_m$columns_source$y_unit)
+      input_paramcd <- names(merged$anl_input_r()$columns_source$paramcd)
+      input_y_unit <- names(merged$anl_input_r()$columns_source$y_unit)
 
       # validate inputs
       validate_args <- list(
@@ -570,29 +576,23 @@ srv_g_lineplot <- function(id,
       NULL
     })
 
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
-
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
+      ANL <- merged$anl_q_r()[["ANL"]] # nolint
       teal::validate_has_data(ANL, 2)
 
       whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
       input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
       input_interval <- input$interval
-      input_param <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$param)]]))
+      input_param <- as.character(unique(ANL[[names(merged$anl_input_r()$columns_source$param)[1]]]))
 
       my_calls <- template_g_lineplot(
         dataname = "ANL",
-        strata = as.vector(anl_m$columns_source$strata),
-        y = as.vector(anl_m$columns_source$y),
-        x = as.vector(anl_m$columns_source$x),
-        paramcd = as.vector(anl_m$columns_source$paramcd),
-        y_unit = as.vector(anl_m$columns_source$y_unit),
+        strata = names(merged$anl_input_r()$columns_source$strata),
+        y = names(merged$anl_input_r()$columns_source$y),
+        x = names(merged$anl_input_r()$columns_source$x),
+        paramcd = names(merged$anl_input_r()$columns_source$paramcd),
+        y_unit = names(merged$anl_input_r()$columns_source$y_unit),
         conf_level = as.numeric(input$conf_level),
         incl_screen = input$incl_screen,
         mid = input$mid,
@@ -604,13 +604,10 @@ srv_g_lineplot <- function(id,
         table_font_size = input$table_font_size,
         ggplot2_args = ggplot2_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-    })
+    plot_r <- shiny::reactive(output_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -620,13 +617,17 @@ srv_g_lineplot <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(strata, paramcd, y, x, y_unit, param)
-      ),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -635,19 +636,16 @@ srv_g_lineplot <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Line Plot")
         card$append_text("Line Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

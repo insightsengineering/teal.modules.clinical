@@ -17,5 +17,5 @@ get_var_labels(datasets, dataname, vars)
 \code{character} variable labels.
 }
 \description{
-Get variable labels
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }

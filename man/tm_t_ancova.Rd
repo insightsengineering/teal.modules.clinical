@@ -35,7 +35,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr
@@ -100,8 +101,8 @@ to be meaningful.
 # Preparation of the test case.
 library(dplyr)
 library(scda)
-adsl <- synthetic_cdisc_data("latest")$adsl
-adqs <- synthetic_cdisc_data("latest")$adqs
+adsl <- synthetic_cdisc_dataset("latest", "adsl")
+adqs <- synthetic_cdisc_dataset("latest", "adqs")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -120,8 +121,8 @@ app <- init(
     cdisc_dataset("ADQS", adqs),
     code =
       '
-      ADSL <- synthetic_cdisc_data("latest")$adsl
-      ADQS <- synthetic_cdisc_data("latest")$adqs
+      ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+      ADQS <- synthetic_cdisc_dataset("latest", "adqs")
       '
   ),
   modules = modules(
@@ -152,8 +153,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 
 }

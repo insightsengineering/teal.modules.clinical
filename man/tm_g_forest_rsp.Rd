@@ -41,7 +41,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr
@@ -116,9 +117,8 @@ library(scda)
 library(dplyr)
 library(nestcolor)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-ADSL <- synthetic_cdisc_data_latest$adsl
-ADRS <- synthetic_cdisc_data_latest$adrs \%>\%
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADRS <- synthetic_cdisc_dataset("latest", "adrs") \%>\%
   mutate(AVALC = d_onco_rsp_label(AVALC)) \%>\%
   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
@@ -138,11 +138,10 @@ app <- init(
     cdisc_dataset("ADSL", ADSL),
     cdisc_dataset("ADRS", ADRS),
     code =
-      "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-       ADSL <- synthetic_cdisc_data_latest$adsl
-       ADRS <- synthetic_cdisc_data_latest$adrs \%>\%
+      'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+       ADRS <- synthetic_cdisc_dataset("latest", "adrs") \%>\%
        mutate(AVALC = d_onco_rsp_label(AVALC)) \%>\%
-       filter(PARAMCD != 'OVRINV' | AVISIT == 'FOLLOW UP')"
+       filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")' # nolint
   ),
   modules = modules(
     tm_g_forest_rsp(
@@ -189,8 +188,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 
 }

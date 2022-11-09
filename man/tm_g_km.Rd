@@ -42,7 +42,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr
@@ -101,12 +102,11 @@ This teal module produces a grid style Kaplan-Meier plot for data with
 ADaM structure.
 }
 \examples{
-
 library(scda)
 library(nestcolor)
 
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADTTE <- synthetic_cdisc_data("latest")$adtte
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADTTE <- synthetic_cdisc_dataset("latest", "adtte")
 
 arm_ref_comp <- list(
   ACTARMCD = list(
@@ -121,8 +121,8 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
-    cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_data("latest")$adtte')
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
+    cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_dataset("latest", "adtte")')
   ),
   modules = modules(
     tm_g_km(
@@ -148,8 +148,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(ui = app$ui, server = app$server)
+if (interactive()) {
+  shinyApp(ui = app$ui, server = app$server)
 }
 
 }

@@ -52,8 +52,8 @@ Use \code{NULL} for no maximum.}
 
 library(scda)
 library(shiny)
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADAE <- synthetic_cdisc_data("latest")$adae
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADAE <- synthetic_cdisc_dataset("latest", "adae")
 
 ui <- fluidPage(
   shiny::sliderInput("obs", "Max Age",
@@ -88,8 +88,8 @@ server <- function(input, output) {
     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
   })
 }
-\dontrun{
-shinyApp(ui, server)
+if (interactive()) {
+  shinyApp(ui, server)
 }
 
 server2 <- function(input, output) {
@@ -140,8 +140,8 @@ server3 <- function(input, output) {
     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
   })
 }
-\dontrun{
-shinyApp(ui, server3)
+if (interactive()) {
+  shinyApp(ui, server3)
 }
 
 }

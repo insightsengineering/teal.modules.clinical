@@ -1,4 +1,5 @@
-adlb <- scda::synthetic_cdisc_data("rcd_2022_02_28")$adlb
+library(scda)
+adlb <- synthetic_cdisc_dataset("rcd_2022_06_27", "adlb")
 ANL <- adlb %>% dplyr::filter(PARAMCD == "ALT") # nolint
 
 testthat::test_that("template_g_lineplot works as expected with default arguments", {
@@ -14,7 +15,7 @@ testthat::test_that("template_g_lineplot works as expected with default argument
     ),
     graph = quote({
       grid::grid.newpage()
-      result <- g_lineplot(
+      plot <- g_lineplot(
         df = anl,
         variables = variables,
         interval = "mean_ci",
@@ -34,7 +35,7 @@ testthat::test_that("template_g_lineplot works as expected with default argument
         subtitle_add_paramcd = FALSE,
         subtitle_add_unit = FALSE
       )
-      result
+      plot
     })
   )
   testthat::expect_equal(result, expected)
@@ -66,7 +67,7 @@ testthat::test_that("template_g_lineplot gives correct data expression with cust
     ),
     graph = quote({
       grid::grid.newpage()
-      result <- g_lineplot(
+      plot <- g_lineplot(
         df = anl,
         variables = variables,
         interval = "median_ci",
@@ -85,7 +86,7 @@ testthat::test_that("template_g_lineplot gives correct data expression with cust
         subtitle_add_paramcd = FALSE,
         subtitle_add_unit = FALSE
       )
-      result
+      plot
     })
   )
   testthat::expect_equal(result, expected)

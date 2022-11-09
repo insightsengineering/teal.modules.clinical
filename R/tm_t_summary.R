@@ -224,7 +224,7 @@ template_summary <- function(dataname,
 #' library(scda)
 #' library(tern)
 #'
-#' adsl <- synthetic_cdisc_data("latest")$adsl
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
 #'
 #' # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
 #' stopifnot(
@@ -235,7 +235,7 @@ template_summary <- function(dataname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl),
-#'     code = 'ADSL <- synthetic_cdisc_data("latest")$adsl',
+#'     code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")',
 #'     check = TRUE
 #'   ),
 #'   modules = modules(
@@ -252,8 +252,8 @@ template_summary <- function(dataname,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_summary <- function(label,
@@ -397,7 +397,10 @@ ui_summary <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -405,8 +408,9 @@ ui_summary <- function(id, ...) {
 
 #' @noRd
 srv_summary <- function(id,
-                        datasets,
+                        data,
                         reporter,
+                        filter_panel_api,
                         dataname,
                         parentname,
                         arm_var,
@@ -416,33 +420,43 @@ srv_summary <- function(id,
                         drop_arm_levels,
                         label,
                         basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
-    anl_selectors <- teal.transform::data_extract_multiple_srv(
-      list(arm_var = arm_var, summarize_vars = summarize_vars),
-      datasets = datasets
-    )
-
-    anl_merged <- teal.transform::data_merge_srv(
-      selector_list = anl_selectors,
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      id = "anl_merge",
+      datasets = data,
+      data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      id = "adsl_merge",
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
 
-    shiny::observeEvent(anl_merged()$columns_source$summarize_vars, {
+    anl_merged_q <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+    })
+
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
+
+    shiny::observeEvent(merged$anl_input_r()$columns_source$summarize_vars, {
       choices_classes <- sapply(
-        anl_merged()$columns_source$summarize_vars,
+        names(merged$anl_input_r()$columns_source$summarize_vars),
         function(x) {
-          summarize_var_data <- datasets$get_data(summarize_vars$dataname)[[x]]
+          summarize_var_data <- data[[summarize_vars$dataname]]()[[x]]
           inherits(summarize_var_data, "numeric") |
             inherits(summarize_var_data, "integer")
         }
@@ -457,16 +471,18 @@ srv_summary <- function(id,
 
     # validate inputs
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
+      anl <- merged$anl_q_r()[["ANL"]]
 
-      anl_m <- anl_merged()
-      input_arm_var <- anl_merged()$columns_source$arm_var
-      input_summarize_vars <- anl_merged()$columns_source$summarize_vars
+      # we take names of the columns source as they match names of the input data in merge_datasets
+      # if we use $arm_var they might be renamed to <selector id>.arm_var
+      input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
+      input_summarize_vars <- names(merged$anl_input_r()$columns_source$summarize_vars)
 
       shiny::validate(
         shiny::need(
-          length(unique(anl_m$data()$USUBJID)) == nrow(anl_m$data()),
+          length(unique(anl$USUBJID)) == nrow(anl),
           paste0(
             "Please choose an analysis dataset where each row represents a different subject, ",
             "i.e. USUBJID is different in each row"
@@ -475,7 +491,9 @@ srv_summary <- function(id,
         shiny::need(input_arm_var, "Please select a treatment variable"),
         shiny::need(input_summarize_vars, "Please select a summarize variable"),
         shiny::need(
-          !any(vapply(anl_m$data()[, input_summarize_vars], inherits, c("Date", "POSIXt"), FUN.VALUE = logical(1))),
+          !any(vapply(anl_filtered[, input_summarize_vars], inherits, c("Date", "POSIXt"),
+            FUN.VALUE = logical(1)
+          )),
           "Date and POSIXt variables are not supported, please select other variables"
         ),
         shiny::need(length(input_arm_var) <= 2, "Please limit column variables within two"),
@@ -500,27 +518,19 @@ srv_summary <- function(id,
     })
 
     # generate r code for the analysis
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
 
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-      sum_vars <- anl_merged()$columns_source$summarize_vars
-
+      summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
+      var_labels <- formatters::var_labels(data[[dataname]]()[, summarize_vars, drop = FALSE])
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = anl_merged()$columns_source$arm_var,
-        sum_vars = sum_vars,
+        arm_var = merged$anl_input_r()$columns_source$arm_var,
+        sum_vars = summarize_vars,
         show_labels = "visible",
         add_total = input$add_total,
-        var_labels = get_var_labels(datasets, dataname, sum_vars),
+        var_labels = var_labels,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
         na_level = na_level,
         numeric_stats = input$numeric_stats,
@@ -528,28 +538,26 @@ srv_summary <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
+    teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
 
-    teal.widgets::table_with_settings_srv(
-      id = "table",
-      table_r = table_r
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
     )
 
     # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(arm_var, summarize_vars)),
-      modal_title = "R Code for the current Summary Table",
-      code_header = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -558,19 +566,16 @@ srv_summary <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Summary Table")
         card$append_text("Summary Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

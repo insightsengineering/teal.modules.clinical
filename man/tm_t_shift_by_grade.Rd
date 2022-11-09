@@ -49,7 +49,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
@@ -108,19 +109,16 @@ Teal Module: Grade Summary Table
 library(scda)
 library(dplyr)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-adsl <- synthetic_cdisc_data_latest$adsl
-adlb <- synthetic_cdisc_data_latest$adlb
+adsl <- synthetic_cdisc_dataset("latest", "adsl")
+adlb <- synthetic_cdisc_dataset("latest", "adlb")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"
+      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
     ),
     cdisc_dataset("ADLB", adlb,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADLB <- synthetic_cdisc_data_latest$adlb"
+      code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")'
     )
   ),
   modules = modules(

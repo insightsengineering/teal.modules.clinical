@@ -42,7 +42,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
@@ -96,19 +97,16 @@ library(dplyr)
 library(tern)
 library(scda)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-adsl <- synthetic_cdisc_data_latest$adsl
-adeg <- synthetic_cdisc_data_latest$adeg
+adsl <- synthetic_cdisc_dataset("latest", "adsl")
+adeg <- synthetic_cdisc_dataset("latest", "adeg")
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"
+      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
     ),
     cdisc_dataset("ADEG", adeg,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADEG <- synthetic_cdisc_data_latest$adeg"
+      code = 'ADEG <- synthetic_cdisc_dataset("latest", "adeg")'
     )
   ),
   modules = modules(
@@ -143,8 +141,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 
 }

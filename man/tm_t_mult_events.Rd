@@ -34,7 +34,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{seq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
@@ -78,15 +79,15 @@ Teal Module: Multiple Events by Term
 library(dplyr)
 library(scda)
 
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADCM <- synthetic_cdisc_data("latest")$adcm
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADCM <- synthetic_cdisc_dataset("latest", "adcm")
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 
 app <- teal::init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_data("latest")$adsl'),
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
     cdisc_dataset("ADCM", ADCM,
-      code = 'ADCM <- synthetic_cdisc_data("latest")$adcm',
+      code = 'ADCM <- synthetic_cdisc_dataset("latest", "adcm")',
       keys = adcm_keys
     )
   ),
@@ -109,7 +110,7 @@ app <- teal::init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 }

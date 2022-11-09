@@ -38,7 +38,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{events_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
@@ -88,8 +89,8 @@ Teal module: Event rates adjusted for patient-years
 library(dplyr)
 library(scda)
 
-adsl <- synthetic_cdisc_data("rcd_2022_06_27")$adsl
-adaette <- synthetic_cdisc_data("rcd_2022_06_27")$adaette
+adsl <- synthetic_cdisc_dataset("latest", "adsl")
+adaette <- synthetic_cdisc_dataset("latest", "adaette")
 adaette <- adaette \%>\%
   dplyr::filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
   dplyr::mutate(is_event = CNSR == 0) \%>\%
@@ -100,12 +101,12 @@ app <- init(
     cdisc_dataset("ADSL", adsl),
     cdisc_dataset("ADAETTE", adaette),
     code =
-      "ADSL <- synthetic_cdisc_data('rcd_2022_06_27')$adsl
-      ADAETTE <- synthetic_cdisc_data('rcd_2022_06_27')$adaette
+      'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+      ADAETTE <- synthetic_cdisc_dataset("latest", "adaette")
       ADAETTE <- ADAETTE \%>\%
-        dplyr::filter(PARAMCD \%in\% c('AETTE1', 'AETTE2', 'AETTE3')) \%>\%
+        dplyr::filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
         dplyr::mutate(is_event = CNSR == 0) \%>\%
-        dplyr::mutate(n_events = as.integer(is_event))"
+        dplyr::mutate(n_events = as.integer(is_event))' # nolint
   ),
   modules = modules(
     tm_t_events_patyear(
@@ -128,8 +129,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 
 }

@@ -91,7 +91,7 @@ library(dplyr)
 library(scda)
 library(tern)
 
-adsl <- synthetic_cdisc_data("latest")$adsl
+adsl <- synthetic_cdisc_dataset("latest", "adsl")
 
 # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
 stopifnot(
@@ -102,7 +102,7 @@ stopifnot(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl),
-    code = 'ADSL <- synthetic_cdisc_data("latest")$adsl',
+    code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")',
     check = TRUE
   ),
   modules = modules(
@@ -119,8 +119,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 
 }

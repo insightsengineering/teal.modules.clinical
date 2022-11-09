@@ -227,10 +227,8 @@ template_forest_tte <- function(dataname = "ANL",
 #' library(scda)
 #' library(nestcolor)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#'
-#' ADSL <- synthetic_cdisc_data_latest$adsl
-#' ADTTE <- synthetic_cdisc_data_latest$adtte
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADTTE <- synthetic_cdisc_dataset("latest", "adtte")
 #'
 #' ADSL$RACE <- droplevels(ADSL$RACE)
 #'
@@ -249,14 +247,12 @@ template_forest_tte <- function(dataname = "ANL",
 #'   data = cdisc_data(
 #'     cdisc_dataset(
 #'       "ADSL", ADSL,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl
-#'         ADSL$RACE <- droplevels(ADSL$RACE)"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#'         ADSL$RACE <- droplevels(ADSL$RACE)' # nolint
 #'     ),
 #'     cdisc_dataset(
 #'       "ADTTE", ADTTE,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADTTE <- synthetic_cdisc_data_latest$adtte"
+#'       code = 'ADTTE <- synthetic_cdisc_dataset("latest", "adtte")'
 #'     )
 #'   ),
 #'   modules = modules(
@@ -284,8 +280,8 @@ template_forest_tte <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_g_forest_tte <- function(label,
@@ -455,15 +451,19 @@ ui_g_forest_tte <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
 }
 
 srv_g_forest_tte <- function(id,
-                             datasets,
+                             data,
                              reporter,
+                             filter_panel_api,
                              dataname,
                              parentname,
                              arm_var,
@@ -477,12 +477,11 @@ srv_g_forest_tte <- function(id,
                              plot_height,
                              plot_width,
                              ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     arm_ref_comp_observer(
@@ -490,8 +489,7 @@ srv_g_forest_tte <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_g_forest_tte"
     )
@@ -506,24 +504,35 @@ srv_g_forest_tte <- function(id,
         cnsr_var = cnsr_var,
         time_unit_var = time_unit_var
       ),
-      datasets = datasets
+      datasets = data,
+      join_keys = get_join_keys(data)
     )
 
-    anl_merged <- teal.transform::data_merge_srv(
+    anl_merged <- teal.transform::merge_expression_srv(
       selector_list = anl_selectors,
-      datasets = datasets,
+      datasets = data,
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
       anl_name = "ANL_ADSL"
     )
 
+    anl_merged_q <- reactive({
+      q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
+      teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
+    })
+
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      q1 <- anl_merged_q()
+      adsl_filtered <- q1[[parentname]]
+      anl_filtered <- q1[[dataname]]
+      anl <- q1[["ANL"]]
 
       anl_m <- anl_merged()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -577,7 +586,7 @@ srv_g_forest_tte <- function(id,
       ))
 
       shiny::validate(shiny::need(
-        length(anl_m$data()[[input_paramcd]]) > 0,
+        length(anl[[input_paramcd]]) > 0,
         "Value of the endpoint variable should not be empty."
       ))
       shiny::validate(
@@ -591,19 +600,11 @@ srv_g_forest_tte <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
 
-      teal.code::chunks_reset()
+      q1 <- anl_merged_q()
       anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
@@ -626,15 +627,11 @@ srv_g_forest_tte <- function(id,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
         ggplot2_args = ggplot2_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      teal.code::eval_code(q1, as.expression(my_calls))
     })
 
     # Outputs to render.
-    plot_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("p")
-    })
+    plot_r <- shiny::reactive(output_q()[["p"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -643,14 +640,17 @@ srv_g_forest_tte <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, paramcd, subgroup_var, strata_var, aval_var, cnsr_var)
-      ),
-      modal_title = "R Code for the Current Time-to-Event Forest Plot",
-      code_header = "Time-to-Event Forest Plot"
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = "R Code for the Current Time-to-Event Forest Plot"
     )
 
     ### REPORTER
@@ -659,19 +659,16 @@ srv_g_forest_tte <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Forest Survival Plot")
         card$append_text("Forest Survival Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

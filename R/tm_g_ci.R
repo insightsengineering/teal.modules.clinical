@@ -192,15 +192,15 @@ template_g_ci <- function(dataname, # nolint
 #'
 #' library(scda)
 #' library(nestcolor)
-#' ADSL <- synthetic_cdisc_data("latest")$adsl
-#' ADLB <- synthetic_cdisc_data("latest")$adlb
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADLB <- synthetic_cdisc_dataset("latest", "adlb")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADLB", ADLB),
-#'     code = "ADSL <- synthetic_cdisc_data('latest')$adsl
-#'     ADLB <- synthetic_cdisc_data('latest')$adlb"
+#'     code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#'     ADLB <- synthetic_cdisc_dataset("latest", "adlb")' # nolint
 #'   ),
 #'   modules = modules(
 #'     tm_g_ci(
@@ -257,8 +257,8 @@ template_g_ci <- function(dataname, # nolint
 #'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_g_ci <- function(label,
@@ -352,15 +352,19 @@ ui_g_ci <- function(id, ...) { # nolint
         selected = args$stat
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
+    ),
     pre_output = args$pre_output,
     post_output = args$post_output
   )
 }
 
 srv_g_ci <- function(id, # nolint
-                     datasets,
+                     data,
                      reporter,
+                     filter_panel_api,
                      x_var,
                      y_var,
                      color,
@@ -368,14 +372,22 @@ srv_g_ci <- function(id, # nolint
                      plot_height,
                      plot_width,
                      ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
-    merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
-      data_extract = list(x_var = x_var, y_var = y_var, color = color)
+  shiny::moduleServer(id, function(input, output, session) {
+    merged_data <- teal.transform::merge_expression_module(
+      datasets = data,
+      data_extract = list(x_var = x_var, y_var = y_var, color = color),
+      join_keys = get_join_keys(data)
+    )
+
+    merged_data_q <- reactive(
+      teal.code::eval_code(
+        object = teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)),
+        code = as.expression(merged_data()$expr)
+      )
     )
 
     validate_data <- shiny::reactive({
@@ -391,29 +403,39 @@ srv_g_ci <- function(id, # nolint
           "Select an analyzed value (y axis)."
         )
       )
-      teal::validate_has_data(merged_data()$data(), min_nrow = 2)
+      teal::validate_has_data(merged_data_q()[["ANL"]], min_nrow = 2)
 
       shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
         "Please choose a confidence level between 0 and 1"
       ))
     })
-    list_calls <- shiny::reactive({
+
+    output_q <- shiny::reactive({
+      validate_data()
       x <- merged_data()$columns_source$x_var
       y <- merged_data()$columns_source$y_var
       color <- merged_data()$columns_source$color
-      ggplot2_args$labs$title <- paste("Confidence Interval Plot by", datasets$get_varlabels(attr(x, "dataname"), x))
+
+      x_label <- column_annotation_label(data[[attr(x, "dataname")]](), x)
+      y_label <- column_annotation_label(data[[attr(y, "dataname")]](), y)
+      color_label <- if (length(color)) {
+        column_annotation_label(data[[attr(color, "dataname")]](), color)
+      } else {
+        NULL
+      }
+
+      ggplot2_args$labs$title <- paste("Confidence Interval Plot by", x_label)
+      ggplot2_args$labs$x <- x_label
       ggplot2_args$labs$subtitle <- paste("Visit:", merged_data()$filter_info$y_var[[2]]$selected[[1]])
-      ggplot2_args$labs$x <- datasets$get_varlabels(attr(x, "dataname"), x)
       ggplot2_args$labs$y <- paste(
         merged_data()$filter_info$y_var[[1]]$selected[[1]],
-        datasets$get_varlabels(attr(y, "dataname"), y)
+        y_label
       )
-      ggplot2_args$labs$color <- datasets$get_varlabels(attr(color, "dataname"), color)
-      ggplot2_args$labs$lty <- datasets$get_varlabels(attr(color, "dataname"), color)
-      ggplot2_args$labs$shape <- datasets$get_varlabels(attr(color, "dataname"), color)
-
-      template_g_ci(
+      ggplot2_args$labs$color <- color_label
+      ggplot2_args$labs$lty <- color_label
+      ggplot2_args$labs$shape <- color_label
+      list_calls <- template_g_ci(
         dataname = "ANL",
         x_var = x,
         y_var = y,
@@ -426,29 +448,22 @@ srv_g_ci <- function(id, # nolint
         conf_level = as.numeric(input$conf_level),
         ggplot2_args = ggplot2_args
       )
+      teal.code::eval_code(merged_data_q(), list_calls)
     })
 
-    eval_call <- shiny::reactive({
-      validate_data()
-      teal.code::chunks_reset()
-      teal.code::chunks_push_data_merge(x = merged_data())
-      teal.code::chunks_push(
-        expression = list_calls(),
-        id = "plot_call"
-      )
-    })
+    plot_r <- shiny::reactive(output_q()[["gg"]])
 
-    plot_r <- shiny::reactive({
-      eval_call()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("gg")
-    })
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(x_var, y_var, color)),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     pws <- teal.widgets::plot_with_settings_srv(
@@ -465,19 +480,16 @@ srv_g_ci <- function(id, # nolint
         card$set_name("CI Plot")
         card$append_text("CI Plot", "header2")
         card$append_text("Confidence Interval Plot", "header3")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

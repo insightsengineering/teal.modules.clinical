@@ -46,7 +46,8 @@ object specifying the variable name for subject id.}
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{visit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
@@ -117,9 +118,8 @@ numerical precision.
 
 library(scda)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-ADSL <- synthetic_cdisc_data_latest$adsl
-ADQS <- synthetic_cdisc_data_latest$adqs \%>\%
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADQS <- synthetic_cdisc_dataset("latest", "adqs") \%>\%
   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
   dplyr::filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
   dplyr::mutate(
@@ -140,12 +140,10 @@ arm_ref_comp <- list(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-              ADSL <- synthetic_cdisc_data_latest$adsl"
+      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
     ),
     cdisc_dataset("ADQS", ADQS,
-      code = 'synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-              ADQS <- synthetic_cdisc_data("latest")$adqs \%>\%
+      code = 'ADQS <- synthetic_cdisc_dataset("latest", "adqs") \%>\%
               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
               dplyr::filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
               dplyr::mutate(
@@ -174,8 +172,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 
 }

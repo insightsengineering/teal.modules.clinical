@@ -236,9 +236,8 @@ template_exposure <- function(parentname,
 #' library(scda)
 #' library(dplyr)
 #'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' adsl <- synthetic_cdisc_data_latest$adsl
-#' adex <- synthetic_cdisc_data_latest$adex
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
+#' adex <- synthetic_cdisc_dataset("latest", "adex")
 #'
 #' set.seed(1, kind = "Mersenne-Twister")
 #' labels <- formatters::var_labels(adex, fill = FALSE)
@@ -256,22 +255,20 @@ template_exposure <- function(parentname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'       ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADEX", adex,
-#'       code = "set.seed(1, kind = 'Mersenne-Twister')
-#'       synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'       ADEX <- synthetic_cdisc_data_latest$adex
+#'       code = 'set.seed(1, kind = "Mersenne-Twister")
+#'       ADEX <- synthetic_cdisc_dataset("latest", "adsl")
 #'       labels <- formatters::var_labels(ADEX, fill = FALSE)
 #'       ADEX <- ADEX %>%
 #'        distinct(USUBJID, .keep_all = TRUE) %>%
-#'        mutate(PARAMCD = 'TDURD',
-#'               PARAM = 'Overall duration (days)',
+#'        mutate(PARAMCD = "TDURD",
+#'               PARAM = "Overall duration (days)",
 #'               AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
-#'               AVALU = 'Days') %>%
+#'               AVALU = "Days") %>%
 #'               bind_rows(ADEX)
-#'       formatters::var_labels(ADEX) <- labels" # nolint
+#'       formatters::var_labels(ADEX) <- labels' # nolint
 #'     )
 #'   ),
 #'   modules = modules(
@@ -301,8 +298,8 @@ template_exposure <- function(parentname,
 #'     ADSL = list(SAFFL = "Y")
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_exposure <- function(label,
@@ -463,7 +460,10 @@ ui_t_exposure <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -471,8 +471,9 @@ ui_t_exposure <- function(id, ...) {
 
 #' @noRd
 srv_t_exposure <- function(id,
-                           datasets,
+                           data,
                            reporter,
+                           filter_panel_api,
                            dataname,
                            parentname,
                            paramcd,
@@ -486,14 +487,13 @@ srv_t_exposure <- function(id,
                            na_level,
                            label,
                            basic_table_args = basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(
         id_var = id_var,
         paramcd = paramcd,
@@ -506,25 +506,36 @@ srv_t_exposure <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(col_by_var = col_by_var),
       anl_name = "ANL_ADSL"
     )
 
+    anl_merged_q <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+    })
+
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
+
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
-      anl_m <- anl_merged()
-      anl_adsl <- adsl_merged()
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
 
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-      input_id_var <- as.vector(anl_m$columns_source$id_var)
-      input_row_by_var <- as.vector(anl_m$columns_source$row_by_var)
-      input_col_by_var <- as.vector(anl_adsl$columns_source$col_by_var)
+      input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
+      input_row_by_var <- names(merged$anl_input_r()$columns_source$row_by_var)
+      input_col_by_var <- names(merged$adsl_input_r()$columns_source$col_by_var)
       input_parcat <- unlist(parcat$filter)["vars_selected"]
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
+      input_aval_var <- names(merged$anl_input_r()$columns_source$aval_var)
+      input_avalu_var <- names(merged$anl_input_r()$columns_source$avalu_var)
 
       shiny::validate(
         shiny::need(input_row_by_var, "Please select a row by variable."),
@@ -559,76 +570,68 @@ srv_t_exposure <- function(id,
       NULL
     })
 
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
 
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      anl_filtered <- data[[dataname]]()
       input_avalu_var <- as.character(
-        unique(anl_m$data()[[as.vector(anl_m$columns_source$avalu_var)]])
+        unique(merged$anl_q_r()[["ANL"]][[names(merged$anl_input_r()$columns_source$avalu_var)[1]]])
       )
       input_paramcd <- as.character(
-        unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]])
+        unique(merged$anl_q_r()[["ANL"]][[names(merged$anl_input_r()$columns_source$paramcd)[1]]])
       )
 
       if (is.null(paramcd_label)) {
         input_paramcd_label <- input_paramcd
       } else {
-        paramcd <- as.vector(anl_m$columns_source$paramcd)
+        paramcd <- names(merged$anl_input_r()$columns_source$paramcd)
         paramcd_map_list <- c(paramcd, paramcd_label)
         paramcd_map <- unique(anl_filtered[paramcd_map_list])
         input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd, 2])
       }
 
       basic_table_args$title <- "Duration of Exposure Table"
-      basic_table_args$subtitles <- paste("Parameter Category:", anl_m$filter_info$parcat[[1]]$selected[[1]])
+      basic_table_args$subtitles <-
+        paste("Parameter Category:", merged$anl_input_r()$filter_info$parcat[[1]]$selected[[1]])
 
       my_calls <- template_exposure(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        id_var <- as.vector(anl_m$columns_source$id_var),
+        id_var <- names(merged$anl_input_r()$columns_source$id_var),
         paramcd <- input_paramcd,
         paramcd_label = input_paramcd_label,
-        row_by_var <- as.vector(anl_m$columns_source$row_by_var),
-        col_by_var <- as.vector(anl_m$columns_source$col_by_var),
+        row_by_var <- names(merged$anl_input_r()$columns_source$row_by_var),
+        col_by_var <- names(merged$anl_input_r()$columns_source$col_by_var),
         add_total = input$add_total,
         drop_levels = TRUE,
         na_level = na_level,
-        aval_var <- as.vector(anl_m$columns_source$aval_var),
+        aval_var <- names(merged$anl_input_r()$columns_source$aval_var),
         avalu_var <- input_avalu_var,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
     # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(id_var, paramcd, row_by_var, col_by_var, parcat, aval_var, avalu_var)
-      ),
-      modal_title = "R Code for Risk Management Plan Table",
-      code_header = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -637,19 +640,16 @@ srv_t_exposure <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Exposure for Risk Management Plan Table")
         card$append_text("Exposure for Risk Management Plan Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

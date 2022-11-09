@@ -67,8 +67,8 @@ library(dplyr)
 library(scda)
 library(nestcolor)
 
-ADSL <- synthetic_cdisc_data("latest")$adsl
-ADAE <- synthetic_cdisc_data("latest")$adae
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADAE <- synthetic_cdisc_dataset("latest", "adae")
 
 adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
 ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
@@ -76,17 +76,16 @@ ADAE <- ADAE \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == 
 # reinstate labels
 formatters::var_labels(ADAE) <- adae_labels
 
-
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = "ADSL <- synthetic_cdisc_data('latest')$adsl"),
+    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
     cdisc_dataset("ADAE", ADAE,
-      code = "ADAE <- synthetic_cdisc_data('latest')$adae
+      code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")
               adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
               ADAE <- ADAE \%>\%
-                dplyr::filter(!((AETOXGR == 1) & (AESEV == 'MILD') & (ARM == 'A: Drug X')))
+                dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
               formatters::var_labels(ADAE) <- adae_labels
-              ADAE"
+              ADAE'
     )
   ),
   modules = modules(
@@ -181,7 +180,7 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 }

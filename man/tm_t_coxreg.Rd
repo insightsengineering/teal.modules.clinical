@@ -39,7 +39,8 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr
@@ -134,9 +135,8 @@ Wald test will be substituted.
 
 library(scda)
 
-synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-ADSL <- synthetic_cdisc_data_latest$adsl
-ADTTE <- synthetic_cdisc_data_latest$adtte
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADTTE <- synthetic_cdisc_dataset("latest", "adtte")
 arm_ref_comp <- list(
   ACTARMCD = list(
     ref = "ARM B",
@@ -151,12 +151,10 @@ arm_ref_comp <- list(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADSL <- synthetic_cdisc_data_latest$adsl"
+      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
     ),
     cdisc_dataset("ADTTE", ADTTE,
-      code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-        ADTTE <- synthetic_cdisc_data_latest$adtte"
+      code = 'ADTTE <- synthetic_cdisc_dataset("latest", "adtte")'
     )
   ),
   modules = modules(
@@ -178,8 +176,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 
 
@@ -251,8 +249,8 @@ app <- init(
     )
   )
 )
-\dontrun{
-shinyApp(app$ui, app$server)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
 }
 
 }

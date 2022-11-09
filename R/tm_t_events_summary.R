@@ -494,7 +494,7 @@ template_events_summary <- function(anl_name,
 #' library(dplyr)
 #' library(scda)
 #'
-#' ADSL <- synthetic_cdisc_data("latest")$adsl %>%
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl") %>%
 #'   mutate(
 #'     DTHFL = case_when( # nolint
 #'       !is.na(DTHDT) ~ "Y",
@@ -503,7 +503,7 @@ template_events_summary <- function(anl_name,
 #'   )
 #' attr(ADSL[["DTHFL"]], "label") <- "Subject Death Flag"
 #'
-#' ADAE <- synthetic_cdisc_data("latest")$adae
+#' ADAE <- synthetic_cdisc_dataset("latest", "adae")
 #'
 #' add_event_flags <- function(dat) {
 #'   dat <- dat %>%
@@ -537,7 +537,7 @@ template_events_summary <- function(anl_name,
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
 #'       code =
-#'         'ADSL <- synthetic_cdisc_data("latest")$adsl %>%
+#'         'ADSL <- synthetic_cdisc_dataset("latest", "adsl") %>%
 #'             mutate(
 #'               DTHFL = case_when(  # nolint
 #'                 !is.na(DTHDT) ~ "Y",
@@ -549,30 +549,30 @@ template_events_summary <- function(anl_name,
 #'     ),
 #'     cdisc_dataset("ADAE", ADAE,
 #'       code =
-#'         "ADAE <- synthetic_cdisc_data('latest')$adae
+#'         'ADAE <- synthetic_cdisc_dataset("latest", "adae")
 #'         add_event_flags <- function(dat) {
 #'           dat <- dat %>%
 #'             dplyr::mutate(
-#'               TMPFL_SER = AESER == 'Y',
-#'               TMPFL_REL = AEREL == 'Y',
-#'               TMPFL_GR5 = AETOXGR == '5',
+#'               TMPFL_SER = AESER == "Y",
+#'               TMPFL_REL = AEREL == "Y",
+#'               TMPFL_GR5 = AETOXGR == "5",
 #'               TMP_SMQ01 = !is.na(SMQ01NAM),
 #'               TMP_SMQ02 = !is.na(SMQ02NAM),
 #'               TMP_CQ01 = !is.na(CQ01NAM)
 #'             )
 #'           column_labels <- list(
-#'               TMPFL_SER = 'Serious AE',
-#'               TMPFL_REL = 'Related AE',
-#'               TMPFL_GR5 = 'Grade 5 AE',
-#'               TMP_SMQ01 = aesi_label(dat[['SMQ01NAM']], dat[['SMQ01SC']]),
-#'               TMP_SMQ02 = aesi_label('Y.9.9.9.9/Z.9.9.9.9 AESI'),
-#'               TMP_CQ01 = aesi_label(dat[['CQ01NAM']])
+#'               TMPFL_SER = "Serious AE",
+#'               TMPFL_REL = "Related AE",
+#'               TMPFL_GR5 = "Grade 5 AE",
+#'               TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
+#'               TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
+#'               TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'           )
 #'           formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'           dat
 #'         }
 #'         # Generating user-defined event flags.
-#'         ADAE <- ADAE %>% add_event_flags()"
+#'         ADAE <- ADAE %>% add_event_flags()' # nolint
 #'     )
 #'   ),
 #'   modules = modules(
@@ -599,8 +599,8 @@ template_events_summary <- function(anl_name,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_events_summary <- function(label,
@@ -790,7 +790,10 @@ ui_t_events_summary <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -798,8 +801,9 @@ ui_t_events_summary <- function(id, ...) {
 
 #' @noRd
 srv_t_events_summary <- function(id,
-                                 datasets,
+                                 data,
                                  reporter,
+                                 filter_panel_api,
                                  dataname,
                                  parentname,
                                  arm_var,
@@ -811,12 +815,11 @@ srv_t_events_summary <- function(id,
                                  llt,
                                  label,
                                  basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     data_extract_vars <- list(
       arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
       aeseq_var = aeseq_var, llt = llt
@@ -832,41 +835,54 @@ srv_t_events_summary <- function(id,
 
     anl_selectors <- teal.transform::data_extract_multiple_srv(
       data_extract_vars,
-      datasets = datasets
+      datasets = data
     )
 
-    anl_merged <- teal.transform::data_merge_srv(
+    anl_merged_input <- teal.transform::merge_expression_srv(
       selector_list = anl_selectors,
-      datasets = datasets,
+      datasets = data,
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
-      data_extract = list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var),
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      data_extract = Filter(Negate(is.null), list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)),
+      join_keys = get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+    anl_merged_q <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+    })
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_dthfl_var <- as.vector(anl_m$columns_source$dthfl_var)
-      input_dcsreas_var <- as.vector(anl_m$columns_source$dcsreas_var)
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
+
+    validate_checks <- shiny::reactive({
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
+
+      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
+      input_dthfl_var <- as.vector(merged$anl_input_r()$columns_source$dthfl_var)
+      input_dcsreas_var <- as.vector(merged$anl_input_r()$columns_source$dcsreas_var)
       input_flag_var_anl <- if (!is.null(flag_var_anl)) {
-        as.vector(anl_m$columns_source$flag_var_anl)
+        as.vector(merged$anl_input_r()$columns_source$flag_var_anl)
       } else {
         NULL
       }
       input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
-        as.vector(anl_m$columns_source$flag_var_aesi)
+        as.vector(merged$anl_input_r()$columns_source$flag_var_aesi)
       } else {
         NULL
       }
-      input_aeseq_var <- as.vector(anl_m$columns_source$aeseq_var)
-      input_llt <- as.vector(anl_m$columns_source$llt)
+      input_aeseq_var <- as.vector(merged$anl_input_r()$columns_source$aeseq_var)
+      input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
 
       shiny::validate(
         shiny::need(input_arm_var, "Please select a treatment variable"),
@@ -895,25 +911,16 @@ srv_t_events_summary <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    call_preparation <- shiny::reactive({
+    output_table <- shiny::reactive({
       validate_checks()
 
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
-
       input_flag_var_anl <- if (!is.null(flag_var_anl)) {
-        as.vector(anl_m$columns_source$flag_var_anl)
+        as.vector(merged$anl_input_r()$columns_source$flag_var_anl)
       } else {
         NULL
       }
       input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
-        as.vector(anl_m$columns_source$flag_var_aesi)
+        as.vector(merged$anl_input_r()$columns_source$flag_var_aesi)
       } else {
         NULL
       }
@@ -921,65 +928,61 @@ srv_t_events_summary <- function(id,
       my_calls <- template_events_summary(
         anl_name = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        dthfl_var = as.vector(anl_m$columns_source$dthfl_var),
-        dcsreas_var = as.vector(anl_m$columns_source$dcsreas_var),
+        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
+        dthfl_var = as.vector(merged$anl_input_r()$columns_source$dthfl_var),
+        dcsreas_var = as.vector(merged$anl_input_r()$columns_source$dcsreas_var),
         flag_var_anl = if (length(input_flag_var_anl) != 0) input_flag_var_anl else NULL,
         flag_var_aesi = if (length(input_flag_var_aesi) != 0) input_flag_var_aesi else NULL,
-        aeseq_var = as.vector(anl_m$columns_source$aeseq_var),
-        llt = as.vector(anl_m$columns_source$llt),
+        aeseq_var = as.vector(merged$anl_input_r()$columns_source$aeseq_var),
+        llt = as.vector(merged$anl_input_r()$columns_source$llt),
         add_total = input$add_total,
         count_subj = input$count_subj,
         count_pt = input$count_pt,
         count_events = input$count_events
       )
 
-      mapply(
-        expression = my_calls,
-        id = paste(names(my_calls), "call", sep = "_"),
-        teal.code::chunks_push
-      )
-
       all_basic_table_args <- teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
-      teal.code::chunks_push(
-        expression = substitute(
-          expr = {
-            rtables::main_title(result) <- title
-            rtables::main_footer(result) <- footer
-            rtables::prov_footer(result) <- p_footer
-            rtables::subtitles(result) <- subtitle
-            result
-          },
-          env = list(
-            title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
-            footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-            p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-            subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+      teal.code::eval_code(
+        merged$anl_q_r(),
+        as.expression(my_calls)
+      ) %>%
+        teal.code::eval_code(
+          substitute(
+            expr = {
+              rtables::main_title(result) <- title
+              rtables::main_footer(result) <- footer
+              rtables::prov_footer(result) <- p_footer
+              rtables::subtitles(result) <- subtitle
+              result
+            }, env = list(
+              title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
+              footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
+              p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
+              subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
+            )
           )
-        ),
-        id = "meta_info_call"
-      )
+        )
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_table()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
-    # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_table())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_table())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(data_extract_vars),
-      modal_title = "Adverse Event Summary Table",
-      code_header = label
+      verbatim_content = reactive(teal.code::get_code(output_table())),
+      title = label
     )
 
     ### REPORTER
@@ -988,19 +991,16 @@ srv_t_events_summary <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Adverse Events Summary Table")
         card$append_text("Adverse Events Summary Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_table()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

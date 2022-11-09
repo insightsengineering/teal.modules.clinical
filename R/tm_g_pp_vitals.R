@@ -128,7 +128,6 @@ template_vitals <- function(dataname = "ANL",
         ) +
         ggplot2::scale_y_continuous(
           breaks = seq(0, max(vitals[[xaxis_char]], na.rm = TRUE), 50),
-          name = "Vitals",
           minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = TRUE), 10)
         ) +
         ggplot2::geom_text(
@@ -194,19 +193,16 @@ template_vitals <- function(dataname = "ANL",
 #' @examples
 #' library(scda)
 #' library(nestcolor)
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' ADSL <- synthetic_cdisc_data_latest$adsl
-#' ADVS <- synthetic_cdisc_data_latest$advs
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADVS <- synthetic_cdisc_dataset("latest", "advs")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADSL <- synthetic_cdisc_data_latest$adsl"
+#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
 #'     ),
 #'     cdisc_dataset("ADVS", ADVS,
-#'       code = "synthetic_cdisc_data_latest <- synthetic_cdisc_data('latest')
-#'         ADVS <- synthetic_cdisc_data_latest$advs"
+#'       code = 'ADVS <- synthetic_cdisc_dataset("latest", "advs")'
 #'     )
 #'   ),
 #'   modules = modules(
@@ -235,8 +231,8 @@ template_vitals <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_g_pp_vitals <- function(label,
@@ -352,7 +348,10 @@ ui_g_vitals <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -360,8 +359,9 @@ ui_g_vitals <- function(id, ...) {
 
 
 srv_g_vitals <- function(id,
-                         datasets,
+                         data,
                          reporter,
+                         filter_panel_api,
                          dataname,
                          parentname,
                          patient_col,
@@ -373,16 +373,15 @@ srv_g_vitals <- function(id,
                          plot_width,
                          label,
                          ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -407,14 +406,19 @@ srv_g_vitals <- function(id,
     )
 
     # Vitals tab ----
-    vitals_merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
       merge_function = "dplyr::left_join"
     )
 
+    anl_q_r <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr))
+    })
 
-    vitals_dat <- vitals_merged_data()$data()
+    merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_q_r)
 
     output$paramcd_levels <- shiny::renderUI({
       paramcd_var <- input[[extract_input("paramcd", dataname)]]
@@ -422,6 +426,7 @@ srv_g_vitals <- function(id,
       shiny::req(paramcd_var)
       shiny::req(input$patient_id)
 
+      vitals_dat <- merged$anl_q_r()[["ANL"]]
       vitals_dat_sub <- vitals_dat[vitals_dat[[patient_col]] == patient_id(), ]
       paramcd_col <- vitals_dat_sub[[paramcd_var]]
       paramcd_col_levels <- unique(paramcd_col)
@@ -445,10 +450,9 @@ srv_g_vitals <- function(id,
       )
     })
 
-    vitals_call <- shiny::reactive({
+    output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-
-      teal::validate_has_data(vitals_merged_data()$data(), 1)
+      teal::validate_has_data(merged$anl_q_r()[["ANL"]], 1)
 
       shiny::validate(
         shiny::need(
@@ -468,27 +472,9 @@ srv_g_vitals <- function(id,
           "Please select AVAL variable."
         ),
         shiny::need(
-          nrow(vitals_merged_data()$data()[input$patient_id == vitals_merged_data()$data()[patient_col], ]) > 0,
+          nrow(merged$anl_q_r()[["ANL"]][input$patient_id == merged$anl_q_r()[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
-      )
-
-      vitals_stack <- teal.code::chunks_new()
-      vitals_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = vitals_stack)
-      }
-      teal.code::chunks_push_data_merge(vitals_merged_data(), chunks = vitals_stack)
-
-      vitals_stack_push(
-        expression = substitute(
-          expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-          }, env = list(
-            patient_col = patient_col,
-            patient_id = patient_id()
-          )
-        ),
-        id = "patient_id_filter_call"
       )
 
       my_calls <- template_vitals(
@@ -498,20 +484,25 @@ srv_g_vitals <- function(id,
         xaxis = input[[extract_input("xaxis", dataname)]],
         aval = input[[extract_input("aval", dataname)]],
         patient_id = patient_id(),
-        font_size = input$`font_size`,
+        font_size = input[["font_size"]],
         ggplot2_args = ggplot2_args
       )
 
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), vitals_stack_push)
-      teal.code::chunks_safe_eval(chunks = vitals_stack)
-      vitals_stack
+      teal.code::eval_code(
+        merged$anl_q_r(),
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        )
+      ) %>%
+        teal.code::eval_code(as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(vitals_call())
-      teal.code::chunks_get_var("result_plot")
-    })
+    plot_r <- shiny::reactive(output_q()[["result_plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "vitals_plot",
@@ -520,11 +511,17 @@ srv_g_vitals <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(paramcd, param, aval, xaxis)),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -533,19 +530,16 @@ srv_g_vitals <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Vitals Plot")
         card$append_text("Patient Profile Vitals Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
