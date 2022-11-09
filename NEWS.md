@@ -1,12 +1,21 @@
-# teal.modules.clinical 0.8.14.9001
+# teal.modules.clinical 0.8.14.9003
+
+### Breaking changes
+
+* Replaced `chunks` with simpler `qenv` class.
+* Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (`tdata` object) and `filter_panel_api` (`FilterPanelAPI`).
 
 ### Enhancements
 * Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
+
+### Miscellaneous
+* Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS. 
 
 # teal.modules.clinical 0.8.14
 
 ### Enhancements
 * Updated all synthetic data for tests to version `rcd_2022_02_28`.
+* Updated all test files in `tests/testthat/` to `synthetic_cdisc_data("2022_02_28")` 
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
 * Added the `teal.reporter` functionality to all modules.
@@ -25,7 +34,7 @@
 
 ### Bug fixes
 
-* Fixed bug in `tm_g_barchart_simple` which prevented graph from showing.
+* Fixed bug in `tm_g_barchart_simple` which prevented graph from being shown.
 * Fixed broken example for `tm_t_abnormality_by_worst_grade`.
 * Fixed bug in `tm_a_mmrm` which prevented table headers from displaying.
 * Fixed bug in `tm_g_forest_rsp` when deselecting endpoint.

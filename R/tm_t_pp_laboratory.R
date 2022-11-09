@@ -153,8 +153,8 @@ template_laboratory <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_pp_laboratory <- function(label,
@@ -276,15 +276,19 @@ ui_g_laboratory <- function(id, ...) {
         choices = NULL
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
 }
 
 srv_g_laboratory <- function(id,
-                             datasets,
+                             data,
                              reporter,
+                             filter_panel_api,
                              dataname,
                              parentname,
                              patient_col,
@@ -295,16 +299,15 @@ srv_g_laboratory <- function(id,
                              paramcd,
                              anrind,
                              label) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -329,7 +332,7 @@ srv_g_laboratory <- function(id,
     )
 
     # Update round_values
-    aval_values <- datasets$get_data(dataname, filtered = TRUE)[, aval$select$selected]
+    aval_values <- data[[dataname]]()[, aval$select$selected]
     decimal_nums <- aval_values[trunc(aval_values) != aval_values]
     max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", decimal_nums)))
 
@@ -341,8 +344,9 @@ srv_g_laboratory <- function(id,
     )
 
     # Laboratory values tab ----
-    labor_merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
+    merge_input_r <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(
         timepoints = timepoints,
         aval = aval,
@@ -353,7 +357,12 @@ srv_g_laboratory <- function(id,
       )
     )
 
-    labor_calls <- shiny::reactive({
+    merge_q_r <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(merge_input_r()$expr))
+    })
+
+    output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       shiny::validate(
@@ -383,26 +392,6 @@ srv_g_laboratory <- function(id,
         )
       )
 
-      labor_stack <- teal.code::chunks_new()
-      labor_stack$reset()
-      labor_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = labor_stack)
-      }
-
-      teal.code::chunks_push_data_merge(labor_merged_data(), chunks = labor_stack)
-
-      labor_stack_push(
-        substitute(
-          expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-          }, env = list(
-            patient_col = patient_col,
-            patient_id = patient_id()
-          )
-        ),
-        id = "patient_id_filter_call"
-      )
-
       labor_calls <- template_laboratory(
         dataname = "ANL",
         timepoints = input[[extract_input("timepoints", dataname)]],
@@ -414,21 +403,25 @@ srv_g_laboratory <- function(id,
         round_value = as.integer(input$round_value)
       )
 
-      mapply(
-        expression = labor_calls,
-        id = paste(names(labor_calls), "call", sep = "_"),
-        labor_stack_push
-      )
-      teal.code::chunks_safe_eval(chunks = labor_stack)
-      labor_stack
+      teal.code::eval_code(
+        merge_q_r(),
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        )
+      ) %>%
+        teal.code::eval_code(as.expression(labor_calls))
     })
 
     table_r <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(labor_calls())
+      q <- output_q()
       list(
-        html = teal.code::chunks_get_var("labor_table_html"),
-        raw = teal.code::chunks_get_var("labor_table_raw")
+        html = q[["labor_table_html"]],
+        raw = q[["labor_table_raw"]]
       )
     })
 
@@ -438,11 +431,17 @@ srv_g_laboratory <- function(id,
       options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(timepoints, aval, avalu, param, paramcd, anrind)),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -451,19 +450,16 @@ srv_g_laboratory <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Laboratory Table")
         card$append_text("Patient Profile Laboratory Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r()$raw)
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

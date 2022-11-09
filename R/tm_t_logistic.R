@@ -277,8 +277,8 @@ template_logistic <- function(dataname,
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(ui = app$ui, server = app$server)
+#' if (interactive()) {
+#'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_t_logistic <- function(label,
@@ -427,7 +427,10 @@ ui_t_logistic <- function(id, ...) {
         fixed = a$conf_level$fixed
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -437,8 +440,9 @@ ui_t_logistic <- function(id, ...) {
 #' @noRd
 #'
 srv_t_logistic <- function(id,
-                           datasets,
+                           data,
                            reporter,
+                           filter_panel_api,
                            dataname,
                            parentname,
                            arm_var,
@@ -448,48 +452,56 @@ srv_t_logistic <- function(id,
                            cov_var,
                            label,
                            basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     # Observer to update reference and comparison arm input options.
-    if (!is.null(arm_var)) {
-      arm_ref_comp_observer(
-        session,
-        input,
-        output,
-        id_arm_var = extract_input("arm_var", parentname),
-        datasets = datasets,
-        dataname = parentname,
-        arm_ref_comp = arm_ref_comp,
-        module = "tm_t_logistic"
-      )
-    }
+    arm_ref_comp_observer(
+      session,
+      input,
+      output,
+      id_arm_var = extract_input("arm_var", parentname),
+      data = data[[parentname]],
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_logistic"
+    )
 
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var, paramcd = paramcd, avalc_var = avalc_var, cov_var = cov_var),
       merge_function = "dplyr::inner_join"
     )
 
-    if (!is.null(arm_var)) {
-      adsl_merged <- teal.transform::data_merge_module(
-        datasets = datasets,
-        data_extract = list(arm_var = arm_var),
-        anl_name = "ANL_ADSL"
-      )
-    }
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL"
+    )
+
+    anl_merged_q <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+    })
+
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
 
     # Because the AVALC values depends on the selected PARAMCD.
-    shiny::observeEvent(anl_merged(), {
-      avalc_var <- anl_merged()$columns_source$avalc_var
-      if (nrow(anl_merged()$data()) == 0) {
+    shiny::observeEvent(merged$anl_input_r(), {
+      avalc_var <- merged$anl_input_r()$columns_source$avalc_var
+      if (nrow(merged$anl_q_r()[["ANL"]]) == 0) {
         responder_choices <- c("CR", "PR")
         responder_sel <- c("CR", "PR")
       } else {
-        responder_choices <- unique(anl_merged()$data()[[avalc_var]])
+        responder_choices <- unique(merged$anl_q_r()[["ANL"]][[avalc_var]])
         responder_sel <- intersect(responder_choices, shiny::isolate(input$responders))
       }
       shiny::updateSelectInput(
@@ -500,8 +512,7 @@ srv_t_logistic <- function(id,
     })
 
     output$interaction_var <- shiny::renderUI({
-      anl_m <- anl_merged()
-      cov_var <- as.vector(anl_m$columns_source$cov_var)
+      cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       if (length(cov_var) > 0) {
         teal.widgets::optionalSelectInput(
           session$ns("interaction_var"),
@@ -516,15 +527,14 @@ srv_t_logistic <- function(id,
     })
 
     output$interaction_input <- shiny::renderUI({
-      anl_m <- anl_merged()
       interaction_var <- input$interaction_var
       if (length(interaction_var) > 0) {
-        if (is.numeric(anl_m$data()[[interaction_var]])) {
+        if (is.numeric(merged$anl_q_r()[["ANL"]][[interaction_var]])) {
           shiny::tagList(
             shiny::textInput(
               session$ns("interaction_values"),
               label = sprintf("Specify %s values (comma delimited) for treatment ORs calculation:", interaction_var),
-              value = as.character(stats::median(anl_m$data()[[interaction_var]]))
+              value = as.character(stats::median(merged$anl_q_r()[["ANL"]][[interaction_var]]))
             )
           )
         }
@@ -534,13 +544,12 @@ srv_t_logistic <- function(id,
     })
 
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_avalc_var <- as.vector(anl_m$columns_source$avalc_var)
-      input_cov_var <- as.vector(anl_m$columns_source$cov_var)
+      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
+      input_avalc_var <- as.vector(merged$anl_input_r()$columns_source$avalc_var)
+      input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
       input_interaction_var <- input$interaction_var
 
@@ -578,7 +587,7 @@ srv_t_logistic <- function(id,
 
         do.call(what = "validate_standard_inputs", validate_args)
 
-        arm_n <- base::table(anl_m$data()[[input_arm_var]])
+        arm_n <- base::table(merged$anl_q_r()[["ANL"]][[input_arm_var]])
         anl_arm_n <- if (input$combine_comp_arms) {
           c(sum(arm_n[unlist(input$buckets$Ref)]), sum(arm_n[unlist(input$buckets$Comp)]))
         } else {
@@ -596,7 +605,7 @@ srv_t_logistic <- function(id,
       )
 
       # validate interaction values
-      if (interaction_flag && (is.numeric(anl_m$data()[[input_interaction_at]]))) {
+      if (interaction_flag && (is.numeric(merged$anl_q_r()[["ANL"]][[input_interaction_at]]))) {
         shiny::validate(shiny::need(
           !is.na(at_values),
           "If interaction is specified the level should be entered."
@@ -608,7 +617,7 @@ srv_t_logistic <- function(id,
         shiny::need(
           all(
             vapply(
-              anl_m$data()[input_cov_var],
+              merged$anl_q_r()[["ANL"]][input_cov_var],
               FUN = function(x) {
                 length(unique(x)) > 1
               },
@@ -620,21 +629,10 @@ srv_t_logistic <- function(id,
       )
     })
 
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
 
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-
-      if (!is.null(arm_var)) {
-        anl_adsl <- adsl_merged()
-        teal.code::chunks_push_data_merge(anl_adsl)
-        teal.code::chunks_push_new_line()
-      }
-
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
+      ANL <- merged$anl_q_r()[["ANL"]] # nolint
 
       label_paramcd <- get_paramcd_label(ANL, paramcd)
 
@@ -648,14 +646,14 @@ srv_t_logistic <- function(id,
       } else {
         unlist(as_num(input$interaction_values))
       }
-      at_flag <- interaction_flag && is.numeric(anl_m$data()[[interaction_var]])
+      at_flag <- interaction_flag && is.numeric(ANL[[interaction_var]])
 
-      cov_var <- as.vector(anl_m$columns_source$cov_var)
+      cov_var <- names(merged$anl_input_r()$columns_source$cov_var)
 
       calls <- template_logistic(
         dataname = "ANL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        aval_var = as.vector(anl_m$columns_source$avalc_var),
+        arm_var = names(merged$anl_input_r()$columns_source$arm_var),
+        aval_var = names(merged$anl_input_r()$columns_source$avalc_var),
         paramcd = paramcd,
         label_paramcd = label_paramcd,
         cov_var = if (length(cov_var) > 0) cov_var else NULL,
@@ -670,28 +668,27 @@ srv_t_logistic <- function(id,
         basic_table_args = basic_table_args
       )
 
-      mapply(expression = calls, id = paste(names(calls), "call", sep = "_"), teal.code::chunks_push)
+      teal.code::eval_code(merged$anl_q_r(), as.expression(calls))
     })
 
-    table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, paramcd, avalc_var, cov_var)
-      ),
-      modal_title = "R Code for the Current Logistic Regression",
-      code_header = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -700,19 +697,16 @@ srv_t_logistic <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Logistic Regression Table")
         card$append_text("Logistic Regression Table", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

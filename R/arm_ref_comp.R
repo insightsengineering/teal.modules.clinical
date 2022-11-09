@@ -9,8 +9,8 @@
 #' @param id_ref (`character`) id of reference Treatment input ui element
 #' @param id_comp (`character`) id of comparison group input ui element
 #' @param id_arm_var (`character`) id of Treatment variable input ui element
-#' @param datasets (`FilteredData`) object from the module
-#' @param dataname (`character`) dataset name
+#' @param data (`reactive` or `data.frame`) dataset used to validate Treatment reference inputs and
+#'   set `id_ref` input.
 #' @param arm_ref_comp (`unknown`) Treatment reference and compare variables provided as a
 #'   nested list where each Treatment variable corresponds a list specifying the default levels for the
 #'   reference and comparison treatments.
@@ -24,35 +24,35 @@
 #' @keywords internal
 #'
 #' @examples
-#' \dontrun{
 #' ds <- teal:::get_dummy_datasets()
 #'
 #' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 #' arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
-#' shinyApp(
-#'   ui = fluidPage(
-#'     teal.widgets::optionalSelectInput(
-#'       "arm",
-#'       "Treatment Variable",
-#'       choices = arm_var$choices,
-#'       selected = arm_var$selected
+#' if (interactive()) {
+#'   shinyApp(
+#'     ui = fluidPage(
+#'       teal.widgets::optionalSelectInput(
+#'         "arm",
+#'         "Treatment Variable",
+#'         choices = arm_var$choices,
+#'         selected = arm_var$selected
+#'       ),
+#'       shiny::uiOutput("arms_buckets"),
 #'     ),
-#'     shiny::uiOutput("arms_buckets"),
-#'   ),
-#'   server = function(input, output, session) {
-#'     shiny::isolate({
-#'       teal.modules.clinical:::arm_ref_comp_observer(
-#'         session,
-#'         input,
-#'         output,
-#'         id_arm_var = "arm",
-#'         datasets = ds,
-#'         arm_ref_comp = arm_ref_comp,
-#'         module = "example"
-#'       )
-#'     })
-#'   }
-#' )
+#'     server = function(input, output, session) {
+#'       shiny::isolate({
+#'         teal.modules.clinical:::arm_ref_comp_observer(
+#'           session,
+#'           input,
+#'           output,
+#'           id_arm_var = "arm",
+#'           datasets = ds,
+#'           arm_ref_comp = arm_ref_comp,
+#'           module = "example"
+#'         )
+#'       })
+#'     }
+#'   )
 #' }
 arm_ref_comp_observer <- function(session,
                                   input,
@@ -60,30 +60,24 @@ arm_ref_comp_observer <- function(session,
                                   id_ref = "Ref",
                                   id_comp = "Comp",
                                   id_arm_var,
-                                  datasets,
-                                  dataname = "ADSL",
+                                  data,
                                   arm_ref_comp,
                                   module,
                                   on_off = shiny::reactive(TRUE),
                                   input_id = "buckets",
                                   output_id = "arms_buckets") {
-  if (any(unlist(lapply(arm_ref_comp, lapply, inherits, "delayed_data")))) {
-    stopifnot(
-      all(vapply(arm_ref_comp, function(x) identical(sort(names(x)), c("comp", "ref")), logical(1)))
-    )
-    # when a delayed object is used for arm_ref_comp, the entire FilteredData
-    # object must be passed to resolve it
-    arm_ref_comp <- teal.transform::resolve_delayed(arm_ref_comp, datasets)
-  }
-
-  df <- datasets$get_data(dataname, filtered = FALSE)
-
-  check_arm_ref_comp(arm_ref_comp, df, module) ## throws an error if there are issues
-
   # uses observe because observeEvent evaluates only when on_off() is switched
   # not necessarily when variables are dropped
   output[[output_id]] <- shiny::renderUI({
     if (!is.null(on_off()) && on_off()) {
+      df <- if (shiny::is.reactive(data)) {
+        data()
+      } else {
+        data
+      }
+
+      check_arm_ref_comp(arm_ref_comp, df, module) ## throws an error if there are issues
+
       arm_var <- input[[id_arm_var]]
 
       # validations here don't produce nice UI message (it's observe and not render output) but it prevent red errors
@@ -97,7 +91,6 @@ arm_ref_comp_observer <- function(session,
       } else {
         unique(arm)
       }
-
       default_settings <- arm_ref_comp[[arm_var]]
 
       if (is.null(default_settings)) {
@@ -150,29 +143,17 @@ check_arm_ref_comp <- function(x, df_to_check, module) {
     }
 
 
-    Map(function(xi, var) {
-      if (!is.list(xi)) {
-        stop(
-          msg, "definition for Treatment variable ",
-          var, " list element needs to be lists with ref and comp elements"
-        )
+    Map(
+      x, vars,
+      f = function(xi, var) {
+        if (!checkmate::check_list(xi) || !setequal(names(xi), c("comp", "ref"))) {
+          stop(
+            msg, "definition for Treatment variable ",
+            var, " list element needs to be lists with ref and comp elements"
+          )
+        }
       }
-
-      rc <- names(xi)
-      if (is.null(rc) || !identical(sort(rc), c("comp", "ref"))) {
-        stop(msg, "definition for Treatment variable ", var, " nested list needs to have the elements ref and comp")
-      }
-
-
-      arm_levels <- unlist(xi)
-
-      if (!all(arm_levels %in% df_to_check[[var]])) {
-        stop(
-          msg, "definition for Treatment variable ",
-          var, " refers to treatment levels that do not exist in the data"
-        )
-      }
-    }, x, vars)
+    )
   }
 
   invisible(TRUE)

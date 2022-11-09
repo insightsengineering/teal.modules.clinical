@@ -266,8 +266,8 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_abnormality_by_worst_grade <- function(label, # nolint
@@ -448,7 +448,10 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -456,8 +459,9 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 
 #' @noRd
 srv_t_abnormality_by_worst_grade <- function(id, # nolint
-                                             datasets,
+                                             data,
                                              reporter,
+                                             filter_panel_api,
                                              dataname,
                                              parentname,
                                              id_var,
@@ -470,14 +474,14 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
                                              drop_arm_levels,
                                              label,
                                              basic_table_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(
         arm_var = arm_var, id_var = id_var, paramcd = paramcd,
         atoxgr_var = atoxgr_var, worst_high_flag_var = worst_high_flag_var,
@@ -486,46 +490,74 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    adsl_merged_input <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
 
-    validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+    anl_merged_q <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(anl_merged_input()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merged_input()$expr))
+    })
 
-      anl_m <- anl_merged()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_id_var <- as.vector(anl_m$columns_source$id_var)
-      input_paramcd_var <- as.vector(anl_m$columns_source$paramcd)
-      input_atoxgr <- as.vector(anl_m$columns_source$atoxgr_var)
-      input_worst_high_flag_var <- as.vector(anl_m$columns_source$worst_high_flag_var)
-      input_worst_low_flag_var <- as.vector(anl_m$columns_source$worst_low_flag_var)
+    merged <- list(
+      anl_input_r = anl_merged_input,
+      adsl_input_r = adsl_merged_input,
+      anl_q_r = anl_merged_q
+    )
+
+    validate_checks <- shiny::reactive({
+      adsl_filtered <- data[[parentname]]()
+      anl_filtered <- data[[dataname]]()
+      anl <- merged$anl_q_r()[["ANL"]]
+
+      input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
+      input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
+      input_paramcd_var <- names(merged$anl_input_r()$columns_source$paramcd)
+      input_atoxgr <- names(merged$anl_input_r()$columns_source$atoxgr_var)
+      input_worst_high_flag_var <- names(merged$anl_input_r()$columns_source$worst_high_flag_var)
+      input_worst_low_flag_var <- names(merged$anl_input_r()$columns_source$worst_low_flag_var)
 
       shiny::validate(
         shiny::need(input_arm_var, "Please select a treatment variable."),
         shiny::need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
         shiny::need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
-        shiny::need(
-          length(anl_m$data()[[input_paramcd_var]]) > 0,
-          "Please select at least one Laboratory parameter."
-        ),
         shiny::need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
         shiny::need(input_id_var, "Please select a Subject Identifier."),
         shiny::need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-        shiny::need(
-          all(as.character(unique(anl_m$data()[[input_atoxgr]])) %in% as.character(c(-4:4))),
-          "All grade values should be within -4:4 range."
-        )
       )
 
-      shiny::validate(
-        shiny::need(is.factor(anl_m$data()[[input_arm_var]]), "Treatment variable should be a factor."),
-        shiny::need(is.factor(anl_m$data()[[input_paramcd_var]]), "Parameter variable should be a factor."),
-        shiny::need(is.factor(anl_m$data()[[input_atoxgr]]), "Grade variable should be a factor.")
-      )
+      if (length(input_paramcd_var) > 0) {
+        shiny::validate(
+          shiny::need(
+            length(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]) > 0,
+            "Please select at least one Laboratory parameter."
+          ),
+          shiny::need(
+            is.factor(merged$anl_q_r()[["ANL"]][[input_paramcd_var]]),
+            "Parameter variable should be a factor."
+          )
+        )
+      }
+
+      if (length(input_atoxgr) > 0) {
+        shiny::validate(
+          shiny::need(
+            all(as.character(unique(merged$anl_q_r()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
+            "All grade values should be within -4:4 range."
+          ),
+          shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Grade variable should be a factor.")
+        )
+      }
+
+      if (length(input_atoxgr) > 0) {
+        shiny::validate(
+          shiny::need(is.factor(merged$anl_q_r()[["ANL"]][[input_atoxgr]]), "Treatment variable should be a factor."),
+        )
+      }
 
       # validate inputs
       validate_standard_inputs(
@@ -541,57 +573,47 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       )
     })
 
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
-      teal.code::chunks_reset()
-      anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
-      anl_adsl <- adsl_merged()
-      teal.code::chunks_push_data_merge(anl_adsl)
-      teal.code::chunks_push_new_line()
 
       my_calls <- template_abnormality_by_worst_grade(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        id_var = as.vector(anl_m$columns_source$id_var),
-        paramcd = as.vector(anl_m$columns_source$paramcd),
-        atoxgr_var = as.vector(anl_m$columns_source$atoxgr_var),
-        worst_high_flag_var = as.vector(anl_m$columns_source$worst_high_flag_var),
-        worst_low_flag_var = as.vector(anl_m$columns_source$worst_low_flag_var),
+        arm_var = names(merged$anl_input_r()$columns_source$arm_var),
+        id_var = names(merged$anl_input_r()$columns_source$id_var),
+        paramcd = names(merged$anl_input_r()$columns_source$paramcd),
+        atoxgr_var = names(merged$anl_input_r()$columns_source$atoxgr_var),
+        worst_high_flag_var = names(merged$anl_input_r()$columns_source$worst_high_flag_var),
+        worst_low_flag_var = names(merged$anl_input_r()$columns_source$worst_low_flag_var),
         worst_flag_indicator = input$worst_flag_indicator,
         add_total = input$add_total,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+
+      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-      teal.code::chunks_get_var("result")
-    })
+    table_r <- shiny::reactive(output_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
     # Render R code.
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(
-          arm_var, id_var, paramcd,
-          atoxgr_var, worst_high_flag_var, worst_low_flag_var
-        )
-      ),
-      modal_title = "R Code for Grade Laboratory Abnormalities",
-      code_header = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -601,19 +623,16 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         card$set_name("Laboratory Test Results Table")
         card$append_text("Laboratory Test Results Table", "header2")
         card$append_text("Laboratory test results with highest grade post-baseline Table", "header3")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

@@ -11,8 +11,7 @@ arm_ref_comp_observer(
   id_ref = "Ref",
   id_comp = "Comp",
   id_arm_var,
-  datasets,
-  dataname = "ADSL",
+  data,
   arm_ref_comp,
   module,
   on_off = shiny::reactive(TRUE),
@@ -33,9 +32,8 @@ arm_ref_comp_observer(
 
 \item{id_arm_var}{(\code{character}) id of Treatment variable input ui element}
 
-\item{datasets}{(\code{FilteredData}) object from the module}
-
-\item{dataname}{(\code{character}) dataset name}
+\item{data}{(\code{reactive} or \code{data.frame}) dataset used to validate Treatment reference inputs and
+set \code{id_ref} input.}
 
 \item{arm_ref_comp}{(\code{unknown}) Treatment reference and compare variables provided as a
 nested list where each Treatment variable corresponds a list specifying the default levels for the
@@ -56,35 +54,35 @@ stop the whole observer if FALSE.}
 Updates the reference and comparison Treatments when the selected Treatment variable changes
 }
 \examples{
-\dontrun{
 ds <- teal:::get_dummy_datasets()
 
 arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
-shinyApp(
-  ui = fluidPage(
-    teal.widgets::optionalSelectInput(
-      "arm",
-      "Treatment Variable",
-      choices = arm_var$choices,
-      selected = arm_var$selected
+if (interactive()) {
+  shinyApp(
+    ui = fluidPage(
+      teal.widgets::optionalSelectInput(
+        "arm",
+        "Treatment Variable",
+        choices = arm_var$choices,
+        selected = arm_var$selected
+      ),
+      shiny::uiOutput("arms_buckets"),
     ),
-    shiny::uiOutput("arms_buckets"),
-  ),
-  server = function(input, output, session) {
-    shiny::isolate({
-      teal.modules.clinical:::arm_ref_comp_observer(
-        session,
-        input,
-        output,
-        id_arm_var = "arm",
-        datasets = ds,
-        arm_ref_comp = arm_ref_comp,
-        module = "example"
-      )
-    })
-  }
-)
+    server = function(input, output, session) {
+      shiny::isolate({
+        teal.modules.clinical:::arm_ref_comp_observer(
+          session,
+          input,
+          output,
+          id_arm_var = "arm",
+          datasets = ds,
+          arm_ref_comp = arm_ref_comp,
+          module = "example"
+        )
+      })
+    }
+  )
 }
 }
 \keyword{internal}

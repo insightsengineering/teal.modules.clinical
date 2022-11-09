@@ -130,7 +130,7 @@ template_g_km <- function(dataname = "ANL",
       graph_list,
       substitute(
         expr = {
-          result <- mapply(
+          plot_list <- mapply(
             df = split(anl, f = anl$facet_var), nrow = seq_along(levels(anl$facet_var)),
             FUN = function(df_i, nrow_i) {
               if (nrow(df_i) == 0) {
@@ -189,8 +189,8 @@ template_g_km <- function(dataname = "ANL",
             },
             SIMPLIFY = FALSE
           )
-          km_grobs <- tern::stack_grobs(grobs = result)
-          km_grobs
+          plot <- tern::stack_grobs(grobs = plot_list)
+          plot
         },
         env = list(
           font_size = font_size,
@@ -215,7 +215,7 @@ template_g_km <- function(dataname = "ANL",
       graph_list,
       substitute(
         expr = {
-          result <- g_km(
+          plot <- g_km(
             df = anl,
             variables = variables,
             font_size = font_size,
@@ -253,7 +253,7 @@ template_g_km <- function(dataname = "ANL",
               NULL
             },
           )
-          result
+          plot
         },
         env = list(
           font_size = font_size,
@@ -339,8 +339,8 @@ template_g_km <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(ui = app$ui, server = app$server)
+#' if (interactive()) {
+#'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
 tm_g_km <- function(label,
@@ -597,7 +597,10 @@ ui_g_km <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -608,8 +611,9 @@ ui_g_km <- function(id, ...) {
 #' @noRd
 #'
 srv_g_km <- function(id,
-                     datasets,
+                     data,
                      reporter,
+                     filter_panel_api,
                      dataname,
                      parentname,
                      paramcd,
@@ -623,11 +627,11 @@ srv_g_km <- function(id,
                      time_unit_var,
                      plot_height,
                      plot_width) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
+  shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
     arm_ref_comp_observer(
@@ -635,15 +639,14 @@ srv_g_km <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
       on_off = shiny::reactive(input$compare_arms)
     )
 
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_merged <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(
         aval_var = aval_var,
         cnsr_var = cnsr_var,
@@ -653,12 +656,21 @@ srv_g_km <- function(id,
         facet_var = facet_var,
         time_unit_var = time_unit_var
       ),
-      merge_function = "dplyr::inner_join"
+      merge_function = "dplyr::inner_join",
+      join_keys = get_join_keys(data)
     )
 
+    anl_merged_q <- reactive({
+      teal.code::eval_code(
+        teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)),
+        code = as.expression(anl_merged()$expr)
+      )
+    })
+
     validate_checks <- shiny::reactive({
-      adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-      anl_filtered <- datasets$get_data(dataname, filtered = TRUE)
+      q1 <- anl_merged_q()
+      adsl_filtered <- q1[[parentname]]
+      anl_filtered <- q1[[dataname]]
 
       anl_m <- anl_merged()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -686,13 +698,12 @@ srv_g_km <- function(id,
       if (length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) == 1) {
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
-      if (input$compare_arms) {
+      if (isTRUE(input$compare_arms)) {
         validate_args <- append(
           validate_args,
           list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
         )
       }
-
       do.call(what = "validate_standard_inputs", validate_args)
 
       # validate xticks
@@ -720,16 +731,14 @@ srv_g_km <- function(id,
       NULL
     })
 
-    call_preparation <- shiny::reactive({
+    output_q <- shiny::reactive({
       validate_checks()
 
-      teal.code::chunks_reset()
+      q1 <- anl_merged_q()
       anl_m <- anl_merged()
-      teal.code::chunks_push_data_merge(anl_m)
-      teal.code::chunks_push_new_line()
 
-      ANL <- teal.code::chunks_get_var("ANL") # nolint
-      teal::validate_has_data(ANL, 2)
+      anl <- q1[["ANL"]] # nolint
+      teal::validate_has_data(anl, 2)
 
       input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
         strsplit(",") %>%
@@ -740,7 +749,7 @@ srv_g_km <- function(id,
         input_xticks <- NULL
       }
 
-      input_paramcd <- as.character(unique(anl_m$data()[[as.vector(anl_m$columns_source$paramcd)]]))
+      input_paramcd <- as.character(unique(anl[[as.vector(anl_m$columns_source$paramcd)]]))
       title <- paste("KM Plot of", input_paramcd)
 
       my_calls <- template_g_km(
@@ -768,13 +777,10 @@ srv_g_km <- function(id,
         ci_ribbon = input$show_ci_ribbon,
         title = title
       )
-      mapply(expression = my_calls, id = paste(names(my_calls), "call", sep = "_"), teal.code::chunks_push)
+      teal.code::eval_code(q1, as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive({
-      call_preparation()
-      teal.code::chunks_safe_eval()
-    })
+    plot_r <- shiny::reactive(output_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -784,13 +790,17 @@ srv_g_km <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(
-        list(arm_var, paramcd, strata_var, facet_var, aval_var, cnsr_var, time_unit_var)
-      ),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -800,19 +810,16 @@ srv_g_km <- function(id,
         card$set_name("Kaplan Meier Plot")
         card$append_text("Kaplan Meier Plot", "header2")
         card$append_text("Non-parametric method used to estimate the survival function from lifetime data", "header3")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

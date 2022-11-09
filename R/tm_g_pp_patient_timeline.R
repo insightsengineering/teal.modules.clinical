@@ -468,8 +468,8 @@ template_patient_timeline <- function(dataname = "ANL",
 #'     )
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_g_pp_patient_timeline <- function(label,
@@ -687,7 +687,10 @@ ui_g_patient_timeline <- function(id, ...) {
         )
       )
     ),
-    forms = teal::get_rcode_ui(ns("rcode")),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -695,8 +698,9 @@ ui_g_patient_timeline <- function(id, ...) {
 
 
 srv_g_patient_timeline <- function(id,
-                                   datasets,
+                                   data,
                                    reporter,
+                                   filter_panel_api,
                                    dataname_adae,
                                    dataname_adcm,
                                    parentname,
@@ -715,16 +719,15 @@ srv_g_patient_timeline <- function(id,
                                    plot_width,
                                    label,
                                    ggplot2_args) {
-  stopifnot(is_cdisc_data(datasets))
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
-
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(datasets$get_data(parentname, filtered = TRUE)[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -749,8 +752,9 @@ srv_g_patient_timeline <- function(id,
     )
 
     # Patient timeline tab ----
-    p_timeline_merged_data <- teal.transform::data_merge_module(
-      datasets = datasets,
+    merge_input_r <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = get_join_keys(data),
       data_extract = list(
         dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end,
         aerelday_start = aerelday_start, aerelday_end = aerelday_end,
@@ -759,7 +763,12 @@ srv_g_patient_timeline <- function(id,
       )
     )
 
-    patient_timeline_calls <- shiny::reactive({
+    merge_q_r <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(merge_input_r()$expr))
+    })
+
+    output_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       aeterm <- input[[extract_input("aeterm", dataname_adae)]]
@@ -777,7 +786,7 @@ srv_g_patient_timeline <- function(id,
       ae_chart_vars_null <- any(vapply(list(aeterm, aetime_start, aetime_end), is.null, FUN.VALUE = logical(1)))
       ds_chart_vars_null <- any(vapply(list(cmdecod, dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
 
-      p_timeline_data <- p_timeline_merged_data()$data()
+      p_timeline_data <- merge_q_r()[["ANL"]]
       # time variables can not be NA
       p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
 
@@ -802,22 +811,22 @@ srv_g_patient_timeline <- function(id,
       # AENDY columns to data_merge_module call above.
       aerelday_start_name <- `if`(
         length(aerelday_start),
-        p_timeline_merged_data()$columns_source$aerelday_start[[1]],
+        merge_input_r()$columns_source$aerelday_start[[1]],
         aerelday_start
       )
       aerelday_end_name <- `if`(
         length(aerelday_end),
-        p_timeline_merged_data()$columns_source$aerelday_end[[1]],
+        merge_input_r()$columns_source$aerelday_end[[1]],
         aerelday_end
       )
       dsrelday_start_name <- `if`(
         length(dsrelday_start),
-        p_timeline_merged_data()$columns_source$dsrelday_start[[1]],
+        merge_input_r()$columns_source$dsrelday_start[[1]],
         dsrelday_start
       )
       dsrelday_end_name <- `if`(
         length(dsrelday_end),
-        p_timeline_merged_data()$columns_source$dsrelday_end[[1]],
+        merge_input_r()$columns_source$dsrelday_end[[1]],
         dsrelday_end
       )
 
@@ -833,25 +842,6 @@ srv_g_patient_timeline <- function(id,
           "The sections of the plot (Adverse Events and Medication) do not have enough input variables.
           Please select the appropriate input variables."
         )
-      )
-
-      patient_timeline_stack <- teal.code::chunks_new()
-      time_line_stack_push <- function(...) {
-        teal.code::chunks_push(..., chunks = patient_timeline_stack)
-      }
-
-      teal.code::chunks_push_data_merge(p_timeline_merged_data(), chunks = patient_timeline_stack)
-
-      time_line_stack_push(
-        expression = substitute(
-          expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-          }, env = list(
-            patient_col = patient_col,
-            patient_id = patient_id()
-          )
-        ),
-        id = "patient_id_filter_call"
       )
 
       patient_timeline_calls <- template_patient_timeline(
@@ -871,21 +861,22 @@ srv_g_patient_timeline <- function(id,
         patient_id = patient_id(),
         ggplot2_args = ggplot2_args
       )
-      # patient_timeline_calls is a list containing one object
-      mapply(
-        expression = patient_timeline_calls,
-        id = "patient_timeline_plot_call",
-        time_line_stack_push
-      )
-      teal.code::chunks_safe_eval(chunks = patient_timeline_stack)
-      patient_timeline_stack
+
+      teal.code::eval_code(
+        merge_q_r(),
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        )
+      ) %>%
+        teal.code::eval_code(as.expression(patient_timeline_calls))
     })
 
-    plot_r <- shiny::reactive({
-      teal.code::chunks_reset()
-      teal.code::chunks_push_chunks(patient_timeline_calls())
-      teal.code::chunks_get_var("patient_timeline_plot")
-    })
+    plot_r <- shiny::reactive(output_q()[["patient_timeline_plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "patient_timeline_plot",
@@ -894,13 +885,17 @@ srv_g_patient_timeline <- function(id,
       width = plot_width
     )
 
-    teal::get_rcode_srv(
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+    )
+
+    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      datasets = datasets,
-      datanames = teal.transform::get_extract_datanames(list(
-        aeterm, aetime_start, aetime_end, dstime_start, dstime_end, cmdecod
-      )),
-      modal_title = label
+      verbatim_content = reactive(teal.code::get_code(output_q())),
+      title = label
     )
 
     ### REPORTER
@@ -909,19 +904,16 @@ srv_g_patient_timeline <- function(id,
         card <- teal.reporter::TealReportCard$new()
         card$set_name("Patient Profile Timeline Plot")
         card$append_text("Patient Profile Timeline Plot", "header2")
-        card$append_fs(datasets$get_filter_state())
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(get_rcode(
-          chunks = teal.code::get_chunks_object(parent_idx = 2L),
-          datasets = datasets,
-          title = "",
-          description = ""
-        ), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

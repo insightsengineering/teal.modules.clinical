@@ -75,31 +75,30 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Creates a valid expression for binary outcome analysis.
 }
 \examples{
-\dontrun{
-# Preparation of the test case.
-library(dplyr)
-library(scda)
-library(tern)
+if (interactive()) {
+  # Preparation of the test case.
+  library(dplyr)
+  library(scda)
+  library(tern)
+  adsl <- synthetic_cdisc_data("latest")$adsl
+  adrs <- synthetic_cdisc_data("latest")$adrs
 
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
-adrs <- synthetic_cdisc_dataset("latest", "adrs")
+  # Generate an expression for the analysis of responders.
+  a <- template_binary_outcome(
+    dataname = "adrs",
+    parentname = "adsl",
+    arm_var = "ARMCD",
+    paramcd = "BESRSPI",
+    ref_arm = "ARM A",
+    comp_arm = c("ARM B"),
+    compare_arm = TRUE,
+    show_rsp_cat = TRUE
+  )
 
-# Generate an expression for the analysis of responders.
-a <- template_binary_outcome(
-  dataname = "adrs",
-  parentname = "adsl",
-  arm_var = "ARMCD",
-  paramcd = "BESRSPI",
-  ref_arm = "ARM A",
-  comp_arm = c("ARM B"),
-  compare_arm = TRUE,
-  show_rsp_cat = TRUE
-)
-
-b <- mapply(expr = a, FUN = eval)
-b$data
-b$layout
-b$table
+  b <- mapply(expr = a, FUN = eval)
+  b$data
+  b$layout
+  b$table
 }
 
 }
