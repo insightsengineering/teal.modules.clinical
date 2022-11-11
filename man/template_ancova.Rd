@@ -14,6 +14,8 @@ template_ancova(
   aval_var,
   label_aval = NULL,
   cov_var,
+  interaction_y = FALSE,
+  interaction_item = NULL,
   paramcd_levels = "",
   paramcd_var = "PARAMCD",
   label_paramcd = NULL,

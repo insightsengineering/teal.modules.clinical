@@ -13,6 +13,8 @@ tm_t_ancova(
   arm_ref_comp = NULL,
   aval_var,
   cov_var,
+  interaction_y = FALSE,
+  interaction_item = NULL,
   avisit,
   paramcd,
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
