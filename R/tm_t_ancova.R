@@ -25,9 +25,8 @@ template_ancova <- function(dataname = "ANL",
                             aval_var,
                             label_aval = NULL,
                             cov_var,
-                            int_y,
-                            int_item,
-                            cov_int,
+                            interaction_y = FALSE,
+                            interaction_item = NULL,
                             paramcd_levels = "",
                             paramcd_var = "PARAMCD",
                             label_paramcd = NULL,
@@ -42,13 +41,17 @@ template_ancova <- function(dataname = "ANL",
     assertthat::is.string(label_aval) || is.null(label_aval),
     assertthat::is.flag(combine_comp_arms),
     assertthat::is.string(aval_var),
-    is.character(cov_var)
+    is.character(cov_var),
+    assertthat::is.string(interaction_y) || isFALSE(interaction_y),
+    assertthat::is.string(interaction_item) || is.null(interaction_item)
   )
 
   y <- list()
-  interact_fl <- (grepl("*",cov_int)) & (length(int_item) > 0) & (length(int_y) > 0)
-  if (interact_fl == TRUE) {
-    cov_var <- c(cov_var,cov_int)
+
+  interact_fl <- (!is.null(interaction_item) & interaction_y)
+
+  if (interact_fl) {
+    cov_var <- c(cov_var, paste0(arm_var, "*", interaction_item))
   }
 
   # Data processing.
@@ -197,14 +200,14 @@ template_ancova <- function(dataname = "ANL",
             label_pos = "topleft",
             split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
           ) %>%
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = cov_var),
-              conf_level = conf_level,
-              var_labels = "Unadjusted mean",
-              show_labels = "hidden",
-              .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
-            ),
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = cov_var),
+            conf_level = conf_level,
+            var_labels = "Unadjusted mean",
+            show_labels = "hidden",
+            .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
+          ),
           env = list(
             paramcd_var = paramcd_var,
             aval_var = aval_var,
@@ -216,7 +219,7 @@ template_ancova <- function(dataname = "ANL",
         )
       )
     } else {
-      if (interact_fl == FALSE) {
+      if (!interact_fl) {
         layout_list <- add_expr(
           layout_list,
           substitute(
@@ -226,13 +229,42 @@ template_ancova <- function(dataname = "ANL",
               label_pos = "topleft",
               split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
             ) %>%
-              summarize_ancova(
-                vars = aval_var,
-                variables = list(arm = arm_var, covariates = cov_var),
-                conf_level = conf_level,
-                var_labels = "Adjusted mean",
-                show_labels = "hidden"
-              ),
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              conf_level = conf_level,
+              var_labels = "Adjusted mean",
+              show_labels = "hidden"
+            ),
+            env = list(
+              paramcd_var = paramcd_var,
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
+              conf_level = conf_level,
+              dataname = as.name(dataname)
+            )
+          )
+        )
+      } else {
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            rtables::split_rows_by(
+              paramcd_var,
+              split_fun = split_fun,
+              label_pos = "topleft",
+              split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
+            ) %>%
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              interaction_y = interaction_y,
+              interaction_item = interaction_item,
+              conf_level = conf_level,
+              var_labels = "Adjusted mean",
+              show_labels = "hidden"
+            ),
             env = list(
               paramcd_var = paramcd_var,
               aval_var = aval_var,
@@ -244,44 +276,15 @@ template_ancova <- function(dataname = "ANL",
           )
         )
       }
-      if (interact_fl == TRUE) {
-        layout_list <- add_expr(
-          layout_list,
-          substitute(
-            rtables::split_rows_by(
-              paramcd_var,
-              split_fun = split_fun,
-              label_pos = "topleft",
-              split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
-            ) %>%
-              summarize_ancova(
-                vars = aval_var,
-                variables = list(arm = arm_var, covariates = cov_var),
-                interaction_y = int_y,
-                interaction_item = int_item,
-                conf_level = conf_level,
-                var_labels = "Adjusted mean",
-                show_labels = "hidden"
-              ),
-            env = list(
-              paramcd_var = paramcd_var,
-              aval_var = aval_var,
-              arm_var = arm_var,
-              cov_var = cov_var,
-              conf_level = conf_level,
-              dataname = as.name(dataname)
-            )
-          )
-        )
-      }}
-  else {
+    }
+  } else {
     # Only one entry in `paramcd_levels` here.
 
-    if (interact_fl == FALSE) {
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
+    if (!interact_fl) {
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = NULL),
@@ -290,30 +293,6 @@ template_ancova <- function(dataname = "ANL",
             .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
             table_names = "unadjusted_comparison"
           ),
-        env = list(
-          paramcd_levels = paramcd_levels,
-          aval_var = aval_var,
-          arm_var = arm_var,
-          conf_level = conf_level,
-          dataname = as.name(dataname)
-        )
-      )
-    )}
-    if (interact_fl == TRUE) {
-      layout_list <- add_expr(
-        layout_list,
-        substitute(
-          rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = NULL),
-              interaction_y = int_y,
-              interaction_item = int_item,
-              conf_level = conf_level,
-              var_labels = "Unadjusted comparison",
-              .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
-              table_names = "unadjusted_comparison"
-            ),
           env = list(
             paramcd_levels = paramcd_levels,
             aval_var = aval_var,
@@ -322,42 +301,65 @@ template_ancova <- function(dataname = "ANL",
             dataname = as.name(dataname)
           )
         )
-      )}}
-
-    if (length(cov_var) > 0) {
-
-      if (interact_fl == FALSE) {
+      )
+    } else {
       layout_list <- add_expr(
         layout_list,
         substitute(
+          rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
           summarize_ancova(
             vars = aval_var,
-            variables = list(arm = arm_var, covariates = cov_var),
+            variables = list(arm = arm_var, covariates = NULL),
+            interaction_y = interaction_y,
+            interaction_item = interaction_item,
             conf_level = conf_level,
-            var_labels = paste0(
-              "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
-            ),
-            table_names = "adjusted_comparison"
+            var_labels = "Unadjusted comparison",
+            .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+            table_names = "unadjusted_comparison"
           ),
           env = list(
+            paramcd_levels = paramcd_levels,
             aval_var = aval_var,
             arm_var = arm_var,
-            cov_var = cov_var,
             conf_level = conf_level,
             dataname = as.name(dataname)
           )
         )
       )
-      }
-      if (interact_fl == TRUE) {
+    }
+
+    if (length(cov_var) > 0) {
+      if (!interact_fl) {
         layout_list <- add_expr(
           layout_list,
           substitute(
             summarize_ancova(
               vars = aval_var,
               variables = list(arm = arm_var, covariates = cov_var),
-              interaction_y = int_y,
-              interaction_item = int_item,
+              conf_level = conf_level,
+              var_labels = paste0(
+                "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
+              ),
+              table_names = "adjusted_comparison"
+            ),
+            env = list(
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
+              conf_level = conf_level,
+              dataname = as.name(dataname)
+            )
+          )
+        )
+      } else {
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              interaction_y = interaction_y,
+              interaction_item = interaction_item,
               conf_level = conf_level,
               var_labels = paste0(
                 "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
@@ -488,9 +490,8 @@ tm_t_ancova <- function(label,
                         arm_ref_comp = NULL,
                         aval_var,
                         cov_var,
-                        int_y,
-                        int_item,
-                        cov_int,
+                        interaction_y = FALSE,
+                        interaction_item = NULL,
                         avisit,
                         paramcd,
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
@@ -602,6 +603,33 @@ ui_ancova <- function(id, ...) {
         a$conf_level$selected,
         multiple = FALSE,
         fixed = a$conf_level$fixed
+      ),
+      shiny::div(
+        shiny::tags$label("Include Interaction Term"),
+        shinyWidgets::switchInput(
+          inputId = ns("add_interaction"),
+          value = !is.null(a$interaction_item),
+          size = "mini"
+        ),
+        shiny::conditionalPanel(
+          condition = paste0("input['", ns("add_interaction"), "']"),
+          shiny::div(
+            teal.transform::data_extract_ui(
+              id = ns("interaction_item"),
+              label = "Select Interaction Item",
+              data_extract_spec = a$cov_var,
+              is_single_dataset = is_single_dataset_value
+            )
+            # teal.widgets::optionalSelectInput(
+            #   ns("interaction_y"),
+            #   label = "Select Interaction y",
+            #   choices = ,
+            #   selected = ,
+            #   multiple = FALSE,
+            #   fixed = FALSE
+            # )
+          )
+        )
       )
     ),
     forms = tagList(
@@ -761,6 +789,14 @@ srv_ancova <- function(id,
       paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
       visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
+      # if (input$add_interaction) {
+      #   interact_y <-
+      #   interact_item <-
+      # } else {
+      #   interact_y <- FALSE
+      #   interact_item <- NULL
+      # }
+
       my_calls <- template_ancova(
         parentname = "ANL_ADSL",
         dataname = "ANL",
@@ -771,6 +807,9 @@ srv_ancova <- function(id,
         aval_var = as.vector(merged$anl_input_r()$columns_source$aval_var),
         label_aval = label_aval,
         cov_var = as.vector(merged$anl_input_r()$columns_source$cov_var),
+        interaction_item = input$interaction_item,
+        interaction_y = interact_y,
+        interaction_item = interact_item,
         paramcd_levels = paramcd_levels,
         paramcd_var = unlist(paramcd$filter)["vars_selected"],
         label_paramcd = label_paramcd,
