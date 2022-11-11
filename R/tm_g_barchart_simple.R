@@ -336,7 +336,7 @@ srv_g_barchart_simple <- function(id,
         shiny::need(anl_inputs()$columns_source$x, "Please select an x-variable")
       })
       qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      qenvv <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
+      qenv <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
       qenv
     })
 
