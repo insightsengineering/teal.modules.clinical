@@ -64,7 +64,6 @@ tm_a_gee <- function(label,
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args()) {
-
   logger::log_info("Initializing tm_a_gee (prototype)")
 
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
@@ -246,33 +245,34 @@ srv_gee <- function(id,
 
     ## split_covariates ----
     shiny::observeEvent(input[[teal.modules.clinical::extract_input("cov_var", dataname)]],
-                        ignoreNULL = FALSE, {
-                          # update covariates as actual variables
-                          split_interactions_values <- teal.modules.clinical::split_interactions(
-                            input[[teal.modules.clinical::extract_input("cov_var", dataname)]]
-                          )
-                          arm_var_value <- input[[teal.modules.clinical::extract_input("arm_var", parentname)]]
-                          arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
-                          if (arm_in_cov) {
-                            split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
-                          } else {
-                            split_covariates_selected <- split_interactions_values
-                          }
-                          teal.widgets::updateOptionalSelectInput(
-                            session,
-                            inputId = teal.modules.clinical::extract_input("split_covariates", dataname),
-                            selected = split_covariates_selected
-                          )
-                        })
+      ignoreNULL = FALSE,
+      {
+        # update covariates as actual variables
+        split_interactions_values <- teal.modules.clinical::split_interactions(
+          input[[teal.modules.clinical::extract_input("cov_var", dataname)]]
+        )
+        arm_var_value <- input[[teal.modules.clinical::extract_input("arm_var", parentname)]]
+        arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
+        if (arm_in_cov) {
+          split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
+        } else {
+          split_covariates_selected <- split_interactions_values
+        }
+        teal.widgets::updateOptionalSelectInput(
+          session,
+          inputId = teal.modules.clinical::extract_input("split_covariates", dataname),
+          selected = split_covariates_selected
+        )
+      }
+    )
 
     ## arm_ref_comp_observer ----
-    teal.modules.clinical:::arm_ref_comp_observer(
+    arm_ref_comp_observer(
       session,
       input,
       output,
       id_arm_var = teal.modules.clinical::extract_input("arm_var", parentname),
-      datasets = datasets,
-      dataname = parentname,
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_a_gee"
     )
