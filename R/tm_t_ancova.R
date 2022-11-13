@@ -506,7 +506,6 @@ tm_t_ancova <- function(label,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_ancova")
-  browser()
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -685,7 +684,6 @@ srv_ancova <- function(id,
       arm_ref_comp = arm_ref_comp,
       module = "tm_ancova"
     )
-    browser()
     anl_merged_input <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(
@@ -737,11 +735,8 @@ srv_ancova <- function(id,
       }
     })
 
-
-
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
-      # browser()
       adsl_filtered <- data[[parentname]]()
       anl_filtered <- data[[dataname]]()
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
@@ -801,6 +796,13 @@ srv_ancova <- function(id,
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
         "`Select Endpoint` is not selected."
       ))
+
+      if (!is.null(input$interact_item)) {
+        shiny::validate(shiny::need(
+          input$interact_item %in% input_cov_var,
+          "Interaction Item must be one of the selected covariates."
+        ))
+      }
 
       if (length(input_cov_var >= 1L)) {
         input_cov_var_dataset <- anl_filtered[input_cov_var]
