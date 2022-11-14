@@ -13,8 +13,9 @@ tm_t_ancova(
   arm_ref_comp = NULL,
   aval_var,
   cov_var,
-  interaction_y = FALSE,
-  interaction_item = NULL,
+  include_interact = FALSE,
+  interact_var = NULL,
+  interact_y = FALSE,
   avisit,
   paramcd,
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
@@ -55,6 +56,14 @@ variable.}
 \item{cov_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
 object with all available choices and preselected option for the covariates
 variables.}
+
+\item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
+
+\item{interact_var}{(\code{character})\cr name of the variable that should have interactions
+with arm. If the interaction is not needed, the default option is \code{NULL}.}
+
+\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select
+the specific ANCOVA results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{avisit}{(\code{choices_selected} or \code{data_extract_spec})\cr
 value of analysis visit \code{AVISIT} of interest.}
