@@ -722,7 +722,7 @@ srv_ancova <- function(id,
       input$interact_var
     }, {
       interact_var <- input$interact_var
-      if (isTRUE(input$include_interact) & length(interact_var) > 0) {
+      if (isTRUE(input$include_interact) && length(interact_var) > 0) {
         interact_choices <- as.vector(unique(data[[dataname]]()[[interact_var]]))
         if (length(interact_choices) > 20) {
           shinyjs::hide("interact_y")
