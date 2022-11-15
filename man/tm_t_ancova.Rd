@@ -160,6 +160,10 @@ app <- init(
       paramcd = choices_selected(
         choices = value_choices(adqs, "PARAMCD", "PARAM"),
         selected = "FKSI-FWB"
+      ),
+      interact_var = choices_selected(
+        choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
+        selected = "STRATA1"
       )
     )
   )

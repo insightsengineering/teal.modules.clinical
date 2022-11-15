@@ -479,7 +479,7 @@ template_ancova <- function(dataname = "ANL",
 #'         selected = "FKSI-FWB"
 #'       ),
 #'       interact_var = choices_selected(
-#'         choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX", "AVISIT", "PARAMCD")),
+#'         choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
 #'         selected = "STRATA1"
 #'       )
 #'     )
