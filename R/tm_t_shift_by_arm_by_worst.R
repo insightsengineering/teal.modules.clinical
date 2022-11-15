@@ -474,14 +474,14 @@ srv_shift_by_arm_by_worst <- function(id,
         shiny::need(input$treatment_flag, "Please select indicator value for on treatment records."),
         shiny::need(input_worst_flag_var, "Please select a worst flag variable."),
         shiny::need(
-          length(unique(anl_m$data()[[input_aval_var]])) < 50,
+          length(unique(merged$anl_q()[["ANL"]][[input_aval_var]])) < 50,
           paste(
             "There are too many values of", input_aval_var, "for the selected endpoint.",
             "Please select either a different endpoint or a different analysis value."
           )
         ),
         shiny::need(
-          length(unique(anl_m$data()[[input_base_var]])) < 50,
+          length(unique(merged$anl_q()[["ANL"]][[input_base_var]])) < 50,
           paste(
             "There are too many values of", input_base_var, "for the selected endpoint.",
             "Please select either a different endpoint or a different baseline value."
