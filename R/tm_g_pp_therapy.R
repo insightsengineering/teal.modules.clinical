@@ -601,7 +601,7 @@ srv_g_therapy <- function(id,
     )
 
     # Therapy tab ----
-    anl_merged_input <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(
@@ -612,16 +612,16 @@ srv_g_therapy <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    anl_q_r <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(anl_merged_input()$expr))
+        teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_q_r)
+    merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
-    output_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-      teal::validate_has_data(merged$anl_q_r()[["ANL"]], 1)
+      teal::validate_has_data(merged$anl_q()[["ANL"]], 1)
 
       shiny::validate(
         shiny::need(
@@ -665,7 +665,7 @@ srv_g_therapy <- function(id,
           "Please select CMENDY variable."
         ),
         shiny::need(
-          nrow(merged$anl_q_r()[["ANL"]][input$patient_id == merged$anl_q_r()[["ANL"]][, patient_col], ]) > 0,
+          nrow(merged$anl_q()[["ANL"]][input$patient_id == merged$anl_q()[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )
@@ -688,7 +688,7 @@ srv_g_therapy <- function(id,
       )
 
       teal.code::eval_code(
-        merged$anl_q_r(),
+        merged$anl_q(),
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
@@ -703,12 +703,12 @@ srv_g_therapy <- function(id,
 
     output$therapy_table <- DT::renderDataTable(
       expr = {
-        output_q()[["therapy_table"]]
+        all_q()[["therapy_table"]]
       },
       options = list(pageLength = input$therapy_table_rows)
     )
 
-    plot_r <- shiny::reactive(output_q()[["therapy_plot"]])
+    plot_r <- shiny::reactive(all_q()[["therapy_plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "therapy_plot",
@@ -719,14 +719,14 @@ srv_g_therapy <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
@@ -745,7 +745,7 @@ srv_g_therapy <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

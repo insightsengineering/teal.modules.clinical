@@ -518,23 +518,23 @@ srv_g_lineplot <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_merged_input <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(anl_merged_input()$expr))
+        teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    merged <- list(anl_input_r = anl_merged_input, anl_q_r = anl_merged_q)
+    merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
     validate_checks <- shiny::reactive({
-      adsl_filtered <- data[[parentname]]()
-      anl_filtered <- data[[dataname]]()
+      adsl_filtered <- merged$anl_q()[[parentname]]
+      anl_filtered <- merged$anl_q()[[dataname]]
 
       input_strata <- names(merged$anl_input_r()$columns_source$strata)
       input_x_var <- names(merged$anl_input_r()$columns_source$x)
@@ -576,9 +576,9 @@ srv_g_lineplot <- function(id,
       NULL
     })
 
-    output_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       validate_checks()
-      ANL <- merged$anl_q_r()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]] # nolint
       teal::validate_has_data(ANL, 2)
 
       whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
@@ -604,10 +604,10 @@ srv_g_lineplot <- function(id,
         table_font_size = input$table_font_size,
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(merged$anl_q_r(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(output_q()[["plot"]])
+    plot_r <- shiny::reactive(all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -619,14 +619,14 @@ srv_g_lineplot <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
@@ -645,7 +645,7 @@ srv_g_lineplot <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
