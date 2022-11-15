@@ -331,17 +331,20 @@ srv_g_barchart_simple <- function(id,
       data_extract = list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
     )
 
-    anl_q <- shiny::reactive({
+    validate_checks <- reactive(
       shiny::validate({
         shiny::need(anl_inputs()$columns_source$x, "Please select an x-variable")
       })
+    )
+
+
+    anl_q <- shiny::reactive({
       qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       qenv <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
       qenv
     })
 
     count_q <- shiny::reactive({
-      req(anl_q())
       qenv <- anl_q()
       teal::validate_has_data(qenv[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
@@ -390,7 +393,7 @@ srv_g_barchart_simple <- function(id,
     })
 
     all_q <- shiny::reactive({
-      req(count_q())
+      validate_checks()
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
       qenv2 <- teal.code::eval_code(count_q(), substitute(
