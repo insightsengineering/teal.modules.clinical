@@ -524,8 +524,8 @@ template_shift_by_grade <- function(parentname,
 #'     ADSL = list(SAFFL = "Y")
 #'   )
 #' )
-#' \dontrun{
-#' shinyApp(app$ui, app$server)
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_t_shift_by_grade <- function(label,
