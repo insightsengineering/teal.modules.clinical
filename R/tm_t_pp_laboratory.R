@@ -344,7 +344,7 @@ srv_g_laboratory <- function(id,
     )
 
     # Laboratory values tab ----
-    merge_input_r <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(
@@ -357,12 +357,12 @@ srv_g_laboratory <- function(id,
       )
     )
 
-    merge_q_r <- reactive({
+    anl_q <- reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
-        teal.code::eval_code(as.expression(merge_input_r()$expr))
+        teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    output_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
 
       shiny::validate(
@@ -404,7 +404,7 @@ srv_g_laboratory <- function(id,
       )
 
       teal.code::eval_code(
-        merge_q_r(),
+        anl_q(),
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
@@ -418,7 +418,7 @@ srv_g_laboratory <- function(id,
     })
 
     table_r <- shiny::reactive({
-      q <- output_q()
+      q <- all_q()
       list(
         html = q[["labor_table_html"]],
         raw = q[["labor_table_raw"]]
@@ -433,14 +433,14 @@ srv_g_laboratory <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
@@ -459,7 +459,7 @@ srv_g_laboratory <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

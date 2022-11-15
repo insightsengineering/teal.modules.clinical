@@ -494,7 +494,8 @@ srv_g_forest_tte <- function(id,
       module = "tm_g_forest_tte"
     )
 
-    anl_selectors <- teal.transform::data_extract_multiple_srv(
+    anl_inputs <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -504,37 +505,30 @@ srv_g_forest_tte <- function(id,
         cnsr_var = cnsr_var,
         time_unit_var = time_unit_var
       ),
-      datasets = data,
-      join_keys = get_join_keys(data)
-    )
-
-    anl_merged <- teal.transform::merge_expression_srv(
-      selector_list = anl_selectors,
-      datasets = data,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
-    adsl_merged <- teal.transform::merge_expression_module(
+    adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
       anl_name = "ANL_ADSL"
     )
 
-    anl_merged_q <- reactive({
+    anl_q <- reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      q1 <- teal.code::eval_code(q, as.expression(anl_merged()$expr))
-      teal.code::eval_code(q1, as.expression(adsl_merged()$expr))
+      qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
+      teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
     })
 
     validate_checks <- shiny::reactive({
-      q1 <- anl_merged_q()
-      adsl_filtered <- q1[[parentname]]
-      anl_filtered <- q1[[dataname]]
-      anl <- q1[["ANL"]]
+      qenv <- anl_q()
+      adsl_filtered <- qenv[[parentname]]
+      anl_filtered <- qenv[[dataname]]
+      anl <- qenv[["ANL"]]
 
-      anl_m <- anl_merged()
+      anl_m <- anl_inputs()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
       input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
@@ -600,11 +594,11 @@ srv_g_forest_tte <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    output_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       validate_checks()
 
-      q1 <- anl_merged_q()
-      anl_m <- anl_merged()
+      qenv <- anl_q()
+      anl_m <- anl_inputs()
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
@@ -627,11 +621,11 @@ srv_g_forest_tte <- function(id,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(q1, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     # Outputs to render.
-    plot_r <- shiny::reactive(output_q()[["p"]])
+    plot_r <- shiny::reactive(all_q()[["p"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -642,14 +636,14 @@ srv_g_forest_tte <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = "R Code for the Current Time-to-Event Forest Plot"
     )
 
@@ -668,7 +662,7 @@ srv_g_forest_tte <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
