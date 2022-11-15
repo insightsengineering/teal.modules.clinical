@@ -200,14 +200,14 @@ template_ancova <- function(dataname = "ANL",
             label_pos = "topleft",
             split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
           ) %>%
-          summarize_ancova(
-            vars = aval_var,
-            variables = list(arm = arm_var, covariates = cov_var),
-            conf_level = conf_level,
-            var_labels = "Unadjusted mean",
-            show_labels = "hidden",
-            .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
-          ),
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              conf_level = conf_level,
+              var_labels = "Unadjusted mean",
+              show_labels = "hidden",
+              .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
+            ),
           env = list(
             paramcd_var = paramcd_var,
             aval_var = aval_var,
@@ -229,13 +229,13 @@ template_ancova <- function(dataname = "ANL",
               label_pos = "topleft",
               split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
             ) %>%
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = cov_var),
-              conf_level = conf_level,
-              var_labels = "Adjusted mean",
-              show_labels = "hidden"
-            ),
+              summarize_ancova(
+                vars = aval_var,
+                variables = list(arm = arm_var, covariates = cov_var),
+                conf_level = conf_level,
+                var_labels = "Adjusted mean",
+                show_labels = "hidden"
+              ),
             env = list(
               paramcd_var = paramcd_var,
               aval_var = aval_var,
@@ -256,15 +256,15 @@ template_ancova <- function(dataname = "ANL",
               label_pos = "topleft",
               split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
             ) %>%
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = cov_var),
-              interact_y = interact_y,
-              interact_var = interact_var,
-              conf_level = conf_level,
-              var_labels = "Adjusted mean",
-              show_labels = "hidden"
-            ),
+              summarize_ancova(
+                vars = aval_var,
+                variables = list(arm = arm_var, covariates = cov_var),
+                interact_y = interact_y,
+                interact_var = interact_var,
+                conf_level = conf_level,
+                var_labels = "Adjusted mean",
+                show_labels = "hidden"
+              ),
             env = list(
               paramcd_var = paramcd_var,
               aval_var = aval_var,
@@ -287,14 +287,14 @@ template_ancova <- function(dataname = "ANL",
         layout_list,
         substitute(
           rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
-          summarize_ancova(
-            vars = aval_var,
-            variables = list(arm = arm_var, covariates = NULL),
-            conf_level = conf_level,
-            var_labels = "Unadjusted comparison",
-            .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
-            table_names = "unadjusted_comparison"
-          ),
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = NULL),
+              conf_level = conf_level,
+              var_labels = "Unadjusted comparison",
+              .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+              table_names = "unadjusted_comparison"
+            ),
           env = list(
             paramcd_levels = paramcd_levels,
             aval_var = aval_var,
@@ -309,16 +309,16 @@ template_ancova <- function(dataname = "ANL",
         layout_list,
         substitute(
           rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
-          summarize_ancova(
-            vars = aval_var,
-            variables = list(arm = arm_var, covariates = NULL),
-            interact_y = interact_y,
-            interact_var = interact_var,
-            conf_level = conf_level,
-            var_labels = "Unadjusted comparison",
-            .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
-            table_names = "unadjusted_comparison"
-          ),
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = NULL),
+              interact_y = interact_y,
+              interact_var = interact_var,
+              conf_level = conf_level,
+              var_labels = "Unadjusted comparison",
+              .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+              table_names = "unadjusted_comparison"
+            ),
           env = list(
             paramcd_levels = paramcd_levels,
             aval_var = aval_var,
