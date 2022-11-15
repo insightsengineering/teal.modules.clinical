@@ -477,6 +477,10 @@ template_ancova <- function(dataname = "ANL",
 #'       paramcd = choices_selected(
 #'         choices = value_choices(adqs, "PARAMCD", "PARAM"),
 #'         selected = "FKSI-FWB"
+#'       ),
+#'       interact_var = choices_selected(
+#'         choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX", "AVISIT", "PARAMCD")),
+#'         selected = "STRATA1"
 #'       )
 #'     )
 #'   )
@@ -521,7 +525,8 @@ tm_t_ancova <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
     avisit = cs_to_des_filter(avisit, dataname = dataname, multiple = TRUE, include_vars = TRUE),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE),
+    interact_var = cs_to_des_select(interact_var, dataname = dataname)
   )
 
   module(
@@ -548,7 +553,7 @@ tm_t_ancova <- function(label,
 ui_ancova <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd
+    a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd, a$interact_var
   )
 
   ns <- shiny::NS(id)
@@ -560,7 +565,7 @@ ui_ancova <- function(id, ...) {
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
-      teal.transform::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
+      teal.transform::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd", "interact_var")]),
       teal.transform::data_extract_ui(
         id = ns("avisit"),
         label = "Analysis Visit",
@@ -622,12 +627,11 @@ ui_ancova <- function(id, ...) {
         shiny::conditionalPanel(
           condition = paste0("input['", ns("include_interact"), "']"),
           shiny::div(
-            shiny::selectInput(
-              inputId = ns("interact_var"),
-              label = "Select Interaction Item",
-              choices = a$cov_var$select$choices,
-              selected = a$cov_var$select$choices[1],
-              multiple = FALSE
+            teal.transform::data_extract_ui(
+              id = ns("interact_var"),
+              label = "Select Interaction Variable",
+              data_extract_spec = a$interact_var,
+              is_single_dataset = is_single_dataset_value
             ),
             teal.widgets::optionalSelectInput(
               ns("interact_y"),
@@ -691,7 +695,8 @@ srv_ancova <- function(id,
         aval_var = aval_var,
         cov_var = cov_var,
         avisit = avisit,
-        paramcd = paramcd
+        paramcd = paramcd,
+        interact_var = interact_var
       ),
       merge_function = "dplyr::inner_join",
       join_keys = get_join_keys(data)
@@ -718,26 +723,29 @@ srv_ancova <- function(id,
 
     # Event handler:
     # Update interact_y choices to all levels of selected interact_var
-    shiny::observeEvent({
-      input$include_interact
-      input$interact_var
-    }, {
-      interact_var <- input$interact_var
-      if (isTRUE(input$include_interact) && length(interact_var) > 0) {
-        interact_choices <- as.vector(unique(data[[dataname]]()[[interact_var]]))
-        if (length(interact_choices) > 20) {
-          shinyjs::hide("interact_y")
-        } else {
-          shinyjs::show("interact_y")
-          teal.widgets::updateOptionalSelectInput(
-            session,
-            "interact_y",
-            selected = "",
-            choices = interact_choices
-          )
+    shiny::observeEvent(
+      {
+        input$include_interact
+        merged$anl_input_r()$columns_source$interact_var
+      },
+      {
+        interact_var <- merged$anl_input_r()$columns_source$interact_var
+        if (isTRUE(input$include_interact) && length(interact_var) > 0) {
+          interact_choices <- as.vector(unique(merged$anl_q()[[dataname]][[interact_var]]))
+          if (length(interact_choices) > 20) {
+            shinyjs::hide("interact_y")
+          } else {
+            shinyjs::show("interact_y")
+            teal.widgets::updateOptionalSelectInput(
+              session,
+              "interact_y",
+              selected = "",
+              choices = interact_choices
+            )
+          }
         }
       }
-    })
+    )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
@@ -747,6 +755,7 @@ srv_ancova <- function(id,
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_aval_var <- as.vector(merged$anl_input_r()$columns_source$aval_var)
       input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
+      input_interact_var <- as.vector(merged$anl_input_r()$columns_source$interact_var)
       input_avisit <- unlist(avisit$filter)["vars_selected"]
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
@@ -755,7 +764,9 @@ srv_ancova <- function(id,
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avisit, input_aval_var, input_cov_var),
+        anlvars = c(
+          "USUBJID", "STUDYID", input_paramcd, input_avisit, input_aval_var, input_cov_var, input_interact_var
+        ),
         arm_var = input_arm_var
       )
       validate_args <- append(
@@ -801,11 +812,17 @@ srv_ancova <- function(id,
         "`Select Endpoint` is not selected."
       ))
 
-      if (!is.null(input$interact_var)) {
-        shiny::validate(shiny::need(
-          input$interact_var %in% input_cov_var,
-          "Interaction Item must be one of the selected covariates."
-        ))
+      if (input$include_interact) {
+        if (!is.null(input_interact_var) && length(input_interact_var) > 0) {
+          shiny::validate(shiny::need(
+            !input_interact_var %in% c(input_avisit, input_paramcd) &&
+              length(as.vector(unique(anl_filtered[[input_interact_var]]))) > 1,
+            paste(
+              "Interaction variable cannot be a filter variable and must have at least two levels.",
+              "Please select a different interaction variable."
+            )
+          ))
+        }
       }
 
       if (length(input_cov_var >= 1L)) {
@@ -829,7 +846,8 @@ srv_ancova <- function(id,
       label_aval <- if (length(input_aval) != 0) attributes(ANL[[input_aval]])$label else NULL
       paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
       visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
-      interact_var <- if (length(input$interact_var) == 0) NULL else input$interact_var
+      interact_var <- as.vector(merged$anl_input_r()$columns_source$interact_var)
+      interact_var <- if (length(interact_var) == 0) NULL else interact_var
       interact_y <- if (is.null(input$interact_y) || input$interact_y == "") FALSE else input$interact_y
 
       my_calls <- template_ancova(
