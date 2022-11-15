@@ -732,7 +732,7 @@ srv_ancova <- function(id,
         interact_var <- merged$anl_input_r()$columns_source$interact_var
         if (isTRUE(input$include_interact) && length(interact_var) > 0) {
           interact_choices <- as.vector(unique(merged$anl_q()[[dataname]][[interact_var]]))
-          if (length(interact_choices) > 20) {
+          if (all(is.numeric(interact_choices))) {
             shinyjs::hide("interact_y")
           } else {
             shinyjs::show("interact_y")
