@@ -50,7 +50,7 @@ template_ancova <- function(dataname = "ANL",
 
   y <- list()
 
-  if (include_interact) {
+  if (include_interact && !is.null(interact_var)) {
     cov_var <- c(cov_var, paste0(arm_var, "*", interact_var))
   }
 
@@ -520,6 +520,13 @@ tm_t_ancova <- function(label,
 
   args <- c(as.list(environment()))
 
+  if (is.null(interact_var)) {
+    interact_var <- choices_selected(
+      choices = cov_var$choices,
+      selected = NULL
+    )
+  }
+
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
@@ -823,6 +830,13 @@ srv_ancova <- function(id,
             )
           ))
         }
+      }
+
+      if (!is.null(input$interact_y) && !input$interact_y %in% c(FALSE, "")) {
+        shiny::validate(shiny::need(
+          !is.null(input_interact_var),
+          "Interaction y cannot be specified without first specifying Interaction Variable."
+        ))
       }
 
       if (length(input_cov_var >= 1L)) {
