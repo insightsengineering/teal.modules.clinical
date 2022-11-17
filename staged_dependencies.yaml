@@ -8,6 +8,9 @@ upstream_repos:
   insightsengineering/tern.mmrm:
     repo: insightsengineering/tern.mmrm
     host: https://github.com
+  insightsengineering/tern.gee:
+    repo: insightsengineering/tern.gee
+    host: https://github.com
   insightsengineering/scda:
     repo: insightsengineering/scda
     host: https://github.com

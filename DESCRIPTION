@@ -57,6 +57,7 @@ Imports:
     teal.transform (>= 0.2.0),
     teal.widgets (>= 0.2.0),
     tern.mmrm (>= 0.2.1),
+    tern.gee,
     tidyr,
     utils,
     vistime
