@@ -82,7 +82,6 @@ Remotes:
     insightsengineering/teal.widgets@*release,
     insightsengineering/teal@*release,
     insightsengineering/tern.mmrm@*release,
-    insightsengineering/tern.gee@*release,
     insightsengineering/tern@*release
 Config/Needs/website: insightsengineering/nesttemplate
 Encoding: UTF-8
