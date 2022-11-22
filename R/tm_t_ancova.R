@@ -59,6 +59,10 @@ template_ancova <- function(dataname = "ANL",
     cov_var <- c(cov_var, paste0(arm_var, "*", interact_var))
   }
 
+  if (length(cov_var) == 0) {
+    cov_var <- NULL
+  }
+
   # Data processing.
   data_list <- list()
   anl_list <- list()
@@ -263,7 +267,7 @@ template_ancova <- function(dataname = "ANL",
         rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
           summarize_ancova(
             vars = aval_var,
-            variables = list(arm = arm_var, covariates = NULL),
+            variables = list(arm = arm_var, covariates = cov_var),
             interaction_y = interact_y,
             interaction_item = interact_item,
             conf_level = conf_level,
@@ -275,6 +279,7 @@ template_ancova <- function(dataname = "ANL",
           paramcd_levels = paramcd_levels,
           aval_var = aval_var,
           arm_var = arm_var,
+          cov_var = cov_var,
           interact_y = interact_y,
           interact_item = interact_var,
           conf_level = conf_level,
