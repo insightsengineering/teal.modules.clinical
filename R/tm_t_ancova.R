@@ -367,7 +367,8 @@ template_ancova <- function(dataname = "ANL",
                   paste0(
                     "Adjusted comparison (", paste(cov_var, collapse = " + "),
                     "), Interaction Level: ", interact_y
-                )},
+                  )
+                },
                 table_names = "adjusted_comparison",
                 interaction_y = interact_y,
                 interaction_item = interact_var
