@@ -199,122 +199,189 @@ template_ancova <- function(dataname = "ANL",
   )
 
   if (length(paramcd_levels) > 1) {
-    if (length(cov_var) == 0) {
-      layout_list <- add_expr(
-        layout_list,
-        substitute(
-          rtables::split_rows_by(
-            paramcd_var,
-            split_fun = split_fun,
-            label_pos = "topleft",
-            split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
-          ) %>%
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = cov_var),
-              conf_level = conf_level,
-              var_labels = "Unadjusted mean",
-              show_labels = "hidden",
-              .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
-            ),
-          env = list(
-            paramcd_var = paramcd_var,
-            aval_var = aval_var,
-            arm_var = arm_var,
-            cov_var = cov_var,
-            conf_level = conf_level,
-            dataname = as.name(dataname)
-          )
-        )
-      )
-    } else {
-      layout_list <- add_expr(
-        layout_list,
-        substitute(
-          rtables::split_rows_by(
-            paramcd_var,
-            split_fun = split_fun,
-            label_pos = "topleft",
-            split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
-          ) %>%
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = cov_var),
-              interaction_y = interact_y,
-              interaction_item = interact_item,
-              conf_level = conf_level,
-              var_labels = "Adjusted mean",
-              show_labels = "hidden"
-            ),
-          env = list(
-            paramcd_var = paramcd_var,
-            aval_var = aval_var,
-            arm_var = arm_var,
-            cov_var = cov_var,
-            interact_y = interact_y,
-            interact_item = interact_var,
-            conf_level = conf_level,
-            dataname = as.name(dataname)
-          )
-        )
-      )
-    }
-  } else {
-    # Only one entry in `paramcd_levels` here.
     layout_list <- add_expr(
       layout_list,
       substitute(
-        rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
-          summarize_ancova(
-            vars = aval_var,
-            variables = list(arm = arm_var, covariates = cov_var),
-            interaction_y = interact_y,
-            interaction_item = interact_item,
-            conf_level = conf_level,
-            var_labels = "Unadjusted comparison",
-            .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
-            table_names = "unadjusted_comparison"
-          ),
+        rtables::split_rows_by(
+          paramcd_var,
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
+        ),
         env = list(
-          paramcd_levels = paramcd_levels,
-          aval_var = aval_var,
-          arm_var = arm_var,
-          cov_var = cov_var,
-          interact_y = interact_y,
-          interact_item = interact_var,
-          conf_level = conf_level,
+          paramcd_var = paramcd_var,
           dataname = as.name(dataname)
+        )
+      )
+    )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        rtables::append_topleft(paste0("  ", paramcd_levels)),
+        env = list(
+          paramcd_levels = paramcd_levels
         )
       )
     )
   }
 
-  if (length(cov_var) > 0) {
+  if (!include_interact) {
+    if (length(paramcd_levels) > 1) {
+      if (length(cov_var) == 0) {
+        ls_lbls <- c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
+        var_lbls <- "Unadjusted mean"
+      } else {
+        ls_lbls <- NULL
+        var_lbls <- "Adjusted mean"
+      }
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = cov_var),
+            conf_level = conf_level,
+            var_labels = var_labels,
+            show_labels = "hidden",
+            .labels = ls_labels
+          ),
+          env = list(
+            aval_var = aval_var,
+            arm_var = arm_var,
+            cov_var = cov_var,
+            conf_level = conf_level,
+            var_labels = var_lbls,
+            ls_labels = ls_lbls
+          )
+        )
+      )
+    } else {
+      # Only one entry in `paramcd_levels` here.
+      layout_list <- add_expr(
+        layout_list,
+        substitute(
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = NULL),
+            conf_level = conf_level,
+            var_labels = "Unadjusted comparison",
+            .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+            table_names = "unadjusted_comparison"
+          ),
+          env = list(
+            aval_var = aval_var,
+            arm_var = arm_var,
+            conf_level = conf_level
+          )
+        )
+      )
+      if (length(cov_var) > 0) {
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              conf_level = conf_level,
+              var_labels = paste0(
+                "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
+              ),
+              table_names = "adjusted_comparison"
+            ),
+            env = list(
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
+              conf_level = conf_level
+            )
+          )
+        )
+      }
+    }
+  } else {
     layout_list <- add_expr(
       layout_list,
       substitute(
-        summarize_ancova(
-          vars = aval_var,
-          variables = list(arm = arm_var, covariates = cov_var),
-          interaction_y = interact_y,
-          interaction_item = interact_item,
-          conf_level = conf_level,
-          var_labels = paste0(
-            "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
-          ),
-          table_names = "adjusted_comparison"
-        ),
+        rtables::append_topleft(paste0("        Interaction Variable: ", interact_var)),
         env = list(
-          aval_var = aval_var,
-          arm_var = arm_var,
-          cov_var = cov_var,
-          interact_y = interact_y,
-          interact_item = interact_var,
-          conf_level = conf_level,
-          dataname = as.name(dataname)
+          interact_var = interact_var
         )
       )
     )
+    for (int_y in interact_y) {
+      if (length(paramcd_levels) > 1) {
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              conf_level = conf_level,
+              var_labels = paste("Interaction Level:", interact_y),
+              show_labels = "visible",
+              interaction_y = interact_y,
+              interaction_item = interact_var
+            ),
+            env = list(
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
+              conf_level = conf_level,
+              interact_y = int_y,
+              interact_var = interact_var
+            )
+          )
+        )
+      } else {
+        # Only one entry in `paramcd_levels` here.
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = NULL),
+              conf_level = conf_level,
+              var_labels = "Unadjusted comparison",
+              .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+              table_names = "unadjusted_comparison"
+            ),
+            env = list(
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
+              conf_level = conf_level
+            )
+          )
+        )
+        if (length(cov_var) > 0) {
+          layout_list <- add_expr(
+            layout_list,
+            substitute(
+              summarize_ancova(
+                vars = aval_var,
+                variables = list(arm = arm_var, covariates = cov_var),
+                conf_level = conf_level,
+                var_labels = paste0(
+                  "Adjusted comparison (", paste(cov_var, collapse = " + "), "), Interaction Level: ", interact_y,
+                ),
+                table_names = "adjusted_comparison",
+                interaction_y = interact_y,
+                interaction_item = interact_var
+              ),
+              env = list(
+                aval_var = aval_var,
+                arm_var = arm_var,
+                cov_var = cov_var,
+                conf_level = conf_level,
+                interact_y = int_y,
+                interact_var = interact_var
+              )
+            )
+          )
+        }
+      }
+    }
   }
 
   y$layout <- substitute(
