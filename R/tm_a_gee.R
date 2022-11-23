@@ -1,3 +1,105 @@
+#' Template for Generalized Estimating Equations (GEE) analysis module
+#'
+#' @inheritParams template_arguments
+#' @param output_table (`character`)\cr type of output table ("t_gee_cov", "t_gee_coef", "t_gee_lsmeans")
+#' @param data_model_fit (`character`)\cr dataset used to fit the model by `tern.gee::fit_gee()`
+#' @param dataname_lsmeans (`character`)\cr dataset used for `alt_counts_df` argument of `rtables::build_table()`
+#' @param split_covariates (`character`)\cr vector of names of variables to use as covariates in `tern.gee::vars_gee()`
+#' @param cor_struct (`character`)\cr assumed correlation structure in `tern.gee::fit_gee`.
+#'
+#' @seealso [tm_a_gee()]
+#' @keywords internal
+#'
+template_a_gee <- function(output_table,
+                           data_model_fit = "ANL",
+                           dataname_lsmeans = "ANL_ADSL",
+                           input_arm_var = "ARM",
+                           ref_group = "A: Drug X",
+                           aval_var,
+                           id_var,
+                           arm_var,
+                           visit_var,
+                           split_covariates,
+                           cor_struct,
+                           conf_level = 0.95) {
+  y <- list()
+  y$model <- list()
+  y$table <- list()
+
+  model_list <- add_expr(
+    list(),
+    substitute(
+      expr = {
+        model_fit <- tern.gee::fit_gee(
+          vars = tern.gee:::vars_gee(
+            response = as.vector(aval_var),
+            covariates = as.vector(split_covariates),
+            id = as.vector(id_var),
+            arm = as.vector(arm_var),
+            visit = as.vector(visit_var)
+          ),
+          data = data_model_fit,
+          regression = "logistic",
+          cor_struct = cor_struct
+        )
+      },
+      env = list(
+        data_model_fit = as.name(data_model_fit),
+        aval_var = aval_var,
+        split_covariates = split_covariates,
+        id_var = id_var,
+        arm_var = arm_var,
+        visit_var = visit_var,
+        cor_struct = cor_struct
+      )
+    )
+  )
+
+  table_list <-
+    add_expr(
+      list(),
+      if (output_table == "t_gee_cov") {
+        quote(result_table <- tern.gee::as.rtable(model_fit, type = "cov"))
+      } else if (output_table == "t_gee_coef") {
+        substitute(
+          expr = {
+            result_table <- tern.gee::as.rtable(model_fit, type = "coef", conf_level = conf_level)
+          },
+          env = list(
+            conf_level = conf_level
+          )
+        )
+      } else if (output_table == "t_gee_lsmeans") {
+        substitute(
+          expr = {
+            lsmeans_fit_model <- tern.gee::lsmeans(model_fit, conf_level)
+            result_table <- rtables::basic_table() %>%
+              rtables::split_cols_by(var = input_arm_var, ref_group = model_fit$ref_level) %>%
+              rtables::add_colcounts() %>%
+              tern.gee::summarize_gee_logistic() %>%
+              rtables::build_table(
+                df = lsmeans_fit_model,
+                alt_counts_df = dataname_lsmeans
+              )
+
+            result_table
+          },
+          env = list(
+            dataname_lsmeans = as.name(dataname_lsmeans),
+            conf_level = conf_level,
+            input_arm_var = input_arm_var
+          )
+        )
+      }
+    )
+  # Note: l_html_concomitant_adcm is still not included since one column is available out of 9
+
+  y$model <- bracket_expr(model_list)
+  y$table <- bracket_expr(table_list)
+
+  y
+}
+
 #' Teal Module: Teal module for Generalized Estimating Equations (GEE) analysis
 #'
 #' @inheritParams module_arguments
@@ -5,47 +107,6 @@
 #' @export
 #'
 #' @examples
-#'
-#' library(scda)
-#'
-#' synthetic_cdisc_data_latest <- synthetic_cdisc_data("latest")
-#' ADSL <- synthetic_cdisc_data_latest$adsl
-#' ADQS <- synthetic_cdisc_data_latest$adqs %>%
-#'   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
-#'   dplyr::mutate(
-#'     AVISIT = as.factor(AVISIT),
-#'     AVISITN = rank(AVISITN) %>%
-#'       as.factor() %>%
-#'       as.numeric() %>%
-#'       as.factor(),
-#'     AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
-#'   ) %>%
-#'   droplevels()
-#'
-#' app <- teal::init(
-#'   data = teal.data::cdisc_data(
-#'     teal.data::cdisc_dataset("ADSL", ADSL),
-#'     teal.data::cdisc_dataset("ADQS", ADQS)
-#'   ),
-#'   modules = teal::modules(
-#'     tm_a_gee(
-#'       label = "GEE",
-#'       dataname = "ADQS",
-#'       aval_var = choices_selected("AVALBIN", fixed = TRUE),
-#'       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
-#'       paramcd = choices_selected(
-#'         choices = value_choices(ADQS, "PARAMCD", "PARAM"),
-#'         selected = "FKSI-FWB"
-#'       ),
-#'       cov_var = choices_selected(c("BASE", "AGE", "SEX"), NULL)
-#'     )
-#'   )
-#' )
-#' \dontrun{
-#' shiny::shinyApp(app$ui, app$server)
-#' }
 tm_a_gee <- function(label,
                      dataname,
                      parentname = ifelse(
@@ -122,13 +183,12 @@ ui_gee <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
-      shiny::htmlOutput(ns("table"))
+      teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    # todo: in production use this if possible, couldn't get it to run quickly
-    # output = teal.widgets::white_small_well(
-    #   teal.widgets::table_with_settings_ui(ns("table"))
-    # ),
     encoding = shiny::div(
+      ### Reporter
+      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
+      ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
       teal.transform::data_extract_ui(
@@ -217,15 +277,21 @@ ui_gee <- function(id, ...) {
           "Coefficients" = "t_gee_coef"
         ),
         selected = "t_gee_lsmeans"
-      ),
-      pre_output = a$pre_output,
-      post_output = a$post_output
-    )
+      )
+    ),
+    forms = tagList(
+      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
+      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+    ),
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 }
 
 srv_gee <- function(id,
-                    datasets,
+                    data,
+                    filter_panel_api,
+                    reporter,
                     dataname,
                     parentname,
                     arm_var,
@@ -240,30 +306,32 @@ srv_gee <- function(id,
                     plot_height,
                     plot_width,
                     basic_table_args) {
-  shiny::moduleServer(id, function(input, output, session) {
-    teal.code::init_chunks()
+  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
+  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
+  checkmate::assert_class(data, "tdata")
 
+  shiny::moduleServer(id, function(input, output, session) {
     ## split_covariates ----
     shiny::observeEvent(input[[teal.modules.clinical::extract_input("cov_var", dataname)]],
-      ignoreNULL = FALSE,
-      {
-        # update covariates as actual variables
-        split_interactions_values <- teal.modules.clinical::split_interactions(
-          input[[teal.modules.clinical::extract_input("cov_var", dataname)]]
-        )
-        arm_var_value <- input[[teal.modules.clinical::extract_input("arm_var", parentname)]]
-        arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
-        if (arm_in_cov) {
-          split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
-        } else {
-          split_covariates_selected <- split_interactions_values
-        }
-        teal.widgets::updateOptionalSelectInput(
-          session,
-          inputId = teal.modules.clinical::extract_input("split_covariates", dataname),
-          selected = split_covariates_selected
-        )
-      }
+                        ignoreNULL = FALSE,
+                        {
+                          # update covariates as actual variables
+                          split_interactions_values <- teal.modules.clinical::split_interactions(
+                            input[[teal.modules.clinical::extract_input("cov_var", dataname)]]
+                          )
+                          arm_var_value <- input[[teal.modules.clinical::extract_input("arm_var", parentname)]]
+                          arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
+                          if (arm_in_cov) {
+                            split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
+                          } else {
+                            split_covariates_selected <- split_interactions_values
+                          }
+                          teal.widgets::updateOptionalSelectInput(
+                            session,
+                            inputId = teal.modules.clinical::extract_input("split_covariates", dataname),
+                            selected = split_covariates_selected
+                          )
+                        }
     )
 
     ## arm_ref_comp_observer ----
@@ -278,8 +346,8 @@ srv_gee <- function(id,
     )
 
     ## data_merge_modules ----
-    anl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
+    anl_inputs <- teal.transform::merge_expression_module(
+      datasets = data,
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -288,77 +356,95 @@ srv_gee <- function(id,
         split_covariates = split_covariates,
         aval_var = aval_var
       ),
-      merge_function = "dplyr::inner_join"
-    )
-    adsl_merged <- teal.transform::data_merge_module(
-      datasets = datasets,
-      data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
+      merge_function = "dplyr::inner_join",
+      join_keys = get_join_keys(data)
     )
 
+    adsl_inputs <- teal.transform::merge_expression_module(
+      datasets = data,
+      data_extract = list(arm_var = arm_var),
+      anl_name = "ANL_ADSL",
+      join_keys = get_join_keys(data)
+    )
+
+    anl_q <- reactive({
+      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_inputs()$expr))
+    })
+
+    merged <- list(
+      anl_input_r = anl_inputs,
+      adsl_input_r = adsl_inputs,
+      anl_q = anl_q
+    )
     # To do in production: add validations.
 
-    ## model_fit ----
-    model_fit <- shiny::reactive({
-      anl_merged <- anl_merged()
-      data <- anl_merged$data()
-      col_source <- anl_merged$columns_source
-      cor_struct <- input$cor_struct
-
-      tern.gee::fit_gee(
-        vars = tern.gee:::vars_gee(
-          response = as.vector(col_source$aval_var),
-          covariates = as.vector(col_source$split_covariates),
-          id = as.vector(col_source$id_var),
-          arm = as.vector(col_source$arm_var),
-          visit = as.vector(col_source$visit_var)
-        ),
-        data = data,
-        regression = "logistic",
-        cor_struct = cor_struct
-      )
-    })
-
     ## table_r ----
-    table_r <- shiny::reactive({
+    table_q <- shiny::reactive({
       output_table <- input$output_table
-      model_fit <- model_fit()
       conf_level <- as.numeric(input$conf_level)
+      col_source <- merged$anl_input_r()$columns_source
 
       req(output_table)
-      req(model_fit)
 
-      if (output_table == "t_gee_cov") {
-        tern.gee::as.rtable(model_fit, type = "cov")
-      } else if (output_table == "t_gee_coef") {
-        tern.gee::as.rtable(model_fit, type = "coef", conf_level = conf_level)
-      } else if (output_table == "t_gee_lsmeans") {
-        # To do: is this needed instead/as well?
-        # adsl_filtered <- datasets$get_data(parentname, filtered = TRUE)
-        anl_adsl <- adsl_merged()
-        data <- anl_adsl$data()
-        input_arm_var <- as.vector(anl_adsl$columns_source$arm_var)
-        rtables::basic_table() %>%
-          rtables::split_cols_by(input_arm_var, ref_group = model_fit$ref_level) %>%
-          rtables::add_colcounts() %>%
-          tern.gee::summarize_gee_logistic() %>%
-          rtables::build_table(
-            df = tern.gee::lsmeans(model_fit, conf_level = conf_level),
-            alt_counts_df = data
-          )
+      my_calls <- template_a_gee(
+        output_table = output_table,
+        data_model_fit = "ANL",
+        dataname_lsmeans = "ANL_ADSL",
+        input_arm_var = as.vector(col_source$arm_var),
+        conf_level = conf_level,
+        aval_var = col_source$aval_var,
+        split_covariates = col_source$split_covariates,
+        id_var = col_source$id_var,
+        arm_var = col_source$arm_var,
+        visit_var = col_source$visit_var,
+        cor_struct = input$cor_struct
+      )
+      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+    })
+
+    table_r <- shiny::reactive({
+      table_q()[["result_table"]]
+    })
+
+    teal.widgets::table_with_settings_srv(
+      id = "table",
+      table_r = table_r
+    )
+
+    teal.widgets::verbatim_popup_srv(
+      id = "warning",
+      verbatim_content = reactive(teal.code::get_warnings(table_q())),
+      title = "Warning",
+      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
+    )
+
+    # Render R code
+    teal.widgets::verbatim_popup_srv(
+      id = "rcode",
+      verbatim_content = reactive(teal.code::get_code(table_q())),
+      title = label
+    )
+
+    if (with_reporter) {
+      card_fun <- function(comment) {
+        card <- teal.reporter::TealReportCard$new()
+        card$set_name("Generalized Estimating Equations (GEE) analysis Table")
+        card$append_text("Generalized Estimating Equations (GEE) analysis Table", "header2")
+        if (with_filter) {
+          card$append_fs(filter_panel_api$get_filter_state())
+        }
+        card$append_text("Table", "header3")
+        card$append_table(table_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_src(paste(teal.code::get_code(table_q()), collapse = "\n"))
+        card
       }
-    })
-
-    ## table ----
-
-    output$table <- shiny::renderUI({
-      rtables::as_html(table_r())
-    })
-
-    # to do in production: use this kind of stuff.
-    # teal.widgets::table_with_settings_srv(
-    #   id = "table",
-    #   table_r = table_r
-    # )
+      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
+    }
   })
 }
