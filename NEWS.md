@@ -7,6 +7,7 @@
 
 ### Enhancements
 * Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
+* Added titles and footnotes to `tm_a_gee`.
 
 ### Miscellaneous
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS. 
