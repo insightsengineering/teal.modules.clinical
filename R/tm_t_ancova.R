@@ -845,6 +845,15 @@ srv_ancova <- function(id,
               "Please select a different interaction variable."
             )
           ))
+          if (!all(is.numeric(as.vector(unique(anl_filtered[[input_interact_var]]))))) {
+            shiny::validate(shiny::need(
+              !is.null(input$interact_y),
+              paste(
+                "Interaction y must be selected when a discrete variable is chosen for interact variable.",
+                "Please select an interaction y, change the interaction variable, or turn off interactions."
+              )
+            ))
+          }
         }
       }
 
