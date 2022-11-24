@@ -54,13 +54,14 @@ label of value variable used for title rendering.}
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
 
-\item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
+\item{include_interact}{(\code{logical})\cr
+should an interaction term be included in the model.}
 
-\item{interact_var}{(\code{character})\cr name of the variable that should have interactions
-with arm. If the interaction is not needed, the default option is \code{NULL}.}
+\item{interact_var}{(\code{character})\cr
+name of the variable to interact with \code{arm_var} in the model.}
 
-\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select
-the specific ANCOVA results. If the interaction is not needed, the default option is \code{FALSE}.}
+\item{interact_y}{(\code{character})\cr
+variable level(s) of \code{interact_var} to interact with \code{arm_var}.}
 
 \item{paramcd_levels}{(\code{character})\cr
 variable levels for the studied parameter.}

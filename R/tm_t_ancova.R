@@ -12,6 +12,13 @@
 #'   label of value variable used for title rendering.
 #' @param label_paramcd (`character`)\cr
 #'   variable label used for title rendering.
+#' @param include_interact (`logical`)\cr
+#'   should an interaction term be included in the model.
+#' @param interact_var (`character`)\cr
+#'   name of the variable to interact with `arm_var` in the model.
+#' @param interact_y (`character`)\cr
+#'   variable level(s) of `interact_var` to interact with `arm_var`.
+#'
 #'
 #' @seealso [tm_t_ancova()]
 #' @keywords internal
@@ -841,16 +848,6 @@ srv_ancova <- function(id,
         }
       }
 
-      if (!is.numeric(input_interact_var)) {
-        shiny::validate(shiny::need(
-          !isFALSE(input$interact_y),
-          paste(
-            "Interaction y must be specified for discrete interaction variables.",
-            "Please select a value for interaction y or choose a different interaction variable."
-          )
-        ))
-      }
-
       if (length(input_cov_var >= 1L)) {
         input_cov_var_dataset <- anl_filtered[input_cov_var]
         shiny::validate(
@@ -874,8 +871,7 @@ srv_ancova <- function(id,
       visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
       interact_var <- as.vector(merged$anl_input_r()$columns_source$interact_var)
-      interact_var <- if (length(interact_var) == 0) NULL else interact_var
-      if (!is.null(interact_var)) {
+      if (length(interact_var) > 0) {
         if (is.numeric(ANL[[interact_var]])) {
           interact_y <- FALSE
         } else if (!all(input$interact_y %in% levels(ANL[[interact_var]]))) {
@@ -884,6 +880,7 @@ srv_ancova <- function(id,
           interact_y <- input$interact_y
         }
       } else {
+        interact_var <- NULL
         if (length(input$interact_y) == 0 || all(input$interact_y == "")) {
           interact_y <- FALSE
         }
