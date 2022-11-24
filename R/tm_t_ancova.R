@@ -12,13 +12,6 @@
 #'   label of value variable used for title rendering.
 #' @param label_paramcd (`character`)\cr
 #'   variable label used for title rendering.
-#' @param include_interact (`logical`)\cr
-#'   should an interaction term be included in the model.
-#' @param interact_var (`character`)\cr
-#'   name of the variable to interact with `arm_var` in the model.
-#' @param interact_y (`character`)\cr
-#'   variable level(s) of `interact_var` to interact with `arm_var`.
-#'
 #'
 #' @seealso [tm_t_ancova()]
 #' @keywords internal

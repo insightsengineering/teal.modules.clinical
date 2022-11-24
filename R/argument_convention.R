@@ -177,8 +177,9 @@ NULL
 #' @param include_interact (`logical`)\cr whether an interaction term should be included in the model.
 #' @param interact_var (`character`)\cr name of the variable that should have interactions
 #'   with arm. If the interaction is not needed, the default option is `NULL`.
-#' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select
-#'   the specific ANCOVA results. If the interaction is not needed, the default option is `FALSE`.
+#' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used
+#'   to select the specific ANCOVA results when interact_var is discrete. If the interaction is not
+#'   needed, the default option is `FALSE`.
 #' @param by_vars (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for variable names
 #'   used to split the summary by rows.
