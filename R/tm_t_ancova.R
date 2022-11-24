@@ -25,6 +25,9 @@ template_ancova <- function(dataname = "ANL",
                             aval_var,
                             label_aval = NULL,
                             cov_var,
+                            include_interact = FALSE,
+                            interact_var = NULL,
+                            interact_y = FALSE,
                             paramcd_levels = "",
                             paramcd_var = "PARAMCD",
                             label_paramcd = NULL,
@@ -39,10 +42,21 @@ template_ancova <- function(dataname = "ANL",
     assertthat::is.string(label_aval) || is.null(label_aval),
     assertthat::is.flag(combine_comp_arms),
     assertthat::is.string(aval_var),
-    is.character(cov_var)
+    is.character(cov_var),
+    assertthat::is.flag(include_interact),
+    all(sapply(interact_y, assertthat::is.string)) || isFALSE(interact_y),
+    assertthat::is.string(interact_var) || is.null(interact_var)
   )
 
   y <- list()
+
+  if (include_interact && !any(interact_y == "") && !is.null(interact_var)) {
+    cov_var <- c(cov_var, paste0(arm_var, "*", interact_var))
+  }
+
+  if (length(cov_var) == 0) {
+    cov_var <- NULL
+  }
 
   # Data processing.
   data_list <- list()
@@ -180,68 +194,68 @@ template_ancova <- function(dataname = "ANL",
   )
 
   if (length(paramcd_levels) > 1) {
-    if (length(cov_var) == 0) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        rtables::split_rows_by(
+          paramcd_var,
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
+        ),
+        env = list(
+          paramcd_var = paramcd_var,
+          dataname = as.name(dataname)
+        )
+      )
+    )
+  } else {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        rtables::append_topleft(paste0("  ", paramcd_levels)),
+        env = list(
+          paramcd_levels = paramcd_levels
+        )
+      )
+    )
+  }
+
+  if (!include_interact) {
+    if (length(paramcd_levels) > 1) {
+      if (length(cov_var) == 0) {
+        ls_lbls <- c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
+        var_lbls <- "Unadjusted mean"
+      } else {
+        ls_lbls <- NULL
+        var_lbls <- "Adjusted mean"
+      }
       layout_list <- add_expr(
         layout_list,
         substitute(
-          rtables::split_rows_by(
-            paramcd_var,
-            split_fun = split_fun,
-            label_pos = "topleft",
-            split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
-          ) %>%
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = cov_var),
-              conf_level = conf_level,
-              var_labels = "Unadjusted mean",
-              show_labels = "hidden",
-              .labels = c(lsmean = "Unadjusted Mean", lsmean_diff = "Difference in Unadjusted Means")
-            ),
+          summarize_ancova(
+            vars = aval_var,
+            variables = list(arm = arm_var, covariates = cov_var),
+            conf_level = conf_level,
+            var_labels = var_labels,
+            show_labels = "hidden",
+            .labels = ls_labels
+          ),
           env = list(
-            paramcd_var = paramcd_var,
             aval_var = aval_var,
             arm_var = arm_var,
             cov_var = cov_var,
             conf_level = conf_level,
-            dataname = as.name(dataname)
+            var_labels = var_lbls,
+            ls_labels = ls_lbls
           )
         )
       )
     } else {
+      # Only one entry in `paramcd_levels` here.
       layout_list <- add_expr(
         layout_list,
         substitute(
-          rtables::split_rows_by(
-            paramcd_var,
-            split_fun = split_fun,
-            label_pos = "topleft",
-            split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
-          ) %>%
-            summarize_ancova(
-              vars = aval_var,
-              variables = list(arm = arm_var, covariates = cov_var),
-              conf_level = conf_level,
-              var_labels = "Adjusted mean",
-              show_labels = "hidden"
-            ),
-          env = list(
-            paramcd_var = paramcd_var,
-            aval_var = aval_var,
-            arm_var = arm_var,
-            cov_var = cov_var,
-            conf_level = conf_level,
-            dataname = as.name(dataname)
-          )
-        )
-      )
-    }
-  } else {
-    # Only one entry in `paramcd_levels` here.
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        rtables::append_topleft(paste0("  ", paramcd_levels)) %>%
           summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = NULL),
@@ -250,38 +264,128 @@ template_ancova <- function(dataname = "ANL",
             .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
             table_names = "unadjusted_comparison"
           ),
-        env = list(
-          paramcd_levels = paramcd_levels,
-          aval_var = aval_var,
-          arm_var = arm_var,
-          conf_level = conf_level,
-          dataname = as.name(dataname)
-        )
-      )
-    )
-
-    if (length(cov_var) > 0) {
-      layout_list <- add_expr(
-        layout_list,
-        substitute(
-          summarize_ancova(
-            vars = aval_var,
-            variables = list(arm = arm_var, covariates = cov_var),
-            conf_level = conf_level,
-            var_labels = paste0(
-              "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
-            ),
-            table_names = "adjusted_comparison"
-          ),
           env = list(
             aval_var = aval_var,
             arm_var = arm_var,
-            cov_var = cov_var,
-            conf_level = conf_level,
-            dataname = as.name(dataname)
+            conf_level = conf_level
           )
         )
       )
+      if (length(cov_var) > 0) {
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              conf_level = conf_level,
+              var_labels = paste0(
+                "Adjusted comparison (", paste(cov_var, collapse = " + "), ")"
+              ),
+              table_names = "adjusted_comparison"
+            ),
+            env = list(
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
+              conf_level = conf_level
+            )
+          )
+        )
+      }
+    }
+  } else {
+    cts_interact <- all(interact_y == FALSE)
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        rtables::append_topleft(paste0("    Interaction Variable: ", interact_var)),
+        env = list(
+          interact_var = interact_var
+        )
+      )
+    )
+    for (int_y in interact_y) {
+      if (length(paramcd_levels) > 1) {
+        layout_list <- add_expr(
+          layout_list,
+          substitute(
+            summarize_ancova(
+              vars = aval_var,
+              variables = list(arm = arm_var, covariates = cov_var),
+              conf_level = conf_level,
+              var_labels = paste("Interaction Level:", interact_y),
+              show_labels = if (cts_interact) "hidden" else "visible",
+              interaction_y = interact_y,
+              interaction_item = interact_var
+            ),
+            env = list(
+              aval_var = aval_var,
+              arm_var = arm_var,
+              cov_var = cov_var,
+              conf_level = conf_level,
+              interact_y = int_y,
+              interact_var = interact_var,
+              cts_interact = cts_interact
+            )
+          )
+        )
+      } else {
+        # Only one entry in `paramcd_levels` here.
+        if (int_y == interact_y[1]) {
+          layout_list <- add_expr(
+            layout_list,
+            substitute(
+              summarize_ancova(
+                vars = aval_var,
+                variables = list(arm = arm_var, covariates = NULL),
+                conf_level = conf_level,
+                var_labels = "Unadjusted comparison",
+                .labels = c(lsmean = "Mean", lsmean_diff = "Difference in Means"),
+                table_names = "unadjusted_comparison"
+              ),
+              env = list(
+                aval_var = aval_var,
+                arm_var = arm_var,
+                cov_var = cov_var,
+                conf_level = conf_level
+              )
+            )
+          )
+        }
+        if (length(cov_var) > 0) {
+          layout_list <- add_expr(
+            layout_list,
+            substitute(
+              summarize_ancova(
+                vars = aval_var,
+                variables = list(arm = arm_var, covariates = cov_var),
+                conf_level = conf_level,
+                var_labels = if (cts_interact) {
+                  paste0("Adjusted comparison (", paste(cov_var, collapse = " + "), ")")
+                } else {
+                  paste0(
+                    "Adjusted comparison (", paste(cov_var, collapse = " + "),
+                    "), Interaction Level: ", interact_y
+                  )
+                },
+                table_names = "adjusted_comparison",
+                interaction_y = interact_y,
+                interaction_item = interact_var
+              ),
+              env = list(
+                aval_var = aval_var,
+                arm_var = arm_var,
+                cov_var = cov_var,
+                conf_level = conf_level,
+                interact_y = int_y,
+                interact_var = interact_var,
+                cts_interact = cts_interact
+              )
+            )
+          )
+        }
+      }
     }
   }
 
@@ -377,6 +481,10 @@ template_ancova <- function(dataname = "ANL",
 #'       paramcd = choices_selected(
 #'         choices = value_choices(adqs, "PARAMCD", "PARAM"),
 #'         selected = "FKSI-FWB"
+#'       ),
+#'       interact_var = choices_selected(
+#'         choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
+#'         selected = "STRATA1"
 #'       )
 #'     )
 #'   )
@@ -396,6 +504,9 @@ tm_t_ancova <- function(label,
                         arm_ref_comp = NULL,
                         aval_var,
                         cov_var,
+                        include_interact = FALSE,
+                        interact_var = NULL,
+                        interact_y = FALSE,
                         avisit,
                         paramcd,
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
@@ -413,12 +524,20 @@ tm_t_ancova <- function(label,
 
   args <- c(as.list(environment()))
 
+  if (is.null(interact_var)) {
+    interact_var <- choices_selected(
+      choices = cov_var$choices,
+      selected = NULL
+    )
+  }
+
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
     avisit = cs_to_des_filter(avisit, dataname = dataname, multiple = TRUE, include_vars = TRUE),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE)
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname, multiple = TRUE),
+    interact_var = cs_to_des_select(interact_var, dataname = dataname)
   )
 
   module(
@@ -432,6 +551,7 @@ tm_t_ancova <- function(label,
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
+        include_interact = include_interact,
         label = label,
         basic_table_args = basic_table_args
       )
@@ -444,7 +564,7 @@ tm_t_ancova <- function(label,
 ui_ancova <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd
+    a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd, a$interact_var
   )
 
   ns <- shiny::NS(id)
@@ -456,7 +576,7 @@ ui_ancova <- function(id, ...) {
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
-      teal.transform::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd")]),
+      teal.transform::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd", "interact_var")]),
       teal.transform::data_extract_ui(
         id = ns("avisit"),
         label = "Analysis Visit",
@@ -507,6 +627,33 @@ ui_ancova <- function(id, ...) {
         a$conf_level$selected,
         multiple = FALSE,
         fixed = a$conf_level$fixed
+      ),
+      shiny::div(
+        shiny::tags$label("Include Interaction Term"),
+        shinyWidgets::switchInput(
+          inputId = ns("include_interact"),
+          value = FALSE,
+          size = "mini"
+        ),
+        shiny::conditionalPanel(
+          condition = paste0("input['", ns("include_interact"), "']"),
+          shiny::div(
+            teal.transform::data_extract_ui(
+              id = ns("interact_var"),
+              label = "Select Interaction Variable",
+              data_extract_spec = a$interact_var,
+              is_single_dataset = is_single_dataset_value
+            ),
+            teal.widgets::optionalSelectInput(
+              ns("interact_y"),
+              label = "Select Interaction y",
+              choices = "",
+              selected = "",
+              multiple = TRUE,
+              fixed = FALSE
+            )
+          )
+        )
       )
     ),
     forms = tagList(
@@ -529,6 +676,8 @@ srv_ancova <- function(id,
                        arm_ref_comp,
                        aval_var,
                        cov_var,
+                       include_interact,
+                       interact_var,
                        paramcd,
                        avisit,
                        label,
@@ -557,7 +706,8 @@ srv_ancova <- function(id,
         aval_var = aval_var,
         cov_var = cov_var,
         avisit = avisit,
-        paramcd = paramcd
+        paramcd = paramcd,
+        interact_var = interact_var
       ),
       merge_function = "dplyr::inner_join",
       join_keys = get_join_keys(data)
@@ -582,6 +732,37 @@ srv_ancova <- function(id,
       anl_q = anl_q
     )
 
+    # Event handler:
+    # Update interact_y choices to all levels of selected interact_var
+    shiny::observeEvent(
+      {
+        input$include_interact
+        input$`interact_var-dataset_ADQS_singleextract-select`
+      },
+      {
+        interact_var <- input$`interact_var-dataset_ADQS_singleextract-select`
+        if (isTRUE(input$include_interact) && length(interact_var) > 0) {
+          interact_choices <- sort(as.vector(unique(merged$anl_q()[[dataname]][[interact_var]])))
+          if (all(is.numeric(interact_choices))) {
+            shinyjs::hide("interact_y")
+          } else {
+            interact_select <- if (!all(input$interact_y %in% interact_choices)) {
+              interact_choices[1]
+            } else {
+              input$interact_y
+            }
+            shinyjs::show("interact_y")
+            teal.widgets::updateOptionalSelectInput(
+              session,
+              "interact_y",
+              selected = interact_select,
+              choices = interact_choices
+            )
+          }
+        }
+      }
+    )
+
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
       adsl_filtered <- merged$anl_q()[[parentname]]
@@ -590,6 +771,7 @@ srv_ancova <- function(id,
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_aval_var <- as.vector(merged$anl_input_r()$columns_source$aval_var)
       input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
+      input_interact_var <- as.vector(merged$anl_input_r()$columns_source$interact_var)
       input_avisit <- unlist(avisit$filter)["vars_selected"]
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
@@ -598,7 +780,9 @@ srv_ancova <- function(id,
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_avisit, input_aval_var, input_cov_var),
+        anlvars = c(
+          "USUBJID", "STUDYID", input_paramcd, input_avisit, input_aval_var, input_cov_var, input_interact_var
+        ),
         arm_var = input_arm_var
       )
       validate_args <- append(
@@ -644,6 +828,28 @@ srv_ancova <- function(id,
         "`Select Endpoint` is not selected."
       ))
 
+      if (input$include_interact) {
+        if (!is.null(input_interact_var) && length(input_interact_var) > 0) {
+          shiny::validate(shiny::need(
+            !input_interact_var %in% c(input_avisit, input_paramcd) &&
+              length(as.vector(unique(anl_filtered[[input_interact_var]]))) > 1,
+            paste(
+              "Interaction variable cannot be a filter variable and must have more than one level.",
+              "Please select a different interaction variable."
+            )
+          ))
+          if (!all(is.numeric(as.vector(unique(anl_filtered[[input_interact_var]]))))) {
+            shiny::validate(shiny::need(
+              !is.null(input$interact_y),
+              paste(
+                "Interaction y must be selected when a discrete variable is chosen for interact variable.",
+                "Please select an interaction y, change the interaction variable, or turn off interactions."
+              )
+            ))
+          }
+        }
+      }
+
       if (length(input_cov_var >= 1L)) {
         input_cov_var_dataset <- anl_filtered[input_cov_var]
         shiny::validate(
@@ -666,6 +872,22 @@ srv_ancova <- function(id,
       paramcd_levels <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
       visit_levels <- unique(ANL[[unlist(avisit$filter)["vars_selected"]]])
 
+      interact_var <- as.vector(merged$anl_input_r()$columns_source$interact_var)
+      if (length(interact_var) > 0) {
+        if (is.numeric(ANL[[interact_var]])) {
+          interact_y <- FALSE
+        } else if (!all(input$interact_y %in% levels(ANL[[interact_var]]))) {
+          interact_y <- levels(ANL[[interact_var]])[1]
+        } else {
+          interact_y <- input$interact_y
+        }
+      } else {
+        interact_var <- NULL
+        if (length(input$interact_y) == 0 || all(input$interact_y == "")) {
+          interact_y <- FALSE
+        }
+      }
+
       my_calls <- template_ancova(
         parentname = "ANL_ADSL",
         dataname = "ANL",
@@ -676,6 +898,9 @@ srv_ancova <- function(id,
         aval_var = as.vector(merged$anl_input_r()$columns_source$aval_var),
         label_aval = label_aval,
         cov_var = as.vector(merged$anl_input_r()$columns_source$cov_var),
+        include_interact = input$include_interact,
+        interact_var = interact_var,
+        interact_y = interact_y,
         paramcd_levels = paramcd_levels,
         paramcd_var = unlist(paramcd$filter)["vars_selected"],
         label_paramcd = label_paramcd,
