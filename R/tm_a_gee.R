@@ -258,6 +258,7 @@ ui_gee <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
+      shiny::h3(shiny::textOutput(ns("gee_title"))),
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
     encoding = shiny::div(
@@ -453,6 +454,10 @@ srv_gee <- function(id,
       adsl_input_r = adsl_inputs,
       anl_q = anl_q
     )
+
+    # Initially hide the output title because there is no output yet.
+    shinyjs::show("gee_title")
+
     # To do in production: add validations.
 
     ## table_r ----
@@ -488,6 +493,19 @@ srv_gee <- function(id,
         basic_table_args = basic_table_args
       )
       teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+    })
+
+    output$gee_title <- shiny::renderText({
+      # Input on output type.
+      output_table <- input$output_table
+
+      output_title <- switch(
+        output_table,
+        "t_gee_cov" = "Residual Covariance Matrix Estimate",
+        "t_gee_coef" = "Model Coefficients",
+        "t_gee_lsmeans" = "LS Means Estimates"
+      )
+      output_title
     })
 
     table_r <- shiny::reactive({
