@@ -34,7 +34,7 @@ template_a_gee <- function(output_table,
     substitute(
       expr = {
         model_fit <- tern.gee::fit_gee(
-          vars = tern.gee:::vars_gee(
+          vars = tern.gee::vars_gee(
             response = as.vector(aval_var),
             covariates = as.vector(split_covariates),
             id = as.vector(id_var),
