@@ -503,7 +503,7 @@ srv_gee <- function(id,
         output_table,
         "t_gee_cov" = "Residual Covariance Matrix Estimate",
         "t_gee_coef" = "Model Coefficients",
-        "t_gee_lsmeans" = "Least Squares Means Estimates"
+        "t_gee_lsmeans" = "LS Means Estimates"
       )
       output_title
     })
