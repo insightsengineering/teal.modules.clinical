@@ -800,7 +800,7 @@ srv_t_binary_outcome <- function(id,
             if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1) {
               sel_param$levels
             } else {
-              union(unique(anl[[aval_var]]), sel_param$levels)
+              unique(anl[[aval_var]])
             }
           } else {
             unique(anl[[aval_var]])
