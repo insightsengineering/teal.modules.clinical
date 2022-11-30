@@ -25,6 +25,8 @@ testthat::test_that("template_a_gee t_gee_cov table works as expected with defau
     }),
     table = quote({
       result_table <- tern.gee::as.rtable(model_fit, type = "cov")
+      subtitles(result_table) <- NULL
+      main_footer(result_table) <- NULL
     })
   )
   testthat::expect_equal(result, expected)
@@ -56,7 +58,9 @@ testthat::test_that("template_a_gee t_gee_coef table works as expected with defa
       )
     }),
     table = quote({
-      result_table <- tern.gee::as.rtable(model_fit, type = "coef", conf_level = 0.95)
+      result_table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
+      subtitles(result_table) <- NULL
+      main_footer(result_table) <- NULL
     })
   )
   testthat::expect_equal(result, expected)
@@ -98,6 +102,8 @@ testthat::test_that("template_a_gee works as expected with non-default reference
         rtables::add_colcounts() %>%
         tern.gee::summarize_gee_logistic() %>%
         rtables::build_table(df = lsmeans_fit_model, alt_counts_df = ANL_ADSL)
+      subtitles(result_table) <- NULL
+      main_footer(result_table) <- NULL
       result_table
     })
   )
@@ -140,6 +146,8 @@ testthat::test_that("template_a_gee works as expected when arm is not considered
         rtables::add_colcounts() %>%
         tern.gee::summarize_gee_logistic() %>%
         rtables::build_table(df = lsmeans_fit_model, alt_counts_df = ANL_ADSL)
+      subtitles(result_table) <- NULL
+      main_footer(result_table) <- NULL
       result_table
     })
   )
