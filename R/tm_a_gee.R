@@ -76,7 +76,7 @@ template_a_gee <- function(output_table,
       } else if (output_table == "t_gee_coef") {
         substitute(
           expr = {
-            result_table <- tern.gee::as.rtable(data.frame(model_fit$coefficients))
+            result_table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
             subtitles(result_table) <- st
             main_footer(result_table) <- mf
           },
