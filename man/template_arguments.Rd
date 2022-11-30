@@ -80,6 +80,14 @@ name of the variable with low level term for events.}
 \item{visit_var}{(\code{character})\cr
 variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 
+\item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
+
+\item{interact_var}{(\code{character})\cr name of the variable that should have interactions
+with arm. If the interaction is not needed, the default option is \code{NULL}.}
+
+\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select
+the specific ANCOVA results. If the interaction is not needed, the default option is \code{FALSE}.}
+
 \item{by_vars}{(\code{character})\cr
 variable names used to split the summary by rows.}
 

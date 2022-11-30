@@ -14,6 +14,9 @@ template_ancova(
   aval_var,
   label_aval = NULL,
   cov_var,
+  include_interact = FALSE,
+  interact_var = NULL,
+  interact_y = FALSE,
   paramcd_levels = "",
   paramcd_var = "PARAMCD",
   label_paramcd = NULL,
@@ -50,6 +53,14 @@ label of value variable used for title rendering.}
 
 \item{cov_var}{(\code{character})\cr
 names of the covariates variables.}
+
+\item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
+
+\item{interact_var}{(\code{character})\cr name of the variable that should have interactions
+with arm. If the interaction is not needed, the default option is \code{NULL}.}
+
+\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select
+the specific ANCOVA results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{paramcd_levels}{(\code{character})\cr
 variable levels for the studied parameter.}

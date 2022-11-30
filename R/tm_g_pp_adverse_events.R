@@ -453,7 +453,7 @@ srv_g_adverse_events <- function(id,
     )
 
     # Adverse events tab ----
-    anl_merged <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = Filter(
         Negate(is.null),
@@ -470,17 +470,17 @@ srv_g_adverse_events <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    anl_merged_q <- reactive(
+    anl_q <- reactive(
       teal.code::eval_code(
-        teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)), as.expression(anl_merged()$expr)
+        teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)), as.expression(anl_inputs()$expr)
       )
     )
 
-    outputs_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-      anl_m <- anl_merged()
-      q1 <- anl_merged_q()
-      ANL <- q1[["ANL"]] # nolint
+      anl_m <- anl_inputs()
+      qenv <- anl_q()
+      ANL <- qenv[["ANL"]] # nolint
 
       teal::validate_has_data(ANL[ANL[[patient_col]] == input$patient_id, ], min_nrow = 1)
 
@@ -511,8 +511,8 @@ srv_g_adverse_events <- function(id,
         )
       )
 
-      q2 <- teal.code::eval_code(
-        q1,
+      qenv2 <- teal.code::eval_code(
+        qenv,
         substitute(
           expr = ANL <- ANL[ANL[[patient_col]] == patient_id, ], # nolint
           env = list(
@@ -536,14 +536,14 @@ srv_g_adverse_events <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      teal.code::eval_code(q2, as.expression(calls))
+      teal.code::eval_code(qenv2, as.expression(calls))
     })
     output$table <- DT::renderDataTable(
-      expr = outputs_q()[["table"]],
+      expr = all_q()[["table"]],
       options = list(pageLength = input$table_rows)
     )
 
-    plot_r <- shiny::reactive(outputs_q()[["plot"]])
+    plot_r <- shiny::reactive(all_q()[["plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "chart",
@@ -554,14 +554,14 @@ srv_g_adverse_events <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(outputs_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(outputs_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(outputs_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
@@ -580,7 +580,7 @@ srv_g_adverse_events <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(outputs_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

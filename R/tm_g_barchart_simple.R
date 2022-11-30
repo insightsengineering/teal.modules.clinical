@@ -325,25 +325,28 @@ srv_g_barchart_simple <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    merge_inputs <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = get_join_keys(data),
       data_extract = list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
     )
 
-    merged_data_q <- shiny::reactive({
+    validate_checks <- reactive(
       shiny::validate({
-        shiny::need(merge_inputs()$columns_source$x, "Please select an x-variable")
+        shiny::need(anl_inputs()$columns_source$x, "Please select an x-variable")
       })
-      quo <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      quo <- teal.code::eval_code(quo, as.expression(merge_inputs()$expr))
-      quo
+    )
+
+
+    anl_q <- shiny::reactive({
+      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      qenv <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
+      qenv
     })
 
     count_q <- shiny::reactive({
-      req(merged_data_q())
-      quo <- merged_data_q()
-      teal::validate_has_data(quo[["ANL"]], 2)
+      qenv <- anl_q()
+      teal::validate_has_data(qenv[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
 
       # count
@@ -359,11 +362,11 @@ srv_g_barchart_simple <- function(id,
         count_str_to_col_exprs <- sapply(groupby_vars[-1], count_str_to_column_expr)
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
-      quo2 <- teal.code::eval_code(quo, code = count_exprs)
+      qenv2 <- teal.code::eval_code(qenv, code = count_exprs)
 
       # add label and slice(1) as all patients in the same subgroup have same n_'s
-      quo3 <- teal.code::eval_code(
-        quo2,
+      qenv3 <- teal.code::eval_code(
+        qenv2,
         as.expression(
           c(
             bquote(attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count"),
@@ -380,20 +383,20 @@ srv_g_barchart_simple <- function(id,
 
       # dplyr::select loses labels
       teal.code::eval_code(
-        quo3,
+        qenv3,
         teal.transform::get_anl_relabel_call(
-          columns_source = merge_inputs()$columns_source,
+          columns_source = anl_inputs()$columns_source,
           datasets = data,
           anl_name = "counts"
         )
       )
     })
 
-    output_q <- shiny::reactive({
-      req(count_q())
+    all_q <- shiny::reactive({
+      validate_checks()
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
-      quo2 <- teal.code::eval_code(count_q(), substitute(
+      qenv2 <- teal.code::eval_code(count_q(), substitute(
         env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
         plot_title <- sprintf(
           "Number of patients (total N = %s) for each combination of (%s)",
@@ -434,26 +437,26 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      quo3 <- teal.code::eval_code(quo2, code = plot_call)
+      qenv3 <- teal.code::eval_code(qenv2, code = plot_call)
 
       # explicitly calling print on the plot inside the qenv evaluates
       # the ggplot call and therefore catches errors
-      teal.code::eval_code(quo3, code = quote(print(plot)))
+      teal.code::eval_code(qenv3, code = quote(print(plot)))
     })
 
-    plot_r <- shiny::reactive(output_q()[["plot"]])
+    plot_r <- shiny::reactive(all_q()[["plot"]])
 
-    output$table <- shiny::renderTable(output_q()[["counts"]])
+    output$table <- shiny::renderTable(all_q()[["counts"]])
 
     # reactive vars
     # NULL: not present in UI, vs character(0): no selection
 
     # returns named vector of non-NULL variables to group by
     r_groupby_vars <- function() {
-      x_name <- if (is.null(x)) NULL else as.vector(merge_inputs()$columns_source$x)
-      fill_name <- if (is.null(fill)) NULL else as.vector(merge_inputs()$columns_source$fill)
-      x_facet_name <- if (is.null(x_facet)) NULL else as.vector(merge_inputs()$columns_source$x_facet)
-      y_facet_name <- if (is.null(y_facet)) NULL else as.vector(merge_inputs()$columns_source$y_facet)
+      x_name <- if (is.null(x)) NULL else as.vector(anl_inputs()$columns_source$x)
+      fill_name <- if (is.null(fill)) NULL else as.vector(anl_inputs()$columns_source$fill)
+      x_facet_name <- if (is.null(x_facet)) NULL else as.vector(anl_inputs()$columns_source$x_facet)
+      y_facet_name <- if (is.null(y_facet)) NULL else as.vector(anl_inputs()$columns_source$y_facet)
 
       # set to NULL when empty character
       if (identical(x_name, character(0))) x_name <- NULL
@@ -485,14 +488,14 @@ srv_g_barchart_simple <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = "Bar Chart"
     )
 
@@ -511,7 +514,7 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

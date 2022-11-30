@@ -377,33 +377,33 @@ srv_g_ci <- function(id, # nolint
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    merged_data <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(x_var = x_var, y_var = y_var, color = color),
       join_keys = get_join_keys(data)
     )
 
-    merged_data_q <- reactive(
+    anl_q <- reactive(
       teal.code::eval_code(
         object = teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)),
-        code = as.expression(merged_data()$expr)
+        code = as.expression(anl_inputs()$expr)
       )
     )
 
     validate_data <- shiny::reactive({
       shiny::validate(
         shiny::need(
-          length(merged_data()$columns_source$x_var) > 0,
+          length(anl_inputs()$columns_source$x_var) > 0,
           "Select a treatment (x axis)."
         )
       )
       shiny::validate(
         shiny::need(
-          length(merged_data()$columns_source$y_var) > 0,
+          length(anl_inputs()$columns_source$y_var) > 0,
           "Select an analyzed value (y axis)."
         )
       )
-      teal::validate_has_data(merged_data_q()[["ANL"]], min_nrow = 2)
+      teal::validate_has_data(anl_q()[["ANL"]], min_nrow = 2)
 
       shiny::validate(shiny::need(
         input$conf_level >= 0 && input$conf_level <= 1,
@@ -411,11 +411,11 @@ srv_g_ci <- function(id, # nolint
       ))
     })
 
-    output_q <- shiny::reactive({
+    all_q <- shiny::reactive({
       validate_data()
-      x <- merged_data()$columns_source$x_var
-      y <- merged_data()$columns_source$y_var
-      color <- merged_data()$columns_source$color
+      x <- anl_inputs()$columns_source$x_var
+      y <- anl_inputs()$columns_source$y_var
+      color <- anl_inputs()$columns_source$color
 
       x_label <- column_annotation_label(data[[attr(x, "dataname")]](), x)
       y_label <- column_annotation_label(data[[attr(y, "dataname")]](), y)
@@ -427,9 +427,9 @@ srv_g_ci <- function(id, # nolint
 
       ggplot2_args$labs$title <- paste("Confidence Interval Plot by", x_label)
       ggplot2_args$labs$x <- x_label
-      ggplot2_args$labs$subtitle <- paste("Visit:", merged_data()$filter_info$y_var[[2]]$selected[[1]])
+      ggplot2_args$labs$subtitle <- paste("Visit:", anl_inputs()$filter_info$y_var[[2]]$selected[[1]])
       ggplot2_args$labs$y <- paste(
-        merged_data()$filter_info$y_var[[1]]$selected[[1]],
+        anl_inputs()$filter_info$y_var[[1]]$selected[[1]],
         y_label
       )
       ggplot2_args$labs$color <- color_label
@@ -448,21 +448,21 @@ srv_g_ci <- function(id, # nolint
         conf_level = as.numeric(input$conf_level),
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(merged_data_q(), list_calls)
+      teal.code::eval_code(anl_q(), list_calls)
     })
 
-    plot_r <- shiny::reactive(output_q()[["gg"]])
+    plot_r <- shiny::reactive(all_q()[["gg"]])
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(output_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(output_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(output_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
@@ -489,7 +489,7 @@ srv_g_ci <- function(id, # nolint
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(output_q()), collapse = "\n"))
+        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
