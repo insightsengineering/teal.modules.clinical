@@ -88,3 +88,59 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 \description{
 Teal Module: Teal module for Generalized Estimating Equations (GEE) analysis
 }
+\examples{
+library(scda)
+
+ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+ADQS <- synthetic_cdisc_dataset("latest", "adqs") \%>\%
+  dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
+  dplyr::mutate(
+    AVISIT = as.factor(AVISIT),
+    AVISITN = rank(AVISITN) \%>\%
+      as.factor() \%>\%
+      as.numeric() \%>\%
+      as.factor(),
+    AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
+  ) \%>\%
+  droplevels()
+
+app <- init(
+  data = cdisc_data(
+    cdisc_dataset("ADSL", ADSL,
+      code = 'synthetic_cdisc_dataset("latest", "adsl")'
+    ),
+    cdisc_dataset("ADQS", ADQS,
+      code = 'ADQS <- synthetic_cdisc_dataset("latest", "adqs") \%>\%
+              dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
+              dplyr::mutate(
+                AVISIT = as.factor(AVISIT),
+                AVISITN = rank(AVISITN) \%>\%
+                  as.factor() \%>\%
+                  as.numeric() \%>\%
+                  as.factor(),
+                AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
+              ) \%>\%
+              droplevels()'
+    )
+  ),
+  modules = modules(
+    tm_a_gee(
+      label = "GEE",
+      dataname = "ADQS",
+      aval_var = choices_selected("AVALBIN", fixed = TRUE),
+      id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
+      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+      paramcd = choices_selected(
+        choices = value_choices(ADQS, "PARAMCD", "PARAM"),
+        selected = "FKSI-FWB"
+      ),
+      cov_var = choices_selected(c("BASE", "AGE", "SEX"), NULL)
+    )
+  )
+)
+if (interactive()) {
+  shiny::shinyApp(app$ui, app$server)
+}
+
+}

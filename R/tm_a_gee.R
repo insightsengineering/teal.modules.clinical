@@ -21,10 +21,13 @@ template_a_gee <- function(output_table,
                            visit_var,
                            split_covariates,
                            cor_struct,
-                           conf_level = 0.95) {
+                           conf_level = 0.95,
+                           basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   y$model <- list()
   y$table <- list()
+
+  all_basic_table_args <- teal.widgets::resolve_basic_table_args(basic_table_args)
 
   model_list <- add_expr(
     list(),
@@ -59,14 +62,28 @@ template_a_gee <- function(output_table,
     add_expr(
       list(),
       if (output_table == "t_gee_cov") {
-        quote(result_table <- tern.gee::as.rtable(model_fit, type = "cov"))
+        substitute(
+          expr = {
+            result_table <- tern.gee::as.rtable(model_fit, type = "cov")
+            subtitles(result_table) <- st
+            main_footer(result_table) <- mf
+          },
+          env = list(
+            st = basic_table_args$subtitles,
+            mf = basic_table_args$main_footer
+          )
+        )
       } else if (output_table == "t_gee_coef") {
         substitute(
           expr = {
             result_table <- tern.gee::as.rtable(model_fit, type = "coef", conf_level = conf_level)
+            subtitles(result_table) <- st
+            main_footer(result_table) <- mf
           },
           env = list(
-            conf_level = conf_level
+            conf_level = conf_level,
+            st = basic_table_args$subtitles,
+            mf = basic_table_args$main_footer
           )
         )
       } else if (output_table == "t_gee_lsmeans") {
@@ -82,12 +99,16 @@ template_a_gee <- function(output_table,
                 alt_counts_df = dataname_lsmeans
               )
 
+            subtitles(result_table) <- st
+            main_footer(result_table) <- mf
             result_table
           },
           env = list(
             dataname_lsmeans = as.name(dataname_lsmeans),
             conf_level = conf_level,
-            input_arm_var = input_arm_var
+            input_arm_var = input_arm_var,
+            st = basic_table_args$subtitles,
+            mf = basic_table_args$main_footer
           )
         )
       }
@@ -107,6 +128,60 @@ template_a_gee <- function(output_table,
 #' @export
 #'
 #' @examples
+#' library(scda)
+#'
+#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
+#' ADQS <- synthetic_cdisc_dataset("latest", "adqs") %>%
+#'   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
+#'   dplyr::mutate(
+#'     AVISIT = as.factor(AVISIT),
+#'     AVISITN = rank(AVISITN) %>%
+#'       as.factor() %>%
+#'       as.numeric() %>%
+#'       as.factor(),
+#'     AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
+#'   ) %>%
+#'   droplevels()
+#'
+#' app <- init(
+#'   data = cdisc_data(
+#'     cdisc_dataset("ADSL", ADSL,
+#'       code = 'synthetic_cdisc_dataset("latest", "adsl")'
+#'     ),
+#'     cdisc_dataset("ADQS", ADQS,
+#'       code = 'ADQS <- synthetic_cdisc_dataset("latest", "adqs") %>%
+#'               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
+#'               dplyr::mutate(
+#'                 AVISIT = as.factor(AVISIT),
+#'                 AVISITN = rank(AVISITN) %>%
+#'                   as.factor() %>%
+#'                   as.numeric() %>%
+#'                   as.factor(),
+#'                 AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
+#'               ) %>%
+#'               droplevels()'
+#'     )
+#'   ),
+#'   modules = modules(
+#'     tm_a_gee(
+#'       label = "GEE",
+#'       dataname = "ADQS",
+#'       aval_var = choices_selected("AVALBIN", fixed = TRUE),
+#'       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
+#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+#'       paramcd = choices_selected(
+#'         choices = value_choices(ADQS, "PARAMCD", "PARAM"),
+#'         selected = "FKSI-FWB"
+#'       ),
+#'       cov_var = choices_selected(c("BASE", "AGE", "SEX"), NULL)
+#'     )
+#'   )
+#' )
+#' if (interactive()) {
+#'   shiny::shinyApp(app$ui, app$server)
+#' }
+#'
 tm_a_gee <- function(label,
                      dataname,
                      parentname = ifelse(
@@ -183,6 +258,7 @@ ui_gee <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
+      shiny::h3(shiny::textOutput(ns("gee_title"))),
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
     encoding = shiny::div(
@@ -378,6 +454,10 @@ srv_gee <- function(id,
       adsl_input_r = adsl_inputs,
       anl_q = anl_q
     )
+
+    # Initially hide the output title because there is no output yet.
+    shinyjs::show("gee_title")
+
     # To do in production: add validations.
 
     ## table_r ----
@@ -385,8 +465,18 @@ srv_gee <- function(id,
       output_table <- input$output_table
       conf_level <- as.numeric(input$conf_level)
       col_source <- merged$anl_input_r()$columns_source
+      filter_info <- merged$anl_input_r()$filter_info
 
       req(output_table)
+
+      basic_table_args$subtitles <- paste0(
+        "Analysis Variable: ", col_source$aval_var,
+        ",  Endpoint: ", filter_info$paramcd[[1]]$selected[[1]],
+        ifelse(length(col_source$split_covariates) == 0, "",
+               paste(",  Covariates:", paste(col_source$split_covariates, collapse = ", "))
+        )
+      )
+      basic_table_args$main_footer <- c(paste("Correlation Structure:", input$cor_struct))
 
       my_calls <- template_a_gee(
         output_table = output_table,
@@ -399,9 +489,23 @@ srv_gee <- function(id,
         id_var = col_source$id_var,
         arm_var = col_source$arm_var,
         visit_var = col_source$visit_var,
-        cor_struct = input$cor_struct
+        cor_struct = input$cor_struct,
+        basic_table_args = basic_table_args
       )
       teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+    })
+
+    output$gee_title <- shiny::renderText({
+      # Input on output type.
+      output_table <- input$output_table
+
+      output_title <- switch(
+        output_table,
+        "t_gee_cov" = "Residual Covariance Matrix Estimate",
+        "t_gee_coef" = "Model Coefficients",
+        "t_gee_lsmeans" = "LS Means Estimates"
+      )
+      output_title
     })
 
     table_r <- shiny::reactive({

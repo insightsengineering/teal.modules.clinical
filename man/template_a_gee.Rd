@@ -16,7 +16,8 @@ template_a_gee(
   visit_var,
   split_covariates,
   cor_struct,
-  conf_level = 0.95
+  conf_level = 0.95,
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
@@ -44,6 +45,13 @@ variable names that can be used as \code{visit} variable. Must be a factor in \c
 
 \item{conf_level}{(\code{numeric})\cr
 value for the confidence level within the range of (0, 1).}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
+
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
 Template for Generalized Estimating Equations (GEE) analysis module
