@@ -120,7 +120,8 @@ app <- init(
                   as.factor(),
                 AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
               ) \%>\%
-              droplevels()'
+              droplevels()
+             '
     )
   ),
   modules = modules(

@@ -159,7 +159,8 @@ template_a_gee <- function(output_table,
 #'                   as.factor(),
 #'                 AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
 #'               ) %>%
-#'               droplevels()'
+#'               droplevels()
+#'              '
 #'     )
 #'   ),
 #'   modules = modules(
@@ -220,7 +221,9 @@ tm_a_gee <- function(label,
     id_var = teal.modules.clinical::cs_to_des_select(id_var, dataname = dataname),
     visit_var = teal.modules.clinical::cs_to_des_select(visit_var, dataname = dataname),
     cov_var = teal.modules.clinical::cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-    split_covariates = teal.modules.clinical::cs_to_des_select(teal.modules.clinical::split_choices(cov_var), dataname = dataname, multiple = TRUE),
+    split_covariates = teal.modules.clinical::cs_to_des_select(teal.modules.clinical::split_choices(cov_var),
+      dataname = dataname, multiple = TRUE
+    ),
     aval_var = teal.modules.clinical::cs_to_des_select(aval_var, dataname = dataname)
   )
 
@@ -389,25 +392,25 @@ srv_gee <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     ## split_covariates ----
     shiny::observeEvent(input[[teal.modules.clinical::extract_input("cov_var", dataname)]],
-                        ignoreNULL = FALSE,
-                        {
-                          # update covariates as actual variables
-                          split_interactions_values <- teal.modules.clinical::split_interactions(
-                            input[[teal.modules.clinical::extract_input("cov_var", dataname)]]
-                          )
-                          arm_var_value <- input[[teal.modules.clinical::extract_input("arm_var", parentname)]]
-                          arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
-                          if (arm_in_cov) {
-                            split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
-                          } else {
-                            split_covariates_selected <- split_interactions_values
-                          }
-                          teal.widgets::updateOptionalSelectInput(
-                            session,
-                            inputId = teal.modules.clinical::extract_input("split_covariates", dataname),
-                            selected = split_covariates_selected
-                          )
-                        }
+      ignoreNULL = FALSE,
+      {
+        # update covariates as actual variables
+        split_interactions_values <- teal.modules.clinical::split_interactions(
+          input[[teal.modules.clinical::extract_input("cov_var", dataname)]]
+        )
+        arm_var_value <- input[[teal.modules.clinical::extract_input("arm_var", parentname)]]
+        arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
+        if (arm_in_cov) {
+          split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
+        } else {
+          split_covariates_selected <- split_interactions_values
+        }
+        teal.widgets::updateOptionalSelectInput(
+          session,
+          inputId = teal.modules.clinical::extract_input("split_covariates", dataname),
+          selected = split_covariates_selected
+        )
+      }
     )
 
     ## arm_ref_comp_observer ----
@@ -473,7 +476,7 @@ srv_gee <- function(id,
         "Analysis Variable: ", col_source$aval_var,
         ",  Endpoint: ", filter_info$paramcd[[1]]$selected[[1]],
         ifelse(length(col_source$split_covariates) == 0, "",
-               paste(",  Covariates:", paste(col_source$split_covariates, collapse = ", "))
+          paste(",  Covariates:", paste(col_source$split_covariates, collapse = ", "))
         )
       )
       basic_table_args$main_footer <- c(paste("Correlation Structure:", input$cor_struct))
@@ -499,8 +502,7 @@ srv_gee <- function(id,
       # Input on output type.
       output_table <- input$output_table
 
-      output_title <- switch(
-        output_table,
+      output_title <- switch(output_table,
         "t_gee_cov" = "Residual Covariance Matrix Estimate",
         "t_gee_coef" = "Model Coefficients",
         "t_gee_lsmeans" = "LS Means Estimates"
