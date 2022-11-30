@@ -536,12 +536,18 @@ srv_gee <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal.reporter::TealReportCard$new()
-        card$set_name("Generalized Estimating Equations (GEE) analysis Table")
-        card$append_text("Generalized Estimating Equations (GEE) analysis Table", "header2")
+        card$set_name("Generalized Estimating Equations (GEE) Analysis Table")
+        card$append_text("Generalized Estimating Equations (GEE) Analysis Table", "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
-        card$append_text("Table", "header3")
+        table_type <- switch(
+          input$output_table,
+          "t_gee_cov" = "Residual Covariance Matrix Estimate",
+          "t_gee_coef" = "Model Coefficients",
+          "t_gee_lsmeans" = "LS Means Estimates"
+        )
+        card$append_text(paste(table_type, "Table"), "header3")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
