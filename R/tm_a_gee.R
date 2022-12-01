@@ -541,8 +541,7 @@ srv_gee <- function(id,
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
-        table_type <- switch(
-          input$output_table,
+        table_type <- switch(input$output_table,
           "t_gee_cov" = "Residual Covariance Matrix Estimate",
           "t_gee_coef" = "Model Coefficients",
           "t_gee_lsmeans" = "LS Means Estimates"
