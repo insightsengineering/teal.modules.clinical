@@ -394,12 +394,7 @@ srv_g_ci <- function(id, # nolint
         "conf_level",
         shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between 0 and 1")
       )
-      selector_list()$x_var()$iv$enable()
-      selector_list()$y_var()$iv$enable()
-      iv$add_validator(selector_list()$x_var()$iv)
-      iv$add_validator(selector_list()$y_var()$iv)
-      iv$enable()
-      iv
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("x_var", "y_var"))
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
