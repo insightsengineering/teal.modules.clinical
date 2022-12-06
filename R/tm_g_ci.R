@@ -377,10 +377,35 @@ srv_g_ci <- function(id, # nolint
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(x_var = x_var, y_var = y_var, color = color),
-      join_keys = get_join_keys(data)
+      datasets = data,
+      select_validation_rule = list(
+        x_var = shinyvalidate::sv_required("Select a treatment (x axis)"),
+        y_var = shinyvalidate::sv_required("Select an analyzed value (y axis)")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between 0 and 1")
+      )
+      selector_list()$x_var()$iv$enable()
+      selector_list()$y_var()$iv$enable()
+      iv$add_validator(selector_list()$x_var()$iv)
+      iv$add_validator(selector_list()$y_var()$iv)
+      iv$enable()
+      iv
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list
     )
 
     anl_q <- reactive(
@@ -390,29 +415,10 @@ srv_g_ci <- function(id, # nolint
       )
     )
 
-    validate_data <- shiny::reactive({
-      shiny::validate(
-        shiny::need(
-          length(anl_inputs()$columns_source$x_var) > 0,
-          "Select a treatment (x axis)."
-        )
-      )
-      shiny::validate(
-        shiny::need(
-          length(anl_inputs()$columns_source$y_var) > 0,
-          "Select an analyzed value (y axis)."
-        )
-      )
+    all_q <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       teal::validate_has_data(anl_q()[["ANL"]], min_nrow = 2)
 
-      shiny::validate(shiny::need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-    })
-
-    all_q <- shiny::reactive({
-      validate_data()
       x <- anl_inputs()$columns_source$x_var
       y <- anl_inputs()$columns_source$y_var
       color <- anl_inputs()$columns_source$color
