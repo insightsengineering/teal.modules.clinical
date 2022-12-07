@@ -24,8 +24,8 @@
 #' @keywords internal
 #'
 #' @examples
-#' ds <- teal:::get_dummy_datasets()
 #'
+#' adsl <- data.frame(ARM = c("ARM 1", "ARM2"), ARMCD = c("ARM A", "ARMB"))
 #' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 #' arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
 #' if (interactive()) {
@@ -46,7 +46,7 @@
 #'           input,
 #'           output,
 #'           id_arm_var = "arm",
-#'           datasets = ds,
+#'           data = adsl,
 #'           arm_ref_comp = arm_ref_comp,
 #'           module = "example"
 #'         )
