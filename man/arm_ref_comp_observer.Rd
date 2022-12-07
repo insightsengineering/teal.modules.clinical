@@ -49,40 +49,56 @@ stop the whole observer if FALSE.}
 
 \item{output_id}{(\code{character}) name of the UI id that the output will be written to.}
 }
+\value{
+Returns a \code{shinyvalidate::InputValidator} which checks that there is at least one reference
+and comparison arm
+}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 Updates the reference and comparison Treatments when the selected Treatment variable changes
 }
 \examples{
 
-adsl <- data.frame(ARM = c("ARM 1", "ARM2"), ARMCD = c("ARM A", "ARMB"))
 arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
-arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
-if (interactive()) {
-  shinyApp(
-    ui = fluidPage(
-      teal.widgets::optionalSelectInput(
-        "arm",
-        "Treatment Variable",
-        choices = arm_var$choices,
-        selected = arm_var$selected
-      ),
-      shiny::uiOutput("arms_buckets"),
+arm_var <- choices_selected(c("ARM", "ARMCD"), "ARMCD")
+
+adsl <- data.frame(ARM = c("ARM 1", "ARM2"), ARMCD = c("ARM A", "ARMB"))
+
+shiny::shinyApp(
+  ui = fluidPage(
+    teal.widgets::optionalSelectInput(
+      "arm",
+      "Treatment Variable",
+      choices = arm_var$choices,
+      selected = arm_var$selected
     ),
-    server = function(input, output, session) {
-      shiny::isolate({
-        teal.modules.clinical:::arm_ref_comp_observer(
-          session,
-          input,
-          output,
-          id_arm_var = "arm",
-          data = adsl,
-          arm_ref_comp = arm_ref_comp,
-          module = "example"
-        )
-      })
-    }
-  )
+    shiny::uiOutput("arms_buckets"),
+    shiny::textOutput("result")
+  ),
+  server = function(input, output, session) {
+
+    iv_arm_ref <- teal.modules.clinical:::arm_ref_comp_observer(
+      session,
+      input,
+      output,
+      id_arm_var = "arm",
+      data = adsl,
+      arm_ref_comp = arm_ref_comp,
+      module = "example"
+    )
+
+    output$result <- shiny::renderText({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_validator(iv_arm_ref)
+      iv$enable()
+      teal::validate_inputs(iv)
+      "Valid selection has been made!"
+    })
+
+  }
+)
+if (interactive()) {
+  shiny::shinyApp(ui, server)
 }
 }
 \keyword{internal}
