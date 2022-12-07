@@ -756,7 +756,7 @@ srv_t_coxreg <- function(id,
 
   shiny::moduleServer(id, function(input, output, session) {
     # Observer to update reference and comparison arm input options.
-    arm_ref_comp_observer(
+    iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
       output,
@@ -766,9 +766,7 @@ srv_t_coxreg <- function(id,
       module = "tm_t_coxreg"
     )
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -777,6 +775,20 @@ srv_t_coxreg <- function(id,
         cnsr_var = cnsr_var,
         cov_var = cov_var
       ),
+      datasets = data,
+      select_validation_rule = NULL
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_validator(iv_arm_ref)
+      teal.transform::compose_and_enable_validators(iv, selector_list, NULL)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
 
@@ -818,6 +830,8 @@ srv_t_coxreg <- function(id,
 
     ## Prepare the call evaluation environment ----
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
