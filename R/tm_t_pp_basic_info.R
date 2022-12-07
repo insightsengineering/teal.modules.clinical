@@ -194,10 +194,24 @@ srv_t_basic_info <- function(id,
     )
 
     # Basic Info tab ----
-    anl_inputs <- teal.transform::merge_expression_module(
+    selector_list <- teal.transform::data_extract_multiple_srv(
+      data_extract = list(vars = vars),
+      datasets = data,
+      select_validation_rule = list(
+        vars = shinyvalidate::sv_required("Please select basic info variables")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
+      teal.transform::compose_and_enable_validators(iv, selector_list, "vars")
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       join_keys = get_join_keys(data),
-      data_extract = list(vars = vars),
+      selector_list = selector_list,
       merge_function = "dplyr::left_join"
     )
 
@@ -207,14 +221,7 @@ srv_t_basic_info <- function(id,
     })
 
     all_q <- shiny::reactive({
-      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-      shiny::validate(
-        shiny::need(
-          anl_inputs()$columns_source$vars,
-          "Please select basic info variables."
-        )
-      )
-
+      teal::validate_inputs(iv_r())
       my_calls <- template_basic_info(
         dataname = "ANL",
         vars = anl_inputs()$columns_source$vars
