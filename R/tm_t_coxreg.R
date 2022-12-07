@@ -819,7 +819,7 @@ srv_t_coxreg <- function(id,
       # finally accessing the UI-rendering function defined above.
       if (!is.null(input$interactions) && input$interactions) {
         input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
-        dataset <- merged$anl_g_r()[[dataname]]
+        dataset <- merged$anl_q()[[dataname]]
         cov_is_numeric <- vapply(dataset[input_cov_var], is.numeric, logical(1))
         interaction_var <- input_cov_var[cov_is_numeric]
         if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
@@ -945,7 +945,7 @@ srv_t_coxreg <- function(id,
 
     at <- shiny::reactive({
       input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
-      cov_is_numeric <- vapply(anl_filtered()[input_cov_var], is.numeric, logical(1))
+      cov_is_numeric <- vapply(merged$anl_q()[[dataname]][input_cov_var], is.numeric, logical(1))
       interaction_var <- input_cov_var[cov_is_numeric]
       if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
         res <- lapply(
