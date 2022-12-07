@@ -329,7 +329,7 @@ ui_g_ci <- function(id, ...) { # nolint
       ),
       teal.transform::data_extract_ui(
         id = ns("y_var"),
-        label = "Analyzed Value (y axis)",
+        label = "Analysis Value (y axis)",
         data_extract_spec = args$y_var
       ),
       teal.transform::data_extract_ui(
@@ -383,7 +383,7 @@ srv_g_ci <- function(id, # nolint
       datasets = data,
       select_validation_rule = list(
         x_var = shinyvalidate::sv_required("Select a treatment (x axis)"),
-        y_var = shinyvalidate::sv_required("Select an analyzed value (y axis)")
+        y_var = shinyvalidate::sv_required("Select an analysis value (y axis)")
       )
     )
 
@@ -417,6 +417,13 @@ srv_g_ci <- function(id, # nolint
       x <- anl_inputs()$columns_source$x_var
       y <- anl_inputs()$columns_source$y_var
       color <- anl_inputs()$columns_source$color
+
+      shiny::validate(
+        shiny::need(
+          !all(is.na(anl_q()[["ANL"]][[y]])),
+          "No valid data. Please check the filtering option for analysis value (y axis)"
+        )
+      )
 
       x_label <- column_annotation_label(data[[attr(x, "dataname")]](), x)
       y_label <- column_annotation_label(data[[attr(y, "dataname")]](), y)
