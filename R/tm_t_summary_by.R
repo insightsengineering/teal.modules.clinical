@@ -590,13 +590,32 @@ srv_summary_by <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
+    vars <- list(arm_var = arm_var, id_var = id_var, summarize_vars = summarize_vars, by_vars = by_vars)
+
     if (!is.null(paramcd)) {
       vars[["paramcd"]] <- paramcd
     }
 
-    anl_inputs <- teal.transform::merge_expression_module(
+    validation_rules <- list(
+      arm_var = shinyvalidate::sv_required("Please select a treatment variable."),
+      id_var = shinyvalidate::sv_required("Please select a subject identifier."),
+      summarize_vars = shinyvalidate::sv_required("Please select a summarize variable.")
+    )
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = vars,
+      datasets = data,
+      select_validation_rule = validation_rules
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "id_var", "summarize_vars"))
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      selector_list = selector_list,
       datasets = data,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
@@ -624,6 +643,7 @@ srv_summary_by <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -635,16 +655,12 @@ srv_summary_by <- function(id,
 
       # validate inputs
       shiny::validate(
-        shiny::need(input_arm_var, "Please select a treatment variable."),
-        shiny::need(input_id_var, "Please select a subject identifier."),
-        shiny::need(input_summarize_vars, "Please select a summarize variable."),
         if (!all(input_summarize_vars %in% names(adsl_filtered))) {
           shiny::need(
             input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
             "`Select Endpoint` is not selected."
           )
-        },
-        shiny::need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
+        }
       )
       validate_standard_inputs(
         adsl = adsl_filtered,
