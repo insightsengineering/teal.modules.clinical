@@ -776,13 +776,25 @@ srv_t_coxreg <- function(id,
         cov_var = cov_var
       ),
       datasets = data,
-      select_validation_rule = NULL
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+        cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
+        arm_var = shinyvalidate::sv_required("A treatment variable is required")
+      )
     )
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_validator(iv_arm_ref)
-      teal.transform::compose_and_enable_validators(iv, selector_list, NULL)
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between 0 and 1")
+      )
+      iv$add_rule("pval_method", ~ if( length(merged$anl_input_r()$columns_source$strata_var) > 0 && . != "wald") {
+        "Only Wald tests are supported for models with strata."
+      })
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("aval_var", "cnsr_var", "arm_var"))
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
@@ -862,11 +874,6 @@ srv_t_coxreg <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
 
-      shiny::validate(shiny::need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-
       teal::validate_no_intersection(
         input_arm_var,
         input_strata_var,
@@ -896,14 +903,6 @@ srv_t_coxreg <- function(id,
         "Each treatment group should have at least 2 records."
       ))
 
-      # validate p-value method
-      if (length(input_strata_var) > 0) {
-        shiny::validate(shiny::need(
-          input$pval_method == "wald",
-          "Only Wald tests are supported for models with strata."
-        ))
-      }
-
       if (input$type == "Multivariate") {
         shiny::validate(shiny::need(
           input$interactions == FALSE,
@@ -924,11 +923,6 @@ srv_t_coxreg <- function(id,
           "Please specify all the interaction levels."
         ))
       }
-
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
-      )
-      shiny::validate(shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
 
       # validate covariate has at least two levels
       shiny::validate(
