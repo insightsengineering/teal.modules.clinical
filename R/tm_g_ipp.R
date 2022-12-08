@@ -474,7 +474,8 @@ srv_g_ipp <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       datasets = data,
       data_extract = list(
         arm_var = arm_var,
@@ -485,6 +486,25 @@ srv_g_ipp <- function(id,
         visit_var = visit_var,
         base_var = base_var
       ),
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("A Parameter values over Time must be selected"),
+        avalu_var = shinyvalidate::sv_required("An Analysis Variable Unit must be selected"),
+        visit_var = shinyvalidate::sv_required("A Timepoint Variable must be selected"),
+        id_var = shinyvalidate::sv_required("A Patient ID must be selected"),
+        base_var = shinyvalidate::sv_required("Baseline Parameter Values must be selected")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      teal.transform::compose_and_enable_validators(
+        iv, selector_list, c("aval_var", "avalu_var", "visit_var", "id_var", "base_var")
+      )
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join",
       join_keys = get_join_keys(data)
     )
@@ -504,6 +524,8 @@ srv_g_ipp <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       qenv <- anl_q()
       adsl_filtered <- qenv[[parentname]]
       anl_filtered <- qenv[[dataname]]
@@ -536,15 +558,6 @@ srv_g_ipp <- function(id,
       )
 
       do.call(what = "validate_standard_inputs", validate_args)
-
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
-      )
-
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_visit_var), "Please select a timepoint variable.")
-      )
-
       NULL
     })
 
