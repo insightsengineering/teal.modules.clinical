@@ -766,6 +766,10 @@ srv_t_coxreg <- function(id,
       module = "tm_t_coxreg"
     )
 
+    use_interactions <- reactive({
+      input$type == "Univariate" && !is.null(input$interactions) && input$interactions
+    })
+
     overlap_rule <- function(other_var, var_name) {
       function(data) {
         if (length(intersect(data, as.vector(merged$anl_input_r()$columns_source[[other_var]]))) > 0 ) {
@@ -788,7 +792,10 @@ srv_t_coxreg <- function(id,
       ),
       cov_var = shinyvalidate::compose_rules(
         overlap_rule("arm_var", c("Treatment", "Covariate")),
-        overlap_rule("strata_var", c("Covariate", "Strata"))
+        overlap_rule("strata_var", c("Covariate", "Strata")),
+        ~ if (use_interactions() && length(.) == 0) {
+          "If interactions are selected at least one covariate should be specified."
+        }
       )
     )
 
@@ -853,11 +860,6 @@ srv_t_coxreg <- function(id,
       )
     }
 
-    use_interactions <- reactive({
-      input$type == "Univariate" && !is.null(input$interactions) && input$interactions
-    })
-
-
     output$interaction_input <- shiny::renderUI({
       # exclude cases when increments are not necessary and
       # finally accessing the UI-rendering function defined above.
@@ -918,13 +920,6 @@ srv_t_coxreg <- function(id,
         all(anl_arm_n >= 2),
         "Each treatment group should have at least 2 records."
       ))
-
-      if (use_interactions()) {
-        shiny::validate(shiny::need(
-          (length(input_cov_var) > 0),
-          "If interactions are selected at least one covariate should be specified."
-        ))
-      }
 
       if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
         shiny::validate(shiny::need(
