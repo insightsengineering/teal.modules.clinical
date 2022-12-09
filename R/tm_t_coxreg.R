@@ -826,6 +826,18 @@ srv_t_coxreg <- function(id,
       iv$add_rule("pval_method", ~ if( length(merged$anl_input_r()$columns_source$strata_var) > 0 && . != "wald") {
         "Only Wald tests are supported for models with strata."
       })
+      # add rules for interaction_var text inputs
+      for (val in interaction_var_r()) {
+        iv$add_rule(
+          paste0("interact_", val),
+          shinyvalidate::sv_required(paste("Interaction level(s) should be specified for", val))
+        )
+        iv$add_rule(
+          paste0("interact_", val),
+          ~ if (anyNA(as_numeric_from_comma_sep_str(.)))
+            paste("Numeric interaction level(s) should be specified for", val)
+        )
+      }
       teal.transform::compose_and_enable_validators(
         iv, selector_list, c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "cov_var")
       )
@@ -860,17 +872,22 @@ srv_t_coxreg <- function(id,
       )
     }
 
-    output$interaction_input <- shiny::renderUI({
+    interaction_var_r <- reactive({
       # exclude cases when increments are not necessary and
       # finally accessing the UI-rendering function defined above.
       if (use_interactions()) {
         input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
         dataset <- merged$anl_q()[[dataname]]
         cov_is_numeric <- vapply(dataset[input_cov_var], is.numeric, logical(1))
-        interaction_var <- input_cov_var[cov_is_numeric]
-        if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
-          lapply(interaction_var, open_textinput, dataset = dataset)
-        }
+        input_cov_var[cov_is_numeric]
+      } else{
+        NULL
+      }
+    })
+
+    output$interaction_input <- shiny::renderUI({
+      if (length(interaction_var_r()) > 0) {
+        lapply(interaction_var_r(), open_textinput, dataset = merged$anl_q()[[dataname]])
       }
     })
 
@@ -921,13 +938,6 @@ srv_t_coxreg <- function(id,
         "Each treatment group should have at least 2 records."
       ))
 
-      if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
-        shiny::validate(shiny::need(
-          all(vapply(at(), function(x) length(x) > 0, logical(1))),
-          "Please specify all the interaction levels."
-        ))
-      }
-
       # validate covariate has at least two levels
       shiny::validate(
         shiny::need(
@@ -951,8 +961,7 @@ srv_t_coxreg <- function(id,
           function(x) {
             cov <- input[[paste0("interact_", x)]]
             if (!is.null(cov)) {
-              vec <- strsplit(cov, split = ",")
-              as.numeric(unlist(vec))
+              as_numeric_from_comma_sep_str(cov)
             }
           }
         )
