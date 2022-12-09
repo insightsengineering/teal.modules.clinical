@@ -766,6 +766,32 @@ srv_t_coxreg <- function(id,
       module = "tm_t_coxreg"
     )
 
+    overlap_rule <- function(other_var, var_name) {
+      function(data) {
+        if (length(intersect(data, as.vector(merged$anl_input_r()$columns_source[[other_var]]))) > 0 ) {
+          sprintf("`%s` and `%s` variables should not overlap", var_name[1], var_name[2])
+        }
+      }
+    }
+
+    select_validation_rule <- list(
+      aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+      cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
+      arm_var = shinyvalidate::compose_rules(
+        shinyvalidate::sv_required("A treatment variable is required"),
+        overlap_rule("strata_var", c("Treatment", "Strata")),
+        overlap_rule("cov_var", c("Treatment", "Covariate"))
+      ),
+      strata_var = shinyvalidate::compose_rules(
+        overlap_rule("arm_var", c("Treatment", "Strata")),
+        overlap_rule("cov_var", c("Covariate", "Strata"))
+      ),
+      cov_var = shinyvalidate::compose_rules(
+        overlap_rule("arm_var", c("Treatment", "Covariate")),
+        overlap_rule("strata_var", c("Covariate", "Strata"))
+      )
+    )
+
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -776,11 +802,7 @@ srv_t_coxreg <- function(id,
         cov_var = cov_var
       ),
       datasets = data,
-      select_validation_rule = list(
-        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
-        cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
-        arm_var = shinyvalidate::sv_required("A treatment variable is required")
-      ),
+      select_validation_rule = select_validation_rule,
       filter_validation_rule = list(
         paramcd = shinyvalidate::sv_required("An endpoint is required")
       )
@@ -797,7 +819,9 @@ srv_t_coxreg <- function(id,
       iv$add_rule("pval_method", ~ if( length(merged$anl_input_r()$columns_source$strata_var) > 0 && . != "wald") {
         "Only Wald tests are supported for models with strata."
       })
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("aval_var", "cnsr_var", "arm_var", "paramcd"))
+      teal.transform::compose_and_enable_validators(
+        iv, selector_list, c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "cov_var")
+      )
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
@@ -829,10 +853,15 @@ srv_t_coxreg <- function(id,
       )
     }
 
+    use_interactions <- reactive({
+      input$type == "Univariate" && !is.null(input$interactions) && input$interactions
+    })
+
+
     output$interaction_input <- shiny::renderUI({
       # exclude cases when increments are not necessary and
       # finally accessing the UI-rendering function defined above.
-      if (!is.null(input$interactions) && input$interactions) {
+      if (use_interactions()) {
         input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
         dataset <- merged$anl_q()[[dataname]]
         cov_is_numeric <- vapply(dataset[input_cov_var], is.numeric, logical(1))
@@ -877,22 +906,6 @@ srv_t_coxreg <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
 
-      teal::validate_no_intersection(
-        input_arm_var,
-        input_strata_var,
-        "`Treatment` and `Strata` variables should not be overlapped."
-      )
-      teal::validate_no_intersection(
-        input_arm_var,
-        input_cov_var,
-        "`Treatment` and `Covariate` variables should not be overlapped."
-      )
-      teal::validate_no_intersection(
-        input_strata_var,
-        input_cov_var,
-        "`Strata` and `Covariate` variables should not be overlapped."
-      )
-
       do.call(what = "validate_standard_inputs", validate_args)
 
       arm_n <- base::table(anl_filtered[[input_arm_var]])
@@ -906,14 +919,7 @@ srv_t_coxreg <- function(id,
         "Each treatment group should have at least 2 records."
       ))
 
-      if (input$type == "Multivariate") {
-        shiny::validate(shiny::need(
-          input$interactions == FALSE,
-          "Interaction is only supported for univariate models."
-        ))
-      }
-
-      if (!is.null(input$interactions) && input$interactions) {
+      if (use_interactions()) {
         shiny::validate(shiny::need(
           (length(input_cov_var) > 0),
           "If interactions are selected at least one covariate should be specified."
@@ -933,7 +939,7 @@ srv_t_coxreg <- function(id,
           all(vapply(anl_filtered[input_cov_var], FUN = function(x) {
             length(unique(x)) > 1
           }, logical(1))),
-          "All covariate needs to have at least two levels"
+          "All covariates needs to have at least two levels"
         )
       )
 
@@ -966,7 +972,7 @@ srv_t_coxreg <- function(id,
       cov_var <- as.vector(anl$columns_source$cov_var)
       cov_var <- if (length(cov_var) > 0) cov_var else NULL
 
-      at <- if (!is.null(input$interactions) && input$interactions) at() else list()
+      at <- if (use_interactions()) at() else list()
       arm_var <- as.vector(anl$columns_source$arm_var)
       cnsr_var <- as.vector(anl$columns_source$cnsr_var)
       aval_var <- as.vector(anl$columns_source$aval_var)
@@ -976,7 +982,7 @@ srv_t_coxreg <- function(id,
         pval_method = input$pval_method,
         ties = input$ties,
         conf_level = as.numeric(input$conf_level),
-        interaction = `if`(is.null(input$interactions), FALSE, input$interactions)
+        interaction = `if`(!use_interactions(), FALSE, input$interactions)
       )
 
       if (multivariate) {
