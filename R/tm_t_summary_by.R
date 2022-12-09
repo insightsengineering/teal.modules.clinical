@@ -659,14 +659,6 @@ srv_summary_by <- function(id,
       input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
 
       # validate inputs
-      # shiny::validate(
-      #   if (!all(input_summarize_vars %in% names(adsl_filtered))) {
-      #     shiny::need(
-      #       input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-      #       "`Select Endpoint` is not selected."
-      #     )
-      #   }
-      # )
       validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
