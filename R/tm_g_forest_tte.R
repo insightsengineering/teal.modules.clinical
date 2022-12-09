@@ -509,7 +509,8 @@ srv_g_forest_tte <- function(id,
         aval_var = shinyvalidate::sv_required("An analysis variable is required"),
         cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
         arm_var = shinyvalidate::sv_required("A treatment variable is required")
-      )
+      ),
+      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
     )
 
     iv_r <- reactive({
@@ -521,7 +522,7 @@ srv_g_forest_tte <- function(id,
       )
       iv$add_validator(iv_arm_ref)
       teal.transform::compose_and_enable_validators(
-        iv, selector_list, c("aval_var", "cnsr_var", "arm_var")
+        iv, selector_list, c("aval_var", "cnsr_var", "arm_var", "paramcd")
       )
     })
 

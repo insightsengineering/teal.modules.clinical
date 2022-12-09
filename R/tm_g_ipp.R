@@ -492,13 +492,17 @@ srv_g_ipp <- function(id,
         visit_var = shinyvalidate::sv_required("A Timepoint Variable must be selected"),
         id_var = shinyvalidate::sv_required("A Patient ID must be selected"),
         base_var = shinyvalidate::sv_required("Baseline Parameter Values must be selected")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required(message = "Please select Parameter filter."),
+        arm_var = shinyvalidate::sv_required(message = "Please select Arm filter.")
       )
     )
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       teal.transform::compose_and_enable_validators(
-        iv, selector_list, c("aval_var", "avalu_var", "visit_var", "id_var", "base_var")
+        iv, selector_list, c("aval_var", "avalu_var", "visit_var", "id_var", "base_var", "paramcd", "arm_var")
       )
     })
 

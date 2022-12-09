@@ -384,7 +384,10 @@ srv_g_ci <- function(id, # nolint
       select_validation_rule = list(
         x_var = shinyvalidate::sv_required("Select a treatment (x axis)"),
         y_var = shinyvalidate::sv_required("Select an analysis value (y axis)")
-      )
+      ),
+      filter_validation_rule = list(
+         y_var = shinyvalidate::sv_required(message = "Please select the filters.")
+       )
     )
 
     iv_r <- reactive({

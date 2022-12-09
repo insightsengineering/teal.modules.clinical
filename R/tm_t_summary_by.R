@@ -605,13 +605,18 @@ srv_summary_by <- function(id,
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = vars,
       datasets = data,
-      select_validation_rule = validation_rules
+      select_validation_rule = validation_rules,
+      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select a filter."))
     )
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "id_var", "summarize_vars"))
+      teal.transform::compose_and_enable_validators(
+        iv,
+        selector_list,
+        c("arm_var", "id_var", "summarize_vars", "paramcd")
+      )
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
@@ -654,14 +659,14 @@ srv_summary_by <- function(id,
       input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
 
       # validate inputs
-      shiny::validate(
-        if (!all(input_summarize_vars %in% names(adsl_filtered))) {
-          shiny::need(
-            input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-            "`Select Endpoint` is not selected."
-          )
-        }
-      )
+      # shiny::validate(
+      #   if (!all(input_summarize_vars %in% names(adsl_filtered))) {
+      #     shiny::need(
+      #       input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
+      #       "`Select Endpoint` is not selected."
+      #     )
+      #   }
+      # )
       validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),

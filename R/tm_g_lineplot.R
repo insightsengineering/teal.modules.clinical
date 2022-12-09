@@ -526,6 +526,9 @@ srv_g_lineplot <- function(id,
         x = shinyvalidate::sv_required("Please select a single time variable"),
         y = shinyvalidate::sv_required("Please select a single analysis variable"),
         strata = shinyvalidate::sv_required("Please select a treatment variable")
+      ),
+      filter_validation_rule = list(
+        param = shinyvalidate::sv_required(message = "Please select Biomarker filter.")
       )
     )
 
@@ -540,7 +543,7 @@ srv_g_lineplot <- function(id,
       )
       iv$add_rule("interval", shinyvalidate::sv_required("Please select an interval for the midpoint statistic"))
       iv$add_rule("whiskers", shinyvalidate::sv_required("At least one of the whiskers must be selected"))
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("x", "y", "strata"))
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("x", "y", "strata", "param"))
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
