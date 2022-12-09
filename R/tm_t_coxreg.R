@@ -780,6 +780,9 @@ srv_t_coxreg <- function(id,
         aval_var = shinyvalidate::sv_required("An analysis variable is required"),
         cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
         arm_var = shinyvalidate::sv_required("A treatment variable is required")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("An endpoint is required")
       )
     )
 
@@ -794,7 +797,7 @@ srv_t_coxreg <- function(id,
       iv$add_rule("pval_method", ~ if( length(merged$anl_input_r()$columns_source$strata_var) > 0 && . != "wald") {
         "Only Wald tests are supported for models with strata."
       })
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("aval_var", "cnsr_var", "arm_var"))
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("aval_var", "cnsr_var", "arm_var", "paramcd"))
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
