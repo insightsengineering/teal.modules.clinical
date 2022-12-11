@@ -3,7 +3,6 @@
 <!-- start badges -->
 [![Check 🛠](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/check.yaml/badge.svg)](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/check.yaml)
 [![Docs 📚](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/)
-[![Code Coverage 📔](https://raw.githubusercontent.com/insightsengineering/teal.modules.clinical/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/insightsengineering/teal.modules.clinical/_xml_coverage_reports/data/main/coverage.xml)
 
 ![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.clinical?style=social)
 ![GitHub Repo stars](https://img.shields.io/github/stars/insightsengineering/teal.modules.clinical?style=social)
