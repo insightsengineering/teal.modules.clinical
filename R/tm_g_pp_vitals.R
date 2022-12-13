@@ -406,10 +406,37 @@ srv_g_vitals <- function(id,
     )
 
     # Vitals tab ----
-    anl_inputs <- teal.transform::merge_expression_module(
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
+      data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
+      datasets = data,
+      select_validation_rule = list(
+        paramcd = shinyvalidate::sv_required(
+          "Please select PARAMCD variable."),
+        xaxis = shinyvalidate::sv_required(
+          "Please select Vitals x-axis variable."),
+        aval = shinyvalidate::sv_required(
+          "Please select AVAL variable.")
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("patient_id", shinyvalidate::sv_required(
+        "Please select a patient."))
+      iv$add_rule("paramcd_levels_vals", shinyvalidate::sv_required(
+        "Please select PARAMCD variable levels."))
+
+      teal.transform::compose_and_enable_validators(
+        iv, selector_list,
+        c("paramcd", "xaxis", "aval")
+      )
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       join_keys = get_join_keys(data),
-      data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
+      selector_list = selector_list,
       merge_function = "dplyr::left_join"
     )
 
@@ -451,26 +478,11 @@ srv_g_vitals <- function(id,
     })
 
     all_q <- shiny::reactive({
-      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       teal::validate_has_data(merged$anl_q()[["ANL"]], 1)
 
+      teal::validate_inputs(iv_r())
+
       shiny::validate(
-        shiny::need(
-          input[[extract_input("paramcd", dataname)]],
-          "Please select PARAMCD variable."
-        ),
-        shiny::need(
-          input[["paramcd_levels_vals"]],
-          "Please select PARAMCD variable levels."
-        ),
-        shiny::need(
-          input[[extract_input("xaxis", dataname)]],
-          "Please select Vitals x-axis variable."
-        ),
-        shiny::need(
-          input[[extract_input("aval", dataname)]],
-          "Please select AVAL variable."
-        ),
         shiny::need(
           nrow(merged$anl_q()[["ANL"]][input$patient_id == merged$anl_q()[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
