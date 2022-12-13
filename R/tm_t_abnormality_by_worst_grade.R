@@ -226,7 +226,6 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #' @export
 #'
 #' @examples
-#'
 #' library(scda)
 #' library(dplyr)
 #'
@@ -479,14 +478,36 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var, id_var = id_var, paramcd = paramcd,
         atoxgr_var = atoxgr_var, worst_high_flag_var = worst_high_flag_var,
         worst_low_flag_var = worst_low_flag_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = shinyvalidate::sv_required("Please select a treatment variable."),
+        id_var = shinyvalidate::sv_required("Please select a Subject Identifier."),
+        atoxgr_var = shinyvalidate::sv_required("Please select Analysis Toxicity Grade variable."),
+        worst_low_flag_var = shinyvalidate::sv_required("Please select the Worst Low Grade flag variable."),
+        worst_high_flag_var = shinyvalidate::sv_required("Please select the Worst High Grade flag variable."),
+        worst_flag_indicator = shinyvalidate::sv_required("Please select the value indicating worst grade.")
+      ),
+      filter_validation_rule = list(
+        paramcd = ~ if (length(.) == 0L) "Please select at least one Laboratory parameter."
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      selector_list = selector_list,
+      datasets = data,
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
@@ -521,21 +542,10 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       input_worst_high_flag_var <- names(merged$anl_input_r()$columns_source$worst_high_flag_var)
       input_worst_low_flag_var <- names(merged$anl_input_r()$columns_source$worst_low_flag_var)
 
-      shiny::validate(
-        shiny::need(input_arm_var, "Please select a treatment variable."),
-        shiny::need(input_worst_high_flag_var, "Please select the Worst High Grade flag variable."),
-        shiny::need(input_worst_low_flag_var, "Please select the Worst Low Grade flag variable."),
-        shiny::need(input_atoxgr, "Please select Analysis Toxicity Grade variable."),
-        shiny::need(input_id_var, "Please select a Subject Identifier."),
-        shiny::need(input$worst_flag_indicator, "Please select the value indicating worst grade."),
-      )
+      teal::validate_inputs(iv_r())
 
       if (length(input_paramcd_var) > 0) {
         shiny::validate(
-          shiny::need(
-            length(merged$anl_q()[["ANL"]][[input_paramcd_var]]) > 0,
-            "Please select at least one Laboratory parameter."
-          ),
           shiny::need(
             is.factor(merged$anl_q()[["ANL"]][[input_paramcd_var]]),
             "Parameter variable should be a factor."
@@ -549,13 +559,15 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
             all(as.character(unique(merged$anl_q()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
             "All grade values should be within -4:4 range."
           ),
-          shiny::need(is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]), "Grade variable should be a factor.")
+          shiny::need(is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]),
+                      "Grade variable should be a factor.")
         )
       }
 
       if (length(input_atoxgr) > 0) {
         shiny::validate(
-          shiny::need(is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]), "Treatment variable should be a factor."),
+          shiny::need(is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]),
+                      "Treatment variable should be a factor."),
         )
       }
 
