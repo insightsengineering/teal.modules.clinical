@@ -530,9 +530,7 @@ srv_t_abnormality <- function(id,
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("treatment_flag", shinyvalidate::sv_required(
         "Please select indicator value for on treatment records."))
-      teal.transform::compose_and_enable_validators(
-        iv, selector_list, c("arm_var", "by_vars", "id_var",
-                             "grade", "baseline_var", "treatment_flag_var"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(

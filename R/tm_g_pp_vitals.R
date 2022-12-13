@@ -266,6 +266,10 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  # checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
+  # checkmate::assert_multi_class(param, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
+  # checkmate::assert_multi_class(aval, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
+  # checkmate::assert_multi_class(xaxis, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -427,10 +431,7 @@ srv_g_vitals <- function(id,
       iv$add_rule("paramcd_levels_vals", shinyvalidate::sv_required(
         "Please select PARAMCD variable levels."))
 
-      teal.transform::compose_and_enable_validators(
-        iv, selector_list,
-        c("paramcd", "xaxis", "aval")
-      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
