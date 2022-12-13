@@ -771,8 +771,8 @@ srv_t_coxreg <- function(id,
     })
 
     overlap_rule <- function(other_var, var_name) {
-      function(data) {
-        if (length(intersect(data, as.vector(merged$anl_input_r()$columns_source[[other_var]]))) > 0 ) {
+      function(value) {
+        if (length(intersect(value, as.vector(merged$anl_input_r()$columns_source[[other_var]]))) > 0 ) {
           sprintf("`%s` and `%s` variables should not overlap", var_name[1], var_name[2])
         }
       }

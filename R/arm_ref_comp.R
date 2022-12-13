@@ -81,8 +81,8 @@ arm_ref_comp_observer <- function(session,
                                   output_id = "arms_buckets") {
 
   iv <- shinyvalidate::InputValidator$new()
-  iv$add_rule(input_id, function(data) if (length(data[[id_ref]]) == 0) "A reference arm must be selected")
-  iv$add_rule(input_id, function(data) if (length(data[[id_comp]]) == 0) "A comparison arm must be selected")
+  iv$add_rule(input_id, function(value) if (length(value[[id_ref]]) == 0) "A reference arm must be selected")
+  iv$add_rule(input_id, function(value) if (length(value[[id_comp]]) == 0) "A comparison arm must be selected")
 
 
   output[[output_id]] <- shiny::renderUI({
