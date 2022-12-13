@@ -499,8 +499,8 @@ srv_t_abnormality <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         id_var = id_var,
@@ -509,7 +509,36 @@ srv_t_abnormality <- function(id,
         baseline_var = baseline_var,
         treatment_flag_var = treatment_flag_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = shinyvalidate::sv_required(
+          "Please select a treatment variable."),
+        by_vars = shinyvalidate::sv_required(
+          "Please select a Row By Variable."),
+        id_var = shinyvalidate::sv_required(
+          "Please select a subject identifier."),
+        grade = shinyvalidate::sv_required(
+          "Please select a grade variable."),
+        baseline_var = shinyvalidate::sv_required(
+          "Please select a baseline grade variable."),
+        treatment_flag_var = shinyvalidate::sv_required(
+          "Please select indicator value for on treatment records.")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("treatment_flag", shinyvalidate::sv_required(
+        "Please select indicator value for on treatment records."))
+      teal.transform::compose_and_enable_validators(
+        iv, selector_list, c("arm_var", "by_vars", "id_var",
+                             "grade", "baseline_var", "treatment_flag_var"))
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
       join_keys = get_join_keys(data),
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
 
@@ -536,6 +565,8 @@ srv_t_abnormality <- function(id,
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
+      teal::validate_inputs(iv_r())
+
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
       input_by_vars <- names(merged$anl_input_r()$columns_source$by_vars)
@@ -543,15 +574,6 @@ srv_t_abnormality <- function(id,
       input_baseline_var <- names(merged$anl_input_r()$columns_source$baseline_var)
       input_treatment_flag_var <- names(merged$anl_input_r()$columns_source$treatment_flag_var)
 
-      shiny::validate(
-        shiny::need(input_arm_var, "Please select a treatment variable."),
-        shiny::need(input_grade, "Please select a grade variable."),
-        shiny::need(input_by_vars, "Please select a Row By Variable."),
-        shiny::need(input_id_var, "Please select a subject identifier."),
-        shiny::need(input_baseline_var, "Please select a baseline grade variable."),
-        shiny::need(input_treatment_flag_var, "Please select an on treatment flag variable."),
-        shiny::need(input$treatment_flag, "Please select indicator value for on treatment records.")
-      )
       # validate inputs
       validate_standard_inputs(
         adsl = adsl_filtered,
