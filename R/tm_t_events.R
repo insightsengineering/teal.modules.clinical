@@ -665,7 +665,7 @@ srv_t_events_byterm <- function(id,
         "prune_diff",
         shinyvalidate::sv_between(0, 100, message_fmt = "Please provide a Difference Rate between 0 and 100 (%).")
       )
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "hlt", "llt"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(

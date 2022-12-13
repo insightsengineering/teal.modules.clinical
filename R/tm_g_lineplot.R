@@ -543,7 +543,7 @@ srv_g_lineplot <- function(id,
       )
       iv$add_rule("interval", shinyvalidate::sv_required("Please select an interval for the midpoint statistic"))
       iv$add_rule("whiskers", shinyvalidate::sv_required("At least one of the whiskers must be selected"))
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("x", "y", "strata", "param"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(

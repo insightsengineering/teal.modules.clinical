@@ -438,7 +438,7 @@ srv_summary <- function(id,
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "summarize_vars"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(

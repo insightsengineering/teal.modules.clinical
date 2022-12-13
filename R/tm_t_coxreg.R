@@ -838,9 +838,7 @@ srv_t_coxreg <- function(id,
             paste("Numeric interaction level(s) should be specified for", val)
         )
       }
-      teal.transform::compose_and_enable_validators(
-        iv, selector_list, c("aval_var", "cnsr_var", "arm_var", "paramcd", "strata_var", "cov_var")
-      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
