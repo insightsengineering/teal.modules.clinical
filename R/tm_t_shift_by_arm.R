@@ -394,9 +394,8 @@ srv_shift_by_arm <- function(id,
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -405,6 +404,32 @@ srv_shift_by_arm <- function(id,
         base_var = base_var,
         treatment_flag_var = treatment_flag_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("An analysis range indicator required"),
+        arm_var = shinyvalidate::sv_required("A treatment variable is required"),
+        treatment_flag_var = shinyvalidate::sv_required("An on treatment flag variable is required"),
+        base_var = shinyvalidate::sv_required("A baseline reference range indicator is required")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("An endpoint is required"),
+        visit_var = shinyvalidate::sv_required("A visit is required")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule(
+        "treatment_flag",
+        shinyvalidate::sv_required("An indicator value for on treatment records is required")
+      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
 
@@ -429,6 +454,8 @@ srv_shift_by_arm <- function(id,
 
     # validate inputs
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -438,16 +465,13 @@ srv_shift_by_arm <- function(id,
       input_treatment_flag_var <- names(merged$anl_input_r()$columns_source$treatment_flag_var)
 
       shiny::validate(
-        shiny::need(input_arm_var, "Please select a treatment variable"),
         shiny::need(
           nrow(merged$anl_q()[["ANL"]]) > 0,
           paste0(
             "Please make sure the analysis dataset is not empty or\n",
             "endpoint parameter and analysis visit are selected."
           )
-        ),
-        shiny::need(input_treatment_flag_var, "Please select an on treatment flag variable."),
-        shiny::need(input$treatment_flag, "Please select indicator value for on treatment records.")
+        )
       )
 
       validate_standard_inputs(
