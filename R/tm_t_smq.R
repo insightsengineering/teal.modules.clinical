@@ -548,7 +548,10 @@ srv_t_smq <- function(id,
       select_validation_rule = list(
         scopes = shinyvalidate::sv_required("A scope variable is required"),
         llt = shinyvalidate::sv_required("A low level term variable is required"),
-        arm_var = shinyvalidate::sv_required("At least one Treatment Variable is required"),
+        arm_var =  shinyvalidate::compose_rules(
+          shinyvalidate::sv_required("At least one Treatment Variable is required"),
+          ~ if (length(.) > 2) "Please select not more than two Treatment Variables"
+        ),
         id_var = shinyvalidate::sv_required("An id variable is required"),
         baskets = shinyvalidate::sv_required("At least one basket is required")
       )
@@ -556,7 +559,6 @@ srv_t_smq <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("arm_var", ~ if (length(.) > 2) "Please select not more than two Treatment Variables")
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
