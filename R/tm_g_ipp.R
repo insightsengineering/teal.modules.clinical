@@ -501,9 +501,7 @@ srv_g_ipp <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      teal.transform::compose_and_enable_validators(
-        iv, selector_list, c("aval_var", "avalu_var", "visit_var", "id_var", "base_var", "paramcd", "arm_var")
-      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(

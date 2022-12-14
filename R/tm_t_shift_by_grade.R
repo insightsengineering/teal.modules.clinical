@@ -751,9 +751,8 @@ srv_t_shift_by_grade <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         visit_var = visit_var,
@@ -763,6 +762,30 @@ srv_t_shift_by_grade <- function(id,
         anl_toxgrade_var = anl_toxgrade_var,
         base_toxgrade_var = base_toxgrade_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        base_toxgrade_var = shinyvalidate::sv_required("A baseline toxicity grade is required"),
+        anl_toxgrade_var = shinyvalidate::sv_required("An analysis toxicity grade is required"),
+        visit_var = shinyvalidate::sv_required("An analysis visit is required"),
+        arm_var = shinyvalidate::sv_required("A treatment variable is required"),
+        worst_flag_var = shinyvalidate::sv_required("A worst treatment flag is required"),
+        id_var = shinyvalidate::sv_required("A subject identifier is required.")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("A laboratory parameter is required")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("worst_flag_indicator", shinyvalidate::sv_required("Please select the value indicating worst grade."))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
 
@@ -786,6 +809,7 @@ srv_t_shift_by_grade <- function(id,
     )
 
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -797,13 +821,6 @@ srv_t_shift_by_grade <- function(id,
       input_worst_flag_var <- names(merged$anl_input_r()$columns_source$worst_flag_var)
       input_anl_toxgrade_var <- names(merged$anl_input_r()$columns_source$anl_toxgrade_var)
       input_base_toxgrade_var <- names(merged$anl_input_r()$columns_source$base_toxgrade_var)
-
-      shiny::validate(
-        shiny::need(input_worst_flag_var, "Please select the worst flag variable."),
-        shiny::need(input_paramcd, "Please select Laboratory parameter."),
-        shiny::need(input_id_var, "Please select a subject identifier."),
-        shiny::need(input$worst_flag_indicator, "Please select the value indicating worst grade.")
-      )
 
       # validate inputs
       validate_standard_inputs(

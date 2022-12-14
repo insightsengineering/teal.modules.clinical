@@ -205,7 +205,7 @@ srv_t_basic_info <- function(id,
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
-      teal.transform::compose_and_enable_validators(iv, selector_list, "vars")
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(

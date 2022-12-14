@@ -521,9 +521,7 @@ srv_g_forest_tte <- function(id,
         shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between 0 and 1")
       )
       iv$add_validator(iv_arm_ref)
-      teal.transform::compose_and_enable_validators(
-        iv, selector_list, c("aval_var", "cnsr_var", "arm_var", "paramcd")
-      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
