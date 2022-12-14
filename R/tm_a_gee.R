@@ -216,15 +216,13 @@ tm_a_gee <- function(label,
   args <- as.list(environment())
 
   data_extract_list <- list(
-    arm_var = teal.modules.clinical::cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = teal.modules.clinical::cs_to_des_filter(paramcd, dataname = dataname),
-    id_var = teal.modules.clinical::cs_to_des_select(id_var, dataname = dataname),
-    visit_var = teal.modules.clinical::cs_to_des_select(visit_var, dataname = dataname),
-    cov_var = teal.modules.clinical::cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-    split_covariates = teal.modules.clinical::cs_to_des_select(teal.modules.clinical::split_choices(cov_var),
-      dataname = dataname, multiple = TRUE
-    ),
-    aval_var = teal.modules.clinical::cs_to_des_select(aval_var, dataname = dataname)
+    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    id_var = cs_to_des_select(id_var, dataname = dataname),
+    visit_var = cs_to_des_select(visit_var, dataname = dataname),
+    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
+    split_covariates = cs_to_des_select(split_choices(cov_var),dataname = dataname, multiple = TRUE),
+    aval_var = cs_to_des_select(aval_var, dataname = dataname)
   )
 
   teal::module(
@@ -308,13 +306,11 @@ ui_gee <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shinyjs::hidden(shiny::uiOutput(ns("arms_buckets"))),
       shinyjs::hidden(
+        shiny::uiOutput(ns("arms_buckets")),
         shiny::helpText(
           id = ns("help_text"), "Multiple reference groups are automatically combined into a single group."
-        )
-      ),
-      shinyjs::hidden(
+        ),
         shiny::checkboxInput(
           ns("combine_comp_arms"),
           "Combine all comparison groups?",
@@ -391,14 +387,14 @@ srv_gee <- function(id,
 
   shiny::moduleServer(id, function(input, output, session) {
     ## split_covariates ----
-    shiny::observeEvent(input[[teal.modules.clinical::extract_input("cov_var", dataname)]],
+    shiny::observeEvent(input[[extract_input("cov_var", dataname)]],
       ignoreNULL = FALSE,
       {
         # update covariates as actual variables
-        split_interactions_values <- teal.modules.clinical::split_interactions(
-          input[[teal.modules.clinical::extract_input("cov_var", dataname)]]
+        split_interactions_values <- split_interactions(
+          input[[extract_input("cov_var", dataname)]]
         )
-        arm_var_value <- input[[teal.modules.clinical::extract_input("arm_var", parentname)]]
+        arm_var_value <- input[[extract_input("arm_var", parentname)]]
         arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
         if (arm_in_cov) {
           split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
@@ -407,7 +403,7 @@ srv_gee <- function(id,
         }
         teal.widgets::updateOptionalSelectInput(
           session,
-          inputId = teal.modules.clinical::extract_input("split_covariates", dataname),
+          inputId = extract_input("split_covariates", dataname),
           selected = split_covariates_selected
         )
       }
@@ -418,15 +414,14 @@ srv_gee <- function(id,
       session,
       input,
       output,
-      id_arm_var = teal.modules.clinical::extract_input("arm_var", parentname),
+      id_arm_var = extract_input("arm_var", parentname),
       data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_a_gee"
     )
 
     ## data_merge_modules ----
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -435,6 +430,35 @@ srv_gee <- function(id,
         split_covariates = split_covariates,
         aval_var = aval_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+        arm_var = shinyvalidate::sv_required("A treatment variable is required"),
+        id_var = shinyvalidate::sv_required("A Subject identifier is required"),
+        visit_var = shinyvalidate::sv_required("A visit variable is required")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("An endpoint is required")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(
+          0, 1, inclusive = c(FALSE, FALSE),
+          message_fmt = "Please choose a confidence level between 0 and 1"
+        )
+      )
+      iv$add_rule("cor_struct", shinyvalidate::sv_required("Please choose a correlation structure"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join",
       join_keys = get_join_keys(data)
     )
@@ -461,10 +485,16 @@ srv_gee <- function(id,
     # Initially hide the output title because there is no output yet.
     shinyjs::show("gee_title")
 
-    # To do in production: add validations.
+    validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
+      # To do in production: add validations.
+      NULL
+    })
 
     ## table_r ----
     table_q <- shiny::reactive({
+      validate_checks()
       output_table <- input$output_table
       conf_level <- as.numeric(input$conf_level)
       col_source <- merged$anl_input_r()$columns_source
