@@ -272,6 +272,28 @@ srv_t_prior_medication <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     patient_id <- shiny::reactive(input$patient_id)
 
+    selector_list <- teal.transform::data_extract_multiple_srv(
+      data_extract = list(
+        atirel = atirel,
+        cmdecod = cmdecod,
+        cmindc = cmindc,
+        cmstdy = cmstdy
+      ),
+      datasets = data,
+      select_validation_rule = list(
+        atirel = shinyvalidate::sv_required("An ATIREL variable is required"),
+        cmdecod = shinyvalidate::sv_required("A medication decoding variable is required"),
+        cmindc = shinyvalidate::sv_required("A CMINDC variable is required"),
+        cmstdy = shinyvalidate::sv_required("A CMSTDY variable is required")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select patient id"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
     # Init
     patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
@@ -298,10 +320,10 @@ srv_t_prior_medication <- function(id,
     )
 
     # Prior medication tab ----
-    anl_inputs <- teal.transform::merge_expression_module(
+    anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
+      selector_list = selector_list,
       join_keys = get_join_keys(data),
-      data_extract = list(atirel = atirel, cmdecod = cmdecod, cmindc = cmindc, cmstdy = cmstdy),
       merge_function = "dplyr::left_join"
     )
 
@@ -311,26 +333,7 @@ srv_t_prior_medication <- function(id,
     })
 
     all_q <- shiny::reactive({
-      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-
-      shiny::validate(
-        shiny::need(
-          input[[extract_input("atirel", dataname)]],
-          "Please select ATIREL variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmdecod", dataname)]],
-          "Please select Medication decoding variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmindc", dataname)]],
-          "Please select CMINDC variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmstdy", dataname)]],
-          "Please select CMSTDY variable."
-        )
-      )
+      teal::validate_inputs(iv_r())
 
       my_calls <- template_prior_medication(
         dataname = "ANL",
