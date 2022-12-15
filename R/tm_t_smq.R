@@ -358,6 +358,7 @@ template_smq <- function(dataname,
 #'         choices = variable_choices(adae, subset = c("AEDECOD")),
 #'         selected = "AEDECOD"
 #'       )
+#'     )
 #'   )
 #' )
 #' if (interactive()) {
