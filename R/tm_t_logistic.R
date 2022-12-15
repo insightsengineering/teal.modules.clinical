@@ -458,7 +458,7 @@ srv_t_logistic <- function(id,
 
   shiny::moduleServer(id, function(input, output, session) {
     # Observer to update reference and comparison arm input options.
-    arm_ref_comp_observer(
+    iv_arco <- arm_ref_comp_observer(
       session,
       input,
       output,
@@ -468,10 +468,51 @@ srv_t_logistic <- function(id,
       module = "tm_t_logistic"
     )
 
-    anl_inputs <- teal.transform::merge_expression_module(
+    selector_list <- teal.transform::data_extract_multiple_srv(
+      data_extract = list(
+        arm_var = arm_var,
+        paramcd = paramcd,
+        avalc_var = avalc_var,
+        cov_var = cov_var),
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = shinyvalidate::sv_required("Treatment Variable is empty"),
+        avalc_var = shinyvalidate::compose_rules(
+          shinyvalidate::sv_required("Analysis variable is empty"),
+          ~ if (!checkmate::test_character(.))  "Analysis variable should be a single column."
+        ),
+        cov_var = shinyvalidate::sv_required("`Covariates` field is empty")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("`Select Endpoint` field is empty")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
+      iv$add_rule("conf_level", shinyvalidate::sv_between(
+        0, 1, message_fmt = "Please choose a confidence level between {left} and {right}"))
+      iv$add_validator(iv_arco)
+      # Conditional validator for interaction values.
+      iv_int <- shinyvalidate::InputValidator$new()
+      iv_int$condition(~ length(input$interaction_var) > 0L)
+      iv_int$add_rule("interaction_values", shinyvalidate::sv_required(
+        "If interaction is specified the level should be entered."))
+      iv_int$add_rule("interaction_values",
+                      ~ if (anyNA(as_numeric_from_comma_sep_str(.)))
+                        "Interaction levels are invalid.")
+      iv_int$add_rule("interaction_values",
+                      ~ if (any(duplicated(as_numeric_from_comma_sep_str(.))))
+                        "Interaction levels must be unique.")
+      iv$add_validator(iv_int)
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      selector_list = selector_list,
       datasets = data,
       join_keys = get_join_keys(data),
-      data_extract = list(arm_var = arm_var, paramcd = paramcd, avalc_var = avalc_var, cov_var = cov_var),
       merge_function = "dplyr::inner_join"
     )
 
@@ -547,6 +588,8 @@ srv_t_logistic <- function(id,
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
+      validate_inputs(iv_r())
+
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_avalc_var <- as.vector(merged$anl_input_r()$columns_source$avalc_var)
       input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
@@ -554,13 +597,8 @@ srv_t_logistic <- function(id,
       input_interaction_var <- input$interaction_var
 
       input_interaction_at <- input_interaction_var[input_interaction_var %in% input_cov_var]
-      interaction_flag <- length(input_interaction_at) != 0
 
-      at_values <- if (is.null(input$interaction_values)) {
-        NA
-      } else {
-        unlist(as_num(input$interaction_values))
-      }
+      at_values <- as_numeric_from_comma_sep_str(input$interaction_values)
 
       # validate inputs
       validate_args <- list(
@@ -573,11 +611,6 @@ srv_t_logistic <- function(id,
         comp_arm = unlist(input$buckets$Comp),
         min_nrow = 4
       )
-
-      shiny::validate(shiny::need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
 
       # validate arm levels
       if (!is.null(arm_var)) {
@@ -596,19 +629,6 @@ srv_t_logistic <- function(id,
         shiny::validate(shiny::need(
           all(anl_arm_n >= 2),
           "Each treatment group should have at least 2 records."
-        ))
-      }
-
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_avalc_var), "Analysis variable should be a single column."),
-        shiny::need(input$responders, "`Responders` field is empty")
-      )
-
-      # validate interaction values
-      if (interaction_flag && (is.numeric(merged$anl_q()[["ANL"]][[input_interaction_at]]))) {
-        shiny::validate(shiny::need(
-          !is.na(at_values),
-          "If interaction is specified the level should be entered."
         ))
       }
 
@@ -641,11 +661,7 @@ srv_t_logistic <- function(id,
       interaction_var <- input$interaction_var
       interaction_flag <- length(interaction_var) != 0
 
-      at_values <- if (is.null(input$interaction_values)) {
-        NA
-      } else {
-        unlist(as_num(input$interaction_values))
-      }
+      at_values <- as_numeric_from_comma_sep_str(input$interaction_values)
       at_flag <- interaction_flag && is.numeric(ANL[[interaction_var]])
 
       cov_var <- names(merged$anl_input_r()$columns_source$cov_var)
