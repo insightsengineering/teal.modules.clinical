@@ -485,8 +485,6 @@ srv_shift_by_arm_by_worst <- function(id,
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_aval_var <- names(merged$anl_input_r()$columns_source$aval_var)
       input_base_var <- names(merged$anl_input_r()$columns_source$base_var)
-      input_treatment_flag_var <- names(merged$anl_input_r()$columns_source$treatment_flag_var)
-      input_worst_flag_var <- names(merged$anl_input_r()$columns_source$worst_flag_var)
 
       shiny::validate(
         shiny::need(
