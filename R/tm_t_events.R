@@ -646,9 +646,9 @@ srv_t_events_byterm <- function(id,
       select_validation_rule = list(
         arm_var = ~ if (length(.) != 1 && length(.) != 2)
           "Please select 1 or 2 treatment variable values",
-        hlt = ~ if (length(as.vector(merged$anl_input_r()$columns_source$llt)) + length(.) == 0)
+        hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0)
           "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.",
-        llt = ~ if (length(as.vector(merged$anl_input_r()$columns_source$hlt)) + length(.) == 0)
+        llt = ~ if (length(selector_list()$hlt()$select) + length(.) == 0)
           "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
       )
     )
