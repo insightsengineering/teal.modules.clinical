@@ -491,9 +491,16 @@ srv_t_exposure <- function(id,
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+
+    rule_intersection <- function(other) {
+      function(value) {
+        others <- selector_list()[[other]]()$select
+        if (length(intersect(value, others)) > 0L)
+          "Column by and row by variables should not be the same."
+      }
+    }
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         id_var = id_var,
         paramcd = paramcd,
@@ -503,6 +510,35 @@ srv_t_exposure <- function(id,
         aval_var = aval_var,
         avalu_var = avalu_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        id_var = shinyvalidate::sv_required("Subject Identifier is required"),
+        col_by_var = shinyvalidate::compose_rules(
+          shinyvalidate::sv_optional(),
+          rule_intersection('row_by_var')
+        ),
+        row_by_var = shinyvalidate::compose_rules(
+          shinyvalidate::sv_required("Please select a row by variable."),
+          rule_intersection("col_by_var")
+        ),
+        aval_var = shinyvalidate::sv_required("Please select an analysis variable."),
+        avalu_var = shinyvalidate::sv_required("Please select an analysis unit variable.")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("Please select a parameter value."),
+        parcat = shinyvalidate::sv_required("Please select a parameter category value.")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
@@ -529,6 +565,8 @@ srv_t_exposure <- function(id,
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
+      teal::validate_inputs(iv_r())
+
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
       input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
       input_row_by_var <- names(merged$anl_input_r()$columns_source$row_by_var)
@@ -537,24 +575,6 @@ srv_t_exposure <- function(id,
       input_aval_var <- names(merged$anl_input_r()$columns_source$aval_var)
       input_avalu_var <- names(merged$anl_input_r()$columns_source$avalu_var)
 
-      shiny::validate(
-        shiny::need(input_row_by_var, "Please select a row by variable."),
-        shiny::need(input_aval_var, "Please select an analysis variable."),
-        shiny::need(input_avalu_var, "Please select an analysis unit variable."),
-        shiny::need(
-          input[[extract_input("parcat", parcat$filter[[1]]$dataname, filter = TRUE)]],
-          "Please select a parameter category value."
-        ),
-        shiny::need(
-          input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-          "Please select a parameter value."
-        ),
-        teal::validate_no_intersection(
-          input[[extract_input("col_by_var", parentname)]],
-          input[[extract_input("row_by_var", dataname)]],
-          "Column by and row by variables should not be the same."
-        )
-      )
       # validate inputs
       validate_standard_inputs(
         adsl = adsl_filtered,
