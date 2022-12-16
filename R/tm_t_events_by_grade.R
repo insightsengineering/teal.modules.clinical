@@ -994,10 +994,10 @@ srv_t_events_by_grade <- function(id,
       select_validation_rule = list(
         arm_var = shinyvalidate::sv_required("A treatment variable is required"),
         grade = shinyvalidate::sv_required("An event grade is required"),
-        hlt = ~ if (length(as.vector(merged$anl_input_r()$columns_source$llt)) + length(.) == 0)
+        hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0)
           "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.",
         llt = shinyvalidate::compose_rules(
-          ~ if (length(as.vector(merged$anl_input_r()$columns_source$hlt)) + length(.) == 0)
+          ~ if (length(selector_list()$hlt()$select) + length(.) == 0)
             "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.",
           ~ if (col_by_grade() && length(.) == 0)
             "Low Level Term must be present when grade groupings are displayed in nested columns."
