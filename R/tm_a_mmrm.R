@@ -886,12 +886,15 @@ srv_mmrm <- function(id,
         id_var = shinyvalidate::sv_required("'Subject Identifier' field is not selected"),
         # validation on cov_var
         cov_var = function(value) {
-          if ("BASE:AVISIT" %in% value && anl_inputs()$columns_source$visit_var == "AVISITN") {
+          if (length(as.vector(anl_inputs()$columns_source$visit_var)) == 0) {
+            return(NULL)
+          }
+          if ("BASE:AVISIT" %in% value && as.vector(anl_inputs()$columns_source$visit_var) == "AVISITN") {
             paste(
               "'BASE:AVISIT' is not a valid covariate when 'AVISITN' is selected as visit variable.",
               "Please deselect 'BASE:AVISIT' as a covariate or change visit variable to 'AVISIT'."
             )
-          } else if ("BASE:AVISITN" %in% value && anl_inputs()$columns_source$visit_var == "AVISIT") {
+          } else if ("BASE:AVISITN" %in% value && as.vector(anl_inputs()$columns_source$visit_var) == "AVISIT") {
             paste(
               "'BASE:AVISITN' is not a valid covariate when 'AVISIT' is selected as visit variable.",
               "Please deselect 'BASE:AVISITN' as a covariate or change visit variable to 'AVISITN'."
