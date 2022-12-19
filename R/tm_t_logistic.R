@@ -498,7 +498,8 @@ srv_t_logistic <- function(id,
       iv$add_validator(iv_arco)
       # Conditional validator for interaction values.
       iv_int <- shinyvalidate::InputValidator$new()
-      iv_int$condition(~ length(input$interaction_var) > 0L)
+      iv_int$condition(~ length(input$interaction_var) > 0L &&
+                         is.numeric(merged$anl_q()[["ANL"]][[input$interaction_var]]))
       iv_int$add_rule("interaction_values", shinyvalidate::sv_required(
         "If interaction is specified the level should be entered."))
       iv_int$add_rule("interaction_values",

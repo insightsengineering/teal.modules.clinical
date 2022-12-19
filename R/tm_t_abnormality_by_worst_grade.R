@@ -544,7 +544,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       anl <- merged$anl_q()[["ANL"]]
 
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
-      input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
       input_paramcd_var <- names(merged$anl_input_r()$columns_source$paramcd)
       input_atoxgr <- names(merged$anl_input_r()$columns_source$atoxgr_var)
       input_worst_high_flag_var <- names(merged$anl_input_r()$columns_source$worst_high_flag_var)
