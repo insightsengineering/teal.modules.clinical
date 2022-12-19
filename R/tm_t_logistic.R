@@ -492,8 +492,9 @@ srv_t_logistic <- function(id,
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
       iv$add_rule("conf_level", shinyvalidate::sv_between(
-        0, 1, message_fmt = "Please choose a confidence level between {left} and {right}"))
+        0, 1, message_fmt = "Confdence level must be between {left} and {right}."))
       iv$add_validator(iv_arco)
       # Conditional validator for interaction values.
       iv_int <- shinyvalidate::InputValidator$new()

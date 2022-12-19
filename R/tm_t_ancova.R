@@ -720,15 +720,16 @@ srv_ancova <- function(id,
         interact_var = shinyvalidate::sv_optional()
       ),
       filter_validation_rule = list(
-        avisit = shinyvalidate::sv_required("`Analysis Visit` field cannot be empty"),
+        avisit = shinyvalidate::sv_required("`Analysis Visit` field cannot be empty."),
         paramcd = shinyvalidate::sv_required("`Select Endpoint` is not selected.")
       )
     )
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
       iv$add_rule("conf_level", shinyvalidate::sv_between(
-        0, 1, message_fmt = "Please choose a confidence level between {left} and {right}"))
+        0, 1, message_fmt = "Confdence level must be between {left} and {right}."))
       iv$add_validator(iv_arco)
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })

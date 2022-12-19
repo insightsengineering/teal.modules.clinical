@@ -430,7 +430,6 @@ srv_g_vitals <- function(id,
         "Please select a patient."))
       iv$add_rule("paramcd_levels_vals", shinyvalidate::sv_required(
         "Please select PARAMCD variable levels."))
-
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
