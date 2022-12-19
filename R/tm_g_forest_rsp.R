@@ -510,7 +510,7 @@ srv_g_forest_rsp <- function(id,
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
       iv$add_rule(
         "conf_level",
-        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between 0 and 1")
+        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between {left} and {right}")
       )
       iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
       iv$add_validator(iv_arm_ref)

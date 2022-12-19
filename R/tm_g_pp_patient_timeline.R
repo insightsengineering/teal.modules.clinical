@@ -757,11 +757,16 @@ srv_g_patient_timeline <- function(id,
 
     check_relative <- function(main_param, return_name) {
       function(value) {
-        if (isTRUE(check_box()) && length(selector_list()[[main_param]]()$select) > 0 && length(value) == 0) {
-          sprintf("Please add %s", return_name)
-        } else if (isFALSE(check_box()) && length(selector_list()[[main_param]]()$select) > 0 && length(value) == 0) {
+        if (length(selector_list()[[main_param]]()$select) > 0 && length(value) == 0) {
           sprintf("Please add %s", return_name)
         }
+      }
+    }
+
+    rule_one_parameter <- function(other) {
+      function(value) {
+        if (length(value) == 0L && length(selector_list()[[other]]()$select) == 0L)
+          "At least one parameter must be selected."
       }
     }
 
@@ -775,15 +780,13 @@ srv_g_patient_timeline <- function(id,
       datasets = data,
       select_validation_rule = list(
         # aeterm
-        aeterm = ~ if (length(selector_list()$cmdecod()$select) == 0 && length(.) == 0)
-          "At least one parameter must be selected.",
+        aeterm = rule_one_parameter("cmdecod"),
         aerelday_start = check_relative("aeterm", "AE start date."),
         aerelday_end = check_relative("aeterm", "AE end date."),
         aetime_start = check_relative("aeterm", "AE start date."),
         aetime_end = check_relative("aeterm", "AE end date."),
         # cmdecod
-        cmdecod = ~ if (length(selector_list()$aeterm()$select) == 0 && length(.) == 0)
-          "At least one parameter must be selected.",
+        cmdecod = rule_one_parameter("aeterm"),
         dsrelday_start = check_relative("cmdecod", "Medication start date."),
         dsrelday_end = check_relative("cmdecod", "Medication end date."),
         dstime_start = check_relative("cmdecod", "Medication start date."),

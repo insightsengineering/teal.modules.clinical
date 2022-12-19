@@ -771,7 +771,7 @@ srv_t_binary_outcome <- function(id,
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
       iv$add_rule(
         "conf_level",
-        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between 0 and 1")
+        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between {left} and {right}")
       )
       teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "aval_var", "paramcd"))
     })

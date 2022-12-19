@@ -536,7 +536,10 @@ srv_g_adverse_events <- function(id,
       options = list(pageLength = input$table_rows)
     )
 
-    plot_r <- shiny::reactive(all_q()[["plot"]])
+    plot_r <- shiny::reactive({
+      shiny::req(iv_r()$is_valid())
+      all_q()[["plot"]]
+    })
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "chart",

@@ -322,8 +322,8 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(atoxgr_var, "choices_selected")
   checkmate::assert_class(worst_high_flag_var, "choices_selected")
@@ -387,8 +387,13 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c(
-          "arm_var", "id_var", "paramcd",
-          "atoxgr_var", "worst_high_flag_var", "worst_low_flag_var", "worst_flag_indicator"
+          "arm_var",
+          "id_var",
+          "paramcd",
+          "atoxgr_var",
+          "worst_high_flag_var",
+          "worst_low_flag_var",
+          "worst_flag_indicator"
         )]
       ),
       teal.transform::data_extract_ui(
@@ -481,8 +486,11 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
 
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
-        arm_var = arm_var, id_var = id_var, paramcd = paramcd,
-        atoxgr_var = atoxgr_var, worst_high_flag_var = worst_high_flag_var,
+        arm_var = arm_var,
+        id_var = id_var,
+        paramcd = paramcd,
+        atoxgr_var = atoxgr_var,
+        worst_high_flag_var = worst_high_flag_var,
         worst_low_flag_var = worst_low_flag_var
       ),
       datasets = data,
@@ -495,7 +503,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         worst_flag_indicator = shinyvalidate::sv_required("Please select the value indicating worst grade.")
       ),
       filter_validation_rule = list(
-        paramcd = ~ if (length(.) == 0L) "Please select at least one Laboratory parameter."
+        paramcd = shinyvalidate::sv_required("Please select at least one Laboratory parameter.")
       )
     )
 
