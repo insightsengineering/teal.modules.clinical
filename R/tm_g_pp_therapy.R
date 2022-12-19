@@ -610,7 +610,7 @@ srv_g_therapy <- function(id,
       datasets = data,
       select_validation_rule = list(
         atirel = shinyvalidate::sv_required("Please select ATIREL variable."),
-        cmdecod = shinyvalidate::sv_required("Please select Medication decoding variable."),
+        cmdecod = shinyvalidate::sv_required("Please select medication decoding variable."),
         cmindc = shinyvalidate::sv_required("Please select CMINDC variable."),
         cmdose = shinyvalidate::sv_required("Please select CMDOSE variable."),
         cmtrt = shinyvalidate::sv_required("Please select CMTRT variable."),
