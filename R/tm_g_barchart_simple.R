@@ -325,18 +325,50 @@ srv_g_barchart_simple <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
+
+    rule_dupl <- function(others) {
+      function(value) {
+        othervals <- lapply(others, function(x) selector_list()[[x]]()$select)
+        vars <- c(value, unlist(othervals))
+        dups <- unique(vars[duplicated(vars)])
+        if (value %in% dups)
+          paste("Duplicated value:", value, collapse = ", ")
+      }
+    }
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
+      data_extract = list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet),
+      datasets = data,
+      select_validation_rule = list(
+        x = shinyvalidate::compose_rules(
+          shinyvalidate::sv_required("Please select an x-variable"),
+          rule_dupl(others = c("fill", "x_facet", "y_facet"))
+        ),
+        fill = shinyvalidate::compose_rules(
+          shinyvalidate::sv_optional(),
+          rule_dupl(others = c("x", "x_facet", "y_facet"))
+        ),
+        x_facet = shinyvalidate::compose_rules(
+          shinyvalidate::sv_optional(),
+          rule_dupl(others = c("fill", "x", "y_facet"))
+        ),
+        y_facet = shinyvalidate::compose_rules(
+          shinyvalidate::sv_optional(),
+          rule_dupl(others = c("fill", "x_facet", "x"))
+        )
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      hm <- teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       join_keys = get_join_keys(data),
-      data_extract = list(x = x, fill = fill, x_facet = x_facet, y_facet = y_facet)
+      selector_list = selector_list
     )
-
-    validate_checks <- reactive(
-      shiny::validate({
-        shiny::need(anl_inputs()$columns_source$x, "Please select an x-variable")
-      })
-    )
-
 
     anl_q <- shiny::reactive({
       qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
@@ -393,7 +425,7 @@ srv_g_barchart_simple <- function(id,
     })
 
     all_q <- shiny::reactive({
-      validate_checks()
+      teal::validate_inputs(iv_r())
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
       qenv2 <- teal.code::eval_code(count_q(), substitute(
@@ -446,36 +478,26 @@ srv_g_barchart_simple <- function(id,
 
     plot_r <- shiny::reactive(all_q()[["plot"]])
 
-    output$table <- shiny::renderTable(all_q()[["counts"]])
+    output$table <- shiny::renderTable({
+      shiny::req(iv_r()$is_valid())
+      all_q()[["counts"]]
+    })
 
-    # reactive vars
+    # get grouping variables
     # NULL: not present in UI, vs character(0): no selection
-
-    # returns named vector of non-NULL variables to group by
+    ## helper function
+    resolve_argument <- function(x){
+      ans <- if (is.null(x)) NULL else as.vector(anl_inputs()$columns_source[[deparse(substitute(x))]])
+      if (identical(ans, character(0L))) NULL else ans
+    }
+    ## returns named vector of non-NULL variables to group by
     r_groupby_vars <- function() {
-      x_name <- if (is.null(x)) NULL else as.vector(anl_inputs()$columns_source$x)
-      fill_name <- if (is.null(fill)) NULL else as.vector(anl_inputs()$columns_source$fill)
-      x_facet_name <- if (is.null(x_facet)) NULL else as.vector(anl_inputs()$columns_source$x_facet)
-      y_facet_name <- if (is.null(y_facet)) NULL else as.vector(anl_inputs()$columns_source$y_facet)
-
-      # set to NULL when empty character
-      if (identical(x_name, character(0))) x_name <- NULL
-      if (identical(fill_name, character(0))) fill_name <- NULL
-      if (identical(x_facet_name, character(0))) x_facet_name <- NULL
-      if (identical(y_facet_name, character(0))) y_facet_name <- NULL
-
-      res <- c(
-        x_name = x_name, fill_name = fill_name,
-        x_facet_name = x_facet_name, y_facet_name = y_facet_name
-      ) # c() -> NULL entries are omitted
-
-      # at least one category must be specified
-      shiny::validate(shiny::need(
-        length(res) > 0, # c() removes NULL entries
-        "Must specify at least one of x, fill, x_facet and y_facet."
-      ))
-
-      res
+      c(
+        x_name = resolve_argument(x),
+        fill_name = resolve_argument(fill),
+        x_facet_name = resolve_argument(x_facet),
+        y_facet_name = resolve_argument(y_facet)
+      )
     }
 
     # Insert the plot into a plot with settings module from teal.widgets
@@ -572,21 +594,13 @@ make_barchart_simple_call <- function(y_name,
                                       rotate_y_label = FALSE,
                                       expand_y_range = 0,
                                       ggplot2_args = teal.widgets::ggplot2_args()) {
-  # c() filters out NULL
-  plot_vars <- c(x_name, fill_name, x_facet_name, y_facet_name)
-  shiny::validate(
-    shiny::need(
-      !any(duplicated(plot_vars)),
-      paste("Duplicated variable(s):", paste(plot_vars[duplicated(plot_vars)], collapse = ", "))
-    )
-  )
   checkmate::assert_string(y_name)
   checkmate::assert_string(x_name, null.ok = TRUE)
   checkmate::assert_string(fill_name, null.ok = TRUE)
   checkmate::assert_string(x_facet_name, null.ok = TRUE)
   checkmate::assert_string(y_facet_name, null.ok = TRUE)
+  checkmate::assert_character(c(x_name, fill_name, x_facet_name, y_facet_name))
   checkmate::assert_flag(label_bars)
-  checkmate::assert_character(plot_vars, min.len = 1)
   checkmate::assert_scalar(expand_y_range)
   barlayout <- match.arg(barlayout)
   checkmate::assert_flag(flip_axis, null.ok = TRUE)
