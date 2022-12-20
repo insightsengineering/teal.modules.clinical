@@ -18,9 +18,9 @@ template_fit_mmrm(
   visit_var,
   cov_var,
   conf_level = 0.95,
+  method = "Satterthwaite",
   cor_struct = "unstructured",
   weights_emmeans = "proportional",
-  optimizer = "automatic",
   parallel = FALSE
 )
 
@@ -79,16 +79,14 @@ names of the covariates variables.}
 \item{conf_level}{(\code{numeric})\cr
 value for the confidence level within the range of (0, 1).}
 
+\item{method}{a string specifying the adjustment method.}
+
 \item{cor_struct}{a string specifying the correlation structure, defaults to
 \code{"unstructured"}. See the details.}
 
 \item{weights_emmeans}{argument from \code{\link[emmeans:emmeans]{emmeans::emmeans()}}, "proportional" by default.}
 
-\item{optimizer}{a string specifying the optimization algorithm which should be used. By default, "automatic"
-will (if necessary) try all possible optimization algorithms and choose the best result. If another algorithm
-is chosen and does not give a valid result, an error will occur.}
-
-\item{parallel}{flag that controls whether "automatic" optimizer search can use available free cores on the
+\item{parallel}{flag that controls whether optimizer search can use available free cores on the
 machine (not default).}
 
 \item{fit_name}{name of fitted MMRM object}
