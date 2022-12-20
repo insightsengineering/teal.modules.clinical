@@ -834,7 +834,7 @@ srv_t_coxreg <- function(id,
         "conf_level",
         shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between 0 and 1")
       )
-      iv$add_rule("pval_method", ~ if( length(merged$anl_input_r()$columns_source$strata_var) > 0 && . != "wald") {
+      iv$add_rule("pval_method", ~ if (length(selector_list()$strata_var()$select) > 0 && . != "wald") {
         "Only Wald tests are supported for models with strata."
       })
       # add rules for interaction_var text inputs
@@ -846,7 +846,6 @@ srv_t_coxreg <- function(id,
         )
         iv$add_rule(
           paste0("interact_", val), numeric_level_validation(val)
-
         )
       }
       teal.transform::compose_and_enable_validators(iv, selector_list)
