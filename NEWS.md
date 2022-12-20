@@ -12,6 +12,7 @@
 
 ### Miscellaneous
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS. 
+* Removed unused argument `param` from `tm_g_pp_vitals`.
 
 # teal.modules.clinical 0.8.14
 
