@@ -772,7 +772,7 @@ srv_t_coxreg <- function(id,
 
     overlap_rule <- function(other_var, var_name) {
       function(value) {
-        if (length(intersect(value, as.vector(merged$anl_input_r()$columns_source[[other_var]]))) > 0 ) {
+        if (length(intersect(value, selector_list()[[other_var]]()$select)) > 0) {
           sprintf("`%s` and `%s` variables should not overlap", var_name[1], var_name[2])
         }
       }
@@ -815,6 +815,17 @@ srv_t_coxreg <- function(id,
       )
     )
 
+
+    numeric_level_validation <- function(val) {
+      # need to explicitly evaluate 'val' here to ensure
+      # the correct label is shown - if this is not done
+      # then the last value of "val" is the label for all cases
+      v <- val
+      ~ if (anyNA(as_numeric_from_comma_sep_str(.)))
+        paste("Numeric interaction level(s) should be specified for", v)
+    }
+
+
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_validator(iv_arm_ref)
@@ -823,19 +834,18 @@ srv_t_coxreg <- function(id,
         "conf_level",
         shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between 0 and 1")
       )
-      iv$add_rule("pval_method", ~ if( length(merged$anl_input_r()$columns_source$strata_var) > 0 && . != "wald") {
+      iv$add_rule("pval_method", ~ if (length(selector_list()$strata_var()$select) > 0 && . != "wald") {
         "Only Wald tests are supported for models with strata."
       })
       # add rules for interaction_var text inputs
+
       for (val in interaction_var_r()) {
         iv$add_rule(
           paste0("interact_", val),
           shinyvalidate::sv_required(paste("Interaction level(s) should be specified for", val))
         )
         iv$add_rule(
-          paste0("interact_", val),
-          ~ if (anyNA(as_numeric_from_comma_sep_str(.)))
-            paste("Numeric interaction level(s) should be specified for", val)
+          paste0("interact_", val), numeric_level_validation(val)
         )
       }
       teal.transform::compose_and_enable_validators(iv, selector_list)
