@@ -751,16 +751,59 @@ srv_g_patient_timeline <- function(id,
       ignoreInit = TRUE
     )
 
+
     # Patient timeline tab ----
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+    check_box <- reactive(input$relday_x_axis)
+
+    check_relative <- function(main_param, return_name) {
+      function(value) {
+        if (length(selector_list()[[main_param]]()$select) > 0 && length(value) == 0) {
+          sprintf("Please add %s", return_name)
+        }
+      }
+    }
+
+    rule_one_parameter <- function(other) {
+      function(value) {
+        if (length(value) == 0L && length(selector_list()[[other]]()$select) == 0L)
+          "At least one parameter must be selected."
+      }
+    }
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         dsrelday_start = dsrelday_start, dsrelday_end = dsrelday_end,
         aerelday_start = aerelday_start, aerelday_end = aerelday_end,
         aeterm = aeterm, aetime_start = aetime_start,
         aetime_end = aetime_end, dstime_start = dstime_start, dstime_end = dstime_end, cmdecod = cmdecod
+      ),
+      datasets = data,
+      select_validation_rule = list(
+        # aeterm
+        aeterm = rule_one_parameter("cmdecod"),
+        aerelday_start = check_relative("aeterm", "AE start date."),
+        aerelday_end = check_relative("aeterm", "AE end date."),
+        aetime_start = check_relative("aeterm", "AE start date."),
+        aetime_end = check_relative("aeterm", "AE end date."),
+        # cmdecod
+        cmdecod = rule_one_parameter("aeterm"),
+        dsrelday_start = check_relative("cmdecod", "Medication start date."),
+        dsrelday_end = check_relative("cmdecod", "Medication end date."),
+        dstime_start = check_relative("cmdecod", "Medication start date."),
+        dstime_end = check_relative("cmdecod", "Medication end date.")
       )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list
     )
 
     anl_q <- reactive({
@@ -769,7 +812,7 @@ srv_g_patient_timeline <- function(id,
     })
 
     all_q <- shiny::reactive({
-      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
+      teal::validate_inputs(iv_r())
 
       aeterm <- input[[extract_input("aeterm", dataname_adae)]]
       aetime_start <- input[[extract_input("aetime_start", dataname_adae)]]
@@ -796,11 +839,6 @@ srv_g_patient_timeline <- function(id,
             (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
               sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
-        ),
-        shiny::need(
-          input$relday_x_axis || (isFALSE(ae_chart_vars_null) || isFALSE(ds_chart_vars_null)),
-          "The sections of the plot (Adverse Events and Medication) do not have enough input variables.
-          Please select the appropriate input variables."
         )
       )
 
@@ -836,11 +874,6 @@ srv_g_patient_timeline <- function(id,
             (sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
               sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
-        ),
-        shiny::need(
-          !input$relday_x_axis || (isFALSE(aerel_chart_vars_null) || isFALSE(dsrel_chart_vars_null)),
-          "The sections of the plot (Adverse Events and Medication) do not have enough input variables.
-          Please select the appropriate input variables."
         )
       )
 
