@@ -1,13 +1,11 @@
 #' Template: Mixed Model Repeated Measurements (MMRM) analysis
 #'
 #' @inheritParams template_arguments
+#' @param method a string specifying the adjustment method.
 #' @param cor_struct a string specifying the correlation structure, defaults to
 #'   `"unstructured"`. See the details.
 #' @param weights_emmeans argument from [emmeans::emmeans()], "proportional" by default.
-#' @param optimizer a string specifying the optimization algorithm which should be used. By default, "automatic"
-#'   will (if necessary) try all possible optimization algorithms and choose the best result. If another algorithm
-#'   is chosen and does not give a valid result, an error will occur.
-#' @param parallel flag that controls whether "automatic" optimizer search can use available free cores on the
+#' @param parallel flag that controls whether optimizer search can use available free cores on the
 #'   machine (not default).
 #'
 #' @seealso [tm_a_mmrm()]
@@ -24,9 +22,9 @@ template_fit_mmrm <- function(parentname,
                               visit_var,
                               cov_var,
                               conf_level = 0.95,
+                              method = "Satterthwaite",
                               cor_struct = "unstructured",
                               weights_emmeans = "proportional",
-                              optimizer = "automatic",
                               parallel = FALSE) {
   # Data
   y <- list()
@@ -134,17 +132,17 @@ template_fit_mmrm <- function(parentname,
       vars = vars,
       data = anl,
       conf_level = conf_level,
+      method = method,
       cor_struct = cor_struct,
       weights_emmeans = weights_emmeans,
-      optimizer = optimizer,
       parallel = parallel
     ),
     env = list(
       vars = vars,
       conf_level = conf_level,
+      method = method,
       cor_struct = cor_struct,
       weights_emmeans = weights_emmeans,
-      optimizer = optimizer,
       parallel = parallel
     )
   )
@@ -434,6 +432,8 @@ template_mmrm_plots <- function(fit_name,
 #' Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
 #'
 #' @inheritParams module_arguments
+#' @param method (`choices_selected`)\cr
+#'   object with all available choices and preselected option for the adjustment method.
 #' @param ggplot2_args optional, (`ggplot2_args`) \cr
 #' object created by [`teal.widgets::ggplot2_args()`] with settings for all the plots or named list of `ggplot2_args`
 #' objects for plot-specific settings. List names should match the following:\cr `
@@ -526,6 +526,11 @@ tm_a_mmrm <- function(label,
                       cov_var,
                       arm_ref_comp = NULL,
                       paramcd,
+                      method = teal.transform::choices_selected(
+                        c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
+                        "Satterthwaite",
+                        keep_order = TRUE
+                      ),
                       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
@@ -537,6 +542,7 @@ tm_a_mmrm <- function(label,
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
+  checkmate::assert_class(method, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -691,6 +697,14 @@ ui_mmrm <- function(id, ...) {
               multiple = FALSE
             ),
             teal.widgets::optionalSelectInput(
+              ns("method"),
+              "Adjustment Method",
+              a$method$choices,
+              a$method$selected,
+              multiple = FALSE,
+              fixed = a$method$fixed
+            ),
+            teal.widgets::optionalSelectInput(
               ns("conf_level"),
               "Confidence Level",
               a$conf_level$choices,
@@ -698,27 +712,11 @@ ui_mmrm <- function(id, ...) {
               multiple = FALSE,
               fixed = a$conf_level$fixed
             ),
-            shiny::selectInput(
-              ns("optimizer"),
-              "Optimization Algorithm",
-              choices = c(
-                "automatic",
-                "L-BFGS-B",
-                "BFGS",
-                "CG",
-                "nlminb"
-              ),
-              selected = NULL,
-              multiple = FALSE
-            ),
-            # Additional option for "automatic" optimizer.
             shiny::checkboxInput(
               ns("parallel"),
               "Parallel Computing",
               value = TRUE
             ),
-            # Show here which automatic optimizer was used in the end.
-            shiny::textOutput(ns("optimizer_selected")),
             collapsed = FALSE # Start with having this panel opened.
           )
         ),
@@ -891,9 +889,9 @@ srv_mmrm <- function(id,
     # reactiveVal used to send a signal to plot_with_settings module to hide the UI
     show_plot_rv <- shiny::reactiveVal(FALSE)
 
-    # this will store the current/last state of inputs and data that generatd a model-fit
+    # this will store the current/last state of inputs and data that generated a model-fit
     # its purpose is so that any input change can be checked whether it resulted in an out of sync state
-    state <- shiny::reactiveValues(input = NULL, button_start = 0, optimizer = NULL)
+    state <- shiny::reactiveValues(input = NULL, button_start = 0)
 
     # Note:
     # input$parallel does not get us out of sync (it just takes longer to get to same result)
@@ -909,8 +907,8 @@ srv_mmrm <- function(id,
       extract_input("id_var", dataname),
       "weights_emmeans",
       "cor_struct",
-      "conf_level",
-      "optimizer"
+      "method",
+      "conf_level"
     )
 
     # Setup arm variable selection, default reference arms, and default
@@ -951,17 +949,6 @@ srv_mmrm <- function(id,
         show_plot_rv(TRUE)
       } else {
         stop("unknown output type")
-      }
-    })
-
-    # Event handler:
-    # Show or hide parallel computing option (and result).
-    shiny::observeEvent(input$optimizer, {
-      optimizer <- input$optimizer
-      if (isTRUE(optimizer == "automatic")) {
-        shinyjs::show("parallel")
-      } else {
-        shinyjs::hide("parallel")
       }
     })
 
@@ -1061,6 +1048,7 @@ srv_mmrm <- function(id,
         ),
         shiny::need(encoding_inputs[[extract_input("visit_var", dataname)]], "`Visit Variable` field is not selected"),
         shiny::need(encoding_inputs[[extract_input("id_var", dataname)]], "`Subject Identifier` field is not selected"),
+        shiny::need(encoding_inputs[["method"]], "`Adjustment Method` field is not selected"),
         shiny::need(encoding_inputs[["conf_level"]], "`Confidence Level` field is not selected"),
         shiny::need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows"),
         shiny::need(
@@ -1218,9 +1206,9 @@ srv_mmrm <- function(id,
         visit_var = as.vector(anl_m_inputs$columns_source$visit_var),
         cov_var = input[[extract_input("cov_var", dataname)]],
         conf_level = as.numeric(input$conf_level),
+        method = as.character(input$method),
         cor_struct = input$cor_struct,
         weights_emmeans = input$weights_emmeans,
-        optimizer = input$optimizer,
         parallel = input$parallel
       )
       teal.code::eval_code(qenv, as.expression(my_calls))
@@ -1288,7 +1276,7 @@ srv_mmrm <- function(id,
       basic_table_args$main_footer <- c(
         paste("Weights for LS Means:", input$weights_emmeans),
         paste("Correlation Structure:", input$cor_struct),
-        paste("Optimization Algorithm:", attr(fit$fit, "optimizer"))
+        paste("Adjustment Method:", input$method)
       )
 
       mmrm_table <- template_mmrm_tables(
@@ -1338,7 +1326,6 @@ srv_mmrm <- function(id,
           caption = paste(
             paste("Weights for LS Means:", input$weights_emmeans),
             paste("Correlation Structure:", input$cor_struct),
-            paste("Optimization Algorithm:", attr(fit$fit, "optimizer")),
             sep = "\n"
           )
         )
@@ -1416,32 +1403,6 @@ srv_mmrm <- function(id,
       table_r = table_r,
       show_hide_signal = shiny::reactive(!show_plot_rv())
     )
-
-    # Endpoint:
-    # Optimizer that was selected.
-    output$optimizer_selected <- shiny::renderText({
-      # First reassign reactive sources:
-      fit_stack <- try(mmrm_fit(), silent = TRUE)
-      result <- if (!inherits(fit_stack, "try-error")) {
-        fit <- fit_stack[["fit"]]
-        if (input$optimizer == "automatic") {
-          selected <- attr(fit$fit, "optimizer")
-          paste("Optimizer used:", selected)
-        }
-      }
-      currnt_state <- !state_has_changed()
-      what_to_return <- if (input$button_start > shiny::isolate(state$button_start)) {
-        state$button_start <- input$button_start
-        state$optimizer <- result
-        result
-      } else if (currnt_state) {
-        shiny::isolate(state$optimizer)
-      } else {
-        NULL
-      }
-
-      return(what_to_return)
-    })
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",

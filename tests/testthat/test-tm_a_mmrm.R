@@ -34,7 +34,6 @@ testthat::test_that("template_fit_mmrm works as expected when not combining comp
         conf_level = 0.95,
         cor_struct = "unstructured",
         weights_emmeans = "proportional",
-        optimizer = "automatic",
         parallel = FALSE
       )
     )
@@ -78,7 +77,6 @@ testthat::test_that("template_fit_mmrm works as expected when combining combinat
         conf_level = 0.95,
         cor_struct = "unstructured",
         weights_emmeans = "proportional",
-        optimizer = "automatic",
         parallel = TRUE
       ),
       env = list(

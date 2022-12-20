@@ -9,9 +9,12 @@
 * Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
 * Added new GEE module `tm_a_gee`.
 * Added interface for selecting an interaction term to `tm_t_ancova`.
+* Added adjustment method choice to `tm_a_mmrm` to allow for Kenward-Roger adjustment of standard errors and p-values.
 
 ### Miscellaneous
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS. 
+* Removed optimizer choice from `tm_a_mmrm` since we can just always use the 
+  automatically determined optimizer.
 
 # teal.modules.clinical 0.8.14
 
