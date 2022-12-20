@@ -304,7 +304,11 @@ tm_t_logistic <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(avalc_var, classes = "choices_selected")
+  checkmate::assert_multi_class(arm_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
+  checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
+  checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"))
+  checkmate::assert_multi_class(cov_var, c("choices_selected", "data_extract_spec"))
+  checkmate::assert_multi_class(avalc_var, c("choices_selected", "data_extract_spec"))
   checkmate::assert_class(conf_level, classes = "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -315,8 +319,8 @@ tm_t_logistic <- function(label,
   data_extract_list <- list(
     arm_var = `if`(is.null(arm_var), NULL, cs_to_des_select(arm_var, dataname = parentname)),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    avalc_var = cs_to_des_select(avalc_var, dataname = dataname),
-    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE)
+    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
+    avalc_var = cs_to_des_select(avalc_var, dataname = dataname)
   )
 
   module(
@@ -477,10 +481,7 @@ srv_t_logistic <- function(id,
       datasets = data,
       select_validation_rule = list(
         arm_var = shinyvalidate::sv_required("Treatment Variable is empty"),
-        avalc_var = shinyvalidate::compose_rules(
-          shinyvalidate::sv_required("Analysis variable is empty"),
-          ~ if (!checkmate::test_character(.))  "Analysis variable should be a single column."
-        ),
+        avalc_var = shinyvalidate::sv_required("Analysis variable is empty"),
         cov_var = shinyvalidate::sv_required("`Covariates` field is empty")
       ),
       filter_validation_rule = list(
@@ -491,12 +492,14 @@ srv_t_logistic <- function(id,
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
       iv$add_rule("conf_level", shinyvalidate::sv_between(
-        0, 1, message_fmt = "Please choose a confidence level between {left} and {right}"))
+        0, 1, message_fmt = "Confdence level must be between {left} and {right}."))
       iv$add_validator(iv_arco)
       # Conditional validator for interaction values.
       iv_int <- shinyvalidate::InputValidator$new()
-      iv_int$condition(~ length(input$interaction_var) > 0L)
+      iv_int$condition(~ length(input$interaction_var) > 0L &&
+                         is.numeric(merged$anl_q()[["ANL"]][[input$interaction_var]]))
       iv_int$add_rule("interaction_values", shinyvalidate::sv_required(
         "If interaction is specified the level should be entered."))
       iv_int$add_rule("interaction_values",
