@@ -815,6 +815,17 @@ srv_t_coxreg <- function(id,
       )
     )
 
+
+    numeric_level_validation <- function(val) {
+      # need to explicitly evaluate 'val' here to ensure
+      # the correct label is shown - if this is not done
+      # then the last value of "val" is the label for all cases
+      v <- val
+      ~ if (anyNA(as_numeric_from_comma_sep_str(.)))
+        paste("Numeric interaction level(s) should be specified for", v)
+    }
+
+
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_validator(iv_arm_ref)
@@ -827,15 +838,15 @@ srv_t_coxreg <- function(id,
         "Only Wald tests are supported for models with strata."
       })
       # add rules for interaction_var text inputs
+
       for (val in interaction_var_r()) {
         iv$add_rule(
           paste0("interact_", val),
           shinyvalidate::sv_required(paste("Interaction level(s) should be specified for", val))
         )
         iv$add_rule(
-          paste0("interact_", val),
-          ~ if (anyNA(as_numeric_from_comma_sep_str(.)))
-            paste("Numeric interaction level(s) should be specified for", val)
+          paste0("interact_", val), numeric_level_validation(val)
+
         )
       }
       teal.transform::compose_and_enable_validators(iv, selector_list)
