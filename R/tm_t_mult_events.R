@@ -458,19 +458,32 @@ srv_t_mult_events_byterm <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_merge_inputs <- teal.transform::merge_expression_module(
-      id = "anl_merge",
-      datasets = data,
-      join_keys = get_join_keys(data),
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         seq_var = seq_var,
         hlt = hlt,
         llt = llt
       ),
-      merge_function = "dplyr::inner_join"
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = shinyvalidate::sv_required("Please select a treatment variable"),
+        llt = shinyvalidate::sv_required("Please select a \"LOW LEVEL TERM\" variable")
+      )
     )
 
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "llt"))
+    })
+
+    anl_merge_inputs <- teal.transform::merge_expression_srv(
+      id = "anl_merge",
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list,
+      merge_function = "dplyr::inner_join"
+    )
 
     adsl_merge_inputs <- teal.transform::merge_expression_module(
       id = "adsl_merge",
@@ -487,6 +500,7 @@ srv_t_mult_events_byterm <- function(id,
     })
 
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
@@ -497,8 +511,6 @@ srv_t_mult_events_byterm <- function(id,
       input_hlt <- as.vector(anl_m$columns_source$hlt)
       input_llt <- as.vector(anl_m$columns_source$llt)
 
-      shiny::validate(shiny::need(input_arm_var, "Please select a treatment variable"))
-      shiny::validate(shiny::need(input_llt, "Please select a \"LOW LEVEL TERM\" variable"))
 
       shiny::validate(
         shiny::need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")

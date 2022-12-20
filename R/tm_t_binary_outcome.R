@@ -743,20 +743,42 @@ srv_t_binary_outcome <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
-    arm_ref_comp_observer(
+    iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
       data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
-      module = "tm_t_tte",
+      module = "tm_t_binary_outcome",
       on_off = shiny::reactive(input$compare_arms)
     )
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
+      datasets = data,
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+        arm_var = shinyvalidate::sv_required("A treatment variable is required")
+      ),
+      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select a filter."))
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_validator(iv_arm_ref)
+      iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between {left} and {right}")
+      )
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "aval_var", "paramcd"))
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join",
       join_keys = get_join_keys(data)
     )
@@ -815,6 +837,7 @@ srv_t_binary_outcome <- function(id,
     )
 
     validate_check <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
@@ -883,11 +906,6 @@ srv_t_binary_outcome <- function(id,
         }
       )
 
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
-        shiny::need(input$responders, "`Responders` field is empty")
-      )
-
       if (is.list(default_responses)) {
         shiny::validate(
           shiny::need(
@@ -899,11 +917,6 @@ srv_t_binary_outcome <- function(id,
           )
         )
       }
-
-      shiny::validate(shiny::need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
 
       NULL
     })

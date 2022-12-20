@@ -601,14 +601,37 @@ srv_g_therapy <- function(id,
     )
 
     # Therapy tab ----
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         atirel = atirel, cmdecod = cmdecod, cmindc = cmindc,
         cmdose = cmdose, cmtrt = cmtrt, cmdosu = cmdosu,
         cmroute = cmroute, cmdosfrq = cmdosfrq, cmstdy = cmstdy, cmendy = cmendy
       ),
+      datasets = data,
+      select_validation_rule = list(
+        atirel = shinyvalidate::sv_required("Please select ATIREL variable."),
+        cmdecod = shinyvalidate::sv_required("Please select medication decoding variable."),
+        cmindc = shinyvalidate::sv_required("Please select CMINDC variable."),
+        cmdose = shinyvalidate::sv_required("Please select CMDOSE variable."),
+        cmtrt = shinyvalidate::sv_required("Please select CMTRT variable."),
+        cmdosu = shinyvalidate::sv_required("Please select CMDOSU variable."),
+        cmroute = shinyvalidate::sv_required("Please select CMROUTE variable."),
+        cmdosfrq = shinyvalidate::sv_required("Please select CMDOSFRQ variable."),
+        cmstdy = shinyvalidate::sv_required("Please select CMSTDY variable."),
+        cmendy = shinyvalidate::sv_required("Please select CMENDY variable.")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient."))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list,
       merge_function = "dplyr::left_join"
     )
 
@@ -620,50 +643,11 @@ srv_g_therapy <- function(id,
     merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
     all_q <- shiny::reactive({
-      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
       teal::validate_has_data(merged$anl_q()[["ANL"]], 1)
 
+      teal::validate_inputs(iv_r())
+
       shiny::validate(
-        shiny::need(
-          input[[extract_input("atirel", dataname)]],
-          "Please select ATIREL variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmdecod", dataname)]],
-          "Please select Medication decoding variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmindc", dataname)]],
-          "Please select CMINDC variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmdose", dataname)]],
-          "Please select CMDOSE variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmtrt", dataname)]],
-          "Please select CMTRT variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmdosu", dataname)]],
-          "Please select CMDOSU variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmroute", dataname)]],
-          "Please select CMROUTE variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmdosfrq", dataname)]],
-          "Please select CMDOSFRQ variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmstdy", dataname)]],
-          "Please select CMSTDY variable."
-        ),
-        shiny::need(
-          input[[extract_input("cmendy", dataname)]],
-          "Please select CMENDY variable."
-        ),
         shiny::need(
           nrow(merged$anl_q()[["ANL"]][input$patient_id == merged$anl_q()[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
@@ -708,7 +692,10 @@ srv_g_therapy <- function(id,
       options = list(pageLength = input$therapy_table_rows)
     )
 
-    plot_r <- shiny::reactive(all_q()[["therapy_plot"]])
+    plot_r <- shiny::reactive({
+      shiny::req(iv_r()$is_valid())
+      all_q()[["therapy_plot"]]
+    })
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "therapy_plot",

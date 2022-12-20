@@ -29,41 +29,45 @@
 #' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 #' arm_var <- choices_selected(c("ARM", "ARMCD"), "ARMCD")
 #'
-#' adsl <- data.frame(ARM = c("ARM 1", "ARM2"), ARMCD = c("ARM A", "ARMB"))
+#' adsl <- data.frame(ARM = c("ARM 1", "ARM 2"), ARMCD = c("ARM A", "ARM B"))
 #'
-#' shiny::shinyApp(
-#'   ui = fluidPage(
-#'     teal.widgets::optionalSelectInput(
-#'       "arm",
-#'       "Treatment Variable",
-#'       choices = arm_var$choices,
-#'       selected = arm_var$selected
+#' ui <- fluidPage(
+#'   sidebarLayout(
+#'     sidebarPanel(
+#'       teal.widgets::optionalSelectInput(
+#'         "arm",
+#'         "Treatment Variable",
+#'         choices = arm_var$choices,
+#'         selected = arm_var$selected
+#'       ),
+#'       shiny::uiOutput("arms_buckets")
 #'     ),
-#'     shiny::uiOutput("arms_buckets"),
-#'     shiny::textOutput("result")
-#'   ),
-#'   server = function(input, output, session) {
-#'
-#'     iv_arm_ref <- teal.modules.clinical:::arm_ref_comp_observer(
-#'       session,
-#'       input,
-#'       output,
-#'       id_arm_var = "arm",
-#'       data = adsl,
-#'       arm_ref_comp = arm_ref_comp,
-#'       module = "example"
+#'     mainPanel(
+#'       shiny::textOutput("result")
 #'     )
-#'
-#'     output$result <- shiny::renderText({
-#'       iv <- shinyvalidate::InputValidator$new()
-#'       iv$add_validator(iv_arm_ref)
-#'       iv$enable()
-#'       teal::validate_inputs(iv)
-#'       "Valid selection has been made!"
-#'     })
-#'
-#'   }
+#'   )
 #' )
+#'
+#' server = function(input, output, session) {
+#'
+#'   iv_arm_ref <- teal.modules.clinical:::arm_ref_comp_observer(
+#'     session,
+#'     input,
+#'     output,
+#'     id_arm_var = "arm",
+#'     data = adsl,
+#'     arm_ref_comp = arm_ref_comp,
+#'     module = "example"
+#'   )
+#'
+#'   output$result <- shiny::renderText({
+#'     iv <- shinyvalidate::InputValidator$new()
+#'     iv$add_validator(iv_arm_ref)
+#'     iv$enable()
+#'     teal::validate_inputs(iv)
+#'     "Valid selection has been made!"
+#'   })
+#' }
 #' if (interactive()) {
 #'   shiny::shinyApp(ui, server)
 #' }
@@ -81,24 +85,26 @@ arm_ref_comp_observer <- function(session,
                                   output_id = "arms_buckets") {
 
   iv <- shinyvalidate::InputValidator$new()
-  iv$add_rule(input_id, function(value) if (length(value[[id_ref]]) == 0) "A reference arm must be selected")
-  iv$add_rule(input_id, function(value) if (length(value[[id_comp]]) == 0) "A comparison arm must be selected")
+  iv1 <- shinyvalidate::InputValidator$new()
+  iv2 <- shinyvalidate::InputValidator$new()
+  iv2$condition(~ iv1$is_valid())
+  iv1$add_rule(id_arm_var, shinyvalidate::sv_required("Treatment variable must be selected"))
+  iv2$add_rule(input_id, ~ if (length(.[[id_ref]]) == 0) "A reference arm must be selected")
+  iv2$add_rule(input_id, ~ if (length(.[[id_comp]]) == 0) "A comparison arm must be selected")
+  iv$add_validator(iv1)
+  iv$add_validator(iv2)
 
 
   output[[output_id]] <- shiny::renderUI({
-    if (!is.null(on_off()) && on_off()) {
+    if (isTRUE(on_off())) {
       df <- if (shiny::is.reactive(data)) {
         data()
       } else {
         data
       }
-
       check_arm_ref_comp(arm_ref_comp, df, module) ## throws an error if there are issues
 
-      arm_var <- input[[id_arm_var]]
-
-      # validations here don't produce nice UI message (it's observe and not render output) but it prevent red errors
-      teal::validate_has_elements(arm_var, "Treatment variable name is empty.")
+      arm_var <- shiny::req(input[[id_arm_var]])
 
       arm <- df[[arm_var]]
       teal::validate_has_elements(arm, "Treatment variable is empty.")
@@ -129,6 +135,7 @@ arm_ref_comp_observer <- function(session,
       )
     }
   })
+
   return(iv)
 }
 
@@ -150,7 +157,6 @@ check_arm_ref_comp <- function(x, df_to_check, module) {
       stop(msg, "needs to be a list or NULL")
     }
 
-
     vars <- names(x)
     if (is.null(vars) || any(vars == "")) {
       stop(msg, "is not named")
@@ -159,7 +165,6 @@ check_arm_ref_comp <- function(x, df_to_check, module) {
     if (!all(vars %in% names(df_to_check))) {
       stop(msg, "refers to variables that are not in the data")
     }
-
 
     Map(
       x, vars,

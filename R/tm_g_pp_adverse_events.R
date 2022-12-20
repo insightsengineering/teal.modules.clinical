@@ -453,8 +453,7 @@ srv_g_adverse_events <- function(id,
     )
 
     # Adverse events tab ----
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = Filter(
         Negate(is.null),
         list(
@@ -467,6 +466,27 @@ srv_g_adverse_events <- function(id,
           decod = decod
         )
       ),
+      datasets = data,
+      select_validation_rule = list(
+        aeterm = shinyvalidate::sv_required("Please select AETERM variable."),
+        tox_grade = shinyvalidate::sv_required("Please select AETOXGR variable."),
+        causality = shinyvalidate::sv_required("Please select AEREL variable."),
+        outcome = shinyvalidate::sv_required("Please select AEOUT variable."),
+        action = shinyvalidate::sv_required("Please select AEACN variable."),
+        time = shinyvalidate::sv_required("Please select ASTDY variable."),
+        decod = shinyvalidate::sv_required("Please select ANRIND variable.")
+      )
+    )
+
+    iv_r <- reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       join_keys = get_join_keys(data)
     )
 
@@ -477,39 +497,12 @@ srv_g_adverse_events <- function(id,
     )
 
     all_q <- shiny::reactive({
-      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
+      teal::validate_inputs(iv_r())
       anl_m <- anl_inputs()
       qenv <- anl_q()
       ANL <- qenv[["ANL"]] # nolint
 
       teal::validate_has_data(ANL[ANL[[patient_col]] == input$patient_id, ], min_nrow = 1)
-
-      shiny::validate(
-        shiny::need(
-          input[[extract_input("aeterm", dataname)]],
-          "Please select AETERM variable."
-        ),
-        shiny::need(
-          input[[extract_input("tox_grade", dataname)]],
-          "Please select AETOXGR variable."
-        ),
-        shiny::need(
-          input[[extract_input("causality", dataname)]],
-          "Please select AEREL variable."
-        ),
-        shiny::need(
-          input[[extract_input("outcome", dataname)]],
-          "Please select AEOUT variable."
-        ),
-        shiny::need(
-          input[[extract_input("action", dataname)]],
-          "Please select AEACN variable."
-        ),
-        shiny::need(
-          input[[extract_input("time", dataname)]],
-          "Please select ASTDY variable."
-        )
-      )
 
       qenv2 <- teal.code::eval_code(
         qenv,
@@ -543,7 +536,10 @@ srv_g_adverse_events <- function(id,
       options = list(pageLength = input$table_rows)
     )
 
-    plot_r <- shiny::reactive(all_q()[["plot"]])
+    plot_r <- shiny::reactive({
+      shiny::req(iv_r()$is_valid())
+      all_q()[["plot"]]
+    })
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "chart",
