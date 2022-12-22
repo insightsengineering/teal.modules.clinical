@@ -356,12 +356,17 @@ srv_g_barchart_simple <- function(id,
           shinyvalidate::sv_optional(),
           rule_dupl(others = c("fill", "x_facet", "x"))
         )
+      ),
+      dataset_validation_rule = list(
+        fill = NULL,
+        x_facet = NULL,
+        y_facet = NULL
       )
     )
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      hm <- teal.transform::compose_and_enable_validators(iv, selector_list)
+      teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
