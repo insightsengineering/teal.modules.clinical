@@ -428,9 +428,9 @@ srv_summary <- function(id,
       data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
       datasets = data,
       select_validation_rule = list(
-        arm_var = shinyvalidate::sv_required("Please select a treatment variable"),
-        summarize_vars = ~ if (length(.) != 1 && length(.) != 2) {
-          "Please select 1 or 2 summary variables"
+        summarize_vars = shinyvalidate::sv_required("Please select a summarize variable"),
+        arm_var = ~ if (length(.) != 1 && length(.) != 2) {
+          "Please select 1 or 2 treatment variables"
         }
       )
     )
