@@ -550,7 +550,7 @@ srv_t_smq <- function(id,
         llt = shinyvalidate::sv_required("A low level term variable is required"),
         arm_var = shinyvalidate::compose_rules(
           shinyvalidate::sv_required("At least one treatment variable is required"),
-          ~ if (length(.) > 2) "Please select not more than two treatment variables"
+          ~ if (length(.) > 2) "Please select no more than two treatment variables"
         ),
         id_var = shinyvalidate::sv_required("An id variable is required"),
         baskets = shinyvalidate::sv_required("At least one basket is required")

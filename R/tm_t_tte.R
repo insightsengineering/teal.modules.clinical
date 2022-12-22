@@ -569,7 +569,7 @@ ui_t_tte <- function(id, ...) {
           condition = paste0("input['", ns("compare_arms"), "']"),
           shiny::div(
             shiny::uiOutput(ns("arms_buckets")),
-            shiny::helpText("Multiple reference groups are automatically combined into a single group."),
+            shiny::uiOutput(ns("helptext_ui")),
             shiny::checkboxInput(
               ns("combine_comp_arms"),
               "Combine all comparison groups?",
@@ -754,22 +754,27 @@ srv_t_tte <- function(id,
       )
     )
 
+    output$helptext_ui <- renderUI({
+      req(selector_list()$arm_var()$select)
+      shiny::helpText("Multiple reference groups are automatically combined into a single group.")
+    })
+
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_validator(iv_arm_ref)
 
-      iv$add_rule("conf_level_coxph", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
+      iv$add_rule("conf_level_coxph", shinyvalidate::sv_required("Please choose a hazard ratio confidence level"))
       iv$add_rule(
         "conf_level_coxph", shinyvalidate::sv_between(
           0, 1,
-          message_fmt = "Please choose a confidence level between 0 and 1"
+          message_fmt = "Hazard ratio confidence level must between 0 and 1"
         )
       )
-      iv$add_rule("conf_level_survfit", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
+      iv$add_rule("conf_level_survfit", shinyvalidate::sv_required("Please choose a KM confidence level"))
       iv$add_rule(
         "conf_level_survfit", shinyvalidate::sv_between(
           0, 1,
-          message_fmt = "Please choose a confidence level between 0 and 1"
+          message_fmt = "KM confidence level must between 0 and 1"
         )
       )
       iv$add_rule(

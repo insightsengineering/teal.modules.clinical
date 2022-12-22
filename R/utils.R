@@ -873,12 +873,12 @@ get_paramcd_label <- function(anl, paramcd) {
   })
 }
 
-as_numeric_from_comma_sep_str <- function(input_string, split_char = ",") {
+as_numeric_from_comma_sep_str <- function(input_string, sep = ",") {
   if (!is.null(input_string) && trimws(input_string) != "") {
-    ref_line <- unlist(strsplit(trimws(input_string), split_char))
-    ref_line <- suppressWarnings(as.numeric(ref_line))
+    split_string <- unlist(strsplit(trimws(input_string), sep))
+    split_as_numeric <- suppressWarnings(as.numeric(split_string))
   } else {
-    ref_line <- NULL
+    split_as_numeric <- NULL
   }
-  return(ref_line)
+  return(split_as_numeric)
 }

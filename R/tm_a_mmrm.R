@@ -921,7 +921,7 @@ srv_mmrm <- function(id,
         "conf_level",
         shinyvalidate::sv_between(
           0, 1,
-          message_fmt = "Please choose a confidence level between 0 and 1"
+          message_fmt = "Confidence level must be between 0 and 1"
         )
       )
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -1103,9 +1103,8 @@ srv_mmrm <- function(id,
       adsl_filtered <- anl_q()[["ADSL"]]
       anl_filtered <- anl_q()[[dataname]]
 
-      shiny::validate(
-        shiny::need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows")
-      )
+      teal::validate_has_data(adsl_filtered, min_nrow = 1)
+      teal::validate_has_data(anl_filtered, min_nrow = 1)
       validate_checks()
       c(list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered), encoding_inputs)
     })

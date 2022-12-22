@@ -670,25 +670,25 @@ srv_g_km <- function(id,
       iv <- shinyvalidate::InputValidator$new()
       iv$add_validator(iv_arm_ref)
       iv$add_rule("font_size", shinyvalidate::sv_required("Plot tables font size must be greater than or equal to 5"))
-      iv$add_rule("font_size", shinyvalidate::sv_gte(5, "Plot tables font size must be greater than or equal to 5."))
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
+      iv$add_rule("font_size", shinyvalidate::sv_gte(5, "Plot tables font size must be greater than or equal to 5"))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
         "conf_level",
         shinyvalidate::sv_between(
           0, 1,
           inclusive = c(FALSE, FALSE),
-          message_fmt = "Please choose a confidence level between 0 and 1"
+          message_fmt = "Confidence level must be between 0 and 1"
         )
       )
       iv$add_rule("xticks", shinyvalidate::sv_optional())
       iv$add_rule(
         "xticks",
         function(value) {
-          val <- as_numeric_from_comma_sep_str(value, split_char = ";")
+          val <- as_numeric_from_comma_sep_str(value, sep = ";")
           if (anyNA(val) || any(val < 0)) {
             "All break intervals for x-axis must be non-negative numbers"
           } else if (all(val == 0)) {
-            "Not all break intervals for x-axis can be 0"
+            "At least one break interval for x-axis must be > 0"
           }
         }
       )
@@ -759,7 +759,7 @@ srv_g_km <- function(id,
       teal::validate_has_data(anl, 2)
 
       input_xticks <- if (!is.null(input$xticks)) {
-        as_numeric_from_comma_sep_str(input$xticks, split_char = ";")
+        as_numeric_from_comma_sep_str(input$xticks, sep = ";")
       } else {
         NULL
       }

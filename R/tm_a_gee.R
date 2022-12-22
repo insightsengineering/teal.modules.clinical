@@ -444,13 +444,13 @@ srv_gee <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
       iv$add_rule(
         "conf_level",
         shinyvalidate::sv_between(
           0, 1,
           inclusive = c(FALSE, FALSE),
-          message_fmt = "Please choose a confidence level between 0 and 1"
+          message_fmt = "Confidence level must be between 0 and 1"
         )
       )
       iv$add_rule("cor_struct", shinyvalidate::sv_required("Please choose a correlation structure"))

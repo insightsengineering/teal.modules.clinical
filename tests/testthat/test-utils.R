@@ -409,3 +409,19 @@ testthat::test_that("cs_to_des_select creates data_extract_spec with ordered = T
     )
   )
 })
+
+testthat::test_that("as_numeric_from_comma_sep_str returns NULL if blank string or NULL entered", {
+  testthat::expect_null(as_numeric_from_comma_sep_str(NULL))
+  testthat::expect_null(as_numeric_from_comma_sep_str("   "))
+})
+
+testthat::test_that("as_numeric_from_comma_sep_str returns numeric vector of numbers", {
+  testthat::expect_equal(as_numeric_from_comma_sep_str("3,4,5.56"), c(3, 4, 5.56))
+  testthat::expect_equal(as_numeric_from_comma_sep_str("3,4   ,v"), c(3, 4, NA))
+})
+
+testthat::test_that("as_numeric_from_comma_sep_str respects sep argument", {
+  testthat::expect_equal(as_numeric_from_comma_sep_str("3,4,5", sep = ";"), as.numeric(NA))
+  testthat::expect_equal(as_numeric_from_comma_sep_str("3 %% 4   %% 154.32", sep = "%%"), c(3, 4, 154.32))
+})
+
