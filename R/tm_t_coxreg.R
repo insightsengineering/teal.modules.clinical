@@ -888,7 +888,7 @@ srv_t_coxreg <- function(id,
         dataset <- merged$anl_q()[[dataname]]
         cov_is_numeric <- vapply(dataset[input_cov_var], is.numeric, logical(1))
         input_cov_var[cov_is_numeric]
-      } else{
+      } else {
         NULL
       }
     })

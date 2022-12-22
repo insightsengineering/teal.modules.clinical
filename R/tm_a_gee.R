@@ -221,7 +221,7 @@ tm_a_gee <- function(label,
     id_var = cs_to_des_select(id_var, dataname = dataname),
     visit_var = cs_to_des_select(visit_var, dataname = dataname),
     cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-    split_covariates = cs_to_des_select(split_choices(cov_var),dataname = dataname, multiple = TRUE),
+    split_covariates = cs_to_des_select(split_choices(cov_var), dataname = dataname, multiple = TRUE),
     aval_var = cs_to_des_select(aval_var, dataname = dataname)
   )
 

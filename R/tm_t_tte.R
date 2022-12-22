@@ -747,7 +747,7 @@ srv_t_tte <- function(id,
         cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
         arm_var = shinyvalidate::sv_required("A treatment variable is required"),
         event_desc_var = shinyvalidate::sv_required("An event description variable is required"),
-        time_unit_var= shinyvalidate::sv_required("A Time unit variable is required")
+        time_unit_var = shinyvalidate::sv_required("A Time unit variable is required")
       ),
       filter_validation_rule = list(
         paramcd = shinyvalidate::sv_required("An endpoint is required")

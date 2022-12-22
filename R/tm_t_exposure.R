@@ -515,7 +515,7 @@ srv_t_exposure <- function(id,
         id_var = shinyvalidate::sv_required("Subject Identifier is required"),
         col_by_var = shinyvalidate::compose_rules(
           shinyvalidate::sv_optional(),
-          rule_intersection('row_by_var')
+          rule_intersection("row_by_var")
         ),
         row_by_var = shinyvalidate::compose_rules(
           shinyvalidate::sv_required("Please select a row by variable."),
