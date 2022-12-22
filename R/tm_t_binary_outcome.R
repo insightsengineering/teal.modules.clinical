@@ -766,7 +766,11 @@ srv_t_binary_outcome <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_validator(iv_arm_ref)
+
+      if (isTRUE(input$compare_arms)) {
+        iv$add_validator(iv_arm_ref)
+      }
+
       iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
       iv$add_rule(

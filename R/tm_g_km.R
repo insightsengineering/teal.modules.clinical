@@ -668,7 +668,11 @@ srv_g_km <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_validator(iv_arm_ref)
+
+      if (isTRUE(input$compare_arms)) {
+        iv$add_validator(iv_arm_ref)
+      }
+
       iv$add_rule("font_size", shinyvalidate::sv_required("Plot tables font size must be greater than or equal to 5"))
       iv$add_rule("font_size", shinyvalidate::sv_gte(5, "Plot tables font size must be greater than or equal to 5"))
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))

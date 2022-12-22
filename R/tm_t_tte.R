@@ -761,7 +761,10 @@ srv_t_tte <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_validator(iv_arm_ref)
+
+      if (isTRUE(input$compare_arms)) {
+        iv$add_validator(iv_arm_ref)
+      }
 
       iv$add_rule("conf_level_coxph", shinyvalidate::sv_required("Please choose a hazard ratio confidence level"))
       iv$add_rule(
