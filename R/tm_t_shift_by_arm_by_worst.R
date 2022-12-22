@@ -439,7 +439,7 @@ srv_shift_by_arm_by_worst <- function(id,
       )
     )
 
-    iv_r <-shiny::reactive({
+    iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule(
         "treatment_flag",
