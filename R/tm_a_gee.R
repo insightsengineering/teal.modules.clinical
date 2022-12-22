@@ -448,7 +448,8 @@ srv_gee <- function(id,
       iv$add_rule(
         "conf_level",
         shinyvalidate::sv_between(
-          0, 1, inclusive = c(FALSE, FALSE),
+          0, 1,
+          inclusive = c(FALSE, FALSE),
           message_fmt = "Please choose a confidence level between 0 and 1"
         )
       )

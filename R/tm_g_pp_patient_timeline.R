@@ -765,8 +765,9 @@ srv_g_patient_timeline <- function(id,
 
     rule_one_parameter <- function(other) {
       function(value) {
-        if (length(value) == 0L && length(selector_list()[[other]]()$select) == 0L)
+        if (length(value) == 0L && length(selector_list()[[other]]()$select) == 0L) {
           "At least one parameter must be selected."
+        }
       }
     }
 

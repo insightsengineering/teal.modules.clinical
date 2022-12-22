@@ -325,14 +325,14 @@ srv_g_barchart_simple <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     rule_dupl <- function(others) {
       function(value) {
         othervals <- lapply(others, function(x) selector_list()[[x]]()$select)
         vars <- c(value, unlist(othervals))
         dups <- unique(vars[duplicated(vars)])
-        if (value %in% dups)
+        if (value %in% dups) {
           paste("Duplicated value:", value, collapse = ", ")
+        }
       }
     }
 

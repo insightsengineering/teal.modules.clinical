@@ -518,7 +518,6 @@ srv_g_lineplot <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
       datasets = data,
@@ -538,7 +537,8 @@ srv_g_lineplot <- function(id,
       iv$add_rule(
         "conf_level",
         shinyvalidate::sv_between(
-          0, 1, message_fmt = "Please choose a confidence level between 0 and 1", inclusive = c(FALSE, FALSE)
+          0, 1,
+          message_fmt = "Please choose a confidence level between 0 and 1", inclusive = c(FALSE, FALSE)
         )
       )
       iv$add_rule("interval", shinyvalidate::sv_required("Please select an interval for the midpoint statistic"))

@@ -424,14 +424,14 @@ srv_summary <- function(id,
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
       datasets = data,
       select_validation_rule = list(
         arm_var = shinyvalidate::sv_required("Please select a treatment variable"),
-        summarize_vars = ~ if (length(.) != 1 && length(.) != 2)
+        summarize_vars = ~ if (length(.) != 1 && length(.) != 2) {
           "Please select 1 or 2 summary variables"
+        }
       )
     )
 

@@ -491,12 +491,12 @@ srv_t_exposure <- function(id,
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-
     rule_intersection <- function(other) {
       function(value) {
         others <- selector_list()[[other]]()$select
-        if (length(intersect(value, others)) > 0L)
+        if (length(intersect(value, others)) > 0L) {
           "Column by and row by variables should not be the same."
+        }
       }
     }
 

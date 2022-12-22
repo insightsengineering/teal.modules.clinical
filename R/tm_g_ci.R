@@ -377,7 +377,6 @@ srv_g_ci <- function(id, # nolint
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(x_var = x_var, y_var = y_var, color = color),
       datasets = data,
@@ -386,8 +385,8 @@ srv_g_ci <- function(id, # nolint
         y_var = shinyvalidate::sv_required("Select an analysis value (y axis)")
       ),
       filter_validation_rule = list(
-         y_var = shinyvalidate::sv_required(message = "Please select the filters.")
-       )
+        y_var = shinyvalidate::sv_required(message = "Please select the filters.")
+      )
     )
 
     iv_r <- reactive({

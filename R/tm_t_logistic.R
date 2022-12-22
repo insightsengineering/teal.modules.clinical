@@ -477,7 +477,8 @@ srv_t_logistic <- function(id,
         arm_var = arm_var,
         paramcd = paramcd,
         avalc_var = avalc_var,
-        cov_var = cov_var),
+        cov_var = cov_var
+      ),
       datasets = data,
       select_validation_rule = list(
         arm_var = shinyvalidate::sv_required("Treatment Variable is empty"),
@@ -494,20 +495,29 @@ srv_t_logistic <- function(id,
       iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
       iv$add_rule("conf_level", shinyvalidate::sv_between(
-        0, 1, message_fmt = "Confdence level must be between {left} and {right}."))
+        0, 1,
+        message_fmt = "Confdence level must be between {left} and {right}."
+      ))
       iv$add_validator(iv_arco)
       # Conditional validator for interaction values.
       iv_int <- shinyvalidate::InputValidator$new()
       iv_int$condition(~ length(input$interaction_var) > 0L &&
-                         is.numeric(merged$anl_q()[["ANL"]][[input$interaction_var]]))
+        is.numeric(merged$anl_q()[["ANL"]][[input$interaction_var]]))
       iv_int$add_rule("interaction_values", shinyvalidate::sv_required(
-        "If interaction is specified the level should be entered."))
-      iv_int$add_rule("interaction_values",
-                      ~ if (anyNA(as_numeric_from_comma_sep_str(.)))
-                        "Interaction levels are invalid.")
-      iv_int$add_rule("interaction_values",
-                      ~ if (any(duplicated(as_numeric_from_comma_sep_str(.))))
-                        "Interaction levels must be unique.")
+        "If interaction is specified the level should be entered."
+      ))
+      iv_int$add_rule(
+        "interaction_values",
+        ~ if (anyNA(as_numeric_from_comma_sep_str(.))) {
+          "Interaction levels are invalid."
+        }
+      )
+      iv_int$add_rule(
+        "interaction_values",
+        ~ if (any(duplicated(as_numeric_from_comma_sep_str(.)))) {
+          "Interaction levels must be unique."
+        }
+      )
       iv$add_validator(iv_int)
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })

@@ -729,7 +729,9 @@ srv_ancova <- function(id,
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
       iv$add_rule("conf_level", shinyvalidate::sv_between(
-        0, 1, message_fmt = "Confdence level must be between {left} and {right}."))
+        0, 1,
+        message_fmt = "Confdence level must be between {left} and {right}."
+      ))
       iv$add_validator(iv_arco)
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })

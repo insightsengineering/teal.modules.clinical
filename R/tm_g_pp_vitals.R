@@ -416,20 +416,25 @@ srv_g_vitals <- function(id,
       datasets = data,
       select_validation_rule = list(
         paramcd = shinyvalidate::sv_required(
-          "Please select PARAMCD variable."),
+          "Please select PARAMCD variable."
+        ),
         xaxis = shinyvalidate::sv_required(
-          "Please select Vitals x-axis variable."),
+          "Please select Vitals x-axis variable."
+        ),
         aval = shinyvalidate::sv_required(
-          "Please select AVAL variable.")
+          "Please select AVAL variable."
+        )
       )
     )
 
     iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required(
-        "Please select a patient."))
+        "Please select a patient."
+      ))
       iv$add_rule("paramcd_levels_vals", shinyvalidate::sv_required(
-        "Please select PARAMCD variable levels."))
+        "Please select PARAMCD variable levels."
+      ))
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 

@@ -48,8 +48,7 @@
 #'   )
 #' )
 #'
-#' server = function(input, output, session) {
-#'
+#' server <- function(input, output, session) {
 #'   iv_arm_ref <- teal.modules.clinical:::arm_ref_comp_observer(
 #'     session,
 #'     input,
@@ -83,7 +82,6 @@ arm_ref_comp_observer <- function(session,
                                   on_off = shiny::reactive(TRUE),
                                   input_id = "buckets",
                                   output_id = "arms_buckets") {
-
   iv <- shinyvalidate::InputValidator$new()
   iv1 <- shinyvalidate::InputValidator$new()
   iv2 <- shinyvalidate::InputValidator$new()

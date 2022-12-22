@@ -920,7 +920,8 @@ srv_mmrm <- function(id,
       iv$add_rule(
         "conf_level",
         shinyvalidate::sv_between(
-          0, 1, message_fmt = "Please choose a confidence level between 0 and 1"
+          0, 1,
+          message_fmt = "Please choose a confidence level between 0 and 1"
         )
       )
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -1218,7 +1219,6 @@ srv_mmrm <- function(id,
         split(anl_data, anl_data[[input_visit_var]]),
         levels(anl_data[[input_visit_var]])
       )
-
     })
 
     # Connector:

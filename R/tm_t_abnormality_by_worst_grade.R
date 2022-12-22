@@ -483,7 +483,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -566,15 +565,19 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
             all(as.character(unique(merged$anl_q()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
             "All grade values should be within -4:4 range."
           ),
-          shiny::need(is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]),
-                      "Grade variable should be a factor.")
+          shiny::need(
+            is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]),
+            "Grade variable should be a factor."
+          )
         )
       }
 
       if (length(input_atoxgr) > 0) {
         shiny::validate(
-          shiny::need(is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]),
-                      "Treatment variable should be a factor."),
+          shiny::need(
+            is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]),
+            "Treatment variable should be a factor."
+          ),
         )
       }
 

@@ -474,7 +474,6 @@ srv_g_ipp <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     selector_list <- teal.transform::data_extract_multiple_srv(
       datasets = data,
       data_extract = list(

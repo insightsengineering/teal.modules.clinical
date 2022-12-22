@@ -639,17 +639,19 @@ srv_t_events_byterm <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt),
       datasets = data,
       select_validation_rule = list(
-        arm_var = ~ if (length(.) != 1 && length(.) != 2)
-          "Please select 1 or 2 treatment variable values",
-        hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0)
-          "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.",
-        llt = ~ if (length(selector_list()$hlt()$select) + length(.) == 0)
+        arm_var = ~ if (length(.) != 1 && length(.) != 2) {
+          "Please select 1 or 2 treatment variable values"
+        },
+        hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0) {
           "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+        },
+        llt = ~ if (length(selector_list()$hlt()$select) + length(.) == 0) {
+          "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+        }
       )
     )
 

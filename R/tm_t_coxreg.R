@@ -821,8 +821,9 @@ srv_t_coxreg <- function(id,
       # the correct label is shown - if this is not done
       # then the last value of "val" is the label for all cases
       v <- val
-      ~ if (anyNA(as_numeric_from_comma_sep_str(.)))
+      ~ if (anyNA(as_numeric_from_comma_sep_str(.))) {
         paste("Numeric interaction level(s) should be specified for", v)
+      }
     }
 
 

@@ -536,7 +536,6 @@ srv_t_smq <- function(id,
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         scopes = scopes,
@@ -549,7 +548,7 @@ srv_t_smq <- function(id,
       select_validation_rule = list(
         scopes = shinyvalidate::sv_required("A scope variable is required"),
         llt = shinyvalidate::sv_required("A low level term variable is required"),
-        arm_var =  shinyvalidate::compose_rules(
+        arm_var = shinyvalidate::compose_rules(
           shinyvalidate::sv_required("At least one treatment variable is required"),
           ~ if (length(.) > 2) "Please select not more than two treatment variables"
         ),

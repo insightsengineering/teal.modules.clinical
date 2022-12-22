@@ -499,7 +499,6 @@ srv_t_abnormality <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -512,24 +511,31 @@ srv_t_abnormality <- function(id,
       datasets = data,
       select_validation_rule = list(
         arm_var = shinyvalidate::sv_required(
-          "Please select a treatment variable."),
+          "Please select a treatment variable."
+        ),
         by_vars = shinyvalidate::sv_required(
-          "Please select a Row By Variable."),
+          "Please select a Row By Variable."
+        ),
         id_var = shinyvalidate::sv_required(
-          "Please select a subject identifier."),
+          "Please select a subject identifier."
+        ),
         grade = shinyvalidate::sv_required(
-          "Please select a grade variable."),
+          "Please select a grade variable."
+        ),
         baseline_var = shinyvalidate::sv_required(
-          "Please select a baseline grade variable."),
+          "Please select a baseline grade variable."
+        ),
         treatment_flag_var = shinyvalidate::sv_required(
-          "Please select indicator value for on treatment records.")
+          "Please select indicator value for on treatment records."
+        )
       )
     )
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("treatment_flag", shinyvalidate::sv_required(
-        "Please select indicator value for on treatment records."))
+        "Please select indicator value for on treatment records."
+      ))
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 

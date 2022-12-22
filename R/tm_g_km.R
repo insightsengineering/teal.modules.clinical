@@ -675,22 +675,23 @@ srv_g_km <- function(id,
       iv$add_rule(
         "conf_level",
         shinyvalidate::sv_between(
-          0, 1, inclusive = c(FALSE, FALSE),
+          0, 1,
+          inclusive = c(FALSE, FALSE),
           message_fmt = "Please choose a confidence level between 0 and 1"
         )
       )
       iv$add_rule("xticks", shinyvalidate::sv_optional())
-       iv$add_rule(
-         "xticks",
-         function(value) {
-           val <- as_numeric_from_comma_sep_str(value, split_char = ";")
-           if (anyNA(val) || any(val < 0)) {
-             "All break intervals for x-axis must be non-negative numbers"
-           } else if (all(val == 0)) {
-             "Not all break intervals for x-axis can be 0"
-           }
-         }
-       )
+      iv$add_rule(
+        "xticks",
+        function(value) {
+          val <- as_numeric_from_comma_sep_str(value, split_char = ";")
+          if (anyNA(val) || any(val < 0)) {
+            "All break intervals for x-axis must be non-negative numbers"
+          } else if (all(val == 0)) {
+            "Not all break intervals for x-axis can be 0"
+          }
+        }
+      )
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
