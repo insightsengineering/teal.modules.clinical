@@ -486,7 +486,7 @@ srv_g_barchart_simple <- function(id,
     # get grouping variables
     # NULL: not present in UI, vs character(0): no selection
     ## helper function
-    resolve_argument <- function(x){
+    resolve_argument <- function(x) {
       ans <- if (is.null(x)) NULL else selector_list()[[deparse(substitute(x))]]()$select
       if (identical(ans, character(0L))) NULL else ans
     }
