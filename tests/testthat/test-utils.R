@@ -424,4 +424,3 @@ testthat::test_that("as_numeric_from_comma_sep_str respects sep argument", {
   testthat::expect_equal(as_numeric_from_comma_sep_str("3,4,5", sep = ";"), as.numeric(NA))
   testthat::expect_equal(as_numeric_from_comma_sep_str("3 %% 4   %% 154.32", sep = "%%"), c(3, 4, 154.32))
 })
-

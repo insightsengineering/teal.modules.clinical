@@ -1451,7 +1451,8 @@ srv_mmrm <- function(id,
         }
       }
       currnt_state <- !state_has_changed()
-      what_to_return <- if (input$button_start > shiny::isolate(state$button_start)) {
+      what_to_return <-
+      if (input$button_start > shiny::isolate(state$button_start)) {
         state$button_start <- input$button_start
         state$optimizer <- result
         result
