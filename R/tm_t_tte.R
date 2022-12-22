@@ -754,7 +754,7 @@ srv_t_tte <- function(id,
       )
     )
 
-    output$helptext_ui <- renderUI({
+    output$helptext_ui <- shiny::renderUI({
       shiny::req(selector_list()$arm_var()$select)
       shiny::helpText("Multiple reference groups are automatically combined into a single group.")
     })

@@ -354,7 +354,7 @@ ui_gee <- function(id, ...) {
         selected = "t_gee_lsmeans"
       )
     ),
-    forms = shny::tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
