@@ -790,7 +790,7 @@ ui_t_events_summary <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -845,7 +845,7 @@ srv_t_events_summary <- function(id,
       )
     )
 
-    iv_r <- reactive({
+    iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
@@ -864,7 +864,7 @@ srv_t_events_summary <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -984,14 +984,14 @@ srv_t_events_summary <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
       title = label
     )
 

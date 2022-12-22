@@ -352,7 +352,7 @@ ui_g_ci <- function(id, ...) { # nolint
         selected = args$stat
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
@@ -389,7 +389,7 @@ srv_g_ci <- function(id, # nolint
       )
     )
 
-    iv_r <- reactive({
+    iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
@@ -405,7 +405,7 @@ srv_g_ci <- function(id, # nolint
       selector_list = selector_list
     )
 
-    anl_q <- reactive(
+    anl_q <- shiny::reactive(
       teal.code::eval_code(
         object = teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)),
         code = as.expression(anl_inputs()$expr)
@@ -465,14 +465,14 @@ srv_g_ci <- function(id, # nolint
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

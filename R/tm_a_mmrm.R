@@ -803,7 +803,7 @@ ui_mmrm <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
@@ -909,11 +909,11 @@ srv_mmrm <- function(id,
 
     # selector_list includes cov_var as it is needed for validation rules
     # but it is not needed for the merge so it is removed here
-    selector_list_without_cov <- reactive({
+    selector_list_without_cov <- shiny::reactive({
       selector_list()[names(selector_list()) != "cov_var"]
     })
 
-    iv_r <- reactive({
+    iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_validator(arm_ref_comp_iv)
       iv$add_rule("conf_level", shinyvalidate::sv_required("'Confidence Level' field is not selected"))
@@ -941,7 +941,7 @@ srv_mmrm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       qenv2 <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
       teal.code::eval_code(qenv2, as.expression(adsl_merge_inputs()$expr))
@@ -1399,7 +1399,7 @@ srv_mmrm <- function(id,
 
     all_q <- shiny::reactive({
       if (!is.null(plot_q()) && !is.null(table_q())) {
-        join(plot_q(), table_q())
+        teal.code::join(plot_q(), table_q())
       } else if (!is.null(plot_q())) {
         plot_q()
       } else {
@@ -1441,7 +1441,7 @@ srv_mmrm <- function(id,
     # Optimizer that was selected.
     output$optimizer_selected <- shiny::renderText({
       # First reassign reactive sources:
-      req(iv_r()$is_valid())
+      shiny::req(iv_r()$is_valid())
       fit_stack <- try(mmrm_fit(), silent = TRUE)
       result <- if (!inherits(fit_stack, "try-error")) {
         fit <- fit_stack[["fit"]]
@@ -1467,15 +1467,15 @@ srv_mmrm <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(disable_r_code() || is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(disable_r_code() || is.null(teal.code::get_warnings(all_q())))
     )
 
     # Show R code once button is pressed.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       disabled = disable_r_code,
       title = "R Code for the Current MMRM Analysis"
     )

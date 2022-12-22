@@ -354,7 +354,7 @@ ui_gee <- function(id, ...) {
         selected = "t_gee_lsmeans"
       )
     ),
-    forms = tagList(
+    forms = shny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -442,7 +442,7 @@ srv_gee <- function(id,
       )
     )
 
-    iv_r <- reactive({
+    iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
       iv$add_rule(
@@ -471,7 +471,7 @@ srv_gee <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -501,7 +501,7 @@ srv_gee <- function(id,
       col_source <- merged$anl_input_r()$columns_source
       filter_info <- merged$anl_input_r()$filter_info
 
-      req(output_table)
+      shiny::req(output_table)
 
       basic_table_args$subtitles <- paste0(
         "Analysis Variable: ", col_source$aval_var,
@@ -552,15 +552,15 @@ srv_gee <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
       title = label
     )
 

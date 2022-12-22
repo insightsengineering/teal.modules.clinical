@@ -446,7 +446,7 @@ ui_g_forest_rsp <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
@@ -505,7 +505,7 @@ srv_g_forest_rsp <- function(id,
       filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
     )
 
-    iv_r <- reactive({
+    iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
       iv$add_rule(
@@ -531,7 +531,7 @@ srv_g_forest_rsp <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
       teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
@@ -543,7 +543,7 @@ srv_g_forest_rsp <- function(id,
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
       ),
       handlerExpr = {
-        req(anl_q())
+        shiny::req(anl_q())
         anl <- anl_q()[["ANL"]]
         aval_var <- anl_inputs()$columns_source$aval_var
         paramcd_level <- unlist(anl_inputs()$filter_info$paramcd[[1]]$selected)
@@ -587,7 +587,7 @@ srv_g_forest_rsp <- function(id,
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
       teal::validate_inputs(iv_r())
-      req(anl_q())
+      shiny::req(anl_q())
       qenv <- anl_q()
       adsl_filtered <- qenv[[parentname]]
       anl_filtered <- qenv[[dataname]]
@@ -701,7 +701,7 @@ srv_g_forest_rsp <- function(id,
       teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
-    plot_r <- reactive(all_q()[["p"]])
+    plot_r <- shiny::reactive(all_q()[["p"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -712,14 +712,14 @@ srv_g_forest_rsp <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

@@ -687,7 +687,7 @@ ui_t_tte <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -755,11 +755,11 @@ srv_t_tte <- function(id,
     )
 
     output$helptext_ui <- renderUI({
-      req(selector_list()$arm_var()$select)
+      shiny::req(selector_list()$arm_var()$select)
       shiny::helpText("Multiple reference groups are automatically combined into a single group.")
     })
 
-    iv_r <- reactive({
+    iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
 
       if (isTRUE(input$compare_arms)) {
@@ -801,7 +801,7 @@ srv_t_tte <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       qenv1 <- teal.code::eval_code(qenv, as.expression(anl_merge_inputs()$expr))
       teal.code::eval_code(qenv1, as.expression(adsl_merge_inputs()$expr))
@@ -911,14 +911,14 @@ srv_t_tte <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 
