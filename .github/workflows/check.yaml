@@ -26,7 +26,7 @@ jobs:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
   coverage:
     name: Coverage 📔
-    uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
+    uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@handle-covr-type-change
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
   linter:
