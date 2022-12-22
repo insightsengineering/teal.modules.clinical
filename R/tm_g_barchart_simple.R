@@ -432,7 +432,7 @@ srv_g_barchart_simple <- function(id,
     all_q <- shiny::reactive({
       teal::validate_inputs(iv_r())
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
-      ANL <- count_q()[["ANL"]]
+      ANL <- count_q()[["ANL"]] # nolint
 
       qenv2 <- teal.code::eval_code(count_q(), substitute(
         env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
