@@ -690,7 +690,7 @@ srv_g_km <- function(id,
         function(value) {
           val <- as_numeric_from_comma_sep_str(value, sep = ";")
           if (anyNA(val) || any(val < 0)) {
-            "All break intervals for x-axis must be non-negative numbers"
+            "All break intervals for x-axis must be non-negative numbers separated by semicolons"
           } else if (all(val == 0)) {
             "At least one break interval for x-axis must be > 0"
           }
