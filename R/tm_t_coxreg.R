@@ -767,7 +767,7 @@ srv_t_coxreg <- function(id,
     )
 
     use_interactions <- shiny::reactive({
-      input$type == "Univariate" && !is.null(input$interactions) && input$interactions
+      input$type == "Univariate" && isTRUE(input$interactions)
     })
 
     overlap_rule <- function(other_var, var_name) {
