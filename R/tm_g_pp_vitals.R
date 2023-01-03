@@ -260,7 +260,6 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
-  checkmate::assert_multi_class(param, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(aval, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(xaxis, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
 
