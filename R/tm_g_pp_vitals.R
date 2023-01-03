@@ -180,8 +180,6 @@ template_vitals <- function(dataname = "ANL",
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' \code{PARAMCD} column of the ADVS dataset.
-#' @param param ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{PARAM} column of the ADVS dataset.
 #' @param aval ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' \code{AVAL} column of the ADVS dataset.
 #' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
@@ -216,10 +214,6 @@ template_vitals <- function(dataname = "ANL",
 #'         choices = variable_choices(ADVS, "PARAMCD"),
 #'         selected = "PARAMCD"
 #'       ),
-#'       param = choices_selected(
-#'         choices = variable_choices(ADVS, "PARAM"),
-#'         selected = "PARAM"
-#'       ),
 #'       xaxis = choices_selected(
 #'         choices = variable_choices(ADVS, "ADY"),
 #'         selected = "ADY"
@@ -240,7 +234,6 @@ tm_g_pp_vitals <- function(label,
                            parentname = "ADSL",
                            patient_col = "USUBJID",
                            paramcd = NULL,
-                           param = NULL,
                            aval = NULL,
                            xaxis = NULL,
                            font_size = c(12L, 12L, 25L),
@@ -274,7 +267,6 @@ tm_g_pp_vitals <- function(label,
   args <- as.list(environment())
   data_extract_list <- list(
     paramcd = `if`(is.null(paramcd), NULL, cs_to_des_select(paramcd, dataname = dataname)),
-    param = `if`(is.null(param), NULL, cs_to_des_select(param, dataname = dataname)),
     aval = `if`(is.null(aval), NULL, cs_to_des_select(aval, dataname = dataname)),
     xaxis = `if`(is.null(xaxis), NULL, cs_to_des_select(xaxis, dataname = dataname))
   )
@@ -304,7 +296,6 @@ ui_g_vitals <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     ui_args$paramcd,
-    ui_args$param,
     ui_args$aval,
     ui_args$xaxis
   )
@@ -317,7 +308,7 @@ ui_g_vitals <- function(id, ...) {
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
-      teal.transform::datanames_input(ui_args[c("paramcd", "param", "aval", "xaxis")]),
+      teal.transform::datanames_input(ui_args[c("paramcd", "aval", "xaxis")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
@@ -370,7 +361,6 @@ srv_g_vitals <- function(id,
                          parentname,
                          patient_col,
                          paramcd,
-                         param,
                          aval,
                          xaxis,
                          plot_height,
