@@ -327,7 +327,10 @@ srv_g_barchart_simple <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     rule_dupl <- function(others) {
       function(value) {
-        othervals <- lapply(others, function(x) selector_list()[[x]]()$select)
+        othervals <- lapply(
+          Filter(Negate(is.null), selector_list()[others]), # some selectors could be ommited in tm_g_barchart_simple
+          function(x) x()$select
+        )
         vars <- c(value, unlist(othervals))
         dups <- unique(vars[duplicated(vars)])
         if (value %in% dups) {
@@ -461,10 +464,10 @@ srv_g_barchart_simple <- function(id,
 
       plot_call <- make_barchart_simple_call(
         y_name = get_n_name(groupby_vars),
-        x_name = groupby_vars$x_name,
-        fill_name = groupby_vars$fill_name,
-        x_facet_name = groupby_vars$x_facet_name,
-        y_facet_name = groupby_vars$y_facet_name,
+        x_name = groupby_vars$x,
+        fill_name = groupby_vars$fill,
+        x_facet_name = groupby_vars$x_facet,
+        y_facet_name = groupby_vars$y_facet,
         label_bars = input$label_bars,
         barlayout = input$barlayout,
         flip_axis = input$flip_axis,
@@ -492,17 +495,15 @@ srv_g_barchart_simple <- function(id,
     # get grouping variables
     # NULL: not present in UI, vs character(0): no selection
     ## helper function
-    resolve_argument <- function(x) {
-      ans <- if (is.null(x)) NULL else selector_list()[[deparse(substitute(x))]]()$select
-      if (identical(ans, character(0L))) NULL else ans
-    }
     ## returns named vector of non-NULL variables to group by
     r_groupby_vars <- function() {
-      c(
-        x_name = resolve_argument(x),
-        fill_name = resolve_argument(fill),
-        x_facet_name = resolve_argument(x_facet),
-        y_facet_name = resolve_argument(y_facet)
+      unlist(
+        lapply(
+          selector_list(),
+          function(selector) {
+            if (is.null(selector)) character(0L) else selector()$select
+          }
+        )
       )
     }
 
