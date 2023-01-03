@@ -765,7 +765,6 @@ srv_g_km <- function(id,
       input_xticks <- if (!is.null(input$xticks)) {
         as_numeric_from_comma_sep_str(input$xticks, sep = ";")
       }
-      }
 
       input_paramcd <- as.character(unique(anl[[as.vector(anl_m$columns_source$paramcd)]]))
       title <- paste("KM Plot of", input_paramcd)
