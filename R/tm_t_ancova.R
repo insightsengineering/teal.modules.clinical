@@ -608,11 +608,7 @@ ui_ancova <- function(id, ...) {
           "when more than one value is selected."
         )
       ),
-      shiny::conditionalPanel(
-        condition = "input['arm_var-dataset_ADSL_singleextract-select'].length != 0",
-        ns = ns,
-        shiny::helpText("Multiple reference groups are automatically combined into a single group.")
-      ),
+      shiny::uiOutput(ns("helptext_ui")),
       shiny::checkboxInput(
         ns("combine_comp_arms"),
         "Combine all comparison groups?",
@@ -761,6 +757,12 @@ srv_ancova <- function(id,
       adsl_input_r = adsl_inputs,
       anl_q = anl_q
     )
+
+    output$helptext_ui <- shiny::renderUI({
+      if (length(selector_list()$arm_var()$select) != 0) {
+        shiny::helpText("Multiple reference groups are automatically combined into a single group.")
+      }
+    })
 
     # Event handler:
     # Update interact_y choices to all levels of selected interact_var
