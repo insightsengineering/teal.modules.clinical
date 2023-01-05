@@ -397,7 +397,7 @@ ui_summary <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -424,10 +424,27 @@ srv_summary <- function(id,
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
+    selector_list <- teal.transform::data_extract_multiple_srv(
+      data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
+      datasets = data,
+      select_validation_rule = list(
+        summarize_vars = shinyvalidate::sv_required("Please select a summarize variable"),
+        arm_var = ~ if (length(.) != 1 && length(.) != 2) {
+          "Please select 1 or 2 column variables"
+        }
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
       id = "anl_merge",
       datasets = data,
-      data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
+      selector_list = selector_list,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
@@ -435,12 +452,12 @@ srv_summary <- function(id,
     adsl_inputs <- teal.transform::merge_expression_module(
       id = "adsl_merge",
       datasets = data,
-      join_keys = get_join_keys(data),
       data_extract = list(arm_var = arm_var),
+      join_keys = get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -471,6 +488,7 @@ srv_summary <- function(id,
 
     # validate inputs
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
       anl <- merged$anl_q()[["ANL"]]
@@ -488,24 +506,18 @@ srv_summary <- function(id,
             "i.e. USUBJID is different in each row"
           )
         ),
-        shiny::need(input_arm_var, "Please select a treatment variable"),
-        shiny::need(input_summarize_vars, "Please select a summarize variable"),
         shiny::need(
           !any(vapply(anl_filtered[, input_summarize_vars], inherits, c("Date", "POSIXt"),
             FUN.VALUE = logical(1)
           )),
           "Date and POSIXt variables are not supported, please select other variables"
         ),
-        shiny::need(length(input_arm_var) <= 2, "Please limit column variables within two"),
         if (length(input_arm_var) == 2) {
           shiny::need(
-            is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
-              "", NA
-            )),
+            is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c("", NA)),
             "Please check nested treatment variable which needs to be a factor without NA or empty strings."
           )
-        },
-        shiny::need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
+        }
       )
 
       validate_standard_inputs(
@@ -548,15 +560,15 @@ srv_summary <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

@@ -48,6 +48,7 @@ Imports:
     scales,
     shiny,
     shinyjs,
+    shinyvalidate,
     shinyWidgets,
     stats,
     styler,

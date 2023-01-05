@@ -387,7 +387,7 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -417,17 +417,41 @@ srv_shift_by_arm_by_worst <- function(id,
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
-        paramcd = paramcd,
+        treatment_flag_var = treatment_flag_var,
         worst_flag_var = worst_flag_var,
         aval_var = aval_var,
         base_var = base_var,
-        treatment_flag_var = treatment_flag_var
+        paramcd = paramcd
       ),
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = shinyvalidate::sv_required("A treatment variable is required"),
+        treatment_flag_var = shinyvalidate::sv_required("A treatment flag variable is required"),
+        worst_flag_var = shinyvalidate::sv_required("A worst flag variable is required"),
+        aval_var = shinyvalidate::sv_required("An analysis range indicator required"),
+        base_var = shinyvalidate::sv_required("A baseline reference range indicator is required")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("An endpoint is required")
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule(
+        "treatment_flag",
+        shinyvalidate::sv_required("An indicator value for on treatment records is required")
+      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
+      join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
@@ -438,7 +462,7 @@ srv_shift_by_arm_by_worst <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -452,17 +476,16 @@ srv_shift_by_arm_by_worst <- function(id,
 
     # validate inputs
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_aval_var <- names(merged$anl_input_r()$columns_source$aval_var)
       input_base_var <- names(merged$anl_input_r()$columns_source$base_var)
-      input_treatment_flag_var <- names(merged$anl_input_r()$columns_source$treatment_flag_var)
-      input_worst_flag_var <- names(merged$anl_input_r()$columns_source$worst_flag_var)
 
       shiny::validate(
-        shiny::need(input_arm_var, "Please select a treatment variable"),
         shiny::need(
           nrow(merged$anl_q()[["ANL"]]) > 0,
           paste0(
@@ -470,9 +493,6 @@ srv_shift_by_arm_by_worst <- function(id,
             "endpoint parameter and analysis visit are selected."
           )
         ),
-        shiny::need(input_treatment_flag_var, "Please select an on treatment flag variable."),
-        shiny::need(input$treatment_flag, "Please select indicator value for on treatment records."),
-        shiny::need(input_worst_flag_var, "Please select a worst flag variable."),
         shiny::need(
           length(unique(merged$anl_q()[["ANL"]][[input_aval_var]])) < 50,
           paste(
@@ -532,15 +552,15 @@ srv_shift_by_arm_by_worst <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

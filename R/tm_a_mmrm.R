@@ -803,7 +803,7 @@ ui_mmrm <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
@@ -858,16 +858,78 @@ srv_mmrm <- function(id,
       )
     })
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    arm_ref_comp_iv <- arm_ref_comp_observer(
+      session,
+      input,
+      output,
+      id_arm_var = extract_input("arm_var", parentname), # From UI.
+      data = data[[parentname]],
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_mmrm"
+    )
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
         id_var = id_var,
         visit_var = visit_var,
         split_covariates = split_covariates,
+        cov_var = cov_var, # only needed for validation see selector_list_without_cov reactive
         aval_var = aval_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("'Analysis Variable' field is not selected"),
+        visit_var = shinyvalidate::sv_required("'Visit Variable' field is not selected"),
+        arm_var = shinyvalidate::sv_required("'Treatment Variable' field is not selected"),
+        id_var = shinyvalidate::sv_required("'Subject Identifier' field is not selected"),
+        # validation on cov_var
+        cov_var = function(value) {
+          if (length(selector_list()$visit_var()$select) == 0) {
+            return(NULL)
+          }
+          if ("BASE:AVISIT" %in% value && selector_list()$visit_var()$select == "AVISITN") {
+            paste(
+              "'BASE:AVISIT' is not a valid covariate when 'AVISITN' is selected as visit variable.",
+              "Please deselect 'BASE:AVISIT' as a covariate or change visit variable to 'AVISIT'."
+            )
+          } else if ("BASE:AVISITN" %in% value && selector_list()$visit_var()$select == "AVISIT") {
+            paste(
+              "'BASE:AVISITN' is not a valid covariate when 'AVISIT' is selected as visit variable.",
+              "Please deselect 'BASE:AVISITN' as a covariate or change visit variable to 'AVISITN'."
+            )
+          }
+        }
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("'Select Endpoint' field is not selected")
+      )
+    )
+
+    # selector_list includes cov_var as it is needed for validation rules
+    # but it is not needed for the merge so it is removed here
+    selector_list_without_cov <- shiny::reactive({
+      selector_list()[names(selector_list()) != "cov_var"]
+    })
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_validator(arm_ref_comp_iv)
+      iv$add_rule("conf_level", shinyvalidate::sv_required("'Confidence Level' field is not selected"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(
+          0, 1,
+          message_fmt = "Confidence level must be between 0 and 1"
+        )
+      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list_without_cov,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
@@ -879,7 +941,7 @@ srv_mmrm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       qenv2 <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
       teal.code::eval_code(qenv2, as.expression(adsl_merge_inputs()$expr))
@@ -928,16 +990,6 @@ srv_mmrm <- function(id,
         shinyjs::show("combine_comp_arms")
       }
     })
-
-    arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = extract_input("arm_var", parentname), # From UI.
-      data = data[[parentname]],
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_mmrm"
-    )
 
     # Event handler:
     # Show either the plot or the table output.
@@ -1035,7 +1087,7 @@ srv_mmrm <- function(id,
     mmrm_inputs_reactive <- shiny::reactive({
       shinyjs::disable("button_start")
       disable_r_code(TRUE)
-
+      teal::validate_inputs(iv_r())
       encoding_inputs <- lapply(
         sync_inputs,
         function(x) {
@@ -1051,35 +1103,8 @@ srv_mmrm <- function(id,
       adsl_filtered <- anl_q()[["ADSL"]]
       anl_filtered <- anl_q()[[dataname]]
 
-      shiny::validate(
-        shiny::need(
-          encoding_inputs[[extract_input("aval_var", dataname)]], "`Analysis Variable` field is not selected"
-        ),
-        shiny::need(
-          encoding_inputs[[extract_input("paramcd", dataname, filter = TRUE)]],
-          "`Select Endpoint` field is not selected"
-        ),
-        shiny::need(encoding_inputs[[extract_input("visit_var", dataname)]], "`Visit Variable` field is not selected"),
-        shiny::need(encoding_inputs[[extract_input("id_var", dataname)]], "`Subject Identifier` field is not selected"),
-        shiny::need(encoding_inputs[["conf_level"]], "`Confidence Level` field is not selected"),
-        shiny::need(nrow(adsl_filtered) > 1 && nrow(anl_filtered) > 1, "Filtered data has zero rows"),
-        shiny::need(
-          !("BASE:AVISIT" %in% encoding_inputs[[extract_input("cov_var", dataname)]] &
-            encoding_inputs[[extract_input("visit_var", dataname)]] != "AVISIT"),
-          paste(
-            "`BASE:AVISIT` is not a valid covariate when `AVISITN` is selected as visit variable.",
-            "Please deselect `BASE:AVISIT` as a covariate or change visit variable to `AVISIT`."
-          )
-        ),
-        shiny::need(
-          !("BASE:AVISITN" %in% encoding_inputs[[extract_input("cov_var", dataname)]] &
-            encoding_inputs[[extract_input("visit_var", dataname)]] != "AVISITN"),
-          paste(
-            "`BASE:AVISITN` is not a valid covariate when `AVISIT` is selected as visit variable.",
-            "Please deselect `BASE:AVISITN` as a covariate or change visit variable to `AVISITN`."
-          )
-        )
-      )
+      teal::validate_has_data(adsl_filtered, min_nrow = 1)
+      teal::validate_has_data(anl_filtered, min_nrow = 1)
       validate_checks()
       c(list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered), encoding_inputs)
     })
@@ -1193,11 +1218,6 @@ srv_mmrm <- function(id,
         split(anl_data, anl_data[[input_visit_var]]),
         levels(anl_data[[input_visit_var]])
       )
-
-      shiny::validate(shiny::need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
     })
 
     # Connector:
@@ -1379,7 +1399,7 @@ srv_mmrm <- function(id,
 
     all_q <- shiny::reactive({
       if (!is.null(plot_q()) && !is.null(table_q())) {
-        join(plot_q(), table_q())
+        teal.code::join(plot_q(), table_q())
       } else if (!is.null(plot_q())) {
         plot_q()
       } else {
@@ -1421,6 +1441,7 @@ srv_mmrm <- function(id,
     # Optimizer that was selected.
     output$optimizer_selected <- shiny::renderText({
       # First reassign reactive sources:
+      shiny::req(iv_r()$is_valid())
       fit_stack <- try(mmrm_fit(), silent = TRUE)
       result <- if (!inherits(fit_stack, "try-error")) {
         fit <- fit_stack[["fit"]]
@@ -1430,30 +1451,31 @@ srv_mmrm <- function(id,
         }
       }
       currnt_state <- !state_has_changed()
-      what_to_return <- if (input$button_start > shiny::isolate(state$button_start)) {
-        state$button_start <- input$button_start
-        state$optimizer <- result
-        result
-      } else if (currnt_state) {
-        shiny::isolate(state$optimizer)
-      } else {
-        NULL
-      }
+      what_to_return <-
+        if (input$button_start > shiny::isolate(state$button_start)) {
+          state$button_start <- input$button_start
+          state$optimizer <- result
+          result
+        } else if (currnt_state) {
+          shiny::isolate(state$optimizer)
+        } else {
+          NULL
+        }
 
       return(what_to_return)
     })
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(disable_r_code() || is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(disable_r_code() || is.null(teal.code::get_warnings(all_q())))
     )
 
     # Show R code once button is pressed.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       disabled = disable_r_code,
       title = "R Code for the Current MMRM Analysis"
     )

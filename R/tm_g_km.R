@@ -597,7 +597,7 @@ ui_g_km <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -634,7 +634,7 @@ srv_g_km <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
-    arm_ref_comp_observer(
+    iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
       output,
@@ -645,8 +645,7 @@ srv_g_km <- function(id,
       on_off = shiny::reactive(input$compare_arms)
     )
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         aval_var = aval_var,
         cnsr_var = cnsr_var,
@@ -656,11 +655,58 @@ srv_g_km <- function(id,
         facet_var = facet_var,
         time_unit_var = time_unit_var
       ),
-      merge_function = "dplyr::inner_join",
-      join_keys = get_join_keys(data)
+      datasets = data,
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+        cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
+        arm_var = shinyvalidate::sv_required("A treatment variable is required")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("An endpoint is required")
+      )
     )
 
-    anl_q <- reactive({
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+
+      if (isTRUE(input$compare_arms)) {
+        iv$add_validator(iv_arm_ref)
+      }
+
+      iv$add_rule("font_size", shinyvalidate::sv_required("Plot tables font size must be greater than or equal to 5"))
+      iv$add_rule("font_size", shinyvalidate::sv_gte(5, "Plot tables font size must be greater than or equal to 5"))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(
+          0, 1,
+          inclusive = c(FALSE, FALSE),
+          message_fmt = "Confidence level must be between 0 and 1"
+        )
+      )
+      iv$add_rule("xticks", shinyvalidate::sv_optional())
+      iv$add_rule(
+        "xticks",
+        function(value) {
+          val <- as_numeric_from_comma_sep_str(value, sep = ";")
+          if (anyNA(val) || any(val < 0)) {
+            "All break intervals for x-axis must be non-negative numbers separated by semicolons"
+          } else if (all(val == 0)) {
+            "At least one break interval for x-axis must be > 0"
+          }
+        }
+      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list,
+      merge_function = "dplyr::inner_join"
+    )
+
+    anl_q <- shiny::reactive({
       teal.code::eval_code(
         teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)),
         code = as.expression(anl_inputs()$expr)
@@ -668,6 +714,8 @@ srv_g_km <- function(id,
     })
 
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       qenv <- anl_q()
       adsl_filtered <- qenv[[parentname]]
       anl_filtered <- qenv[[dataname]]
@@ -680,10 +728,6 @@ srv_g_km <- function(id,
       input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
       input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
-      input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-        strsplit(",") %>%
-        unlist() %>%
-        as.numeric()
 
       # validate inputs
       validate_args <- list(
@@ -706,28 +750,6 @@ srv_g_km <- function(id,
       }
       do.call(what = "validate_standard_inputs", validate_args)
 
-      # validate xticks
-      if (length(input_xticks) == 0) {
-        input_xticks <- NULL
-      } else {
-        shiny::validate(shiny::need(all(!is.na(input_xticks)), "Not all values entered were numeric"))
-        shiny::validate(shiny::need(all(input_xticks >= 0), "All break intervals for x-axis must be non-negative"))
-        shiny::validate(shiny::need(any(input_xticks > 0), "At least one break interval for x-axis must be positive"))
-      }
-
-      shiny::validate(shiny::need(
-        input$conf_level > 0 && input$conf_level < 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
-      )
-      shiny::validate(shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
-
-      # validate font size
-      shiny::validate(shiny::need(input$font_size >= 5, "Plot tables font size must be greater than or equal to 5."))
-
       NULL
     })
 
@@ -740,13 +762,8 @@ srv_g_km <- function(id,
       anl <- qenv[["ANL"]] # nolint
       teal::validate_has_data(anl, 2)
 
-      input_xticks <- gsub(";", ",", trimws(input$xticks)) %>%
-        strsplit(",") %>%
-        unlist() %>%
-        as.numeric()
-
-      if (length(input_xticks) == 0) {
-        input_xticks <- NULL
+      input_xticks <- if (!is.null(input$xticks)) {
+        as_numeric_from_comma_sep_str(input$xticks, sep = ";")
       }
 
       input_paramcd <- as.character(unique(anl[[as.vector(anl_m$columns_source$paramcd)]]))
@@ -792,14 +809,14 @@ srv_g_km <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

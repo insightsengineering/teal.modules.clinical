@@ -451,7 +451,7 @@ ui_g_forest_tte <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -484,7 +484,7 @@ srv_g_forest_tte <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
-    arm_ref_comp_observer(
+    iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
       output,
@@ -494,8 +494,7 @@ srv_g_forest_tte <- function(id,
       module = "tm_g_forest_tte"
     )
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -505,7 +504,30 @@ srv_g_forest_tte <- function(id,
         cnsr_var = cnsr_var,
         time_unit_var = time_unit_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+        cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
+        arm_var = shinyvalidate::sv_required("A treatment variable is required")
+      ),
+      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(0, 1, message_fmt = "Confidence level must be between 0 and 1")
+      )
+      iv$add_validator(iv_arm_ref)
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
       join_keys = get_join_keys(data),
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
 
@@ -516,13 +538,14 @@ srv_g_forest_tte <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
       teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
     })
 
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       qenv <- anl_q()
       adsl_filtered <- qenv[[parentname]]
       anl_filtered <- qenv[[dataname]]
@@ -575,20 +598,9 @@ srv_g_forest_tte <- function(id,
       do.call(what = "validate_standard_inputs", validate_args)
 
       shiny::validate(shiny::need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-
-      shiny::validate(shiny::need(
         length(anl[[input_paramcd]]) > 0,
         "Value of the endpoint variable should not be empty."
       ))
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
-      )
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column.")
-      )
 
       NULL
     })
@@ -636,14 +648,14 @@ srv_g_forest_tte <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = "R Code for the Current Time-to-Event Forest Plot"
     )
 

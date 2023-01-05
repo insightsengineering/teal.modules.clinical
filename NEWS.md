@@ -9,6 +9,7 @@
 * Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
 * Added new GEE module `tm_a_gee`.
 * Added interface for selecting an interaction term to `tm_t_ancova`.
+* Updated encodings input checks to use `shinyvalidate::InputValidator` instead of `shiny::validate` for better UI experience.   
 
 ### Miscellaneous
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS. 

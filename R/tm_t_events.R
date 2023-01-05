@@ -611,7 +611,7 @@ ui_t_events_byterm <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -639,11 +639,42 @@ srv_t_events_byterm <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt),
-      merge_function = "dplyr::inner_join",
-      join_keys = get_join_keys(data)
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = ~ if (length(.) != 1 && length(.) != 2) {
+          "Please select 1 or 2 treatment variable values"
+        },
+        hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0) {
+          "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+        },
+        llt = ~ if (length(selector_list()$hlt()$select) + length(.) == 0) {
+          "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+        }
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("prune_freq", shinyvalidate::sv_required("Please provide an Incidence Rate between 0 and 100 (%)."))
+      iv$add_rule(
+        "prune_freq",
+        shinyvalidate::sv_between(0, 100, message_fmt = "Please provide an Incidence Rate between 0 and 100 (%).")
+      )
+      iv$add_rule("prune_diff", shinyvalidate::sv_required("Please provide a Difference Rate between 0 and 100 (%)."))
+      iv$add_rule(
+        "prune_diff",
+        shinyvalidate::sv_between(0, 100, message_fmt = "Please provide a Difference Rate between 0 and 100 (%).")
+      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list,
+      merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
@@ -653,7 +684,7 @@ srv_t_events_byterm <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -666,6 +697,8 @@ srv_t_events_byterm <- function(id,
     )
 
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -676,8 +709,6 @@ srv_t_events_byterm <- function(id,
       )
 
       shiny::validate(
-        shiny::need(input_arm_var, "Please select a treatment variable"),
-        shiny::need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
         if (length(input_arm_var) >= 1) {
           shiny::need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
         },
@@ -689,20 +720,6 @@ srv_t_events_byterm <- function(id,
             "Please check nested treatment variable which needs to be a factor without NA or empty strings."
           )
         }
-      )
-      teal::validate_has_elements(
-        input_level_term,
-        "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-      )
-      shiny::validate(
-        shiny::need(
-          input$prune_freq >= 0 && input$prune_freq <= 100,
-          "Please provide an Incidence Rate between 0 and 100 (%)."
-        ),
-        shiny::need(
-          input$prune_diff >= 0 && input$prune_diff <= 100,
-          "Please provide a Difference Rate between 0 and 100 (%)."
-        )
       )
 
       # validate inputs
@@ -757,15 +774,15 @@ srv_t_events_byterm <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
       title = label
     )
 

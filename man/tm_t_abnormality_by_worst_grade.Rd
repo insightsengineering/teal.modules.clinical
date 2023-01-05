@@ -95,7 +95,6 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Laboratory test results with highest grade post-baseline
 }
 \examples{
-
 library(scda)
 library(dplyr)
 

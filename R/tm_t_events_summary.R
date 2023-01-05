@@ -790,7 +790,7 @@ ui_t_events_summary <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -833,9 +833,26 @@ srv_t_events_summary <- function(id,
       data_extract_vars[["flag_var_aesi"]] <- flag_var_aesi
     }
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = data_extract_vars,
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = ~ if (length(.) != 1 && length(.) != 2) "Please select exactly 1 or 2 treatment variables",
+        dthfl_var = shinyvalidate::sv_required("Death Flag Variable is requried"),
+        dcsreas_var = shinyvalidate::sv_required("Study Discontinuation Reason Variable is required"),
+        aeseq_var = shinyvalidate::sv_required("AE Sequence Variable is required"),
+        llt = shinyvalidate::sv_required("AE Term Variable is required")
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
@@ -847,7 +864,7 @@ srv_t_events_summary <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -860,6 +877,8 @@ srv_t_events_summary <- function(id,
     )
 
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -880,14 +899,10 @@ srv_t_events_summary <- function(id,
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
 
       shiny::validate(
-        shiny::need(input_arm_var, "Please select a treatment variable"),
-        shiny::need(length(input_arm_var) <= 2, "Please limit treatment variables within two"),
-        if (length(input_arm_var) >= 1) {
-          shiny::need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
-        },
+        shiny::need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor."),
         if (length(input_arm_var) == 2) {
           shiny::need(
-            is.factor(adsl_filtered[[input_arm_var[[2]]]]) & all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
+            is.factor(adsl_filtered[[input_arm_var[[2]]]]) && all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
               "", NA
             )),
             "Please check nested treatment variable which needs to be a factor without NA or empty strings."
@@ -969,14 +984,14 @@ srv_t_events_summary <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
       title = label
     )
 

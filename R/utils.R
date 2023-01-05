@@ -872,3 +872,13 @@ get_paramcd_label <- function(anl, paramcd) {
     label_paramcd
   })
 }
+
+as_numeric_from_comma_sep_str <- function(input_string, sep = ",") {
+  if (!is.null(input_string) && trimws(input_string) != "") {
+    split_string <- unlist(strsplit(trimws(input_string), sep))
+    split_as_numeric <- suppressWarnings(as.numeric(split_string))
+  } else {
+    split_as_numeric <- NULL
+  }
+  return(split_as_numeric)
+}

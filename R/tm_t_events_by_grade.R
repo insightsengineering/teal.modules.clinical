@@ -957,7 +957,7 @@ ui_t_events_by_grade <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -987,9 +987,52 @@ srv_t_events_by_grade <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt, grade = grade),
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = shinyvalidate::sv_required("A treatment variable is required"),
+        grade = shinyvalidate::sv_required("An event grade is required"),
+        hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0) {
+          "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+        },
+        llt = shinyvalidate::compose_rules(
+          ~ if (length(selector_list()$hlt()$select) + length(.) == 0) {
+            "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
+          },
+          ~ if (col_by_grade() && length(.) == 0) {
+            "Low Level Term must be present when grade groupings are displayed in nested columns."
+          }
+        )
+      )
+    )
+
+    col_by_grade <- shiny::reactive({
+      input$col_by_grade
+    })
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule(
+        "prune_freq", shinyvalidate::sv_required("Please provide an Incidence Rate between 0 and 100 (%).")
+      )
+      iv$add_rule(
+        "prune_freq",
+        shinyvalidate::sv_between(0, 100, message_fmt = "Please provide an Incidence Rate between 0 and 100 (%).")
+      )
+      iv$add_rule(
+        "prune_diff", shinyvalidate::sv_required("Please provide a Difference Rate between 0 and 100 (%).")
+      )
+      iv$add_rule(
+        "prune_diff",
+        shinyvalidate::sv_between(0, 100, message_fmt = "Please provide a Difference Rate between 0 and 100 (%).")
+      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
@@ -1001,7 +1044,7 @@ srv_t_events_by_grade <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -1014,6 +1057,8 @@ srv_t_events_by_grade <- function(id,
     )
 
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
       adsl_keys <- merged$adsl_input_r()$keys
@@ -1025,14 +1070,6 @@ srv_t_events_by_grade <- function(id,
       )
       input_grade <- as.vector(merged$anl_input_r()$columns_source$grade)
 
-      shiny::validate(
-        shiny::need(input_arm_var, "Please select a treatment variable"),
-        shiny::need(input_grade, "Please select a grade variable")
-      )
-      teal::validate_has_elements(
-        input_level_term,
-        "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables.\n If the module is for displaying adverse events with grading groups in nested columns, \"LOW LEVEL TERM\" cannot be empty" # nolint
-      )
       shiny::validate(
         shiny::need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
       )
@@ -1049,24 +1086,6 @@ srv_t_events_by_grade <- function(id,
           shiny::need(
             is.factor(anl_filtered[[input_grade]]),
             "Event grade variable must be a factor."
-          )
-        )
-      }
-      shiny::validate(
-        shiny::need(
-          input$prune_freq >= 0 && input$prune_freq <= 100,
-          "Please provide an Incidence Rate between 0 and 100 (%)."
-        ),
-        shiny::need(
-          input$prune_diff >= 0 && input$prune_diff <= 100,
-          "Please provide a Difference Rate between 0 and 100 (%)."
-        )
-      )
-      if (input$col_by_grade) {
-        shiny::validate(
-          shiny::need(
-            as.vector(merged$anl_input_r()$columns_source$llt),
-            "Low Level Term must be present for nested grade grouping display."
           )
         )
       }
@@ -1148,15 +1167,15 @@ srv_t_events_by_grade <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
       title = label
     )
 
