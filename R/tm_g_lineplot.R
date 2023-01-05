@@ -522,8 +522,8 @@ srv_g_lineplot <- function(id,
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
       datasets = data,
       select_validation_rule = list(
-        x = shinyvalidate::sv_required("Please select a single time variable"),
-        y = shinyvalidate::sv_required("Please select a single analysis variable"),
+        x = shinyvalidate::sv_required("Please select a time variable"),
+        y = shinyvalidate::sv_required("Please select an analysis variable"),
         strata = shinyvalidate::sv_required("Please select a treatment variable")
       ),
       filter_validation_rule = list(
