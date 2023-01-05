@@ -494,7 +494,6 @@ srv_g_barchart_simple <- function(id,
 
     # get grouping variables
     # NULL: not present in UI, vs character(0): no selection
-    ## helper function
     ## returns named vector of non-NULL variables to group by
     r_groupby_vars <- function() {
       unlist(
