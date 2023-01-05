@@ -496,14 +496,21 @@ srv_g_barchart_simple <- function(id,
     # NULL: not present in UI, vs character(0): no selection
     ## returns named vector of non-NULL variables to group by
     r_groupby_vars <- function() {
-      unlist(
-        lapply(
-          selector_list(),
-          function(selector) {
-            if (is.null(selector)) character(0L) else selector()$select
-          }
-        )
-      )
+      x_name <- if (is.null(x)) NULL else as.vector(anl_inputs()$columns_source$x)
+      fill_name <- if (is.null(fill)) NULL else as.vector(anl_inputs()$columns_source$fill)
+      x_facet_name <- if (is.null(x_facet)) NULL else as.vector(anl_inputs()$columns_source$x_facet)
+      y_facet_name <- if (is.null(y_facet)) NULL else as.vector(anl_inputs()$columns_source$y_facet)
+
+      # set to NULL when empty character
+      if (identical(x_name, character(0))) x_name <- NULL
+      if (identical(fill_name, character(0))) fill_name <- NULL
+      if (identical(x_facet_name, character(0))) x_facet_name <- NULL
+      if (identical(y_facet_name, character(0))) y_facet_name <- NULL
+
+      c(
+        x_name = x_name, fill_name = fill_name,
+        x_facet_name = x_facet_name, y_facet_name = y_facet_name
+      ) # c() -> NULL entries are omitted
     }
 
     # Insert the plot into a plot with settings module from teal.widgets
