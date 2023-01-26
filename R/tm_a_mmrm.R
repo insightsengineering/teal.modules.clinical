@@ -1345,6 +1345,7 @@ srv_mmrm <- function(id,
           caption = paste(
             paste("Weights for LS Means:", input$weights_emmeans),
             paste("Correlation Structure:", input$cor_struct),
+            paste("Adjustment Method:", input$method),
             sep = "\n"
           )
         )
