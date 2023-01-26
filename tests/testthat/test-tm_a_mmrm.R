@@ -32,6 +32,7 @@ testthat::test_that("template_fit_mmrm works as expected when not combining comp
         ),
         data = anl,
         conf_level = 0.95,
+        method = "Satterthwaite",
         cor_struct = "unstructured",
         weights_emmeans = "proportional",
         parallel = FALSE
@@ -75,6 +76,7 @@ testthat::test_that("template_fit_mmrm works as expected when combining combinat
         vars = vars,
         data = anl,
         conf_level = 0.95,
+        method = "Satterthwaite",
         cor_struct = "unstructured",
         weights_emmeans = "proportional",
         parallel = TRUE
