@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9015</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,14 +33,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -80,9 +72,9 @@
 <span>  <span class="va">visit_var</span>,</span>
 <span>  <span class="va">cov_var</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"Satterthwaite"</span>,</span>
 <span>  cor_struct <span class="op">=</span> <span class="st">"unstructured"</span>,</span>
 <span>  weights_emmeans <span class="op">=</span> <span class="st">"proportional"</span>,</span>
-<span>  optimizer <span class="op">=</span> <span class="st">"automatic"</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -165,6 +157,10 @@ names of the covariates variables.</p></dd>
 value for the confidence level within the range of (0, 1).</p></dd>
 
 
+<dt>method</dt>
+<dd><p>a string specifying the adjustment method.</p></dd>
+
+
 <dt>cor_struct</dt>
 <dd><p>a string specifying the correlation structure, defaults to
 <code>"unstructured"</code>. See the details.</p></dd>
@@ -174,14 +170,8 @@ value for the confidence level within the range of (0, 1).</p></dd>
 <dd><p>argument from <code><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html" class="external-link">emmeans::emmeans()</a></code>, "proportional" by default.</p></dd>
 
 
-<dt>optimizer</dt>
-<dd><p>a string specifying the optimization algorithm which should be used. By default, "automatic"
-will (if necessary) try all possible optimization algorithms and choose the best result. If another algorithm
-is chosen and does not give a valid result, an error will occur.</p></dd>
-
-
 <dt>parallel</dt>
-<dd><p>flag that controls whether "automatic" optimizer search can use available free cores on the
+<dd><p>flag that controls whether optimizer search can use available free cores on the
 machine (not default).</p></dd>
 
 
