@@ -557,7 +557,7 @@ ui_summary_by <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -590,13 +590,33 @@ srv_summary_by <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    vars <- list(arm_var = arm_var, id_var = id_var, by_vars = by_vars, summarize_vars = summarize_vars)
+    vars <- list(arm_var = arm_var, id_var = id_var, summarize_vars = summarize_vars, by_vars = by_vars)
+
     if (!is.null(paramcd)) {
       vars[["paramcd"]] <- paramcd
     }
 
-    anl_inputs <- teal.transform::merge_expression_module(
+    validation_rules <- list(
+      arm_var = shinyvalidate::sv_required("Please select a treatment variable."),
+      id_var = shinyvalidate::sv_required("Please select a subject identifier."),
+      summarize_vars = shinyvalidate::sv_required("Please select a summarize variable.")
+    )
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = vars,
+      datasets = data,
+      select_validation_rule = validation_rules,
+      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select a filter."))
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      selector_list = selector_list,
       datasets = data,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
@@ -610,7 +630,7 @@ srv_summary_by <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -624,6 +644,7 @@ srv_summary_by <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -634,18 +655,6 @@ srv_summary_by <- function(id,
       input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
 
       # validate inputs
-      shiny::validate(
-        shiny::need(input_arm_var, "Please select a treatment variable."),
-        shiny::need(input_id_var, "Please select a subject identifier."),
-        shiny::need(input_summarize_vars, "Please select a summarize variable."),
-        if (!all(input_summarize_vars %in% names(adsl_filtered))) {
-          shiny::need(
-            input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-            "`Select Endpoint` is not selected."
-          )
-        },
-        shiny::need(!is.null(input$numeric_stats), "Please select at least one statistic to display.")
-      )
       validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
@@ -701,15 +710,15 @@ srv_summary_by <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

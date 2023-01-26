@@ -309,7 +309,7 @@ tm_g_lineplot <- function(label,
     strata = cs_to_des_select(strata, dataname = parentname),
     param = cs_to_des_filter(param, dataname = dataname),
     x = cs_to_des_select(x, dataname = dataname, multiple = FALSE),
-    y = cs_to_des_select(y, dataname = dataname),
+    y = cs_to_des_select(y, dataname = dataname, multiple = FALSE),
     y_unit = cs_to_des_select(y_unit, dataname = dataname),
     paramcd = cs_to_des_select(paramcd, dataname = dataname)
   )
@@ -484,7 +484,7 @@ ui_g_lineplot <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -518,14 +518,42 @@ srv_g_lineplot <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
+      datasets = data,
+      select_validation_rule = list(
+        x = shinyvalidate::sv_required("Please select a time variable"),
+        y = shinyvalidate::sv_required("Please select an analysis variable"),
+        strata = shinyvalidate::sv_required("Please select a treatment variable")
+      ),
+      filter_validation_rule = list(
+        param = shinyvalidate::sv_required(message = "Please select Biomarker filter.")
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(
+          0, 1,
+          message_fmt = "Please choose a confidence level between 0 and 1", inclusive = c(FALSE, FALSE)
+        )
+      )
+      iv$add_rule("interval", shinyvalidate::sv_required("Please select an interval for the midpoint statistic"))
+      iv$add_rule("whiskers", shinyvalidate::sv_required("At least one of the whiskers must be selected"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
       join_keys = get_join_keys(data),
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
@@ -533,6 +561,8 @@ srv_g_lineplot <- function(id,
     merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -557,22 +587,7 @@ srv_g_lineplot <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
 
-      # Validate whiskers
-      shiny::validate(shiny::need(length(input$whiskers) > 0, "At least one of the whiskers must be selected."))
-
-      # Validate interval
-      shiny::validate(shiny::need(length(input$interval) > 0, "Need to select an interval for the midpoint statistic."))
-
       do.call(what = "validate_standard_inputs", validate_args)
-
-      shiny::validate(shiny::need(
-        input$conf_level > 0 && input$conf_level < 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-
-      shiny::validate(shiny::need(checkmate::test_string(input_y), "Analysis variable should be a single column."))
-      shiny::validate(shiny::need(checkmate::test_string(input_x_var), "Time variable should be a single column."))
-
       NULL
     })
 
@@ -619,14 +634,14 @@ srv_g_lineplot <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

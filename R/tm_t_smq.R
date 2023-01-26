@@ -509,7 +509,7 @@ ui_t_smq <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -536,15 +536,35 @@ srv_t_smq <- function(id,
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
+        scopes = scopes,
+        llt = llt,
         arm_var = arm_var,
         id_var = id_var,
-        baskets = baskets,
-        scopes = scopes,
-        llt = llt
+        baskets = baskets
       ),
+      datasets = data,
+      select_validation_rule = list(
+        scopes = shinyvalidate::sv_required("A scope variable is required"),
+        llt = shinyvalidate::sv_required("A low level term variable is required"),
+        arm_var = shinyvalidate::compose_rules(
+          shinyvalidate::sv_required("At least one treatment variable is required"),
+          ~ if (length(.) > 2) "Please select no more than two treatment variables"
+        ),
+        id_var = shinyvalidate::sv_required("An id variable is required"),
+        baskets = shinyvalidate::sv_required("At least one basket is required")
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
@@ -556,7 +576,7 @@ srv_t_smq <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -569,6 +589,7 @@ srv_t_smq <- function(id,
     )
 
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -578,14 +599,6 @@ srv_t_smq <- function(id,
       input_scopes <- names(merged$anl_input_r()$columns_source$scopes)
       input_llt <- names(merged$anl_input_r()$columns_source$llt)
 
-      shiny::validate(
-        shiny::need(input_id_var, "Please select a subject identifier."),
-        shiny::need(length(input_arm_var) <= 2, "Please limit arm variables within two"),
-        shiny::need(input_baskets, "Please select the SMQ/CQ baskets."),
-        shiny::need(input_scopes, "Please select the scope variables."),
-        shiny::need(input_llt, "Please select the low level term."),
-        shiny::need(input_arm_var, "Please select the arm variable.")
-      )
       # validate inputs
       validate_standard_inputs(
         adsl = adsl_filtered,
@@ -629,15 +642,15 @@ srv_t_smq <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

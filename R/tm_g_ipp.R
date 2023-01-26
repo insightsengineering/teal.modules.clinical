@@ -443,7 +443,7 @@ ui_g_ipp <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -474,7 +474,7 @@ srv_g_ipp <- function(id,
   checkmate::assert_class(data, "tdata")
 
   shiny::moduleServer(id, function(input, output, session) {
-    anl_inputs <- teal.transform::merge_expression_module(
+    selector_list <- teal.transform::data_extract_multiple_srv(
       datasets = data,
       data_extract = list(
         arm_var = arm_var,
@@ -485,6 +485,27 @@ srv_g_ipp <- function(id,
         visit_var = visit_var,
         base_var = base_var
       ),
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("A Parameter values over Time must be selected"),
+        avalu_var = shinyvalidate::sv_required("An Analysis Variable Unit must be selected"),
+        visit_var = shinyvalidate::sv_required("A Timepoint Variable must be selected"),
+        id_var = shinyvalidate::sv_required("A Patient ID must be selected"),
+        base_var = shinyvalidate::sv_required("Baseline Parameter Values must be selected")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required(message = "Please select Parameter filter."),
+        arm_var = shinyvalidate::sv_required(message = "Please select Arm filter.")
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join",
       join_keys = get_join_keys(data)
     )
@@ -496,7 +517,7 @@ srv_g_ipp <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
       teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
@@ -504,6 +525,8 @@ srv_g_ipp <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       qenv <- anl_q()
       adsl_filtered <- qenv[[parentname]]
       anl_filtered <- qenv[[dataname]]
@@ -536,15 +559,6 @@ srv_g_ipp <- function(id,
       )
 
       do.call(what = "validate_standard_inputs", validate_args)
-
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
-      )
-
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_visit_var), "Please select a timepoint variable.")
-      )
-
       NULL
     })
 
@@ -599,14 +613,14 @@ srv_g_ipp <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

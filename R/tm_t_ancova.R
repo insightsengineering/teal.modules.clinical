@@ -525,7 +525,7 @@ tm_t_ancova <- function(label,
   args <- c(as.list(environment()))
 
   if (is.null(interact_var)) {
-    interact_var <- choices_selected(
+    interact_var <- teal.transform::choices_selected(
       choices = cov_var$choices,
       selected = NULL
     )
@@ -604,11 +604,11 @@ ui_ancova <- function(id, ...) {
       shiny::uiOutput(
         ns("arms_buckets"),
         title = paste(
-          "Multiple reference groups are automatically combined into a single group when more than one",
-          "value is selected."
+          "Multiple reference groups are automatically combined into a single group",
+          "when more than one value is selected."
         )
       ),
-      shiny::helpText("Multiple reference groups are automatically combined into a single group."),
+      shiny::uiOutput(ns("helptext_ui")),
       shiny::checkboxInput(
         ns("combine_comp_arms"),
         "Combine all comparison groups?",
@@ -656,7 +656,7 @@ ui_ancova <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -689,7 +689,7 @@ srv_ancova <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
-    arm_ref_comp_observer(
+    iv_arco <- arm_ref_comp_observer(
       session,
       input,
       output,
@@ -699,8 +699,7 @@ srv_ancova <- function(id,
       module = "tm_ancova"
     )
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         aval_var = aval_var,
@@ -709,8 +708,35 @@ srv_ancova <- function(id,
         paramcd = paramcd,
         interact_var = interact_var
       ),
-      merge_function = "dplyr::inner_join",
-      join_keys = get_join_keys(data)
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = shinyvalidate::sv_required("Arm variable cannot be empty."),
+        aval_var = shinyvalidate::sv_required("Analysis variable cannot be empty."),
+        cov_var = shinyvalidate::sv_optional(),
+        interact_var = shinyvalidate::sv_optional()
+      ),
+      filter_validation_rule = list(
+        avisit = shinyvalidate::sv_required("`Analysis Visit` field cannot be empty."),
+        paramcd = shinyvalidate::sv_required("`Select Endpoint` is not selected.")
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
+      iv$add_rule("conf_level", shinyvalidate::sv_between(
+        0, 1,
+        message_fmt = "Confdence level must be between {left} and {right}."
+      ))
+      iv$add_validator(iv_arco)
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      selector_list = selector_list,
+      datasets = data,
+      join_keys = get_join_keys(data),
+      merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
@@ -720,7 +746,7 @@ srv_ancova <- function(id,
       join_keys = get_join_keys(data)
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -731,6 +757,12 @@ srv_ancova <- function(id,
       adsl_input_r = adsl_inputs,
       anl_q = anl_q
     )
+
+    output$helptext_ui <- shiny::renderUI({
+      if (length(selector_list()$arm_var()$select) != 0) {
+        shiny::helpText("Multiple reference groups are automatically combined into a single group.")
+      }
+    })
 
     # Event handler:
     # Update interact_y choices to all levels of selected interact_var
@@ -768,6 +800,8 @@ srv_ancova <- function(id,
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
+      teal::validate_inputs(iv_r())
+
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_aval_var <- as.vector(merged$anl_input_r()$columns_source$aval_var)
       input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
@@ -793,11 +827,7 @@ srv_ancova <- function(id,
 
       # Other validations.
       shiny::validate(shiny::need(
-        length(input_aval_var) > 0,
-        "Analysis variable cannot be empty."
-      ))
-      shiny::validate(shiny::need(
-        length(input_arm_var) > 0 && length(unique(adsl_filtered[[input_arm_var]])) > 1,
+        length(unique(adsl_filtered[[input_arm_var]])) > 1,
         "ANCOVA table needs at least 2 arm groups to make comparisons."
       ))
       # check that there is at least one record with no missing data
@@ -812,20 +842,6 @@ srv_ancova <- function(id,
       shiny::validate(shiny::need(
         !any(all_NA_dataset$all_NA),
         "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."
-      ))
-      shiny::validate(shiny::need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-
-      shiny::validate(shiny::need(
-        input[[extract_input("avisit", avisit$filter[[1]]$dataname, filter = TRUE)]],
-        "`Analysis Visit` field cannot be empty"
-      ))
-
-      shiny::validate(shiny::need(
-        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-        "`Select Endpoint` is not selected."
       ))
 
       if (input$include_interact) {
@@ -924,15 +940,15 @@ srv_ancova <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
       title = label
     )
 

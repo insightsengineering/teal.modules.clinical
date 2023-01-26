@@ -10,7 +10,6 @@ tm_g_pp_vitals(
   parentname = "ADSL",
   patient_col = "USUBJID",
   paramcd = NULL,
-  param = NULL,
   aval = NULL,
   xaxis = NULL,
   font_size = c(12L, 12L, 25L),
@@ -35,9 +34,6 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 \code{PARAMCD} column of the ADVS dataset.}
-
-\item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{PARAM} column of the ADVS dataset.}
 
 \item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 \code{AVAL} column of the ADVS dataset.}
@@ -100,10 +96,6 @@ app <- init(
       paramcd = choices_selected(
         choices = variable_choices(ADVS, "PARAMCD"),
         selected = "PARAMCD"
-      ),
-      param = choices_selected(
-        choices = variable_choices(ADVS, "PARAM"),
-        selected = "PARAM"
       ),
       xaxis = choices_selected(
         choices = variable_choices(ADVS, "ADY"),

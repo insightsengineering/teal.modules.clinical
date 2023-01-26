@@ -725,7 +725,7 @@ ui_t_coxreg <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -756,7 +756,7 @@ srv_t_coxreg <- function(id,
 
   shiny::moduleServer(id, function(input, output, session) {
     # Observer to update reference and comparison arm input options.
-    arm_ref_comp_observer(
+    iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
       output,
@@ -766,9 +766,40 @@ srv_t_coxreg <- function(id,
       module = "tm_t_coxreg"
     )
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+    use_interactions <- shiny::reactive({
+      input$type == "Univariate" && isTRUE(input$interactions)
+    })
+
+    overlap_rule <- function(other_var, var_name) {
+      function(value) {
+        if (length(intersect(value, selector_list()[[other_var]]()$select)) > 0) {
+          sprintf("`%s` and `%s` variables should not overlap", var_name[1], var_name[2])
+        }
+      }
+    }
+
+    select_validation_rule <- list(
+      aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+      cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
+      arm_var = shinyvalidate::compose_rules(
+        shinyvalidate::sv_required("A treatment variable is required"),
+        overlap_rule("strata_var", c("Treatment", "Strata")),
+        overlap_rule("cov_var", c("Treatment", "Covariate"))
+      ),
+      strata_var = shinyvalidate::compose_rules(
+        overlap_rule("arm_var", c("Treatment", "Strata")),
+        overlap_rule("cov_var", c("Covariate", "Strata"))
+      ),
+      cov_var = shinyvalidate::compose_rules(
+        overlap_rule("arm_var", c("Treatment", "Covariate")),
+        overlap_rule("strata_var", c("Covariate", "Strata")),
+        ~ if (use_interactions() && length(.) == 0) {
+          "If interactions are selected at least one covariate should be specified."
+        }
+      )
+    )
+
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -777,10 +808,58 @@ srv_t_coxreg <- function(id,
         cnsr_var = cnsr_var,
         cov_var = cov_var
       ),
+      datasets = data,
+      select_validation_rule = select_validation_rule,
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("An endpoint is required")
+      )
+    )
+
+
+    numeric_level_validation <- function(val) {
+      # need to explicitly evaluate 'val' here to ensure
+      # the correct label is shown - if this is not done
+      # then the last value of "val" is the label for all cases
+      v <- val
+      ~ if (anyNA(as_numeric_from_comma_sep_str(.))) {
+        paste("Numeric interaction level(s) should be specified for", v)
+      }
+    }
+
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_validator(iv_arm_ref)
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(0, 1, message_fmt = "Confidence level must be between 0 and 1")
+      )
+      iv$add_rule("pval_method", ~ if (length(selector_list()$strata_var()$select) > 0 && . != "wald") {
+        "Only Wald tests are supported for models with strata."
+      })
+      # add rules for interaction_var text inputs
+
+      for (val in interaction_var_r()) {
+        iv$add_rule(
+          paste0("interact_", val),
+          shinyvalidate::sv_required(paste("Interaction level(s) should be specified for", val))
+        )
+        iv$add_rule(
+          paste0("interact_", val), numeric_level_validation(val)
+        )
+      }
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
@@ -802,22 +881,29 @@ srv_t_coxreg <- function(id,
       )
     }
 
-    output$interaction_input <- shiny::renderUI({
+    interaction_var_r <- shiny::reactive({
       # exclude cases when increments are not necessary and
       # finally accessing the UI-rendering function defined above.
-      if (!is.null(input$interactions) && input$interactions) {
+      if (use_interactions()) {
         input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
         dataset <- merged$anl_q()[[dataname]]
         cov_is_numeric <- vapply(dataset[input_cov_var], is.numeric, logical(1))
-        interaction_var <- input_cov_var[cov_is_numeric]
-        if (length(interaction_var) > 0 && length(input_cov_var) > 0) {
-          lapply(interaction_var, open_textinput, dataset = dataset)
-        }
+        input_cov_var[cov_is_numeric]
+      } else {
+        NULL
+      }
+    })
+
+    output$interaction_input <- shiny::renderUI({
+      if (length(interaction_var_r()) > 0) {
+        lapply(interaction_var_r(), open_textinput, dataset = merged$anl_q()[[dataname]])
       }
     })
 
     ## Prepare the call evaluation environment ----
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
+
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -848,27 +934,6 @@ srv_t_coxreg <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
 
-      shiny::validate(shiny::need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-
-      teal::validate_no_intersection(
-        input_arm_var,
-        input_strata_var,
-        "`Treatment` and `Strata` variables should not be overlapped."
-      )
-      teal::validate_no_intersection(
-        input_arm_var,
-        input_cov_var,
-        "`Treatment` and `Covariate` variables should not be overlapped."
-      )
-      teal::validate_no_intersection(
-        input_strata_var,
-        input_cov_var,
-        "`Strata` and `Covariate` variables should not be overlapped."
-      )
-
       do.call(what = "validate_standard_inputs", validate_args)
 
       arm_n <- base::table(anl_filtered[[input_arm_var]])
@@ -882,47 +947,13 @@ srv_t_coxreg <- function(id,
         "Each treatment group should have at least 2 records."
       ))
 
-      # validate p-value method
-      if (length(input_strata_var) > 0) {
-        shiny::validate(shiny::need(
-          input$pval_method == "wald",
-          "Only Wald tests are supported for models with strata."
-        ))
-      }
-
-      if (input$type == "Multivariate") {
-        shiny::validate(shiny::need(
-          input$interactions == FALSE,
-          "Interaction is only supported for univariate models."
-        ))
-      }
-
-      if (!is.null(input$interactions) && input$interactions) {
-        shiny::validate(shiny::need(
-          (length(input_cov_var) > 0),
-          "If interactions are selected at least one covariate should be specified."
-        ))
-      }
-
-      if (!is.null(input$interactions) && input$interactions && length(interaction_var) > 0) {
-        shiny::validate(shiny::need(
-          all(vapply(at(), function(x) length(x) > 0, logical(1))),
-          "Please specify all the interaction levels."
-        ))
-      }
-
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
-      )
-      shiny::validate(shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
-
       # validate covariate has at least two levels
       shiny::validate(
         shiny::need(
           all(vapply(anl_filtered[input_cov_var], FUN = function(x) {
             length(unique(x)) > 1
           }, logical(1))),
-          "All covariate needs to have at least two levels"
+          "All covariates needs to have at least two levels"
         )
       )
 
@@ -939,8 +970,7 @@ srv_t_coxreg <- function(id,
           function(x) {
             cov <- input[[paste0("interact_", x)]]
             if (!is.null(cov)) {
-              vec <- strsplit(cov, split = ",")
-              as.numeric(unlist(vec))
+              as_numeric_from_comma_sep_str(cov)
             }
           }
         )
@@ -955,7 +985,7 @@ srv_t_coxreg <- function(id,
       cov_var <- as.vector(anl$columns_source$cov_var)
       cov_var <- if (length(cov_var) > 0) cov_var else NULL
 
-      at <- if (!is.null(input$interactions) && input$interactions) at() else list()
+      at <- if (use_interactions()) at() else list()
       arm_var <- as.vector(anl$columns_source$arm_var)
       cnsr_var <- as.vector(anl$columns_source$cnsr_var)
       aval_var <- as.vector(anl$columns_source$aval_var)
@@ -965,7 +995,7 @@ srv_t_coxreg <- function(id,
         pval_method = input$pval_method,
         ties = input$ties,
         conf_level = as.numeric(input$conf_level),
-        interaction = `if`(is.null(input$interactions), FALSE, input$interactions)
+        interaction = `if`(!use_interactions(), FALSE, input$interactions)
       )
 
       if (multivariate) {
@@ -1081,14 +1111,14 @@ srv_t_coxreg <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model"
     )
 

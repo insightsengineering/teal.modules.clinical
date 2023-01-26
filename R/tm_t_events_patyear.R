@@ -358,7 +358,7 @@ ui_events_patyear <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -404,8 +404,7 @@ srv_events_patyear <- function(id,
       }
     })
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -413,6 +412,36 @@ srv_events_patyear <- function(id,
         avalu_var = avalu_var,
         events_var = events_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        arm_var = ~ if (length(.) != 1 && length(.) != 2) "Please select exactly 1 or 2 treatment variables",
+        aval_var = shinyvalidate::sv_required("Analysis Variable is required"),
+        events_var = shinyvalidate::sv_required("Events Variable is required")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("A Event Type Parameter is required")
+      )
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(
+          0, 1,
+          inclusive = c(FALSE, FALSE),
+          message_fmt = "Confidence level must be between 0 and 1"
+        )
+      )
+      iv$add_rule("conf_method", shinyvalidate::sv_required("A CI method is required"))
+      iv$add_rule("time_unit_output", shinyvalidate::sv_required("Time Unit for AE Rate is required"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
@@ -424,7 +453,7 @@ srv_events_patyear <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -438,6 +467,7 @@ srv_events_patyear <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -456,26 +486,12 @@ srv_events_patyear <- function(id,
         arm_var = input_arm_var
       )
 
-      shiny::validate(shiny::need(
-        input$conf_level > 0 && input$conf_level < 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-
       shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "`Analysis Variable` should be a single column."),
-        shiny::need(checkmate::test_string(input_events_var), "Events variable should be a single column."),
-        shiny::need(input$conf_method, "`CI Method` field is not selected."),
-        shiny::need(input$time_unit_output, "`Time Unit for AE Rate (in Patient-Years)` field is empty."),
-        shiny::need(
-          input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]],
-          "`Select an Event Type Parameter is not selected."
-        ),
         shiny::need(
           !any(is.na(merged$anl_q()[["ANL"]][[input_events_var]])),
           "`Event Variable` for selected parameter includes NA values."
         )
       )
-
       NULL
     })
 
@@ -530,15 +546,15 @@ srv_events_patyear <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
       title = label
     )
 

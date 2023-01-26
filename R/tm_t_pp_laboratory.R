@@ -276,7 +276,7 @@ ui_g_laboratory <- function(id, ...) {
         choices = NULL
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -344,9 +344,7 @@ srv_g_laboratory <- function(id,
     )
 
     # Laboratory values tab ----
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = get_join_keys(data),
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         timepoints = timepoints,
         aval = aval,
@@ -354,43 +352,37 @@ srv_g_laboratory <- function(id,
         param = param,
         paramcd = paramcd,
         anrind = anrind
+      ),
+      datasets = data,
+      select_validation_rule = list(
+        timepoints = shinyvalidate::sv_required("Please select timepoints variable."),
+        aval = shinyvalidate::sv_required("Please select AVAL variable."),
+        avalu = shinyvalidate::sv_required("Please select AVALU variable."),
+        param = shinyvalidate::sv_required("Please select PARAM variable."),
+        paramcd = shinyvalidate::sv_required("Please select PARAMCD variable."),
+        anrind = shinyvalidate::sv_required("Please select ANRIND variable.")
       )
     )
 
-    anl_q <- reactive({
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      join_keys = get_join_keys(data),
+      selector_list = selector_list
+    )
+
+    anl_q <- shiny::reactive({
       teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     all_q <- shiny::reactive({
-      shiny::validate(shiny::need(patient_id(), "Please select a patient."))
-
-      shiny::validate(
-        shiny::need(
-          input[[extract_input("timepoints", dataname)]],
-          "Please select timepoints variable."
-        ),
-        shiny::need(
-          input[[extract_input("aval", dataname)]],
-          "Please select AVAL variable."
-        ),
-        shiny::need(
-          input[[extract_input("avalu", dataname)]],
-          "Please select AVALU variable."
-        ),
-        shiny::need(
-          input[[extract_input("param", dataname)]],
-          "Please select PARAM variable."
-        ),
-        shiny::need(
-          input[[extract_input("paramcd", dataname)]],
-          "Please select PARAMCD variable."
-        ),
-        shiny::need(
-          input[[extract_input("anrind", dataname)]],
-          "Please select ANRIND variable."
-        )
-      )
+      teal::validate_inputs(iv_r())
 
       labor_calls <- template_laboratory(
         dataname = "ANL",
@@ -433,14 +425,14 @@ srv_g_laboratory <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

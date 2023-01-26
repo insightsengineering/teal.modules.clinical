@@ -569,7 +569,7 @@ ui_t_tte <- function(id, ...) {
           condition = paste0("input['", ns("compare_arms"), "']"),
           shiny::div(
             shiny::uiOutput(ns("arms_buckets")),
-            shiny::helpText("Multiple reference groups are automatically combined into a single group."),
+            shiny::uiOutput(ns("helptext_ui")),
             shiny::checkboxInput(
               ns("combine_comp_arms"),
               "Combine all comparison groups?",
@@ -687,7 +687,7 @@ ui_t_tte <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -720,7 +720,7 @@ srv_t_tte <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
-    arm_ref_comp_observer(
+    iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
       output,
@@ -731,8 +731,7 @@ srv_t_tte <- function(id,
       on_off = shiny::reactive(input$compare_arms)
     )
 
-    anl_merge_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
         paramcd = paramcd,
@@ -742,6 +741,55 @@ srv_t_tte <- function(id,
         event_desc_var = event_desc_var,
         time_unit_var = time_unit_var
       ),
+      datasets = data,
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+        cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
+        arm_var = shinyvalidate::sv_required("A treatment variable is required"),
+        event_desc_var = shinyvalidate::sv_required("An event description variable is required"),
+        time_unit_var = shinyvalidate::sv_required("A Time unit variable is required")
+      ),
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required("An endpoint is required")
+      )
+    )
+
+    output$helptext_ui <- shiny::renderUI({
+      shiny::req(selector_list()$arm_var()$select)
+      shiny::helpText("Multiple reference groups are automatically combined into a single group.")
+    })
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+
+      if (isTRUE(input$compare_arms)) {
+        iv$add_validator(iv_arm_ref)
+      }
+
+      iv$add_rule("conf_level_coxph", shinyvalidate::sv_required("Please choose a hazard ratio confidence level"))
+      iv$add_rule(
+        "conf_level_coxph", shinyvalidate::sv_between(
+          0, 1,
+          message_fmt = "Hazard ratio confidence level must between 0 and 1"
+        )
+      )
+      iv$add_rule("conf_level_survfit", shinyvalidate::sv_required("Please choose a KM confidence level"))
+      iv$add_rule(
+        "conf_level_survfit", shinyvalidate::sv_between(
+          0, 1,
+          message_fmt = "KM confidence level must between 0 and 1"
+        )
+      )
+      iv$add_rule(
+        "probs_survfit",
+        ~ if (!is.null(.) && .[1] == .[2]) "KM Estimate Percentiles cannot have a range of size 0"
+      )
+      teal.transform::compose_and_enable_validators(iv, selector_list)
+    })
+
+    anl_merge_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       join_keys = get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
@@ -753,7 +801,7 @@ srv_t_tte <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       qenv1 <- teal.code::eval_code(qenv, as.expression(anl_merge_inputs()$expr))
       teal.code::eval_code(qenv1, as.expression(adsl_merge_inputs()$expr))
@@ -761,6 +809,7 @@ srv_t_tte <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
@@ -799,34 +848,10 @@ srv_t_tte <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      shiny::validate(shiny::need(
-        input$conf_level_coxph >= 0 && input$conf_level_coxph <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-
-      shiny::validate(shiny::need(
-        input$conf_level_survfit >= 0 && input$conf_level_survfit <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
-
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column.")
-      )
-      shiny::validate(shiny::need(checkmate::test_string(input_cnsr_var), "Censor variable should be a single column."))
-      shiny::validate(shiny::need(
-        checkmate::test_string(input_event_desc),
-        "Event description variable should be a single column."
-      ))
-
       # check that there is at least one record with no missing data
       shiny::validate(shiny::need(
         !all(is.na(anl[[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
-      ))
-
-      shiny::validate(shiny::need(
-        length(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]) > 0,
-        "`Select Endpoint` field is NULL"
       ))
 
       NULL
@@ -886,14 +911,14 @@ srv_t_tte <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
       title = label
     )
 

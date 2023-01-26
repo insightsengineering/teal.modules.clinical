@@ -710,7 +710,7 @@ ui_t_binary_outcome <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = tagList(
+    forms = shiny::tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -743,20 +743,46 @@ srv_t_binary_outcome <- function(id,
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
-    arm_ref_comp_observer(
+    iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
       data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
-      module = "tm_t_tte",
+      module = "tm_t_binary_outcome",
       on_off = shiny::reactive(input$compare_arms)
     )
 
-    anl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
+    selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
+      datasets = data,
+      select_validation_rule = list(
+        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+        arm_var = shinyvalidate::sv_required("A treatment variable is required")
+      ),
+      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select a filter."))
+    )
+
+    iv_r <- shiny::reactive({
+      iv <- shinyvalidate::InputValidator$new()
+
+      if (isTRUE(input$compare_arms)) {
+        iv$add_validator(iv_arm_ref)
+      }
+
+      iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
+      iv$add_rule(
+        "conf_level",
+        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between {left} and {right}")
+      )
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "aval_var", "paramcd"))
+    })
+
+    anl_inputs <- teal.transform::merge_expression_srv(
+      datasets = data,
+      selector_list = selector_list,
       merge_function = "dplyr::inner_join",
       join_keys = get_join_keys(data)
     )
@@ -768,7 +794,7 @@ srv_t_binary_outcome <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- reactive({
+    anl_q <- shiny::reactive({
       q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
       qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
       teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
@@ -815,6 +841,7 @@ srv_t_binary_outcome <- function(id,
     )
 
     validate_check <- shiny::reactive({
+      teal::validate_inputs(iv_r())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
@@ -883,11 +910,6 @@ srv_t_binary_outcome <- function(id,
         }
       )
 
-      shiny::validate(
-        shiny::need(checkmate::test_string(input_aval_var), "Analysis variable should be a single column."),
-        shiny::need(input$responders, "`Responders` field is empty")
-      )
-
       if (is.list(default_responses)) {
         shiny::validate(
           shiny::need(
@@ -899,11 +921,6 @@ srv_t_binary_outcome <- function(id,
           )
         )
       }
-
-      shiny::validate(shiny::need(
-        input$conf_level >= 0 && input$conf_level <= 1,
-        "Please choose a confidence level between 0 and 1"
-      ))
 
       NULL
     })
@@ -975,15 +992,15 @@ srv_t_binary_outcome <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive({
+      verbatim_content = shiny::reactive({
         teal.code::get_code(table_q())
       }),
       title = label
