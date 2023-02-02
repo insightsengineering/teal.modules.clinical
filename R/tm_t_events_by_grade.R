@@ -1063,6 +1063,8 @@ srv_t_events_by_grade <- function(id,
       anl_filtered <- merged$anl_q()[[dataname]]
       adsl_keys <- merged$adsl_input_r()$keys
 
+      assertthat::assert_that("USUBJID" %in% adsl_keys)
+
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_level_term <- c(
         as.vector(merged$anl_input_r()$columns_source$hlt),
@@ -1104,7 +1106,6 @@ srv_t_events_by_grade <- function(id,
     table_q <- shiny::reactive({
       validate_checks()
       ANL <- merged$anl_q()[["ANL"]] # nolint
-      adsl_keys <- merged$adsl_input_r()$keys
 
       input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
@@ -1121,6 +1122,7 @@ srv_t_events_by_grade <- function(id,
           add_total = input$add_total,
           grading_groups = grading_groups,
           arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
+          id = "USUBJID",
           hlt = if (length(input_hlt) != 0) input_hlt else NULL,
           llt = if (length(input_llt) != 0) input_llt else NULL,
           label_hlt = label_hlt,
@@ -1137,6 +1139,7 @@ srv_t_events_by_grade <- function(id,
           dataname = "ANL",
           parentname = "ANL_ADSL",
           arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
+          id = "USUBJID",
           hlt = if (length(input_hlt) != 0) input_hlt else NULL,
           llt = if (length(input_llt) != 0) input_llt else NULL,
           label_hlt = label_hlt,
