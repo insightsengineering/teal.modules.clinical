@@ -16,6 +16,8 @@ tm_a_mmrm(
   cov_var,
   arm_ref_comp = NULL,
   paramcd,
+  method = teal.transform::choices_selected(c("Satterthwaite", "Kenward-Roger",
+    "Kenward-Roger-Linear"), "Satterthwaite", keep_order = TRUE),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
   plot_height = c(700L, 200L, 2000L),
@@ -68,6 +70,9 @@ reference and comparison arms when the arm variable is changed.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
+
+\item{method}{(\code{choices_selected})\cr
+object with all available choices and preselected option for the adjustment method.}
 
 \item{conf_level}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the confidence
