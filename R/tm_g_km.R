@@ -130,6 +130,7 @@ template_g_km <- function(dataname = "ANL",
       graph_list,
       substitute(
         expr = {
+          anl$facet_var <- droplevels(anl$facet_var)
           plot_list <- mapply(
             df = split(anl, f = anl$facet_var), nrow = seq_along(levels(anl$facet_var)),
             FUN = function(df_i, nrow_i) {
