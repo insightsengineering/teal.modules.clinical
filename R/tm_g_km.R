@@ -95,7 +95,7 @@ template_g_km <- function(dataname = "ANL",
     )
   )
 
-  y$variables <- if (!is.null(strata_var) && length(strata_var) != 0) {
+  y$variables <- if (length(strata_var) != 0) {
     substitute(
       expr = variables <- list(tte = tte, is_event = "is_event", arm = arm, strat = strata_var),
       env = list(tte = aval_var, arm = arm_var, strata_var = strata_var)
@@ -108,7 +108,7 @@ template_g_km <- function(dataname = "ANL",
   }
   graph_list <- list()
 
-  if (!is.null(facet_var) && length(facet_var) != 0) {
+  if (length(facet_var) != 0) {
     graph_list <- add_expr(
       graph_list,
       quote(grid::grid.newpage())
