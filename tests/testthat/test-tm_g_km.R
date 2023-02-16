@@ -14,6 +14,7 @@ testthat::test_that("template_g_km works as expected with default arguments", {
       lyt <- grid::grid.layout(nrow = nlevels(ANL$SEX), ncol = 1) %>%
         grid::viewport(layout = .) %>%
         grid::pushViewport()
+      anl$SEX <- droplevels(anl$SEX)
       plot_list <- mapply(
         df = split(anl, f = anl$SEX), nrow = seq_along(levels(anl$SEX)),
         FUN = function(df_i, nrow_i) {
