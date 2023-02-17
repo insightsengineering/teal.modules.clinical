@@ -110,22 +110,18 @@ template_laboratory <- function(dataname = "ANL",
 #' @examples
 #'
 #' # Complete synthetic data
-#' ADSL <- scda::synthetic_cdisc_dataset("latest", "adsl")
-#' ADLB <- scda::synthetic_cdisc_dataset("latest", "adlb")
+#' # ADSL <- scda::synthetic_cdisc_dataset("latest", "adsl")
+#' # ADLB <- scda::synthetic_cdisc_dataset("latest", "adlb")
 #'
 #' # Reduced data from tern
 #' ADSL <- tern::tern_ex_adsl
 #' ADLB <- tern::tern_ex_adlb %>%
-#' dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days"))))
+#'   dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days"))))
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
-#'     cdisc_dataset("ADLB", ADLB,
-#'       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")'
-#'     )
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADLB", ADLB)
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_laboratory(
@@ -161,7 +157,7 @@ template_laboratory <- function(dataname = "ANL",
 #' )
 #' if (interactive()) {
 #'   shinyApp(app$ui, app$server)
-}
+#' }
 #'
 tm_t_pp_laboratory <- function(label,
                                dataname = "ADLB",

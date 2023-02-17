@@ -87,11 +87,8 @@ Teal Module: Summary of Variables
 }
 \examples{
 # Preparation of the test case.
-library(dplyr)
-library(scda)
-library(tern)
 
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
+adsl <- scda::synthetic_cdisc_dataset("latest", "adsl")
 
 # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
 stopifnot(
@@ -102,7 +99,6 @@ stopifnot(
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", adsl),
-    code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")',
     check = TRUE
   ),
   modules = modules(
