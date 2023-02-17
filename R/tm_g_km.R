@@ -145,7 +145,9 @@ template_g_km <- function(dataname = "ANL",
 
         plot_list <- lapply(
           anl,
-          function(x) g_km(
+          function(x) {
+            browser()
+            g_km(
             x,
             variables = variables,
             control_surv = control_surv_timepoint(conf_level = conf_level),
@@ -163,6 +165,7 @@ template_g_km <- function(dataname = "ANL",
                 title,
                 if (!is.null(facets)) {
                   sprintf(", %s = %s", as.character(quote(facet_var)), unique(x$facet_var))
+                  # sprintf(", %s = %s", as.character(quote(facet_var)), unique(x[[as.character(quote(facet_var))]]))
                 } else {
                   ""
                 }
@@ -187,6 +190,7 @@ template_g_km <- function(dataname = "ANL",
             annot_coxph = annot_coxph,
             control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties)
           )
+          }
         )
 
         plot <- tern::stack_grobs(grobs = plot_list)
