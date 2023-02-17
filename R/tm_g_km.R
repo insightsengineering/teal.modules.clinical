@@ -116,11 +116,13 @@ template_g_km <- function(dataname = "ANL",
     graph_list <- add_expr(
       graph_list,
       substitute(
-        expr = lyt <- grid::grid.layout(nrow = nlevels(df$facet_var), ncol = 1) %>%
-          grid::viewport(layout = .) %>%
-          grid::pushViewport(),
+        expr = {
+          anl$facet_var <- droplevels(anl$facet_var)
+          lyt <- grid::grid.layout(nrow = nlevels(anl$facet_var), ncol = 1) %>%
+            grid::viewport(layout = .) %>%
+            grid::pushViewport()
+        },
         env = list(
-          df = as.name(dataname),
           facet_var = as.name(facet_var)
         )
       )
@@ -130,63 +132,53 @@ template_g_km <- function(dataname = "ANL",
       graph_list,
       substitute(
         expr = {
-          anl$facet_var <- droplevels(anl$facet_var)
           plot_list <- mapply(
             df = split(anl, f = anl$facet_var), nrow = seq_along(levels(anl$facet_var)),
             FUN = function(df_i, nrow_i) {
-              if (nrow(df_i) == 0) {
-                grid::grid.text(
-                  "No data found for a given facet value.",
-                  x = 0.5,
-                  y = 0.5,
-                  vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1)
-                )
-              } else {
-                g_km(
-                  df = df_i,
-                  variables = variables,
-                  font_size = font_size,
-                  xlab = paste0(
-                    xlab,
-                    " (",
-                    gsub(
-                      "(^|[[:space:]])([[:alpha:]])",
-                      "\\1\\U\\2",
-                      tolower(anl$time_unit_var[1]),
-                      perl = TRUE
-                    ),
-                    ")"
+              g_km(
+                df = df_i,
+                variables = variables,
+                font_size = font_size,
+                xlab = paste0(
+                  xlab,
+                  " (",
+                  gsub(
+                    "(^|[[:space:]])([[:alpha:]])",
+                    "\\1\\U\\2",
+                    tolower(anl$time_unit_var[1]),
+                    perl = TRUE
                   ),
-                  yval = yval,
-                  xticks = xticks,
-                  newpage = FALSE,
-                  title = ifelse(
-                    length(strata_var) == 0,
+                  ")"
+                ),
+                yval = yval,
+                xticks = xticks,
+                newpage = FALSE,
+                title = ifelse(
+                  length(strata_var) == 0,
+                  paste0(title, ", ", quote(facet_var), " = ", as.character(unique(df_i$facet_var))),
+                  paste(
                     paste0(title, ", ", quote(facet_var), " = ", as.character(unique(df_i$facet_var))),
-                    paste(
-                      paste0(title, ", ", quote(facet_var), " = ", as.character(unique(df_i$facet_var))),
-                      paste("Stratified by", paste(strata_var, collapse = ", ")),
-                      sep = "\n"
-                    )
-                  ),
-                  footnotes = if (annot_coxph) {
-                    paste(
-                      "Ties for Coxph (Hazard Ratio):", ties, "\n",
-                      "p-value Method for Coxph (Hazard Ratio):", pval_method
-                    )
-                  } else {
-                    NULL
-                  },
-                  ggtheme = ggplot2::theme_minimal(),
-                  annot_surv_med = annot_surv_med,
-                  annot_coxph = annot_coxph,
-                  control_surv = control_surv_timepoint(conf_level = conf_level),
-                  control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
-                  ci_ribbon = ci_ribbon,
-                  vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1),
-                  draw = TRUE
-                )
-              }
+                    paste("Stratified by", paste(strata_var, collapse = ", ")),
+                    sep = "\n"
+                  )
+                ),
+                footnotes = if (annot_coxph) {
+                  paste(
+                    "Ties for Coxph (Hazard Ratio):", ties, "\n",
+                    "p-value Method for Coxph (Hazard Ratio):", pval_method
+                  )
+                } else {
+                  NULL
+                },
+                ggtheme = ggplot2::theme_minimal(),
+                annot_surv_med = annot_surv_med,
+                annot_coxph = annot_coxph,
+                control_surv = control_surv_timepoint(conf_level = conf_level),
+                control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+                ci_ribbon = ci_ribbon,
+                vp = grid::viewport(layout.pos.row = nrow_i, layout.pos.col = 1),
+                draw = TRUE
+              )
             },
             SIMPLIFY = FALSE
           )
