@@ -108,82 +108,93 @@ template_g_km <- function(dataname = "ANL",
   }
   graph_list <- list()
 
+  if (length(facet_var) != 0L) {
+    graph_list <- add_expr(
+      graph_list,
+      substitute(
+        expr = {
+          facets <- droplevels(anl$facet_var)
+          anl <- split(anl, f = facets)
+        },
+        env = list(
+          facet_var = as.name(facet_var)
+        )
+      )
+    )
+  } else {
+    graph_list <- add_expr(
+      graph_list,
+      substitute(
+        expr = {
+          facets <- NULL
+          anl <- list(anl)
+        }
+      )
+    )
+  }
+
   graph_list <- add_expr(
     graph_list,
     substitute(
       expr = {
 
-        facet_control <-
-          if (!is.null(quote(facet_var))) {
-            droplevels(anl$facet_var)
-          } else {
-            factor(rep_len("dummy_factor_level", nrow(anl)))
-          }
-
         grid::grid.newpage()
-        lyt <- grid::grid.layout(nrow = nlevels(facet_control), ncol = 1) %>%
+        lyt <- grid::grid.layout(nrow = length(anl), ncol = 1) %>%
           grid::viewport(layout = .) %>%
           grid::pushViewport()
 
-        # This creates a function that will count how many times it has been called.
-        # The count will be used to position subplots in viewports.
-        plotting_function_generator <- function() {
-          plot_number <- 0L
-          function(x) {
-            plot_number <<- plot_number + 1L
-
-            this_title <- title
-            if (!is.null(quote(facet_var))) {
-              sprintf("%s, %s = %s", title, as.character(quote(facet_var)), unique(x$facet_var))
-            }
-            if (length(strata_var) != 0) {
-              this_title <- sprintf("%s\nStratified by %s", this_title, toString(strata_var))
-            }
-
-            this_xlab <- paste0(
+        plot_list <- lapply(
+          anl,
+          function(x) g_km(
+            x,
+            variables = variables,
+            control_surv = control_surv_timepoint(conf_level = conf_level),
+            xticks = xticks,
+            xlab = sprintf(
+              "%s (%s)",
               xlab,
-              " (",
-              gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(anl$time_unit_var[1]), perl = TRUE),
-              ")"
-            )
-
-            this_footnote <- if (annot_coxph) {
+              gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(x$time_unit_var[1]), perl = TRUE)
+            ),
+            yval = yval,
+            title =   sprintf(
+              "%s%s",
+              sprintf(
+                "%s%s",
+                title,
+                if (!is.null(facets)) {
+                  sprintf(", %s = %s", as.character(quote(facet_var)), unique(x$facet_var))
+                } else {
+                  ""
+                }
+              ),
+              if (length(strata_var) != 0) {
+                sprintf("\nStratified by %s", toString(strata_var))
+              } else {
+                ""
+              }
+            ),
+            footnotes = if (annot_coxph) {
               paste(
                 "Ties for Coxph (Hazard Ratio):", ties, "\n",
                 "p-value Method for Coxph (Hazard Ratio):", pval_method
               )
-            }
-
-            g_km(
-              df = x,
-              variables = variables,
-              control_surv = control_surv_timepoint(conf_level = conf_level),
-              xticks = xticks,
-              xlab = this_xlab,
-              yval = yval,
-              title = this_title,
-              footnotes = this_footnote,
-              newpage = FALSE,
-              vp = grid::viewport(layout.pos.row = plot_number, layout.pos.col = 1),
-              font_size = font_size,
-              ci_ribbon = ci_ribbon,
-              ggtheme = ggplot2::theme_minimal(),
-              annot_surv_med = annot_surv_med,
-              annot_coxph = annot_coxph,
-              control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties)
-            )
-          }
-        }
-        plotting_function <- plotting_function_generator()
-
-        plot_list <- lapply(split(anl, f = facet_control), plotting_function)
+            },
+            newpage = FALSE,
+            font_size = font_size,
+            ci_ribbon = ci_ribbon,
+            ggtheme = ggplot2::theme_minimal(),
+            annot_surv_med = annot_surv_med,
+            annot_coxph = annot_coxph,
+            control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties)
+          )
+        )
 
         plot <- tern::stack_grobs(grobs = plot_list)
         plot
       },
       env = list(
-        font_size = font_size,
         facet_var = if (length(facet_var) != 0L) as.name(facet_var),
+        font_size = font_size,
         strata_var = strata_var,
         xticks = xticks,
         xlab = xlab,
