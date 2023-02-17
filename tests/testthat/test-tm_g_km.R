@@ -10,66 +10,59 @@ testthat::test_that("template_g_km works as expected with default arguments", {
       variables <- list(tte = "AVAL", is_event = "is_event", arm = "ARM")
     ),
     graph = quote({
+      facets <- droplevels(anl$SEX)
+      anl <- split(anl, f = facets)
       grid::grid.newpage()
-      lyt <- grid::grid.layout(nrow = nlevels(ANL$SEX), ncol = 1) %>%
+      lyt <- grid::grid.layout(nrow = length(anl), ncol = 1) %>%
         grid::viewport(layout = .) %>%
         grid::pushViewport()
-      anl$SEX <- droplevels(anl$SEX)
-      plot_list <- mapply(
-        df = split(anl, f = anl$SEX), nrow = seq_along(levels(anl$SEX)),
-        FUN = function(df_i, nrow_i) {
-          if (nrow(df_i) == 0) {
-            grid::grid.text("No data found for a given facet value.",
-              x = 0.5, y = 0.5, vp = grid::viewport(
-                layout.pos.row = nrow_i,
-                layout.pos.col = 1
-              )
-            )
-          } else {
-            g_km(
-              df = df_i, variables = variables, font_size = 8,
-              xlab = paste0(
-                "Survival time",
-                " (",
-                gsub(
-                  "(^|[[:space:]])([[:alpha:]])",
-                  "\\1\\U\\2",
-                  tolower(anl$AVALU[1]),
-                  perl = TRUE
-                ),
-                ")"
-              ), yval = "Survival", xticks = NULL, newpage = FALSE,
-              title = ifelse(
-                length(NULL) == 0,
-                paste0("KM Plot", ", ", quote(SEX), " = ", as.character(unique(df_i$SEX))),
-                paste(paste0("KM Plot", ", ", quote(SEX), " = ", as.character(unique(df_i$SEX))),
-                  paste("Stratified by", paste(NULL, collapse = ", ")),
-                  sep = "\n"
-                )
-              ),
-              footnotes = if (TRUE) {
-                paste(
-                  "Ties for Coxph (Hazard Ratio):", "efron",
-                  "\n", "p-value Method for Coxph (Hazard Ratio):",
-                  "log-rank"
-                )
+      plot_list <- lapply(
+        anl,
+        function(x) g_km(
+          x,
+          variables = variables,
+          control_surv = control_surv_timepoint(conf_level = 0.95),
+          xticks = NULL,
+          xlab = sprintf(
+            "%s (%s)",
+            "Survival time",
+            gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(x$AVALU[1]), perl = TRUE)
+          ),
+          yval = "Survival",
+          title =   sprintf(
+            "%s%s",
+            sprintf(
+              "%s%s",
+              "KM Plot",
+              if (!is.null(facets)) {
+                sprintf(", %s = %s", as.character(quote(SEX)), unique(x$SEX))
+                # sprintf(", %s = %s", as.character(quote(SEX)), unique(x[[as.character(quote(SEX))]]))
               } else {
-                NULL
-              },
-              ggtheme = ggplot2::theme_minimal(), annot_surv_med = TRUE,
-              annot_coxph = TRUE, control_surv = control_surv_timepoint(conf_level = 0.95),
-              control_coxph_pw = control_coxph(
-                conf_level = 0.95,
-                pval_method = "log-rank", ties = "efron"
-              ),
-              ci_ribbon = FALSE, vp = grid::viewport(
-                layout.pos.row = nrow_i,
-                layout.pos.col = 1
-              ), draw = TRUE
+                ""
+              }
+            ),
+            if (length(NULL) != 0) {
+              sprintf("\nStratified by %s", toString(NULL))
+            } else {
+              ""
+            }
+          ),
+          footnotes = if (TRUE) {
+            paste(
+              "Ties for Coxph (Hazard Ratio):", "efron", "\n",
+              "p-value Method for Coxph (Hazard Ratio):", "log-rank"
             )
-          }
-        }, SIMPLIFY = FALSE
+          },
+          newpage = FALSE,
+          font_size = 8,
+          ci_ribbon = FALSE,
+          ggtheme = ggplot2::theme_minimal(),
+          annot_surv_med = TRUE,
+          annot_coxph = TRUE,
+          control_coxph_pw = control_coxph(conf_level = 0.95, pval_method = "log-rank", ties = "efron")
+        )
       )
+
       plot <- tern::stack_grobs(grobs = plot_list)
       plot
     })
