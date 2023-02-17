@@ -145,8 +145,7 @@ template_g_km <- function(dataname = "ANL",
 
         plot_list <- lapply(
           anl,
-          function(x) {
-            browser()
+          function(x)
             g_km(
             x,
             variables = variables,
@@ -190,7 +189,6 @@ template_g_km <- function(dataname = "ANL",
             annot_coxph = annot_coxph,
             control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties)
           )
-          }
         )
 
         plot <- tern::stack_grobs(grobs = plot_list)
