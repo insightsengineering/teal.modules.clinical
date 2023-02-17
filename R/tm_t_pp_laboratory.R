@@ -108,9 +108,15 @@ template_laboratory <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(scda)
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADLB <- synthetic_cdisc_dataset("latest", "adlb")
+#'
+#' # Complete synthetic data
+#' ADSL <- scda::synthetic_cdisc_dataset("latest", "adsl")
+#' ADLB <- scda::synthetic_cdisc_dataset("latest", "adlb")
+#'
+#' # Reduced data from tern
+#' ADSL <- tern::tern_ex_adsl
+#' ADLB <- tern::tern_ex_adlb %>%
+#' dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days"))))
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -155,7 +161,7 @@ template_laboratory <- function(dataname = "ANL",
 #' )
 #' if (interactive()) {
 #'   shinyApp(app$ui, app$server)
-#' }
+}
 #'
 tm_t_pp_laboratory <- function(label,
                                dataname = "ADLB",
