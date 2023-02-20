@@ -143,52 +143,62 @@ template_g_km <- function(dataname = "ANL",
           grid::viewport(layout = .) %>%
           grid::pushViewport()
 
-        plot_list <- lapply(
-          anl,
-          function(x)
+        g_km_counter_generator <- function() {
+          plot_number <- 0L
+          function(x) {
+            plot_number <<- plot_number + 1L
             g_km(
-            x,
-            variables = variables,
-            control_surv = control_surv_timepoint(conf_level = conf_level),
-            xticks = xticks,
-            xlab = sprintf(
-              "%s (%s)",
-              xlab,
-              gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(x$time_unit_var[1]), perl = TRUE)
-            ),
-            yval = yval,
-            title =   sprintf(
-              "%s%s",
-              sprintf(
+              x,
+              variables = variables,
+              control_surv = control_surv_timepoint(conf_level = conf_level),
+              xticks = xticks,
+              xlab = sprintf(
+                "%s (%s)",
+                xlab,
+                gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(x$time_unit_var[1]), perl = TRUE)
+              ),
+              yval = yval,
+              title =   sprintf(
                 "%s%s",
-                title,
-                if (!is.null(facets)) {
-                  sprintf(", %s = %s", as.character(quote(facet_var)), unique(x$facet_var))
-                  # sprintf(", %s = %s", as.character(quote(facet_var)), unique(x[[as.character(quote(facet_var))]]))
+                sprintf(
+                  "%s%s",
+                  title,
+                  if (!is.null(facets)) {
+                    sprintf(", %s = %s", as.character(quote(facet_var)), unique(x$facet_var))
+                    # sprintf(", %s = %s", as.character(quote(facet_var)), unique(x[[as.character(quote(facet_var))]]))
+                  } else {
+                    ""
+                  }
+                ),
+                if (length(strata_var) != 0) {
+                  sprintf("\nStratified by %s", toString(strata_var))
                 } else {
                   ""
                 }
               ),
-              if (length(strata_var) != 0) {
-                sprintf("\nStratified by %s", toString(strata_var))
-              } else {
-                ""
-              }
-            ),
-            footnotes = if (annot_coxph) {
-              paste(
-                "Ties for Coxph (Hazard Ratio):", ties, "\n",
-                "p-value Method for Coxph (Hazard Ratio):", pval_method
-              )
-            },
-            newpage = FALSE,
-            font_size = font_size,
-            ci_ribbon = ci_ribbon,
-            ggtheme = ggplot2::theme_minimal(),
-            annot_surv_med = annot_surv_med,
-            annot_coxph = annot_coxph,
-            control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties)
-          )
+              footnotes = if (annot_coxph) {
+                paste(
+                  "Ties for Coxph (Hazard Ratio):", ties, "\n",
+                  "p-value Method for Coxph (Hazard Ratio):", pval_method
+                )
+              },
+              newpage = FALSE,
+              vp = grid::viewport(layout.pos.row = plot_number, layout.pos.col = 1),
+              font_size = font_size,
+              ci_ribbon = ci_ribbon,
+              ggtheme = ggplot2::theme_minimal(),
+              annot_surv_med = annot_surv_med,
+              annot_coxph = annot_coxph,
+              control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties)
+            )
+          }
+        }
+
+        g_km_counter <- g_km_counter_generator()
+
+        plot_list <- lapply(
+          anl,
+          g_km_counter
         )
 
         plot <- tern::stack_grobs(grobs = plot_list)
