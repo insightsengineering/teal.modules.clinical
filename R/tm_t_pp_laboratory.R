@@ -114,8 +114,8 @@ template_laboratory <- function(dataname = "ANL",
 #' # ADLB <- scda::synthetic_cdisc_dataset("latest", "adlb")
 #'
 #' # Reduced data from tern
-#' ADSL <- tern::tern_ex_adsl
-#' ADLB <- tern::tern_ex_adlb %>%
+#' ADSL <- tmc_ex_adsl
+#' ADLB <- tmc_ex_adlb %>%
 #'   dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days"))))
 #'
 #' app <- init(
