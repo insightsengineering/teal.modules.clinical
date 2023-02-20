@@ -37,8 +37,7 @@ testthat::test_that("template_g_km works as expected with default arguments", {
                 "%s%s",
                 "KM Plot",
                 if (!is.null(facets)) {
-                  sprintf(", %s = %s", as.character(quote(SEX)), unique(x$SEX))
-                  # sprintf(", %s = %s", as.character(quote(SEX)), unique(x[[as.character(quote(SEX))]]))
+                  sprintf(", %s = %s", as.character(quote(SEX)), unique(x[[as.character(quote(SEX))]]))
                 } else {
                   ""
                 }

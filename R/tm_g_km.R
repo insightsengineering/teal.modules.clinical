@@ -164,8 +164,7 @@ template_g_km <- function(dataname = "ANL",
                   "%s%s",
                   title,
                   if (!is.null(facets)) {
-                    sprintf(", %s = %s", as.character(quote(facet_var)), unique(x$facet_var))
-                    # sprintf(", %s = %s", as.character(quote(facet_var)), unique(x[[as.character(quote(facet_var))]]))
+                    sprintf(", %s = %s", as.character(quote(facet_var)), unique(x[[as.character(quote(facet_var))]]))
                   } else {
                     ""
                   }
