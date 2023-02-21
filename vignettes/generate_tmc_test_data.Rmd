@@ -607,6 +607,11 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
   ),
   PARAM = as.factor(.data$PARAM))
   
+  tmc_ex_adlb <- tmc_ex_adlb %>%
+    group_by(.data$USUBJID, .data$PARAMCD, .data$BASETYPE) %>%
+    mutate(BNRIND = .data$ANRIND[.data$ABLFL == "Y"]) %>%
+    ungroup()
+  
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adlb")
   formatters::var_labels(tmc_ex_adlb) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adlb)])
