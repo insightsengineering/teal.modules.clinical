@@ -891,7 +891,7 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
 
 ## ADCM
 
-```{r adtte, eval=FALSE}
+```{r adcm, eval=FALSE}
 generate_adcm <- function(adsl = tmc_ex_adsl) {
   set.seed(1)
   max_n_cms <- 10L
