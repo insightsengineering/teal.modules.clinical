@@ -185,7 +185,7 @@ generate_adsl <- function(N = 200) { # nolint
         sample(x = l_dcsreas$choices, size = N, replace = TRUE, prob = l_dcsreas$prob),
         as.character(NA)
       )
-    ) %>% 
+    ) %>%
     dplyr::mutate(study_duration_secs = study_duration_secs)
 
 
@@ -290,7 +290,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
     dplyr::select(-"trtsdt_int", -"trtedt_int", -"astdt_int") %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM, .data$AETERM)
-    
+
   adae <- adae %>%
     dplyr::group_by(.data$USUBJID) %>%
     dplyr::mutate(AESEQ = seq_len(dplyr::n())) %>%
@@ -894,20 +894,20 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
 ```{r adtte, eval=FALSE}
 generate_adcm <- function(adsl = tmc_ex_adsl) {
   set.seed(1)
-  max_n_cms = 10L
-  
+  max_n_cms <- 10L
+
   lookup_cm <- tibble::tribble(
-      ~CMCLAS, ~CMDECOD, ~ATIREL,
-      "medcl A", "medname A_1/3", "PRIOR",
-      "medcl A", "medname A_2/3", "CONCOMITANT",
-      "medcl A", "medname A_3/3", "CONCOMITANT",
-      "medcl B", "medname B_1/4", "CONCOMITANT",
-      "medcl B", "medname B_2/4", "PRIOR",
-      "medcl B", "medname B_3/4", "PRIOR",
-      "medcl B", "medname B_4/4", "CONCOMITANT",
-      "medcl C", "medname C_1/2", "CONCOMITANT",
-      "medcl C", "medname C_2/2", "CONCOMITANT"
-    )
+    ~CMCLAS, ~CMDECOD, ~ATIREL,
+    "medcl A", "medname A_1/3", "PRIOR",
+    "medcl A", "medname A_2/3", "CONCOMITANT",
+    "medcl A", "medname A_3/3", "CONCOMITANT",
+    "medcl B", "medname B_1/4", "CONCOMITANT",
+    "medcl B", "medname B_2/4", "PRIOR",
+    "medcl B", "medname B_3/4", "PRIOR",
+    "medcl B", "medname B_4/4", "CONCOMITANT",
+    "medcl C", "medname C_1/2", "CONCOMITANT",
+    "medcl C", "medname C_2/2", "CONCOMITANT"
+  )
 
   adcm <- Map(function(id, sid) { # nolint
     n_cms <- sample(c(0, seq_len(max_n_cms)), 1)
@@ -987,15 +987,14 @@ generate_adcm <- function(adsl = tmc_ex_adsl) {
       "Q4W", "QN", "Q4H", "UNKNOWN", "TWICE",
       "Q4H", "QD", "TID", "4 TIMES PER MONTH"
     ), dplyr::n(), replace = TRUE))
-  
- # Adding labels
+
+  # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adcm")
   formatters::var_labels(tmc_ex_adcm) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adcm)])
   rm(tmp_dt)
 
   save(tmc_ex_adcm, file = "data/tmc_ex_adcm.rda", compress = "xz")
 }
-
 ```
 
 ## Generate Data
