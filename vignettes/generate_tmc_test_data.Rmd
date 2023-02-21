@@ -616,7 +616,7 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
     group_by(.data$USUBJID, .data$PARAMCD, .data$BASETYPE) %>%
     mutate(BNRIND = .data$ANRIND[.data$ABLFL == "Y"]) %>%
     ungroup()
-  
+
   # ADY column
   tmc_ex_adlb <- tmc_ex_adlb %>%
     dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days"))))
