@@ -137,7 +137,6 @@ template_g_km <- function(dataname = "ANL",
     graph_list,
     substitute(
       expr = {
-
         grid::grid.newpage()
         lyt <- grid::grid.layout(nrow = length(anl), ncol = 1) %>%
           grid::viewport(layout = .) %>%
@@ -158,7 +157,7 @@ template_g_km <- function(dataname = "ANL",
                 gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(x$time_unit_var[1]), perl = TRUE)
               ),
               yval = yval,
-              title =   sprintf(
+              title = sprintf(
                 "%s%s",
                 sprintf(
                   "%s%s",

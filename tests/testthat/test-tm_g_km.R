@@ -31,7 +31,7 @@ testthat::test_that("template_g_km works as expected with default arguments", {
               gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(x$AVALU[1]), perl = TRUE)
             ),
             yval = "Survival",
-            title =   sprintf(
+            title = sprintf(
               "%s%s",
               sprintf(
                 "%s%s",
