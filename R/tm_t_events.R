@@ -446,15 +446,16 @@ template_events <- function(dataname,
 #'
 #' @examples
 #' library(dplyr)
-#' library(scda)
+#' # adsl <- scda::synthetic_cdisc_dataset("latest", "adsl") # complete data
+#' # adae <- scda::synthetic_cdisc_dataset("latest", "adae")
 #'
-#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
-#' adae <- synthetic_cdisc_dataset("latest", "adae")
+#' adsl <- tmc_ex_adsl
+#' adae <- tmc_ex_adae
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
-#'     cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")')
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADAE", adae)
 #'   ),
 #'   modules = modules(
 #'     tm_t_events(

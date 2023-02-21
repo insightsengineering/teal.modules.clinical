@@ -86,11 +86,10 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Summary of Variables
 }
 \examples{
-# Preparation of the test case.
+# Preparation of the test case
 # adsl <- scda::synthetic_cdisc_dataset("latest", "adsl") # complete data
-adsl <- tern::tern_ex_adsl
-adsl$EOSDY[1] <- NA
-adsl$DCSREAS[1] <- NA
+adsl <- tmc_ex_adsl
+adsl$EOSDY[1] <- NA_integer_
 
 # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
 stopifnot(

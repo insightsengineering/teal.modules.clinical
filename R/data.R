@@ -17,10 +17,6 @@ NULL
 #'
 "tmc_ex_adlb"
 
-#' @describeIn ex_data ADPP data
-#'
-"tmc_ex_adpp"
-
 #' @describeIn ex_data ADRS data
 #'
 "tmc_ex_adrs"

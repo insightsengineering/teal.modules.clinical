@@ -184,7 +184,12 @@ generate_adsl <- function(N = 200) { # nolint
         as.character(NA)
       )
     )
-
+  
+  # Adding labels
+  tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adsl")
+  formatters::var_labels(tmc_ex_adsl) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adsl)])
+  rm(tmp_dt)
+  
   save(tmc_ex_adsl, file = "data/tmc_ex_adsl.rda", compress = "xz")
 }
 ```
@@ -263,6 +268,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
       origin = "1970-01-01"
     )) %>%
+    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM, .data$AETERM)
 
   adae <- adae %>%
@@ -313,6 +319,11 @@ generate_adae <- function(adsl = tmc_ex_adsl,
   }, adae)
 
   tmc_ex_adae <- dplyr::bind_cols(adae, l_aesi)
+  
+  # Adding labels
+  tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adae")
+  formatters::var_labels(tmc_ex_adae) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adae)])
+  rm(tmp_dt)
 
   save(tmc_ex_adae, file = "data/tmc_ex_adae.rda", compress = "xz")
 }
@@ -595,65 +606,13 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
     ""
   ),
   PARAM = as.factor(.data$PARAM))
+  
+  # Adding labels
+  tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adlb")
+  formatters::var_labels(tmc_ex_adlb) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adlb)])
+  rm(tmp_dt)
 
   save(tmc_ex_adlb, file = "data/tmc_ex_adlb.rda", compress = "xz")
-}
-```
-
-## ADPP
-
-```{r adpp, eval=FALSE}
-generate_adpp <- function(adsl = tmc_ex_adsl) {
-  set.seed(1)
-  paramcd <- c(
-    "AUCIFO", "CMAX", "CLO", "RMAX", "TON",
-    "RENALCL", "RENALCLD", "RCAMINT", "RCPCINT"
-  )
-  param <- c(
-    "AUC Infinity Obs", "Max Conc", "Total CL Obs", "Time of Maximum Response",
-    "Time to Onset", "Renal CL", "Renal CL Norm by Dose",
-    "Amt Rec from T1 to T2", "Pct Rec from T1 to T2"
-  )
-  paramu <- c("day*ug/mL", "ug/mL", "ml/day/kg", "hr", "hr", "L/hr", "L/hr/mg", "mg", "%")
-  aval_mean <- c(200, 30, 5, 10, 3, 0.05, 0.005, 1.5613, 15.65)
-
-  # validate and initialize related variables
-  param_init_list <- relvar_init(param, paramcd)
-  unit_init_list <- relvar_init(param, paramu)
-
-  adpp <- expand.grid(
-    STUDYID = unique(adsl$STUDYID),
-    USUBJID = adsl$USUBJID,
-    PARAM = as.factor(param_init_list$relvar1),
-    stringsAsFactors = FALSE
-  )
-  adpp <- adpp %>%
-    dplyr::mutate(AVAL = stats::rnorm(nrow(adpp), mean = 1, sd = 0.2)) %>%
-    dplyr::left_join(data.frame(PARAM = param, ADJUST = aval_mean), by = "PARAM") %>%
-    dplyr::mutate(AVAL = .data$AVAL * .data$ADJUST) %>%
-    dplyr::select(-"ADJUST")
-
-  # assign related variable values: PARAMxPARAMCD are related
-  adpp$PARAMCD <- as.factor(rel_var(
-    df = adpp,
-    var_name = "PARAMCD",
-    var_values = param_init_list$relvar2,
-    related_var = "PARAM"
-  ))
-
-  # assign related variable values: PARAMxPARAMU are related
-  adpp$AVALU <- as.factor(rel_var(
-    df = adpp,
-    var_name = "PARAMU",
-    var_values = unit_init_list$relvar2,
-    related_var = "PARAM"
-  ))
-
-  tmc_ex_adpp <- adsl %>%
-    dplyr::inner_join(adpp, by = c("STUDYID", "USUBJID")) %>%
-    dplyr::filter(.data$ACTARM != "B: Placebo", !(.data$ACTARM == "A: Drug X"))
-
-  save(tmc_ex_adpp, file = "data/tmc_ex_adpp.rda", compress = "xz")
 }
 ```
 
@@ -767,6 +726,11 @@ generate_adrs <- function(adsl = tmc_ex_adsl) {
       .data$AVISITN,
       .data$ADTM
     )
+  
+  # Adding labels
+  tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adrs")
+  formatters::var_labels(tmc_ex_adrs) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adrs)])
+  rm(tmp_dt)
 
   save(tmc_ex_adrs, file = "data/tmc_ex_adrs.rda", compress = "xz")
 }
@@ -883,6 +847,11 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
       .data$PARAMCD,
       .data$ADTM
     )
+  
+  # Adding labels
+  tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adtte")
+  formatters::var_labels(tmc_ex_adtte) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adtte)])
+  rm(tmp_dt)
 
   save(tmc_ex_adtte, file = "data/tmc_ex_adtte.rda", compress = "xz")
 }
@@ -898,7 +867,6 @@ load("data/tmc_ex_adsl.rda")
 # Generate other datasets
 generate_adae()
 generate_adlb()
-generate_adpp()
 generate_adrs()
 generate_adtte()
 ```
