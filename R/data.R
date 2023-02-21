@@ -1,6 +1,6 @@
 #' Simulated CDISC Data for Examples
 #'
-#' @format rds (data.frame)
+#' @format `rds` (`data.frame`)
 #'
 #' @name ex_data
 NULL

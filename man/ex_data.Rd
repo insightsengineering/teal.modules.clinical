@@ -10,7 +10,7 @@
 \alias{tmc_ex_adtte}
 \title{Simulated CDISC Data for Examples}
 \format{
-rds (data.frame)
+\code{rds} (\code{data.frame})
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 200 rows and 25 columns.
 

@@ -20,6 +20,8 @@ editor_options:
 
 The following script is used to create and save cached synthetic CDISC data to the `data/` directory to use in examples and tests in the `teal.modules.clinical` package. This script/vignette was initialized by Emily de la Rua in `tern`.
 
+_Disclaimer_: this vignette concerns mainly the development of minimal and stable test data and it is kept internal for feature traceability.
+
 ## Setup & Helper Functions
 
 ```{r setup, eval=FALSE}
@@ -151,7 +153,7 @@ generate_adsl <- function(N = 200) { # nolint
       SAFFL = factor("Y")
     ) %>%
     dplyr::mutate(USUBJID = paste(.data$STUDYID, .data$SITEID, .data$SUBJID, sep = "-"))
-  
+
   # disposition related variables
   # using probability of 1 for the "DEATH" level to ensure at least one death record exists
   l_dcsreas <- list(
@@ -176,7 +178,7 @@ generate_adsl <- function(N = 200) { # nolint
       EOSDY < max(EOSDY, na.rm = TRUE) ~ "DISCONTINUED",
       is.na(TRTEDTM) ~ "ONGOING"
     )) %>%
-    dplyr::mutate(EOTSTT = .data$EOSSTT) %>% 
+    dplyr::mutate(EOTSTT = .data$EOSSTT) %>%
     dplyr::mutate(
       DCSREAS = ifelse(
         .data$EOSSTT == "DISCONTINUED",
@@ -184,12 +186,12 @@ generate_adsl <- function(N = 200) { # nolint
         as.character(NA)
       )
     )
-  
+
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adsl")
   formatters::var_labels(tmc_ex_adsl) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adsl)])
   rm(tmp_dt)
-  
+
   save(tmc_ex_adsl, file = "data/tmc_ex_adsl.rda", compress = "xz")
 }
 ```
@@ -319,7 +321,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
   }, adae)
 
   tmc_ex_adae <- dplyr::bind_cols(adae, l_aesi)
-  
+
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adae")
   formatters::var_labels(tmc_ex_adae) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adae)])
@@ -599,19 +601,21 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
   adlb <- flag_variables(adlb, TRUE, TRUE, TRUE) %>% dplyr::rename(WGRHIVFL = "new_var")
   adlb <- flag_variables(adlb, TRUE, FALSE, TRUE) %>% dplyr::rename(WGRLOVFL = "new_var")
 
-  tmc_ex_adlb <- adlb %>% dplyr::mutate(ANL01FL = ifelse(
-    (.data$ABLFL == "Y" | (.data$WORS01FL == "Y" & is.na(.data$DTYPE))) &
-      (.data$AVISIT != "SCREENING"),
-    "Y",
-    ""
-  ),
-  PARAM = as.factor(.data$PARAM))
-  
+  tmc_ex_adlb <- adlb %>% dplyr::mutate(
+    ANL01FL = ifelse(
+      (.data$ABLFL == "Y" | (.data$WORS01FL == "Y" & is.na(.data$DTYPE))) &
+        (.data$AVISIT != "SCREENING"),
+      "Y",
+      ""
+    ),
+    PARAM = as.factor(.data$PARAM)
+  )
+
   tmc_ex_adlb <- tmc_ex_adlb %>%
     group_by(.data$USUBJID, .data$PARAMCD, .data$BASETYPE) %>%
     mutate(BNRIND = .data$ANRIND[.data$ABLFL == "Y"]) %>%
     ungroup()
-  
+
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adlb")
   formatters::var_labels(tmc_ex_adlb) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adlb)])
@@ -731,7 +735,7 @@ generate_adrs <- function(adsl = tmc_ex_adsl) {
       .data$AVISITN,
       .data$ADTM
     )
-  
+
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adrs")
   formatters::var_labels(tmc_ex_adrs) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adrs)])
@@ -852,7 +856,7 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
       .data$PARAMCD,
       .data$ADTM
     )
-  
+
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adtte")
   formatters::var_labels(tmc_ex_adtte) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adtte)])
@@ -862,16 +866,17 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
 }
 ```
 
-## Generate Data
 
+## Generate Data
 ```{r generate data, eval=FALSE}
 # Generate & load ADSL
-generate_adsl()
+setwd("~/NEST/teal.modules.clinical")
+# generate_adsl()
 load("data/tmc_ex_adsl.rda")
 
 # Generate other datasets
-generate_adae()
+# generate_adae()
 generate_adlb()
-generate_adrs()
-generate_adtte()
+# generate_adrs()
+# generate_adtte()
 ```
