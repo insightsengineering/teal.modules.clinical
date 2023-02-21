@@ -87,7 +87,6 @@ Teal Module: Summary of Variables
 }
 \examples{
 # Preparation of the test case
-# adsl <- scda::synthetic_cdisc_dataset("latest", "adsl") # complete data
 adsl <- tmc_ex_adsl
 adsl$EOSDY[1] <- NA_integer_
 

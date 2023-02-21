@@ -62,14 +62,9 @@ This teal module produces a patient profile laboratory table using ADaM datasets
 }
 \examples{
 
-# Complete synthetic data
-# ADSL <- scda::synthetic_cdisc_dataset("latest", "adsl")
-# ADLB <- scda::synthetic_cdisc_dataset("latest", "adlb")
-
-# Reduced data from tern
+# Reduced data for tests
 ADSL <- tmc_ex_adsl
-ADLB <- tmc_ex_adlb \%>\%
-  dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days"))))
+ADLB <- tmc_ex_adlb
 
 app <- init(
   data = cdisc_data(

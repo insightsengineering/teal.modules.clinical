@@ -90,10 +90,8 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Adverse Events Table by Standardized \code{MedDRA} Query.
 }
 \examples{
-library(scda)
-
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
-adae <- synthetic_cdisc_dataset("latest", "adae")
+adsl <- tmc_ex_adsl
+adae <- tmc_ex_adae
 
 names_baskets <- grep("^(SMQ|CQ).*NAM$", names(adae), value = TRUE)
 names_scopes <- grep("^SMQ.*SC$", names(adae), value = TRUE)
@@ -111,12 +109,8 @@ cs_scopes <- choices_selected(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl,
-      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-    ),
-    cdisc_dataset("ADAE", adae,
-      code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")'
-    )
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADAE", adae)
   ),
   modules = modules(
     tm_t_smq(

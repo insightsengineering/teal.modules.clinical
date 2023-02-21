@@ -16,11 +16,8 @@
 #' @examples
 #' if (interactive()) {
 #'   # Preparation of the test case.
-#'   library(dplyr)
-#'   library(scda)
-#'   library(tern)
-#'   adsl <- synthetic_cdisc_data("latest")$adsl
-#'   adrs <- synthetic_cdisc_data("latest")$adrs
+#'   adsl <- tmc_ex_adsl
+#'   adrs <- tmc_ex_adrs
 #'
 #'   # Generate an expression for the analysis of responders.
 #'   a <- template_binary_outcome(

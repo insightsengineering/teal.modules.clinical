@@ -611,10 +611,15 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
     PARAM = as.factor(.data$PARAM)
   )
 
+  # BNRIND column
   tmc_ex_adlb <- tmc_ex_adlb %>%
     group_by(.data$USUBJID, .data$PARAMCD, .data$BASETYPE) %>%
     mutate(BNRIND = .data$ANRIND[.data$ABLFL == "Y"]) %>%
     ungroup()
+  
+  # ADY column
+  tmc_ex_adlb <- tmc_ex_adlb %>%
+    dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days"))))
 
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adlb")
@@ -870,13 +875,12 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
 ## Generate Data
 ```{r generate data, eval=FALSE}
 # Generate & load ADSL
-setwd("~/NEST/teal.modules.clinical")
-# generate_adsl()
+generate_adsl()
 load("data/tmc_ex_adsl.rda")
 
 # Generate other datasets
-# generate_adae()
+generate_adae()
 generate_adlb()
-# generate_adrs()
-# generate_adtte()
+generate_adrs()
+generate_adtte()
 ```

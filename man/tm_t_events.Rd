@@ -85,8 +85,6 @@ Teal Module: Events by Term
 }
 \examples{
 library(dplyr)
-# adsl <- scda::synthetic_cdisc_dataset("latest", "adsl") # complete data
-# adae <- scda::synthetic_cdisc_dataset("latest", "adae")
 
 adsl <- tmc_ex_adsl
 adae <- tmc_ex_adae
