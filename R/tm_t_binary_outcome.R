@@ -392,10 +392,9 @@ template_binary_outcome <- function(dataname,
 #'
 #' @examples
 #' library(dplyr)
-#' library(scda)
 #'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
+#' ADSL <- tmc_ex_adsl
+#' ADRS <- tmc_ex_adrs %>%
 #'   mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
 #'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #' arm_ref_comp <- list(
@@ -405,12 +404,7 @@ template_binary_outcome <- function(dataname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADRS", ADRS),
-#'     code =
-#'       'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#'        ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
-#'        mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
-#'        filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")' # nolint
+#'     cdisc_dataset("ADRS", ADRS)
 #'   ),
 #'   modules = modules(
 #'     tm_t_binary_outcome(

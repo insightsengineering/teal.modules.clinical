@@ -361,7 +361,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #' ADAE <- synthetic_cdisc_dataset("latest", "adae")
 #' ADCM <- synthetic_cdisc_dataset("latest", "adcm")
 #'
-#' #' Modify ADCM
+#' # Modify ADCM
 #' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #' ADCM$CMDOSE <- 1
 #' ADCM$CMDOSU <- "U"

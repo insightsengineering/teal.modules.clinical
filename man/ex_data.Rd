@@ -8,11 +8,12 @@
 \alias{tmc_ex_adlb}
 \alias{tmc_ex_adrs}
 \alias{tmc_ex_adtte}
+\alias{tmc_ex_adcm}
 \title{Simulated CDISC Data for Examples}
 \format{
 \code{rds} (\code{data.frame})
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 200 rows and 25 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 200 rows and 26 columns.
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 541 rows and 46 columns.
 
@@ -21,6 +22,8 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1600 rows and 33 columns.
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1000 rows and 32 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1012 rows and 54 columns.
 }
 \usage{
 tmc_ex_adsl
@@ -32,6 +35,8 @@ tmc_ex_adlb
 tmc_ex_adrs
 
 tmc_ex_adtte
+
+tmc_ex_adcm
 }
 \description{
 Simulated CDISC Data for Examples
@@ -47,6 +52,8 @@ Simulated CDISC Data for Examples
 \item \code{tmc_ex_adrs}: ADRS data
 
 \item \code{tmc_ex_adtte}: ADTTE data
+
+\item \code{tmc_ex_adcm}: ADCM data
 
 }}
 \keyword{datasets}

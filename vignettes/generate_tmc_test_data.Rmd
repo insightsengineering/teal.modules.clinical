@@ -185,7 +185,9 @@ generate_adsl <- function(N = 200) { # nolint
         sample(x = l_dcsreas$choices, size = N, replace = TRUE, prob = l_dcsreas$prob),
         as.character(NA)
       )
-    )
+    ) %>% 
+    dplyr::mutate(study_duration_secs = study_duration_secs)
+
 
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adsl")
@@ -871,10 +873,142 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
 }
 ```
 
+## ADCM
+
+```{r adtte, eval=FALSE}
+generate_adcm <- function(adsl = tmc_ex_adsl) {
+  set.seed(1)
+  max_n_cms = 10L
+  
+  lookup_cm <- tibble::tribble(
+      ~CMCLAS, ~CMDECOD, ~ATIREL,
+      "medcl A", "medname A_1/3", "PRIOR",
+      "medcl A", "medname A_2/3", "CONCOMITANT",
+      "medcl A", "medname A_3/3", "CONCOMITANT",
+      "medcl B", "medname B_1/4", "CONCOMITANT",
+      "medcl B", "medname B_2/4", "PRIOR",
+      "medcl B", "medname B_3/4", "PRIOR",
+      "medcl B", "medname B_4/4", "CONCOMITANT",
+      "medcl C", "medname C_1/2", "CONCOMITANT",
+      "medcl C", "medname C_2/2", "CONCOMITANT"
+    )
+
+  adcm <- Map(function(id, sid) { # nolint
+    n_cms <- sample(c(0, seq_len(max_n_cms)), 1)
+    i <- sample(seq_len(nrow(lookup_cm)), n_cms, TRUE)
+    dplyr::mutate(
+      lookup_cm[i, ],
+      USUBJID = id,
+      STUDYID = sid
+    )
+  }, adsl$USUBJID, adsl$STUDYID) %>%
+    Reduce(rbind, .) %>%
+    `[`(c(4, 5, 1, 2, 3)) %>%
+    dplyr::mutate(CMCAT = .data$CMCLAS)
+
+  adcm <- var_relabel( # nolint
+    adcm,
+    STUDYID = "Study Identifier",
+    USUBJID = "Unique Subject Identifier"
+  )
+
+  # merge adsl to be able to add CM date and study day variables
+  adcm <- dplyr::inner_join( # nolint
+    adcm,
+    adsl,
+    by = c("STUDYID", "USUBJID")
+  ) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
+    dplyr::mutate(trtedt_int = dplyr::case_when(
+      !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
+      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + (.data$study_duration_secs) / 86400)
+    )) %>%
+    dplyr::mutate(ASTDTM = as.POSIXct(
+      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
+      origin = "1970-01-01"
+    )) %>%
+    dplyr::mutate(astdt_int = as.numeric(as.Date(.data$ASTDTM))) %>%
+    dplyr::mutate(ASTDY = ceiling(as.numeric(difftime(.data$ASTDTM, .data$TRTSDTM, units = "days")))) %>%
+    # add 1 to end of range incase both values passed to sample() are the same
+    dplyr::mutate(AENDTM = as.POSIXct(
+      (
+        sample(.data$astdt_int:(.data$trtedt_int + 1), size = 1) * 86400),
+      origin = "1970-01-01"
+    )) %>%
+    dplyr::mutate(AENDY = ceiling(as.numeric(difftime(.data$AENDTM, .data$TRTSDTM, units = "days")))) %>%
+    dplyr::select(-"trtsdt_int", -"trtedt_int", -"astdt_int") %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM)
+
+  adcm <- adcm %>% # nolint
+    dplyr::group_by(.data$USUBJID) %>%
+    dplyr::mutate(CMSEQ = seq_len(dplyr::n())) %>%
+    dplyr::mutate(ASEQ = .data$CMSEQ) %>%
+    dplyr::ungroup() %>%
+    dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM, .data$CMSEQ) %>%
+    dplyr::mutate(
+      ATC1 = paste("ATCCLAS1", substr(.data$CMDECOD, 9, 9)),
+      ATC2 = paste("ATCCLAS2", substr(.data$CMDECOD, 9, 9)),
+      ATC3 = paste("ATCCLAS3", substr(.data$CMDECOD, 9, 9)),
+      ATC4 = paste("ATCCLAS4", substr(.data$CMDECOD, 9, 9))
+    ) %>%
+    dplyr::mutate(CMINDC = sample(c(
+      "Nausea", "Hypertension", "Urticaria", "Fever",
+      "Asthma", "Infection", "Diabete", "Diarrhea", "Pneumonia"
+    ), dplyr::n(), replace = TRUE)) %>%
+    dplyr::mutate(CMDOSE = sample(1:99, dplyr::n(), replace = TRUE)) %>%
+    dplyr::mutate(CMTRT = substr(.data$CMDECOD, 9, 13)) %>%
+    dplyr::mutate(CMDOSU = sample(c(
+      "ug/mL", "ug/kg/day", "%", "uL", "DROP",
+      "umol/L", "mg", "mg/breath", "ug"
+    ), dplyr::n(), replace = TRUE)) %>%
+    dplyr::mutate(CMROUTE = sample(c(
+      "INTRAVENOUS", "ORAL", "NASAL",
+      "INTRAMUSCULAR", "SUBCUTANEOUS", "INHALED", "RECTAL", "UNKNOWN"
+    ), dplyr::n(), replace = TRUE)) %>%
+    dplyr::mutate(CMDOSFRQ = sample(c(
+      "Q4W", "QN", "Q4H", "UNKNOWN", "TWICE",
+      "Q4H", "QD", "TID", "4 TIMES PER MONTH"
+    ), dplyr::n(), replace = TRUE)) %>%
+    dplyr::mutate(
+      # use 1 year as reference time point
+      CMSTRTPT = dplyr::case_when(
+        ASTDY <= 365 ~ "BEFORE",
+        ASTDY > 365 ~ "AFTER",
+        is.na(ASTDY) ~ "U"
+      ),
+      CMENRTPT = dplyr::case_when(
+        EOSSTT %in% c("COMPLETED", "DISCONTINUED") ~ "BEFORE",
+        EOSSTT == "ONGOING" ~ "ONGOING",
+        is.na(EOSSTT) ~ "U"
+      ),
+      ADURN = (.data$AENDTM - .data$ASTDTM) / 86400,
+      ADURU = "days"
+    )
+
+  tmc_ex_adcm <- adcm %>% # nolint
+    dplyr::mutate(
+      ATC1CD = .data$ATC1,
+      ATC2CD = .data$ATC2,
+      ATC3CD = .data$ATC3,
+      ATC4CD = .data$ATC4
+    )
+
+ # Adding labels
+  tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adcm")
+  formatters::var_labels(tmc_ex_adcm) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adcm)])
+  rm(tmp_dt)
+
+  save(tmc_ex_adcm, file = "data/tmc_ex_adcm.rda", compress = "xz")
+}
+
+```
 
 ## Generate Data
+
 ```{r generate data, eval=FALSE}
-# Generate & load ADSL
+# Generate & load adsl
 generate_adsl()
 load("data/tmc_ex_adsl.rda")
 
@@ -883,4 +1017,5 @@ generate_adae()
 generate_adlb()
 generate_adrs()
 generate_adtte()
+generate_adcm()
 ```

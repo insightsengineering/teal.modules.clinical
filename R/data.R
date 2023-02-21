@@ -24,3 +24,6 @@ NULL
 #' @describeIn ex_data ADTTE data
 #'
 "tmc_ex_adtte"
+#' @describeIn ex_data ADCM data
+#'
+"tmc_ex_adcm"

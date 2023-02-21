@@ -215,14 +215,12 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @template author_song24
 #'
 #' @examples
-#'
-#' library(scda)
 #' library(dplyr)
 #' library(nestcolor)
 #'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
-#'   mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
+#' ADSL <- tmc_ex_adsl
+#' ADRS <- tmc_ex_adrs %>%
+#'   mutate(AVALC = tern::d_onco_rsp_label(AVALC)) %>%
 #'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
 #' arm_ref_comp <- list(
@@ -239,12 +237,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADRS", ADRS),
-#'     code =
-#'       'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#'        ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
-#'        mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
-#'        filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")' # nolint
+#'     cdisc_dataset("ADRS", ADRS)
 #'   ),
 #'   modules = modules(
 #'     tm_g_forest_rsp(
