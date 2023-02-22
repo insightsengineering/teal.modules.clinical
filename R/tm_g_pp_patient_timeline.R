@@ -354,7 +354,6 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(scda)
 #' library(nestcolor)
 #'
 #' ADSL <- tmc_ex_adsl

@@ -102,7 +102,6 @@ For more details, see the help vignette: \code{vignette("custom-ggplot2-argument
 This teal module produces a patient profile timeline plot using ADaM datasets.
 }
 \examples{
-library(scda)
 library(nestcolor)
 
 ADSL <- tmc_ex_adsl
