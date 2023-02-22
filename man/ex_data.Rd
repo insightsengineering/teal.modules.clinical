@@ -17,11 +17,11 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 541 rows and 52 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 4200 rows and 58 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 4200 rows and 60 columns.
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1600 rows and 35 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1000 rows and 34 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1000 rows and 35 columns.
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1012 rows and 47 columns.
 }

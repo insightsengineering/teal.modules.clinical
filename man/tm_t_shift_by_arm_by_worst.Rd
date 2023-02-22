@@ -92,7 +92,6 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Shift by Arm by Worst
 }
 \examples{
-
 library(dplyr)
 library(tern)
 library(scda)

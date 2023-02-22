@@ -229,11 +229,10 @@ template_logistic <- function(dataname,
 #'
 #' @export
 #' @examples
-#' library(scda)
 #' library(dplyr)
 #'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
+#' ADSL <- tmc_ex_adsl
+#' ADRS <- tmc_ex_adrs %>%
 #'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
 #' arm_ref_comp <- list(
@@ -249,13 +248,8 @@ template_logistic <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
-#'     cdisc_dataset("ADRS", ADRS,
-#'       code = 'ADRS <- synthetic_cdisc_dataset("latest", "adrs") %>%
-#'         filter(PARAMCD %in% c("BESRSPI", "INVET"))' # nolint
-#'     )
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADRS", ADRS)
 #'   ),
 #'   modules = modules(
 #'     tm_t_logistic(

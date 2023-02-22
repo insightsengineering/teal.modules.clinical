@@ -171,8 +171,8 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'   whether to include row with total number of patients.
 #'
 #' @export
-#' @examples
 #'
+#' @examples
 #' library(dplyr)
 #' library(tern)
 #' library(scda)

@@ -74,6 +74,7 @@ This teal module produces a patient profile vitals plot using ADaM datasets.
 \examples{
 library(scda)
 library(nestcolor)
+
 ADSL <- synthetic_cdisc_dataset("latest", "adsl")
 ADVS <- synthetic_cdisc_dataset("latest", "advs")
 

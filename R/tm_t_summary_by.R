@@ -327,16 +327,13 @@ template_summary_by <- function(parentname,
 #' @export
 #' @examples
 #' # Preparation of the test case.
-#' library(scda)
-#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
-#' adlb <- synthetic_cdisc_dataset("latest", "adlb")
+#' adsl <- tmc_ex_adsl
+#' adlb <- tmc_ex_adlb
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADLB", adlb),
-#'     code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#'       ADLB <- synthetic_cdisc_dataset("latest", "adlb")' # nolint
+#'     cdisc_dataset("ADLB", adlb)
 #'   ),
 #'   modules = modules(
 #'     tm_t_summary_by(

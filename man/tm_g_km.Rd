@@ -102,11 +102,10 @@ This teal module produces a grid style Kaplan-Meier plot for data with
 ADaM structure.
 }
 \examples{
-library(scda)
 library(nestcolor)
 
-ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-ADTTE <- synthetic_cdisc_dataset("latest", "adtte")
+ADSL <- tmc_ex_adsl
+ADTTE <- tmc_ex_adtte
 
 arm_ref_comp <- list(
   ACTARMCD = list(
@@ -121,8 +120,8 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
-    cdisc_dataset("ADTTE", ADTTE, code = 'ADTTE <- synthetic_cdisc_dataset("latest", "adtte")')
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADTTE", ADTTE)
   ),
   modules = modules(
     tm_g_km(

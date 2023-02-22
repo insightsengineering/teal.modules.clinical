@@ -107,11 +107,10 @@ ADaM structure.
 }
 \examples{
 library(dplyr)
-library(scda)
 library(nestcolor)
 
-adsl <- synthetic_cdisc_dataset("latest", "adsl") \%>\% slice(1:20)
-adlb <- synthetic_cdisc_dataset("latest", "adlb")
+adsl <- tmc_ex_adsl \%>\% slice(1:20)
+adlb <- tmc_ex_adlb
 adlb <- adlb \%>\% filter(USUBJID \%in\% adsl$USUBJID)
 
 adsl <- df_explicit_na(adsl)
@@ -122,16 +121,11 @@ app <- init(
   data = cdisc_data(
     cdisc_dataset(
       "ADSL",
-      adsl,
-      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl") \%>\% slice(1:20)
-      ADSL <- df_explicit_na(ADSL)' # nolint
+      adsl
     ),
     cdisc_dataset(
       "ADLB",
-      adlb,
-      code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")
-      ADLB <- df_explicit_na(ADLB) \%>\%
-      dplyr::filter(AVISIT != "SCREENING")' # nolint
+      adlb
     )
   ),
   modules = modules(

@@ -145,9 +145,7 @@ template_a_gee <- function(output_table,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
+#'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADQS", ADQS,
 #'       code = 'ADQS <- synthetic_cdisc_dataset("latest", "adqs") %>%
 #'               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%

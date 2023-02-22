@@ -154,7 +154,7 @@ template_events_patyear <- function(dataname,
 #' library(dplyr)
 #' library(scda)
 #'
-#' adsl <- tmc_ex_adsl
+#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
 #' adaette <- synthetic_cdisc_dataset("latest", "adaette")
 #' adaette <- adaette %>%
 #'   dplyr::filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%

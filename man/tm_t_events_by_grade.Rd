@@ -86,16 +86,16 @@ Teal Module: Events by Grade
 }
 \examples{
 library(dplyr)
-library(scda)
 library(tern)
 
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
-adae <- synthetic_cdisc_dataset("latest", "adae")
+adsl <- tmc_ex_adsl
+adae <- tmc_ex_adae \%>\%
+  mutate_if(is.character, as.factor) # be certain of having factors
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
-    cdisc_dataset("ADAE", adae, code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")')
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADAE", adae)
   ),
   modules = modules(
     tm_t_events_by_grade(

@@ -15,11 +15,11 @@
 #'
 #' @examples
 #' library(dplyr)
-#' library(scda)
 #' library(nestcolor)
 #'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADAE <- synthetic_cdisc_dataset("latest", "adae")
+#' ADSL <- tmc_ex_adsl %>%
+#'   dplyr::mutate(ITTFL = factor("Y"))
+#' ADAE <- tmc_ex_adae
 #'
 #' adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
 #' ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
@@ -29,15 +29,8 @@
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
-#'     cdisc_dataset("ADAE", ADAE,
-#'       code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")
-#'               adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
-#'               ADAE <- ADAE %>%
-#'                 dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
-#'               formatters::var_labels(ADAE) <- adae_labels
-#'               ADAE'
-#'     )
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADAE", ADAE)
 #'   ),
 #'   modules = modules(
 #'     tm_g_barchart_simple(

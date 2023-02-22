@@ -72,11 +72,10 @@ template_prior_medication <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(scda)
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADCM <- synthetic_cdisc_dataset("latest", "adcm")
+#' ADSL <- tmc_ex_adsl
+#' ADCM <- tmc_ex_adcm
 #'
-#' #' Modify ADCM
+#' # Modify ADCM
 #' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #' ADCM$CMDOSE <- 1
 #' ADCM$CMTRT <- ADCM$CMCAT
@@ -96,25 +95,8 @@ template_prior_medication <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
+#'     cdisc_dataset("ADSL", ADSL),
 #'     cdisc_dataset("ADCM", ADCM,
-#'       code = 'ADCM <- synthetic_cdisc_dataset("latest", "adcm")
-#'         ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
-#'         ADCM$CMDOSE <- 1
-#'         ADCM$CMTRT <- ADCM$CMCAT
-#'         ADCM$CMDOSU <- "U"
-#'         ADCM$CMROUTE <- "CMROUTE"
-#'         ADCM$CMDOSFRQ <- "CMDOSFRQ"
-#'         ADCM$CMASTDTM <- ADCM$ASTDTM
-#'         ADCM$CMAENDTM <- ADCM$AENDTM
-#'         formatters::var_labels(
-#'           ADCM[c("CMINDC", "CMTRT", "ASTDY")]) <- c(
-#'             "Indication",
-#'             "Reported Name of Drug, Med, or Therapy",
-#'             "Study Day of Start of Medication"
-#'            )',
 #'       keys = adcm_keys
 #'     )
 #'   ),

@@ -429,10 +429,10 @@ template_ancova <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#'
 #' # Preparation of the test case.
 #' library(dplyr)
 #' library(scda)
+#'
 #' adsl <- synthetic_cdisc_dataset("latest", "adsl")
 #' adqs <- synthetic_cdisc_dataset("latest", "adqs")
 #'
