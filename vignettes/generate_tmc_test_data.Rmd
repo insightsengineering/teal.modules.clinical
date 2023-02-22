@@ -185,11 +185,11 @@ generate_adsl <- function(N = 200) { # nolint
       )
     ) %>%
     dplyr::mutate(study_duration_secs = study_duration_secs)
-  
+
   tmc_ex_adsl <- tmc_ex_adsl %>%
     dplyr::mutate(DTHDT = dplyr::case_when(
       DCSREAS == "DEATH" ~ as.Date(.data$TRTEDTM) + sample(0:50, size = N, replace = TRUE)
-    )) 
+    ))
 
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adsl")
@@ -637,7 +637,7 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
   # ADY column
   tmc_ex_adlb <- tmc_ex_adlb %>%
     dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days"))))
-  
+
   # PARAMCD should be factor
   tmc_ex_adlb$PARAMCD <- as.factor(tmc_ex_adlb$PARAMCD)
 
