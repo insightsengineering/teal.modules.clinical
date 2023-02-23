@@ -123,23 +123,17 @@ This teal module produces a grid style Line Plot for data with
 ADaM structure.
 }
 \examples{
-library(scda)
 library(nestcolor)
 
-ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-ADLB <- synthetic_cdisc_dataset("latest", "adlb")
+ADSL <- tmc_ex_adsl
+ADLB <- tmc_ex_adlb
 
 ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL,
-      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-    ),
-    cdisc_dataset("ADLB", ADLB,
-      code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")
-        ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))' # nolint
-    )
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADLB", ADLB)
   ),
   modules = modules(
     tm_g_lineplot(

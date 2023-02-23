@@ -65,18 +65,15 @@ For more details, see the help vignette: \code{vignette("custom-ggplot2-argument
 The module generates the R code and returns the corresponding output.
 }
 \examples{
-
-library(scda)
 library(nestcolor)
-ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-ADLB <- synthetic_cdisc_dataset("latest", "adlb")
+
+ADSL <- tmc_ex_adsl
+ADLB <- tmc_ex_adlb
 
 app <- init(
   data = cdisc_data(
     cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADLB", ADLB),
-    code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-    ADLB <- synthetic_cdisc_dataset("latest", "adlb")' # nolint
+    cdisc_dataset("ADLB", ADLB)
   ),
   modules = modules(
     tm_g_ci(

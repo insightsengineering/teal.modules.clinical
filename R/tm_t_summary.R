@@ -219,12 +219,9 @@ template_summary <- function(dataname,
 #'
 #' @export
 #' @examples
-#' # Preparation of the test case.
-#' library(dplyr)
-#' library(scda)
-#' library(tern)
-#'
-#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
+#' # Preparation of the test case
+#' adsl <- tmc_ex_adsl
+#' adsl$EOSDY[1] <- NA_integer_
 #'
 #' # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
 #' stopifnot(
@@ -234,9 +231,7 @@ template_summary <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")',
-#'     check = TRUE
+#'     cdisc_dataset("ADSL", adsl)
 #'   ),
 #'   modules = modules(
 #'     tm_t_summary(

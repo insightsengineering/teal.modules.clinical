@@ -492,9 +492,8 @@ template_events_summary <- function(anl_name,
 #' @export
 #' @examples
 #' library(dplyr)
-#' library(scda)
 #'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl") %>%
+#' ADSL <- tmc_ex_adsl %>%
 #'   mutate(
 #'     DTHFL = case_when( # nolint
 #'       !is.na(DTHDT) ~ "Y",
@@ -503,7 +502,7 @@ template_events_summary <- function(anl_name,
 #'   )
 #' attr(ADSL[["DTHFL"]], "label") <- "Subject Death Flag"
 #'
-#' ADAE <- synthetic_cdisc_dataset("latest", "adae")
+#' ADAE <- tmc_ex_adae
 #'
 #' add_event_flags <- function(dat) {
 #'   dat <- dat %>%
@@ -535,45 +534,8 @@ template_events_summary <- function(anl_name,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code =
-#'         'ADSL <- synthetic_cdisc_dataset("latest", "adsl") %>%
-#'             mutate(
-#'               DTHFL = case_when(  # nolint
-#'                 !is.na(DTHDT) ~ "Y",
-#'                 TRUE ~ ""
-#'               )
-#'             )
-#'         attr(ADSL[["DTHFL"]], "label") <- "Subject Death Flag"
-#'         ADSL'
-#'     ),
-#'     cdisc_dataset("ADAE", ADAE,
-#'       code =
-#'         'ADAE <- synthetic_cdisc_dataset("latest", "adae")
-#'         add_event_flags <- function(dat) {
-#'           dat <- dat %>%
-#'             dplyr::mutate(
-#'               TMPFL_SER = AESER == "Y",
-#'               TMPFL_REL = AEREL == "Y",
-#'               TMPFL_GR5 = AETOXGR == "5",
-#'               TMP_SMQ01 = !is.na(SMQ01NAM),
-#'               TMP_SMQ02 = !is.na(SMQ02NAM),
-#'               TMP_CQ01 = !is.na(CQ01NAM)
-#'             )
-#'           column_labels <- list(
-#'               TMPFL_SER = "Serious AE",
-#'               TMPFL_REL = "Related AE",
-#'               TMPFL_GR5 = "Grade 5 AE",
-#'               TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
-#'               TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-#'               TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
-#'           )
-#'           formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
-#'           dat
-#'         }
-#'         # Generating user-defined event flags.
-#'         ADAE <- ADAE %>% add_event_flags()' # nolint
-#'     )
+#'     cdisc_dataset("ADSL", ADSL),
+#'     cdisc_dataset("ADAE", ADAE)
 #'   ),
 #'   modules = modules(
 #'     tm_t_events_summary(

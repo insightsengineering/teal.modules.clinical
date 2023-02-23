@@ -354,14 +354,13 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(scda)
 #' library(nestcolor)
 #'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADAE <- synthetic_cdisc_dataset("latest", "adae")
-#' ADCM <- synthetic_cdisc_dataset("latest", "adcm")
+#' ADSL <- tmc_ex_adsl
+#' ADAE <- tmc_ex_adae
+#' ADCM <- tmc_ex_adcm
 #'
-#' #' Modify ADCM
+#' # Modify ADCM
 #' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
 #' ADCM$CMDOSE <- 1
 #' ADCM$CMDOSU <- "U"

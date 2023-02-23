@@ -61,18 +61,15 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient profile laboratory table using ADaM datasets.
 }
 \examples{
-library(scda)
-ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-ADLB <- synthetic_cdisc_dataset("latest", "adlb")
+
+# Reduced data for tests
+ADSL <- tmc_ex_adsl
+ADLB <- tmc_ex_adlb
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL,
-      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-    ),
-    cdisc_dataset("ADLB", ADLB,
-      code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")'
-    )
+    cdisc_dataset("ADSL", ADSL),
+    cdisc_dataset("ADLB", ADLB)
   ),
   modules = modules(
     tm_t_pp_laboratory(

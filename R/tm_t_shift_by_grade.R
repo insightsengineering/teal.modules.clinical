@@ -472,20 +472,13 @@ template_shift_by_grade <- function(parentname,
 #'
 #' @export
 #' @examples
-#' library(scda)
-#' library(dplyr)
-#'
-#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
-#' adlb <- synthetic_cdisc_dataset("latest", "adlb")
+#' adsl <- tmc_ex_adsl
+#' adlb <- tmc_ex_adlb
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl,
-#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
-#'     cdisc_dataset("ADLB", adlb,
-#'       code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb")'
-#'     )
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADLB", adlb)
 #'   ),
 #'   modules = modules(
 #'     tm_t_shift_by_grade(

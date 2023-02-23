@@ -216,12 +216,13 @@ add_expr <- function(expr_ls, new_expr) {
 #'   a single _bracketed_ expression.
 #'
 #' @export
+#'
 #' @examples
 #' library(dplyr)
-#' library(scda)
 #' library(tern)
-#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
-#' adrs <- synthetic_cdisc_dataset("latest", "adrs")
+#'
+#' adsl <- tmc_ex_adsl
+#' adrs <- tmc_ex_adrs
 #'
 #' expr1 <- substitute(
 #'   expr = anl <- subset(df, PARAMCD == param),
@@ -235,7 +236,7 @@ add_expr <- function(expr_ls, new_expr) {
 #'   }
 #' )
 #'
-#' res <- teal.modules.clinical:::bracket_expr(list(expr1, expr2, expr3))
+#' res <- bracket_expr(list(expr1, expr2, expr3))
 #' eval(res)
 #' table(anl$rsp_lab, anl$is_rsp)
 bracket_expr <- function(exprs) {

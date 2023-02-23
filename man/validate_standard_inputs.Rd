@@ -48,12 +48,10 @@ Use \code{NULL} for no maximum.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
-
-
-library(scda)
 library(shiny)
-ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-ADAE <- synthetic_cdisc_dataset("latest", "adae")
+
+ADSL <- tmc_ex_adsl
+ADAE <- tmc_ex_adae
 
 ui <- fluidPage(
   shiny::sliderInput("obs", "Max Age",

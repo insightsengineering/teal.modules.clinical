@@ -48,3 +48,7 @@ reference:
       - split_col_expr
       - split_interactions
       - styled_expr
+  - title: Data
+    desc: Data included in the package.
+    contents:
+      - starts_with("ex_")

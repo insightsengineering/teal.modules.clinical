@@ -120,7 +120,6 @@ different convergence behavior. This is a known observation with the used packag
 numerical precision.
 }
 \examples{
-
 library(scda)
 
 ADSL <- synthetic_cdisc_dataset("latest", "adsl")

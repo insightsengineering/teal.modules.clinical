@@ -95,22 +95,16 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Laboratory test results with highest grade post-baseline
 }
 \examples{
-library(scda)
 library(dplyr)
 
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
-adlb <- synthetic_cdisc_dataset("latest", "adlb") \%>\%
+adsl <- tmc_ex_adsl
+adlb <- tmc_ex_adlb \%>\%
   filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl,
-      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-    ),
-    cdisc_dataset("ADLB", adlb,
-      code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb") \%>\%
-        filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))' # nolint
-    )
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADLB", adlb)
   ),
   modules = modules(
     tm_t_abnormality_by_worst_grade(

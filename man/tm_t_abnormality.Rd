@@ -105,35 +105,23 @@ Patients with the same abnormality at baseline as on the treatment visit can be
 excluded in accordance with GDSR specifications by using \code{exclude_base_abn}.
 }
 \examples{
-library(scda)
 library(dplyr)
 
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
-adlb <- synthetic_cdisc_dataset("latest", "adlb") \%>\%
+adsl <- tmc_ex_adsl
+adlb <- tmc_ex_adlb \%>\%
   mutate(
     ONTRTFL = case_when(
       AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
       TRUE ~ "Y"
     )
   )
+
 attr(adlb[["ONTRTFL"]], "label") <- "On Treatment Record Flag"
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl,
-      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-    ),
-    cdisc_dataset("ADLB", adlb,
-      code = 'ADLB <- synthetic_cdisc_dataset("latest", "adlb") \%>\%
-                mutate(
-                  ONTRTFL = case_when(
-                    AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
-                    TRUE ~ "Y"
-                  )
-                )
-              attr(ADLB[["ONTRTFL"]], "label") <- "On Treatment Record Flag"
-              ADLB'
-    )
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADLB", adlb)
   ),
   modules = modules(
     tm_t_abnormality(
@@ -148,6 +136,10 @@ app <- init(
         choices = variable_choices(adlb, subset = c("LBCAT", "PARAM", "AVISIT")),
         selected = c("LBCAT", "PARAM"),
         keep_order = TRUE
+      ),
+      baseline_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(adlb, subset = "BNRIND"),
+        selected = "BNRIND", fixed = TRUE
       ),
       grade = choices_selected(
         choices = variable_choices(adlb, subset = "ANRIND"),
