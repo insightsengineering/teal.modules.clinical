@@ -1034,15 +1034,15 @@ generate_adcm <- function(adsl = tmc_ex_adsl) {
 # Generate & load adsl
 tmp_fol <- getwd()
 setwd(dirname(tmp_fol))
-# generate_adsl()
+generate_adsl()
 load("data/tmc_ex_adsl.rda")
 
 # Generate other datasets
 generate_adae()
-# generate_adlb()
-# generate_adrs()
-# generate_adtte()
-# generate_adcm()
+generate_adlb()
+generate_adrs()
+generate_adtte()
+generate_adcm()
 
 setwd(tmp_fol)
 ```
