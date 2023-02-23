@@ -339,7 +339,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
   }, adae)
 
   tmc_ex_adae <- dplyr::bind_cols(adae, l_aesi)
-  
+
   actions <- c(
     "DOSE RATE REDUCED",
     "UNKNOWN",
@@ -351,7 +351,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
     "DOSE REDUCED",
     "NOT EVALUABLE"
   )
-  
+
   tmc_ex_adae <- tmc_ex_adae %>%
     dplyr::mutate(AEACN = factor(ifelse(
       .data$AETOXGR == "5",
