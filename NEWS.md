@@ -1,7 +1,6 @@
 # teal.modules.clinical 0.8.14.9020
 
 ### Breaking changes
-
 * Replaced `chunks` with simpler `qenv` class.
 * Replaced `datasets` argument containing `FilteredData` with the new arguments `data` (`tdata` object) and `filter_panel_api` (`FilterPanelAPI`).
 
@@ -13,10 +12,13 @@
 * Added adjustment method choice to `tm_a_mmrm` to allow for Kenward-Roger adjustment of standard errors and p-values.
 
 ### Miscellaneous
-* Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS. 
+* Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS.
 * Removed unused argument `param` from `tm_g_pp_vitals`.
 * Removed optimizer choice from `tm_a_mmrm` since we can just always use the 
   automatically determined optimizer.
+* Creation of internal data for `adsl`, `adae`, `adlb`, `adcm`, `adrs`, and `adtte`. They are accessible
+  via `tmc_ex_*` prefix.
+* Partial substitution of `scda` data with internal data in examples.
 
 # teal.modules.clinical 0.8.14
 
