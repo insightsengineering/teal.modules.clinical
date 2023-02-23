@@ -16,6 +16,9 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/main/SECURITY.html</loc>
   </url>
   <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/main/articles/generate_tmc_test_data.html</loc>
+  </url>
+  <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/main/articles/index.html</loc>
   </url>
   <url>
@@ -80,6 +83,9 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/main/reference/dyn_assertion.html</loc>
+  </url>
+  <url>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/main/reference/ex_data.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/main/reference/extract_input.html</loc>
