@@ -339,6 +339,25 @@ generate_adae <- function(adsl = tmc_ex_adsl,
   }, adae)
 
   tmc_ex_adae <- dplyr::bind_cols(adae, l_aesi)
+  
+  actions <- c(
+    "DOSE RATE REDUCED",
+    "UNKNOWN",
+    "NOT APPLICABLE",
+    "DRUG INTERRUPTED",
+    "DRUG WITHDRAWN",
+    "DOSE INCREASED",
+    "DOSE NOT CHANGED",
+    "DOSE REDUCED",
+    "NOT EVALUABLE"
+  )
+  
+  tmc_ex_adae <- tmc_ex_adae %>%
+    dplyr::mutate(AEACN = factor(ifelse(
+      .data$AETOXGR == "5",
+      "NOT EVALUABLE",
+      as.character(sample_fct(actions, nrow(ADAE), prob = c(0.05, 0.05, 0.05, 0.01, 0.05, 0.1, 0.45, 0.1, 0.05)))
+    )))
 
   # Adding labels
   tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adae")
@@ -1015,15 +1034,15 @@ generate_adcm <- function(adsl = tmc_ex_adsl) {
 # Generate & load adsl
 tmp_fol <- getwd()
 setwd(dirname(tmp_fol))
-generate_adsl()
+# generate_adsl()
 load("data/tmc_ex_adsl.rda")
 
 # Generate other datasets
 generate_adae()
-generate_adlb()
-generate_adrs()
-generate_adtte()
-generate_adcm()
+# generate_adlb()
+# generate_adrs()
+# generate_adtte()
+# generate_adcm()
 
 setwd(tmp_fol)
 ```
