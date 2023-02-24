@@ -125,15 +125,13 @@ ADaM structure.
 \examples{
 library(nestcolor)
 
-ADSL <- tmc_ex_adsl
-ADLB <- tmc_ex_adlb
-
-ADLB <- dplyr::mutate(ADLB, AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+adsl <- tmc_ex_adsl
+adlb <- tmc_ex_adlb \%>\% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADLB", ADLB)
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADLB", adlb)
   ),
   modules = modules(
     tm_g_lineplot(

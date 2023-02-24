@@ -189,20 +189,15 @@ template_vitals <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(scda)
 #' library(nestcolor)
 #'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADVS <- synthetic_cdisc_dataset("latest", "advs")
+#' adsl <- tmc_ex_adsl
+#' advs <- tmc_ex_advs
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
-#'     cdisc_dataset("ADVS", ADVS,
-#'       code = 'ADVS <- synthetic_cdisc_dataset("latest", "advs")'
-#'     )
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADVS", advs)
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_vitals(

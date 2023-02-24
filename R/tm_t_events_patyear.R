@@ -150,12 +150,8 @@ template_events_patyear <- function(dataname,
 #'
 #' @export
 #' @examples
-#' # Preparation of the test case.
-#' library(dplyr)
-#' library(scda)
-#'
-#' adsl <- synthetic_cdisc_dataset("latest", "adsl")
-#' adaette <- synthetic_cdisc_dataset("latest", "adaette")
+#' adsl <- tmc_ex_adsl
+#' adaette <- tmc_ex_adaette
 #' adaette <- adaette %>%
 #'   dplyr::filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
 #'   dplyr::mutate(is_event = CNSR == 0) %>%
@@ -164,14 +160,7 @@ template_events_patyear <- function(dataname,
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADAETTE", adaette),
-#'     code =
-#'       'ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#'       ADAETTE <- synthetic_cdisc_dataset("latest", "adaette")
-#'       ADAETTE <- ADAETTE %>%
-#'         dplyr::filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
-#'         dplyr::mutate(is_event = CNSR == 0) %>%
-#'         dplyr::mutate(n_events = as.integer(is_event))' # nolint
+#'     cdisc_dataset("ADAETTE", adaette)
 #'   ),
 #'   modules = modules(
 #'     tm_t_events_patyear(
