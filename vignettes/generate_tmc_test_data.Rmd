@@ -1733,30 +1733,13 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
             ""
           )
         )
-        x$LOQFL <- ifelse(x$AVAL < 32, "Y", "N")
         x
       }
     )
   )
 
-  adqs$BASE2 <- retain(adqs, adqs$AVAL, adqs$ABLFL2 == "Y")
   adqs$BASE <- ifelse(adqs$ABLFL2 != "Y", retain(adqs, adqs$AVAL, adqs$ABLFL == "Y"), NA)
-
-  adqs <- adqs %>%
-    dplyr::mutate(CHG2 = .data$AVAL - .data$BASE2) %>%
-    dplyr::mutate(PCHG2 = 100 * (.data$CHG2 / .data$BASE2)) %>%
-    dplyr::mutate(CHG = .data$AVAL - .data$BASE) %>%
-    dplyr::mutate(PCHG = 100 * (.data$CHG / .data$BASE)) %>%
-    var_relabel(
-      STUDYID = attr(adsl$STUDYID, "label"),
-      USUBJID = attr(adsl$USUBJID, "label")
-    )
-
-  adqs <- var_relabel(
-    adqs,
-    STUDYID = "Study Identifier",
-    USUBJID = "Unique Subject Identifier"
-  )
+  adqs <- adqs %>% dplyr::mutate(CHG = .data$AVAL - .data$BASE)
 
   adqs <- dplyr::inner_join(
     adsl,
@@ -1774,24 +1757,25 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
       origin = "1970-01-01"
     )) %>%
-    dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days")))) %>%
     dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ADTM)
 
   tmc_ex_adqs <- adqs %>%
     dplyr::group_by(.data$USUBJID) %>%
-    dplyr::mutate(QSSEQ = seq_len(dplyr::n())) %>%
-    dplyr::mutate(ASEQ = .data$QSSEQ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(
       .data$STUDYID,
       .data$USUBJID,
       .data$PARAMCD,
       .data$AVISITN,
-      .data$ADTM,
-      .data$QSSEQ
+      .data$ADTM
     )
+
+  common_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_adqs)[is.na(var_labels(tmc_ex_adqs))]), function(x) which(names(common_var_labels) == x)
+  )
+  var_labels(tmc_ex_adqs[names(common_lbls_ind)]) <- common_var_labels[common_lbls_ind]
 
   save(tmc_ex_adqs, file = "data/tmc_ex_adqs.rda", compress = "xz")
 }
