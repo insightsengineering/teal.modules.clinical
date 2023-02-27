@@ -128,7 +128,8 @@ common_var_labels <- c(
   ANRLO = "Analysis Normal Range Lower Limit",
   ANRHI = "Analysis Normal Range Upper Limit",
   ADTM = "Analysis Datetime",
-  ADY = "Analysis Relative Day"
+  ADY = "Analysis Relative Day",
+  ASTDTM = "Analysis Start Datetime"
 )
 ```
 
@@ -1621,12 +1622,6 @@ generate_admh <- function(adsl = tmc_ex_adsl,
     `[`(c(4, 5, 1, 2, 3)) %>%
     dplyr::mutate(MHTERM = .data$MHDECOD)
 
-  admh <- var_relabel(
-    admh,
-    STUDYID = "Study Identifier",
-    USUBJID = "Unique Subject Identifier"
-  )
-
   admh <- dplyr::inner_join(
     adsl,
     admh,
@@ -1643,14 +1638,7 @@ generate_admh <- function(adsl = tmc_ex_adsl,
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
       origin = "1970-01-01"
     )) %>%
-    dplyr::mutate(astdt_int = as.numeric(as.Date(.data$ASTDTM))) %>%
-    dplyr::mutate(ASTDY = ceiling(as.numeric(difftime(.data$ASTDTM, .data$TRTSDTM, units = "days")))) %>%
-    dplyr::mutate(AENDTM = as.POSIXct(
-      (sample(.data$astdt_int:(.data$trtedt_int + 1), size = 1) * 86400),
-      origin = "1970-01-01"
-    )) %>%
-    dplyr::mutate(AENDY = ceiling(as.numeric(difftime(.data$AENDTM, .data$TRTSDTM, units = "days")))) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int", -"astdt_int") %>%
+    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM, .data$MHTERM) %>%
     dplyr::mutate(MHDISTAT = sample(
@@ -1658,18 +1646,26 @@ generate_admh <- function(adsl = tmc_ex_adsl,
       prob = c(0.6, 0.2, 0.2),
       size = dplyr::n(),
       replace = TRUE
-    )) %>%
-    dplyr::mutate(ATIREL = dplyr::case_when(
-      (AENDTM < TRTSDTM | (is.na(AENDTM) & MHDISTAT == "Resolved")) ~ "PRIOR",
-      (AENDTM >= TRTSDTM | (is.na(AENDTM) & grepl("Ongoing", MHDISTAT))) ~ "PRIOR_CONCOMITANT"
     ))
 
   tmc_ex_admh <- admh %>%
     dplyr::group_by(.data$USUBJID) %>%
     dplyr::mutate(MHSEQ = seq_len(dplyr::n())) %>%
-    dplyr::mutate(ASEQ = .data$MHSEQ) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM, .data$MHSEQ)
+    dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM) %>%
+    var_relabel(
+      MHBODSYS = "Body System or Organ Class",
+      MHDECOD = "Dictionary-Derived Term",
+      MHSOC = "Primary System Organ Class",
+      MHTERM = "Reported Term for the Medical History",
+      MHDISTAT = "Status of Disease",
+      MHSEQ = "Sponsor-Defined Identifier"
+    )
+  
+  common_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_admh)[is.na(var_labels(tmc_ex_admh))]), function(x) which(names(common_var_labels) == x)
+  )
+  var_labels(tmc_ex_admh[names(common_lbls_ind)]) <- common_var_labels[common_lbls_ind]
 
   save(tmc_ex_admh, file = "data/tmc_ex_admh.rda", compress = "xz")
 }
@@ -1714,7 +1710,6 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
 
   adqs$PARAMCD <- rel_var(df = adqs, var_name = "PARAMCD", var_values = param_init_list$relvar2, related_var = "PARAM")
   adqs$AVAL <- stats::rnorm(nrow(adqs), mean = 50, sd = 8) + adqs$AVISITN * stats::rnorm(nrow(adqs), mean = 5, sd = 2)
-
   adqs <- adqs[order(adqs$STUDYID, adqs$USUBJID, adqs$PARAMCD, adqs$AVISITN), ]
 
   adqs <- Reduce(

@@ -116,7 +116,7 @@ app <- init(
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
       paramcd = choices_selected(
-        choices = value_choices(ADQS, "PARAMCD", "PARAM"),
+        choices = value_choices(adqs, "PARAMCD", "PARAM"),
         selected = "FKSI-FWB"
       ),
       cov_var = choices_selected(c("BASE", "AGE", "SEX"), NULL)

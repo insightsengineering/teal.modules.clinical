@@ -33,9 +33,9 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 4200 rows and 60 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1077 rows and 39 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1077 rows and 34 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 7000 rows and 45 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 7000 rows and 37 columns.
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1600 rows and 35 columns.
 

@@ -74,21 +74,18 @@ template_medical_history <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param mhterm
-#' ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{MHTERM} column of the ADMH dataset.
+#' @param mhterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#'   `MHTERM` column of the ADMH dataset.
 #' @param mhbodsys ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{MHBODSYS} column of the ADMH dataset.
+#'   `MHBODSYS` column of the ADMH dataset.
 #' @param mhdistat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{MHDISTAT} column of the ADMH dataset.
+#'   `MHDISTAT` column of the ADMH dataset.
 #'
 #' @export
 #'
 #' @examples
 #' adsl <- tmc_ex_adsl
 #' admh <- tmc_ex_admh
-#' admh[["MHDISTAT"]] <- "ONGOING"
-#' formatters::var_labels(admh[c("MHDISTAT")]) <- c("Status of Disease")
 #'
 #' app <- init(
 #'   data = cdisc_data(

@@ -51,8 +51,6 @@ This teal module produces a patient medical history report using ADaM datasets.
 \examples{
 adsl <- tmc_ex_adsl
 admh <- tmc_ex_admh
-admh[["MHDISTAT"]] <- "ONGOING"
-formatters::var_labels(admh[c("MHDISTAT")]) <- c("Status of Disease")
 
 app <- init(
   data = cdisc_data(
