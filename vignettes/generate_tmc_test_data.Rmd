@@ -111,6 +111,35 @@ str_extract <- function(string, pattern) {
   regmatches(string, gregexpr(pattern, string))
 }
 
+adsl_var_labels <- c(
+  STUDYID = "Study Identifier",
+  USUBJID = "Unique Subject Identifier",
+  SUBJID = "Subject Identifier for the Study",
+  SITEID = "Study Site Identifier",
+  AGE = "Age",
+  SEX = "Sex",
+  RACE = "Race",
+  COUNTRY = "Country",
+  ARM = "Description of Planned Arm",
+  ARMCD = "Planned Arm Code",
+  ACTARM = "Description of Actual Arm",
+  ACTARMCD = "Actual Arm Code",
+  REGION1 = "Geographic Region 1",
+  STRATA1 = "Stratification Factor 1",
+  STRATA2 = "Stratification Factor 2",
+  BMRKR1 = "Continuous Level Biomarker 1",
+  BMRKR2 = "Categorical Level Biomarker 2",
+  SAFFL = "Safety Population Flag",
+  TRTSDTM = "Datetime of First Exposure to Treatment",
+  TRTEDTM = "Datetime of Last Exposure to Treatment",
+  EOSSTT = "End of Study Status",
+  EOTSTT = "End of Treatment Status",
+  EOSDT = "End of Study Date",
+  EOSDY = "End of Study Relative Day",
+  DCSREAS = "Reason for Discontinuation from Study",
+  DTHDT = "Date of Death"
+)
+
 common_var_labels <- c(
   PARAM = "Parameter",
   PARAMCD = "Parameter Code",
@@ -224,18 +253,17 @@ generate_adsl <- function(N = 200) { # nolint
         sample(x = l_dcsreas$choices, size = N, replace = TRUE, prob = l_dcsreas$prob),
         as.character(NA)
       )
-    ) %>%
-    dplyr::mutate(study_duration_secs = study_duration_secs)
+    )
 
   tmc_ex_adsl <- tmc_ex_adsl %>%
     dplyr::mutate(DTHDT = dplyr::case_when(
       DCSREAS == "DEATH" ~ as.Date(.data$TRTEDTM) + sample(0:50, size = N, replace = TRUE)
     ))
 
-  # Adding labels
-  tmp_dt <- scda::synthetic_cdisc_dataset("latest", "adsl")
-  formatters::var_labels(tmc_ex_adsl) <- as.character(formatters::var_labels(tmp_dt)[names(tmc_ex_adsl)])
-  rm(tmp_dt)
+  adsl_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_adsl)[is.na(var_labels(tmc_ex_adsl))]), function(x) which(names(adsl_var_labels) == x)
+  )
+  var_labels(tmc_ex_adsl[names(adsl_lbls_ind)]) <- adsl_var_labels[adsl_lbls_ind]
 
   save(tmc_ex_adsl, file = "data/tmc_ex_adsl.rda", compress = "xz")
 }
@@ -309,7 +337,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
     dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
     dplyr::mutate(trtedt_int = dplyr::case_when(
       !is.na(.data$TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(.data$TRTEDTM) ~ floor(trtsdt_int + (study_duration_secs) / 86400)
+      is.na(.data$TRTEDTM) ~ floor(trtsdt_int + study_duration_secs / 86400)
     )) %>%
     dplyr::mutate(ASTDTM = as.POSIXct(
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
@@ -442,7 +470,7 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
     trtedt_int <- ifelse(
       !is.na(patient_info$TRTEDTM),
       as.numeric(as.Date(patient_info$TRTEDTM)),
-      floor(trtsdt_int + patient_info$study_duration_secs / 86400)
+      floor(trtsdt_int + study_duration_secs / 86400)
     )
     startdt <- as.Date(patient_info$TRTSDTM)
     trtedtm <- as.POSIXct(trtedt_int * 86400, origin = "1970-01-01")
@@ -472,7 +500,7 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
   paramcd_hy <- c("HYSTTEUL", "HYSTTEBL")
   param_hy <- c("Time to Hy's Law Elevation in relation to ULN", "Time to Hy's Law Elevation in relation to Baseline")
   param_init_list <- relvar_init(param_hy, paramcd_hy)
-  adsl_hy <- dplyr::select(adsl, "STUDYID", "USUBJID", "TRTSDTM", "SITEID", "ARM", "study_duration_secs")
+  adsl_hy <- dplyr::select(adsl, "STUDYID", "USUBJID", "TRTSDTM", "SITEID", "ARM")
 
   adaette_hy <- expand.grid(
     STUDYID = unique(adsl$STUDYID),
@@ -507,7 +535,7 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
     dplyr::mutate(ADTM = dplyr::case_when(
       .data$CNSDTDSC == "Treatment Start" ~ .data$TRTSDTM,
       TRUE ~ as.POSIXct(
-        .data$TRTSDTM + sample(seq(0, .data$study_duration_secs), size = dplyr::n(), replace = TRUE),
+        .data$TRTSDTM + sample(seq(0, study_duration_secs), size = dplyr::n(), replace = TRUE),
         origin = "1970-01-01"
       )
     )) %>%
@@ -519,7 +547,7 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
       AVALU = "WEEKS"
     )
 
-  adaette_hy <- dplyr::select(adaette_hy, -"TRTSDTM", -"study_duration_secs", -"ADT", -"STARTDT")
+  adaette_hy <- dplyr::select(adaette_hy, -"TRTSDTM", -"ADT", -"STARTDT")
 
   random_ae_data <- function(lookup_info, patient_info, patient_data) {
     cnsr <- sample(c(0, 1), 1, prob = c(1 - lookup_info$CNSR_P, lookup_info$CNSR_P))
@@ -663,7 +691,7 @@ generate_adcm <- function(adsl = tmc_ex_adsl) {
     dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
     dplyr::mutate(trtedt_int = dplyr::case_when(
       !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + (.data$study_duration_secs) / 86400)
+      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
     )) %>%
     dplyr::mutate(ASTDTM = as.POSIXct(
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
@@ -849,7 +877,7 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
     dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
     dplyr::mutate(trtedt_int = dplyr::case_when(
       !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + (.data$study_duration_secs) / 86400)
+      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
     )) %>%
     dplyr::group_by(USUBJID, AVISIT) %>%
     dplyr::mutate(ADTM = as.POSIXct(
@@ -1191,7 +1219,7 @@ generate_adex <- function(adsl = tmc_ex_adsl,
     dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
     dplyr::mutate(trtedt_int = dplyr::case_when(
       !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + (.data$study_duration_secs) / 86400)
+      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
     )) %>%
     dplyr::mutate(ASTDTM = as.POSIXct(
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
@@ -1632,7 +1660,7 @@ generate_admh <- function(adsl = tmc_ex_adsl,
     dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
     dplyr::mutate(trtedt_int = dplyr::case_when(
       !is.na(.data$TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(.data$TRTEDTM) ~ floor(.data$trtsdt_int + (.data$study_duration_secs) / 86400)
+      is.na(.data$TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
     )) %>%
     dplyr::mutate(ASTDTM = as.POSIXct(
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
@@ -1746,7 +1774,7 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
     dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
     dplyr::mutate(trtedt_int = dplyr::case_when(
       !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + (.data$study_duration_secs) / 86400)
+      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
     )) %>%
     dplyr::mutate(ADTM = as.POSIXct(
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
@@ -1820,7 +1848,7 @@ generate_adrs <- function(adsl = tmc_ex_adsl) {
       trtsdt_int <- as.numeric(as.Date(pinfo$TRTSDTM))
       trtedt_int <- ifelse(
         !is.na(pinfo$TRTEDTM), as.numeric(as.Date(pinfo$TRTEDTM)),
-        floor(trtsdt_int + (pinfo$study_duration_secs) / 86400)
+        floor(trtsdt_int + study_duration_secs / 86400)
       )
       scr_date <- as.POSIXct(((trtsdt_int - 100) * 86400), origin = "1970-01-01")
       bs_date <- pinfo$TRTSDTM
@@ -1974,7 +2002,7 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
     dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
     dplyr::mutate(trtedt_int = dplyr::case_when(
       !is.na(TRTEDTM) ~ as.numeric(as.Date(TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(trtsdt_int + (study_duration_secs) / 86400)
+      is.na(TRTEDTM) ~ floor(trtsdt_int + study_duration_secs / 86400)
     )) %>%
     dplyr::mutate(ADTM = as.POSIXct(
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
@@ -2136,7 +2164,7 @@ generate_advs <- function(adsl = tmc_ex_adsl,
     dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
     dplyr::mutate(trtedt_int = dplyr::case_when(
       !is.na(TRTEDTM) ~ as.numeric(as.Date(TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(trtsdt_int + (study_duration_secs) / 86400)
+      is.na(TRTEDTM) ~ floor(trtsdt_int + study_duration_secs / 86400)
     )) %>%
     dplyr::mutate(
       ADTM = as.POSIXct(
