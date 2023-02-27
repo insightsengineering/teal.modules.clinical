@@ -110,6 +110,26 @@ rtexp <- function(n, rate, l = NULL, r = NULL) {
 str_extract <- function(string, pattern) {
   regmatches(string, gregexpr(pattern, string))
 }
+
+common_var_labels <- c(
+  PARAM = "Parameter",
+  PARAMCD = "Parameter Code",
+  AVISIT = "Analysis Visit",
+  AVISITN = "Analysis Visit (N)",
+  AVAL = "Analysis Value",
+  AVALU = "Analysis Value Unit",
+  BASE = "Baseline Value",
+  BASE2 = "Screening Value",
+  ABLFL = "Baseline Record Flag",
+  ABLFL2 = "Screening Record Flag",
+  CHG = "Absolute Change from Baseline",
+  PCHG = "Percentage Change from Baseline",
+  ANRIND = "Analysis Reference Range Indicator",
+  ANRLO = "Analysis Normal Range Lower Limit",
+  ANRHI = "Analysis Normal Range Upper Limit",
+  ADTM = "Analysis Datetime",
+  ADY = "Analysis Relative Day"
+)
 ```
 
 ## ADSL
@@ -2067,17 +2087,12 @@ generate_advs <- function(adsl = tmc_ex_adsl,
     )
   )
 
-  advs$VSCAT <- "VITAL SIGNS"
-
   advs$PARAMCD <- as.factor(rel_var(
     df = advs,
     var_name = "PARAMCD",
     var_values = param_init_list$relvar2,
     related_var = "PARAM"
   ))
-  advs <- advs %>%
-    dplyr::mutate(VSTESTCD = .data$PARAMCD) %>%
-    dplyr::mutate(VSTEST = .data$PARAM)
   advs$AVALU <- as.factor(rel_var(
     df = advs,
     var_name = "AVALU",
@@ -2086,8 +2101,6 @@ generate_advs <- function(adsl = tmc_ex_adsl,
   ))
 
   advs$AVAL <- stats::rnorm(nrow(advs), mean = 50, sd = 8)
-  advs$VSSTRESC <- advs$AVAL
-
   advs <- advs[order(advs$STUDYID, advs$USUBJID, advs$PARAMCD, advs$AVISITN), ]
 
   advs <- Reduce(rbind, lapply(split(advs, advs$USUBJID), function(x) {
@@ -2102,21 +2115,17 @@ generate_advs <- function(adsl = tmc_ex_adsl,
         ""
       )
     )
-    x$LOQFL <- ifelse(x$AVAL < 32, "Y", "N")
     x
   }))
 
-  advs$BASE2 <- retain(advs, advs$AVAL, advs$ABLFL2 == "Y")
   advs$BASE <- ifelse(advs$ABLFL2 != "Y", retain(advs, advs$AVAL, advs$ABLFL == "Y"), NA)
-  anrind_choices <- c("HIGH", "LOW", "NORMAL")
+  advs$BASE2 <- retain(advs, advs$AVAL, advs$ABLFL2 == "Y")
 
   advs <- advs %>%
-    dplyr::mutate(CHG2 = .data$AVAL - .data$BASE2) %>%
-    dplyr::mutate(PCHG2 = 100 * (.data$CHG2 / .data$BASE2)) %>%
     dplyr::mutate(CHG = .data$AVAL - .data$BASE) %>%
     dplyr::mutate(PCHG = 100 * (.data$CHG / .data$BASE)) %>%
     dplyr::mutate(
-      ANRIND = anrind_choices %>%
+      ANRIND = c("HIGH", "LOW", "NORMAL") %>%
         sample_fct(nrow(advs), prob = c(0.1, 0.1, 0.8))
     ) %>%
     dplyr::mutate(ANRLO = dplyr::case_when(
@@ -2135,22 +2144,8 @@ generate_advs <- function(adsl = tmc_ex_adsl,
       .data$PARAMCD == "TEMP" ~ 37.2,
       .data$PARAMCD == "WEIGHT" ~ 100
     )) %>%
-    dplyr::mutate(BASETYPE = "LAST") %>%
-    dplyr::group_by(.data$USUBJID, .data$PARAMCD, .data$BASETYPE) %>%
-    dplyr::mutate(BNRIND = .data$ANRIND[.data$ABLFL == "Y"]) %>%
-    dplyr::ungroup() %>%
-    dplyr::mutate(ATPTN = 1) %>%
-    dplyr::mutate(DTYPE = NA) %>%
-    var_relabel(
-      USUBJID = attr(adsl$USUBJID, "label"),
-      STUDYID = attr(adsl$STUDYID, "label")
-    )
-
-  advs <- var_relabel(
-    advs,
-    STUDYID = "Study Identifier",
-    USUBJID = "Unique Subject Identifier"
-  )
+    dplyr::group_by(.data$USUBJID, .data$PARAMCD) %>%
+    dplyr::ungroup()
 
   advs <- dplyr::inner_join(
     adsl,
@@ -2175,33 +2170,22 @@ generate_advs <- function(adsl = tmc_ex_adsl,
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ADTM)
 
-  advs <- advs %>% dplyr::mutate(ONTRTFL = factor(dplyr::case_when(
-    is.na(.data$TRTSDTM) ~ "",
-    is.na(.data$ADTM) ~ "Y",
-    (.data$ADTM < .data$TRTSDTM) ~ "",
-    (.data$ADTM > .data$TRTEDTM) ~ "",
-    TRUE ~ "Y"
-  )))
-
   tmc_ex_advs <- advs %>%
-    dplyr::mutate(ASPID = sample(seq_len(dplyr::n()))) %>%
     dplyr::group_by(.data$USUBJID) %>%
-    dplyr::mutate(VSSEQ = seq_len(dplyr::n())) %>%
-    dplyr::mutate(ASEQ = .data$VSSEQ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(
       .data$STUDYID,
       .data$USUBJID,
       .data$PARAMCD,
-      .data$BASETYPE,
       .data$AVISITN,
-      .data$ATPTN,
-      .data$DTYPE,
-      .data$ADTM,
-      .data$VSSEQ,
-      .data$ASPID
+      .data$ADTM
     )
-
+  
+  common_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_advs)[is.na(var_labels(tmc_ex_advs))]), function(x) which(names(common_var_labels) == x)
+  )
+  var_labels(tmc_ex_advs[names(common_lbls_ind)]) <- common_var_labels[common_lbls_ind]
+  
   save(tmc_ex_advs, file = "data/tmc_ex_advs.rda", compress = "xz")
 }
 ```

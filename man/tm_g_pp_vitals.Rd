@@ -90,15 +90,15 @@ app <- init(
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
       paramcd = choices_selected(
-        choices = variable_choices(ADVS, "PARAMCD"),
+        choices = variable_choices(advs, "PARAMCD"),
         selected = "PARAMCD"
       ),
       xaxis = choices_selected(
-        choices = variable_choices(ADVS, "ADY"),
+        choices = variable_choices(advs, "ADY"),
         selected = "ADY"
       ),
       aval = choices_selected(
-        choices = variable_choices(ADVS, "AVAL"),
+        choices = variable_choices(advs, "AVAL"),
         selected = "AVAL"
       )
     )
