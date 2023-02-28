@@ -136,11 +136,11 @@ app <- init(
         "ARM"
       ),
       y = choices_selected(
-        variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
+        variable_choices(adlb, c("AVAL", "BASE", "CHG", "PCHG")),
         "AVAL"
       ),
       param = choices_selected(
-        value_choices(ADLB, "PARAMCD", "PARAM"),
+        value_choices(adlb, "PARAMCD", "PARAM"),
         "ALT"
       )
     )
