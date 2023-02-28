@@ -207,7 +207,7 @@ generate_adsl <- function(N = 200) { # nolint
       SAFFL = factor("Y") %>% with_label("Safety Population Flag")
     ) %>%
     dplyr::mutate(USUBJID = paste(.data$STUDYID, .data$SITEID, .data$SUBJID, sep = "-") %>%
-                    with_label("Unique Subject Identifier"))
+      with_label("Unique Subject Identifier"))
 
   # disposition related variables
   # using probability of 1 for the "DEATH" level to ensure at least one death record exists
@@ -226,9 +226,11 @@ generate_adsl <- function(N = 200) { # nolint
   )
 
   adsl <- adsl %>%
-    dplyr::mutate(EOSDT = as.Date(.data$TRTEDTM) %>% with_label("End of Study Date")) %>%
-    dplyr::mutate(EOSDY = as.numeric(ceiling(difftime(.data$TRTEDTM, .data$TRTSDTM, units = "days"))) %>% 
-                    with_label("End of Study Relative Day")) %>%
+    dplyr::mutate(
+      EOSDT = as.Date(.data$TRTEDTM) %>% with_label("End of Study Date"),
+      EOSDY = as.numeric(ceiling(difftime(.data$TRTEDTM, .data$TRTSDTM, units = "days"))) %>%
+        with_label("End of Study Relative Day")
+    ) %>%
     dplyr::mutate(EOSSTT = dplyr::case_when(
       EOSDY == max(EOSDY, na.rm = TRUE) ~ "COMPLETED",
       EOSDY < max(EOSDY, na.rm = TRUE) ~ "DISCONTINUED",
@@ -366,7 +368,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
       as.character(sample_fct(outcomes, nrow(adae), prob = c(0.1, 0.2, 0.1, 0.3, 0.3)))
     )) %>% with_label("Outcome of Adverse Event")) %>%
     dplyr::mutate(TRTEMFL = ifelse(.data$ASTDTM >= .data$TRTSDTM, "Y", "") %>%
-                    with_label("Treatment Emergent Analysis Flag"))
+      with_label("Treatment Emergent Analysis Flag"))
 
   l_aag <- split(aag, interaction(aag$NAMVAR, aag$SRCVAR, aag$GRPTYPE, drop = TRUE))
 
@@ -386,7 +388,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
     d_new[, dplyr::setdiff(names(d_new), names(d_adae)), drop = FALSE]
   }, adae)
   adae <- dplyr::bind_cols(adae, l_aesi)
-  
+
   actions <- c(
     "DOSE RATE REDUCED",
     "UNKNOWN",
@@ -661,13 +663,15 @@ generate_adcm <- function(adsl = tmc_ex_adsl,
       is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
     )) %>%
     dplyr::mutate(ASTDTM = as.POSIXct(
-      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400), origin = "1970-01-01"
+      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
+      origin = "1970-01-01"
     )) %>%
     dplyr::mutate(astdt_int = as.numeric(as.Date(.data$ASTDTM))) %>%
     dplyr::mutate(ASTDY = ceiling(as.numeric(difftime(.data$ASTDTM, .data$TRTSDTM, units = "days")))) %>%
     # add 1 to end of range incase both values passed to sample() are the same
     dplyr::mutate(AENDTM = as.POSIXct(
-      (sample(.data$astdt_int:(.data$trtedt_int + 1), size = 1) * 86400), origin = "1970-01-01"
+      (sample(.data$astdt_int:(.data$trtedt_int + 1), size = 1) * 86400),
+      origin = "1970-01-01"
     )) %>%
     dplyr::mutate(AENDY = ceiling(as.numeric(difftime(.data$AENDTM, .data$TRTSDTM, units = "days")))) %>%
     dplyr::select(-"trtsdt_int", -"trtedt_int", -"astdt_int") %>%
@@ -782,23 +786,24 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
   }))
 
   adeg$BASE <- ifelse(adeg$AVISITN >= 0, retain(adeg, adeg$AVAL, adeg$ABLFL == "Y"), adeg$AVAL)
-  adeg <- adeg %>% dplyr::mutate(ANRLO = dplyr::case_when(
-    .data$PARAMCD == "QT" ~ 200,
-    .data$PARAMCD == "RR" ~ 600,
-    .data$PARAMCD == "HR" ~ 40,
-    .data$PARAMCD == "ECGINTP" ~ NA_real_
-  )) %>%
-  dplyr::mutate(ANRHI = dplyr::case_when(
-    .data$PARAMCD == "QT" ~ 500,
-    .data$PARAMCD == "RR" ~ 1500,
-    .data$PARAMCD == "HR" ~ 100,
-    .data$PARAMCD == "ECGINTP" ~ NA_real_
-  )) %>%
-  dplyr::mutate(ANRIND = factor(dplyr::case_when(
-    .data$AVAL < .data$ANRLO ~ "LOW",
-    .data$AVAL >= .data$ANRLO & .data$AVAL <= .data$ANRHI ~ "NORMAL",
-    .data$AVAL > .data$ANRHI ~ "HIGH"
-  )))
+  adeg <- adeg %>%
+    dplyr::mutate(ANRLO = dplyr::case_when(
+      .data$PARAMCD == "QT" ~ 200,
+      .data$PARAMCD == "RR" ~ 600,
+      .data$PARAMCD == "HR" ~ 40,
+      .data$PARAMCD == "ECGINTP" ~ NA_real_
+    )) %>%
+    dplyr::mutate(ANRHI = dplyr::case_when(
+      .data$PARAMCD == "QT" ~ 500,
+      .data$PARAMCD == "RR" ~ 1500,
+      .data$PARAMCD == "HR" ~ 100,
+      .data$PARAMCD == "ECGINTP" ~ NA_real_
+    )) %>%
+    dplyr::mutate(ANRIND = factor(dplyr::case_when(
+      .data$AVAL < .data$ANRLO ~ "LOW",
+      .data$AVAL >= .data$ANRLO & .data$AVAL <= .data$ANRHI ~ "NORMAL",
+      .data$AVAL > .data$ANRHI ~ "HIGH"
+    )))
 
   adeg <- adeg %>%
     dplyr::mutate(CHG = ifelse(.data$AVISITN > 0, .data$AVAL - .data$BASE, NA)) %>%
@@ -847,18 +852,19 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
       .data$ADTM
     )
 
-  adeg <- adeg %>% dplyr::mutate(ONTRTFL = factor(dplyr::case_when(
-    is.na(.data$TRTSDTM) ~ "",
-    is.na(.data$ADTM) ~ "Y",
-    (.data$ADTM < .data$TRTSDTM) ~ "",
-    (.data$ADTM > .data$TRTEDTM) ~ "",
-    TRUE ~ "Y"
-  ))) %>%
-  dplyr::mutate(AVALC = ifelse(
-    .data$PARAMCD == "ECGINTP",
-    as.character(sample_fct(c("ABNORMAL", "NORMAL"), nrow(adeg), prob = c(0.25, 0.75))),
-    as.character(.data$AVAL)
-  ))
+  adeg <- adeg %>%
+    dplyr::mutate(ONTRTFL = factor(dplyr::case_when(
+      is.na(.data$TRTSDTM) ~ "",
+      is.na(.data$ADTM) ~ "Y",
+      (.data$ADTM < .data$TRTSDTM) ~ "",
+      (.data$ADTM > .data$TRTEDTM) ~ "",
+      TRUE ~ "Y"
+    ))) %>%
+    dplyr::mutate(AVALC = ifelse(
+      .data$PARAMCD == "ECGINTP",
+      as.character(sample_fct(c("ABNORMAL", "NORMAL"), nrow(adeg), prob = c(0.25, 0.75))),
+      as.character(.data$AVAL)
+    ))
 
   adeg <- adeg %>% dplyr::mutate(row_check = seq_len(nrow(adeg)))
   get_groups <- function(data, minimum) {
@@ -882,7 +888,7 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
       dplyr::ungroup()
     return(data)
   }
-  
+
   lbls <- var_labels(adeg)
   adeg <- rbind(adeg, get_groups(adeg, TRUE), get_groups(adeg, FALSE)) %>%
     dplyr::arrange(.data$row_check) %>%
@@ -1872,7 +1878,7 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
       .data$ADTM
     )
   lbls <- var_labels(adtte)
-  
+
   # adding adverse event counts and log follow-up time
   tmc_ex_adtte <- dplyr::bind_rows(
     adtte,
