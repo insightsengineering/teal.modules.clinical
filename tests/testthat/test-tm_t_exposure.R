@@ -12,44 +12,9 @@ testthat::test_that("template_exposure generates correct expressions with defaul
     aval_var = "AVAL",
     avalu_var = "Days"
   )
-  expected <- list(
-    data = quote({
-      anl <- adex
-      anl <- df_explicit_na(anl, na_level = "<Missing>")
-    }),
-    layout_prep = quote(split_fun <- drop_split_levels),
-    layout = quote(
-      lyt <- rtables::basic_table(main_footer = "* Patient Time is the sum of TDURD") %>%
-        rtables::split_cols_by("SEX") %>%
-        rtables::add_colcounts() %>%
-        summarize_patients_exposure_in_cols(
-          var = "AVAL", col_split = TRUE,
-          .labels = c(
-            n_patients = "Number of Patients",
-            sum_exposure = ifelse(
-              "Days" == " ",
-              paste("Sum of", "TDURD"),
-              paste("Sum of", "TDURD", sprintf("(%s)", "Days"))
-            )
-          ),
-          custom_label = "Total Number of Patients and Patient Time*"
-        ) %>%
-        rtables::split_rows_by("RACE",
-          label_pos = "topleft", split_fun = split_fun,
-          split_label = formatters::var_labels(adex["RACE"], fill = TRUE),
-          nested = FALSE
-        ) %>%
-        summarize_patients_exposure_in_cols(
-          var = "AVAL",
-          col_split = FALSE
-        )
-    ),
-    table = quote({
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
-      result
-    })
-  )
-  testthat::expect_equal(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("template_exposure generates correct expressions with custom arguments", {
@@ -66,45 +31,9 @@ testthat::test_that("template_exposure generates correct expressions with custom
     aval_var = "myAVAL",
     avalu_var = "Days"
   )
-  expected <- list(
-    data = quote({
-      anl <- myadex
-      anl <- df_explicit_na(anl, na_level = "<myMissing>")
-    }),
-    layout_prep = quote(split_fun <- drop_split_levels),
-    layout = quote(
-      lyt <- rtables::basic_table(main_footer = "* Patient Time is the sum of myTDURD") %>%
-        rtables::split_cols_by("SEX") %>%
-        rtables::add_colcounts() %>%
-        summarize_patients_exposure_in_cols(
-          var = "myAVAL", col_split = TRUE,
-          .labels = c(
-            n_patients = "Number of Patients",
-            sum_exposure = ifelse(
-              "Days" == " ",
-              paste("Sum of", "myTDURD"),
-              paste("Sum of", "myTDURD", sprintf("(%s)", "Days"))
-            )
-          ),
-          custom_label = "Total Number of Patients and Patient Time*"
-        ) %>%
-        rtables::split_rows_by("myRACE",
-          label_pos = "topleft", split_fun = split_fun,
-          split_label = formatters::var_labels(myadex["myRACE"],
-            fill = TRUE
-          ), nested = FALSE
-        ) %>%
-        summarize_patients_exposure_in_cols(
-          var = "myAVAL",
-          col_split = FALSE
-        )
-    ),
-    table = quote({
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
-      result
-    })
-  )
-  testthat::expect_equal(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("template_exposure generates correct expressions with paramcd_label", {
@@ -122,42 +51,7 @@ testthat::test_that("template_exposure generates correct expressions with paramc
     aval_var = "AVAL",
     avalu_var = "Days"
   )
-  expected <- list(
-    data = quote({
-      anl <- adex
-      anl <- df_explicit_na(anl, na_level = "<Missing>")
-    }),
-    layout_prep = quote(split_fun <- drop_split_levels),
-    layout = quote(
-      lyt <- rtables::basic_table(main_footer = "* Patient Time is the sum of Total Duration (Days)") %>%
-        rtables::split_cols_by("SEX") %>%
-        rtables::add_colcounts() %>%
-        summarize_patients_exposure_in_cols(
-          var = "AVAL", col_split = TRUE,
-          .labels = c(
-            n_patients = "Number of Patients",
-            sum_exposure = ifelse(
-              "Days" == " ",
-              paste("Sum of", "TDURD"),
-              paste("Sum of", "TDURD", sprintf("(%s)", "Days"))
-            )
-          ),
-          custom_label = "Total Number of Patients and Patient Time*"
-        ) %>%
-        rtables::split_rows_by("RACE",
-          label_pos = "topleft", split_fun = split_fun,
-          split_label = formatters::var_labels(adex["RACE"], fill = TRUE),
-          nested = FALSE
-        ) %>%
-        summarize_patients_exposure_in_cols(
-          var = "AVAL",
-          col_split = FALSE
-        )
-    ),
-    table = quote({
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
-      result
-    })
-  )
-  testthat::expect_equal(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
