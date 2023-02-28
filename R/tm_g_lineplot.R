@@ -218,7 +218,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'       label = "Line Plot",
 #'       dataname = "ADLB",
 #'       strata = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+#'         variable_choices(adsl, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
 #'       y = choices_selected(
