@@ -1095,8 +1095,8 @@ srv_mmrm <- function(id,
     state_has_changed <- shiny::reactive({
       shiny::req(state$input)
       displayed_state <- mmrm_inputs_reactive()
-      equal_ADSL <- dplyr::all.equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
-      equal_dataname <- dplyr::all.equal(state$input$anl_filtered, displayed_state$anl_filtered)
+      equal_ADSL <- all.equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
+      equal_dataname <- all.equal(state$input$anl_filtered, displayed_state$anl_filtered)
       true_means_change <- vapply(
         sync_inputs,
         FUN = function(x) {

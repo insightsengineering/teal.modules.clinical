@@ -1,4 +1,3 @@
-
 #' Template: Exposure Table for Risk management plan
 #'
 #' @inheritParams template_arguments
