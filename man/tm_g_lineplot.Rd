@@ -47,15 +47,15 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{strata}{(\code{character} scalar or \code{NA}) strata variable name. \cr}
+\item{strata}{(\code{character} or \code{NA})\cr strata variable name.}
 
-\item{x}{(\code{character} scalar) x variable name. \cr}
+\item{x}{(\code{character})\cr x variable name.}
 
-\item{y}{(\code{character} scalar) y variable name. \cr}
+\item{y}{(\code{character})\cr y variable name.}
 
-\item{y_unit}{(\code{character} scalar or \code{NA}) y_unit variable name. \cr}
+\item{y_unit}{(\code{character} or \code{NA})\cr y_unit variable name.}
 
-\item{paramcd}{(\code{character} scalar or \code{NA}) paramcd variable name. \cr}
+\item{paramcd}{(\code{character} or \code{NA})\cr paramcd variable name.}
 
 \item{param}{(\code{character})\cr
 parameter chosen to filter the data by.}
@@ -63,33 +63,27 @@ parameter chosen to filter the data by.}
 \item{conf_level}{(\code{numeric})\cr
 value for the confidence level within the range of (0, 1).}
 
-\item{interval}{(\code{character} or \code{NULL}) \cr
-names of the statistics that will be plotted as intervals.
+\item{interval}{(\code{character} or \code{NULL})\cr names of the statistics that will be plotted as intervals.
 All the statistics indicated in \code{interval} variable must be present in the object returned by \code{sfun},
 and be of a \code{double} or \code{numeric} type vector of length two.}
 
-\item{mid}{(\code{character} or \code{NULL}) \cr
-names of the statistics that will be plotted as midpoints.
+\item{mid}{(\code{character} or \code{NULL})\cr names of the statistics that will be plotted as midpoints.
 All the statistics indicated in \code{mid} variable must be present in the object returned by \code{sfun},
 and be of a \code{double} or \code{numeric} type vector of length one.}
 
-\item{whiskers}{(\code{character}) \cr
-names of the interval whiskers that will be plotted. Must match the \code{names} attribute of the
-\code{interval} element in the list returned by \code{sfun}.
-It is possible to specify one whisker only, lower or upper.}
+\item{whiskers}{(\code{character})\cr names of the interval whiskers that will be plotted. Must match the \code{names}
+attribute of the \code{interval} element in the list returned by \code{sfun}. It is possible to specify one whisker only,
+lower or upper.}
 
-\item{table}{(\code{character} or \code{NULL}) \cr
-names of the statistics that will be displayed in the table below the plot.
+\item{table}{(\code{character} or \code{NULL})\cr names of the statistics that will be displayed in the table below the plot.
 All the statistics indicated in \code{table} variable must be present in the object returned by \code{sfun}.}
 
-\item{mid_type}{(\code{character} scalar) \cr
-controls the type of the \code{mid} plot, it can be point (\code{p}), line (\code{l}), or point and line (\code{pl}).}
+\item{mid_type}{(\code{character})\cr controls the type of the \code{mid} plot, it can be point (\code{p}), line (\code{l}),
+or point and line (\code{pl}).}
 
-\item{mid_point_size}{(\code{integer} or \code{double}) \cr
-controls the font size of the point for \code{mid} plot.}
+\item{mid_point_size}{(\code{integer} or \code{double})\cr controls the font size of the point for \code{mid} plot.}
 
-\item{table_font_size}{(\code{integer} or \code{double}) \cr
-controls the font size of values in the table.}
+\item{table_font_size}{(\code{integer} or \code{double})\cr controls the font size of values in the table.}
 
 \item{plot_height}{optional, (\code{numeric})\cr
 a vector of length three with \code{c(value, min, max)}. Specifies the height of
