@@ -153,6 +153,7 @@ ex_var_labels <- c(
   PARCAT1 = "Parameter Category (Individual/Overall)",
   PARCAT2 = "Parameter Category (Drug A/Drug B)",
   ANRIND = "Analysis Reference Range Indicator",
+  BNRIND = "Baseline Reference Range Indicator",
   ANRLO = "Analysis Normal Range Lower Limit",
   ANRHI = "Analysis Normal Range Upper Limit",
   CNSR = "Censor",
@@ -632,9 +633,9 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
       EVNTDESC = "Event or Censoring Description",
       CNSDTDSC = "Censor Date Description"
     )
-  
+
   var_lbls_ind <- sapply(
-    names(var_labels(tmc_ex_adaette)[is.na(var_labels(tmc_ex_adaette))]), 
+    names(var_labels(tmc_ex_adaette)[is.na(var_labels(tmc_ex_adaette))]),
     function(x) which(names(ex_var_labels) == x)
   )
   var_labels(tmc_ex_adaette[names(var_lbls_ind)]) <- ex_var_labels[var_lbls_ind]
@@ -758,15 +759,13 @@ generate_adcm <- function(adsl = tmc_ex_adsl) {
 generate_adeg <- function(adsl = tmc_ex_adsl,
                           n_assessments = 3L,
                           n_days = 3L,
-                          max_n_eg = 5L) {
+                          max_n_eg = 3L) {
   set.seed(1)
-  egcat <- c("INTERVAL", "INTERVAL", "MEASUREMENT", "FINDING")
   param <- c("QT Duration", "RR Duration", "Heart Rate", "ECG Interpretation")
   paramcd <- c("QT", "RR", "HR", "ECGINTP")
   paramu <- c("msec", "msec", "beats/min", "")
   visit_format <- "WEEK"
 
-  egcat_init_list <- relvar_init(param, egcat)
   param_init_list <- relvar_init(param, paramcd)
   unit_init_list <- relvar_init(param, paramu)
 
@@ -777,13 +776,6 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
     AVISIT = visit_schedule(visit_format = visit_format, n_assessments = n_assessments, n_days = n_days),
     stringsAsFactors = FALSE
   )
-
-  adeg$EGCAT <- as.factor(rel_var(
-    df = adeg,
-    var_name = "EGCAT",
-    var_values = egcat_init_list$relvar2,
-    related_var = "PARAM"
-  ))
 
   adeg$PARAMCD <- as.factor(rel_var(
     df = adeg,
@@ -798,10 +790,6 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
     .data$PARAMCD == "HR" ~ stats::rnorm(nrow(adeg), mean = 70, sd = 20),
     .data$PARAMCD == "ECGINTP" ~ NA_real_
   ))
-
-  adeg <- adeg %>%
-    dplyr::mutate(EGTESTCD = .data$PARAMCD) %>%
-    dplyr::mutate(EGTEST = .data$PARAM)
 
   adeg <- adeg %>% dplyr::mutate(AVISITN = dplyr::case_when(
     AVISIT == "SCREENING" ~ -1,
@@ -818,7 +806,6 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
   ))
 
   adeg <- adeg[order(adeg$STUDYID, adeg$USUBJID, adeg$PARAMCD, adeg$AVISITN), ]
-
   adeg <- Reduce(rbind, lapply(split(adeg, adeg$USUBJID), function(x) {
     x$STUDYID <- adsl$STUDYID[which(adsl$USUBJID == x$USUBJID[1])]
     x$ABLFL <- ifelse(toupper(visit_format) == "WEEK" & x$AVISIT == "BASELINE",
@@ -835,16 +822,14 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
     .data$PARAMCD == "RR" ~ 600,
     .data$PARAMCD == "HR" ~ 40,
     .data$PARAMCD == "ECGINTP" ~ NA_real_
-  ))
-
-  adeg <- adeg %>% dplyr::mutate(ANRHI = dplyr::case_when(
+  )) %>%
+  dplyr::mutate(ANRHI = dplyr::case_when(
     .data$PARAMCD == "QT" ~ 500,
     .data$PARAMCD == "RR" ~ 1500,
     .data$PARAMCD == "HR" ~ 100,
     .data$PARAMCD == "ECGINTP" ~ NA_real_
-  ))
-
-  adeg <- adeg %>% dplyr::mutate(ANRIND = factor(dplyr::case_when(
+  )) %>%
+  dplyr::mutate(ANRIND = factor(dplyr::case_when(
     .data$AVAL < .data$ANRLO ~ "LOW",
     .data$AVAL >= .data$ANRLO & .data$AVAL <= .data$ANRHI ~ "NORMAL",
     .data$AVAL > .data$ANRHI ~ "HIGH"
@@ -857,17 +842,10 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
     dplyr::group_by(.data$USUBJID, .data$PARAMCD, .data$BASETYPE) %>%
     dplyr::mutate(BNRIND = .data$ANRIND[.data$ABLFL == "Y"]) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(ATPTN = 1) %>%
     dplyr::mutate(DTYPE = NA)
 
   adeg$ANRIND <- factor(adeg$ANRIND, levels = c("LOW", "NORMAL", "HIGH"))
   adeg$BNRIND <- factor(adeg$BNRIND, levels = c("LOW", "NORMAL", "HIGH"))
-
-  adeg <- var_relabel(
-    adeg,
-    STUDYID = "Study Identifier",
-    USUBJID = "Unique Subject Identifier"
-  )
 
   adeg <- dplyr::inner_join(
     adsl,
@@ -887,16 +865,12 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
       origin = "1970-01-01"
     )) %>%
     dplyr::ungroup() %>%
-    dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days")))) %>%
     dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ADTM)
 
   adeg <- adeg %>%
-    dplyr::mutate(ASPID = sample(seq_len(dplyr::n()))) %>%
     dplyr::group_by(.data$USUBJID) %>%
-    dplyr::mutate(EGSEQ = seq_len(dplyr::n())) %>%
-    dplyr::mutate(ASEQ = .data$EGSEQ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(
       .data$STUDYID,
@@ -904,11 +878,8 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
       .data$PARAMCD,
       .data$BASETYPE,
       .data$AVISITN,
-      .data$ATPTN,
       .data$DTYPE,
-      .data$ADTM,
-      .data$EGSEQ,
-      .data$ASPID
+      .data$ADTM
     )
 
   adeg <- adeg %>% dplyr::mutate(ONTRTFL = factor(dplyr::case_when(
@@ -917,22 +888,18 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
     (.data$ADTM < .data$TRTSDTM) ~ "",
     (.data$ADTM > .data$TRTEDTM) ~ "",
     TRUE ~ "Y"
-  )))
-
-  adeg <- adeg %>% dplyr::mutate(AVALC = ifelse(
+  ))) %>%
+  dplyr::mutate(AVALC = ifelse(
     .data$PARAMCD == "ECGINTP",
     as.character(sample_fct(c("ABNORMAL", "NORMAL"), nrow(adeg), prob = c(0.25, 0.75))),
     as.character(.data$AVAL)
   ))
 
-  adeg <- adeg %>%
-    dplyr::mutate(row_check = seq_len(nrow(adeg)))
-
-  get_groups <- function(data,
-                         minimum) {
+  adeg <- adeg %>% dplyr::mutate(row_check = seq_len(nrow(adeg)))
+  get_groups <- function(data, minimum) {
     data <- data %>%
       dplyr::group_by(.data$USUBJID, .data$PARAMCD, .data$BASETYPE) %>%
-      dplyr::arrange(.data$ADTM, .data$ASPID, .data$EGSEQ) %>%
+      dplyr::arrange(.data$ADTM) %>%
       dplyr::filter(
         (.data$AVISIT != "BASELINE" & .data$AVISIT != "SCREENING") &
           (.data$ONTRTFL == "Y" | .data$ADTM <= .data$TRTSDTM)
@@ -948,7 +915,6 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
       } %>%
       dplyr::slice(1) %>%
       dplyr::ungroup()
-
     return(data)
   }
 
@@ -959,16 +925,14 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
     dplyr::ungroup()
 
   adeg <- adeg[, -which(names(adeg) %in% c("row_check"))]
-
   flag_variables <- function(data, worst_obs) {
     data_compare <- data %>%
       dplyr::mutate(row_check = seq_len(nrow(data)))
-
     data <- data_compare %>%
       {
         if (worst_obs == FALSE) {
           dplyr::group_by(., .data$USUBJID, .data$PARAMCD, .data$BASETYPE, .data$AVISIT) %>%
-            dplyr::arrange(., .data$ADTM, .data$ASPID, .data$EGSEQ)
+            dplyr::arrange(., .data$ADTM)
         } else {
           dplyr::group_by(., .data$USUBJID, .data$PARAMCD, .data$BASETYPE)
         }
@@ -1019,13 +983,6 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
   adeg <- flag_variables(adeg, FALSE) %>% dplyr::rename(WORS01FL = "new_var")
   adeg <- flag_variables(adeg, TRUE) %>% dplyr::rename(WORS02FL = "new_var")
 
-  adeg <- adeg %>% dplyr::mutate(ANL01FL = factor(ifelse(
-    (.data$ABLFL == "Y" | (is.na(.data$DTYPE) & .data$WORS01FL == "Y")) &
-      (.data$AVISIT != "SCREENING"),
-    "Y",
-    ""
-  )))
-
   tmc_ex_adeg <- adeg %>%
     dplyr::group_by(.data$USUBJID, .data$PARAMCD, .data$BASETYPE) %>%
     dplyr::mutate(BASEC = ifelse(
@@ -1033,18 +990,17 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
       .data$AVALC[.data$AVISIT == "BASELINE"],
       as.character(.data$BASE)
     )) %>%
-    dplyr::mutate(ANL03FL = dplyr::case_when(
-      .data$DTYPE == "MINIMUM" ~ "Y",
-      .data$ABLFL == "Y" & .data$PARAMCD != "ECGINTP" ~ "Y",
-      TRUE ~ ""
-    )) %>%
-    dplyr::mutate(ANL04FL = dplyr::case_when(
-      .data$DTYPE == "MAXIMUM" ~ "Y",
-      .data$ABLFL == "Y" & .data$PARAMCD != "ECGINTP" ~ "Y",
-      TRUE ~ ""
-    )) %>%
-    dplyr::ungroup()
-  
+    dplyr::ungroup() %>%
+    var_relabel(
+      AVALC = "Character Result/Finding",
+      BASEC = "Baseline Character Value",
+      BASETYPE = "Baseline Type",
+      DTYPE = "Derivation Type",
+      ONTRTFL = "On Treatment Record Flag",
+      WORS01FL = "Worst Observation in Window Flag 01",
+      WORS02FL = "Worst Post-Baseline Observation"
+    )
+
   var_lbls_ind <- sapply(
     names(var_labels(tmc_ex_adeg)[is.na(var_labels(tmc_ex_adeg))]), function(x) which(names(ex_var_labels) == x)
   )
@@ -1644,7 +1600,7 @@ generate_admh <- function(adsl = tmc_ex_adsl,
       MHDISTAT = "Status of Disease",
       MHSEQ = "Sponsor-Defined Identifier"
     )
-  
+
   var_lbls_ind <- sapply(
     names(var_labels(tmc_ex_admh)[is.na(var_labels(tmc_ex_admh))]), function(x) which(names(ex_var_labels) == x)
   )
@@ -2142,12 +2098,12 @@ generate_advs <- function(adsl = tmc_ex_adsl,
       .data$AVISITN,
       .data$ADTM
     )
-  
+
   var_lbls_ind <- sapply(
     names(var_labels(tmc_ex_advs)[is.na(var_labels(tmc_ex_advs))]), function(x) which(names(ex_var_labels) == x)
   )
   var_labels(tmc_ex_advs[names(var_lbls_ind)]) <- ex_var_labels[var_lbls_ind]
-  
+
   save(tmc_ex_advs, file = "data/tmc_ex_advs.rda", compress = "xz")
 }
 ```
