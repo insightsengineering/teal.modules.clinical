@@ -19,29 +19,29 @@
 \format{
 \code{rds} (\code{data.frame})
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 200 rows and 27 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 200 rows and 26 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 541 rows and 53 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 541 rows and 52 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1800 rows and 38 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1800 rows and 37 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1012 rows and 47 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1012 rows and 46 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 5200 rows and 60 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 5200 rows and 59 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 2400 rows and 51 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 400 rows and 36 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 4200 rows and 60 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 4200 rows and 59 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1077 rows and 34 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1077 rows and 33 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 7000 rows and 37 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 7000 rows and 36 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1600 rows and 35 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1600 rows and 34 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1000 rows and 35 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1000 rows and 34 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 8400 rows and 44 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 8400 rows and 43 columns.
 }
 \usage{
 tmc_ex_adsl

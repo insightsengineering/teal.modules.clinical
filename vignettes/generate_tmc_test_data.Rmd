@@ -111,7 +111,7 @@ str_extract <- function(string, pattern) {
   regmatches(string, gregexpr(pattern, string))
 }
 
-adsl_var_labels <- c(
+ex_var_labels <- c(
   STUDYID = "Study Identifier",
   USUBJID = "Unique Subject Identifier",
   SUBJID = "Subject Identifier for the Study",
@@ -137,10 +137,7 @@ adsl_var_labels <- c(
   EOSDT = "End of Study Date",
   EOSDY = "End of Study Relative Day",
   DCSREAS = "Reason for Discontinuation from Study",
-  DTHDT = "Date of Death"
-)
-
-common_var_labels <- c(
+  DTHDT = "Date of Death",
   PARAM = "Parameter",
   PARAMCD = "Parameter Code",
   AVISIT = "Analysis Visit",
@@ -153,12 +150,15 @@ common_var_labels <- c(
   ABLFL2 = "Screening Record Flag",
   CHG = "Absolute Change from Baseline",
   PCHG = "Percentage Change from Baseline",
+  PARCAT1 = "Parameter Category (Individual/Overall)",
+  PARCAT2 = "Parameter Category (Drug A/Drug B)",
   ANRIND = "Analysis Reference Range Indicator",
   ANRLO = "Analysis Normal Range Lower Limit",
   ANRHI = "Analysis Normal Range Upper Limit",
   ADTM = "Analysis Datetime",
   ADY = "Analysis Relative Day",
-  ASTDTM = "Analysis Start Datetime"
+  ASTDTM = "Analysis Start Datetime",
+  VISITDY = "Planned Study Day of Visit"
 )
 ```
 
@@ -260,10 +260,10 @@ generate_adsl <- function(N = 200) { # nolint
       DCSREAS == "DEATH" ~ as.Date(.data$TRTEDTM) + sample(0:50, size = N, replace = TRUE)
     ))
 
-  adsl_lbls_ind <- sapply(
-    names(var_labels(tmc_ex_adsl)[is.na(var_labels(tmc_ex_adsl))]), function(x) which(names(adsl_var_labels) == x)
+  var_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_adsl)[is.na(var_labels(tmc_ex_adsl))]), function(x) which(names(ex_var_labels) == x)
   )
-  var_labels(tmc_ex_adsl[names(adsl_lbls_ind)]) <- adsl_var_labels[adsl_lbls_ind]
+  var_labels(tmc_ex_adsl[names(var_lbls_ind)]) <- ex_var_labels[var_lbls_ind]
 
   save(tmc_ex_adsl, file = "data/tmc_ex_adsl.rda", compress = "xz")
 }
@@ -1690,10 +1690,10 @@ generate_admh <- function(adsl = tmc_ex_adsl,
       MHSEQ = "Sponsor-Defined Identifier"
     )
   
-  common_lbls_ind <- sapply(
-    names(var_labels(tmc_ex_admh)[is.na(var_labels(tmc_ex_admh))]), function(x) which(names(common_var_labels) == x)
+  var_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_admh)[is.na(var_labels(tmc_ex_admh))]), function(x) which(names(ex_var_labels) == x)
   )
-  var_labels(tmc_ex_admh[names(common_lbls_ind)]) <- common_var_labels[common_lbls_ind]
+  var_labels(tmc_ex_admh[names(var_lbls_ind)]) <- ex_var_labels[var_lbls_ind]
 
   save(tmc_ex_admh, file = "data/tmc_ex_admh.rda", compress = "xz")
 }
@@ -1795,10 +1795,10 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
       .data$ADTM
     )
 
-  common_lbls_ind <- sapply(
-    names(var_labels(tmc_ex_adqs)[is.na(var_labels(tmc_ex_adqs))]), function(x) which(names(common_var_labels) == x)
+  var_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_adqs)[is.na(var_labels(tmc_ex_adqs))]), function(x) which(names(ex_var_labels) == x)
   )
-  var_labels(tmc_ex_adqs[names(common_lbls_ind)]) <- common_var_labels[common_lbls_ind]
+  var_labels(tmc_ex_adqs[names(var_lbls_ind)]) <- ex_var_labels[var_lbls_ind]
 
   save(tmc_ex_adqs, file = "data/tmc_ex_adqs.rda", compress = "xz")
 }
@@ -2188,10 +2188,10 @@ generate_advs <- function(adsl = tmc_ex_adsl,
       .data$ADTM
     )
   
-  common_lbls_ind <- sapply(
-    names(var_labels(tmc_ex_advs)[is.na(var_labels(tmc_ex_advs))]), function(x) which(names(common_var_labels) == x)
+  var_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_advs)[is.na(var_labels(tmc_ex_advs))]), function(x) which(names(ex_var_labels) == x)
   )
-  var_labels(tmc_ex_advs[names(common_lbls_ind)]) <- common_var_labels[common_lbls_ind]
+  var_labels(tmc_ex_advs[names(var_lbls_ind)]) <- ex_var_labels[var_lbls_ind]
   
   save(tmc_ex_advs, file = "data/tmc_ex_advs.rda", compress = "xz")
 }
