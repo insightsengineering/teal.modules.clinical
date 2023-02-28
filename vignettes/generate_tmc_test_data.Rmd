@@ -231,12 +231,16 @@ generate_adsl <- function(N = 200) { # nolint
       EOSDY = as.numeric(ceiling(difftime(.data$TRTEDTM, .data$TRTSDTM, units = "days"))) %>%
         with_label("End of Study Relative Day")
     ) %>%
-    dplyr::mutate(EOSSTT = dplyr::case_when(
-      EOSDY == max(EOSDY, na.rm = TRUE) ~ "COMPLETED",
-      EOSDY < max(EOSDY, na.rm = TRUE) ~ "DISCONTINUED",
-      is.na(TRTEDTM) ~ "ONGOING"
-    ) %>% with_label("End of Study Status")) %>%
-    dplyr::mutate(EOTSTT = .data$EOSSTT %>% with_label("End of Treatment Status")) %>%
+    dplyr::mutate(
+      EOSSTT = dplyr::case_when(
+        EOSDY == max(EOSDY, na.rm = TRUE) ~ "COMPLETED",
+        EOSDY < max(EOSDY, na.rm = TRUE) ~ "DISCONTINUED",
+        is.na(TRTEDTM) ~ "ONGOING"
+      ) %>% with_label("End of Study Status")
+    ) %>%
+    dplyr::mutate(
+      EOTSTT = .data$EOSSTT %>% with_label("End of Treatment Status")
+    ) %>%
     dplyr::mutate(
       DCSREAS = ifelse(
         .data$EOSSTT == "DISCONTINUED",
@@ -303,12 +307,14 @@ generate_adae <- function(adsl = tmc_ex_adsl,
   ) %>%
     Reduce(rbind, .) %>%
     `[`(c(10, 11, 1, 2, 3, 4, 5, 6, 7, 8, 9)) %>%
-    dplyr::mutate(AETERM = gsub("dcd", "trm", .data$AEDECOD) %>% with_label("Reported Term for the Adverse Event")) %>%
-    dplyr::mutate(AESEV = dplyr::case_when(
-      AETOXGR == 1 ~ "MILD",
-      AETOXGR %in% c(2, 3) ~ "MODERATE",
-      AETOXGR %in% c(4, 5) ~ "SEVERE"
-    ) %>% with_label("Severity/Intensity"))
+    dplyr::mutate(
+      AETERM = gsub("dcd", "trm", .data$AEDECOD) %>% with_label("Reported Term for the Adverse Event"),
+      AESEV = dplyr::case_when(
+        AETOXGR == 1 ~ "MILD",
+        AETOXGR %in% c(2, 3) ~ "MODERATE",
+        AETOXGR %in% c(4, 5) ~ "SEVERE"
+      ) %>% with_label("Severity/Intensity")
+    )
 
   # merge adsl to be able to add AE date and study day variables
   adae <- dplyr::inner_join(adae, adsl, by = c("STUDYID", "USUBJID"), multiple = "all") %>%
@@ -362,13 +368,15 @@ generate_adae <- function(adsl = tmc_ex_adsl,
   )
 
   adae <- adae %>%
-    dplyr::mutate(AEOUT = factor(ifelse(
-      .data$AETOXGR == "5",
-      "FATAL",
-      as.character(sample_fct(outcomes, nrow(adae), prob = c(0.1, 0.2, 0.1, 0.3, 0.3)))
-    )) %>% with_label("Outcome of Adverse Event")) %>%
-    dplyr::mutate(TRTEMFL = ifelse(.data$ASTDTM >= .data$TRTSDTM, "Y", "") %>%
-      with_label("Treatment Emergent Analysis Flag"))
+    dplyr::mutate(
+      AEOUT = factor(ifelse(
+        .data$AETOXGR == "5",
+        "FATAL",
+        as.character(sample_fct(outcomes, nrow(adae), prob = c(0.1, 0.2, 0.1, 0.3, 0.3)))
+      )) %>% with_label("Outcome of Adverse Event"),
+      TRTEMFL = ifelse(.data$ASTDTM >= .data$TRTSDTM, "Y", "") %>%
+        with_label("Treatment Emergent Analysis Flag")
+    )
 
   l_aag <- split(aag, interaction(aag$NAMVAR, aag$SRCVAR, aag$GRPTYPE, drop = TRUE))
 
@@ -402,11 +410,13 @@ generate_adae <- function(adsl = tmc_ex_adsl,
   )
 
   tmc_ex_adae <- adae %>%
-    dplyr::mutate(AEACN = factor(ifelse(
-      .data$AETOXGR == "5",
-      "NOT EVALUABLE",
-      as.character(sample_fct(actions, nrow(adae), prob = c(0.05, 0.05, 0.05, 0.01, 0.05, 0.1, 0.45, 0.1, 0.05)))
-    )) %>% with_label("Action Taken With Study Treatment")) %>%
+    dplyr::mutate(
+      AEACN = factor(ifelse(
+        .data$AETOXGR == "5",
+        "NOT EVALUABLE",
+        as.character(sample_fct(actions, nrow(adae), prob = c(0.05, 0.05, 0.05, 0.01, 0.05, 0.1, 0.45, 0.1, 0.05)))
+      )) %>% with_label("Action Taken With Study Treatment")
+    ) %>%
     var_relabel(
       AEBODSYS = "Body System or Organ Class",
       AELLT = "Lowest Level Term",
@@ -689,24 +699,28 @@ generate_adcm <- function(adsl = tmc_ex_adsl,
       ATC3 = paste("ATCCLAS3", substr(.data$CMDECOD, 9, 9)) %>% with_label("ATC Level 3 Text"),
       ATC4 = paste("ATCCLAS4", substr(.data$CMDECOD, 9, 9)) %>% with_label("ATC Level 4 Text")
     ) %>%
-    dplyr::mutate(CMINDC = sample(c(
-      "Nausea", "Hypertension", "Urticaria", "Fever",
-      "Asthma", "Infection", "Diabete", "Diarrhea", "Pneumonia"
-    ), dplyr::n(), replace = TRUE) %>% with_label("Indication")) %>%
-    dplyr::mutate(CMDOSE = sample(1:99, dplyr::n(), replace = TRUE) %>% with_label("Dose per Administration")) %>%
-    dplyr::mutate(CMTRT = substr(.data$CMDECOD, 9, 13) %>% with_label("Reported Name of Drug, Med, or Therapy")) %>%
-    dplyr::mutate(CMDOSU = sample(c(
-      "ug/mL", "ug/kg/day", "%", "uL", "DROP",
-      "umol/L", "mg", "mg/breath", "ug"
-    ), dplyr::n(), replace = TRUE) %>% with_label("Dose Units")) %>%
-    dplyr::mutate(CMROUTE = sample(c(
-      "INTRAVENOUS", "ORAL", "NASAL",
-      "INTRAMUSCULAR", "SUBCUTANEOUS", "INHALED", "RECTAL", "UNKNOWN"
-    ), dplyr::n(), replace = TRUE) %>% with_label("Route of Administration")) %>%
-    dplyr::mutate(CMDOSFRQ = sample(c(
-      "Q4W", "QN", "Q4H", "UNKNOWN", "TWICE",
-      "Q4H", "QD", "TID", "4 TIMES PER MONTH"
-    ), dplyr::n(), replace = TRUE) %>% with_label("Dosing Frequency per Interval")) %>%
+    dplyr::mutate(
+      CMINDC = sample(c(
+        "Nausea", "Hypertension", "Urticaria", "Fever",
+        "Asthma", "Infection", "Diabete", "Diarrhea", "Pneumonia"
+      ), dplyr::n(), replace = TRUE) %>% with_label("Indication"),
+      CMDOSE = sample(1:99, dplyr::n(), replace = TRUE) %>% with_label("Dose per Administration"),
+      CMTRT = substr(.data$CMDECOD, 9, 13) %>% with_label("Reported Name of Drug, Med, or Therapy"),
+      CMDOSU = sample(c(
+        "ug/mL", "ug/kg/day", "%", "uL", "DROP",
+        "umol/L", "mg", "mg/breath", "ug"
+      ), dplyr::n(), replace = TRUE) %>% with_label("Dose Units")
+    ) %>%
+    dplyr::mutate(
+      CMROUTE = sample(c(
+        "INTRAVENOUS", "ORAL", "NASAL",
+        "INTRAMUSCULAR", "SUBCUTANEOUS", "INHALED", "RECTAL", "UNKNOWN"
+      ), dplyr::n(), replace = TRUE) %>% with_label("Route of Administration"),
+      CMDOSFRQ = sample(c(
+        "Q4W", "QN", "Q4H", "UNKNOWN", "TWICE",
+        "Q4H", "QD", "TID", "4 TIMES PER MONTH"
+      ), dplyr::n(), replace = TRUE) %>% with_label("Dosing Frequency per Interval")
+    ) %>%
     var_relabel(
       CMCLAS = "Medication Class",
       CMDECOD = "Standardized Medication Name",
@@ -1290,21 +1304,23 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
       .data$PARAMCD == "IGA" ~ 3
     )) %>%
     dplyr::mutate(DTYPE = NA) %>%
-    dplyr::mutate(ATOXGR = factor(dplyr::case_when(
-      .data$ANRIND == "LOW" ~ sample(
-        c("-1", "-2", "-3", "-4", "-5"),
-        nrow(adlb),
-        replace = TRUE,
-        prob = c(0.30, 0.25, 0.20, 0.15, 0)
-      ),
-      .data$ANRIND == "HIGH" ~ sample(
-        c("1", "2", "3", "4", "5"),
-        nrow(adlb),
-        replace = TRUE,
-        prob = c(0.30, 0.25, 0.20, 0.15, 0)
-      ),
-      .data$ANRIND == "NORMAL" ~ "0"
-    )) %>% with_label("Analysis Toxicity Grade")) %>%
+    dplyr::mutate(
+      ATOXGR = factor(dplyr::case_when(
+        .data$ANRIND == "LOW" ~ sample(
+          c("-1", "-2", "-3", "-4", "-5"),
+          nrow(adlb),
+          replace = TRUE,
+          prob = c(0.30, 0.25, 0.20, 0.15, 0)
+        ),
+        .data$ANRIND == "HIGH" ~ sample(
+          c("1", "2", "3", "4", "5"),
+          nrow(adlb),
+          replace = TRUE,
+          prob = c(0.30, 0.25, 0.20, 0.15, 0)
+        ),
+        .data$ANRIND == "NORMAL" ~ "0"
+      )) %>% with_label("Analysis Toxicity Grade")
+    ) %>%
     dplyr::group_by(.data$USUBJID, .data$PARAMCD, .data$BASETYPE) %>%
     dplyr::mutate(BTOXGR = .data$ATOXGR[.data$ABLFL == "Y"]) %>%
     dplyr::ungroup() %>%
