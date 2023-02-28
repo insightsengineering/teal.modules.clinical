@@ -2021,50 +2021,6 @@ generate_advs <- function(adsl = tmc_ex_adsl,
   advs$AVAL <- stats::rnorm(nrow(advs), mean = 50, sd = 8)
   advs <- advs[order(advs$STUDYID, advs$USUBJID, advs$PARAMCD, advs$AVISITN), ]
 
-  advs <- Reduce(rbind, lapply(split(advs, advs$USUBJID), function(x) {
-    x$STUDYID <- adsl$STUDYID[which(adsl$USUBJID == x$USUBJID[1])]
-    x$ABLFL2 <- ifelse(x$AVISIT == "SCREENING", "Y", "")
-    x$ABLFL <- ifelse(
-      toupper(visit_format) == "WEEK" & x$AVISIT == "BASELINE",
-      "Y",
-      ifelse(
-        toupper(visit_format) == "CYCLE" & x$AVISIT == "CYCLE 1 DAY 1",
-        "Y",
-        ""
-      )
-    )
-    x
-  }))
-
-  advs$BASE <- ifelse(advs$ABLFL2 != "Y", retain(advs, advs$AVAL, advs$ABLFL == "Y"), NA)
-  advs$BASE2 <- retain(advs, advs$AVAL, advs$ABLFL2 == "Y")
-
-  advs <- advs %>%
-    dplyr::mutate(CHG = .data$AVAL - .data$BASE) %>%
-    dplyr::mutate(PCHG = 100 * (.data$CHG / .data$BASE)) %>%
-    dplyr::mutate(
-      ANRIND = c("HIGH", "LOW", "NORMAL") %>%
-        sample_fct(nrow(advs), prob = c(0.1, 0.1, 0.8))
-    ) %>%
-    dplyr::mutate(ANRLO = dplyr::case_when(
-      .data$PARAMCD == "DIABP" ~ 80,
-      .data$PARAMCD == "PULSE" ~ 60,
-      .data$PARAMCD == "RESP" ~ 12,
-      .data$PARAMCD == "SYSBP" ~ 120,
-      .data$PARAMCD == "TEMP" ~ 36.1,
-      .data$PARAMCD == "WEIGHT" ~ 40
-    )) %>%
-    dplyr::mutate(ANRHI = dplyr::case_when(
-      .data$PARAMCD == "DIABP" ~ 120,
-      .data$PARAMCD == "PULSE" ~ 100,
-      .data$PARAMCD == "RESP" ~ 20,
-      .data$PARAMCD == "SYSBP" ~ 180,
-      .data$PARAMCD == "TEMP" ~ 37.2,
-      .data$PARAMCD == "WEIGHT" ~ 100
-    )) %>%
-    dplyr::group_by(.data$USUBJID, .data$PARAMCD) %>%
-    dplyr::ungroup()
-
   advs <- dplyr::inner_join(
     adsl,
     advs,
