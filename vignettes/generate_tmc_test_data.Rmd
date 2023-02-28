@@ -1152,7 +1152,6 @@ generate_adex <- function(adsl = tmc_ex_adsl,
     TRUE ~ 999000
   ))
 
-
   adex2 <- split(adex, adex$USUBJID) %>%
     lapply(function(pinfo) {
       pinfo %>%
@@ -1208,12 +1207,6 @@ generate_adex <- function(adsl = tmc_ex_adsl,
       .data$AVAL
     ))
 
-  adex <- var_relabel(
-    adex,
-    STUDYID = "Study Identifier",
-    USUBJID = "Unique Subject Identifier"
-  )
-
   adex <- dplyr::inner_join(adsl, adex, by = c("STUDYID", "USUBJID"), multiple = "all") %>%
     dplyr::rowwise() %>%
     dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
@@ -1225,81 +1218,36 @@ generate_adex <- function(adsl = tmc_ex_adsl,
       (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
       origin = "1970-01-01"
     )) %>%
-    dplyr::mutate(astdt_int = as.numeric(as.Date(.data$ASTDTM))) %>%
-    dplyr::mutate(AENDTM = as.POSIXct(
-      (sample(.data$astdt_int:(.data$trtedt_int + 1), size = 1) * 86400),
-      origin = "1970-01-01"
-    )) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int", -"astdt_int") %>%
+    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM)
-
 
   adex <- adex %>%
     dplyr::group_by(.data$USUBJID) %>%
     dplyr::mutate(EXSEQ = seq_len(dplyr::n())) %>%
-    dplyr::mutate(ASEQ = .data$EXSEQ) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(
       .data$STUDYID,
       .data$USUBJID,
       .data$PARAMCD,
       .data$ASTDTM,
-      .data$AVISITN,
-      .data$EXSEQ
+      .data$AVISITN
     )
 
-  adex <- adex %>%
-    dplyr::mutate(EXDOSFRQ = dplyr::case_when(
-      PARCAT1 == "INDIVIDUAL" ~ "ONCE",
-      TRUE ~ ""
-    ))
-
-  adex <- adex %>%
-    dplyr::mutate(EXROUTE = dplyr::case_when(
-      PARCAT1 == "INDIVIDUAL" ~ sample(c("INTRAVENOUS", "SUBCUTANEOUS"),
-        nrow(adex),
-        replace = TRUE,
-        prob = c(0.9, 0.1)
-      ),
-      TRUE ~ ""
-    ))
-
-  adex <- adex %>% dplyr::mutate(VISIT = AVISIT)
-
-  visit_levels <- str_extract(levels(adex$VISIT), pattern = "[0-9]+")
+  visit_levels <- str_extract(levels(adex$AVISIT), pattern = "[0-9]+")
   vl_extracted <- vapply(visit_levels, function(x) as.numeric(x[2]), numeric(1))
   vl_extracted <- c(-1, 1, vl_extracted[!is.na(vl_extracted)])
 
-  adex <- adex %>%
-    dplyr::mutate(VISITDY = as.numeric(as.character(factor(VISIT, labels = vl_extracted))))
-
-  adex <- adex %>%
-    dplyr::mutate(
-      EXSTDTC = lubridate::as_datetime(TRTSDTM) + lubridate::days(VISITDY),
-      EXENDTC = EXSTDTC + lubridate::hours(1),
-      EXSTDY = VISITDY,
-      EXENDY = VISITDY
-    )
-
-  adex <- adex %>%
-    dplyr::group_by(SUBJID) %>%
-    dplyr::mutate(TRTEDTM = max(EXENDTC, na.rm = TRUE)) %>%
-    dplyr::ungroup()
-
-  adex <- adex %>%
-    dplyr::mutate(
-      TRTSDT = lubridate::as_date(TRTSDTM),
-      TRTEDT = lubridate::as_date(TRTEDTM)
-    )
-
   tmc_ex_adex <- adex %>%
-    dplyr::mutate(
-      ASTDY = EXSTDY,
-      AENDY = EXENDY,
-      ASTDTM = EXSTDTC,
-      AENDTM = EXENDTC
-    )
+    dplyr::mutate(VISITDY = as.numeric(as.character(factor(AVISIT, labels = vl_extracted)))) %>%
+    dplyr::mutate(ASTDTM = lubridate::as_datetime(TRTSDTM) + lubridate::days(VISITDY)) %>%
+    dplyr::distinct(USUBJID, .keep_all = TRUE) %>%
+    var_relabel(EXSEQ = "Analysis Sequence Number")
+
+  var_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_adex)[is.na(var_labels(tmc_ex_adex))]), function(x) which(names(ex_var_labels) == x)
+  )
+  var_labels(tmc_ex_adex[names(var_lbls_ind)]) <- ex_var_labels[var_lbls_ind]
 
   save(tmc_ex_adex, file = "data/tmc_ex_adex.rda", compress = "xz")
 }
