@@ -151,8 +151,7 @@ template_events_patyear <- function(dataname,
 #' @export
 #' @examples
 #' adsl <- tmc_ex_adsl
-#' adaette <- tmc_ex_adaette
-#' adaette <- adaette %>%
+#' adaette <- tmc_ex_adaette %>%
 #'   dplyr::filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
 #'   dplyr::mutate(is_event = CNSR == 0) %>%
 #'   dplyr::mutate(n_events = as.integer(is_event))

@@ -155,6 +155,7 @@ ex_var_labels <- c(
   ANRIND = "Analysis Reference Range Indicator",
   ANRLO = "Analysis Normal Range Lower Limit",
   ANRHI = "Analysis Normal Range Upper Limit",
+  CNSR = "Censor",
   ADTM = "Analysis Datetime",
   ADY = "Analysis Relative Day",
   ASTDTM = "Analysis Start Datetime",
@@ -608,12 +609,6 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
     }) %>%
     Reduce(rbind, .)
 
-  adaette <- var_relabel(
-    adaette,
-    STUDYID = "Study Identifier",
-    USUBJID = "Unique Subject Identifier"
-  )
-
   adaette <- rbind(adaette, adaette_hy)
 
   tmc_ex_adaette <- adsl %>%
@@ -624,8 +619,6 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
     ) %>%
     dplyr::group_by(.data$USUBJID) %>%
     dplyr::arrange(.data$ADTM) %>%
-    dplyr::mutate(TTESEQ = seq_len(dplyr::n())) %>%
-    dplyr::mutate(ASEQ = .data$TTESEQ) %>%
     dplyr::mutate(PARAM = as.factor(.data$PARAM)) %>%
     dplyr::mutate(PARAMCD = as.factor(.data$PARAMCD)) %>%
     dplyr::ungroup() %>%
@@ -633,9 +626,18 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
       .data$STUDYID,
       .data$USUBJID,
       .data$PARAMCD,
-      .data$ADTM,
-      .data$TTESEQ
+      .data$ADTM
+    ) %>%
+    var_relabel(
+      EVNTDESC = "Event or Censoring Description",
+      CNSDTDSC = "Censor Date Description"
     )
+  
+  var_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_adaette)[is.na(var_labels(tmc_ex_adaette))]), 
+    function(x) which(names(ex_var_labels) == x)
+  )
+  var_labels(tmc_ex_adaette[names(var_lbls_ind)]) <- ex_var_labels[var_lbls_ind]
 
   save(tmc_ex_adaette, file = "data/tmc_ex_adaette.rda", compress = "xz")
 }
@@ -1042,6 +1044,11 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
       TRUE ~ ""
     )) %>%
     dplyr::ungroup()
+  
+  var_lbls_ind <- sapply(
+    names(var_labels(tmc_ex_adeg)[is.na(var_labels(tmc_ex_adeg))]), function(x) which(names(ex_var_labels) == x)
+  )
+  var_labels(tmc_ex_adeg[names(var_lbls_ind)]) <- ex_var_labels[var_lbls_ind]
 
   save(tmc_ex_adeg, file = "data/tmc_ex_adeg.rda", compress = "xz")
 }

@@ -23,7 +23,7 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 541 rows and 52 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1800 rows and 37 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1800 rows and 35 columns.
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1012 rows and 46 columns.
 
