@@ -92,21 +92,13 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Shift by Arm
 }
 \examples{
-library(dplyr)
-library(tern)
-library(scda)
-
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
-adeg <- synthetic_cdisc_dataset("latest", "adeg")
+adsl <- tmc_ex_adsl
+adeg <- tmc_ex_adeg
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl,
-      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-    ),
-    cdisc_dataset("ADEG", adeg,
-      code = 'ADEG <- synthetic_cdisc_dataset("latest", "adeg")'
-    )
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADEG", adeg)
   ),
   modules = modules(
     tm_t_shift_by_arm(

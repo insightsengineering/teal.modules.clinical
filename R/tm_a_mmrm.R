@@ -451,10 +451,8 @@ template_mmrm_plots <- function(fit_name,
 #' numerical precision.
 #'
 #' @examples
-#' library(scda)
-#'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADQS <- synthetic_cdisc_dataset("latest", "adqs") %>%
+#' adsl <- tmc_ex_adsl
+#' adqs <- tmc_ex_adqs %>%
 #'   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'   dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'   dplyr::mutate(
@@ -474,21 +472,8 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
-#'     cdisc_dataset("ADQS", ADQS,
-#'       code = 'ADQS <- synthetic_cdisc_dataset("latest", "adqs") %>%
-#'               dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
-#'               dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
-#'               dplyr::mutate(
-#'                 AVISIT = as.factor(AVISIT),
-#'                 AVISITN = rank(AVISITN) %>%
-#'                   as.factor() %>%
-#'                   as.numeric() %>%
-#'                   as.factor() # making consecutive numeric factor
-#'               )'
-#'     )
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADQS", adqs)
 #'   ),
 #'   modules = modules(
 #'     tm_a_mmrm(
@@ -500,7 +485,7 @@ template_mmrm_plots <- function(fit_name,
 #'       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
-#'         choices = value_choices(ADQS, "PARAMCD", "PARAM"),
+#'         choices = value_choices(adqs, "PARAMCD", "PARAM"),
 #'         selected = "FKSI-FWB"
 #'       ),
 #'       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
@@ -1110,8 +1095,8 @@ srv_mmrm <- function(id,
     state_has_changed <- shiny::reactive({
       shiny::req(state$input)
       displayed_state <- mmrm_inputs_reactive()
-      equal_ADSL <- dplyr::all_equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
-      equal_dataname <- dplyr::all_equal(state$input$anl_filtered, displayed_state$anl_filtered)
+      equal_ADSL <- all.equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
+      equal_dataname <- all.equal(state$input$anl_filtered, displayed_state$anl_filtered)
       true_means_change <- vapply(
         sync_inputs,
         FUN = function(x) {
@@ -1132,7 +1117,7 @@ srv_mmrm <- function(id,
         FUN.VALUE = logical(1)
       )
 
-      # all_equal function either returns TRUE or a character scalar to describe where there is inequality
+      # all.equal function either returns TRUE or a character scalar to describe where there is inequality
       any(c(is.character(equal_ADSL), is.character(equal_dataname), true_means_change))
     })
 
