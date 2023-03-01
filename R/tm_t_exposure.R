@@ -242,7 +242,7 @@ template_exposure <- function(parentname,
 #'   dplyr::mutate(
 #'     PARAMCD = "TDURD",
 #'     PARAM = "Overall duration (days)",
-#'     AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
+#'     AVAL = sample(x = seq(1, 200), size = dplyr::n(), replace = TRUE),
 #'     AVALU = "Days"
 #'   ) %>%
 #'   dplyr::bind_rows(adex)
