@@ -53,23 +53,25 @@ testthat::test_that("template_summary generates correct expressions for multiple
 })
 
 testthat::test_that(
-  "template_summary generates correct expressions for multiple grouping variables and all patientts", {
-  result <- template_summary(
-    dataname = "adrs",
-    parentname = "adsl",
-    arm_var = c("ARM", "STRATA1"),
-    sum_vars = c("RACE", "COUNTRY", "AGE"),
-    show_labels = "visible",
-    add_total = TRUE,
-    var_labels = character(),
-    na.rm = FALSE,
-    denominator = "N",
-    drop_arm_levels = TRUE
-  )
+  "template_summary generates correct expressions for multiple grouping variables and all patientts",
+  {
+    result <- template_summary(
+      dataname = "adrs",
+      parentname = "adsl",
+      arm_var = c("ARM", "STRATA1"),
+      sum_vars = c("RACE", "COUNTRY", "AGE"),
+      show_labels = "visible",
+      add_total = TRUE,
+      var_labels = character(),
+      na.rm = FALSE,
+      denominator = "N",
+      drop_arm_levels = TRUE
+    )
 
-  res <- testthat::expect_silent(result)
-  testthat::expect_snapshot(res)
-})
+    res <- testthat::expect_silent(result)
+    testthat::expect_snapshot(res)
+  }
+)
 
 testthat::test_that("template_summary generates correct expressions for customized numeric statistics", {
   result <- template_summary(

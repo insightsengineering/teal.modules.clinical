@@ -43,15 +43,44 @@ testthat::test_that("template_shift_by_grade generates correct expressions with 
 })
 
 testthat::test_that(
-  "template_shift_by_grade throws an error when worst_flag_var is not one of WGRLOVFL, WGRLOFL, WGRHIVFL, WGRHIFL", {
-  testthat::expect_error(
-    result <- template_shift_by_grade(
+  "template_shift_by_grade throws an error when worst_flag_var is not one of WGRLOVFL, WGRLOFL, WGRHIVFL, WGRHIFL",
+  {
+    testthat::expect_error(
+      result <- template_shift_by_grade(
+        parentname = "adsl",
+        dataname = "adlb",
+        arm_var = "ARM",
+        id_var = "USUBJID",
+        visit_var = "AVISIT",
+        worst_flag_var = c("another_value"),
+        worst_flag_indicator = "Y",
+        anl_toxgrade_var = "ATOXGR",
+        base_toxgrade_var = "BTOXGR",
+        paramcd = "PARAMCD",
+        drop_arm_levels = TRUE,
+        add_total = FALSE,
+        na_level = "<Missing>",
+        code_missing_baseline = FALSE
+      )
+    )
+  }
+)
+
+testthat::test_that(
+  "template_shift_by_grade keeps the same number of missing data ('<Missing>') after preprocessing",
+  {
+    adsl <- tmc_ex_adsl
+    adlb <- tmc_ex_adlb %>% dplyr::filter(WGRLOVFL == "Y")
+    adlb$ATOXGR[1] <- NA
+    adlb <- df_explicit_na(adlb)
+    expected_missing_n <- sum(adlb$ATOXGR == "<Missing>")
+    template <- template_shift_by_grade(
       parentname = "adsl",
       dataname = "adlb",
       arm_var = "ARM",
       id_var = "USUBJID",
       visit_var = "AVISIT",
-      worst_flag_var = c("another_value"),
+      worst_flag_var = c(c("WGRLOVFL")),
       worst_flag_indicator = "Y",
       anl_toxgrade_var = "ATOXGR",
       base_toxgrade_var = "BTOXGR",
@@ -61,36 +90,11 @@ testthat::test_that(
       na_level = "<Missing>",
       code_missing_baseline = FALSE
     )
-  )
-})
 
-testthat::test_that(
-  "template_shift_by_grade keeps the same number of missing data ('<Missing>') after preprocessing", {
-  adsl <- tmc_ex_adsl
-  adlb <- tmc_ex_adlb %>% dplyr::filter(WGRLOVFL == "Y")
-  adlb$ATOXGR[1] <- NA
-  adlb <- df_explicit_na(adlb)
-  expected_missing_n <- sum(adlb$ATOXGR == "<Missing>")
-  template <- template_shift_by_grade(
-    parentname = "adsl",
-    dataname = "adlb",
-    arm_var = "ARM",
-    id_var = "USUBJID",
-    visit_var = "AVISIT",
-    worst_flag_var = c(c("WGRLOVFL")),
-    worst_flag_indicator = "Y",
-    anl_toxgrade_var = "ATOXGR",
-    base_toxgrade_var = "BTOXGR",
-    paramcd = "PARAMCD",
-    drop_arm_levels = TRUE,
-    add_total = FALSE,
-    na_level = "<Missing>",
-    code_missing_baseline = FALSE
-  )
+    template_data <- template$data
+    data <- eval(template_data)
+    result_missing_n <- sum(data$ATOXGR_GP == "Missing")
 
-  template_data <- template$data
-  data <- eval(template_data)
-  result_missing_n <- sum(data$ATOXGR_GP == "Missing")
-
-  testthat::expect_equal(expected_missing_n, result_missing_n)
-})
+    testthat::expect_equal(expected_missing_n, result_missing_n)
+  }
+)

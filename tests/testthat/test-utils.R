@@ -20,7 +20,7 @@ testthat::test_that("pipe_expr concatenate expressions into a single pipeline (%
       expr2 = substitute(head)
     )
   )
-  expected <- quote(df %>% head)
+  expected <- quote(df %>% head())
   testthat::expect_identical(result, expected)
 })
 
