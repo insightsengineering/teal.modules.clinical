@@ -18,7 +18,8 @@
   automatically determined optimizer.
 * Creation of internal data for `adsl`, `adae`, `adaette`, `adcm`, `adeg`, `adex`, `adlb`, `admh`, `adqs`, `adrs`, `adtte`, and `advs`. 
   They are accessible via `tmc_ex_*` prefix.
-* Partial substitution of `scda` data with internal data in examples.
+* Updated all examples and tests to use datasets from the `teal.modules.clinical` package instead of `scda` datasets.
+* Updated tests to use `testthat` 3rd edition and replaced all applicable tests with snapshot testing.
 
 # teal.modules.clinical 0.8.14
 
