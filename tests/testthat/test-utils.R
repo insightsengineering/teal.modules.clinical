@@ -1,6 +1,3 @@
-library(dplyr)
-library(tern)
-
 testthat::test_that("h_concat_expr returns a string for long expression", {
   expr <- quote(
     rtables::basic_table() %>%

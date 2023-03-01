@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   dev = "svg"
 )
-library(magrittr)
 ```
 
 # Introduction
@@ -205,6 +204,7 @@ the pipeline is working but not humanly readable.
 
 ```{r}
 library(magrittr)
+
 short_iris <- head(iris)
 plot_expr <- substitute(
   expr = df %>% plot(y ~ x, data = ., main = text),
@@ -267,7 +267,7 @@ library(rtables)
 library(dplyr)
 library(tern)
 
-adlb <- tmc_ex_adlb
+adlb <- teal.modules.clinical::tmc_ex_adlb
 adlb_f <- adlb %>%
   filter(
     PARAM == "Alanine Aminotransferase Measurement" &
@@ -311,6 +311,7 @@ rtables_expr
 
 ```{r, message = FALSE}
 library(teal)
+
 #' Stylish code
 #'
 #' Deparse an expression and display the code following NEST conventions.
@@ -544,7 +545,7 @@ It is now possible to modify the studied parameter (`PARAMCD`)
 in addition to the study arm and visit variables names.
 
 ```{r}
-adlb <- tmc_ex_adlb
+adlb <- teal.modules.clinical::tmc_ex_adlb
 result <- rtables_expr(
   df = adlb, paramcd = "CRP", arm = "ARM", visit = "AVISIT",
   .stats = c("n", "mean_sd")

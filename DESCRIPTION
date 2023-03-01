@@ -66,23 +66,10 @@ Suggests:
     forcats,
     knitr,
     nestcolor (>= 0.1.0),
-    scda (>= 0.1.5),
-    scda.2022 (>= 0.1.3),
     teal.data (>= 0.1.2),
     testthat (>= 3.0)
 VignetteBuilder:
     knitr
-Remotes:
-    insightsengineering/teal.code@*release,
-    insightsengineering/teal.data@*release,
-    insightsengineering/teal.logger@*release,
-    insightsengineering/teal.reporter@*release,
-    insightsengineering/teal.transform@*release,
-    insightsengineering/teal.widgets@*release,
-    insightsengineering/teal@*release,
-    insightsengineering/tern.gee@*release,
-    insightsengineering/tern.mmrm@*release,
-    insightsengineering/tern@*release
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
