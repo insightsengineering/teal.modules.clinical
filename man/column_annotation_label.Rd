@@ -26,7 +26,6 @@ attr(data[["cyl"]], "label") <- "Cylinder"
 column_annotation_label(data, "cyl")
 column_annotation_label(data, "cyl", omit_raw_name = TRUE)
 \dontrun{
-ANL <- synthetic_cdisc_dataset("latest", "adsl")
-column_annotation_label(ANL, "ACTARM")
+column_annotation_label(tmc_ex_adsl, "ACTARM")
 }
 }

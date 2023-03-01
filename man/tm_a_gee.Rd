@@ -89,10 +89,8 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Teal module for Generalized Estimating Equations (GEE) analysis
 }
 \examples{
-library(scda)
-
-ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-ADQS <- synthetic_cdisc_dataset("latest", "adqs") \%>\%
+adsl <- tmc_ex_adsl
+adqs <- tmc_ex_adqs \%>\%
   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
   dplyr::mutate(
     AVISIT = as.factor(AVISIT),
@@ -106,21 +104,8 @@ ADQS <- synthetic_cdisc_dataset("latest", "adqs") \%>\%
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADQS", ADQS,
-      code = 'ADQS <- synthetic_cdisc_dataset("latest", "adqs") \%>\%
-              dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
-              dplyr::mutate(
-                AVISIT = as.factor(AVISIT),
-                AVISITN = rank(AVISITN) \%>\%
-                  as.factor() \%>\%
-                  as.numeric() \%>\%
-                  as.factor(),
-                AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
-              ) \%>\%
-              droplevels()
-             '
-    )
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADQS", adqs)
   ),
   modules = modules(
     tm_a_gee(
@@ -131,7 +116,7 @@ app <- init(
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
       paramcd = choices_selected(
-        choices = value_choices(ADQS, "PARAMCD", "PARAM"),
+        choices = value_choices(adqs, "PARAMCD", "PARAM"),
         selected = "FKSI-FWB"
       ),
       cov_var = choices_selected(c("BASE", "AGE", "SEX"), NULL)

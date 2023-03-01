@@ -5,38 +5,68 @@
 \alias{ex_data}
 \alias{tmc_ex_adsl}
 \alias{tmc_ex_adae}
+\alias{tmc_ex_adaette}
+\alias{tmc_ex_adcm}
+\alias{tmc_ex_adeg}
+\alias{tmc_ex_adex}
 \alias{tmc_ex_adlb}
+\alias{tmc_ex_admh}
+\alias{tmc_ex_adqs}
 \alias{tmc_ex_adrs}
 \alias{tmc_ex_adtte}
-\alias{tmc_ex_adcm}
+\alias{tmc_ex_advs}
 \title{Simulated CDISC Data for Examples}
 \format{
 \code{rds} (\code{data.frame})
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 200 rows and 27 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 200 rows and 26 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 541 rows and 53 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 541 rows and 51 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 4200 rows and 60 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1800 rows and 35 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1600 rows and 35 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 512 rows and 45 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1000 rows and 35 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 5200 rows and 48 columns.
 
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1012 rows and 47 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 200 rows and 37 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 3000 rows and 58 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1077 rows and 33 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 7000 rows and 36 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1600 rows and 34 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1000 rows and 34 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 8400 rows and 34 columns.
 }
 \usage{
 tmc_ex_adsl
 
 tmc_ex_adae
 
+tmc_ex_adaette
+
+tmc_ex_adcm
+
+tmc_ex_adeg
+
+tmc_ex_adex
+
 tmc_ex_adlb
+
+tmc_ex_admh
+
+tmc_ex_adqs
 
 tmc_ex_adrs
 
 tmc_ex_adtte
 
-tmc_ex_adcm
+tmc_ex_advs
 }
 \description{
 Simulated CDISC Data for Examples
@@ -47,13 +77,25 @@ Simulated CDISC Data for Examples
 
 \item \code{tmc_ex_adae}: ADAE data
 
+\item \code{tmc_ex_adaette}: ADAETTE data
+
+\item \code{tmc_ex_adcm}: ADCM data
+
+\item \code{tmc_ex_adeg}: ADEG data
+
+\item \code{tmc_ex_adex}: ADEX data
+
 \item \code{tmc_ex_adlb}: ADLB data
+
+\item \code{tmc_ex_admh}: ADMH data
+
+\item \code{tmc_ex_adqs}: ADQS data
 
 \item \code{tmc_ex_adrs}: ADRS data
 
 \item \code{tmc_ex_adtte}: ADTTE data
 
-\item \code{tmc_ex_adcm}: ADCM data
+\item \code{tmc_ex_advs}: ADVS data
 
 }}
 \keyword{datasets}

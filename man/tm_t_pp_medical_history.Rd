@@ -49,23 +49,13 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient medical history report using ADaM datasets.
 }
 \examples{
-library(scda)
-
-ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-ADMH <- synthetic_cdisc_dataset("latest", "admh")
-ADMH[["MHDISTAT"]] <- "ONGOING"
-formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
+adsl <- tmc_ex_adsl
+admh <- tmc_ex_admh
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL,
-      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-    ),
-    cdisc_dataset("ADMH", ADMH,
-      code = 'ADMH <- synthetic_cdisc_dataset("latest", "admh")
-        ADMH[["MHDISTAT"]] <- "ONGOING"
-        formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")' # nolint
-    )
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADMH", admh)
   ),
   modules = modules(
     tm_t_pp_medical_history(
@@ -74,15 +64,15 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       mhterm = choices_selected(
-        choices = variable_choices(ADMH, c("MHTERM")),
+        choices = variable_choices(admh, c("MHTERM")),
         selected = "MHTERM"
       ),
       mhbodsys = choices_selected(
-        choices = variable_choices(ADMH, "MHBODSYS"),
+        choices = variable_choices(admh, "MHBODSYS"),
         selected = "MHBODSYS"
       ),
       mhdistat = choices_selected(
-        choices = variable_choices(ADMH, "MHDISTAT"),
+        choices = variable_choices(admh, "MHDISTAT"),
         selected = "MHDISTAT"
       )
     )

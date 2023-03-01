@@ -91,43 +91,26 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal module: Exposure Table for Risk management plan
 }
 \examples{
-library(scda)
-library(dplyr)
-
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
-adex <- synthetic_cdisc_dataset("latest", "adex")
+adsl <- tmc_ex_adsl
+adex <- tmc_ex_adex
 
 set.seed(1, kind = "Mersenne-Twister")
 labels <- formatters::var_labels(adex, fill = FALSE)
 adex <- adex \%>\%
-  distinct(USUBJID, .keep_all = TRUE) \%>\%
-  mutate(
+  dplyr::distinct(USUBJID, .keep_all = TRUE) \%>\%
+  dplyr::mutate(
     PARAMCD = "TDURD",
     PARAM = "Overall duration (days)",
-    AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
+    AVAL = sample(x = seq(1, 200), size = dplyr::n(), replace = TRUE),
     AVALU = "Days"
   ) \%>\%
-  bind_rows(adex)
+  dplyr::bind_rows(adex)
 formatters::var_labels(adex) <- labels
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl,
-      code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-    ),
-    cdisc_dataset("ADEX", adex,
-      code = 'set.seed(1, kind = "Mersenne-Twister")
-      ADEX <- synthetic_cdisc_dataset("latest", "adsl")
-      labels <- formatters::var_labels(ADEX, fill = FALSE)
-      ADEX <- ADEX \%>\%
-       distinct(USUBJID, .keep_all = TRUE) \%>\%
-       mutate(PARAMCD = "TDURD",
-              PARAM = "Overall duration (days)",
-              AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
-              AVALU = "Days") \%>\%
-              bind_rows(ADEX)
-      formatters::var_labels(ADEX) <- labels' # nolint
-    )
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADEX", adex)
   ),
   modules = modules(
     tm_t_exposure(

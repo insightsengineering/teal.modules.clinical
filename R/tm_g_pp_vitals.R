@@ -189,20 +189,15 @@ template_vitals <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' library(scda)
 #' library(nestcolor)
 #'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADVS <- synthetic_cdisc_dataset("latest", "advs")
+#' adsl <- tmc_ex_adsl
+#' advs <- tmc_ex_advs
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
-#'     cdisc_dataset("ADVS", ADVS,
-#'       code = 'ADVS <- synthetic_cdisc_dataset("latest", "advs")'
-#'     )
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADVS", advs)
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_vitals(
@@ -212,15 +207,15 @@ template_vitals <- function(dataname = "ANL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       paramcd = choices_selected(
-#'         choices = variable_choices(ADVS, "PARAMCD"),
+#'         choices = variable_choices(advs, "PARAMCD"),
 #'         selected = "PARAMCD"
 #'       ),
 #'       xaxis = choices_selected(
-#'         choices = variable_choices(ADVS, "ADY"),
+#'         choices = variable_choices(advs, "ADY"),
 #'         selected = "ADY"
 #'       ),
 #'       aval = choices_selected(
-#'         choices = variable_choices(ADVS, "AVAL"),
+#'         choices = variable_choices(advs, "AVAL"),
 #'         selected = "AVAL"
 #'       )
 #'     )

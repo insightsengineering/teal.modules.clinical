@@ -74,34 +74,23 @@ template_medical_history <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param mhterm
-#' ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{MHTERM} column of the ADMH dataset.
+#' @param mhterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#'   `MHTERM` column of the ADMH dataset.
 #' @param mhbodsys ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{MHBODSYS} column of the ADMH dataset.
+#'   `MHBODSYS` column of the ADMH dataset.
 #' @param mhdistat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{MHDISTAT} column of the ADMH dataset.
+#'   `MHDISTAT` column of the ADMH dataset.
 #'
 #' @export
 #'
 #' @examples
-#' library(scda)
-#'
-#' ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-#' ADMH <- synthetic_cdisc_dataset("latest", "admh")
-#' ADMH[["MHDISTAT"]] <- "ONGOING"
-#' formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")
+#' adsl <- tmc_ex_adsl
+#' admh <- tmc_ex_admh
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
-#'     cdisc_dataset("ADMH", ADMH,
-#'       code = 'ADMH <- synthetic_cdisc_dataset("latest", "admh")
-#'         ADMH[["MHDISTAT"]] <- "ONGOING"
-#'         formatters::var_labels(ADMH[c("MHDISTAT")]) <- c("Status of Disease")' # nolint
-#'     )
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADMH", admh)
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_medical_history(
@@ -110,15 +99,15 @@ template_medical_history <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       mhterm = choices_selected(
-#'         choices = variable_choices(ADMH, c("MHTERM")),
+#'         choices = variable_choices(admh, c("MHTERM")),
 #'         selected = "MHTERM"
 #'       ),
 #'       mhbodsys = choices_selected(
-#'         choices = variable_choices(ADMH, "MHBODSYS"),
+#'         choices = variable_choices(admh, "MHBODSYS"),
 #'         selected = "MHBODSYS"
 #'       ),
 #'       mhdistat = choices_selected(
-#'         choices = variable_choices(ADMH, "MHDISTAT"),
+#'         choices = variable_choices(admh, "MHDISTAT"),
 #'         selected = "MHDISTAT"
 #'       )
 #'     )

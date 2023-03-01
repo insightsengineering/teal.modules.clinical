@@ -55,10 +55,8 @@ name of the analysis variable.}
 \item{cnsr_var}{(\code{character})\cr
 name of the censoring variable.}
 
-\item{xticks}{(\code{numeric}, \code{number}, or \code{NULL})\cr
-numeric vector of ticks or single number with spacing
-between ticks on the x axis.
-If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
+\item{xticks}{(\code{numeric}, \code{number}, or \code{NULL})\cr numeric vector of ticks or single number with spacing
+between ticks on the x axis. If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
 an optimal tick position on the x axis.}
 
 \item{strata_var}{(\code{character})\cr
@@ -71,7 +69,7 @@ time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_
 object with all available choices and preselected option
 for variable names that can be used for facet plotting.}
 
-\item{font_size}{(\code{number}) \cr font size to be used.}
+\item{font_size}{(\code{number})\cr font size to be used.}
 
 \item{conf_level}{(\code{numeric})\cr
 value for the confidence level within the range of (0, 1).}
@@ -85,14 +83,13 @@ Note: there is no equivalent of SAS \code{EXACT} method in R.}
 \item{time_unit_var}{(\code{character})\cr
 name of the variable representing time units.}
 
-\item{yval}{(\code{string})\cr value of y-axis. Should be either
-\code{Survival} (default) or \code{Failure} probability.}
+\item{yval}{(\code{string})\cr value of y-axis. Options are \code{Survival} (default) and \code{Failure} probability.}
 
 \item{pval_method}{(\code{string})\cr the method used for estimation of p.values;
 \code{wald} (default) or \code{likelihood}.}
 
-\item{annot_surv_med}{(\code{flag})\cr compute and add the annotation table
-on the Kaplan-Meier curve estimating the median survival time per group.}
+\item{annot_surv_med}{(\code{flag})\cr compute and add the annotation table on the Kaplan-Meier curve estimating the
+median survival time per group.}
 
 \item{annot_coxph}{(\code{flag})\cr add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
 

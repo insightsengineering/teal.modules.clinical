@@ -16,8 +16,8 @@
 * Removed unused argument `param` from `tm_g_pp_vitals`.
 * Removed optimizer choice from `tm_a_mmrm` since we can just always use the 
   automatically determined optimizer.
-* Creation of internal data for `adsl`, `adae`, `adlb`, `adcm`, `adrs`, and `adtte`. They are accessible
-  via `tmc_ex_*` prefix.
+* Creation of internal data for `adsl`, `adae`, `adaette`, `adcm`, `adeg`, `adex`, `adlb`, `admh`, `adqs`, `adrs`, `adtte`, and `advs`. 
+  They are accessible via `tmc_ex_*` prefix.
 * Partial substitution of `scda` data with internal data in examples.
 
 # teal.modules.clinical 0.8.14
