@@ -70,6 +70,17 @@ Suggests:
     testthat (>= 3.0)
 VignetteBuilder:
     knitr
+Remotes:
+    insightsengineering/teal.code@*release,
+    insightsengineering/teal.data@*release,
+    insightsengineering/teal.logger@*release,
+    insightsengineering/teal.reporter@*release,
+    insightsengineering/teal.transform@*release,
+    insightsengineering/teal.widgets@*release,
+    insightsengineering/teal@*release,
+    insightsengineering/tern.gee@*release,
+    insightsengineering/tern.mmrm@*release,
+    insightsengineering/tern@*release
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
