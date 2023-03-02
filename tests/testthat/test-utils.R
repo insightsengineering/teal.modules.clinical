@@ -1,34 +1,26 @@
-library(dplyr)
-library(scda)
-library(tern)
-
 testthat::test_that("h_concat_expr returns a string for long expression", {
   expr <- quote(
     rtables::basic_table() %>%
       rtables::split_cols_by(var = "ARMCD") %>%
-      test_proportion_diff(
+      tern::test_proportion_diff(
         vars = "rsp", method = "cmh", variables = list(strata = "strat")
       ) %>%
       rtables::build_table(df = dta)
   )
   result <- h_concat_expr(expr)
-  expected <- paste0(
-    "rtables::basic_table() %>% rtables::split_cols_by(var = \"ARMCD\") %>%      ",
-    "test_proportion_diff(vars = \"rsp\", method = \"cmh\", ",
-    "variables = list(strata = \"strat\")) %>%      rtables::build_table(df = dta)"
-  )
-  testthat::expect_identical(result, expected)
-})
 
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
+})
 
 testthat::test_that("pipe_expr concatenate expressions into a single pipeline (%>%)", {
   result <- pipe_expr(
     list(
       expr1 = substitute(df),
-      expr2 = substitute(head)
+      expr2 = substitute(head())
     )
   )
-  expected <- quote(df %>% head) # styler: off
+  expected <- quote(df %>% head())
   testthat::expect_identical(result, expected)
 })
 
@@ -41,22 +33,15 @@ testthat::test_that("add_expr adds expressions to expression list", {
   lyt <- add_expr(
     lyt,
     substitute(
-      test_proportion_diff(
+      tern::test_proportion_diff(
         vars = "rsp", method = "cmh", variables = list(strata = "strat")
       )
     )
   )
-
   result <- lyt <- add_expr(lyt, substitute(rtables::build_table(df = dta)))
-  expected <- list(
-    substitute(rtables::basic_table()),
-    substitute(rtables::split_cols_by(var = arm)),
-    substitute(test_proportion_diff(
-      vars = "rsp", method = "cmh", variables = list(strata = "strat")
-    )),
-    substitute(rtables::build_table(df = dta))
-  )
-  testthat::expect_identical(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("add_expr manages expression list which can be used by pipe_expr", {
@@ -73,26 +58,19 @@ testthat::test_that("add_expr manages expression list which can be used by pipe_
       )
     )
   )
-
   lyt <- add_expr(lyt, substitute(rtables::build_table(df = dta)))
   result <- pipe_expr(lyt)
-  expected <- substitute(
-    rtables::basic_table() %>%
-      rtables::split_cols_by(var = arm) %>%
-      test_proportion_diff(
-        vars = "rsp", method = "cmh", variables = list(strata = "strat")
-      ) %>%
-      rtables::build_table(df = dta)
-  )
-  testthat::expect_identical(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
-adrs <- synthetic_cdisc_dataset("rcd_2022_06_27", "adrs")
+adrs <- tmc_ex_adrs
 expr1 <- substitute(
   expr = anl <- subset(df, PARAMCD == param),
   env = list(df = as.name("adrs"), param = "INVET")
 )
-expr2 <- substitute(expr = anl$rsp_lab <- d_onco_rsp_label(anl$AVALC))
+expr2 <- substitute(expr = anl$rsp_lab <- tern::d_onco_rsp_label(anl$AVALC))
 expr3 <- substitute(
   expr = anl$is_rsp <- anl$rsp_lab %in%
     c("Complete Response (CR)", "Partial Response (PR)")
@@ -100,38 +78,17 @@ expr3 <- substitute(
 
 testthat::test_that("bracket_expr concatenates expressions into a single expression", {
   result <- bracket_expr(list(expr1, expr2, expr3))
-  expected <- substitute(
-    expr = {
-      anl <- subset(adrs, PARAMCD == "INVET")
-      anl$rsp_lab <- d_onco_rsp_label(anl$AVALC)
-      anl$is_rsp <- anl$rsp_lab %in% c(
-        "Complete Response (CR)", "Partial Response (PR)"
-      )
-    }
-  )
-  testthat::expect_identical(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("bracket_expr returns a single evaluable expression", {
   eval(bracket_expr(list(expr1, expr2, expr3)))
   result <- table(anl$rsp_lab, anl$is_rsp)
-  expected <- structure(
-    c(0L, 18L, 0L, 73L, 44L, 164L, 0L, 101L, 0L, 0L),
-    .Dim = c(5L, 2L),
-    .Dimnames = structure(
-      list(
-        c(
-          "Complete Response (CR)", "Not Evaluable (NE)",
-          "Partial Response (PR)", "Progressive Disease (PD)",
-          "Stable Disease (SD)"
-        ),
-        c("FALSE", "TRUE")
-      ),
-      .Names = c("", "")
-    ),
-    class = "table"
-  )
-  testthat::expect_identical(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 # prepare_arm ----
@@ -143,14 +100,8 @@ testthat::test_that("prepare_arm with standard inputs", {
     comp_arm = c("ARM B", "ARM C")
   )
 
-  expected <- quote(
-    adrs %>%
-      dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A")) %>%
-      dplyr::mutate(ARMCD = droplevels(ARMCD))
-  )
-
-  testthat::expect_equal(result, expected)
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("prepare_arm combine ref arms", {
@@ -161,15 +112,8 @@ testthat::test_that("prepare_arm combine ref arms", {
     comp_arm = c("ARM C")
   )
 
-  expected <- quote(
-    adrs %>%
-      dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-      dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>%
-      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>%
-      dplyr::mutate(ARMCD = droplevels(ARMCD))
-  )
-
-  testthat::expect_equal(result, expected)
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("prepare_arm combine ref arms and use new level", {
@@ -181,15 +125,8 @@ testthat::test_that("prepare_arm combine ref arms and use new level", {
     ref_arm_val = "Control"
   )
 
-  expected <- quote(
-    adrs %>%
-      dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>%
-      dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", "ARM B"), new_level = "Control")) %>%
-      dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "Control")) %>%
-      dplyr::mutate(ARMCD = droplevels(ARMCD))
-  )
-
-  testthat::expect_equal(result, expected)
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("prepare_arm does not do anything when we don't want to compare or drop arms", {
@@ -227,14 +164,8 @@ testthat::test_that("prepare_arm_levels with standard inputs", {
     drop_arm_levels = TRUE
   )
 
-  expected <- quote({
-    adae <- adae %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
-    arm_levels <- levels(adae[["ARMCD"]])
-    adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
-    adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
-  })
-
-  testthat::expect_equal(result, expected)
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("prepare_arm_levels can use parentname arm levels", {
@@ -245,45 +176,30 @@ testthat::test_that("prepare_arm_levels can use parentname arm levels", {
     drop_arm_levels = FALSE
   )
 
-  expected <- quote({
-    adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
-    arm_levels <- levels(adsl[["ARMCD"]])
-    adae <- adae %>% dplyr::mutate(ARMCD = factor(ARMCD, levels = arm_levels))
-  })
-
-  testthat::expect_equal(result, expected)
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("color_lab_values main", {
   vals <- c("3 HIGH", "2 NORMAL", "5 HIGH", "4", "0 LOW")
+  result <- color_lab_values(vals)
 
-  testthat::expect_identical(
-    color_lab_values(vals),
-    c(
-      `3 HIGH` = "<span style='color:red!important'>3<i class='glyphicon glyphicon-arrow-up'></i></span>",
-      `2 NORMAL` = "<span style='color:grey!important'>2<i class='NULL'></i></span>",
-      `5 HIGH` = "<span style='color:red!important'>5<i class='glyphicon glyphicon-arrow-up'></i></span>",
-      `4` = "4",
-      `0 LOW` = "<span style='color:blue!important'>0<i class='glyphicon glyphicon-arrow-down'></i></span>"
-    )
-  )
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("color_lab_values neutral for none characters", {
   vals <- 1:5
 
   testthat::expect_identical(color_lab_values(vals), vals)
-
   testthat::expect_identical(color_lab_values(letters), letters)
 })
 
 testthat::test_that("clean_description", {
   vals <- rownames(mtcars)
-
-  testthat::expect_identical(clean_description(vals), vals)
-
   vals2 <- 1:10
 
+  testthat::expect_identical(clean_description(vals), vals)
   testthat::expect_identical(clean_description(vals2), as.character(vals2))
 })
 

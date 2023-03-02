@@ -12,7 +12,6 @@ testthat::test_that("validate_arm throws shiny error if arm_vec is not a factor"
   )
 })
 
-
 testthat::test_that("validate_arm throws specific shiny error if arm_vec has just whitespace strings", {
   testthat::expect_error(
     validate_arm(as.factor(c("A", "   "))),
@@ -26,7 +25,6 @@ testthat::test_that("validate_arm throws specific shiny error if arm_vec has jus
     class = "shiny.silent.error"
   )
 })
-
 
 testthat::test_that("validate_arm throws no error if arm_vec is a factor", {
   testthat::expect_error(

@@ -49,18 +49,16 @@ A `teal.modules.clinical` module needs to be embedded inside a `shiny` / `teal` 
 A simple application including a bar chart module could look like this:
 
 ```r
-library(scda)
 library(teal.modules.clinical)
 library(nestcolor)
 
-ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-ADAE <- synthetic_cdisc_dataset("latest", "adae")
+ADSL <- tmc_ex_adsl
+ADAE <- tmc_ex_adae
 
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
-    teal.data::cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")'),
-    check = FALSE
+    teal.data::cdisc_dataset("ADSL", ADSL),
+    teal.data::cdisc_dataset("ADAE", ADAE)
   ),
   modules = list(
     tm_g_barchart_simple(
@@ -88,14 +86,12 @@ and `cdisc_dataset` and `cdisc_data` are `teal.data` functions.
 Let's break the above app into pieces:
 ```r
 library(teal.modules.clinical)
-library(scda)
 library(nestcolor)
 ```
-The above lines load the libraries used in this example. `scda` is a package containing sample data in the `ADaM`
-format. We use `scda` to load data into two R objects:
+The above lines load the libraries used in this example. We will use the example data provided in the `teal.modules.clinical` package:
 ```r
-ADSL <- synthetic_cdisc_dataset("latest", "adsl")
-ADAE <- synthetic_cdisc_dataset("latest", "adae")
+ADSL <- tmc_ex_adsl
+ADAE <- tmc_ex_adae
 ```
 `nestcolor` is an optional package that can be loaded in to apply the standardized NEST color palette to all module plots.
 
@@ -107,9 +103,8 @@ argument indicates the modules included in the application. Here, we include onl
 ```r
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", ADSL, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'),
-    teal.data::cdisc_dataset("ADAE", ADAE, code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")'),
-    check = FALSE
+    teal.data::cdisc_dataset("ADSL", ADSL),
+    teal.data::cdisc_dataset("ADAE", ADAE)
   ),
   modules = list(
     tm_g_barchart_simple(
@@ -131,11 +126,9 @@ if (interactive()) shiny::shinyApp(app$ui, app$server)
 Some of `teal.modules.clinical` modules allow specifying arguments using `teal.transform::choices_selected` such as
 `tm_t_summary` module in this example:
 ```r
-adsl <- synthetic_cdisc_dataset("latest", "adsl")
+adsl <- tmc_ex_adsl
 app <- teal::init(
-  data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", adsl, code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")')
-  ),
+  data = teal.data::cdisc_data(teal.data::cdisc_dataset("ADSL", adsl)),
   modules = list(
     tm_t_summary(
       label = "Demographic Table",
