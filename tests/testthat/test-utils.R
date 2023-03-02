@@ -2,7 +2,7 @@ testthat::test_that("h_concat_expr returns a string for long expression", {
   expr <- quote(
     rtables::basic_table() %>%
       rtables::split_cols_by(var = "ARMCD") %>%
-      test_proportion_diff(
+      tern::test_proportion_diff(
         vars = "rsp", method = "cmh", variables = list(strata = "strat")
       ) %>%
       rtables::build_table(df = dta)
@@ -33,7 +33,7 @@ testthat::test_that("add_expr adds expressions to expression list", {
   lyt <- add_expr(
     lyt,
     substitute(
-      test_proportion_diff(
+      tern::test_proportion_diff(
         vars = "rsp", method = "cmh", variables = list(strata = "strat")
       )
     )
@@ -70,7 +70,7 @@ expr1 <- substitute(
   expr = anl <- subset(df, PARAMCD == param),
   env = list(df = as.name("adrs"), param = "INVET")
 )
-expr2 <- substitute(expr = anl$rsp_lab <- d_onco_rsp_label(anl$AVALC))
+expr2 <- substitute(expr = anl$rsp_lab <- tern::d_onco_rsp_label(anl$AVALC))
 expr3 <- substitute(
   expr = anl$is_rsp <- anl$rsp_lab %in%
     c("Complete Response (CR)", "Partial Response (PR)")

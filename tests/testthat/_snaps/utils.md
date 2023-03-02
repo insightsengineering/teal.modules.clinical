@@ -3,7 +3,7 @@
     Code
       res
     Output
-      [1] "rtables::basic_table() %>% rtables::split_cols_by(var = \"ARMCD\") %>%      test_proportion_diff(vars = \"rsp\", method = \"cmh\", variables = list(strata = \"strat\")) %>%      rtables::build_table(df = dta)"
+      [1] "rtables::basic_table() %>% rtables::split_cols_by(var = \"ARMCD\") %>%      tern::test_proportion_diff(vars = \"rsp\", method = \"cmh\",          variables = list(strata = \"strat\")) %>% rtables::build_table(df = dta)"
 
 # add_expr adds expressions to expression list
 
@@ -17,7 +17,7 @@
       rtables::split_cols_by(var = arm)
       
       [[3]]
-      test_proportion_diff(vars = "rsp", method = "cmh", variables = list(strata = "strat"))
+      tern::test_proportion_diff(vars = "rsp", method = "cmh", variables = list(strata = "strat"))
       
       [[4]]
       rtables::build_table(df = dta)
@@ -39,7 +39,7 @@
     Output
       {
           anl <- subset(adrs, PARAMCD == "INVET")
-          anl$rsp_lab <- d_onco_rsp_label(anl$AVALC)
+          anl$rsp_lab <- tern::d_onco_rsp_label(anl$AVALC)
           anl$is_rsp <- anl$rsp_lab %in% c("Complete Response (CR)", 
               "Partial Response (PR)")
       }
