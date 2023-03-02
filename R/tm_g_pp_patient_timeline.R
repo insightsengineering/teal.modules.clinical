@@ -356,65 +356,30 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADAE <- tmc_ex_adae
-#' ADCM <- tmc_ex_adcm
-#'
-#' # Modify ADCM
-#' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
-#' ADCM$CMDOSE <- 1
-#' ADCM$CMDOSU <- "U"
-#' ADCM$CMROUTE <- "CMROUTE"
-#' ADCM$CMDOSFRQ <- "CMDOSFRQ"
-#' ADCM$CMSTDY <- 1
-#' ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
-#' ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
-#' ADCM$CMENDY <- 500
-#' ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
-#' ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
-#' ADCM$CMASTDTM <- ADCM$ASTDTM
-#' ADCM$CMAENDTM <- ADCM$AENDTM
-#' formatters::var_labels(
-#'   ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
-#' ) <- c(
-#'   "Indication",
-#'   "Reported Name of Drug, Med, or Therapy",
-#'   "Study Day of Start of Medication",
-#'   "Study Day of End of Medication"
+#' adsl <- tmc_ex_adsl
+#' adae <- tmc_ex_adae
+#' adcm <- tmc_ex_adcm %>% dplyr::mutate(
+#'   CMSTDY = dplyr::case_when(
+#'     CMCAT == "medcl B" ~ 20,
+#'     CMCAT == "medcl C" ~ 150,
+#'     TRUE ~ 1
+#'   ) %>% formatters::with_label("Study Day of Start of Medication"),
+#'   CMENDY = dplyr::case_when(
+#'     CMCAT == "medcl B" ~ 700,
+#'     CMCAT == "medcl C" ~ 1000,
+#'     TRUE ~ 500
+#'   ) %>% formatters::with_label("Study Day of End of Medication"),
 #' )
+#' adcm$CMASTDTM <- adcm$ASTDTM
+#' adcm$CMAENDTM <- adcm$AENDTM
+#' adsl <- adsl %>% dplyr::filter(USUBJID %in% adae$USUBJID)
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL,
-#'       code = 'ADSL <- synthetic_cdisc_dataset("latest", "adsl")'
-#'     ),
-#'     cdisc_dataset("ADAE", ADAE,
-#'       code = 'ADAE <- synthetic_cdisc_dataset("latest", "adae")'
-#'     ),
-#'     cdisc_dataset("ADCM", ADCM,
-#'       code = 'ADCM <- synthetic_cdisc_dataset("latest", "adcm")
-#'         ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
-#'         ADCM$CMDOSE <- 1
-#'         ADCM$CMDOSU <- "U"
-#'         ADCM$CMROUTE <- "CMROUTE"
-#'         ADCM$CMDOSFRQ <- "CMDOSFRQ"
-#'         ADCM$CMSTDY <- 1
-#'         ADCM[ADCM$CMCAT == "medcl B", ]$CMSTDY <- 20
-#'         ADCM[ADCM$CMCAT == "medcl C", ]$CMSTDY <- 150
-#'         ADCM$CMENDY <- 500
-#'         ADCM[ADCM$CMCAT == "medcl B", ]$CMENDY <- 700
-#'         ADCM[ADCM$CMCAT == "medcl C", ]$CMENDY <- 1000
-#'         ADCM$CMASTDTM <- ADCM$ASTDTM
-#'         ADCM$CMAENDTM <- ADCM$AENDTM
-#'         formatters::var_labels(
-#'           ADCM[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
-#'             "Indication",
-#'             "Reported Name of Drug, Med, or Therapy",
-#'             "Study Day of Start of Medication",
-#'             "Study Day of End of Medication")',
-#'       keys = adcm_keys
-#'     )
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADAE", adae),
+#'     cdisc_dataset("ADCM", adcm, keys = adcm_keys)
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_patient_timeline(
@@ -425,43 +390,43 @@ template_patient_timeline <- function(dataname = "ANL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       cmdecod = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDECOD"),
+#'         choices = variable_choices(adcm, "CMDECOD"),
 #'         selected = "CMDECOD",
 #'       ),
 #'       aeterm = choices_selected(
-#'         choices = variable_choices(ADAE, "AETERM"),
+#'         choices = variable_choices(adae, "AETERM"),
 #'         selected = c("AETERM")
 #'       ),
 #'       aetime_start = choices_selected(
-#'         choices = variable_choices(ADAE, "ASTDTM"),
+#'         choices = variable_choices(adae, "ASTDTM"),
 #'         selected = c("ASTDTM")
 #'       ),
 #'       aetime_end = choices_selected(
-#'         choices = variable_choices(ADAE, "AENDTM"),
+#'         choices = variable_choices(adae, "AENDTM"),
 #'         selected = c("AENDTM")
 #'       ),
 #'       dstime_start = choices_selected(
-#'         choices = variable_choices(ADCM, "CMASTDTM"),
+#'         choices = variable_choices(adcm, "CMASTDTM"),
 #'         selected = c("CMASTDTM")
 #'       ),
 #'       dstime_end = choices_selected(
-#'         choices = variable_choices(ADCM, "CMAENDTM"),
+#'         choices = variable_choices(adcm, "CMAENDTM"),
 #'         selected = c("CMAENDTM")
 #'       ),
 #'       aerelday_start = choices_selected(
-#'         choices = variable_choices(ADAE, "ASTDY"),
+#'         choices = variable_choices(adae, "ASTDY"),
 #'         selected = c("ASTDY")
 #'       ),
 #'       aerelday_end = choices_selected(
-#'         choices = variable_choices(ADAE, "AENDY"),
+#'         choices = variable_choices(adae, "AENDY"),
 #'         selected = c("AENDY")
 #'       ),
 #'       dsrelday_start = choices_selected(
-#'         choices = variable_choices(ADCM, "ASTDY"),
+#'         choices = variable_choices(adcm, "ASTDY"),
 #'         selected = c("ASTDY")
 #'       ),
 #'       dsrelday_end = choices_selected(
-#'         choices = variable_choices(ADCM, "AENDY"),
+#'         choices = variable_choices(adcm, "AENDY"),
 #'         selected = c("AENDY")
 #'       )
 #'     )
