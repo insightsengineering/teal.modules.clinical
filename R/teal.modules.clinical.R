@@ -16,12 +16,10 @@
 NULL
 
 # We need this to avoid R CMD check warning about missing global definitions.
-if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c(
-    "column_name",
-    "n_column_name",
-    "new_arm_ref_comp",
-    "new_comp_arm",
-    "usubjid"
-  ))
-}
+utils::globalVariables(c(
+  "column_name",
+  "n_column_name",
+  "new_arm_ref_comp",
+  "new_comp_arm",
+  "usubjid"
+))

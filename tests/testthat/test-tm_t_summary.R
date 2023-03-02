@@ -53,7 +53,7 @@ testthat::test_that("template_summary generates correct expressions for multiple
 })
 
 testthat::test_that(
-  "template_summary generates correct expressions for multiple grouping variables and all patientts",
+  "template_summary generates correct expressions for multiple grouping variables and all patients",
   {
     result <- template_summary(
       dataname = "adrs",
