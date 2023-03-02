@@ -6,7 +6,9 @@
 #' @import teal
 #' @import tern
 #' @importFrom magrittr %>%
-#' @importFrom rlang :=
+#' @importFrom methods is
+#' @importFrom rlang := .data
+#' @importFrom tern.gee lsmeans
 #'
 #' @docType package
 #' @name teal.modules.clinical
@@ -14,17 +16,10 @@
 NULL
 
 # We need this to avoid R CMD check warning about missing global definitions.
-if (getRversion() >= "2.15.1") {
-  utils::globalVariables(c(
-    "new_arm_ref_comp",
-    "new_comp_arm",
-    "usubjid"
-  ))
-}
-
-#' Avoiding R CMD check notes
-#' @importFrom methods is
-#' @importFrom rlang .data
-#' @importFrom tern.gee lsmeans
-#' @noRd
-NULL
+utils::globalVariables(c(
+  "column_name",
+  "n_column_name",
+  "new_arm_ref_comp",
+  "new_comp_arm",
+  "usubjid"
+))

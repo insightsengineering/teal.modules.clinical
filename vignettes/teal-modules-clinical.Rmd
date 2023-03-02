@@ -128,9 +128,7 @@ Some of `teal.modules.clinical` modules allow specifying arguments using `teal.t
 ```r
 adsl <- tmc_ex_adsl
 app <- teal::init(
-  data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", adsl)
-  ),
+  data = teal.data::cdisc_data(teal.data::cdisc_dataset("ADSL", adsl)),
   modules = list(
     tm_t_summary(
       label = "Demographic Table",

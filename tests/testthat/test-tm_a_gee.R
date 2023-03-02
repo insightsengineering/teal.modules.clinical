@@ -8,28 +8,9 @@ testthat::test_that("template_a_gee t_gee_cov table works as expected with defau
     split_covariates = c(),
     cor_struct = "unstructured"
   )
-  expected <- list(
-    model = quote({
-      model_fit <- tern.gee::fit_gee(
-        vars = tern.gee::vars_gee(
-          response = as.vector("AVAL"),
-          covariates = as.vector(NULL),
-          id = as.vector("USUBJID"),
-          arm = as.vector("ARMCD"),
-          visit = as.vector("AVISIT")
-        ),
-        data = ANL,
-        regression = "logistic",
-        cor_struct = "unstructured"
-      )
-    }),
-    table = quote({
-      result_table <- tern.gee::as.rtable(model_fit, type = "cov")
-      subtitles(result_table) <- NULL
-      main_footer(result_table) <- NULL
-    })
-  )
-  testthat::expect_equal(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("template_a_gee t_gee_coef table works as expected with default input", {
@@ -42,28 +23,9 @@ testthat::test_that("template_a_gee t_gee_coef table works as expected with defa
     split_covariates = c(),
     cor_struct = "unstructured"
   )
-  expected <- list(
-    model = quote({
-      model_fit <- tern.gee::fit_gee(
-        vars = tern.gee::vars_gee(
-          response = as.vector("AVAL"),
-          covariates = as.vector(NULL),
-          id = as.vector("USUBJID"),
-          arm = as.vector("ARMCD"),
-          visit = as.vector("AVISIT")
-        ),
-        data = ANL,
-        regression = "logistic",
-        cor_struct = "unstructured"
-      )
-    }),
-    table = quote({
-      result_table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
-      subtitles(result_table) <- NULL
-      main_footer(result_table) <- NULL
-    })
-  )
-  testthat::expect_equal(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("template_a_gee works as expected with non-default reference arm", {
@@ -77,37 +39,9 @@ testthat::test_that("template_a_gee works as expected with non-default reference
     split_covariates = c(),
     cor_struct = "unstructured"
   )
-  expected <- list(
-    model = quote({
-      model_fit <- tern.gee::fit_gee(
-        vars = tern.gee::vars_gee(
-          response = as.vector("AVAL"),
-          covariates = as.vector(NULL),
-          id = as.vector("USUBJID"),
-          arm = as.vector("ARMCD"),
-          visit = as.vector("AVISIT")
-        ),
-        data = ANL,
-        regression = "logistic",
-        cor_struct = "unstructured"
-      )
-    }),
-    table = quote({
-      lsmeans_fit_model <- tern.gee::lsmeans(model_fit, 0.95)
-      result_table <- rtables::basic_table() %>%
-        rtables::split_cols_by(
-          var = "ARM",
-          ref_group = model_fit$ref_level
-        ) %>%
-        rtables::add_colcounts() %>%
-        tern.gee::summarize_gee_logistic() %>%
-        rtables::build_table(df = lsmeans_fit_model, alt_counts_df = ANL_ADSL)
-      subtitles(result_table) <- NULL
-      main_footer(result_table) <- NULL
-      result_table
-    })
-  )
-  testthat::expect_equal(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
 
 testthat::test_that("template_a_gee works as expected when arm is not considered in the model", {
@@ -121,35 +55,7 @@ testthat::test_that("template_a_gee works as expected when arm is not considered
     split_covariates = c(),
     cor_struct = "unstructured"
   )
-  expected <- list(
-    model = quote({
-      model_fit <- tern.gee::fit_gee(
-        vars = tern.gee::vars_gee(
-          response = as.vector("AVAL"),
-          covariates = as.vector(NULL),
-          id = as.vector("USUBJID"),
-          arm = as.vector(NULL),
-          visit = as.vector("AVISIT")
-        ),
-        data = ANL,
-        regression = "logistic",
-        cor_struct = "unstructured"
-      )
-    }),
-    table = quote({
-      lsmeans_fit_model <- tern.gee::lsmeans(model_fit, 0.95)
-      result_table <- rtables::basic_table() %>%
-        rtables::split_cols_by(
-          var = "ARM",
-          ref_group = model_fit$ref_level
-        ) %>%
-        rtables::add_colcounts() %>%
-        tern.gee::summarize_gee_logistic() %>%
-        rtables::build_table(df = lsmeans_fit_model, alt_counts_df = ANL_ADSL)
-      subtitles(result_table) <- NULL
-      main_footer(result_table) <- NULL
-      result_table
-    })
-  )
-  testthat::expect_equal(result, expected)
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
 })
