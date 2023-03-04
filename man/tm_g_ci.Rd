@@ -67,13 +67,13 @@ The module generates the R code and returns the corresponding output.
 \examples{
 library(nestcolor)
 
-ADSL <- tmc_ex_adsl
-ADLB <- tmc_ex_adlb
+adsl <- tmc_ex_adsl
+adlb <- tmc_ex_adlb
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADLB", ADLB)
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADLB", adlb)
   ),
   modules = modules(
     tm_g_ci(
@@ -92,15 +92,15 @@ app <- init(
         filter = list(
           filter_spec(
             vars = "PARAMCD",
-            choices = levels(ADLB$PARAMCD),
-            selected = levels(ADLB$PARAMCD)[1],
+            choices = levels(adlb$PARAMCD),
+            selected = levels(adlb$PARAMCD)[1],
             multiple = FALSE,
             label = "Select lab:"
           ),
           filter_spec(
             vars = "AVISIT",
-            choices = levels(ADLB$AVISIT),
-            selected = levels(ADLB$AVISIT)[1],
+            choices = levels(adlb$AVISIT),
+            selected = levels(adlb$AVISIT)[1],
             multiple = FALSE,
             label = "Select visit:"
           )
@@ -124,10 +124,6 @@ app <- init(
         )
       )
     )
-  ),
-  header = "Example of Confidence Interval Plot",
-  footer = shiny::tags$p(
-    class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
   )
 )
 if (interactive()) {

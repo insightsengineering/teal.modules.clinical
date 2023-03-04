@@ -109,6 +109,7 @@ adae <- tmc_ex_adae
 adcm <- tmc_ex_adcm
 
 # Modify ADCM
+adcm$CMINDC <- paste0("Indication_", as.numeric(adcm$CMDECOD))
 adcm$CMDOSE <- 1
 adcm$CMDOSU <- "U"
 adcm$CMROUTE <- "CMROUTE"
@@ -121,7 +122,9 @@ adcm[adcm$CMCAT == "medcl B", ]$CMENDY <- 700
 adcm[adcm$CMCAT == "medcl C", ]$CMENDY <- 1000
 adcm$CMASTDTM <- adcm$ASTDTM
 adcm$CMAENDTM <- adcm$AENDTM
-formatters::var_labels(adcm[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
+formatters::var_labels(
+  adcm[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
+) <- c(
   "Indication",
   "Reported Name of Drug, Med, or Therapy",
   "Study Day of Start of Medication",
