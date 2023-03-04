@@ -182,13 +182,13 @@ template_adverse_events <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADAE <- tmc_ex_adae
+#' adsl <- tmc_ex_adsl
+#' adae <- tmc_ex_adae
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADAE", ADAE)
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADAE", adae)
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_adverse_events(
@@ -198,27 +198,27 @@ template_adverse_events <- function(dataname = "ANL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       aeterm = choices_selected(
-#'         choices = variable_choices(ADAE, "AETERM"),
+#'         choices = variable_choices(adae, "AETERM"),
 #'         selected = "AETERM"
 #'       ),
 #'       tox_grade = choices_selected(
-#'         choices = variable_choices(ADAE, "AETOXGR"),
+#'         choices = variable_choices(adae, "AETOXGR"),
 #'         selected = "AETOXGR"
 #'       ),
 #'       causality = choices_selected(
-#'         choices = variable_choices(ADAE, "AEREL"),
+#'         choices = variable_choices(adae, "AEREL"),
 #'         selected = "AEREL"
 #'       ),
 #'       outcome = choices_selected(
-#'         choices = variable_choices(ADAE, "AEOUT"),
+#'         choices = variable_choices(adae, "AEOUT"),
 #'         selected = "AEOUT"
 #'       ),
 #'       action = choices_selected(
-#'         choices = variable_choices(ADAE, "AEACN"),
+#'         choices = variable_choices(adae, "AEACN"),
 #'         selected = "AEACN"
 #'       ),
 #'       time = choices_selected(
-#'         choices = variable_choices(ADAE, "ASTDY"),
+#'         choices = variable_choices(adae, "ASTDY"),
 #'         selected = "ASTDY"
 #'       ),
 #'       decod = NULL

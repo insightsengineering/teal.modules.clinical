@@ -55,11 +55,11 @@ template_basic_info <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' ADSL <- tmc_ex_adsl
+#' adsl <- tmc_ex_adsl
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL)
+#'     cdisc_dataset("ADSL", adsl)
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_basic_info(
@@ -67,7 +67,7 @@ template_basic_info <- function(dataname = "ANL",
 #'       dataname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       vars = choices_selected(
-#'         choices = variable_choices(ADSL),
+#'         choices = variable_choices(adsl),
 #'         selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
 #'       )
 #'     )

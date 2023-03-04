@@ -413,8 +413,8 @@ template_coxreg_m <- function(dataname,
 #' ## The example below is based on the usual approach involving creation of
 #' ## a random CDISC dataset and then running the application.
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADTTE <- tmc_ex_adtte
+#' adsl <- tmc_ex_adsl
+#' adtte <- tmc_ex_adtte
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
@@ -428,8 +428,8 @@ template_coxreg_m <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADTTE", ADTTE)
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADTTE", adtte)
 #'   ),
 #'   modules = modules(
 #'     tm_t_coxreg(
@@ -438,7 +438,7 @@ template_coxreg_m <- function(dataname,
 #'       arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+#'         value_choices(adtte, "PARAMCD", "PARAM"), "OS"
 #'       ),
 #'       strata_var = choices_selected(
 #'         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
@@ -463,7 +463,7 @@ template_coxreg_m <- function(dataname,
 #' ## Dataset fabrication
 #' ## -------------------
 #'
-#' ADTTE <- data.frame(
+#' adtte <- data.frame(
 #'   STUDYID = "LUNG",
 #'   AVAL = c(4, 3, 1, 1, 2, 2, 3, 1, 2),
 #'   CNSR = c(1, 1, 1, 0, 1, 1, 0, 0, 0),
@@ -478,15 +478,15 @@ template_coxreg_m <- function(dataname,
 #'   INST = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
 #'   stringsAsFactors = FALSE
 #' )
-#' ADTTE <- base::rbind(ADTTE, ADTTE, ADTTE, ADTTE)
-#' ADTTE <- dplyr::as_tibble(ADTTE)
+#' adtte <- base::rbind(adtte, adtte, adtte, adtte)
+#' adtte <- dplyr::as_tibble(adtte)
 #' set.seed(1)
-#' ADTTE$INST <- sample(ADTTE$INST)
-#' ADTTE$AGE <- sample(seq(5, 75, 5), size = nrow(ADTTE), replace = TRUE)
-#' ADTTE$USUBJID <- paste("sub", 1:nrow(ADTTE), ADTTE$INST, sep = "-")
-#' ADTTE$PARAM <- ADTTE$PARAMCD <- "OS"
-#' ADSL <- subset(
-#'   ADTTE,
+#' adtte$INST <- sample(adtte$INST)
+#' adtte$AGE <- sample(seq(5, 75, 5), size = nrow(adtte), replace = TRUE)
+#' adtte$USUBJID <- paste("sub", 1:nrow(adtte), adtte$INST, sep = "-")
+#' adtte$PARAM <- adtte$PARAMCD <- "OS"
+#' adsl <- subset(
+#'   adtte,
 #'   select = c("USUBJID", "STUDYID", "ARMCD", "SEX", "INST", "AGE")
 #' )
 #'
@@ -501,11 +501,11 @@ template_coxreg_m <- function(dataname,
 #'   data = cdisc_data(
 #'     cdisc_dataset(
 #'       dataname = "ADSL",
-#'       x = ADSL
+#'       x = adsl
 #'     ),
 #'     cdisc_dataset(
 #'       dataname = "ADTTE",
-#'       x = ADTTE
+#'       x = adtte
 #'     )
 #'   ),
 #'   modules = modules(
@@ -515,7 +515,7 @@ template_coxreg_m <- function(dataname,
 #'       arm_var = choices_selected(c("ARMCD"), "ARMCD"),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
+#'         value_choices(adtte, "PARAMCD", "PARAM"), "OS"
 #'       ),
 #'       strata_var = choices_selected(c("INST"), NULL),
 #'       cov_var = choices_selected(c("SEX", "AGE"), "SEX"),
