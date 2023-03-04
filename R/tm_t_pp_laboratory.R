@@ -108,15 +108,13 @@ template_laboratory <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#'
-#' # Reduced data for tests
-#' ADSL <- tmc_ex_adsl
-#' ADLB <- tmc_ex_adlb
+#' adsl <- tmc_ex_adsl
+#' adlb <- tmc_ex_adlb
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADLB", ADLB)
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADLB", adlb)
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_laboratory(
@@ -124,27 +122,27 @@ template_laboratory <- function(dataname = "ANL",
 #'       dataname = "ADLB",
 #'       patient_col = "USUBJID",
 #'       paramcd = choices_selected(
-#'         choices = variable_choices(ADLB, "PARAMCD"),
+#'         choices = variable_choices(adlb, "PARAMCD"),
 #'         selected = "PARAMCD"
 #'       ),
 #'       param = choices_selected(
-#'         choices = variable_choices(ADLB, "PARAM"),
+#'         choices = variable_choices(adlb, "PARAM"),
 #'         selected = "PARAM"
 #'       ),
 #'       timepoints = choices_selected(
-#'         choices = variable_choices(ADLB, "ADY"),
+#'         choices = variable_choices(adlb, "ADY"),
 #'         selected = "ADY"
 #'       ),
 #'       anrind = choices_selected(
-#'         choices = variable_choices(ADLB, "ANRIND"),
+#'         choices = variable_choices(adlb, "ANRIND"),
 #'         selected = "ANRIND"
 #'       ),
 #'       aval = choices_selected(
-#'         choices = variable_choices(ADLB, "AVAL"),
+#'         choices = variable_choices(adlb, "AVAL"),
 #'         selected = "AVAL"
 #'       ),
 #'       avalu = choices_selected(
-#'         choices = variable_choices(ADLB, "AVALU"),
+#'         choices = variable_choices(adlb, "AVALU"),
 #'         selected = "AVALU"
 #'       )
 #'     )

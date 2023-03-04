@@ -215,13 +215,14 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @template author_song24
 #'
 #' @examples
-#' library(dplyr)
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADRS <- tmc_ex_adrs %>%
-#'   mutate(AVALC = tern::d_onco_rsp_label(AVALC)) %>%
-#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#' adsl <- tmc_ex_adsl
+#' adrs <- tmc_ex_adrs %>%
+#'   dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) %>%
+#'     formatters::with_label("Character Result/Finding")
+#'   ) %>%
+#'   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -236,28 +237,28 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADRS", ADRS)
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADRS", adrs)
 #'   ),
 #'   modules = modules(
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
 #'       dataname = "ADRS",
 #'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD")),
+#'         variable_choices(adsl, c("ARM", "ARMCD")),
 #'         "ARMCD"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
-#'         value_choices(ADRS, "PARAMCD", "PARAM"),
+#'         value_choices(adrs, "PARAMCD", "PARAM"),
 #'         "INVET"
 #'       ),
 #'       subgroup_var = choices_selected(
-#'         variable_choices(ADSL, names(ADSL)),
+#'         variable_choices(adsl, names(adsl)),
 #'         c("BMRKR2", "SEX")
 #'       ),
 #'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("STRATA1", "STRATA2")),
+#'         variable_choices(adsl, c("STRATA1", "STRATA2")),
 #'         "STRATA2"
 #'       ),
 #'       plot_height = c(600L, 200L, 2000L),

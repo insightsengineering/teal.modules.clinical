@@ -226,11 +226,9 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #' @export
 #'
 #' @examples
-#' library(dplyr)
-#'
 #' adsl <- tmc_ex_adsl
 #' adlb <- tmc_ex_adlb %>%
-#'   filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+#'   dplyr::filter(!AVISIT %in% c("SCREENING", "BASELINE"))
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -239,7 +237,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'   ),
 #'   modules = modules(
 #'     tm_t_abnormality_by_worst_grade(
-#'       label = "Laboratory test results with highest grade post-baseline",
+#'       label = "Laboratory Test Results with Highest Grade Post-Baseline",
 #'       dataname = "ADLB",
 #'       arm_var = choices_selected(
 #'         choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),

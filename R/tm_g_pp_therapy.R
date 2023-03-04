@@ -255,34 +255,16 @@ template_therapy <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADCM <- tmc_ex_adcm
-#'
-#' # Modify ADCM
-#' ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
-#' ADCM$CMDOSE <- 1
-#' ADCM$CMTRT <- ADCM$CMCAT
-#' ADCM$CMDOSU <- "U"
-#' ADCM$CMROUTE <- "CMROUTE"
-#' ADCM$CMDOSFRQ <- "CMDOSFRQ"
-#' ADCM$CMASTDTM <- ADCM$ASTDTM
-#' ADCM$CMAENDTM <- ADCM$AENDTM
-#' formatters::var_labels(
-#'   ADCM[c("CMINDC", "CMTRT", "ASTDY", "AENDY")]
-#' ) <- c(
-#'   "Indication",
-#'   "Reported Name of Drug, Med, or Therapy",
-#'   "Study Day of Start of Medication",
-#'   "Study Day of End of Medication"
-#' )
+#' adcm <- tmc_ex_adcm
+#' adsl <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% adcm$USUBJID)
+#' adcm$CMASTDTM <- adcm$ASTDTM
+#' adcm$CMAENDTM <- adcm$AENDTM
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADCM", ADCM,
-#'       keys = adcm_keys
-#'     )
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADCM", adcm, keys = adcm_keys)
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_therapy(
@@ -292,43 +274,43 @@ template_therapy <- function(dataname = "ANL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       atirel = choices_selected(
-#'         choices = variable_choices(ADCM, "ATIREL"),
+#'         choices = variable_choices(adcm, "ATIREL"),
 #'         selected = c("ATIREL")
 #'       ),
 #'       cmdecod = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDECOD"),
+#'         choices = variable_choices(adcm, "CMDECOD"),
 #'         selected = "CMDECOD"
 #'       ),
 #'       cmindc = choices_selected(
-#'         choices = variable_choices(ADCM, "CMINDC"),
+#'         choices = variable_choices(adcm, "CMINDC"),
 #'         selected = "CMINDC"
 #'       ),
 #'       cmdose = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDOSE"),
+#'         choices = variable_choices(adcm, "CMDOSE"),
 #'         selected = "CMDOSE"
 #'       ),
 #'       cmtrt = choices_selected(
-#'         choices = variable_choices(ADCM, "CMTRT"),
+#'         choices = variable_choices(adcm, "CMTRT"),
 #'         selected = "CMTRT"
 #'       ),
 #'       cmdosu = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDOSU"),
+#'         choices = variable_choices(adcm, "CMDOSU"),
 #'         selected = c("CMDOSU")
 #'       ),
 #'       cmroute = choices_selected(
-#'         choices = variable_choices(ADCM, "CMROUTE"),
+#'         choices = variable_choices(adcm, "CMROUTE"),
 #'         selected = "CMROUTE"
 #'       ),
 #'       cmdosfrq = choices_selected(
-#'         choices = variable_choices(ADCM, "CMDOSFRQ"),
+#'         choices = variable_choices(adcm, "CMDOSFRQ"),
 #'         selected = "CMDOSFRQ"
 #'       ),
 #'       cmstdy = choices_selected(
-#'         choices = variable_choices(ADCM, "ASTDY"),
+#'         choices = variable_choices(adcm, "ASTDY"),
 #'         selected = "ASTDY"
 #'       ),
 #'       cmendy = choices_selected(
-#'         choices = variable_choices(ADCM, "AENDY"),
+#'         choices = variable_choices(adcm, "AENDY"),
 #'         selected = "AENDY"
 #'       )
 #'     )

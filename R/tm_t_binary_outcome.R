@@ -391,36 +391,37 @@ template_binary_outcome <- function(dataname,
 #' @export
 #'
 #' @examples
-#' library(dplyr)
+#' adsl <- tmc_ex_adsl
+#' adrs <- tmc_ex_adrs %>% dplyr::mutate(
+#'   AVALC = tern::d_onco_rsp_label(AVALC) %>%
+#'     formatters::with_label("Character Result/Finding")
+#'   ) %>%
+#'   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADRS <- tmc_ex_adrs %>%
-#'   mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
-#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #' arm_ref_comp <- list(
 #'   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
 #'   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
 #' )
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADRS", ADRS)
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADRS", adrs)
 #'   ),
 #'   modules = modules(
 #'     tm_t_binary_outcome(
 #'       label = "Responders",
 #'       dataname = "ADRS",
 #'       paramcd = choices_selected(
-#'         choices = value_choices(ADRS, "PARAMCD", "PARAM"),
+#'         choices = value_choices(adrs, "PARAMCD", "PARAM"),
 #'         selected = "BESRSPI"
 #'       ),
 #'       arm_var = choices_selected(
-#'         choices = variable_choices(ADRS, c("ARM", "ARMCD", "ACTARMCD")),
+#'         choices = variable_choices(adrs, c("ARM", "ARMCD", "ACTARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       strata_var = choices_selected(
-#'         choices = variable_choices(ADRS, c("SEX", "BMRKR2", "RACE")),
+#'         choices = variable_choices(adrs, c("SEX", "BMRKR2", "RACE")),
 #'         select = "RACE"
 #'       ),
 #'       default_responses = list(

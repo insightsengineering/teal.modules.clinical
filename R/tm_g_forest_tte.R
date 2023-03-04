@@ -226,10 +226,9 @@ template_forest_tte <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADTTE <- tmc_ex_adtte
-#'
-#' ADSL$RACE <- droplevels(ADSL$RACE)
+#' adsl <- tmc_ex_adsl
+#' adtte <- tmc_ex_adtte
+#' adsl$RACE <- droplevels(adsl$RACE) %>% formatters::with_label("Race")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -244,28 +243,28 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADTTE", ADTTE)
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADTTE", adtte)
 #'   ),
 #'   modules = modules(
 #'     tm_g_forest_tte(
 #'       label = "Forest Survival",
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD")),
+#'         variable_choices(adsl, c("ARM", "ARMCD")),
 #'         "ARMCD"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'         value_choices(adtte, "PARAMCD", "PARAM"),
 #'         "OS"
 #'       ),
 #'       subgroup_var = choices_selected(
-#'         variable_choices(ADSL, names(ADSL)),
+#'         variable_choices(adsl, names(adsl)),
 #'         c("BMRKR2", "SEX")
 #'       ),
 #'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("STRATA1", "STRATA2")),
+#'         variable_choices(adsl, c("STRATA1", "STRATA2")),
 #'         "STRATA2"
 #'       ),
 #'       plot_height = c(600, 200, 2000)

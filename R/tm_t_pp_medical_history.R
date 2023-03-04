@@ -94,7 +94,7 @@ template_medical_history <- function(dataname = "ANL",
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_medical_history(
-#'       label = "Medical history",
+#'       label = "Medical History",
 #'       dataname = "ADMH",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",

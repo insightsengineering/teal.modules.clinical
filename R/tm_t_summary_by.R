@@ -326,7 +326,6 @@ template_summary_by <- function(parentname,
 #'
 #' @export
 #' @examples
-#' # Preparation of the test case.
 #' adsl <- tmc_ex_adsl
 #' adlb <- tmc_ex_adlb
 #'

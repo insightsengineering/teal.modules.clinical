@@ -445,8 +445,6 @@ template_events <- function(dataname,
 #' @export
 #'
 #' @examples
-#' library(dplyr)
-#'
 #' adsl <- tmc_ex_adsl
 #' adae <- tmc_ex_adae
 #'
