@@ -361,7 +361,6 @@ template_patient_timeline <- function(dataname = "ANL",
 #' adcm <- tmc_ex_adcm
 #'
 #' # Modify ADCM
-#' adcm$CMINDC <- paste0("Indication_", as.numeric(adcm$CMDECOD))
 #' adcm$CMDOSE <- 1
 #' adcm$CMDOSU <- "U"
 #' adcm$CMROUTE <- "CMROUTE"
@@ -374,9 +373,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #' adcm[adcm$CMCAT == "medcl C", ]$CMENDY <- 1000
 #' adcm$CMASTDTM <- adcm$ASTDTM
 #' adcm$CMAENDTM <- adcm$AENDTM
-#' formatters::var_labels(
-#'   adcm[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
-#' ) <- c(
+#' formatters::var_labels(adcm[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
 #'   "Indication",
 #'   "Reported Name of Drug, Med, or Therapy",
 #'   "Study Day of Start of Medication",

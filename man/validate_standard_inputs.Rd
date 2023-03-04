@@ -48,6 +48,8 @@ Use \code{NULL} for no maximum.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
+library(shiny)
+
 adsl <- tmc_ex_adsl
 adae <- tmc_ex_adae
 

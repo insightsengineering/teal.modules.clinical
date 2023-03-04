@@ -280,9 +280,7 @@ template_therapy <- function(dataname = "ANL",
 #' app <- init(
 #'   data = cdisc_data(
 #'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADCM", adcm,
-#'       keys = adcm_keys
-#'     )
+#'     cdisc_dataset("ADCM", adcm, keys = adcm_keys)
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_therapy(

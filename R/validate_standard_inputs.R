@@ -19,6 +19,8 @@
 #' @keywords internal
 #'
 #' @examples
+#' library(shiny)
+#'
 #' adsl <- tmc_ex_adsl
 #' adae <- tmc_ex_adae
 #'
