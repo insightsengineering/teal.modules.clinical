@@ -82,8 +82,8 @@ STREAM template \code{lgrt02}.
 \examples{
 library(dplyr)
 
-ADSL <- tmc_ex_adsl
-ADRS <- tmc_ex_adrs \%>\%
+adsl <- tmc_ex_adsl
+adrs <- tmc_ex_adrs \%>\%
   filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
 
 arm_ref_comp <- list(
@@ -99,20 +99,20 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADRS", ADRS)
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADRS", adrs)
   ),
   modules = modules(
     tm_t_logistic(
       label = "Logistic Regression",
       dataname = "ADRS",
       arm_var = choices_selected(
-        choices = variable_choices(ADRS, c("ARM", "ARMCD")),
+        choices = variable_choices(adrs, c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(
-        choices = value_choices(ADRS, "PARAMCD", "PARAM"),
+        choices = value_choices(adrs, "PARAMCD", "PARAM"),
         selected = "BESRSPI"
       ),
       cov_var = choices_selected(

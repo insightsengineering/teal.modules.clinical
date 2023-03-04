@@ -125,8 +125,8 @@ The arm and stratification variables and taken from the \code{parentname} data.
 }
 \examples{
 
-ADSL <- tmc_ex_adsl
-ADTTE <- tmc_ex_adtte
+adsl <- tmc_ex_adsl
+adtte <- tmc_ex_adtte
 
 arm_ref_comp <- list(
   ACTARMCD = list(
@@ -141,29 +141,29 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADTTE", ADTTE)
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADTTE", adtte)
   ),
   modules = modules(
     tm_t_tte(
       label = "Time To Event Table",
       dataname = "ADTTE",
       arm_var = choices_selected(
-        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+        variable_choices(adsl, c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
       ),
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(
-        value_choices(ADTTE, "PARAMCD", "PARAM"),
+        value_choices(adtte, "PARAMCD", "PARAM"),
         "OS"
       ),
       strata_var = choices_selected(
-        variable_choices(ADSL, c("SEX", "BMRKR2")),
+        variable_choices(adsl, c("SEX", "BMRKR2")),
         "SEX"
       ),
       time_points = choices_selected(c(182, 243), 182),
       event_desc_var = choices_selected(
-        variable_choices(ADTTE, "EVNTDESC"),
+        variable_choices(adtte, "EVNTDESC"),
         "EVNTDESC",
         fixed = TRUE
       )

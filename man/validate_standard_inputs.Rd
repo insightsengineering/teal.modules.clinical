@@ -50,8 +50,8 @@ Use \code{NULL} for no maximum.}
 \examples{
 library(shiny)
 
-ADSL <- tmc_ex_adsl
-ADAE <- tmc_ex_adae
+adsl <- tmc_ex_adsl
+adae <- tmc_ex_adae
 
 ui <- fluidPage(
   shiny::sliderInput("obs", "Max Age",
@@ -68,19 +68,19 @@ server <- function(input, output) {
     keep_adsl <- c("USUBJID", "STUDYID", "ARMCD", "AGE", "ARM")
     keep_adae <- c("USUBJID", "STUDYID", "AETOXGR")
 
-    ADSL_f <- ADSL[ADSL$AGE <= input$obs, keep_adsl]
-    ADAE_f <- ADAE[as.numeric(ADAE$AETOXGR) <= input$maxgr, keep_adae]
+    adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
+    adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
 
     validate_standard_inputs(
-      adsl = ADSL_f,
+      adsl = adsl_f,
       adslvars = keep_adsl,
-      anl = ADAE_f,
+      anl = adae_f,
       anlvars = keep_adae,
       arm_var = "ARM",
       need_arm = TRUE
     )
 
-    ANL <- merge(ADSL_f, ADAE_f, by = c("USUBJID", "STUDYID"))
+    ANL <- merge(adsl_f, adae_f, by = c("USUBJID", "STUDYID"))
 
 
     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
@@ -95,19 +95,19 @@ server2 <- function(input, output) {
     keep_adsl <- c("USUBJID", "STUDYID", "ARMCD", "AGE", "ARM")
     keep_adae <- c("USUBJID", "STUDYID", "AETOXGR")
 
-    ADSL_f <- ADSL[ADSL$AGE <= input$obs, keep_adsl]
-    ADAE_f <- ADAE[as.numeric(ADAE$AETOXGR) <= input$maxgr, keep_adae]
+    adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
+    adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
 
     validate_standard_inputs(
-      adsl = ADSL_f,
+      adsl = adsl_f,
       adslvars = keep_adsl,
-      anl = ADAE_f,
+      anl = adae_f,
       anlvars = keep_adae,
       arm_var = NULL,
       need_arm = FALSE
     )
 
-    ANL <- merge(ADSL_f, ADAE_f, by = c("USUBJID", "STUDYID"))
+    ANL <- merge(adsl_f, adae_f, by = c("USUBJID", "STUDYID"))
 
     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
   })
@@ -121,19 +121,19 @@ server3 <- function(input, output) {
     keep_adsl <- c("USUBJID", "STUDYID", "ARMCD", "AGE", "ARM")
     keep_adae <- c("USUBJID", "STUDYID", "AETOXGR")
 
-    ADSL_f <- ADSL[ADSL$AGE <= input$obs, keep_adsl]
-    ADAE_f <- ADAE[as.numeric(ADAE$AETOXGR) <= input$maxgr, keep_adae]
+    adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
+    adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
 
     validate_standard_inputs(
-      adsl = ADSL_f,
+      adsl = adsl_f,
       adslvars = keep_adsl,
-      anl = ADAE_f,
+      anl = adae_f,
       anlvars = keep_adae,
       arm_var = "HELLO",
       need_arm = FALSE
     )
 
-    ANL <- merge(ADSL_f, ADAE_f, by = c("USUBJID", "STUDYID"))
+    ANL <- merge(adsl_f, adae_f, by = c("USUBJID", "STUDYID"))
 
     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
   })

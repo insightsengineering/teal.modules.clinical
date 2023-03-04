@@ -53,20 +53,20 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient prior medication report using ADaM datasets.
 }
 \examples{
-ADSL <- tmc_ex_adsl
-ADCM <- tmc_ex_adcm
+adsl <- tmc_ex_adsl
+adcm <- tmc_ex_adcm
 
 # Modify ADCM
-ADCM$CMINDC <- paste0("Indication_", as.numeric(ADCM$CMDECOD))
-ADCM$CMDOSE <- 1
-ADCM$CMTRT <- ADCM$CMCAT
-ADCM$CMDOSU <- "U"
-ADCM$CMROUTE <- "CMROUTE"
-ADCM$CMDOSFRQ <- "CMDOSFRQ"
-ADCM$CMASTDTM <- ADCM$ASTDTM
-ADCM$CMAENDTM <- ADCM$AENDTM
+adcm$CMINDC <- paste0("Indication_", as.numeric(adcm$CMDECOD))
+adcm$CMDOSE <- 1
+adcm$CMTRT <- adcm$CMCAT
+adcm$CMDOSU <- "U"
+adcm$CMROUTE <- "CMROUTE"
+adcm$CMDOSFRQ <- "CMDOSFRQ"
+adcm$CMASTDTM <- adcm$ASTDTM
+adcm$CMAENDTM <- adcm$AENDTM
 formatters::var_labels(
-  ADCM[c("CMINDC", "CMTRT", "ASTDY")]
+  adcm[c("CMINDC", "CMTRT", "ASTDY")]
 ) <- c(
   "Indication",
   "Reported Name of Drug, Med, or Therapy",
@@ -76,10 +76,8 @@ adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", 
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADCM", ADCM,
-      keys = adcm_keys
-    )
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADCM", adcm, keys = adcm_keys)
   ),
   modules = modules(
     tm_t_pp_prior_medication(
@@ -88,19 +86,19 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       atirel = choices_selected(
-        choices = variable_choices(ADCM, "ATIREL"),
+        choices = variable_choices(adcm, "ATIREL"),
         selected = "ATIREL"
       ),
       cmdecod = choices_selected(
-        choices = variable_choices(ADCM, "CMDECOD"),
+        choices = variable_choices(adcm, "CMDECOD"),
         selected = "CMDECOD"
       ),
       cmindc = choices_selected(
-        choices = variable_choices(ADCM, "CMINDC"),
+        choices = variable_choices(adcm, "CMINDC"),
         selected = "CMINDC"
       ),
       cmstdy = choices_selected(
-        choices = variable_choices(ADCM, "ASTDY"),
+        choices = variable_choices(adcm, "ASTDY"),
         selected = "ASTDY"
       )
     )
