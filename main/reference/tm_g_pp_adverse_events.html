@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9021</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9022</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,14 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -182,13 +174,13 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/nestcolor/" class="external-link">nestcolor</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
-<span class="r-in"><span><span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adae</span></span></span>
+<span class="r-in"><span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
+<span class="r-in"><span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adae</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">ADSL</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">ADAE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">adsl</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADAE"</span>, <span class="va">adae</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  modules <span class="op">=</span> <span class="fu">modules</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu">tm_g_pp_adverse_events</span><span class="op">(</span></span></span>
@@ -198,34 +190,34 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in"><span>      patient_col <span class="op">=</span> <span class="st">"USUBJID"</span>,</span></span>
 <span class="r-in"><span>      plot_height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600L</span>, <span class="fl">200L</span>, <span class="fl">2000L</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      aeterm <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, <span class="st">"AETERM"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, <span class="st">"AETERM"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"AETERM"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      tox_grade <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, <span class="st">"AETOXGR"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, <span class="st">"AETOXGR"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"AETOXGR"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      causality <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, <span class="st">"AEREL"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, <span class="st">"AEREL"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"AEREL"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      outcome <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, <span class="st">"AEOUT"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, <span class="st">"AEOUT"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"AEOUT"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      action <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, <span class="st">"AEACN"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, <span class="st">"AEACN"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"AEACN"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      time <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, <span class="st">"ASTDY"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adae</span>, <span class="st">"ASTDY"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"ASTDY"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      decod <span class="op">=</span> <span class="cn">NULL</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2023-03-01 09:11:05.4437 pid:1230 token:[] teal.modules.clinical Initializing tm_g_pp_adverse_events</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2023-03-04 19:22:00.1447 pid:1232 token:[] teal.modules.clinical Initializing tm_g_pp_adverse_events</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

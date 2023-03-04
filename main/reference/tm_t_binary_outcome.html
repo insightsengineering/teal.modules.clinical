@@ -12,7 +12,7 @@ table, with the option to match the STREAM template RSPT01."><!-- mathjax --><sc
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9021</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9022</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,14 +36,6 @@ table, with the option to match the STREAM template RSPT01."><!-- mathjax --><sc
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -220,8 +212,8 @@ reference group.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
-<span class="r-in"><span><span class="va">ADRS</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adrs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
+<span class="r-in"><span><span class="va">adrs</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adrs</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AVALC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/tern/man/d_onco_rsp_label.html" class="external-link">d_onco_rsp_label</a></span><span class="op">(</span><span class="va">AVALC</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PARAMCD</span> <span class="op">!=</span> <span class="st">"OVRINV"</span> <span class="op">|</span> <span class="va">AVISIT</span> <span class="op">==</span> <span class="st">"FOLLOW UP"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">arm_ref_comp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -230,24 +222,24 @@ reference group.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">ADSL</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADRS"</span>, <span class="va">ADRS</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="va">adsl</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu">cdisc_dataset</span><span class="op">(</span><span class="st">"ADRS"</span>, <span class="va">adrs</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  modules <span class="op">=</span> <span class="fu">modules</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu">tm_t_binary_outcome</span><span class="op">(</span></span></span>
 <span class="r-in"><span>      label <span class="op">=</span> <span class="st">"Responders"</span>,</span></span>
 <span class="r-in"><span>      dataname <span class="op">=</span> <span class="st">"ADRS"</span>,</span></span>
 <span class="r-in"><span>      paramcd <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">value_choices</span><span class="op">(</span><span class="va">ADRS</span>, <span class="st">"PARAMCD"</span>, <span class="st">"PARAM"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">value_choices</span><span class="op">(</span><span class="va">adrs</span>, <span class="st">"PARAMCD"</span>, <span class="st">"PARAM"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"BESRSPI"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      arm_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADRS</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM"</span>, <span class="st">"ARMCD"</span>, <span class="st">"ACTARMCD"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adrs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ARM"</span>, <span class="st">"ARMCD"</span>, <span class="st">"ACTARMCD"</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"ARM"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      arm_ref_comp <span class="op">=</span> <span class="va">arm_ref_comp</span>,</span></span>
 <span class="r-in"><span>      strata_var <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADRS</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SEX"</span>, <span class="st">"BMRKR2"</span>, <span class="st">"RACE"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">adrs</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SEX"</span>, <span class="st">"BMRKR2"</span>, <span class="st">"RACE"</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        select <span class="op">=</span> <span class="st">"RACE"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      default_responses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -273,7 +265,7 @@ reference group.</p>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2023-03-01 09:11:10.2888 pid:1230 token:[] teal.modules.clinical Initializing tm_t_binary_outcome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2023-03-04 19:22:04.7157 pid:1232 token:[] teal.modules.clinical Initializing tm_t_binary_outcome</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
