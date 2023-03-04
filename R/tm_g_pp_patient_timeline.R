@@ -358,21 +358,30 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' adsl <- tmc_ex_adsl
 #' adae <- tmc_ex_adae
-#' adcm <- tmc_ex_adcm %>% dplyr::mutate(
-#'   CMSTDY = dplyr::case_when(
-#'     CMCAT == "medcl B" ~ 20,
-#'     CMCAT == "medcl C" ~ 150,
-#'     TRUE ~ 1
-#'   ) %>% formatters::with_label("Study Day of Start of Medication"),
-#'   CMENDY = dplyr::case_when(
-#'     CMCAT == "medcl B" ~ 700,
-#'     CMCAT == "medcl C" ~ 1000,
-#'     TRUE ~ 500
-#'   ) %>% formatters::with_label("Study Day of End of Medication"),
-#' )
+#' adcm <- tmc_ex_adcm
+#'
+#' # Modify ADCM
+#' adcm$CMINDC <- paste0("Indication_", as.numeric(adcm$CMDECOD))
+#' adcm$CMDOSE <- 1
+#' adcm$CMDOSU <- "U"
+#' adcm$CMROUTE <- "CMROUTE"
+#' adcm$CMDOSFRQ <- "CMDOSFRQ"
+#' adcm$CMSTDY <- 1
+#' adcm[adcm$CMCAT == "medcl B", ]$CMSTDY <- 20
+#' adcm[adcm$CMCAT == "medcl C", ]$CMSTDY <- 150
+#' adcm$CMENDY <- 500
+#' adcm[adcm$CMCAT == "medcl B", ]$CMENDY <- 700
+#' adcm[adcm$CMCAT == "medcl C", ]$CMENDY <- 1000
 #' adcm$CMASTDTM <- adcm$ASTDTM
 #' adcm$CMAENDTM <- adcm$AENDTM
-#' adsl <- adsl %>% dplyr::filter(USUBJID %in% adae$USUBJID)
+#' formatters::var_labels(
+#'   adcm[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]
+#' ) <- c(
+#'   "Indication",
+#'   "Reported Name of Drug, Med, or Therapy",
+#'   "Study Day of Start of Medication",
+#'   "Study Day of End of Medication"
+#' )
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' app <- init(
