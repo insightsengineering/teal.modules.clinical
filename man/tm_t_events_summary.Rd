@@ -108,16 +108,16 @@ Teal Module: Adverse Events Summary
 \examples{
 library(dplyr)
 
-ADSL <- tmc_ex_adsl \%>\%
+adsl <- tmc_ex_adsl \%>\%
   mutate(
     DTHFL = case_when( # nolint
       !is.na(DTHDT) ~ "Y",
       TRUE ~ ""
     )
   )
-attr(ADSL[["DTHFL"]], "label") <- "Subject Death Flag"
+attr(adsl[["DTHFL"]], "label") <- "Subject Death Flag"
 
-ADAE <- tmc_ex_adae
+adae <- tmc_ex_adae
 
 add_event_flags <- function(dat) {
   dat <- dat \%>\%
@@ -142,15 +142,15 @@ add_event_flags <- function(dat) {
 }
 
 # Generating user-defined event flags.
-ADAE <- ADAE \%>\% add_event_flags()
+adae <- adae \%>\% add_event_flags()
 
-ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
-aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
+ae_anl_vars <- names(adae)[startsWith(names(adae), "TMPFL_")]
+aesi_vars <- names(adae)[startsWith(names(adae), "TMP_")]
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", ADSL),
-    cdisc_dataset("ADAE", ADAE)
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADAE", adae)
   ),
   modules = modules(
     tm_t_events_summary(

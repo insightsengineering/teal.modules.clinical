@@ -241,8 +241,8 @@ template_g_km <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADTTE <- tmc_ex_adtte
+#' adsl <- tmc_ex_adsl
+#' adtte <- tmc_ex_adtte
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -257,28 +257,28 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADTTE", ADTTE)
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADTTE", adtte)
 #'   ),
 #'   modules = modules(
 #'     tm_g_km(
 #'       label = "KM PLOT",
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+#'         variable_choices(adsl, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
 #'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'         value_choices(adtte, "PARAMCD", "PARAM"),
 #'         "OS"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'         variable_choices(adsl, c("SEX", "BMRKR2")),
 #'         "SEX"
 #'       ),
 #'       facet_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'         variable_choices(adsl, c("SEX", "BMRKR2")),
 #'         NULL
 #'       )
 #'     )

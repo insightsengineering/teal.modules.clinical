@@ -52,13 +52,13 @@ A simple application including a bar chart module could look like this:
 library(teal.modules.clinical)
 library(nestcolor)
 
-ADSL <- tmc_ex_adsl
-ADAE <- tmc_ex_adae
+adsl <- tmc_ex_adsl
+adae <- tmc_ex_adae
 
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", ADSL),
-    teal.data::cdisc_dataset("ADAE", ADAE)
+    teal.data::cdisc_dataset("ADSL", adsl),
+    teal.data::cdisc_dataset("ADAE", adae)
   ),
   modules = list(
     tm_g_barchart_simple(
@@ -66,7 +66,7 @@ app <- teal::init(
       x = teal.transform::data_extract_spec(
         dataname = "ADAE",
         select = teal.transform::select_spec(
-          choices = teal.transform::variable_choices(ADAE),
+          choices = teal.transform::variable_choices(adae),
           multiple = FALSE
         )
       )
@@ -90,28 +90,28 @@ library(nestcolor)
 ```
 The above lines load the libraries used in this example. We will use the example data provided in the `teal.modules.clinical` package:
 ```r
-ADSL <- tmc_ex_adsl
-ADAE <- tmc_ex_adae
+adsl <- tmc_ex_adsl
+adae <- tmc_ex_adae
 ```
 `nestcolor` is an optional package that can be loaded in to apply the standardized NEST color palette to all module plots.
 
 There is no need to load `teal` as `teal.modules.clinical` already depends on it.
 
 In the next step, we use `teal` to create `shiny` `ui` and `server` functions so we can launch using `shiny`. The `data`
-argument tells `teal` about the input data - the two `ADaM` datasets `ADSL` and `ADAE` - and the `modules`
+argument tells `teal` about the input data - the two `ADaM` datasets `adsl` and `adae` - and the `modules`
 argument indicates the modules included in the application. Here, we include only one - `tm_g_barchart_simple`.
 ```r
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", ADSL),
-    teal.data::cdisc_dataset("ADAE", ADAE)
+    teal.data::cdisc_dataset("ADSL", adsl),
+    teal.data::cdisc_dataset("ADAE", adae)
   ),
   modules = list(
     tm_g_barchart_simple(
       label = "ADAE Analysis", 
       x = teal.transform::data_extract_spec(
         dataname = "ADAE",
-        select = teal.transform::select_spec(choices = teal.transform::variable_choices(ADAE), multiple = FALSE)
+        select = teal.transform::select_spec(choices = teal.transform::variable_choices(adae), multiple = FALSE)
       )
     )
   )

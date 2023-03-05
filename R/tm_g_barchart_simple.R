@@ -17,20 +17,20 @@
 #' library(dplyr)
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl %>%
+#' adsl <- tmc_ex_adsl %>%
 #'   dplyr::mutate(ITTFL = factor("Y"))
-#' ADAE <- tmc_ex_adae
+#' adae <- tmc_ex_adae
 #'
-#' adae_labels <- formatters::var_labels(ADAE, fill = FALSE)
-#' ADAE <- ADAE %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+#' adae_labels <- formatters::var_labels(adae, fill = FALSE)
+#' adae <- adae %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #'
 #' # reinstate labels
-#' formatters::var_labels(ADAE) <- adae_labels
+#' formatters::var_labels(adae) <- adae_labels
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", ADSL),
-#'     cdisc_dataset("ADAE", ADAE)
+#'     cdisc_dataset("ADSL", adsl),
+#'     cdisc_dataset("ADAE", adae)
 #'   ),
 #'   modules = modules(
 #'     tm_g_barchart_simple(
@@ -39,7 +39,7 @@
 #'         dataname = "ADSL",
 #'         select = select_spec(
 #'           choices = variable_choices(
-#'             ADSL,
+#'             adsl,
 #'             c(
 #'               "ARM", "ACTARM", "SEX",
 #'               "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -54,7 +54,7 @@
 #'           dataname = "ADSL",
 #'           select = select_spec(
 #'             choices = variable_choices(
-#'               ADSL,
+#'               adsl,
 #'               c(
 #'                 "ARM", "ACTARM", "SEX",
 #'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -67,7 +67,7 @@
 #'         data_extract_spec(
 #'           dataname = "ADAE",
 #'           select = select_spec(
-#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
+#'             choices = variable_choices(adae, c("AETOXGR", "AESEV", "AESER")),
 #'             selected = NULL,
 #'             multiple = FALSE
 #'           )
@@ -77,7 +77,7 @@
 #'         data_extract_spec(
 #'           dataname = "ADAE",
 #'           select = select_spec(
-#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
+#'             choices = variable_choices(adae, c("AETOXGR", "AESEV", "AESER")),
 #'             selected = "AETOXGR",
 #'             multiple = FALSE
 #'           )
@@ -86,7 +86,7 @@
 #'           dataname = "ADSL",
 #'           select = select_spec(
 #'             choices = variable_choices(
-#'               ADSL,
+#'               adsl,
 #'               c(
 #'                 "ARM", "ACTARM", "SEX",
 #'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -101,7 +101,7 @@
 #'         data_extract_spec(
 #'           dataname = "ADAE",
 #'           select = select_spec(
-#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
+#'             choices = variable_choices(adae, c("AETOXGR", "AESEV", "AESER")),
 #'             selected = "AESEV",
 #'             multiple = FALSE
 #'           )
@@ -110,7 +110,7 @@
 #'           dataname = "ADSL",
 #'           select = select_spec(
 #'             choices = variable_choices(
-#'               ADSL,
+#'               adsl,
 #'               c(
 #'                 "ARM", "ACTARM", "SEX",
 #'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
