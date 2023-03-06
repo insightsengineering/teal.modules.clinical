@@ -106,17 +106,13 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Adverse Events Summary
 }
 \examples{
-library(dplyr)
-
 adsl <- tmc_ex_adsl \%>\%
-  mutate(
-    DTHFL = case_when( # nolint
+  dplyr::mutate(
+    DTHFL = dplyr::case_when( # nolint
       !is.na(DTHDT) ~ "Y",
       TRUE ~ ""
-    )
+    ) \%>\% formatters::with_label("Subject Death Flag")
   )
-attr(adsl[["DTHFL"]], "label") <- "Subject Death Flag"
-
 adae <- tmc_ex_adae
 
 add_event_flags <- function(dat) {

@@ -61,8 +61,6 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient profile laboratory table using ADaM datasets.
 }
 \examples{
-
-# Reduced data for tests
 adsl <- tmc_ex_adsl
 adlb <- tmc_ex_adlb
 

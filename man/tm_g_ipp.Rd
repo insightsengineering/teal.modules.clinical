@@ -106,27 +106,18 @@ trends in parameter values over time for each patient using data with
 ADaM structure.
 }
 \examples{
-library(dplyr)
 library(nestcolor)
 
-adsl <- tmc_ex_adsl \%>\% slice(1:20)
-adlb <- tmc_ex_adlb
-adlb <- adlb \%>\% filter(USUBJID \%in\% adsl$USUBJID)
+adsl <- tmc_ex_adsl \%>\% dplyr::slice(1:20)
+adlb <- tmc_ex_adlb \%>\% dplyr::filter(USUBJID \%in\% adsl$USUBJID)
 
 adsl <- df_explicit_na(adsl)
-adlb <- df_explicit_na(adlb) \%>\%
-  dplyr::filter(AVISIT != "SCREENING")
+adlb <- df_explicit_na(adlb) \%>\% dplyr::filter(AVISIT != "SCREENING")
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset(
-      "ADSL",
-      adsl
-    ),
-    cdisc_dataset(
-      "ADLB",
-      adlb
-    )
+    cdisc_dataset("ADSL", adsl),
+    cdisc_dataset("ADLB", adlb)
   ),
   modules = modules(
     tm_g_ipp(

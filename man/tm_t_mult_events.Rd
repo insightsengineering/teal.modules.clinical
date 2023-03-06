@@ -76,8 +76,6 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Multiple Events by Term
 }
 \examples{
-library(dplyr)
-
 adsl <- tmc_ex_adsl
 adcm <- tmc_ex_adcm
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")

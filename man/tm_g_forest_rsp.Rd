@@ -112,13 +112,14 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 This teal module produces a grid style Forest plot for response data with ADaM structure.
 }
 \examples{
-library(dplyr)
 library(nestcolor)
 
 adsl <- tmc_ex_adsl
 adrs <- tmc_ex_adrs \%>\%
-  mutate(AVALC = tern::d_onco_rsp_label(AVALC)) \%>\%
-  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+  dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
+    formatters::with_label("Character Result/Finding")
+  ) \%>\%
+  dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
 arm_ref_comp <- list(
   ARM = list(

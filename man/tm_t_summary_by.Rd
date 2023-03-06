@@ -112,7 +112,6 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Summarize Variables by Row Groups Module
 }
 \examples{
-# Preparation of the test case.
 adsl <- tmc_ex_adsl
 adlb <- tmc_ex_adlb
 

@@ -84,8 +84,6 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Events by Term
 }
 \examples{
-library(dplyr)
-
 adsl <- tmc_ex_adsl
 adae <- tmc_ex_adae
 

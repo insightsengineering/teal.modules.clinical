@@ -777,12 +777,9 @@ template_events_col_by_grade <- function(dataname,
 #'
 #' @export
 #' @examples
-#' library(dplyr)
-#' library(tern)
-#'
 #' adsl <- tmc_ex_adsl
 #' adae <- tmc_ex_adae %>%
-#'   mutate_if(is.character, as.factor) # be certain of having factors
+#'   dplyr::mutate_if(is.character, as.factor) # be certain of having factors
 #'
 #' app <- init(
 #'   data = cdisc_data(
