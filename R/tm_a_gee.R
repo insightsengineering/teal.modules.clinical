@@ -311,8 +311,8 @@ ui_gee <- function(id, ...) {
         "Correlation Structure",
         choices = c(
           "unstructured",
-          # "toeplitz", # needs the fix of https://github.com/insightsengineering/tern.gee/issues/3
-          # "auto-regressive"
+          "toeplitz", # needs the fix of https://github.com/insightsengineering/tern.gee/issues/3
+          "auto-regressive",
           "compound symmetry"
         ),
         selected = "unstructured",

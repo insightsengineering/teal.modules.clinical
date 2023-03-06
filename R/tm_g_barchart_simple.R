@@ -19,8 +19,7 @@
 #' adsl <- tmc_ex_adsl %>% dplyr::mutate(ITTFL = factor("Y") %>%
 #'   formatters::with_label("Intent-To-Treat Population Flag")
 #' )
-#' adae <- tmc_ex_adae %>%
-#'   dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+#' adae <- tmc_ex_adae %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #'
 #' app <- init(
 #'   data = cdisc_data(
