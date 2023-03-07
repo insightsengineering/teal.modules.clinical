@@ -72,25 +72,10 @@ template_prior_medication <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
 #' adcm <- tmc_ex_adcm
-#'
-#' # Modify ADCM
-#' adcm$CMINDC <- paste0("Indication_", as.numeric(adcm$CMDECOD))
-#' adcm$CMDOSE <- 1
-#' adcm$CMTRT <- adcm$CMCAT
-#' adcm$CMDOSU <- "U"
-#' adcm$CMROUTE <- "CMROUTE"
-#' adcm$CMDOSFRQ <- "CMDOSFRQ"
+#' adsl <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% adcm$USUBJID)
 #' adcm$CMASTDTM <- adcm$ASTDTM
 #' adcm$CMAENDTM <- adcm$AENDTM
-#' formatters::var_labels(
-#'   adcm[c("CMINDC", "CMTRT", "ASTDY")]
-#' ) <- c(
-#'   "Indication",
-#'   "Reported Name of Drug, Med, or Therapy",
-#'   "Study Day of Start of Medication"
-#' )
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' app <- init(
@@ -100,7 +85,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_prior_medication(
-#'       label = "Prior medication",
+#'       label = "Prior Medication",
 #'       dataname = "ADCM",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",

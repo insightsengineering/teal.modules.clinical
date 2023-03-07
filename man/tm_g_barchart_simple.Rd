@@ -63,18 +63,11 @@ Categories can be defined up to four levels deep and are defined through
 it is ignored.
 }
 \examples{
-library(dplyr)
 library(nestcolor)
 
-adsl <- tmc_ex_adsl \%>\%
-  dplyr::mutate(ITTFL = factor("Y"))
-adae <- tmc_ex_adae
-
-adae_labels <- formatters::var_labels(adae, fill = FALSE)
-adae <- adae \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
-
-# reinstate labels
-formatters::var_labels(adae) <- adae_labels
+adsl <- tmc_ex_adsl \%>\% dplyr::mutate(ITTFL = factor("Y") \%>\%
+  formatters::with_label("Intent-To-Treat Population Flag"))
+adae <- tmc_ex_adae \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 
 app <- init(
   data = cdisc_data(

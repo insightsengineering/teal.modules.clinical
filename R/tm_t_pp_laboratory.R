@@ -108,8 +108,6 @@ template_laboratory <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#'
-#' # Reduced data for tests
 #' adsl <- tmc_ex_adsl
 #' adlb <- tmc_ex_adlb
 #'

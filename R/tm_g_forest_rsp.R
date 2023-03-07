@@ -215,13 +215,13 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @template author_song24
 #'
 #' @examples
-#' library(dplyr)
 #' library(nestcolor)
 #'
 #' adsl <- tmc_ex_adsl
 #' adrs <- tmc_ex_adrs %>%
-#'   mutate(AVALC = tern::d_onco_rsp_label(AVALC)) %>%
-#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#'   dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) %>%
+#'     formatters::with_label("Character Result/Finding")) %>%
+#'   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(

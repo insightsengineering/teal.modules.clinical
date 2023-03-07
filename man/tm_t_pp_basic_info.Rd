@@ -45,7 +45,7 @@ app <- init(
   ),
   modules = modules(
     tm_t_pp_basic_info(
-      label = "Basic info",
+      label = "Basic Info",
       dataname = "ADSL",
       patient_col = "USUBJID",
       vars = choices_selected(

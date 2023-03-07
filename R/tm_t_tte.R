@@ -380,7 +380,6 @@ template_tte <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#'
 #' adsl <- tmc_ex_adsl
 #' adtte <- tmc_ex_adtte
 #'

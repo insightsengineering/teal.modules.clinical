@@ -104,28 +104,21 @@ This teal module produces a patient profile timeline plot using ADaM datasets.
 \examples{
 library(nestcolor)
 
-adsl <- tmc_ex_adsl
 adae <- tmc_ex_adae
-adcm <- tmc_ex_adcm
-
-# Modify ADCM
-adcm$CMDOSE <- 1
-adcm$CMDOSU <- "U"
-adcm$CMROUTE <- "CMROUTE"
-adcm$CMDOSFRQ <- "CMDOSFRQ"
-adcm$CMSTDY <- 1
-adcm[adcm$CMCAT == "medcl B", ]$CMSTDY <- 20
-adcm[adcm$CMCAT == "medcl C", ]$CMSTDY <- 150
-adcm$CMENDY <- 500
-adcm[adcm$CMCAT == "medcl B", ]$CMENDY <- 700
-adcm[adcm$CMCAT == "medcl C", ]$CMENDY <- 1000
-adcm$CMASTDTM <- adcm$ASTDTM
-adcm$CMAENDTM <- adcm$AENDTM
-formatters::var_labels(adcm[c("CMINDC", "CMDECOD", "CMSTDY", "CMENDY")]) <- c(
-  "Indication",
-  "Reported Name of Drug, Med, or Therapy",
-  "Study Day of Start of Medication",
-  "Study Day of End of Medication"
+adsl <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% adae$USUBJID)
+adcm <- tmc_ex_adcm \%>\% dplyr::mutate(
+  CMSTDY = dplyr::case_when(
+    CMCAT == "medcl B" ~ 20,
+    CMCAT == "medcl C" ~ 150,
+    TRUE ~ 1
+  ) \%>\% formatters::with_label("Study Day of Start of Medication"),
+  CMENDY = dplyr::case_when(
+    CMCAT == "medcl B" ~ 700,
+    CMCAT == "medcl C" ~ 1000,
+    TRUE ~ 500
+  ) \%>\% formatters::with_label("Study Day of End of Medication"),
+  CMASTDTM = ASTDTM,
+  CMAENDTM = AENDTM
 )
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 
@@ -137,7 +130,7 @@ app <- init(
   ),
   modules = modules(
     tm_g_pp_patient_timeline(
-      label = "Patient timeline",
+      label = "Patient Timeline",
       dataname_adae = "ADAE",
       dataname_adcm = "ADCM",
       parentname = "ADSL",

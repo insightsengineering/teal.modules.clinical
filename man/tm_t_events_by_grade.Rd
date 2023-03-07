@@ -85,12 +85,11 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Events by Grade
 }
 \examples{
-library(dplyr)
-library(tern)
-
 adsl <- tmc_ex_adsl
+lbls_adae <- formatters::var_labels(tmc_ex_adae)
 adae <- tmc_ex_adae \%>\%
-  mutate_if(is.character, as.factor) # be certain of having factors
+  dplyr::mutate_if(is.character, as.factor) # be certain of having factors
+formatters::var_labels(adae) <- lbls_adae
 
 app <- init(
   data = cdisc_data(

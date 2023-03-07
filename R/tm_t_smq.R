@@ -339,7 +339,7 @@ template_smq <- function(dataname,
 #'   ),
 #'   modules = modules(
 #'     tm_t_smq(
-#'       label = "Adverse events by `SMQ` Table",
+#'       label = "Adverse Events by SMQ Table",
 #'       dataname = "ADAE",
 #'       arm_var = choices_selected(
 #'         choices = variable_choices(adsl, subset = c("ARM", "SEX")),

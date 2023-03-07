@@ -95,11 +95,9 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Laboratory test results with highest grade post-baseline
 }
 \examples{
-library(dplyr)
-
 adsl <- tmc_ex_adsl
 adlb <- tmc_ex_adlb \%>\%
-  filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))
+  dplyr::filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))
 
 app <- init(
   data = cdisc_data(
@@ -108,7 +106,7 @@ app <- init(
   ),
   modules = modules(
     tm_t_abnormality_by_worst_grade(
-      label = "Laboratory test results with highest grade post-baseline",
+      label = "Laboratory Test Results with Highest Grade Post-Baseline",
       dataname = "ADLB",
       arm_var = choices_selected(
         choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),

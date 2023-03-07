@@ -279,8 +279,6 @@ template_mult_events <- function(dataname,
 #' @export
 #'
 #' @examples
-#' library(dplyr)
-#'
 #' adsl <- tmc_ex_adsl
 #' adcm <- tmc_ex_adcm
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")

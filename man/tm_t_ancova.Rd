@@ -130,7 +130,7 @@ app <- init(
   ),
   modules = modules(
     tm_t_ancova(
-      label = "ANCOVA table",
+      label = "ANCOVA Table",
       dataname = "ADQS",
       avisit = choices_selected(
         choices = value_choices(adqs, "AVISIT"),

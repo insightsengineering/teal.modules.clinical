@@ -262,7 +262,7 @@ template_g_km <- function(dataname = "ANL",
 #'   ),
 #'   modules = modules(
 #'     tm_g_km(
-#'       label = "KM PLOT",
+#'       label = "Kaplan-Meier Plot",
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(
 #'         variable_choices(adsl, c("ARM", "ARMCD", "ACTARMCD")),

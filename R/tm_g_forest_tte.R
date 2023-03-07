@@ -228,8 +228,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' adsl <- tmc_ex_adsl
 #' adtte <- tmc_ex_adtte
-#'
-#' adsl$RACE <- droplevels(adsl$RACE)
+#' adsl$RACE <- droplevels(adsl$RACE) %>% formatters::with_label("Race")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(

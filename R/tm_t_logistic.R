@@ -229,11 +229,9 @@ template_logistic <- function(dataname,
 #'
 #' @export
 #' @examples
-#' library(dplyr)
-#'
 #' adsl <- tmc_ex_adsl
 #' adrs <- tmc_ex_adrs %>%
-#'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
+#'   dplyr::filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(

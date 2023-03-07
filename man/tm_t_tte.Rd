@@ -124,7 +124,6 @@ filtering for \code{paramcd} one observation per patient is expected
 The arm and stratification variables and taken from the \code{parentname} data.
 }
 \examples{
-
 adsl <- tmc_ex_adsl
 adtte <- tmc_ex_adtte
 

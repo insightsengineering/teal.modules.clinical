@@ -90,8 +90,8 @@ This teal module produces a patient profile adverse events table and plot using 
 \examples{
 library(nestcolor)
 
-adsl <- tmc_ex_adsl
 adae <- tmc_ex_adae
+adsl <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% adae$USUBJID)
 
 app <- init(
   data = cdisc_data(
@@ -100,7 +100,7 @@ app <- init(
   ),
   modules = modules(
     tm_g_pp_adverse_events(
-      label = "Adverse events",
+      label = "Adverse Events",
       dataname = "ADAE",
       parentname = "ADSL",
       patient_col = "USUBJID",

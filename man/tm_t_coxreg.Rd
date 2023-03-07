@@ -116,7 +116,7 @@ filtering for \code{paramcd} one observation per patient is expected
 }
 
 The arm variables, stratification and covariate variables are taken from the
-\code{ADSL} data.
+ADSL data.
 }
 \section{Note}{
 
