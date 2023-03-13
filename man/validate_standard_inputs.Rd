@@ -48,7 +48,7 @@ Use \code{NULL} for no maximum.}
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
-library(shiny)
+# Internal function - validate_standard_inputs
 
 adsl <- tmc_ex_adsl
 adae <- tmc_ex_adae
@@ -71,7 +71,7 @@ server <- function(input, output) {
     adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
     adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
 
-    validate_standard_inputs(
+    teal.modules.clinical:::validate_standard_inputs(
       adsl = adsl_f,
       adslvars = keep_adsl,
       anl = adae_f,
@@ -81,7 +81,6 @@ server <- function(input, output) {
     )
 
     ANL <- merge(adsl_f, adae_f, by = c("USUBJID", "STUDYID"))
-
 
     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
   })
@@ -98,7 +97,7 @@ server2 <- function(input, output) {
     adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
     adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
 
-    validate_standard_inputs(
+    teal.modules.clinical:::validate_standard_inputs(
       adsl = adsl_f,
       adslvars = keep_adsl,
       anl = adae_f,
@@ -112,8 +111,8 @@ server2 <- function(input, output) {
     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
   })
 }
-\dontrun{
-shinyApp(ui, server2)
+if (interactive()) {
+  shinyApp(ui, server2)
 }
 
 server3 <- function(input, output) {
@@ -124,7 +123,7 @@ server3 <- function(input, output) {
     adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
     adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
 
-    validate_standard_inputs(
+    teal.modules.clinical:::validate_standard_inputs(
       adsl = adsl_f,
       adslvars = keep_adsl,
       anl = adae_f,
