@@ -244,6 +244,20 @@ ui_g_barchart_simple <- function(id, ...) {
                 inline = TRUE
               )
             },
+            if (!(is.null(args$x_facet))) {
+              shiny::checkboxInput(
+                ns("facet_scale_x"),
+                "Fixed scales for column facets",
+                value = TRUE
+              )
+            },
+            if (!(is.null(args$y_facet))) {
+              shiny::checkboxInput(
+                ns("facet_scale_y"),
+                "Fixed scales for row facets",
+                value = TRUE
+              )
+            },
             shiny::checkboxInput(
               ns("label_bars"),
               "Label bars",
@@ -421,6 +435,7 @@ srv_g_barchart_simple <- function(id,
     all_q <- shiny::reactive({
       teal::validate_inputs(iv_r())
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
+
       ANL <- count_q()[["ANL"]] # nolint
 
       qenv2 <- teal.code::eval_code(count_q(), substitute(
@@ -450,10 +465,10 @@ srv_g_barchart_simple <- function(id,
 
       plot_call <- make_barchart_simple_call(
         y_name = get_n_name(groupby_vars),
-        x_name = groupby_vars$x,
-        fill_name = groupby_vars$fill,
-        x_facet_name = groupby_vars$x_facet,
-        y_facet_name = groupby_vars$y_facet,
+        x_name = groupby_vars$x_name,
+        fill_name = groupby_vars$fill_name,
+        x_facet_name = groupby_vars$x_facet_name,
+        y_facet_name = groupby_vars$y_facet_name,
         label_bars = input$label_bars,
         barlayout = input$barlayout,
         flip_axis = input$flip_axis,
@@ -461,6 +476,7 @@ srv_g_barchart_simple <- function(id,
         rotate_x_label = input$rotate_x_label,
         rotate_y_label = input$rotate_y_label,
         expand_y_range = input$expand_y_range,
+        facet_scales = get_facet_scale(input$facet_scale_x, input$facet_scale_y),
         ggplot2_args = all_ggplot2_args
       )
 
@@ -575,13 +591,15 @@ srv_g_barchart_simple <- function(id,
 #'  whether to rotate y-axis label by 45 degrees.
 #' @param expand_y_range (`NULL`, `numeric(1)`)\cr
 #'  fraction of y-axis range to expand further up.
+#' @param facet_scales (`fixed`, `free_x`, `free_y` or `free`) value
+#'  passed to `scales` argument of `ggplot2::facet_grid`
 #' @inheritParams tm_g_barchart_simple
 #' @examples
 #' teal.modules.clinical:::make_barchart_simple_call(y_name = "y", x_name = "x")
 #' @return `call`
 #' @keywords internal
 make_barchart_simple_call <- function(y_name,
-                                      x_name = NULL, # NULL because it depepends on extract input which might be empty
+                                      x_name = NULL, # NULL because it depends on extract input which might be empty
                                       fill_name = NULL,
                                       x_facet_name = NULL,
                                       y_facet_name = NULL,
@@ -592,6 +610,7 @@ make_barchart_simple_call <- function(y_name,
                                       rotate_x_label = FALSE,
                                       rotate_y_label = FALSE,
                                       expand_y_range = 0,
+                                      facet_scales = "free_x",
                                       ggplot2_args = teal.widgets::ggplot2_args()) {
   checkmate::assert_string(y_name)
   checkmate::assert_string(x_name, null.ok = TRUE)
@@ -623,7 +642,7 @@ make_barchart_simple_call <- function(y_name,
     # free_x is needed, otherwise when we facet on x and x-ticks are different for each facet value,
     # it will fit all possible x-ticks across all facet values into each facet panel
     plot_args <- c(plot_args, bquote(
-      ggplot2::facet_grid(.(facet_grid_formula(x_facet_name, y_facet_name)), scales = "free_x")
+      ggplot2::facet_grid(.(facet_grid_formula(x_facet_name, y_facet_name)), scales = .(facet_scales))
     ))
   }
 
@@ -663,11 +682,11 @@ make_barchart_simple_call <- function(y_name,
     # center text and move slightly to the top or to the right (depending on flip axes)
     # see https://stackoverflow.com/questions/7263849/what-do-hjust-and-vjust-do-when-making-a-plot-using-ggplot
     if (isTRUE(flip_axis)) {
-      hjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked #nolintr
+      hjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked # nolint
       vjust <- 0.5
     } else {
       hjust <- 0.5
-      vjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked #nolintr
+      vjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked # nolint
     }
 
     plot_args <- c(plot_args, bquote(
@@ -735,4 +754,26 @@ count_by_group_expr <- function(groupby_vars, data_name = "counts") {
     ),
     keep.source = FALSE
   )
+}
+
+
+get_facet_scale <- function(x, y) {
+  facet_scale_x <- if(isTRUE(x)) {
+    "fixed"
+  } else {
+    "free"
+  }
+  facet_scale_y <- if(isTRUE(y)) {
+    "fixed"
+  } else {
+    "free"
+  }
+
+  if (facet_scale_x == "fixed" && facet_scale_y == "free"){
+    "free_y"
+  } else if (facet_scale_x == "free" && facet_scale_y == "fixed") {
+    "free_x"
+  } else {
+    facet_scale_x # fixed or free, as x and y match
+  }
 }
