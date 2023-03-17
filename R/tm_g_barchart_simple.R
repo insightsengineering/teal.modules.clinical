@@ -758,18 +758,18 @@ count_by_group_expr <- function(groupby_vars, data_name = "counts") {
 
 
 get_facet_scale <- function(x, y) {
-  facet_scale_x <- if(isTRUE(x)) {
+  facet_scale_x <- if (isTRUE(x)) {
     "fixed"
   } else {
     "free"
   }
-  facet_scale_y <- if(isTRUE(y)) {
+  facet_scale_y <- if (isTRUE(y)) {
     "fixed"
   } else {
     "free"
   }
 
-  if (facet_scale_x == "fixed" && facet_scale_y == "free"){
+  if (facet_scale_x == "fixed" && facet_scale_y == "free") {
     "free_y"
   } else if (facet_scale_x == "free" && facet_scale_y == "fixed") {
     "free_x"
