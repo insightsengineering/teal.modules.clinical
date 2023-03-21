@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9028</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.14.9029</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,14 +52,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -220,7 +212,7 @@ values were substituted (argument <code>env</code>).</li>
 <span><span class="va">non_evaluated_expression</span></span>
 <span><span class="co">## plot(x = 0:10, y = exp(0:10), main = "A graph")</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">non_evaluated_expression</span><span class="op">)</span></span></code></pre></div>
-<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-6-1.svg" width="700"></p>
 <p>Note that:</p>
 <ul>
 <li>
@@ -273,7 +265,7 @@ substitution?</p>
 <span><span class="va">plot_expr</span></span>
 <span><span class="co">## plot(Sepal.Width ~ Sepal.Length, data = iris, main = "Iris, again ...")</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-9-1.svg" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="what-with-dataframe-name">What with dataframe name?<a class="anchor" aria-label="anchor" href="#what-with-dataframe-name"></a>
@@ -299,7 +291,7 @@ dataframe: the pipeline is working but not humanly readable.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-10-1.svg" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot_expr</span></span>
 <span><span class="co">## list(Sepal.Length = c(5.1, 4.9, 4.7, 4.6, 5, 5.4), Sepal.Width = c(3.5, </span></span>
@@ -324,7 +316,7 @@ value?</p>
 <span><span class="va">plot_expr</span></span>
 <span><span class="co">## iris %&gt;% plot(Sepal.Width ~ Sepal.Length, data = ., main = "Iris, again ...")</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span></code></pre></div>
-<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-11-1.svg" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="in-a-nutshell">In a nutshell<a class="anchor" aria-label="anchor" href="#in-a-nutshell"></a>
