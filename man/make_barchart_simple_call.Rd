@@ -17,6 +17,7 @@ make_barchart_simple_call(
   rotate_x_label = FALSE,
   rotate_y_label = FALSE,
   expand_y_range = 0,
+  facet_scales = "free_x",
   ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
@@ -50,6 +51,9 @@ whether to rotate y-axis label by 45 degrees.}
 
 \item{expand_y_range}{(\code{NULL}, \code{numeric(1)})\cr
 fraction of y-axis range to expand further up.}
+
+\item{facet_scales}{(\code{fixed}, \code{free_x}, \code{free_y} or \code{free}) value
+passed to \code{scales} argument of \code{ggplot2::facet_grid}}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.

@@ -10,6 +10,7 @@
 * Added interface for selecting an interaction term to `tm_t_ancova`.
 * Updated encodings input checks to use `shinyvalidate::InputValidator` instead of `shiny::validate` for better UI experience.   
 * Added adjustment method choice to `tm_a_mmrm` to allow for Kenward-Roger adjustment of standard errors and p-values.
+* Added option to choose facet scale options in `tm_g_barchart_simple`.
 
 ### Miscellaneous
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS.
@@ -20,6 +21,7 @@
   They are accessible via `tmc_ex_*` prefix.
 * Updated all examples and tests to use datasets from the `teal.modules.clinical` package instead of `scda` datasets.
 * Updated tests to use `testthat` 3rd edition and replaced all applicable tests with snapshot testing.
+* Fixed bug in overlapping bars in `tm_g_barchart_simple`.
 
 # teal.modules.clinical 0.8.14
 
