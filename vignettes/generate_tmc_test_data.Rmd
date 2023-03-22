@@ -226,8 +226,6 @@ generate_adsl <- function(N = 200) { # nolint
 
   adsl <- adsl %>%
     dplyr::mutate(
-    ) %>%
-    dplyr::mutate(
       EOSSTT = dplyr::case_when(
         EOSDY == max(EOSDY, na.rm = TRUE) ~ "COMPLETED",
         EOSDY < max(EOSDY, na.rm = TRUE) ~ "DISCONTINUED",
@@ -523,7 +521,7 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
       )
     ) %>%
     dplyr::rowwise() %>%
-     dplyr::mutate(ADTM = dplyr::case_when(
+    dplyr::mutate(ADTM = dplyr::case_when(
       CNSDTDSC == "Treatment Start" ~ TRTSDTM,
       TRUE ~ TRTSDTM + sample(seq(0, study_duration_secs), size = dplyr::n(), replace = TRUE)
     )) %>%
@@ -1531,7 +1529,7 @@ generate_admh <- function(adsl = tmc_ex_adsl,
     multiple = "all"
   ) %>%
     dplyr::rowwise() %>%
-   dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
       is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
       TRUE ~ TRTEDTM
     ))) %>%
@@ -1541,13 +1539,13 @@ generate_admh <- function(adsl = tmc_ex_adsl,
     )) %>%
     select(-TRTENDT) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM, .data$MHTERM) %>% 
+    dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM, .data$MHTERM) %>%
     dplyr::mutate(MHDISTAT = sample(
       x = c("Resolved", "Ongoing with treatment", "Ongoing without treatment"),
       prob = c(0.6, 0.2, 0.2),
       size = dplyr::n(),
       replace = TRUE
-    ) %>% with_label("Status of Disease")) 
+    ) %>% with_label("Status of Disease"))
 
   tmc_ex_admh <- admh %>%
     dplyr::group_by(.data$USUBJID) %>%
@@ -1646,7 +1644,7 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
       is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
       TRUE ~ TRTEDTM
     ))) %>%
-    ungroup() %>% 
+    ungroup() %>%
     group_by(USUBJID) %>%
     arrange(USUBJID, AVISITN) %>%
     dplyr::mutate(ADTM = rep(
