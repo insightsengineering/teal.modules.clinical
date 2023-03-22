@@ -523,21 +523,17 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
       )
     ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(ADTM = dplyr::case_when(
-      .data$CNSDTDSC == "Treatment Start" ~ .data$TRTSDTM,
-      TRUE ~ as.POSIXct(
-        .data$TRTSDTM + sample(seq(0, study_duration_secs), size = dplyr::n(), replace = TRUE),
-        origin = "1970-01-01"
-      )
+     dplyr::mutate(ADTM = dplyr::case_when(
+      CNSDTDSC == "Treatment Start" ~ TRTSDTM,
+      TRUE ~ TRTSDTM + sample(seq(0, study_duration_secs), size = dplyr::n(), replace = TRUE)
     )) %>%
     dplyr::mutate(
-      STARTDT = as.Date(.data$TRTSDTM),
-      ADT = as.Date(.data$ADTM),
-      ADY = as.numeric(.data$ADT - .data$STARTDT + 1),
-      AVAL = .data$ADY / 7,
+      ADY_int = lubridate::date(ADTM) - lubridate::date(TRTSDTM) + 1,
+      ADY = as.numeric(ADY_int),
+      AVAL = lubridate::days(ADY_int) / lubridate::weeks(1),
       AVALU = "WEEKS"
-    )
-  adaette_hy <- dplyr::select(adaette_hy, -"TRTSDTM", -"ADT", -"STARTDT")
+    ) %>%
+    dplyr::select(-TRTSDTM, -ADY_int)
 
   random_ae_data <- function(lookup_info, patient_info, patient_data) {
     cnsr <- sample(c(0, 1), 1, prob = c(1 - lookup_info$CNSR_P, lookup_info$CNSR_P))
@@ -565,11 +561,11 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
       CNSDTDSC = c(ifelse(cnsr == 1, sample(cnsdtdscr_sel, 1), ""), NA),
       stringsAsFactors = FALSE
     ) %>% dplyr::mutate(
-      ADY = dplyr::if_else(is.na(.data$AVALU), NA_real_, ceiling(.data$AVAL * 365.25)),
+      ADY = dplyr::if_else(is.na(AVALU), NA_real_, ceiling(as.numeric(lubridate::dyears(AVAL), "days"))),
       ADTM = dplyr::if_else(
-        is.na(.data$AVALU),
-        as.POSIXct(NA),
-        as.POSIXct(patient_info$TRTSDTM) + as.difftime(.data$ADY, units = "days")
+        is.na(AVALU),
+        lubridate::as_datetime(NA),
+        patient_info$TRTSDTM + lubridate::days(ADY)
       )
     )
   }
