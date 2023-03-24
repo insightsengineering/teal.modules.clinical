@@ -23,6 +23,7 @@
 * Updated tests to use `testthat` 3rd edition and replaced all applicable tests with snapshot testing.
 * Fixed bug in overlapping bars in `tm_g_barchart_simple`.
 * Fixed bug for figures in `svg` format.
+* Implemented the `lubridate` package for date variables in internal data.
 
 # teal.modules.clinical 0.8.14
 

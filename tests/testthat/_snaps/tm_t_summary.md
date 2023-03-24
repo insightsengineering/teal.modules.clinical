@@ -96,7 +96,7 @@
       }
       
 
-# template_summary generates correct expressions for multiple grouping variables and all patientts
+# template_summary generates correct expressions for multiple grouping variables and all patients
 
     Code
       res

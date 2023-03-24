@@ -28,7 +28,7 @@ _Disclaimer_: this vignette concerns mainly the development of minimal and stabl
 library(dplyr)
 library(formatters)
 
-study_duration_secs <- 31556952 * 2
+study_duration_secs <- lubridate::seconds(lubridate::years(2))
 
 sample_fct <- function(x, N, ...) { # nolint
   checkmate::assert_number(N)
@@ -150,7 +150,7 @@ common_var_labels <- c(
 ```{r adsl, eval=FALSE}
 generate_adsl <- function(N = 200) { # nolint
   set.seed(1)
-  sys_dtm <- as.numeric(strptime("20/2/2019 11:16:16.683", "%d/%m/%Y %H:%M:%OS"))
+  sys_dtm <- lubridate::fast_strptime("20/2/2019 11:16:16.683", "%d/%m/%Y %H:%M:%OS", tz = "UTC")
   country_site_prob <- c(.5, .121, .077, .077, .075, .052, .046, .025, .014, .003)
 
   adsl <- tibble::tibble(
@@ -177,14 +177,13 @@ generate_adsl <- function(N = 200) { # nolint
     ) %>%
       sample_fct(N, prob = c(.55, .23, .16, .05, .004, .003, .002, .002)) %>%
       with_label("Race"),
-    TRTSDTM = as.POSIXct(
-      sys_dtm + sample(seq(0, study_duration_secs), size = N, replace = TRUE),
-      origin = "1970-01-01"
-    ) %>% with_label("Datetime of First Exposure to Treatment"),
-    TRTEDTM = as.POSIXct(as.numeric(.data$TRTSDTM) + study_duration_secs, origin = "1970-01-01") %>%
+    TRTSDTM = sys_dtm + sample(seq(0, study_duration_secs), size = N, replace = TRUE) %>%
+      with_label("Datetime of First Exposure to Treatment"),
+    TRTEDTM = c(TRTSDTM + study_duration_secs) %>%
       with_label("Datetime of Last Exposure to Treatment"),
-    EOSDY = as.numeric(ceiling(difftime(.data$TRTEDTM, .data$TRTSDTM, units = "days"))) %>%
+    EOSDY = ceiling(as.numeric(difftime(TRTEDTM, TRTSDTM, units = "days"))) %>%
       with_label("End of Study Relative Day"),
+    EOSDT = lubridate::date(TRTEDTM) %>% with_label("End of Study Date"),
     STRATA1 = c("A", "B", "C") %>% sample_fct(N) %>% with_label("Stratification Factor 1"),
     STRATA2 = c("S1", "S2") %>% sample_fct(N) %>% with_label("Stratification Factor 2"),
     BMRKR1 = stats::rchisq(N, 6) %>% with_label("Continuous Level Biomarker 1"),
@@ -227,11 +226,6 @@ generate_adsl <- function(N = 200) { # nolint
 
   adsl <- adsl %>%
     dplyr::mutate(
-      EOSDT = as.Date(.data$TRTEDTM) %>% with_label("End of Study Date"),
-      EOSDY = as.numeric(ceiling(difftime(.data$TRTEDTM, .data$TRTSDTM, units = "days"))) %>%
-        with_label("End of Study Relative Day")
-    ) %>%
-    dplyr::mutate(
       EOSSTT = dplyr::case_when(
         EOSDY == max(EOSDY, na.rm = TRUE) ~ "COMPLETED",
         EOSDY < max(EOSDY, na.rm = TRUE) ~ "DISCONTINUED",
@@ -251,7 +245,7 @@ generate_adsl <- function(N = 200) { # nolint
 
   tmc_ex_adsl <- adsl %>%
     dplyr::mutate(DTHDT = dplyr::case_when(
-      DCSREAS == "DEATH" ~ as.Date(.data$TRTEDTM) + sample(0:50, size = N, replace = TRUE)
+      DCSREAS == "DEATH" ~ lubridate::date(TRTEDTM + lubridate::days(sample(0:50, size = N, replace = TRUE)))
     ) %>% with_label("Date of Death"))
 
   save(tmc_ex_adsl, file = "data/tmc_ex_adsl.rda", compress = "xz")
@@ -319,31 +313,26 @@ generate_adae <- function(adsl = tmc_ex_adsl,
   # merge adsl to be able to add AE date and study day variables
   adae <- dplyr::inner_join(adae, adsl, by = c("STUDYID", "USUBJID"), multiple = "all") %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
-    dplyr::mutate(trtedt_int = dplyr::case_when(
-      !is.na(.data$TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(.data$TRTEDTM) ~ floor(trtsdt_int + study_duration_secs / 86400)
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+      is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
+      TRUE ~ TRTEDTM
+    ))) %>%
+    dplyr::mutate(ASTDTM = sample(
+      seq(lubridate::as_datetime(TRTSDTM), lubridate::as_datetime(TRTENDT), by = "day"),
+      size = 1
     )) %>%
-    dplyr::mutate(ASTDTM = as.POSIXct(
-      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
-      origin = "1970-01-01"
-    )) %>%
-    dplyr::mutate(astdt_int = as.numeric(as.Date(.data$ASTDTM))) %>%
-    dplyr::mutate(ASTDY = ceiling(as.numeric(difftime(.data$ASTDTM, .data$TRTSDTM, units = "days")))) %>%
+    dplyr::mutate(ASTDY = ceiling(difftime(ASTDTM, TRTSDTM, units = "days"))) %>%
     # add 1 to end of range incase both values passed to sample() are the same
-    dplyr::mutate(AENDTM = as.POSIXct(
-      (sample(.data$astdt_int:(.data$trtedt_int + 1), size = 1) * 86400),
-      origin = "1970-01-01"
+    dplyr::mutate(AENDTM = sample(
+      seq(lubridate::as_datetime(ASTDTM), lubridate::as_datetime(TRTENDT + 1), by = "day"),
+      size = 1
     )) %>%
-    dplyr::mutate(AENDY = ceiling(as.numeric(difftime(.data$AENDTM, .data$TRTSDTM, units = "days")))) %>%
-    dplyr::mutate(LDOSEDTM = as.POSIXct(
-      ifelse(.data$TRTSDTM < .data$ASTDTM,
-        lubridate::as_datetime(stats::runif(1, .data$TRTSDTM, .data$ASTDTM), tz = "EST"),
-        .data$ASTDTM
-      ),
-      origin = "1970-01-01"
+    dplyr::mutate(AENDY = ceiling(difftime(AENDTM, TRTSDTM, units = "days"))) %>%
+    dplyr::mutate(LDOSEDTM = dplyr::case_when(
+      TRTSDTM < ASTDTM ~ lubridate::as_datetime(stats::runif(1, TRTSDTM, ASTDTM)),
+      TRUE ~ ASTDTM
     )) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int", -"astdt_int") %>%
+    dplyr::select(-TRTENDT) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM, .data$AETERM)
 
@@ -470,18 +459,15 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
   )
 
   random_patient_data <- function(patient_info) {
-    trtsdt_int <- as.numeric(as.Date(patient_info$TRTSDTM))
-    trtedt_int <- ifelse(
-      !is.na(patient_info$TRTEDTM),
-      as.numeric(as.Date(patient_info$TRTEDTM)),
-      floor(trtsdt_int + study_duration_secs / 86400)
-    )
-    startdt <- as.Date(patient_info$TRTSDTM)
-    trtedtm <- as.POSIXct(trtedt_int * 86400, origin = "1970-01-01")
-    enddts <- c(as.Date(patient_info$EOSDT), as.Date(trtedtm))
+    startdt <- lubridate::date(patient_info$TRTSDTM)
+    trtedtm <- lubridate::floor_date(dplyr::case_when(
+      is.na(patient_info$TRTEDTM) ~ lubridate::date(patient_info$TRTSDTM) + study_duration_secs,
+      TRUE ~ lubridate::date(patient_info$TRTEDTM)
+    ), unit = "day")
+    enddts <- c(patient_info$EOSDT, lubridate::date(trtedtm))
     enddts_min_index <- which.min(enddts)
     adt <- enddts[enddts_min_index]
-    adtm <- as.POSIXct(adt)
+    adtm <- lubridate::as_datetime(adt)
     ady <- as.numeric(adt - startdt + 1)
     data.frame(
       ARM = patient_info$ARM,
@@ -491,7 +477,7 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
       PARAMCD = "AEREPTTE",
       PARAM = "Time to end of AE reporting period",
       CNSR = 0,
-      AVAL = ady / 365.25,
+      AVAL = lubridate::days(ady) / lubridate::years(1),
       AVALU = "YEARS",
       EVNTDESC = ifelse(enddts_min_index == 1, "Completion or Discontinuation", "End of AE Reporting Period"),
       CNSDTDSC = NA,
@@ -536,20 +522,16 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
     ) %>%
     dplyr::rowwise() %>%
     dplyr::mutate(ADTM = dplyr::case_when(
-      .data$CNSDTDSC == "Treatment Start" ~ .data$TRTSDTM,
-      TRUE ~ as.POSIXct(
-        .data$TRTSDTM + sample(seq(0, study_duration_secs), size = dplyr::n(), replace = TRUE),
-        origin = "1970-01-01"
-      )
+      CNSDTDSC == "Treatment Start" ~ TRTSDTM,
+      TRUE ~ TRTSDTM + sample(seq(0, study_duration_secs), size = dplyr::n(), replace = TRUE)
     )) %>%
     dplyr::mutate(
-      STARTDT = as.Date(.data$TRTSDTM),
-      ADT = as.Date(.data$ADTM),
-      ADY = as.numeric(.data$ADT - .data$STARTDT + 1),
-      AVAL = .data$ADY / 7,
+      ADY_int = lubridate::date(ADTM) - lubridate::date(TRTSDTM) + 1,
+      ADY = as.numeric(ADY_int),
+      AVAL = lubridate::days(ADY_int) / lubridate::weeks(1),
       AVALU = "WEEKS"
-    )
-  adaette_hy <- dplyr::select(adaette_hy, -"TRTSDTM", -"ADT", -"STARTDT")
+    ) %>%
+    dplyr::select(-TRTSDTM, -ADY_int)
 
   random_ae_data <- function(lookup_info, patient_info, patient_data) {
     cnsr <- sample(c(0, 1), 1, prob = c(1 - lookup_info$CNSR_P, lookup_info$CNSR_P))
@@ -577,11 +559,11 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
       CNSDTDSC = c(ifelse(cnsr == 1, sample(cnsdtdscr_sel, 1), ""), NA),
       stringsAsFactors = FALSE
     ) %>% dplyr::mutate(
-      ADY = dplyr::if_else(is.na(.data$AVALU), NA_real_, ceiling(.data$AVAL * 365.25)),
+      ADY = dplyr::if_else(is.na(AVALU), NA_real_, ceiling(as.numeric(lubridate::dyears(AVAL), "days"))),
       ADTM = dplyr::if_else(
-        is.na(.data$AVALU),
-        as.POSIXct(NA),
-        as.POSIXct(patient_info$TRTSDTM) + as.difftime(.data$ADY, units = "days")
+        is.na(AVALU),
+        lubridate::as_datetime(NA),
+        patient_info$TRTSDTM + lubridate::days(ADY)
       )
     )
   }
@@ -667,26 +649,24 @@ generate_adcm <- function(adsl = tmc_ex_adsl,
     multiple = "all"
   ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
-    dplyr::mutate(trtedt_int = dplyr::case_when(
-      !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+      is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
+      TRUE ~ TRTEDTM
+    ))) %>%
+    dplyr::mutate(ASTDTM = sample(
+      seq(lubridate::as_datetime(TRTSDTM), lubridate::as_datetime(TRTENDT), by = "day"),
+      size = 1
     )) %>%
-    dplyr::mutate(ASTDTM = as.POSIXct(
-      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
-      origin = "1970-01-01"
-    )) %>%
-    dplyr::mutate(astdt_int = as.numeric(as.Date(.data$ASTDTM))) %>%
-    dplyr::mutate(ASTDY = ceiling(as.numeric(difftime(.data$ASTDTM, .data$TRTSDTM, units = "days")))) %>%
+    dplyr::mutate(ASTDY = ceiling(difftime(ASTDTM, TRTSDTM, units = "days"))) %>%
     # add 1 to end of range incase both values passed to sample() are the same
-    dplyr::mutate(AENDTM = as.POSIXct(
-      (sample(.data$astdt_int:(.data$trtedt_int + 1), size = 1) * 86400),
-      origin = "1970-01-01"
+    dplyr::mutate(AENDTM = sample(
+      seq(lubridate::as_datetime(ASTDTM), lubridate::as_datetime(TRTENDT + 1), by = "day"),
+      size = 1
     )) %>%
-    dplyr::mutate(AENDY = ceiling(as.numeric(difftime(.data$AENDTM, .data$TRTSDTM, units = "days")))) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int", -"astdt_int") %>%
+    dplyr::mutate(AENDY = ceiling(difftime(AENDTM, TRTSDTM, units = "days"))) %>%
+    dplyr::select(-TRTENDT) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM)
+    dplyr::arrange(STUDYID, USUBJID, ASTDTM)
 
   tmc_ex_adcm <- adcm %>%
     dplyr::group_by(.data$USUBJID) %>%
@@ -838,18 +818,22 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
     multiple = "all"
   ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
-    dplyr::mutate(trtedt_int = dplyr::case_when(
-      !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
-    )) %>%
-    dplyr::group_by(USUBJID, AVISIT) %>%
-    dplyr::mutate(ADTM = as.POSIXct(
-      (sample(unique(.data$trtsdt_int):unique(.data$trtedt_int), size = 1) * 86400),
-      origin = "1970-01-01"
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+      is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
+      TRUE ~ TRTEDTM
+    ))) %>%
+    dplyr::ungroup() %>%
+    dplyr::group_by(USUBJID) %>%
+    dplyr::arrange(USUBJID, AVISITN) %>%
+    dplyr::mutate(ADTM = rep(
+      sort(sample(
+        seq(lubridate::as_datetime(TRTSDTM[1]), lubridate::as_datetime(TRTENDT[1]), by = "day"),
+        size = nlevels(AVISIT)
+      )),
+      each = n() / nlevels(AVISIT)
     )) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
+    dplyr::select(-TRTENDT) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ADTM)
 
@@ -1150,16 +1134,15 @@ generate_adex <- function(adsl = tmc_ex_adsl,
 
   adex <- dplyr::inner_join(adsl, adex, by = c("STUDYID", "USUBJID"), multiple = "all") %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
-    dplyr::mutate(trtedt_int = dplyr::case_when(
-      !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+      is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
+      TRUE ~ TRTEDTM
+    ))) %>%
+    dplyr::mutate(ASTDTM = sample(
+      seq(lubridate::as_datetime(TRTSDTM), lubridate::as_datetime(TRTENDT), by = "day"),
+      size = 1
     )) %>%
-    dplyr::mutate(ASTDTM = as.POSIXct(
-      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
-      origin = "1970-01-01"
-    )) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
+    dplyr::select(-TRTENDT) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM)
 
@@ -1363,17 +1346,22 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
     multiple = "all"
   ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
-    dplyr::mutate(trtedt_int = dplyr::case_when(
-      !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
-    )) %>%
-    dplyr::mutate(ADTM = as.POSIXct(
-      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
-      origin = "1970-01-01"
-    )) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+      is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
+      TRUE ~ TRTEDTM
+    ))) %>%
     dplyr::ungroup() %>%
+    dplyr::group_by(USUBJID) %>%
+    dplyr::arrange(USUBJID, AVISITN) %>%
+    dplyr::mutate(ADTM = rep(
+      sort(sample(
+        seq(lubridate::as_datetime(TRTSDTM[1]), lubridate::as_datetime(TRTENDT[1]), by = "day"),
+        size = nlevels(AVISIT)
+      )),
+      each = n() / nlevels(AVISIT)
+    )) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(-TRTENDT) %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ADTM)
 
   adlb <- adlb %>%
@@ -1541,16 +1529,15 @@ generate_admh <- function(adsl = tmc_ex_adsl,
     multiple = "all"
   ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
-    dplyr::mutate(trtedt_int = dplyr::case_when(
-      !is.na(.data$TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(.data$TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+      is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
+      TRUE ~ TRTEDTM
+    ))) %>%
+    dplyr::mutate(ASTDTM = sample(
+      seq(lubridate::as_datetime(TRTSDTM), lubridate::as_datetime(TRTENDT), by = "day"),
+      size = 1
     )) %>%
-    dplyr::mutate(ASTDTM = as.POSIXct(
-      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
-      origin = "1970-01-01"
-    )) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
+    select(-TRTENDT) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ASTDTM, .data$MHTERM) %>%
     dplyr::mutate(MHDISTAT = sample(
@@ -1653,17 +1640,22 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
     multiple = "all"
   ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
-    dplyr::mutate(trtedt_int = dplyr::case_when(
-      !is.na(TRTEDTM) ~ as.numeric(as.Date(.data$TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(.data$trtsdt_int + study_duration_secs / 86400)
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+      is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
+      TRUE ~ TRTEDTM
+    ))) %>%
+    ungroup() %>%
+    group_by(USUBJID) %>%
+    arrange(USUBJID, AVISITN) %>%
+    dplyr::mutate(ADTM = rep(
+      sort(sample(
+        seq(lubridate::as_datetime(TRTSDTM[1]), lubridate::as_datetime(TRTENDT[1]), by = "day"),
+        size = nlevels(AVISIT)
+      )),
+      each = n() / nlevels(AVISIT)
     )) %>%
-    dplyr::mutate(ADTM = as.POSIXct(
-      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
-      origin = "1970-01-01"
-    )) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
     dplyr::ungroup() %>%
+    dplyr::select(-TRTENDT) %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ADTM)
 
   tmc_ex_adqs <- adqs %>%
@@ -1726,17 +1718,17 @@ generate_adrs <- function(adsl = tmc_ex_adsl) {
       avisit <- c("SCREENING", "BASELINE", "CYCLE 2 DAY 1", "CYCLE 4 DAY 1", "END OF INDUCTION", "FOLLOW UP")
 
       # meaningful date information
-      trtsdt_int <- as.numeric(as.Date(pinfo$TRTSDTM))
-      trtedt_int <- ifelse(
-        !is.na(pinfo$TRTEDTM), as.numeric(as.Date(pinfo$TRTEDTM)),
-        floor(trtsdt_int + study_duration_secs / 86400)
-      )
-      scr_date <- as.POSIXct(((trtsdt_int - 100) * 86400), origin = "1970-01-01")
-      bs_date <- pinfo$TRTSDTM
-      flu_date <- as.POSIXct((sample(trtsdt_int:trtedt_int, size = 1) * 86400), origin = "1970-01-01")
-      eoi_date <- as.POSIXct((sample(trtsdt_int:trtedt_int, size = 1) * 86400), origin = "1970-01-01")
-      c2d1_date <- as.POSIXct((sample(trtsdt_int:trtedt_int, size = 1) * 86400), origin = "1970-01-01")
-      c4d1_date <- min(c2d1_date + 60 * 86400, pinfo$TRTEDTM)
+      TRTSTDT <- lubridate::date(pinfo$TRTSDTM) # nolint
+      TRTENDT <- lubridate::date(dplyr::if_else( # nolint
+        !is.na(pinfo$TRTEDTM), pinfo$TRTEDTM,
+        lubridate::floor_date(TRTSTDT + study_duration_secs, unit = "day")
+      ))
+      scr_date <- TRTSTDT - lubridate::days(100)
+      bs_date <- TRTSTDT
+      flu_date <- sample(seq(lubridate::as_datetime(TRTSTDT), lubridate::as_datetime(TRTENDT), by = "day"), size = 1)
+      eoi_date <- sample(seq(lubridate::as_datetime(TRTSTDT), lubridate::as_datetime(TRTENDT), by = "day"), size = 1)
+      c2d1_date <- sample(seq(lubridate::as_datetime(TRTSTDT), lubridate::as_datetime(TRTENDT), by = "day"), size = 1)
+      c4d1_date <- min(lubridate::date(c2d1_date + lubridate::days(60)), TRTENDT)
 
       tibble::tibble(
         STUDYID = pinfo$STUDYID,
@@ -1869,16 +1861,15 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
     multiple = "all"
   ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
-    dplyr::mutate(trtedt_int = dplyr::case_when(
-      !is.na(TRTEDTM) ~ as.numeric(as.Date(TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(trtsdt_int + study_duration_secs / 86400)
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+      is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
+      TRUE ~ TRTEDTM
+    ))) %>%
+    dplyr::mutate(ADTM = sample(
+      seq(lubridate::as_datetime(TRTSDTM), lubridate::as_datetime(TRTENDT), by = "day"),
+      size = 1
     )) %>%
-    dplyr::mutate(ADTM = as.POSIXct(
-      (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
-      origin = "1970-01-01"
-    )) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
+    dplyr::select(-TRTENDT) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ADTM)
 
@@ -1989,19 +1980,16 @@ generate_advs <- function(adsl = tmc_ex_adsl,
     multiple = "all"
   ) %>%
     dplyr::rowwise() %>%
-    dplyr::mutate(trtsdt_int = as.numeric(as.Date(.data$TRTSDTM))) %>%
-    dplyr::mutate(trtedt_int = dplyr::case_when(
-      !is.na(TRTEDTM) ~ as.numeric(as.Date(TRTEDTM)),
-      is.na(TRTEDTM) ~ floor(trtsdt_int + study_duration_secs / 86400)
+    dplyr::mutate(TRTENDT = lubridate::date(dplyr::case_when(
+      is.na(TRTEDTM) ~ lubridate::floor_date(lubridate::date(TRTSDTM) + study_duration_secs, unit = "day"),
+      TRUE ~ TRTEDTM
+    ))) %>%
+    dplyr::mutate(ADTM = sample(
+      seq(lubridate::as_datetime(TRTSDTM), lubridate::as_datetime(TRTENDT), by = "day"),
+      size = 1
     )) %>%
-    dplyr::mutate(
-      ADTM = as.POSIXct(
-        (sample(.data$trtsdt_int:.data$trtedt_int, size = 1) * 86400),
-        origin = "1970-01-01"
-      )
-    ) %>%
-    dplyr::mutate(ADY = ceiling(as.numeric(difftime(.data$ADTM, .data$TRTSDTM, units = "days")))) %>%
-    dplyr::select(-"trtsdt_int", -"trtedt_int") %>%
+    dplyr::mutate(ADY = ceiling(difftime(ADTM, TRTSDTM, units = "days"))) %>%
+    dplyr::select(-TRTENDT) %>%
     dplyr::ungroup() %>%
     dplyr::arrange(.data$STUDYID, .data$USUBJID, .data$ADTM)
 
