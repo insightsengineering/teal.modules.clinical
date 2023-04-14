@@ -158,7 +158,7 @@ template_a_gee <- function(output_table,
 #'         choices = value_choices(adqs, "PARAMCD", "PARAM"),
 #'         selected = "FKSI-FWB"
 #'       ),
-#'       cov_var = choices_selected(c("BASE", "AGE", "SEX"), NULL)
+#'       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
 #'     )
 #'   )
 #' )

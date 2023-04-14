@@ -51,11 +51,11 @@
     Output
                                 
                                  FALSE TRUE
-        Complete Response (CR)       0   69
+        Complete Response (CR)       0   60
         Not Evaluable (NE)           6    0
-        Partial Response (PR)        0   63
-        Progressive Disease (PD)    29    0
-        Stable Disease (SD)         33    0
+        Partial Response (PR)        0   45
+        Progressive Disease (PD)    39    0
+        Stable Disease (SD)         50    0
 
 # prepare_arm with standard inputs
 
