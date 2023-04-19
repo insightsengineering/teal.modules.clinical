@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.14.9031
+# teal.modules.clinical 0.8.14.9034
 
 ### Breaking changes
 * Replaced `chunks` with simpler `qenv` class.
@@ -24,6 +24,7 @@
 * Fixed bug in overlapping bars in `tm_g_barchart_simple`.
 * Fixed bug for figures in `svg` format.
 * Implemented the `lubridate` package for date variables in internal data.
+* Changed default value of `plot_width` in `tm_g_forest_rsp` to prevent clutter.
 
 # teal.modules.clinical 0.8.14
 

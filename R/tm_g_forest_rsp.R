@@ -308,7 +308,7 @@ tm_g_forest_rsp <- function(label,
                             conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
                             plot_height = c(700L, 200L, 2000L),
-                            plot_width = c(900L, 200L, 2000L),
+                            plot_width = c(1200L, 800L, 3000L),
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
