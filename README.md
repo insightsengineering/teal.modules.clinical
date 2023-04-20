@@ -1,7 +1,7 @@
 # teal.modules.clinical
 
 <!-- start badges -->
-[![Check 🛠](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/check.yaml/badge.svg)](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/check.yaml)
+[![Check 🛠](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/check.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/main/unit-test-report/)
 [![Docs 📚](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/)
 
 ![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.clinical?style=social)
