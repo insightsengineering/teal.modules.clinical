@@ -11,6 +11,7 @@
 * Updated encodings input checks to use `shinyvalidate::InputValidator` instead of `shiny::validate` for better UI experience.   
 * Added adjustment method choice to `tm_a_mmrm` to allow for Kenward-Roger adjustment of standard errors and p-values.
 * Added option to choose facet scale options in `tm_g_barchart_simple`.
+* Updated `tm_t_coxreg` module after refactoring `summarize_coxreg` in `tern` to fix indentation.
 
 ### Miscellaneous
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS.

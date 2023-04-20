@@ -1,4 +1,4 @@
-#' Template: Cox Regression Univariate
+#' Template: Univariable Cox Regression
 #'
 #' Creates a valid expression for Cox regression analysis.
 #'
@@ -25,7 +25,7 @@ template_coxreg_u <- function(dataname,
                               control = control_coxreg(),
                               append = FALSE,
                               basic_table_args = teal.widgets::basic_table_args(
-                                title = paste("Multi-Variable Cox Regression for", paramcd)
+                                title = paste("Multivariable Cox Regression for", paramcd)
                               )) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -76,50 +76,16 @@ template_coxreg_u <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = variables <- list(
-        time = aval_var, event = "event", arm = arm_var, covariates = cov_var
-      ),
-      env = list(
-        aval_var = aval_var,
-        arm_var = arm_var,
-        cov_var = cov_var
-      )
+      expr = control <- ctrl,
+      env = list(ctrl = control)
     )
   )
 
-  if (!is.null(strata_var)) {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = variables$strata <- strata_var,
-        env = list(
-          strata_var = strata_var
-        )
-      )
-    )
-  }
-
-  data_list <-
-    add_expr(
-      data_list,
-      substitute(
-        model <- fit_coxreg_univar(
-          variables = variables,
-          data = anl,
-          control = control,
-          at = at
-        ),
-        env = list(
-          at = at,
-          control = control
-        )
-      )
-    )
-
-  data_list <- add_expr(
-    data_list,
-    quote(df <- broom::tidy(model))
+  variables <- list(
+    time = aval_var, event = "event", arm = arm_var, covariates = cov_var
   )
+
+  if (!is.null(strata_var)) variables$strata <- strata_var
 
   y$data <- bracket_expr(data_list)
 
@@ -129,7 +95,7 @@ template_coxreg_u <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
-        title = paste("Multi-Variable Cox Regression for", paramcd),
+        title = paste("Multivariable Cox Regression for", paramcd),
         main_footer = c(
           paste("p-value method for Coxph (Hazard Ratio):", control$pval_method),
           paste("Ties for Coxph (Hazard Ratio):", control$ties)
@@ -138,41 +104,37 @@ template_coxreg_u <- function(dataname,
     )
   )
 
-
   layout_list <- add_expr(
     layout_list,
     parsed_basic_table_args
   )
 
-
-  layout_list <- add_expr(
-    layout_list,
-    quote(rtables::split_rows_by("effect"))
-  )
-
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = rtables::append_topleft(paramcd) %>%
-        rtables::split_rows_by("term", child_labels = "hidden"),
+      expr = rtables::append_topleft(paramcd),
       env = list(paramcd = paramcd)
     )
   )
 
-  vars <- c("n", "hr", "ci", "pval")
+  stats <- c("n", "hr", "ci", "pval")
 
   layout_list <- add_expr(
     layout_list,
     substitute(
       expr = summarize_coxreg(
+        variables = variables,
+        control = control,
+        at = at,
         multivar = multivariate,
-        conf_level = conf_level,
-        vars = vars
+        .stats = stats
       ),
       env = list(
         multivariate = FALSE,
-        conf_level = control$conf_level,
-        vars = if (control$interaction) c(vars, "pval_inter") else vars
+        variables = variables,
+        control = control,
+        at = at,
+        stats = if (control$interaction) c(stats, "pval_inter") else stats
       )
     )
   )
@@ -183,15 +145,15 @@ template_coxreg_u <- function(dataname,
   )
 
   y$table <- if (append) {
-    quote(result <- c(result, rtables::build_table(lyt = lyt, df = df)))
+    quote(result <- c(result, rtables::build_table(lyt = lyt, df = anl)))
   } else {
-    quote(result <- rtables::build_table(lyt = lyt, df = df))
+    quote(result <- rtables::build_table(lyt = lyt, df = anl))
   }
 
   y
 }
 
-#' Template: Cox Regression Multivariate
+#' Template: Multivariable Cox Regression
 #'
 #' Creates a valid expression for Cox regression analysis.
 #'
@@ -264,46 +226,11 @@ template_coxreg_m <- function(dataname,
     )
   )
 
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = variables <- list(
-        time = aval_var, event = "event", arm = arm_var, covariates = cov_var
-      ),
-      env = list(
-        aval_var = aval_var,
-        arm_var = arm_var,
-        cov_var = cov_var
-      )
-    )
+  variables <- list(
+    time = aval_var, event = "event", arm = arm_var, covariates = cov_var
   )
 
-  if (!is.null(strata_var)) {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = variables$strata <- strata_var,
-        env = list(strata_var = strata_var)
-      )
-    )
-  }
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      model <- fit_coxreg_multivar(
-        variables = variables,
-        data = anl,
-        control = control
-      ),
-      env = list(control = control)
-    )
-  )
-
-  data_list <- add_expr(
-    data_list,
-    quote(df <- broom::tidy(model))
-  )
+  if (!is.null(strata_var)) variables$strata <- strata_var
 
   y$data <- bracket_expr(data_list)
 
@@ -330,26 +257,27 @@ template_coxreg_m <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = rtables::append_topleft(paramcd) %>%
-        rtables::split_rows_by("term", child_labels = "hidden"),
+      expr = rtables::append_topleft(paramcd),
       env = list(paramcd = paramcd)
     )
   )
 
-  vars <- c("n", "hr", "ci", "pval")
+  stats <- c("hr", "ci", "pval")
 
   layout_list <- add_expr(
     layout_list,
     substitute(
       expr = summarize_coxreg(
+        variables = variables,
+        control = control,
         multivar = multivariate,
-        conf_level = conf_level,
-        vars = vars
+        .stats = stats
       ),
       env = list(
+        variables = variables,
+        control = control,
         multivariate = TRUE,
-        conf_level = control$conf_level,
-        vars = if (control$interaction) c(vars, "pval_inter") else vars
+        stats = stats
       )
     )
   )
@@ -360,7 +288,7 @@ template_coxreg_m <- function(dataname,
   )
 
   y$table <- quote({
-    result <- rtables::build_table(lyt = lyt, df = df)
+    result <- rtables::build_table(lyt = lyt, df = anl)
     result
   })
 
@@ -369,13 +297,13 @@ template_coxreg_m <- function(dataname,
 
 #' Teal Module: Cox Regression Model
 #'
-#' Teal module to fit Cox univariate or multivariate models consistent with
+#' Teal module to fit Cox univariable or multivariable models consistent with
 #' `COXT01` and `COXT02` standard outputs, respectively.
 #'
 #' @inheritParams module_arguments
 #' @param multivariate (`logical`)\cr
-#'   If `FALSE`, the univariate approach is used
-#'   (equivalent to `COXT01` standard) instead of the multivariate model
+#'   If `FALSE`, the univariable approach is used
+#'   (equivalent to `COXT01` standard) instead of the multivariable model
 #'   (equivalent to `COXT02` standard).
 #'
 #' @details
@@ -403,7 +331,7 @@ template_coxreg_m <- function(dataname,
 #' @section Note:
 #' - The likelihood ratio test is not supported for model including strata,
 #'   Wald test will be substituted.
-#' - Multivariate is the default choice for backward compatibility.
+#' - Multivariable is the default choice for backward compatibility.
 #'
 #' @export
 #'
@@ -1076,11 +1004,12 @@ srv_t_coxreg <- function(id,
           teal.code::eval_code(
             substitute(
               expr = {
+                result <- lapply(result, function(x) {rtables::col_info(x) <- rtables::col_info(result[[1]]); x})
                 result <- rtables::rbindl_rtables(result, check_headers = TRUE)
                 rtables::main_title(result) <- title
                 rtables::main_footer(result) <- c(
-                  paste("p-value method for Coxph (Hazard Ratio):", model$control$pval_method),
-                  paste("Ties for Coxph (Hazard Ratio):", model$control$ties)
+                  paste("p-value method for Coxph (Hazard Ratio):", control$pval_method),
+                  paste("Ties for Coxph (Hazard Ratio):", control$ties)
                 )
                 rtables::prov_footer(result) <- p_footer
                 rtables::subtitles(result) <- subtitle
@@ -1113,7 +1042,7 @@ srv_t_coxreg <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
-      title = "R Code for the Current (Multi-variable) Cox proportional hazard regression model"
+      title = "R Code for the Current (Multivariable) Cox proportional hazard regression model"
     )
 
     ### REPORTER
