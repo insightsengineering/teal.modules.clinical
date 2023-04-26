@@ -1004,7 +1004,10 @@ srv_t_coxreg <- function(id,
           teal.code::eval_code(
             substitute(
               expr = {
-                result <- lapply(result, function(x) {rtables::col_info(x) <- rtables::col_info(result[[1]]); x})
+                result <- lapply(result, function(x) {
+                  rtables::col_info(x) <- rtables::col_info(result[[1]])
+                  x
+                })
                 result <- rtables::rbindl_rtables(result, check_headers = TRUE)
                 rtables::main_title(result) <- title
                 rtables::main_footer(result) <- c(
