@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_coxreg.R
 \name{template_coxreg_m}
 \alias{template_coxreg_m}
-\title{Template: Multivariable Cox Regression}
+\title{Template: Multi-Variable Cox Regression}
 \usage{
 template_coxreg_m(
   dataname,

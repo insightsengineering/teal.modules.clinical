@@ -14,7 +14,7 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Multivariable Cox Regression for OS", 
+      lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS", 
           main_footer = c("p-value method for Coxph (Hazard Ratio): wald", 
               "Ties for Coxph (Hazard Ratio): efron")) %>% rtables::append_topleft("OS") %>% 
           summarize_coxreg(variables = list(time = "AVAL", event = "event", 
@@ -44,7 +44,7 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Multivariable Cox Regression for OS", 
+      lyt <- rtables::basic_table(title = "Multi-Variable Cox Regression for OS", 
           main_footer = c("p-value method for Coxph (Hazard Ratio): wald", 
               "Ties for Coxph (Hazard Ratio): efron")) %>% rtables::append_topleft("OS") %>% 
           summarize_coxreg(variables = list(time = "AVAL", event = "event", 

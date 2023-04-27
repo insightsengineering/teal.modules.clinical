@@ -24,9 +24,7 @@ template_coxreg_u <- function(dataname,
                               combine_comp_arms = FALSE,
                               control = control_coxreg(),
                               append = FALSE,
-                              basic_table_args = teal.widgets::basic_table_args(
-                                title = paste("Multivariable Cox Regression for", paramcd)
-                              )) {
+                              basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
@@ -95,7 +93,7 @@ template_coxreg_u <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
-        title = paste("Multivariable Cox Regression for", paramcd),
+        title = paste("Multi-Variable Cox Regression for", paramcd),
         main_footer = c(
           paste("p-value method for Coxph (Hazard Ratio):", control$pval_method),
           paste("Ties for Coxph (Hazard Ratio):", control$ties)
@@ -153,7 +151,7 @@ template_coxreg_u <- function(dataname,
   y
 }
 
-#' Template: Multivariable Cox Regression
+#' Template: Multi-Variable Cox Regression
 #'
 #' Creates a valid expression for Cox regression analysis.
 #'
@@ -297,13 +295,13 @@ template_coxreg_m <- function(dataname,
 
 #' Teal Module: Cox Regression Model
 #'
-#' Teal module to fit Cox univariable or multivariable models consistent with
+#' Teal module to fit Cox univariable or multi-variable models consistent with
 #' `COXT01` and `COXT02` standard outputs, respectively.
 #'
 #' @inheritParams module_arguments
 #' @param multivariate (`logical`)\cr
 #'   If `FALSE`, the univariable approach is used
-#'   (equivalent to `COXT01` standard) instead of the multivariable model
+#'   (equivalent to `COXT01` standard) instead of the multi-variable model
 #'   (equivalent to `COXT02` standard).
 #'
 #' @details
@@ -331,7 +329,7 @@ template_coxreg_m <- function(dataname,
 #' @section Note:
 #' - The likelihood ratio test is not supported for model including strata,
 #'   Wald test will be substituted.
-#' - Multivariable is the default choice for backward compatibility.
+#' - Multi-Variable is the default choice for backward compatibility.
 #'
 #' @export
 #'
@@ -1045,7 +1043,7 @@ srv_t_coxreg <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
-      title = "R Code for the Current (Multivariable) Cox proportional hazard regression model"
+      title = "R Code for the Current (Multi-Variable) Cox proportional hazard regression model"
     )
 
     ### REPORTER
