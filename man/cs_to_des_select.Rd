@@ -4,7 +4,13 @@
 \alias{cs_to_des_select}
 \title{Convert choices_selected to data_extract_spec with only select_spec}
 \usage{
-cs_to_des_select(cs, dataname, multiple = FALSE, ordered = FALSE)
+cs_to_des_select(
+  cs,
+  dataname,
+  multiple = FALSE,
+  ordered = FALSE,
+  label = "Select"
+)
 }
 \arguments{
 \item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for details.}
@@ -15,6 +21,8 @@ cs_to_des_select(cs, dataname, multiple = FALSE, ordered = FALSE)
 shiny \code{\link[shiny]{selectInput}}.}
 
 \item{ordered}{(\code{logical(1)}) Flags whether selection order should be tracked.}
+
+\item{label}{(\code{character}) Label to print over the selection field. For no label, set to \code{NULL}.}
 }
 \value{
 (\code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})

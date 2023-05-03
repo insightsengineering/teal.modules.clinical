@@ -11,6 +11,7 @@
 * Updated encodings input checks to use `shinyvalidate::InputValidator` instead of `shiny::validate` for better UI experience.   
 * Added adjustment method choice to `tm_a_mmrm` to allow for Kenward-Roger adjustment of standard errors and p-values.
 * Added option to choose facet scale options in `tm_g_barchart_simple`.
+* Added `label` parameter to `cs_to_select_spec`/`cs_to_des_select` and `cs_to_filter_spec`/`cs_to_des_filter` to allow the user to customize the label printed over the selection field.
 
 ### Miscellaneous
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS.

@@ -263,9 +263,10 @@ bracket_expr <- function(exprs) {
 #' @param multiple (\code{logical}) Whether multiple values shall be allowed in the
 #'  shiny \code{\link[shiny]{selectInput}}.
 #' @param ordered (`logical(1)`) Flags whether selection order should be tracked.
+#' @param label (`character`) Label to print over the selection field. For no label, set to `NULL`.
 #' @export
 #' @return (`select_spec`)
-cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE) {
+cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE, label = "Select") {
   checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
   checkmate::assert_flag(ordered)
@@ -275,7 +276,8 @@ cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE) {
     selected = cs$selected,
     fixed = cs$fixed,
     multiple = multiple,
-    ordered = ordered
+    ordered = ordered,
+    label = label
   )
 }
 
@@ -285,7 +287,7 @@ cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE) {
 #'
 #' @export
 #' @return ([teal.transform::filter_spec()])
-cs_to_filter_spec <- function(cs, multiple = FALSE) {
+cs_to_filter_spec <- function(cs, multiple = FALSE, label = "Filter by") {
   checkmate::assert_class(cs, "choices_selected")
   checkmate::assert_flag(multiple)
 
@@ -300,7 +302,8 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
     choices = cs$choices,
     selected = cs$selected,
     multiple = multiple,
-    drop_keys = FALSE
+    drop_keys = FALSE,
+    label = label
   )
 }
 
@@ -311,7 +314,7 @@ cs_to_filter_spec <- function(cs, multiple = FALSE) {
 #'
 #' @export
 #' @return ([teal.transform::data_extract_spec()])
-cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE) {
+cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE, label = "Select") {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
@@ -329,7 +332,7 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE) {
   if (inherits(cs, "choices_selected")) {
     teal.transform::data_extract_spec(
       dataname = dataname,
-      select = cs_to_select_spec(cs, multiple = multiple, ordered = ordered)
+      select = cs_to_select_spec(cs, multiple = multiple, ordered = ordered, label = label)
     )
   } else {
     return(cs)
@@ -344,7 +347,7 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE) {
 #'
 #' @export
 #' @return ([teal.transform::data_extract_spec()])
-cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALSE) {
+cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALSE, label = "Filter by") {
   cs_sub <- substitute(cs)
   cs_name <- if (is.symbol(cs_sub)) as.character(cs_sub) else "cs"
 
@@ -377,7 +380,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
 
     teal.transform::data_extract_spec(
       dataname = dataname,
-      filter = cs_to_filter_spec(cs, multiple = multiple),
+      filter = cs_to_filter_spec(cs, multiple = multiple, label = label),
       select = select
     )
   } else {
