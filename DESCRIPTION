@@ -27,7 +27,7 @@ BugReports:
 Depends:
     R (>= 3.6),
     teal (>= 0.12.0),
-    tern (>= 0.7.10)
+    tern (>= 0.8.1.9009)
 Imports:
     assertthat,
     broom,

@@ -31,8 +31,10 @@ PARAMCD
 Repo
 Rua
 SREPs
+TLG
 UI
 USUBJID
+Univariable
 Yuyao
 atezo
 barchart
@@ -44,10 +46,7 @@ customizable
 datetime
 de
 ggplot
-github
 grey
-https
-insightsengineering
 lsmeans
 param
 paramcd
@@ -62,7 +61,7 @@ shinyapp
 songy
 surv
 timepoint
-TLG
 ui
 unadjusted
 unevaluable
+univariable

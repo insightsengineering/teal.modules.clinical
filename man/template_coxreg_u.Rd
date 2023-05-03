@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_coxreg.R
 \name{template_coxreg_u}
 \alias{template_coxreg_u}
-\title{Template: Cox Regression Univariate}
+\title{Template: Univariable Cox Regression}
 \usage{
 template_coxreg_u(
   dataname,
@@ -18,8 +18,7 @@ template_coxreg_u(
   combine_comp_arms = FALSE,
   control = control_coxreg(),
   append = FALSE,
-  basic_table_args = teal.widgets::basic_table_args(title =
-    paste("Multi-Variable Cox Regression for", paramcd))
+  basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{

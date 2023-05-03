@@ -69,8 +69,8 @@ object with all available choices and preselected option for the censoring
 variable.}
 
 \item{multivariate}{(\code{logical})\cr
-If \code{FALSE}, the univariate approach is used
-(equivalent to \code{COXT01} standard) instead of the multivariate model
+If \code{FALSE}, the univariable approach is used
+(equivalent to \code{COXT01} standard) instead of the multi-variable model
 (equivalent to \code{COXT02} standard).}
 
 \item{conf_level}{(\code{choices_selected})\cr
@@ -93,7 +93,7 @@ The argument is merged with option \code{teal.basic_table_args} and with default
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Teal module to fit Cox univariate or multivariate models consistent with
+Teal module to fit Cox univariable or multi-variable models consistent with
 \code{COXT01} and \code{COXT02} standard outputs, respectively.
 }
 \details{
@@ -123,7 +123,7 @@ ADSL data.
 \itemize{
 \item The likelihood ratio test is not supported for model including strata,
 Wald test will be substituted.
-\item Multivariate is the default choice for backward compatibility.
+\item Multi-Variable is the default choice for backward compatibility.
 }
 }
 
