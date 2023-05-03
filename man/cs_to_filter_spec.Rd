@@ -4,13 +4,15 @@
 \alias{cs_to_filter_spec}
 \title{Convert choices_selected to filter_spec}
 \usage{
-cs_to_filter_spec(cs, multiple = FALSE)
+cs_to_filter_spec(cs, multiple = FALSE, label = "Filter by")
 }
 \arguments{
 \item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for details.}
 
 \item{multiple}{(\code{logical}) Whether multiple values shall be allowed in the
 shiny \code{\link[shiny]{selectInput}}.}
+
+\item{label}{(\code{character}) Label to print over the selection field. For no label, set to \code{NULL}.}
 }
 \value{
 (\code{\link[teal.transform:filter_spec]{teal.transform::filter_spec()}})

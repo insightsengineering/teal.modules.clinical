@@ -4,7 +4,7 @@
 \alias{cs_to_select_spec}
 \title{Convert choices_selected to select_spec}
 \usage{
-cs_to_select_spec(cs, multiple = FALSE, ordered = FALSE)
+cs_to_select_spec(cs, multiple = FALSE, ordered = FALSE, label = "Select")
 }
 \arguments{
 \item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for details.}
@@ -13,6 +13,8 @@ cs_to_select_spec(cs, multiple = FALSE, ordered = FALSE)
 shiny \code{\link[shiny]{selectInput}}.}
 
 \item{ordered}{(\code{logical(1)}) Flags whether selection order should be tracked.}
+
+\item{label}{(\code{character}) Label to print over the selection field. For no label, set to \code{NULL}.}
 }
 \value{
 (\code{select_spec})
