@@ -81,3 +81,4 @@ This package is the result of the joint efforts of many developers and stakehold
 ### Forkers
 
 [![Forkers repo roster for @insightsengineering/teal.modules.clinical](https://reporoster.com/forks/insightsengineering/teal.modules.clinical)](https://github.com/insightsengineering/teal.modules.clinical/network/members)
+
