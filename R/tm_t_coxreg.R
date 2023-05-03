@@ -491,7 +491,7 @@ tm_t_coxreg <- function(label,
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+    paramcd = cs_to_des_filter(paramcd, dataname = dataname, label = NULL),
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
