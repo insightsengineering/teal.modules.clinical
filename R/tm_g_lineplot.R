@@ -64,16 +64,25 @@ template_g_lineplot <- function(dataname = "ANL",
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = dplyr::filter(x != "SCREENING") %>%
-          dplyr::mutate(x = droplevels(x)),
-        names = list(x = as.name(x)),
-        others = list(
-          anl = as.name(dataname),
-          x_var = as.name(x)
-        )
+        expr = dplyr::filter(x_var != "SCREENING") %>%
+          dplyr::mutate(x_var = factor(x_var)),
+        names = list(x_var = as.name(x))
       )
     )
   }
+
+  # droplevels for strata
+  data_list <- add_expr(
+    data_list,
+    substitute_names(
+      expr = dplyr::mutate(
+        arm_var = droplevels(arm_var)
+      ),
+      names = list(
+        arm_var = as.name(strata)
+      )
+    )
+  )
 
   z$data <- substitute(
     expr = {
