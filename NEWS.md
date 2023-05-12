@@ -13,6 +13,7 @@
 * Added option to choose facet scale options in `tm_g_barchart_simple`.
 * Added `label` parameter to `cs_to_select_spec`/`cs_to_des_select` and `cs_to_filter_spec`/`cs_to_des_filter` to allow the user to customize the label printed over the selection field.
 * Updated `tm_t_coxreg` module after refactoring `summarize_coxreg` in `tern` to fix indentation.
+* Updated `tm_t_exposure` module to use new function `analyze_patients_exposure_in_cols` to fix table structure.
 
 ### Miscellaneous
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS.

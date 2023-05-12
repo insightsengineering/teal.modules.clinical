@@ -19,15 +19,13 @@
               .labels = c(n_patients = "Number of Patients", sum_exposure = ifelse("Days" == 
                   " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
                   sprintf("(%s)", "Days")))), custom_label = "Total Number of Patients and Patient Time*") %>% 
-          rtables::split_rows_by("RACE", label_pos = "topleft", split_fun = split_fun, 
-              split_label = formatters::var_labels(adex["RACE"], fill = TRUE), 
-              nested = FALSE) %>% summarize_patients_exposure_in_cols(var = "AVAL", 
-          col_split = FALSE)
+          analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE) %>% 
+          append_topleft(c(formatters::var_labels(adex["RACE"], fill = TRUE)))
       
       $table
       {
           result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
-          result
+          rtables::prune_table(result)
       }
       
 
@@ -52,15 +50,14 @@
               .labels = c(n_patients = "Number of Patients", sum_exposure = ifelse("Days" == 
                   " ", paste("Sum of", "myTDURD"), paste("Sum of", 
                   "myTDURD", sprintf("(%s)", "Days")))), custom_label = "Total Number of Patients and Patient Time*") %>% 
-          rtables::split_rows_by("myRACE", label_pos = "topleft", split_fun = split_fun, 
-              split_label = formatters::var_labels(myadex["myRACE"], 
-                  fill = TRUE), nested = FALSE) %>% summarize_patients_exposure_in_cols(var = "myAVAL", 
-          col_split = FALSE)
+          analyze_patients_exposure_in_cols(var = "myRACE", col_split = FALSE) %>% 
+          append_topleft(c(formatters::var_labels(myadex["myRACE"], 
+              fill = TRUE)))
       
       $table
       {
           result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = myadsl)
-          result
+          rtables::prune_table(result)
       }
       
 
@@ -85,15 +82,13 @@
               .labels = c(n_patients = "Number of Patients", sum_exposure = ifelse("Days" == 
                   " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
                   sprintf("(%s)", "Days")))), custom_label = "Total Number of Patients and Patient Time*") %>% 
-          rtables::split_rows_by("RACE", label_pos = "topleft", split_fun = split_fun, 
-              split_label = formatters::var_labels(adex["RACE"], fill = TRUE), 
-              nested = FALSE) %>% summarize_patients_exposure_in_cols(var = "AVAL", 
-          col_split = FALSE)
+          analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE) %>% 
+          append_topleft(c(formatters::var_labels(adex["RACE"], fill = TRUE)))
       
       $table
       {
           result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
-          result
+          rtables::prune_table(result)
       }
       
 
