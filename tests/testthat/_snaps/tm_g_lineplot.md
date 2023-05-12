@@ -5,7 +5,7 @@
     Output
       $data
       {
-          anl <- ANL
+          anl <- ANL %>% dplyr::mutate(ARM = droplevels(ARM))
       }
       
       $variables
@@ -35,7 +35,8 @@
     Output
       $data
       {
-          anl <- ANL %>% dplyr::filter(AVISIT != "SCREENING") %>% dplyr::mutate(AVISIT = droplevels(AVISIT))
+          anl <- ANL %>% dplyr::filter(AVISIT != "SCREENING") %>% dplyr::mutate(AVISIT = factor(AVISIT)) %>% 
+              dplyr::mutate(ARMCD = droplevels(ARMCD))
       }
       
       $variables

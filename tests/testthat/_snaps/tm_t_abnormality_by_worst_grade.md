@@ -16,6 +16,9 @@
           arm_levels <- levels(anl[["ARMCD"]])
           adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
+          if (is.null(obj_label(anl[["PARAMCD"]]))) {
+              stop("Please specify label for ", "PARAMCD")
+          }
       }
       
       $layout_prep
@@ -62,6 +65,9 @@
           arm_levels <- levels(anl[["ARMCD"]])
           myadsl <- myadsl %>% dplyr::filter(ARMCD %in% arm_levels)
           myadsl <- myadsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
+          if (is.null(obj_label(anl[["myPARAMCD"]]))) {
+              stop("Please specify label for ", "myPARAMCD")
+          }
       }
       
       $layout_prep
