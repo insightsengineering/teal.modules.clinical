@@ -148,50 +148,17 @@ template_exposure <- function(parentname,
     )
   )
 
-  if (drop_levels) {
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        rtables::split_rows_by(
-          row_by_var,
-          label_pos = "topleft",
-          split_fun = split_fun,
-          split_label = split_label,
-          nested = FALSE
-        ),
-        env = list(
-          row_by_var = row_by_var,
-          split_label = split_label
-        )
-      )
-    )
-  } else {
-    layout_list <- add_expr(
-      layout_list,
-      substitute(
-        rtables::split_rows_by(
-          row_by_var,
-          label_pos = "topleft",
-          split_label = split_label,
-          nested = FALSE
-        ),
-        env = list(
-          row_by_var = row_by_var,
-          split_label = split_label
-        )
-      )
-    )
-  }
-
   layout_list <- add_expr(
     layout_list,
     substitute(
-      summarize_patients_exposure_in_cols(
-        var = aval_var,
+      analyze_patients_exposure_in_cols(
+        var = row_by_var,
         col_split = FALSE
-      ),
+      ) %>%
+        append_topleft(c(split_label)),
       env = list(
-        aval_var = aval_var
+        row_by_var = row_by_var,
+        split_label = split_label
       )
     )
   )
@@ -208,6 +175,16 @@ template_exposure <- function(parentname,
     },
     env = list(parent = as.name(parentname))
   )
+
+  if (drop_levels) {
+    y$table <- substitute(
+      expr = {
+        result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+        rtables::prune_table(result)
+      },
+      env = list(parent = as.name(parentname))
+    )
+  }
   y
 }
 
