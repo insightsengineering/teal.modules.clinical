@@ -74,9 +74,8 @@ for variable names that can be used for facet plotting.}
 \item{conf_level}{(\code{numeric})\cr
 value for the confidence level within the range of (0, 1).}
 
-\item{ties}{(\code{string})\cr among \code{exact} (equivalent to \code{DISCRETE} in SAS),
-\code{efron} and \code{breslow}, see \code{\link[survival:coxph]{survival::coxph()}}.
-Note: there is no equivalent of SAS \code{EXACT} method in R.}
+\item{ties}{(\code{string})\cr among \code{exact} (equivalent to \code{DISCRETE} in SAS), \code{efron} and \code{breslow},
+see \code{\link[survival:coxph]{survival::coxph()}}. Note: there is no equivalent of SAS \code{EXACT} method in R.}
 
 \item{xlab}{(\code{string})\cr label of x-axis.}
 
@@ -85,8 +84,7 @@ name of the variable representing time units.}
 
 \item{yval}{(\code{string})\cr value of y-axis. Options are \code{Survival} (default) and \code{Failure} probability.}
 
-\item{pval_method}{(\code{string})\cr the method used for estimation of p.values;
-\code{wald} (default) or \code{likelihood}.}
+\item{pval_method}{(\code{string})\cr the method used for estimation of p.values; \code{wald} (default) or \code{likelihood}.}
 
 \item{annot_surv_med}{(\code{flag})\cr compute and add the annotation table on the Kaplan-Meier curve estimating the
 median survival time per group.}
