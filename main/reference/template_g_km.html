@@ -34,14 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -177,9 +169,8 @@ value for the confidence level within the range of (0, 1).</p></dd>
 
 
 <dt>ties</dt>
-<dd><p>(<code>string</code>)<br> among <code>exact</code> (equivalent to <code>DISCRETE</code> in SAS),
-<code>efron</code> and <code>breslow</code>, see <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code>.
-Note: there is no equivalent of SAS <code>EXACT</code> method in R.</p></dd>
+<dd><p>(<code>string</code>)<br> among <code>exact</code> (equivalent to <code>DISCRETE</code> in SAS), <code>efron</code> and <code>breslow</code>,
+see <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code>. Note: there is no equivalent of SAS <code>EXACT</code> method in R.</p></dd>
 
 
 <dt>xlab</dt>
@@ -196,8 +187,7 @@ name of the variable representing time units.</p></dd>
 
 
 <dt>pval_method</dt>
-<dd><p>(<code>string</code>)<br> the method used for estimation of p.values;
-<code>wald</code> (default) or <code>likelihood</code>.</p></dd>
+<dd><p>(<code>string</code>)<br> the method used for estimation of p.values; <code>wald</code> (default) or <code>likelihood</code>.</p></dd>
 
 
 <dt>annot_surv_med</dt>
