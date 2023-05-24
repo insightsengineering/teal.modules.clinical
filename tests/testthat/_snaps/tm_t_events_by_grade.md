@@ -280,7 +280,7 @@
       }
       
 
-# template_events_col_by_grade generates STREAM variant 8
+# template_events_col_by_grade works with custom values
 
     Code
       res

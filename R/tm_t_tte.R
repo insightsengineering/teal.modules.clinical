@@ -363,8 +363,7 @@ template_tte <- function(dataname = "ANL",
 #' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
 #'   information, optional.
 #'
-#' @details This module produces a response summary table that is similar to
-#'   STREAM template `ttet01`. The core functionality is based on
+#' @details This module produces a response summary table that is similar to TTET01. The core functionality is based on
 #'   [coxph_pairwise()], [surv_timepoint()] and [surv_time()] from package `tern`.\cr
 #'   The following variables are used in the module:
 #'
