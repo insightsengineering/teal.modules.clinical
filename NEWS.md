@@ -8,7 +8,7 @@
 * Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
 * Added new GEE module `tm_a_gee`.
 * Added interface for selecting an interaction term to `tm_t_ancova`.
-* Updated encodings input checks to replace `shiny::validate` usage with `shinyvalidate::InputValidator` for better UI experience.
+* Updated encodings input checks to use `shinyvalidate::InputValidator` for better UI experience. Previously used `shiny::validate`.
 * Added option to `tm_a_mmrm` to allow for Kenward-Roger adjustments of standard errors and p-values.
 * Added option to choose facet scale options in `tm_g_barchart_simple`.
 * Added `label` parameter to `cs_to_select_spec`/`cs_to_des_select` and `cs_to_filter_spec`/`cs_to_des_filter` to allow the user to customize the label printed over the selection field.
