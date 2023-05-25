@@ -285,8 +285,7 @@ tm_t_summary <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   checkmate::assertFlag(add_total)
 
-  numeric_stats_choices <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
-  numeric_stats <- match.arg(numeric_stats, numeric_stats_choices, several.ok = TRUE)
+  numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
   args <- as.list(environment())
 
