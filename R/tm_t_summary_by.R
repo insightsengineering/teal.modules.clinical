@@ -403,10 +403,13 @@ tm_t_summary_by <- function(label,
   checkmate::assert_flag(parallel_vars)
   checkmate::assert_flag(row_groups)
   checkmate::assert_flag(drop_arm_levels)
-  numeric_stats <- match.arg(numeric_stats)
+  checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+
+  numeric_stats_choices <- c("n", "mean_sd", "mean_ci", "geom_mean", "median", "median_ci", "quantiles", "range")
+  numeric_stats <- match.arg(numeric_stats, numeric_stats_choices, several.ok = TRUE)
 
   args <- c(as.list(environment()))
 
@@ -522,7 +525,7 @@ ui_summary_by <- function(id, ...) {
               "25% and 75%-ile" = "quantiles",
               "Min - Max" = "range"
             ),
-            selected = c("n", "mean_sd", "median", "range")
+            selected = a$numeric_stats
           ),
           if (a$dataname == a$parentname) {
             shinyjs::hidden(
