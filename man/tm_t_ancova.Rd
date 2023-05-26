@@ -96,7 +96,7 @@ Teal Module: ANCOVA Teal Module
 }
 \details{
 This module produces an analysis of variance summary table that is
-similar to STREAM template \code{aovt01} when multiple endpoints are selected.
+similar to AOVT01 when multiple endpoints are selected.
 When a single endpoint is selected, both unadjusted and adjusted comparison
 would be provided. This modules expects that the analysis data has the
 following variables:
