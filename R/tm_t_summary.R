@@ -277,18 +277,15 @@ tm_t_summary <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   checkmate::assert_character(numeric_stats, min.len = 1)
-  checkmate::assert_subset(
-    numeric_stats,
-    c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
-  )
   useNA <- match.arg(useNA) # nolint
-  numeric_stats <- match.arg(numeric_stats)
   denominator <- match.arg(denominator)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   checkmate::assertFlag(add_total)
+
+  numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
   args <- as.list(environment())
 
@@ -366,7 +363,7 @@ ui_summary <- function(id, ...) {
               "25% and 75%-ile" = "quantiles",
               "Min - Max" = "range"
             ),
-            selected = c("n", "mean_sd", "median", "range")
+            selected = a$numeric_stats
           ),
           shiny::radioButtons(
             ns("denominator"),

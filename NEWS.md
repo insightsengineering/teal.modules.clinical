@@ -15,6 +15,9 @@
 * Updated `tm_t_coxreg` module after refactoring `summarize_coxreg` in `tern` to fix indentation.
 * Updated `tm_t_exposure` module to use new function `analyze_patients_exposure_in_cols` to fix table structure.
 
+### Bug fixes
+* Fixed bug in `tm_t_summary` and `tm_t_summary_by` preventing users from specifying the `numeric_stats` argument.
+
 ### Miscellaneous
 * Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS.
 * Removed unused argument `param` from `tm_g_pp_vitals`.
