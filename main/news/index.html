@@ -34,14 +34,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -81,8 +73,8 @@
 <ul><li>Replaced <code>synthetic_cdisc_data</code> with refactored <code>synthetic_cdisc_dataset</code> function to speed up dataset loading in tests/examples.</li>
 <li>Added new GEE module <code>tm_a_gee</code>.</li>
 <li>Added interface for selecting an interaction term to <code>tm_t_ancova</code>.</li>
-<li>Updated encodings input checks to use <code><a href="https://rstudio.github.io/shinyvalidate/reference/InputValidator.html" class="external-link">shinyvalidate::InputValidator</a></code> instead of <code><a href="https://rdrr.io/pkg/shiny/man/validate.html" class="external-link">shiny::validate</a></code> for better UI experience.<br></li>
-<li>Added adjustment method choice to <code>tm_a_mmrm</code> to allow for Kenward-Roger adjustment of standard errors and p-values.</li>
+<li>Updated encodings input checks to use <code><a href="https://rstudio.github.io/shinyvalidate/reference/InputValidator.html" class="external-link">shinyvalidate::InputValidator</a></code> for better UI experience. Previously used <code><a href="https://rdrr.io/pkg/shiny/man/validate.html" class="external-link">shiny::validate</a></code>.</li>
+<li>Added option to <code>tm_a_mmrm</code> to allow for Kenward-Roger adjustments of standard errors and p-values.</li>
 <li>Added option to choose facet scale options in <code>tm_g_barchart_simple</code>.</li>
 <li>Added <code>label</code> parameter to <code>cs_to_select_spec</code>/<code>cs_to_des_select</code> and <code>cs_to_filter_spec</code>/<code>cs_to_des_filter</code> to allow the user to customize the label printed over the selection field.</li>
 <li>Updated <code>tm_t_coxreg</code> module after refactoring <code>summarize_coxreg</code> in <code>tern</code> to fix indentation.</li>
@@ -92,7 +84,7 @@
 <h4 id="miscellaneous-0-8-14-9038">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-14-9038"></a></h4>
 <ul><li>Package now uses <code>scda.2022</code> rather than <code>scda.2021</code> in SUGGESTS.</li>
 <li>Removed unused argument <code>param</code> from <code>tm_g_pp_vitals</code>.</li>
-<li>Removed optimizer choice from <code>tm_a_mmrm</code> since we can just always use the automatically determined optimizer.</li>
+<li>Removed optimizer choice from <code>tm_a_mmrm</code> since we can always use the automatically determined optimizer.</li>
 <li>Creation of internal data for <code>adsl</code>, <code>adae</code>, <code>adaette</code>, <code>adcm</code>, <code>adeg</code>, <code>adex</code>, <code>adlb</code>, <code>admh</code>, <code>adqs</code>, <code>adrs</code>, <code>adtte</code>, and <code>advs</code>. They are accessible via <code>tmc_ex_*</code> prefix.</li>
 <li>Updated all examples and tests to use datasets from the <code>teal.modules.clinical</code> package instead of <code>scda</code> datasets.</li>
 <li>Updated tests to use <code>testthat</code> 3rd edition and replaced all applicable tests with snapshot testing.</li>
@@ -127,7 +119,7 @@
 </ul></div>
 <div class="section level4">
 <h4 id="bug-fixes-0-8-14">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-14"></a></h4>
-<ul><li>Fixed bug in <code>tm_g_barchart_simple</code> which prevented graph from being shown.</li>
+<ul><li>Fixed bug in <code>tm_g_barchart_simple</code> which prevented display of graph.</li>
 <li>Fixed broken example for <code>tm_t_abnormality_by_worst_grade</code>.</li>
 <li>Fixed bug in <code>tm_a_mmrm</code> which prevented table headers from displaying.</li>
 <li>Fixed bug in <code>tm_g_forest_rsp</code> when deselecting endpoint.</li>
