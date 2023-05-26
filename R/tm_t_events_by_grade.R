@@ -550,7 +550,6 @@ template_events_col_by_grade <- function(dataname,
     )
   )
 
-  # for variant 8 in STREAM manual
   if (!is.null(hlt)) {
     layout_list <- add_expr(
       layout_list,

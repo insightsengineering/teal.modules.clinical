@@ -95,7 +95,7 @@ testthat::test_that("template_events_col_by_grade generates standard expressions
   testthat::expect_snapshot(res)
 })
 
-testthat::test_that("template_events_col_by_grade generates STREAM variant 8", {
+testthat::test_that("template_events_col_by_grade works with custom values", {
   result <- template_events_col_by_grade(
     dataname = "adae",
     parentname = "adsl",
