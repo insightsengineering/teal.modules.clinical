@@ -13,7 +13,6 @@ This package contains a set of standard `teal` modules to be used with CDISC dat
 These modules include, but are not limited to:
 
 <!-- markdownlint-disable MD007 MD030 -->
-
 -   Data visualizations:
     -   forest plots (`tm_g_forest_rsp`/`tm_g_forest_tte`)
     -   line plots (`tm_g_lineplot`)
