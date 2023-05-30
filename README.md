@@ -3,17 +3,17 @@
 <!-- start badges -->
 [![Check 🛠](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/check.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/main/unit-test-report/) [![Docs 📚](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/)
 
-![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.clinical?style=social) 
+![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.clinical?style=social)
 ![GitHub Repo stars](https://img.shields.io/github/stars/insightsengineering/teal.modules.clinical?style=social)
 
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/insightsengineering/teal.modules.clinical) 
-![GitHub contributors](https://img.shields.io/github/contributors/insightsengineering/teal.modules.clinical) 
-![GitHub last commit](https://img.shields.io/github/last-commit/insightsengineering/teal.modules.clinical) 
-![GitHub pull requests](https://img.shields.io/github/issues-pr/insightsengineering/teal.modules.clinical) 
-![GitHub repo size](https://img.shields.io/github/repo-size/insightsengineering/teal.modules.clinical) 
-![GitHub language count](https://img.shields.io/github/languages/count/insightsengineering/teal.modules.clinical) 
-[![Project Status: Active -- The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) 
-[![Current Version](https://img.shields.io/github/r-package/v/insightsengineering/teal.modules.clinical/main?color=purple&label=package%20version)](https://github.com/insightsengineering/teal.modules.clinical/tree/main) 
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/insightsengineering/teal.modules.clinical)
+![GitHub contributors](https://img.shields.io/github/contributors/insightsengineering/teal.modules.clinical)
+![GitHub last commit](https://img.shields.io/github/last-commit/insightsengineering/teal.modules.clinical)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/insightsengineering/teal.modules.clinical)
+![GitHub repo size](https://img.shields.io/github/repo-size/insightsengineering/teal.modules.clinical)
+![GitHub language count](https://img.shields.io/github/languages/count/insightsengineering/teal.modules.clinical)
+[![Project Status: Active -- The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Current Version](https://img.shields.io/github/r-package/v/insightsengineering/teal.modules.clinical/main?color=purple&label=package%20version)](https://github.com/insightsengineering/teal.modules.clinical/tree/main)
 [![Open Issues](https://img.shields.io/github/issues-raw/insightsengineering/teal.modules.clinical?color=red&label=open%20issues)](https://github.com/insightsengineering/teal.modules.clinical/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
 <!-- end badges -->
 
