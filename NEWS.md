@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.14.9038
+# teal.modules.clinical 0.8.15
 
 ### Breaking changes
 * Replaced `chunks` with simpler `qenv` class.
