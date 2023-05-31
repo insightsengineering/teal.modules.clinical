@@ -51,7 +51,7 @@ Please see [teal gallery](https://insightsengineering.github.io/teal.gallery/mai
 
 ## Installation
 
-You can install the latest development version of this package directly from GitHub by running the following:
+You can install the latest released version of this package directly from GitHub by running the following:
 
 ``` r
 if (!require("remotes")) install.packages("remotes")
