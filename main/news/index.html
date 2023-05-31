@@ -34,14 +34,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -87,6 +79,10 @@
 <li>Added <code>label</code> parameter to <code>cs_to_select_spec</code>/<code>cs_to_des_select</code> and <code>cs_to_filter_spec</code>/<code>cs_to_des_filter</code> to allow the user to customize the label printed over the selection field.</li>
 <li>Updated <code>tm_t_coxreg</code> module after refactoring <code>summarize_coxreg</code> in <code>tern</code> to fix indentation.</li>
 <li>Updated <code>tm_t_exposure</code> module to use new function <code>analyze_patients_exposure_in_cols</code> to fix table structure.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-0-8-14-9038">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-14-9038"></a></h4>
+<ul><li>Fixed bug in <code>tm_t_summary</code> and <code>tm_t_summary_by</code> preventing users from specifying the <code>numeric_stats</code> argument.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="miscellaneous-0-8-14-9038">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-14-9038"></a></h4>
