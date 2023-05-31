@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.14.9038
+# teal.modules.clinical 0.8.15
 
 ### Breaking changes
 * Replaced `chunks` with simpler `qenv` class.
@@ -8,7 +8,7 @@
 * Replaced `synthetic_cdisc_data` with refactored `synthetic_cdisc_dataset` function to speed up dataset loading in tests/examples.
 * Added new GEE module `tm_a_gee`.
 * Added interface for selecting an interaction term to `tm_t_ancova`.
-* Updated encodings input checks to use `shinyvalidate::InputValidator` for better UI experience. Previously used `shiny::validate`.
+* Updated encoding input checks to use `shinyvalidate::InputValidator` for better UI experience. Previously used `shiny::validate`.
 * Added option to `tm_a_mmrm` to allow for Kenward-Roger adjustments of standard errors and p-values.
 * Added option to choose facet scale options in `tm_g_barchart_simple`.
 * Added `label` parameter to `cs_to_select_spec`/`cs_to_des_select` and `cs_to_filter_spec`/`cs_to_des_filter` to allow the user to customize the label printed over the selection field.
@@ -16,18 +16,17 @@
 * Updated `tm_t_exposure` module to use new function `analyze_patients_exposure_in_cols` to fix table structure.
 
 ### Bug fixes
+* Fixed bug causing overlapping bars in `tm_g_barchart_simple`.
+* Fixed bug for figures in `svg` format.
 * Fixed bug in `tm_t_summary` and `tm_t_summary_by` preventing users from specifying the `numeric_stats` argument.
 
 ### Miscellaneous
-* Package now uses `scda.2022` rather than `scda.2021` in SUGGESTS.
+* Updated package Suggests to use `scda.2022` rather than `scda.2021`.
 * Removed unused argument `param` from `tm_g_pp_vitals`.
 * Removed optimizer choice from `tm_a_mmrm` since we can always use the automatically determined optimizer.
-* Creation of internal data for `adsl`, `adae`, `adaette`, `adcm`, `adeg`, `adex`, `adlb`, `admh`, `adqs`, `adrs`, `adtte`, and `advs`. 
-  They are accessible via `tmc_ex_*` prefix.
+* Created datasets to use in examples/tests for `adsl`, `adae`, `adaette`, `adcm`, `adeg`, `adex`, `adlb`, `admh`, `adqs`, `adrs`, `adtte`, and `advs`. These datasets are stored in the data folder and accessible via the `tmc_ex_*` prefix.
 * Updated all examples and tests to use datasets from the `teal.modules.clinical` package instead of `scda` datasets.
 * Updated tests to use `testthat` 3rd edition and replaced all applicable tests with snapshot testing.
-* Fixed bug in overlapping bars in `tm_g_barchart_simple`.
-* Fixed bug for figures in `svg` format.
 * Implemented the `lubridate` package for date variables in internal data.
 * Changed default value of `plot_width` in `tm_g_forest_rsp` to prevent clutter.
 
