@@ -18,6 +18,7 @@ template_summary(
     "range", "geom_mean"),
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
+  overall_col_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

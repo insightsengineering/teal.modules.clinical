@@ -174,6 +174,7 @@ NULL
 #'   object with all available choices and preselected option
 #'   for variable names that can be used as `visit` variable. Must be a factor
 #'   in `dataname`.
+#' @param overall_col_label (`string`)\cr string to display as overall column label (if column is enabled).
 #' @param include_interact (`logical`)\cr whether an interaction term should be included in the model.
 #' @param interact_var (`character`)\cr name of the variable that should have interactions
 #'   with arm. If the interaction is not needed, the default option is `NULL`.
