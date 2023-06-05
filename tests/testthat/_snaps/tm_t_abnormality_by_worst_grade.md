@@ -6,11 +6,11 @@
       $data
       {
           anl_labels <- formatters::var_labels(adlb, fill = FALSE)
-          anl <- adlb %>% dplyr::mutate(GRADE_DIR = factor(case_when(as.numeric(as.character(ATOXGR)) < 
+          anl <- adlb %>% dplyr::mutate(GRADE_DIR = factor(dplyr::case_when(as.numeric(as.character(ATOXGR)) < 
               0 ~ "LOW", ATOXGR == "0" ~ "ZERO", as.numeric(as.character(ATOXGR)) > 
               0 ~ "HIGH"), levels = c("LOW", "ZERO", "HIGH")), GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))) %>% 
               dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>% droplevels()
-          formatters::var_labels(anl) <- c(anl_labels, GRADE_DIR = "Direction of Abnormality", 
+          formatters::var_labels(anl) <- c(anl_labels, GRADE_DIR = "   Direction of Abnormality", 
               GRADE_ANL = "Highest Grade")
           anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
           arm_levels <- levels(anl[["ARMCD"]])
@@ -23,10 +23,9 @@
       
       $layout_prep
       {
-          map <- unique(anl[anl[["GRADE_DIR"]] != "ZERO", c("PARAMCD", 
-              "GRADE_DIR", "GRADE_ANL")]) %>% lapply(as.character) %>% 
-              as.data.frame() %>% dplyr::arrange("PARAMCD", desc(GRADE_DIR), 
-              GRADE_ANL)
+          map <- expand.grid(PARAM = levels(anl[["PARAMCD"]]), GRADE_DIR = c("LOW", 
+              "HIGH"), GRADE_ANL = as.character(1:4), stringsAsFactors = FALSE) %>% 
+              dplyr::arrange("PARAMCD", desc(GRADE_DIR), GRADE_ANL)
       }
       
       $layout
@@ -38,7 +37,7 @@
           label_pos = "topleft", split_fun = trim_levels_to_map(map = map), 
           split_label = obj_label(anl$GRADE_DIR)) %>% count_abnormal_by_worst_grade(var = "GRADE_ANL", 
           variables = list(id = "USUBJID", param = "PARAMCD", grade_dir = "GRADE_DIR"), 
-          .indent_mods = 4L) %>% rtables::append_topleft("    Highest Grade")
+          .indent_mods = 4L) %>% rtables::append_topleft("                                  Highest Grade")
       
       $table
       {
@@ -55,11 +54,11 @@
       $data
       {
           anl_labels <- formatters::var_labels(myadlb, fill = FALSE)
-          anl <- myadlb %>% dplyr::mutate(GRADE_DIR = factor(case_when(as.numeric(as.character(ATOXGR)) < 
+          anl <- myadlb %>% dplyr::mutate(GRADE_DIR = factor(dplyr::case_when(as.numeric(as.character(ATOXGR)) < 
               0 ~ "LOW", ATOXGR == "0" ~ "ZERO", as.numeric(as.character(ATOXGR)) > 
               0 ~ "HIGH"), levels = c("LOW", "ZERO", "HIGH")), GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))) %>% 
               dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>% droplevels()
-          formatters::var_labels(anl) <- c(anl_labels, GRADE_DIR = "Direction of Abnormality", 
+          formatters::var_labels(anl) <- c(anl_labels, GRADE_DIR = "   Direction of Abnormality", 
               GRADE_ANL = "Highest Grade")
           anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
           arm_levels <- levels(anl[["ARMCD"]])
@@ -72,10 +71,9 @@
       
       $layout_prep
       {
-          map <- unique(anl[anl[["GRADE_DIR"]] != "ZERO", c("myPARAMCD", 
-              "GRADE_DIR", "GRADE_ANL")]) %>% lapply(as.character) %>% 
-              as.data.frame() %>% dplyr::arrange("myPARAMCD", desc(GRADE_DIR), 
-              GRADE_ANL)
+          map <- expand.grid(PARAM = levels(anl[["myPARAMCD"]]), GRADE_DIR = c("LOW", 
+              "HIGH"), GRADE_ANL = as.character(1:4), stringsAsFactors = FALSE) %>% 
+              dplyr::arrange("myPARAMCD", desc(GRADE_DIR), GRADE_ANL)
       }
       
       $layout
@@ -87,7 +85,7 @@
           label_pos = "topleft", split_fun = trim_levels_to_map(map = map), 
           split_label = obj_label(anl$GRADE_DIR)) %>% count_abnormal_by_worst_grade(var = "GRADE_ANL", 
           variables = list(id = "USUBJID", param = "myPARAMCD", grade_dir = "GRADE_DIR"), 
-          .indent_mods = 4L) %>% rtables::append_topleft("    Highest Grade")
+          .indent_mods = 4L) %>% rtables::append_topleft("                                  Highest Grade")
       
       $table
       {
