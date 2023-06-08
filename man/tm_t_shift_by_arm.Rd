@@ -23,6 +23,7 @@ tm_t_shift_by_arm(
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   add_total = FALSE,
+  overall_label = "All Patients",
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
@@ -72,6 +73,8 @@ in character or factor variables in the data.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include row with total number of patients.}
+
+\item{overall_label}{(\code{string})\cr string to display as overall column/row label (if column/row is enabled).}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

@@ -24,7 +24,7 @@ template_summary <- function(dataname,
                              ),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
-                             overall_col_label = "All Patients",
+                             overall_label = "All Patients",
                              basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -36,7 +36,7 @@ template_summary <- function(dataname,
     assertthat::is.flag(na.rm),
     assertthat::is.string(na_level),
     assertthat::is.flag(drop_arm_levels),
-    assertthat::is.string(overall_col_label)
+    assertthat::is.string(overall_label)
   )
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
@@ -136,8 +136,8 @@ template_summary <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = rtables::add_overall_col(overall_col_label),
-        env = list(overall_col_label = overall_col_label)
+        expr = rtables::add_overall_col(overall_label),
+        env = list(overall_label = overall_label)
       )
     )
   }
@@ -272,7 +272,7 @@ tm_t_summary <- function(label,
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                          ),
                          denominator = c("N", "n", "omit"),
-                         overall_col_label = "All Patients",
+                         overall_label = "All Patients",
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
                          post_output = NULL,
@@ -282,7 +282,7 @@ tm_t_summary <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  checkmate::assert_string(overall_col_label)
+  checkmate::assert_string(overall_label)
   checkmate::assert_character(numeric_stats, min.len = 1)
   useNA <- match.arg(useNA) # nolint
   denominator <- match.arg(denominator)
@@ -313,7 +313,7 @@ tm_t_summary <- function(label,
         parentname = parentname,
         label = label,
         na_level = na_level,
-        overall_col_label = overall_col_label,
+        overall_label = overall_label,
         basic_table_args = basic_table_args
       )
     ),
@@ -417,7 +417,7 @@ srv_summary <- function(id,
                         summarize_vars,
                         add_total,
                         na_level,
-                        overall_col_label,
+                        overall_label,
                         drop_arm_levels,
                         label,
                         basic_table_args) {
@@ -548,7 +548,7 @@ srv_summary <- function(id,
         na_level = na_level,
         numeric_stats = input$numeric_stats,
         denominator = input$denominator,
-        overall_col_label = overall_col_label,
+        overall_label = overall_label,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )

@@ -22,6 +22,7 @@ template_summary_by(
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
   drop_zero_levels = TRUE,
+  overall_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

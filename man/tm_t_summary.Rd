@@ -17,6 +17,7 @@ tm_t_summary(
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
   denominator = c("N", "n", "omit"),
+  overall_label = "All Patients",
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
@@ -60,6 +61,8 @@ chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option
 \code{n}, the number of non-missing records in this row and column intersection
 is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
+
+\item{overall_label}{(\code{string})\cr string to display as overall column/row label (if column/row is enabled).}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},

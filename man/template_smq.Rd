@@ -16,6 +16,7 @@ template_smq(
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
   id_var = "USUBJID",
+  overall_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
