@@ -84,7 +84,8 @@ object with all available choices and preselected option
 for variable names that can be used as \code{visit} variable. Must be a factor
 in \code{dataname}.}
 
-\item{overall_label}{(\code{string})\cr string to display as overall column/row label (if column/row is enabled).}
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
 

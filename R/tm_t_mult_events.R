@@ -15,6 +15,7 @@ template_mult_events <- function(dataname,
                                  hlt,
                                  llt,
                                  add_total = TRUE,
+                                 total_label = "All Patients",
                                  event_type = "event",
                                  drop_arm_levels = TRUE,
                                  basic_table_args = teal.widgets::basic_table_args()) {
@@ -28,7 +29,8 @@ template_mult_events <- function(dataname,
     assertthat::is.string(llt),
     assertthat::is.flag(add_total),
     assertthat::is.string(event_type),
-    assertthat::is.flag(drop_arm_levels)
+    assertthat::is.flag(drop_arm_levels),
+    assertthat::is.string(total_label)
   )
 
   y <- list()
@@ -116,8 +118,9 @@ template_mult_events <- function(dataname,
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
-      quote(
-        rtables::add_overall_col(label = "All Patients")
+      substitute(
+        expr = rtables::add_overall_col(total_label),
+        env = list(total_label = total_label)
       )
     )
   }
@@ -322,6 +325,7 @@ tm_t_mult_events <- function(label, # nolint
                              hlt,
                              llt,
                              add_total = TRUE,
+                             total_label = "All Patients",
                              event_type = "event",
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
@@ -333,6 +337,7 @@ tm_t_mult_events <- function(label, # nolint
   checkmate::assert_string(parentname)
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -359,6 +364,7 @@ tm_t_mult_events <- function(label, # nolint
         parentname = parentname,
         event_type = event_type,
         label = label,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
     ),
@@ -446,6 +452,7 @@ srv_t_mult_events_byterm <- function(id,
                                      llt,
                                      drop_arm_levels,
                                      label,
+                                     total_label,
                                      basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -555,6 +562,7 @@ srv_t_mult_events_byterm <- function(id,
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = input_llt,
         add_total = input$add_total,
+        total_label = total_label,
         event_type = event_type,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args

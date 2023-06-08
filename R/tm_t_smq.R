@@ -23,7 +23,7 @@ template_smq <- function(dataname,
                          smq_varlabel = "Standardized MedDRA Query",
                          baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
                          id_var = "USUBJID",
-                         overall_label = "All Patients",
+                         total_label = "All Patients",
                          basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(parentname),
@@ -36,7 +36,7 @@ template_smq <- function(dataname,
     assertthat::is.string(na_level),
     assertthat::is.string(smq_varlabel),
     is.character(baskets),
-    assertthat::is.string(overall_label)
+    assertthat::is.string(total_label)
   )
 
   sort_criteria <- match.arg(sort_criteria)
@@ -179,8 +179,8 @@ template_smq <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = rtables::add_overall_col(overall_label),
-        env = list(overall_label = overall_label)
+        expr = rtables::add_overall_col(total_label),
+        env = list(total_label = total_label)
       )
     )
   }
@@ -376,7 +376,7 @@ tm_t_smq <- function(label,
                      ),
                      llt,
                      add_total = TRUE,
-                     overall_label = "All Patients",
+                     total_label = "All Patients",
                      sort_criteria = c("freq_desc", "alpha"),
                      drop_arm_levels = TRUE,
                      na_level = "<Missing>",
@@ -394,7 +394,7 @@ tm_t_smq <- function(label,
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_flag(add_total)
-  checkmate::assert_string(overall_label)
+  checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)
   sort_criteria <- match.arg(sort_criteria)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
@@ -423,7 +423,7 @@ tm_t_smq <- function(label,
         parentname = parentname,
         na_level = na_level,
         label = label,
-        overall_label = overall_label,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
     ),
@@ -530,7 +530,7 @@ srv_t_smq <- function(id,
                       baskets,
                       scopes,
                       na_level,
-                      overall_label,
+                      total_label,
                       label,
                       basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
@@ -627,7 +627,7 @@ srv_t_smq <- function(id,
         baskets = names(merged$anl_input_r()$columns_source$baskets),
         na_level = na_level,
         id_var = names(merged$anl_input_r()$columns_source$id_var),
-        overall_label = overall_label,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
 

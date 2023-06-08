@@ -31,7 +31,7 @@ template_summary_by <- function(parentname,
                                 denominator = c("N", "n", "omit"),
                                 drop_arm_levels = TRUE,
                                 drop_zero_levels = TRUE,
-                                overall_label = "All Patients",
+                                total_label = "All Patients",
                                 basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(parentname),
@@ -49,7 +49,7 @@ template_summary_by <- function(parentname,
     assertthat::is.flag(drop_arm_levels),
     is.character(numeric_stats),
     assertthat::is.flag(drop_zero_levels),
-    assertthat::is.string(overall_label)
+    assertthat::is.string(total_label)
   )
   denominator <- match.arg(denominator)
 
@@ -128,11 +128,11 @@ template_summary_by <- function(parentname,
       substitute(
         expr = rtables::split_cols_by(
           arm_var,
-          split_fun = add_overall_level(overall_label, first = FALSE)
+          split_fun = add_overall_level(total_label, first = FALSE)
         ),
         env = list(
           arm_var = arm_var,
-          overall_label = overall_label
+          total_label = total_label
         )
       )
     } else {
@@ -389,7 +389,7 @@ tm_t_summary_by <- function(label,
                             na_level = "<Missing>",
                             numeric_stats = c("n", "mean_sd", "median", "range"),
                             denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
-                            overall_label = "All Patients",
+                            total_label = "All Patients",
                             drop_arm_levels = TRUE,
                             drop_zero_levels = TRUE,
                             pre_output = NULL,
@@ -404,7 +404,7 @@ tm_t_summary_by <- function(label,
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(denominator, "choices_selected")
   checkmate::assert_flag(add_total)
-  checkmate::assert_string(overall_label)
+  checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_zero_levels)
   checkmate::assert_subset(denominator$choices, choices = c("n", "N", "omit"))
   checkmate::assert_flag(parallel_vars)
@@ -444,7 +444,7 @@ tm_t_summary_by <- function(label,
         parentname = parentname,
         label = label,
         na_level = na_level,
-        overall_label = overall_label,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
     ),
@@ -588,7 +588,7 @@ srv_summary_by <- function(id,
                            summarize_vars,
                            add_total,
                            na_level,
-                           overall_label,
+                           total_label,
                            drop_arm_levels,
                            drop_zero_levels,
                            label,
@@ -698,7 +698,7 @@ srv_summary_by <- function(id,
         numeric_stats = input$numeric_stats,
         denominator = input$denominator,
         add_total = input$add_total,
-        overall_label = overall_label,
+        total_label = total_label,
         parallel_vars = input$parallel_vars,
         row_groups = input$row_groups,
         drop_arm_levels = input$drop_arm_levels,

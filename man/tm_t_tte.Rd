@@ -27,7 +27,7 @@ tm_t_tte(
     "AVALU", fixed = TRUE),
   event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
   add_total = FALSE,
-  overall_label = "All Patients",
+  total_label = "All Patients",
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
@@ -91,7 +91,8 @@ information, optional.}
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
-\item{overall_label}{(\code{string})\cr string to display as overall column/row label (if column/row is enabled).}
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

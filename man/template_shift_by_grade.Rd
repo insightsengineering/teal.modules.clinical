@@ -19,7 +19,7 @@ template_shift_by_grade(
   add_total = FALSE,
   na_level = "<Missing>",
   code_missing_baseline = FALSE,
-  overall_label = "All Patients",
+  total_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
