@@ -32,7 +32,7 @@ template_summary <- function(dataname,
     is.character(arm_var),
     is.character(sum_vars),
     assertthat::is.flag(add_total),
-    assertthat::is.string(total_label)
+    assertthat::is.string(total_label),
     is.character(var_labels),
     assertthat::is.flag(na.rm),
     assertthat::is.string(na_level),
