@@ -26,11 +26,11 @@ arm_ref_comp_observer(
 
 \item{output}{(\code{character}) shiny input}
 
-\item{id_ref}{(\code{character}) id of reference Treatment input ui element}
+\item{id_ref}{(\code{character}) id of reference Treatment input UI element}
 
-\item{id_comp}{(\code{character}) id of comparison group input ui element}
+\item{id_comp}{(\code{character}) id of comparison group input UI element}
 
-\item{id_arm_var}{(\code{character}) id of Treatment variable input ui element}
+\item{id_arm_var}{(\code{character}) id of Treatment variable input UI element}
 
 \item{data}{(\code{reactive} or \code{data.frame}) dataset used to validate Treatment reference inputs and
 set \code{id_ref} input.}

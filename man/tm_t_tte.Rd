@@ -109,7 +109,7 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Time To Event Table Teal Module
 }
 \details{
-This module produces a response summary table that is similar to TTET01. The core functionality is based on
+This module produces a response summary table that is similar to \code{TTET01}. The core functionality is based on
 \code{\link[=coxph_pairwise]{coxph_pairwise()}}, \code{\link[=surv_timepoint]{surv_timepoint()}} and \code{\link[=surv_time]{surv_time()}} from package \code{tern}.\cr
 The following variables are used in the module:
 

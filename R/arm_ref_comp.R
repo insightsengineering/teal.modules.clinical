@@ -6,9 +6,9 @@
 #' @param session (`environment`) shiny session
 #' @param input (`character`) shiny input
 #' @param output (`character`) shiny input
-#' @param id_ref (`character`) id of reference Treatment input ui element
-#' @param id_comp (`character`) id of comparison group input ui element
-#' @param id_arm_var (`character`) id of Treatment variable input ui element
+#' @param id_ref (`character`) id of reference Treatment input UI element
+#' @param id_comp (`character`) id of comparison group input UI element
+#' @param id_arm_var (`character`) id of Treatment variable input UI element
 #' @param data (`reactive` or `data.frame`) dataset used to validate Treatment reference inputs and
 #'   set `id_ref` input.
 #' @param arm_ref_comp (`unknown`) Treatment reference and compare variables provided as a

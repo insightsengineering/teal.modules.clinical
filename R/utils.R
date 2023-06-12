@@ -462,11 +462,11 @@ split_choices <- function(x) {
   return(split_x)
 }
 
-#' Extracts html id for data_extract_ui
-#' @description The data_extract_ui is located under extended html id.
+#' Extracts html id for \code{data_extract_ui}
+#' @description The \code{data_extract_ui} is located under extended html id.
 #'   We could not use \code{ns("original id")} for reference, as it is extended with specific suffixes.
 #' @param varname (`character`)\cr
-#'   the original html id.  This should be retrieved with \code{ns("original id")} in the ui function
+#'   the original html id.  This should be retrieved with \code{ns("original id")} in the UI function
 #'   or \code{session$ns("original id")}/"original id" in the server function.
 #' @param dataname (`character`)\cr
 #'   \code{dataname} from data_extract input.
@@ -829,7 +829,7 @@ clean_description <- function(x) {
 #' @param paramcd [`teal.transform::data_extract_spec()`]
 #' variable value designating the studied parameter.
 #'
-#' @param input shinyapp input
+#' @param input shiny app input
 #'
 #' @param filter_idx filter section index (default 1)
 #' @keywords internal
