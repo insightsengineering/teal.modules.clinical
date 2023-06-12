@@ -144,7 +144,7 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = rtables::add_overall_col(total_label),
+        expr = rtables::add_overall_col(label = total_label),
         env = list(total_label = total_label)
       )
     )

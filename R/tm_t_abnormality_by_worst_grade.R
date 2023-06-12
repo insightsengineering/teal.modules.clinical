@@ -159,7 +159,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
         expr = expr_basic_table_args %>%
           rtables::split_cols_by(
             var = arm_var,
-            split_fun = add_overall_level(total_label, first = FALSE)
+            split_fun = add_overall_level(label = total_label, first = FALSE)
           ) %>%
           rtables::add_colcounts(),
         env = list(

@@ -194,7 +194,7 @@ template_events_summary <- function(anl_name,
     layout_parent_list <- add_expr(
       layout_parent_list,
       substitute(
-        expr = rtables::add_overall_col(total_label),
+        expr = rtables::add_overall_col(label = total_label),
         env = list(total_label = total_label)
       )
     )

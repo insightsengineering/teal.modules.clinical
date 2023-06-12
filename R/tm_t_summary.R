@@ -36,7 +36,7 @@ template_summary <- function(dataname,
     is.character(var_labels),
     assertthat::is.flag(na.rm),
     assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels),
+    assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
