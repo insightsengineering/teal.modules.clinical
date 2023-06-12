@@ -3,7 +3,7 @@
 ### Enhancements
 * Added more informative error message when grade mapping error occurs in `tm_t_abnormality_by_worst_grade`.
 * Fixed label indentation in `tm_t_abnormality_by_worst_grade`.
-* Added `total_label` argument to enable customizion of the "All Patients" column/row label in the following modules: `tm_a_mmrm`, `tm_t_abnormality`, `tm_t_abnormality_by_worst_grade`, `tm_t_binary_outcome`, `tm_t_events`, `tm_t_events_by_grade`, `tm_t_events_patyear`, `tm_t_events_summary`, `tm_t_exposure`, `tm_t_mult_events`, `tm_t_shift_by_arm`, `tm_t_shift_by_arm_worst`, `tm_t_shift_by_grade`, `tm_t_smq`, `tm_t_summary`, `tm_t_summary_by`, and `tm_t_tte`.
+* Added `total_label` argument to enable customization of the "All Patients" column/row label in the following modules: `tm_a_mmrm`, `tm_t_abnormality`, `tm_t_abnormality_by_worst_grade`, `tm_t_binary_outcome`, `tm_t_events`, `tm_t_events_by_grade`, `tm_t_events_patyear`, `tm_t_events_summary`, `tm_t_exposure`, `tm_t_mult_events`, `tm_t_shift_by_arm`, `tm_t_shift_by_arm_worst`, `tm_t_shift_by_grade`, `tm_t_smq`, `tm_t_summary`, `tm_t_summary_by`, and `tm_t_tte`.
 
 # teal.modules.clinical 0.8.15
 
