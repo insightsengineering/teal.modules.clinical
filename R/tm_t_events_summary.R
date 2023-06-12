@@ -51,14 +51,14 @@ template_events_summary <- function(anl_name,
     assertthat::is.string(dthfl_var),
     assertthat::is.string(dcsreas_var),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     is.character(flag_var_anl) || is.null(NULL),
     is.character(flag_var_aesi) || is.null(NULL),
     assertthat::is.string(aeseq_var),
     assertthat::is.string(llt),
     assertthat::is.flag(count_subj),
     assertthat::is.flag(count_pt),
-    assertthat::is.flag(count_events),
-    assertthat::is.string(total_label)
+    assertthat::is.flag(count_events)
   )
 
   y <- list()

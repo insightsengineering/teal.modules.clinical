@@ -23,9 +23,9 @@ template_shift_by_grade <- function(parentname,
                                     paramcd = "PARAMCD",
                                     drop_arm_levels = TRUE,
                                     add_total = FALSE,
+                                    total_label = "All Patients",
                                     na_level = "<Missing>",
                                     code_missing_baseline = FALSE,
-                                    total_label = "All Patients",
                                     basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -40,8 +40,8 @@ template_shift_by_grade <- function(parentname,
     assertthat::is.string(paramcd),
     assertthat::is.flag(drop_arm_levels),
     assertthat::is.flag(add_total),
-    assertthat::is.string(na_level),
-    assertthat::is.string(total_label)
+    assertthat::is.string(total_label),
+    assertthat::is.string(na_level)
   )
 
   worst_flag_var <- match.arg(worst_flag_var)
@@ -613,8 +613,8 @@ tm_t_shift_by_grade <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        na_level = na_level,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -744,9 +744,9 @@ srv_t_shift_by_grade <- function(id,
                                  base_toxgrade_var,
                                  id_var,
                                  add_total,
+                                 total_label,
                                  drop_arm_levels,
                                  na_level,
-                                 total_label,
                                  label,
                                  basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")

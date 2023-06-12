@@ -28,9 +28,9 @@ template_mult_events <- function(dataname,
     is.null(hlt) || is.character(hlt),
     assertthat::is.string(llt),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.string(event_type),
-    assertthat::is.flag(drop_arm_levels),
-    assertthat::is.string(total_label)
+    assertthat::is.flag(drop_arm_levels)
   )
 
   y <- list()

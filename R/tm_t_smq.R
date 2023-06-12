@@ -17,13 +17,13 @@ template_smq <- function(dataname,
                          arm_var,
                          llt = "AEDECOD",
                          add_total = TRUE,
+                         total_label = "All Patients",
                          sort_criteria = c("freq_desc", "alpha"),
                          drop_arm_levels = TRUE,
                          na_level = "<Missing>",
                          smq_varlabel = "Standardized MedDRA Query",
                          baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
                          id_var = "USUBJID",
-                         total_label = "All Patients",
                          basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(parentname),
@@ -32,11 +32,11 @@ template_smq <- function(dataname,
     assertthat::is.string(id_var),
     assertthat::is.string(llt),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.flag(drop_arm_levels),
     assertthat::is.string(na_level),
     assertthat::is.string(smq_varlabel),
-    is.character(baskets),
-    assertthat::is.string(total_label)
+    is.character(baskets)
   )
 
   sort_criteria <- match.arg(sort_criteria)
@@ -530,8 +530,8 @@ srv_t_smq <- function(id,
                       baskets,
                       scopes,
                       na_level,
-                      total_label,
                       label,
+                      total_label,
                       basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -622,12 +622,12 @@ srv_t_smq <- function(id,
         arm_var = names(merged$anl_input_r()$columns_source$arm_var),
         llt = names(merged$anl_input_r()$columns_source$llt),
         add_total = input$add_total,
+        total_label = total_label,
         sort_criteria = input$sort_criteria,
         drop_arm_levels = input$drop_arm_levels,
         baskets = names(merged$anl_input_r()$columns_source$baskets),
         na_level = na_level,
         id_var = names(merged$anl_input_r()$columns_source$id_var),
-        total_label = total_label,
         basic_table_args = basic_table_args
       )
 

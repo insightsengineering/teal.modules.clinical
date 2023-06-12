@@ -285,8 +285,8 @@ tm_t_shift_by_arm_by_worst <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        na_level = na_level,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),

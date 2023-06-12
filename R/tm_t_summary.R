@@ -16,6 +16,7 @@ template_summary <- function(dataname,
                              sum_vars,
                              show_labels = c("default", "visible", "hidden"),
                              add_total = TRUE,
+                             total_label = "All Patients",
                              var_labels = character(),
                              na.rm = FALSE, # nolint
                              na_level = "<Missing>",
@@ -24,7 +25,6 @@ template_summary <- function(dataname,
                              ),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
-                             total_label = "All Patients",
                              basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -32,11 +32,11 @@ template_summary <- function(dataname,
     is.character(arm_var),
     is.character(sum_vars),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label)
     is.character(var_labels),
     assertthat::is.flag(na.rm),
     assertthat::is.string(na_level),
     assertthat::is.flag(drop_arm_levels),
-    assertthat::is.string(total_label)
   )
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
@@ -266,13 +266,13 @@ tm_t_summary <- function(label,
                          arm_var,
                          summarize_vars,
                          add_total = TRUE,
+                         total_label = "All Patients",
                          useNA = c("ifany", "no"), # nolint
                          na_level = "<Missing>",
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                          ),
                          denominator = c("N", "n", "omit"),
-                         total_label = "All Patients",
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
                          post_output = NULL,
@@ -282,7 +282,6 @@ tm_t_summary <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  checkmate::assert_string(total_label)
   checkmate::assert_character(numeric_stats, min.len = 1)
   useNA <- match.arg(useNA) # nolint
   denominator <- match.arg(denominator)
@@ -291,6 +290,7 @@ tm_t_summary <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   checkmate::assertFlag(add_total)
+  checkmate::assert_string(total_label)
 
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
@@ -312,8 +312,8 @@ tm_t_summary <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        na_level = na_level,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -416,8 +416,8 @@ srv_summary <- function(id,
                         arm_var,
                         summarize_vars,
                         add_total,
-                        na_level,
                         total_label,
+                        na_level,
                         drop_arm_levels,
                         label,
                         basic_table_args) {
@@ -543,12 +543,12 @@ srv_summary <- function(id,
         sum_vars = summarize_vars,
         show_labels = "visible",
         add_total = input$add_total,
+        total_label = total_label,
         var_labels = var_labels,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
         na_level = na_level,
         numeric_stats = input$numeric_stats,
         denominator = input$denominator,
-        total_label = total_label,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )

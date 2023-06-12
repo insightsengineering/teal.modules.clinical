@@ -36,11 +36,11 @@ template_exposure <- function(parentname,
     assertthat::is.string(paramcd),
     assertthat::is.string(id_var),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.string(na_level),
     assertthat::is.string(aval_var),
     assertthat::is.string(avalu_var) || length(avalu_var) == 0,
-    assertthat::is.flag(drop_levels),
-    assertthat::is.string(total_label)
+    assertthat::is.flag(drop_levels)
   )
 
   y <- list()
@@ -340,8 +340,8 @@ tm_t_exposure <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        na_level = na_level,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args,
         paramcd_label = paramcd_label
       )
@@ -450,8 +450,8 @@ srv_t_exposure <- function(id,
                            aval_var,
                            avalu_var,
                            na_level,
-                           total_label,
                            label,
+                           total_label,
                            basic_table_args = basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
