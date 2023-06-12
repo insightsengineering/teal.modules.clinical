@@ -102,7 +102,7 @@ Teal Module: Abnormality Summary Table
 }
 \note{
 Patients with the same abnormality at baseline as on the treatment visit can be
-excluded in accordance with GDSR specifications by using \code{exclude_base_abn}.
+excluded in accordance with \code{GDSR} specifications by using \code{exclude_base_abn}.
 }
 \examples{
 adsl <- tmc_ex_adsl

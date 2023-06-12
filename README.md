@@ -17,7 +17,7 @@
 [![Open Issues](https://img.shields.io/github/issues-raw/insightsengineering/teal.modules.clinical?color=red&label=open%20issues)](https://github.com/insightsengineering/teal.modules.clinical/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
 <!-- end badges -->
 
-This package contains a set of standard `teal` modules to be used with CDISC data in order to generate many of the standard outputs used in clinical trials.
+This package contains a set of standard `teal` modules to be used with `CDISC` data in order to generate many of the standard outputs used in clinical trials.
 
 These modules include, but are not limited to:
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_km.R
 \name{tm_g_km}
 \alias{tm_g_km}
-\title{Teal Module: Kaplan-Meier}
+\title{Teal Module: \code{Kaplan-Meier}}
 \usage{
 tm_g_km(
   label,
@@ -98,8 +98,8 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
-This teal module produces a grid style Kaplan-Meier plot for data with
-ADaM structure.
+This teal module produces a grid style \code{Kaplan-Meier} plot for data with
+\code{ADaM} structure.
 }
 \examples{
 library(nestcolor)

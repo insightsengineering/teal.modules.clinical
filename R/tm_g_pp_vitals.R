@@ -10,7 +10,7 @@
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @note
-#' The vitals plot supports horizontal lines for 6 PARAMCD levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
+#' The vitals plot supports horizontal lines for 6 `PARAMCD` levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
 #' and PULSE`)\cr when these levels are present in the analyzed dataset and the spelling matches.
 #' @keywords internal
 #'

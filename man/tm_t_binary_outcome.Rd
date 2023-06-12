@@ -72,7 +72,7 @@ and contain arrays, each name corresponding to a single value of \code{paramcd}.
 may contain default response values or named arrays \code{rsp} of default selected response
 values and \code{levels} of default level choices.}
 
-\item{rsp_table}{(\code{logical})\cr should the initial set-up of the module match RSPT01. (default FALSE)}
+\item{rsp_table}{(\code{logical})\cr should the initial set-up of the module match \code{RSPT01}. (default FALSE)}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}

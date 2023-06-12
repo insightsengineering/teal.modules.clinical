@@ -4,7 +4,7 @@
 \alias{template_fit_mmrm}
 \alias{template_mmrm_tables}
 \alias{template_mmrm_plots}
-\title{Template: Mixed Model Repeated Measurements (MMRM) analysis}
+\title{Template: Mixed Model Repeated Measurements (\code{MMRM}) analysis}
 \usage{
 template_fit_mmrm(
   parentname,
@@ -89,7 +89,7 @@ value for the confidence level within the range of (0, 1).}
 \item{parallel}{flag that controls whether optimizer search can use available free cores on the
 machine (not default).}
 
-\item{fit_name}{name of fitted MMRM object}
+\item{fit_name}{name of fitted \code{MMRM} object}
 
 \item{paramcd}{(\code{character})\cr
 variable value designating the studied parameter.}
@@ -119,7 +119,7 @@ The argument is merged with option \code{teal.ggplot2_args} and with default mod
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
-Template: Mixed Model Repeated Measurements (MMRM) analysis
+Template: Mixed Model Repeated Measurements (\code{MMRM}) analysis
 }
 \section{Functions}{
 \itemize{

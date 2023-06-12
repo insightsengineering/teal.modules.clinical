@@ -248,7 +248,7 @@
   * The timeline plot now supports more edge cases.
   * In vitals tab, removed unused label text legend, updated plot to display stable colors per levels, cleared x-axis limit and fixed legend to update when filtering. Also added a note to clarify the supported horizontal lines cases.
   * Updated adverse events tab to show a warning message instead of an empty plot when data is empty.
-  * Fixed PARAMCD selected levels for current patient.
+  * Fixed `PARAMCD` selected levels for current patient.
 * For `tm_t_tte`:
   * Updated the pre-processing code inside `template_tte` so that a dataset without any events still produces a table.
   * Updated code to use correct denominator for duration of response endpoints.
@@ -272,7 +272,7 @@
 ### Bug fixes
 * Added a validation for the case when filtering out all rows in the therapy tab of `tm_g_patient_profile`.
 * Updated the internals of the modules to read data from the correct field of the `filter_spec` objects.
-* Fixed the reactivity between the filter panel and the PARAMCD variable levels input in `tm_g_patient_profile` vitals tab so that the plot does not get reset when filtering.
+* Fixed the reactivity between the filter panel and the `PARAMCD` variable levels input in `tm_g_patient_profile` vitals tab so that the plot does not get reset when filtering.
 * Updated the vitals plot tab in `tm_g_patient_profile` to drop NA entries in the plot.
 * Updated `tm_t_coxreg` to take at values into account.
 * Added a check in `tm_t_coxreg` to have interactions in univariate models but not in multivariate models.
@@ -335,7 +335,7 @@ display a summary for individual response categories.
 * Updated `tm_t_tte` to optionally compare between arms, removed `conf_level` argument.
 * Updated `tm_g_km` to optionally compare between arms.
 * Extend `tm_g_km` to optionally scale X axis range in case of more than one plot.
-* New `tm_a_mmrm` for MMRM analysis.
+* New `tm_a_mmrm` for `MMRM` analysis.
 * Deprecated `tm_t_mmrm` (superseded by `tm_a_mmrm`).
 
 # teal.modules.clinical 0.8.3

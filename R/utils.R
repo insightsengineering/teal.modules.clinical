@@ -1,6 +1,6 @@
 #' Concatenate expressions via a binary operator
 #'
-#' e.g. combine with `+` for ggplot without introducing parentheses due to associativity
+#' e.g. combine with `+` for `ggplot` without introducing parentheses due to associativity
 #'
 #' @param args arguments to concatenate with operator
 #' @param bin_op binary operator to concatenate it with
@@ -822,9 +822,9 @@ clean_description <- function(x) {
 }
 
 
-#' Utility function for extracting paramcd for forest plots
+#' Utility function for extracting `paramcd` for forest plots
 #'
-#' Utility function for extracting paramcd for forest plots
+#' Utility function for extracting `paramcd` for forest plots
 #'
 #' @param paramcd [`teal.transform::data_extract_spec()`]
 #' variable value designating the studied parameter.
@@ -846,11 +846,11 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
 }
 
 
-#' Extract the associated param value for paramcd
+#' Extract the associated parameter value for `paramcd`
 #'
-#' Utility function for extracting the param value that is associated
-#' with the paramcd value label. If there is no param value for
-#' the paramcd label, the paramcd value is returned. This is used
+#' Utility function for extracting the parameter value that is associated
+#' with the `paramcd` value label. If there is no parameter value for
+#' the `paramcd` label, the `paramcd` value is returned. This is used
 #' for generating the title.
 #'
 #' @param anl Analysis dataset

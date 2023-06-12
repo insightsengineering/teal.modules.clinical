@@ -365,7 +365,7 @@ template_binary_outcome <- function(dataname,
 #'   may contain default response values or named arrays `rsp` of default selected response
 #'   values and `levels` of default level choices.
 #'
-#' @param rsp_table (`logical`)\cr should the initial set-up of the module match RSPT01. (default FALSE)
+#' @param rsp_table (`logical`)\cr should the initial set-up of the module match `RSPT01`. (default FALSE)
 #'
 #' @details Additional standard UI inputs include `responders`,
 #'   `ref_arm`, `comp_arm` and `combine_comp_arms` (default FALSE)

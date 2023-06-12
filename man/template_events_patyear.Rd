@@ -29,7 +29,7 @@ variable names that can be used as \code{arm_var}.}
 
 \item{events_var}{(\code{integer})\cr number of observed events.}
 
-\item{label_paramcd}{(\code{string})\cr title of table based on paramcd}
+\item{label_paramcd}{(\code{string})\cr title of table based on \code{paramcd}}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
