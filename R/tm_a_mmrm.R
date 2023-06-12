@@ -167,6 +167,7 @@ template_mmrm_tables <- function(parentname,
                                  paramcd,
                                  show_relative = c("increase", "reduction", "none"),
                                  table_type = "t_mmrm_cov",
+                                 total_label = "All Patients",
                                  basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -239,11 +240,12 @@ template_mmrm_tables <- function(parentname,
       layout_list,
       substitute(
         expr =
-          rtables::add_overall_col("All Patients") %>%
+          rtables::add_overall_col(total_label) %>%
             rtables::split_rows_by(visit_var) %>%
             tern.mmrm::summarize_lsmeans(arms = FALSE) %>%
             rtables::append_topleft(paste0("  ", paramcd)),
         env = list(
+          total_label = total_label,
           visit_var = visit_var,
           paramcd = paramcd
         )
@@ -518,6 +520,7 @@ tm_a_mmrm <- function(label,
                       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
+                      total_label = "All Patients",
                       pre_output = NULL,
                       post_output = NULL,
                       basic_table_args = teal.widgets::basic_table_args(),
@@ -525,6 +528,7 @@ tm_a_mmrm <- function(label,
   logger::log_info("Initializing tm_a_mmrm")
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
+  checkmate::assert_string(total_label)
   checkmate::assert_string(dataname)
   checkmate::assert_class(method, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
@@ -567,6 +571,7 @@ tm_a_mmrm <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
+        total_label = total_label,
         plot_height = plot_height,
         plot_width = plot_width,
         basic_table_args = basic_table_args,
@@ -810,6 +815,7 @@ srv_mmrm <- function(id,
                      aval_var,
                      arm_ref_comp,
                      label,
+                     total_label,
                      plot_height,
                      plot_width,
                      basic_table_args,
@@ -1292,6 +1298,7 @@ srv_mmrm <- function(id,
         paramcd = paramcd,
         show_relative = input$t_mmrm_lsmeans_show_relative,
         table_type = output_function,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
 

@@ -22,6 +22,7 @@ template_events <- function(dataname,
                             label_hlt = NULL,
                             label_llt = NULL,
                             add_total = TRUE,
+                            total_label = "All Patients",
                             event_type = "event",
                             sort_criteria = c("freq_desc", "alpha"),
                             prune_freq = 0,
@@ -38,6 +39,7 @@ template_events <- function(dataname,
     assertthat::is.string(label_llt) || is.null(label_llt),
     is.character(c(llt, hlt)),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.string(event_type),
     assertthat::is.flag(drop_arm_levels)
   )
@@ -177,8 +179,9 @@ template_events <- function(dataname,
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
-      quote(
-        rtables::add_overall_col(label = "All Patients")
+      substitute(
+        expr = rtables::add_overall_col(total_label),
+        env = list(total_label = total_label)
       )
     )
   }
@@ -486,6 +489,7 @@ tm_t_events <- function(label,
                         hlt,
                         llt,
                         add_total = TRUE,
+                        total_label = "All Patients",
                         event_type = "event",
                         sort_criteria = c("freq_desc", "alpha"),
                         prune_freq = 0,
@@ -500,6 +504,7 @@ tm_t_events <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
   checkmate::assert_flag(drop_arm_levels)
@@ -528,6 +533,7 @@ tm_t_events <- function(label,
         parentname = parentname,
         event_type = event_type,
         label = label,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
     ),
@@ -630,6 +636,7 @@ srv_t_events_byterm <- function(id,
                                 llt,
                                 drop_arm_levels,
                                 label,
+                                total_label,
                                 basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -748,6 +755,7 @@ srv_t_events_byterm <- function(id,
         label_hlt = label_hlt,
         label_llt = label_llt,
         add_total = input$add_total,
+        total_label = total_label,
         event_type = event_type,
         sort_criteria = input$sort_criteria,
         prune_freq = input$prune_freq / 100,

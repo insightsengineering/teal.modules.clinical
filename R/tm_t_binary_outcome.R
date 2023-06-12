@@ -66,6 +66,7 @@ template_binary_outcome <- function(dataname,
                                       )
                                     ),
                                     add_total = FALSE,
+                                    total_label = "All Patients",
                                     basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -75,7 +76,8 @@ template_binary_outcome <- function(dataname,
     assertthat::is.flag(compare_arm),
     assertthat::is.flag(combine_comp_arms),
     assertthat::is.flag(show_rsp_cat),
-    assertthat::is.flag(add_total)
+    assertthat::is.flag(add_total),
+    assertthat::is.string(total_label)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -175,10 +177,11 @@ template_binary_outcome <- function(dataname,
       substitute(
         rtables::split_cols_by(
           var = arm_var,
-          split_fun = add_overall_level("All Patients", first = FALSE)
+          split_fun = add_overall_level(total_label, first = FALSE)
         ),
         env = list(
-          arm_var = arm_var
+          arm_var = arm_var,
+          total_label = total_label
         )
       )
     )
@@ -474,6 +477,7 @@ tm_t_binary_outcome <- function(label,
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 rsp_table = FALSE,
                                 add_total = FALSE,
+                                total_label = "All Patients",
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args()) {
@@ -483,6 +487,7 @@ tm_t_binary_outcome <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert(
     checkmate::check_class(default_responses, classes = "list"),
     checkmate::check_class(default_responses, classes = "character"),
@@ -514,6 +519,7 @@ tm_t_binary_outcome <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
+        total_label = total_label,
         default_responses = default_responses,
         rsp_table = rsp_table,
         basic_table_args = basic_table_args
@@ -724,6 +730,7 @@ srv_t_binary_outcome <- function(id,
                                  arm_ref_comp,
                                  strata_var,
                                  add_total,
+                                 total_label,
                                  label,
                                  default_responses,
                                  rsp_table,
@@ -968,6 +975,7 @@ srv_t_binary_outcome <- function(id,
           )
         ),
         add_total = input$add_total,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
 
