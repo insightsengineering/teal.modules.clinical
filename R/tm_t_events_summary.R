@@ -40,6 +40,7 @@ template_events_summary <- function(anl_name,
                                     aeseq_var = "AESEQ",
                                     llt = "AEDECOD",
                                     add_total = TRUE,
+                                    total_label = "All Patients",
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
@@ -56,7 +57,8 @@ template_events_summary <- function(anl_name,
     assertthat::is.string(llt),
     assertthat::is.flag(count_subj),
     assertthat::is.flag(count_pt),
-    assertthat::is.flag(count_events)
+    assertthat::is.flag(count_events),
+    assertthat::is.string(total_label)
   )
 
   y <- list()
@@ -191,7 +193,10 @@ template_events_summary <- function(anl_name,
   if (add_total) {
     layout_parent_list <- add_expr(
       layout_parent_list,
-      quote(rtables::add_overall_col(label = "All Patients"))
+      substitute(
+        expr = rtables::add_overall_col(total_label),
+        env = list(total_label = total_label)
+      )
     )
   }
   layout_parent_list <- add_expr(
@@ -588,6 +593,7 @@ tm_t_events_summary <- function(label,
                                   fixed = TRUE
                                 ),
                                 add_total = TRUE,
+                                total_label = "All Patients",
                                 count_subj = TRUE,
                                 count_pt = TRUE,
                                 count_events = TRUE,
@@ -599,6 +605,7 @@ tm_t_events_summary <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_flag(count_subj)
   checkmate::assert_flag(count_pt)
   checkmate::assert_flag(count_events)
@@ -637,6 +644,7 @@ tm_t_events_summary <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
     ),
@@ -772,6 +780,7 @@ srv_t_events_summary <- function(id,
                                  aeseq_var,
                                  llt,
                                  label,
+                                 total_label,
                                  basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -904,6 +913,7 @@ srv_t_events_summary <- function(id,
         aeseq_var = as.vector(merged$anl_input_r()$columns_source$aeseq_var),
         llt = as.vector(merged$anl_input_r()$columns_source$llt),
         add_total = input$add_total,
+        total_label = total_label,
         count_subj = input$count_subj,
         count_pt = input$count_pt,
         count_events = input$count_events
