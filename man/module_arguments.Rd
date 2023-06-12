@@ -90,7 +90,7 @@ in \code{dataname}.}
 with arm. If the interaction is not needed, the default option is \code{NULL}.}
 
 \item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used
-to select the specific ANCOVA results when interact_var is discrete. If the interaction is not
+to select the specific \code{ANCOVA} results when interact_var is discrete. If the interaction is not
 needed, the default option is \code{FALSE}.}
 
 \item{by_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr

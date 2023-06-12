@@ -32,9 +32,9 @@ tm_g_pp_patient_timeline(
 \item{label}{(\code{character})\cr
 menu item label of the module in the teal app.}
 
-\item{dataname_adcm}{(\code{character})\cr name of ADCM dataset or equivalent.}
+\item{dataname_adcm}{(\code{character})\cr name of \code{ADCM} dataset or equivalent.}
 
-\item{dataname_adae}{(\code{character})\cr name of ADAE dataset or equivalent.}
+\item{dataname_adae}{(\code{character})\cr name of \code{ADAE} dataset or equivalent.}
 
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
@@ -42,34 +42,34 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AETERM} column of the ADAE dataset.}
+\code{AETERM} column of the \code{ADAE} dataset.}
 
 \item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{cmdecod} column of the ADCM dataset.}
+\code{cmdecod} column of the \code{ADCM} dataset.}
 
 \item{aetime_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ASTDTM} column of the AE start of the ADAE dataset.}
+\code{ASTDTM} column of the \code{AE} start of the \code{ADAE} dataset.}
 
 \item{aetime_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AENDTM} column of the AE end of the ADAE dataset.}
+\code{AENDTM} column of the \code{AE} end of the \code{ADAE} dataset.}
 
 \item{dstime_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMASTDTM} column of treatment start of the ADCM dataset.}
+\code{CMASTDTM} column of treatment start of the \code{ADCM} dataset.}
 
 \item{dstime_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMAENDTM} column of treatment end of the ADCM dataset.}
+\code{CMAENDTM} column of treatment end of the \code{ADCM} dataset.}
 
 \item{aerelday_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ASTDY} column of the ADAE dataset.}
+\code{ASTDY} column of the \code{ADAE} dataset.}
 
 \item{aerelday_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr \code{AENDY}
-column of the ADAE dataset.}
+column of the \code{ADAE} dataset.}
 
 \item{dsrelday_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr \code{ASTDY}
-column of the ADCM dataset.}
+column of the \code{ADCM} dataset.}
 
 \item{dsrelday_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr \code{AENDY}
-column of the ADCM dataset.}
+column of the \code{ADCM} dataset.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
@@ -99,7 +99,7 @@ The argument is merged with option \code{teal.ggplot2_args} and with default mod
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
-This teal module produces a patient profile timeline plot using ADaM datasets.
+This teal module produces a patient profile timeline plot using \code{ADaM} datasets.
 }
 \examples{
 library(nestcolor)

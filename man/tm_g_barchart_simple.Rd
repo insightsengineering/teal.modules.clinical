@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_barchart_simple.R
 \name{tm_g_barchart_simple}
 \alias{tm_g_barchart_simple}
-\title{Simple barchart plot that shows counts per category.}
+\title{Simple bar chart plot that shows counts per category.}
 \usage{
 tm_g_barchart_simple(
   x = NULL,

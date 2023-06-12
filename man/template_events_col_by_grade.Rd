@@ -39,7 +39,7 @@ variable names that can be used as \code{arm_var}.}
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
-\item{id}{(\code{character}) \cr unique identifier of patients in datasets, default to "USUBJID".}
+\item{id}{(\code{character}) \cr unique identifier of patients in datasets, default to \code{"USUBJID"}.}
 
 \item{hlt}{(\code{character})\cr
 name of the variable with high level term for events.}
@@ -53,7 +53,7 @@ module.}
 \item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
 module.}
 
-\item{grade}{(\code{character}) \cr grade term which grading_groups is based on, default to "AETOXGR".}
+\item{grade}{(\code{character}) \cr grade term which grading_groups is based on, default to \code{"AETOXGR"}.}
 
 \item{label_grade}{(\code{string})\cr label of the \code{grade} variable from \code{dataname}. The label will be extracted from the
 module.}

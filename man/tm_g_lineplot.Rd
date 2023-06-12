@@ -114,7 +114,7 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 }
 \description{
 This teal module produces a grid style Line Plot for data with
-ADaM structure.
+\code{ADaM} structure.
 }
 \examples{
 library(nestcolor)

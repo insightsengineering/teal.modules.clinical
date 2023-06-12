@@ -196,7 +196,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #' Teal Module: Line Plot
 #'
 #' This teal module produces a grid style Line Plot for data with
-#' ADaM structure.
+#' `ADaM` structure.
 #'
 #' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments

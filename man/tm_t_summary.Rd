@@ -64,7 +64,7 @@ is used as the denominator. If \code{omit} is chosen, then the percentage is omi
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parentname} dataset.
-If \code{dataname} dataset and \code{parentname} dataset are the same (i.e. ADSL), then \code{drop_arm_levels} will always be
+If \code{dataname} dataset and \code{parentname} dataset are the same (i.e. \code{ADSL}), then \code{drop_arm_levels} will always be
 TRUE regardless of the user choice when \code{tm_t_summary} is called.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr

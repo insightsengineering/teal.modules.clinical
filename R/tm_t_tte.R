@@ -3,11 +3,11 @@
 #' Controls the arguments for Cox regressions and Survival analysis results.
 #'
 #' @param coxph (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_coxph].
+#'   parameters for comparison, specified using [tern::control_coxph()].
 #' @param surv_time (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_surv_time].
+#'   parameters for comparison, specified using [tern::control_surv_time()].
 #' @param surv_timepoint (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_surv_timepoint].
+#'   parameters for comparison, specified using [tern::control_surv_timepoint()].
 #' @keywords internal
 #'
 control_tte <- function(surv_time = list(

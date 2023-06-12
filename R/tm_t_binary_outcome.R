@@ -360,7 +360,7 @@ template_binary_outcome <- function(dataname,
 #' @inheritParams module_arguments
 #' @param default_responses (`list` or `character`) \cr defines
 #'   the default codes for the response variable in the module per value of `paramcd`.
-#'   A passed vector is broadcasted for all `paramcd` values. A passed `list` must be named
+#'   A passed vector is transmitted for all `paramcd` values. A passed `list` must be named
 #'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
 #'   may contain default response values or named arrays `rsp` of default selected response
 #'   values and `levels` of default level choices.

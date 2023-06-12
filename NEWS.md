@@ -215,7 +215,7 @@
 * Added the option to choose the number of decimal places for rounding in `tm_t_pp_laboratory`.
 * Added a check box to `tm_g_pp_patient_timeline` hiding/showing relative study days on the x-axis.
 * Added a title with patient's id to plots in patient profile modules.
-* Made the grey error message in `tm_g_forest_tte` more informative when deselecting the `Endpoint` column in the left-hand encoding panel.
+* Made the gray error message in `tm_g_forest_tte` more informative when deselecting the `Endpoint` column in the left-hand encoding panel.
 * Added the twenty-fifth and seventy-fifth quantile to summary statistics in `tm_t_summary`.
 * Added an interaction p-value column for `tm_t_coxreg`.
 * Added a validation for `tm_t_ancova` when selected covariate variables contain one level.

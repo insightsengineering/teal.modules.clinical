@@ -324,7 +324,7 @@ template_coxreg_m <- function(dataname,
 #' }
 #'
 #' The arm variables, stratification and covariate variables are taken from the
-#' ADSL data.
+#' `ADSL` data.
 #'
 #' @section Note:
 #' - The likelihood ratio test is not supported for model including strata,

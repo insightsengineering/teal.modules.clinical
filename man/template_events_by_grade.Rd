@@ -8,7 +8,7 @@ template_events_by_grade(
   dataname,
   parentname,
   arm_var,
-  id = "USUBJID",
+  id = "",
   hlt,
   llt,
   label_hlt = NULL,
@@ -32,7 +32,7 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
 
-\item{id}{(\code{character}) \cr unique identifier of patients in datasets, default to "USUBJID".}
+\item{id}{(\code{character}) \cr unique identifier of patients in datasets, default to \code{"USUBJID"}.}
 
 \item{hlt}{(\code{character})\cr
 name of the variable with high level term for events.}

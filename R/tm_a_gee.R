@@ -1,7 +1,7 @@
 #' Template for Generalized Estimating Equations (GEE) analysis module
 #'
 #' @inheritParams template_arguments
-#' @param output_table (`character`)\cr type of output table ("t_gee_cov", "t_gee_coef", "t_gee_lsmeans")
+#' @param output_table (`character`)\cr type of output table (`"t_gee_cov", "t_gee_coef", "t_gee_lsmeans"`)
 #' @param data_model_fit (`character`)\cr dataset used to fit the model by `tern.gee::fit_gee()`
 #' @param dataname_lsmeans (`character`)\cr dataset used for `alt_counts_df` argument of `rtables::build_table()`
 #' @param split_covariates (`character`)\cr vector of names of variables to use as covariates in `tern.gee::vars_gee()`

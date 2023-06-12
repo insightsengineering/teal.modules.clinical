@@ -37,25 +37,25 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AETERM} column of the ADAE dataset.}
+\code{AETERM} column of the \code{ADAE} dataset.}
 
 \item{tox_grade}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AETOXGR} column of the ADAE dataset.}
+\code{AETOXGR} column of the \code{ADAE} dataset.}
 
 \item{causality}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AEREL} column of the ADAE dataset.}
+\code{AEREL} column of the \code{ADAE} dataset.}
 
 \item{outcome}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AEOUT} column of the ADAE dataset.}
+\code{AEOUT} column of the \code{ADAE} dataset.}
 
 \item{action}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AEACN} column of the ADAE dataset.}
+\code{AEACN} column of the \code{ADAE} dataset.}
 
 \item{time}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ASTDY} column of the ADAE dataset.}
+\code{ASTDY} column of the \code{ADAE} dataset.}
 
 \item{decod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AEDECOD} column of the ADAE dataset.}
+\code{AEDECOD} column of the \code{ADAE} dataset.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
@@ -85,7 +85,7 @@ The argument is merged with option \code{teal.ggplot2_args} and with default mod
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
-This teal module produces a patient profile adverse events table and plot using ADaM datasets.
+This teal module produces a patient profile adverse events table and plot using \code{ADaM} datasets.
 }
 \examples{
 library(nestcolor)

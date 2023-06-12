@@ -36,7 +36,7 @@ the table row for "Total number of deaths".}
 
 \item{dcsreas_var}{(\code{character})\cr
 variable for study discontinuation reason from \code{parentname}. Records with \code{"ADVERSE EVENTS"}
-are summarized in the table row for "Total number of patients withdrawn from study due to an AE".}
+are summarized in the table row for \code{"Total number of patients withdrawn from study due to an AE"}.}
 
 \item{flag_var_anl}{(\code{character})\cr
 flag variable from \code{dataset} used to count adverse event sub-groups (e.g. Serious

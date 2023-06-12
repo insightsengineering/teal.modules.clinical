@@ -507,7 +507,7 @@ split_interactions <- function(x, by = "\\*|:") {
 #' The function generate the standard expression for pre-processing of dataset
 #' in teal module applications. This is especially of interest when the same
 #' preprocessing steps needs to be applied similarly to several datasets
-#' (e.g. ADSL and ADRS).
+#' (e.g. `ADSL` and `ADRS`).
 #'
 #' @details
 #' In `teal.modules.clinical`, the user interface includes manipulation of

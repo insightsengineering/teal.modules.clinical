@@ -33,10 +33,10 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{PARAMCD} column of the ADVS dataset.}
+\code{PARAMCD} column of the \code{ADVS} dataset.}
 
 \item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AVAL} column of the ADVS dataset.}
+\code{AVAL} column of the \code{ADVS} dataset.}
 
 \item{xaxis}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 time variable to be represented in the vitals plot x-axis.}
@@ -69,7 +69,7 @@ The argument is merged with option \code{teal.ggplot2_args} and with default mod
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
-This teal module produces a patient profile vitals plot using ADaM datasets.
+This teal module produces a patient profile vitals plot using \code{ADaM} datasets.
 }
 \examples{
 library(nestcolor)

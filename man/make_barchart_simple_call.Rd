@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_barchart_simple.R
 \name{make_barchart_simple_call}
 \alias{make_barchart_simple_call}
-\title{\code{ggplot2} call to generate simple barchart}
+\title{\code{ggplot2} call to generate simple bar chart}
 \usage{
 make_barchart_simple_call(
   y_name,
@@ -72,7 +72,7 @@ name of the \code{xaxis} variable.}
 \code{call}
 }
 \description{
-\code{ggplot2} call to generate simple barchart
+\code{ggplot2} call to generate simple bar chart
 }
 \examples{
 teal.modules.clinical:::make_barchart_simple_call(y_name = "y", x_name = "x")
