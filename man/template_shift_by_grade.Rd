@@ -17,9 +17,9 @@ template_shift_by_grade(
   paramcd = "PARAMCD",
   drop_arm_levels = TRUE,
   add_total = FALSE,
+  total_label = "All Patients",
   na_level = "<Missing>",
   code_missing_baseline = FALSE,
-  total_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

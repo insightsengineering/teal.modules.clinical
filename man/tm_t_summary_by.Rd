@@ -16,6 +16,7 @@ tm_t_summary_by(
     subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
+  total_label = "All Patients",
   parallel_vars = FALSE,
   row_groups = FALSE,
   useNA = c("ifany", "no"),
@@ -23,7 +24,6 @@ tm_t_summary_by(
   numeric_stats = c("n", "mean_sd", "median", "range"),
   denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed =
     TRUE),
-  total_label = "All Patients",
   drop_arm_levels = TRUE,
   drop_zero_levels = TRUE,
   pre_output = NULL,
@@ -64,6 +64,9 @@ variable value designating the studied parameter.}
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
+
 \item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
@@ -85,9 +88,6 @@ chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option
 \code{n}, the number of non-missing records in this row and column intersection
 is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
-
-\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},

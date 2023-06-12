@@ -13,6 +13,7 @@ tm_t_events(
   hlt,
   llt,
   add_total = TRUE,
+  total_label = "All Patients",
   event_type = "event",
   sort_criteria = c("freq_desc", "alpha"),
   prune_freq = 0,
@@ -48,6 +49,9 @@ name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment).
 Default is "event".}

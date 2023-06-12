@@ -26,6 +26,7 @@ tm_t_abnormality_by_worst_grade(
     teal.transform::choices_selected(teal.transform::value_choices(dataname, var_choices
     = "WGRLOFL"), selected = "Y", fixed = TRUE),
   add_total = TRUE,
+  total_label = "All Patients",
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
@@ -71,6 +72,9 @@ value indicating worst grade.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},

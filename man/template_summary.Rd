@@ -11,6 +11,7 @@ template_summary(
   sum_vars,
   show_labels = c("default", "visible", "hidden"),
   add_total = TRUE,
+  total_label = "All Patients",
   var_labels = character(),
   na.rm = FALSE,
   na_level = "<Missing>",
@@ -18,7 +19,6 @@ template_summary(
     "range", "geom_mean"),
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
-  total_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

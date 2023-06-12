@@ -13,6 +13,7 @@ template_summary_by(
   by_vars,
   var_labels = character(),
   add_total = TRUE,
+  total_label = "All Patients",
   parallel_vars = FALSE,
   row_groups = FALSE,
   na.rm = FALSE,
@@ -22,7 +23,6 @@ template_summary_by(
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
   drop_zero_levels = TRUE,
-  total_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

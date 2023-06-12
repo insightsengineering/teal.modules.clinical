@@ -12,12 +12,12 @@ tm_t_summary(
   arm_var,
   summarize_vars,
   add_total = TRUE,
+  total_label = "All Patients",
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
   denominator = c("N", "n", "omit"),
-  total_label = "All Patients",
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
@@ -45,6 +45,9 @@ names of the variables that should be summarized.}
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
+
 \item{useNA}{(\code{character})\cr
 whether missing data (\code{NA}) should be displayed as a level.}
 
@@ -61,9 +64,6 @@ chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option
 \code{n}, the number of non-missing records in this row and column intersection
 is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
-
-\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},

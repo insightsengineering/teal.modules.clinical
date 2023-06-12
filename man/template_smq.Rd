@@ -10,13 +10,13 @@ template_smq(
   arm_var,
   llt = "AEDECOD",
   add_total = TRUE,
+  total_label = "All Patients",
   sort_criteria = c("freq_desc", "alpha"),
   drop_arm_levels = TRUE,
   na_level = "<Missing>",
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
   id_var = "USUBJID",
-  total_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

@@ -13,6 +13,7 @@ template_events(
   label_hlt = NULL,
   label_llt = NULL,
   add_total = TRUE,
+  total_label = "All Patients",
   event_type = "event",
   sort_criteria = c("freq_desc", "alpha"),
   prune_freq = 0,

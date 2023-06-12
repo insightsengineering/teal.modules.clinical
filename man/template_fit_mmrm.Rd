@@ -34,6 +34,7 @@ template_mmrm_tables(
   paramcd,
   show_relative = c("increase", "reduction", "none"),
   table_type = "t_mmrm_cov",
+  total_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 

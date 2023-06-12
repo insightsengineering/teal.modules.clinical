@@ -23,6 +23,7 @@ tm_t_events_summary(
   aeseq_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AESEQ"), "AESEQ", fixed = TRUE),
   add_total = TRUE,
+  total_label = "All Patients",
   count_subj = TRUE,
   count_pt = TRUE,
   count_events = TRUE,
@@ -74,6 +75,9 @@ for adverse events sequence number from \code{dataset}. Used for counting total 
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{count_subj}{(\code{logical})\cr w
 whether to show count of unique subjects based on \code{USUBJID}. Only applies if event flag
