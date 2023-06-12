@@ -94,7 +94,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
     quote(
       expr = formatters::var_labels(anl) <- c(
         anl_labels,
-        GRADE_DIR = "Direction of Abnormality",
+        GRADE_DIR = "   Direction of Abnormality",
         GRADE_ANL = "Highest Grade"
       )
     )
@@ -131,11 +131,12 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   prep_list <- add_expr(
     prep_list,
     substitute(
-      expr = map <- unique(
-        anl[anl[["GRADE_DIR"]] != "ZERO", c(paramcd, "GRADE_DIR", "GRADE_ANL")]
+      expr = map <- expand.grid(
+        PARAM = levels(anl[[paramcd]]),
+        GRADE_DIR = c("LOW", "HIGH"),
+        GRADE_ANL = as.character(1:4),
+        stringsAsFactors = FALSE
       ) %>%
-        lapply(as.character) %>%
-        as.data.frame() %>%
         dplyr::arrange(paramcd, desc(GRADE_DIR), GRADE_ANL),
       env = list(
         paramcd = paramcd
@@ -201,7 +202,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
           variables = list(id = id_var, param = paramcd, grade_dir = "GRADE_DIR"),
           .indent_mods = 4L
         ) %>%
-        rtables::append_topleft("    Highest Grade"),
+        rtables::append_topleft("                                  Highest Grade"),
       env = list(
         paramcd = paramcd,
         id_var = id_var
@@ -567,7 +568,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       if (length(input_paramcd_var) > 0) {
         shiny::validate(
           shiny::need(
-            is.factor(merged$anl_q()[["ANL"]][[input_paramcd_var]]),
+            is.factor(anl[[input_paramcd_var]]),
             "Parameter variable should be a factor."
           )
         )
@@ -576,12 +577,20 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       if (length(input_atoxgr) > 0) {
         shiny::validate(
           shiny::need(
-            all(as.character(unique(merged$anl_q()[["ANL"]][[input_atoxgr]])) %in% as.character(c(-4:4))),
+            all(as.character(unique(anl[[input_atoxgr]])) %in% as.character(c(-4:4))),
             "All grade values should be within -4:4 range."
           ),
           shiny::need(
-            is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]),
+            is.factor(anl[[input_atoxgr]]),
             "Grade variable should be a factor."
+          ),
+          shiny::need(
+            all(sapply(1:4, function(y) any(abs(as.numeric(as.character(anl[[input_atoxgr]]))) == y))),
+            paste(
+              "To display the table there must be at least one record for",
+              "each highest grade (in either direction).\n\n",
+              "Please remove filter(s) or select a different lab parameter."
+            )
           )
         )
       }
@@ -589,7 +598,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       if (length(input_atoxgr) > 0) {
         shiny::validate(
           shiny::need(
-            is.factor(merged$anl_q()[["ANL"]][[input_atoxgr]]),
+            is.factor(anl[[input_atoxgr]]),
             "Treatment variable should be a factor."
           ),
         )
