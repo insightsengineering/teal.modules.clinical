@@ -45,8 +45,8 @@ testthat::test_that("template_events_patyear generates right expressions with no
     control = control_incidence_rate(
       conf_level = 0.9,
       conf_type = "exact",
-      time_unit_input = "month",
-      time_unit_output = 100
+      input_time_unit = "month",
+      num_pt_year = 80
     )
   )
 

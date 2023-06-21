@@ -109,8 +109,8 @@ template_events_patyear <- function(dataname,
         control = control_incidence_rate(
           conf_level = conf_level,
           conf_type = conf_type,
-          time_unit_input = time_unit_input,
-          time_unit_output = time_unit_output
+          input_time_unit = input_time_unit,
+          num_pt_year = num_pt_year
         )
       ),
       env = list(
@@ -118,8 +118,8 @@ template_events_patyear <- function(dataname,
         events_var = events_var,
         conf_level = control$conf_level,
         conf_type = control$conf_type,
-        time_unit_input = control$time_unit_input,
-        time_unit_output = control$time_unit_output
+        input_time_unit = control$input_time_unit,
+        num_pt_year = control$num_pt_year
       )
     )
   )
@@ -329,7 +329,7 @@ ui_events_patyear <- function(id, ...) {
             value = a$drop_arm_levels
           ),
           teal.widgets::optionalSelectInput(
-            ns("time_unit_output"),
+            ns("num_pt_year"),
             "Time Unit for AE Rate (in Patient-Years)",
             choices = c(0.1, 1, 10, 100, 1000),
             selected = 100,
@@ -337,7 +337,7 @@ ui_events_patyear <- function(id, ...) {
             fixed = FALSE
           ),
           shiny::selectInput(
-            ns("time_unit_input"),
+            ns("input_time_unit"),
             "Analysis Unit",
             choices = NULL,
             selected = NULL,
@@ -385,7 +385,7 @@ srv_events_patyear <- function(id,
 
         shiny::updateSelectInput(
           session,
-          "time_unit_input",
+          "input_time_unit",
           choices = choices,
           selected = choices[1]
         )
@@ -423,7 +423,7 @@ srv_events_patyear <- function(id,
         )
       )
       iv$add_rule("conf_method", shinyvalidate::sv_required("A CI method is required"))
-      iv$add_rule("time_unit_output", shinyvalidate::sv_required("Time Unit for AE Rate is required"))
+      iv$add_rule("num_pt_year", shinyvalidate::sv_required("Time Unit for AE Rate is required"))
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
@@ -509,12 +509,12 @@ srv_events_patyear <- function(id,
           } else {
             "byar"
           },
-          time_unit_input = if (input$time_unit_input %in% c("day", "week", "month", "year")) {
-            input$time_unit_input
+          input_time_unit = if (input$input_time_unit %in% c("day", "week", "month", "year")) {
+            input$input_time_unit
           } else {
             "year"
           },
-          time_unit_output = as.numeric(input$time_unit_output)
+          num_pt_year = as.numeric(input$num_pt_year)
         ),
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
