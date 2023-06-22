@@ -20,7 +20,7 @@
           rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
           estimate_incidence_rate(vars = "AVAL", n_events = "n_events", 
               control = control_incidence_rate(conf_level = 0.95, conf_type = "normal", 
-                  time_unit_input = "year", time_unit_output = 1))
+                  input_time_unit = "year", num_pt_year = 100))
       
       $table
       {
@@ -49,7 +49,7 @@
           main_footer = "CI Method: Normal (rate)") %>% rtables::split_cols_by(var = "ARM") %>% 
           rtables::add_colcounts() %>% estimate_incidence_rate(vars = "AVAL", 
           n_events = "n_events", control = control_incidence_rate(conf_level = 0.95, 
-              conf_type = "normal", time_unit_input = "year", time_unit_output = 1))
+              conf_type = "normal", input_time_unit = "year", num_pt_year = 100))
       
       $table
       {
@@ -80,7 +80,7 @@
           rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
           estimate_incidence_rate(vars = "AVAL", n_events = "n_events", 
               control = control_incidence_rate(conf_level = 0.9, conf_type = "exact", 
-                  time_unit_input = "month", time_unit_output = 100))
+                  input_time_unit = "month", num_pt_year = 80))
       
       $table
       {
