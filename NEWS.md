@@ -4,6 +4,9 @@
 * Added more informative error message when grade mapping error occurs in `tm_t_abnormality_by_worst_grade`.
 * Fixed label indentation in `tm_t_abnormality_by_worst_grade`.
 
+### Miscellaneous
+* Updated `control_incidence_rate` parameter names in `tm_t_events_patyear` from `time_unit_input` and `time_unit_output` to `input_time_unit` and `num_pt_year`, respectively, after parameter names were changed in `tern`.
+
 # teal.modules.clinical 0.8.15
 
 ### Breaking changes
