@@ -22,6 +22,7 @@ template_exposure <- function(parentname,
                               row_by_var,
                               col_by_var,
                               add_total = FALSE,
+                              total_label = "Total",
                               drop_levels = TRUE,
                               na_level = "<Missing>",
                               aval_var,
@@ -35,6 +36,7 @@ template_exposure <- function(parentname,
     assertthat::is.string(paramcd),
     assertthat::is.string(id_var),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.string(na_level),
     assertthat::is.string(aval_var),
     assertthat::is.string(avalu_var) || length(avalu_var) == 0,
@@ -93,9 +95,10 @@ template_exposure <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          rtables::split_cols_by(col_by_var, split_fun = add_overall_level("Total", first = FALSE)),
+          rtables::split_cols_by(col_by_var, split_fun = add_overall_level(total_label, first = FALSE)),
           env = list(
-            col_by_var = col_by_var
+            col_by_var = col_by_var,
+            total_label = total_label
           )
         )
       )
@@ -292,6 +295,7 @@ tm_t_exposure <- function(label,
                             fixed = TRUE
                           ),
                           add_total,
+                          total_label = "All Patients",
                           na_level = "<Missing>",
                           pre_output = NULL,
                           post_output = NULL,
@@ -309,6 +313,7 @@ tm_t_exposure <- function(label,
   checkmate::assert_class(aval_var, "choices_selected")
   checkmate::assert_class(avalu_var, "choices_selected")
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -335,6 +340,7 @@ tm_t_exposure <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        total_label = total_label,
         na_level = na_level,
         basic_table_args = basic_table_args,
         paramcd_label = paramcd_label
@@ -445,6 +451,7 @@ srv_t_exposure <- function(id,
                            avalu_var,
                            na_level,
                            label,
+                           total_label,
                            basic_table_args = basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -582,6 +589,7 @@ srv_t_exposure <- function(id,
         row_by_var <- names(merged$anl_input_r()$columns_source$row_by_var),
         col_by_var <- names(merged$anl_input_r()$columns_source$col_by_var),
         add_total = input$add_total,
+        total_label = total_label,
         drop_levels = TRUE,
         na_level = na_level,
         aval_var <- names(merged$anl_input_r()$columns_source$aval_var),

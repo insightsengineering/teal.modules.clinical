@@ -24,6 +24,7 @@ template_abnormality <- function(parentname,
                                  treatment_flag_var = "ONTRTFL",
                                  treatment_flag = "Y",
                                  add_total = FALSE,
+                                 total_label = "All Patients",
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE,
                                  na_level = "<Missing>",
@@ -41,6 +42,7 @@ template_abnormality <- function(parentname,
     assertthat::is.string(treatment_flag_var),
     assertthat::is.string(treatment_flag),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.flag(exclude_base_abn),
     assertthat::is.flag(drop_arm_levels),
     assertthat::is.string(tbl_title)
@@ -132,10 +134,14 @@ template_abnormality <- function(parentname,
         expr = expr_basic_table_args %>%
           rtables::split_cols_by(
             var = arm_var,
-            split_fun = add_overall_level("All Patients", first = FALSE)
+            split_fun = add_overall_level(total_label, first = FALSE)
           ) %>%
           rtables::add_colcounts(),
-        env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
+        env = list(
+          arm_var = arm_var,
+          total_label = total_label,
+          expr_basic_table_args = parsed_basic_table_args
+        )
       )
     } else {
       substitute(
@@ -306,6 +312,7 @@ tm_t_abnormality <- function(label,
                                selected = "Y", fixed = TRUE
                              ),
                              add_total = TRUE,
+                             total_label = "All Patients",
                              exclude_base_abn = FALSE,
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
@@ -326,6 +333,7 @@ tm_t_abnormality <- function(label,
   checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(treatment_flag_var, "choices_selected")
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_flag(exclude_base_abn)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
@@ -355,6 +363,7 @@ tm_t_abnormality <- function(label,
         parentname = parentname,
         abnormal = abnormal,
         label = label,
+        total_label = total_label,
         na_level = na_level,
         basic_table_args = basic_table_args
       )
@@ -478,6 +487,7 @@ srv_t_abnormality <- function(id,
                               baseline_var,
                               treatment_flag_var,
                               add_total,
+                              total_label,
                               drop_arm_levels,
                               label,
                               na_level,
@@ -602,6 +612,7 @@ srv_t_abnormality <- function(id,
         treatment_flag_var = as.vector(merged$anl_input_r()$columns_source$treatment_flag_var),
         treatment_flag = input$treatment_flag,
         add_total = input$add_total,
+        total_label = total_label,
         exclude_base_abn = input$exclude_base_abn,
         drop_arm_levels = input$drop_arm_levels,
         na_level = na_level,

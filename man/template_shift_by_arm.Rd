@@ -17,6 +17,7 @@ template_shift_by_arm(
   na.rm = FALSE,
   na_level = "<Missing>",
   add_total = FALSE,
+  total_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

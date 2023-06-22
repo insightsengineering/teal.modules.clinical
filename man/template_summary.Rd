@@ -11,6 +11,7 @@ template_summary(
   sum_vars,
   show_labels = c("default", "visible", "hidden"),
   add_total = TRUE,
+  total_label = "All Patients",
   var_labels = character(),
   na.rm = FALSE,
   na_level = "<Missing>",

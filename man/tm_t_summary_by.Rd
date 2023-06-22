@@ -16,6 +16,7 @@ tm_t_summary_by(
     subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
+  total_label = "All Patients",
   parallel_vars = FALSE,
   row_groups = FALSE,
   useNA = c("ifany", "no"),
@@ -62,6 +63,9 @@ variable value designating the studied parameter.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}

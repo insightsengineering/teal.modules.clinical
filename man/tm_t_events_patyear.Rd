@@ -17,6 +17,7 @@ tm_t_events_patyear(
   avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVALU"), "AVALU", fixed = TRUE),
   add_total = TRUE,
+  total_label = "All Patients",
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
   drop_arm_levels = TRUE,
@@ -57,6 +58,9 @@ object with all available choices and preselected option for the analysis unit v
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{conf_level}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the confidence

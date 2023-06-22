@@ -22,6 +22,7 @@ tm_a_mmrm(
     TRUE),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
+  total_label = "All Patients",
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -87,6 +88,9 @@ height.}
 a vector of length three with \code{c(value, min, max)}. Specifies the width of
 the main plot and renders a slider on the plot to interactively adjust the plot
 width.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

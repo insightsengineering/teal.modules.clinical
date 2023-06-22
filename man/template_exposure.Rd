@@ -13,6 +13,7 @@ template_exposure(
   row_by_var,
   col_by_var,
   add_total = FALSE,
+  total_label = "Total",
   drop_levels = TRUE,
   na_level = "<Missing>",
   aval_var,

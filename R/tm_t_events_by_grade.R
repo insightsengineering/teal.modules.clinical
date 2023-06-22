@@ -26,6 +26,7 @@ template_events_by_grade <- function(dataname,
                                      prune_freq = 0,
                                      prune_diff = 0,
                                      add_total = TRUE,
+                                     total_label = "All Patients",
                                      drop_arm_levels = TRUE,
                                      basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
@@ -40,6 +41,7 @@ template_events_by_grade <- function(dataname,
     assertthat::is.string(grade),
     assertthat::is.string(label_grade) || is.null(label_grade),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_scalar(prune_freq)
@@ -141,8 +143,9 @@ template_events_by_grade <- function(dataname,
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
-      quote(
-        rtables::add_overall_col(label = "All Patients")
+      substitute(
+        expr = rtables::add_overall_col(label = total_label),
+        env = list(total_label = total_label)
       )
     )
   }
@@ -385,6 +388,7 @@ template_events_col_by_grade <- function(dataname,
                                            "Grade 5 (%)" = "5"
                                          ),
                                          add_total = TRUE,
+                                         total_label = "All Patients",
                                          id = "USUBJID",
                                          hlt,
                                          llt,
@@ -402,6 +406,7 @@ template_events_col_by_grade <- function(dataname,
     assertthat::is.string(arm_var),
     is.list(grading_groups),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.string(id),
     assertthat::is.string(hlt) || is.null(hlt),
     assertthat::is.string(llt),
@@ -528,8 +533,11 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = rtables::split_cols_by(var = arm_var, split_fun = add_overall_level("All Patients", first = FALSE)),
-        env = list(arm_var = arm_var)
+        expr = rtables::split_cols_by(var = arm_var, split_fun = add_overall_level(total_label, first = FALSE)),
+        env = list(
+          arm_var = arm_var,
+          total_label = total_label
+        )
       )
     )
   } else {
@@ -690,7 +698,6 @@ template_events_col_by_grade <- function(dataname,
 
   y$sort <- bracket_expr(sort_list)
 
-
   # Start pruning table.
   prune_list <- list()
   prune_list <- add_expr(
@@ -832,6 +839,7 @@ tm_t_events_by_grade <- function(label,
                                  prune_freq = 0,
                                  prune_diff = 0,
                                  add_total = TRUE,
+                                 total_label = "All Patients",
                                  drop_arm_levels = TRUE,
                                  pre_output = NULL,
                                  post_output = NULL,
@@ -841,6 +849,7 @@ tm_t_events_by_grade <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_flag(col_by_grade)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
@@ -869,6 +878,7 @@ tm_t_events_by_grade <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        total_label = total_label,
         grading_groups = grading_groups,
         basic_table_args = basic_table_args
       )
@@ -979,6 +989,7 @@ srv_t_events_by_grade <- function(id,
                                   col_by_grade,
                                   grading_groups,
                                   drop_arm_levels,
+                                  total_label,
                                   basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -1118,6 +1129,7 @@ srv_t_events_by_grade <- function(id,
           dataname = "ANL",
           parentname = "ANL_ADSL",
           add_total = input$add_total,
+          total_label = total_label,
           grading_groups = grading_groups,
           arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
           id = "USUBJID",
@@ -1147,6 +1159,7 @@ srv_t_events_by_grade <- function(id,
           prune_freq = input$prune_freq / 100,
           prune_diff = input$prune_diff / 100,
           add_total = input$add_total,
+          total_label = total_label,
           drop_arm_levels = input$drop_arm_levels,
           basic_table_args = basic_table_args
         )

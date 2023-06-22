@@ -22,6 +22,7 @@ tm_t_exposure(
   avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     subset = "AVALU"), selected = "AVALU", fixed = TRUE),
   add_total,
+  total_label = "All Patients",
   na_level = "<Missing>",
   pre_output = NULL,
   post_output = NULL,
@@ -68,6 +69,9 @@ object with the analysis unit variable.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data.}

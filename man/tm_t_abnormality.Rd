@@ -25,6 +25,7 @@ tm_t_abnormality(
     teal.transform::choices_selected(teal.transform::value_choices(dataname, "ONTRTFL"),
     selected = "Y", fixed = TRUE),
   add_total = TRUE,
+  total_label = "All Patients",
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
   pre_output = NULL,
@@ -73,6 +74,9 @@ records in \code{treatment_flag_var}.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{exclude_base_abn}{(\code{logical})\cr whether to exclude patients who had abnormal values at baseline.}
 

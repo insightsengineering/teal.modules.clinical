@@ -21,6 +21,7 @@ template_tte(
   event_desc_var = "EVNTDESC",
   control = control_tte(),
   add_total = FALSE,
+  total_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

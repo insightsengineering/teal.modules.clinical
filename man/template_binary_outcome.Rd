@@ -21,6 +21,7 @@ template_binary_outcome(
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
     list(method_ci = "cmh", method_test = "cmh", strat = NULL)),
   add_total = FALSE,
+  total_label = "All Patients",
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

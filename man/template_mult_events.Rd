@@ -12,6 +12,7 @@ template_mult_events(
   hlt,
   llt,
   add_total = TRUE,
+  total_label = "All Patients",
   event_type = "event",
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
