@@ -53,9 +53,9 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{y}{(\code{character})\cr y variable name.}
 
-\item{y_unit}{(\code{character} or \code{NA})\cr y_unit variable name.}
+\item{y_unit}{(\code{character} or \code{NA})\cr \code{y_unit} variable name.}
 
-\item{paramcd}{(\code{character} or \code{NA})\cr paramcd variable name.}
+\item{paramcd}{(\code{character} or \code{NA})\cr \code{paramcd} variable name.}
 
 \item{param}{(\code{character})\cr
 parameter chosen to filter the data by.}
