@@ -23,6 +23,7 @@ template_shift_by_grade <- function(parentname,
                                     paramcd = "PARAMCD",
                                     drop_arm_levels = TRUE,
                                     add_total = FALSE,
+                                    total_label = "All Patients",
                                     na_level = "<Missing>",
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
@@ -39,6 +40,7 @@ template_shift_by_grade <- function(parentname,
     assertthat::is.string(paramcd),
     assertthat::is.flag(drop_arm_levels),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.string(na_level)
   )
 
@@ -305,10 +307,14 @@ template_shift_by_grade <- function(parentname,
         expr = expr_basic_table_args %>%
           rtables::split_cols_by(
             var = arm_var,
-            split_fun = add_overall_level("All Patients", first = FALSE)
+            split_fun = add_overall_level(total_label, first = FALSE)
           ) %>%
           rtables::add_colcounts(),
-        env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
+        env = list(
+          arm_var = arm_var,
+          total_label = total_label,
+          expr_basic_table_args = parsed_basic_table_args
+        )
       )
     } else {
       substitute(
@@ -557,6 +563,7 @@ tm_t_shift_by_grade <- function(label,
                                   selected = "USUBJID", fixed = TRUE
                                 ),
                                 add_total = FALSE,
+                                total_label = "All Patients",
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
@@ -576,6 +583,7 @@ tm_t_shift_by_grade <- function(label,
   checkmate::assert_class(base_toxgrade_var, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_flag(code_missing_baseline)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
@@ -605,6 +613,7 @@ tm_t_shift_by_grade <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        total_label = total_label,
         na_level = na_level,
         basic_table_args = basic_table_args
       )
@@ -735,6 +744,7 @@ srv_t_shift_by_grade <- function(id,
                                  base_toxgrade_var,
                                  id_var,
                                  add_total,
+                                 total_label,
                                  drop_arm_levels,
                                  na_level,
                                  label,
@@ -843,6 +853,7 @@ srv_t_shift_by_grade <- function(id,
         paramcd = unlist(paramcd$filter)["vars_selected"],
         drop_arm_levels = input$drop_arm_levels,
         add_total = input$add_total,
+        total_label = total_label,
         na_level = na_level,
         code_missing_baseline = input$code_missing_baseline,
         basic_table_args = basic_table_args

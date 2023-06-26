@@ -20,6 +20,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
                                                 worst_low_flag_var = "WGRLOFL",
                                                 worst_flag_indicator = "Y",
                                                 add_total = FALSE,
+                                                total_label = "All Patients",
                                                 drop_arm_levels = TRUE,
                                                 basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
@@ -33,6 +34,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
     assertthat::is.string(worst_low_flag_var),
     assertthat::is.string(worst_flag_indicator),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.flag(drop_arm_levels)
   )
 
@@ -157,10 +159,14 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
         expr = expr_basic_table_args %>%
           rtables::split_cols_by(
             var = arm_var,
-            split_fun = add_overall_level("All Patients", first = FALSE)
+            split_fun = add_overall_level(label = total_label, first = FALSE)
           ) %>%
           rtables::add_colcounts(),
-        env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
+        env = list(
+          arm_var = arm_var,
+          total_label = total_label,
+          expr_basic_table_args = parsed_basic_table_args
+        )
       )
     } else {
       substitute(
@@ -319,6 +325,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                               selected = "Y", fixed = TRUE
                                             ),
                                             add_total = TRUE,
+                                            total_label = "All Patients",
                                             drop_arm_levels = TRUE,
                                             pre_output = NULL,
                                             post_output = NULL,
@@ -327,6 +334,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_string(total_label)
   checkmate::assert_class(arm_var, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(paramcd, "choices_selected")
@@ -360,6 +368,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
         dataname = dataname,
         parentname = parentname,
         label = label,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
     ),
@@ -480,6 +489,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
                                              worst_low_flag_var,
                                              worst_high_flag_var,
                                              add_total,
+                                             total_label,
                                              drop_arm_levels,
                                              label,
                                              basic_table_args) {
@@ -622,6 +632,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         worst_low_flag_var = names(merged$anl_input_r()$columns_source$worst_low_flag_var),
         worst_flag_indicator = input$worst_flag_indicator,
         add_total = input$add_total,
+        total_label = total_label,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )

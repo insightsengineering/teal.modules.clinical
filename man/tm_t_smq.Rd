@@ -14,6 +14,7 @@ tm_t_smq(
     subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   llt,
   add_total = TRUE,
+  total_label = "All Patients",
   sort_criteria = c("freq_desc", "alpha"),
   drop_arm_levels = TRUE,
   na_level = "<Missing>",
@@ -50,6 +51,9 @@ name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
 by decreasing total number of patients with event. Alternative option \code{alpha} sorts events

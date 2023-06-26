@@ -61,6 +61,7 @@ template_tte <- function(dataname = "ANL",
                          event_desc_var = "EVNTDESC",
                          control = control_tte(),
                          add_total = FALSE,
+                         total_label = "All Patients",
                          basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -71,7 +72,8 @@ template_tte <- function(dataname = "ANL",
     assertthat::is.string(time_unit_var),
     assertthat::is.string(event_desc_var),
     assertthat::is.flag(compare_arm),
-    assertthat::is.flag(combine_comp_arms)
+    assertthat::is.flag(combine_comp_arms),
+    assertthat::is.string(total_label)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -174,10 +176,11 @@ template_tte <- function(dataname = "ANL",
       substitute(
         rtables::split_cols_by(
           var = arm_var,
-          split_fun = add_overall_level("All Patients", first = FALSE)
+          split_fun = add_overall_level(total_label, first = FALSE)
         ),
         env = list(
-          arm_var = arm_var
+          arm_var = arm_var,
+          total_label = total_label
         )
       )
     )
@@ -456,6 +459,7 @@ tm_t_tte <- function(label,
                      ),
                      event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
+                     total_label = "All Patients",
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args()) {
@@ -467,6 +471,7 @@ tm_t_tte <- function(label,
   checkmate::assert_class(conf_level_coxph, "choices_selected")
   checkmate::assert_class(conf_level_survfit, "choices_selected")
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -495,6 +500,7 @@ tm_t_tte <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
     ),
@@ -706,6 +712,7 @@ srv_t_tte <- function(id,
                       arm_ref_comp,
                       time_unit_var,
                       add_total,
+                      total_label,
                       label,
                       basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
@@ -893,6 +900,7 @@ srv_t_tte <- function(id,
           )
         ),
         add_total = input$add_total,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
 

@@ -23,6 +23,7 @@ template_shift_by_arm_by_worst <- function(dataname,
                                            na.rm = FALSE, # nolint
                                            na_level = "<Missing>",
                                            add_total = FALSE,
+                                           total_label = "All Patients",
                                            basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -36,7 +37,8 @@ template_shift_by_arm_by_worst <- function(dataname,
     assertthat::is.string(na_level),
     assertthat::is.string(treatment_flag_var),
     assertthat::is.string(treatment_flag),
-    assertthat::is.flag(add_total)
+    assertthat::is.flag(add_total),
+    assertthat::is.string(total_label)
   )
 
   y <- list()
@@ -99,7 +101,7 @@ template_shift_by_arm_by_worst <- function(dataname,
           rtables::split_cols_by(aval_var) %>%
           rtables::split_rows_by(
             arm_var,
-            split_fun = add_overall_level("All Patients", first = FALSE),
+            split_fun = add_overall_level(total_label, first = FALSE),
             label_pos = "topleft",
             split_label = obj_label(dataname$arm_var)
           ) %>%
@@ -113,6 +115,7 @@ template_shift_by_arm_by_worst <- function(dataname,
           dataname = as.name(dataname),
           na.rm = na.rm,
           na_level = na_level,
+          total_label = total_label,
           expr_basic_table_args = parsed_basic_table_args
         )
       )
@@ -241,6 +244,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        useNA = c("ifany", "no"), # nolint
                                        na_level = "<Missing>",
                                        add_total = FALSE,
+                                       total_label = "All Patients",
                                        pre_output = NULL,
                                        post_output = NULL,
                                        basic_table_args = teal.widgets::basic_table_args()) {
@@ -250,6 +254,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
   checkmate::assert_string(parentname)
   useNA <- match.arg(useNA) # nolint
   checkmate::assert_string(na_level)
+  checkmate::assert_string(total_label)
   checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(treatment_flag_var, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
@@ -280,6 +285,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        total_label = total_label,
         na_level = na_level,
         basic_table_args = basic_table_args
       )
@@ -404,6 +410,7 @@ srv_shift_by_arm_by_worst <- function(id,
                                       label,
                                       na_level,
                                       add_total,
+                                      total_label,
                                       basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -528,6 +535,7 @@ srv_shift_by_arm_by_worst <- function(id,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
         na_level = na_level,
         add_total = input$add_total,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
 

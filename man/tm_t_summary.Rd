@@ -12,6 +12,7 @@ tm_t_summary(
   arm_var,
   summarize_vars,
   add_total = TRUE,
+  total_label = "All Patients",
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
@@ -43,6 +44,9 @@ names of the variables that should be summarized.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}).}
 
 \item{useNA}{(\code{character})\cr
 whether missing data (\code{NA}) should be displayed as a level.}

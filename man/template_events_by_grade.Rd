@@ -18,6 +18,7 @@ template_events_by_grade(
   prune_freq = 0,
   prune_diff = 0,
   add_total = TRUE,
+  total_label = "All Patients",
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
 )

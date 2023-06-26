@@ -17,6 +17,7 @@ template_smq <- function(dataname,
                          arm_var,
                          llt = "AEDECOD",
                          add_total = TRUE,
+                         total_label = "All Patients",
                          sort_criteria = c("freq_desc", "alpha"),
                          drop_arm_levels = TRUE,
                          na_level = "<Missing>",
@@ -31,6 +32,7 @@ template_smq <- function(dataname,
     assertthat::is.string(id_var),
     assertthat::is.string(llt),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.flag(drop_arm_levels),
     assertthat::is.string(na_level),
     assertthat::is.string(smq_varlabel),
@@ -176,8 +178,9 @@ template_smq <- function(dataname,
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
-      quote(
-        rtables::add_overall_col(label = "All Patients")
+      substitute(
+        expr = rtables::add_overall_col(total_label),
+        env = list(total_label = total_label)
       )
     )
   }
@@ -373,6 +376,7 @@ tm_t_smq <- function(label,
                      ),
                      llt,
                      add_total = TRUE,
+                     total_label = "All Patients",
                      sort_criteria = c("freq_desc", "alpha"),
                      drop_arm_levels = TRUE,
                      na_level = "<Missing>",
@@ -390,6 +394,7 @@ tm_t_smq <- function(label,
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)
   sort_criteria <- match.arg(sort_criteria)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
@@ -418,6 +423,7 @@ tm_t_smq <- function(label,
         parentname = parentname,
         na_level = na_level,
         label = label,
+        total_label = total_label,
         basic_table_args = basic_table_args
       )
     ),
@@ -525,6 +531,7 @@ srv_t_smq <- function(id,
                       scopes,
                       na_level,
                       label,
+                      total_label,
                       basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -615,6 +622,7 @@ srv_t_smq <- function(id,
         arm_var = names(merged$anl_input_r()$columns_source$arm_var),
         llt = names(merged$anl_input_r()$columns_source$llt),
         add_total = input$add_total,
+        total_label = total_label,
         sort_criteria = input$sort_criteria,
         drop_arm_levels = input$drop_arm_levels,
         baskets = names(merged$anl_input_r()$columns_source$baskets),

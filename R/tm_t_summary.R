@@ -16,6 +16,7 @@ template_summary <- function(dataname,
                              sum_vars,
                              show_labels = c("default", "visible", "hidden"),
                              add_total = TRUE,
+                             total_label = "All Patients",
                              var_labels = character(),
                              na.rm = FALSE, # nolint
                              na_level = "<Missing>",
@@ -31,6 +32,7 @@ template_summary <- function(dataname,
     is.character(arm_var),
     is.character(sum_vars),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     is.character(var_labels),
     assertthat::is.flag(na.rm),
     assertthat::is.string(na_level),
@@ -133,7 +135,10 @@ template_summary <- function(dataname,
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
-      quote(rtables::add_overall_col("All Patients"))
+      substitute(
+        expr = rtables::add_overall_col(total_label),
+        env = list(total_label = total_label)
+      )
     )
   }
   layout_list <- add_expr(
@@ -261,6 +266,7 @@ tm_t_summary <- function(label,
                          arm_var,
                          summarize_vars,
                          add_total = TRUE,
+                         total_label = "All Patients",
                          useNA = c("ifany", "no"), # nolint
                          na_level = "<Missing>",
                          numeric_stats = c(
@@ -284,6 +290,7 @@ tm_t_summary <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   checkmate::assertFlag(add_total)
+  checkmate::assert_string(total_label)
 
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
@@ -305,6 +312,7 @@ tm_t_summary <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        total_label = total_label,
         na_level = na_level,
         basic_table_args = basic_table_args
       )
@@ -408,6 +416,7 @@ srv_summary <- function(id,
                         arm_var,
                         summarize_vars,
                         add_total,
+                        total_label,
                         na_level,
                         drop_arm_levels,
                         label,
@@ -534,6 +543,7 @@ srv_summary <- function(id,
         sum_vars = summarize_vars,
         show_labels = "visible",
         add_total = input$add_total,
+        total_label = total_label,
         var_labels = var_labels,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
         na_level = na_level,

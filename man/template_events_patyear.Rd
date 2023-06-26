@@ -12,6 +12,7 @@ template_events_patyear(
   label_paramcd,
   aval_var = "AVAL",
   add_total = TRUE,
+  total_label = "All Patients",
   control = control_incidence_rate(),
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()

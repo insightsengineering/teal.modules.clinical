@@ -21,6 +21,7 @@ template_summary_by <- function(parentname,
                                 by_vars,
                                 var_labels = character(),
                                 add_total = TRUE,
+                                total_label = "All Patients",
                                 parallel_vars = FALSE,
                                 row_groups = FALSE,
                                 na.rm = FALSE, # nolint
@@ -41,6 +42,7 @@ template_summary_by <- function(parentname,
     is.character(by_vars),
     is.character(var_labels),
     assertthat::is.flag(add_total),
+    assertthat::is.string(total_label),
     assertthat::is.flag(parallel_vars),
     assertthat::is.flag(row_groups),
     assertthat::is.flag(na.rm),
@@ -126,9 +128,12 @@ template_summary_by <- function(parentname,
       substitute(
         expr = rtables::split_cols_by(
           arm_var,
-          split_fun = add_overall_level("All Patients", first = FALSE)
+          split_fun = add_overall_level(total_label, first = FALSE)
         ),
-        env = list(arm_var = arm_var)
+        env = list(
+          arm_var = arm_var,
+          total_label = total_label
+        )
       )
     } else {
       substitute(
@@ -378,6 +383,7 @@ tm_t_summary_by <- function(label,
                             ),
                             paramcd = NULL,
                             add_total = TRUE,
+                            total_label = "All Patients",
                             parallel_vars = FALSE,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint
@@ -398,6 +404,7 @@ tm_t_summary_by <- function(label,
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(denominator, "choices_selected")
   checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_zero_levels)
   checkmate::assert_subset(denominator$choices, choices = c("n", "N", "omit"))
   checkmate::assert_flag(parallel_vars)
@@ -436,6 +443,7 @@ tm_t_summary_by <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        total_label = total_label,
         na_level = na_level,
         basic_table_args = basic_table_args
       )
@@ -579,6 +587,7 @@ srv_summary_by <- function(id,
                            by_vars,
                            summarize_vars,
                            add_total,
+                           total_label,
                            na_level,
                            drop_arm_levels,
                            drop_zero_levels,
@@ -689,6 +698,7 @@ srv_summary_by <- function(id,
         numeric_stats = input$numeric_stats,
         denominator = input$denominator,
         add_total = input$add_total,
+        total_label = total_label,
         parallel_vars = input$parallel_vars,
         row_groups = input$row_groups,
         drop_arm_levels = input$drop_arm_levels,
