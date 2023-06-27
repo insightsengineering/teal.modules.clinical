@@ -56,18 +56,18 @@ template_prior_medication <- function(dataname = "ANL",
 
 #' Teal Module: Patient Prior Medication Teal Module
 #'
-#' This teal module produces a patient prior medication report using ADaM datasets.
+#' This teal module produces a patient prior medication report using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ATIREL} column of the ADCM dataset.
+#' \code{ATIREL} column of the `ADCM` dataset.
 #' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDECOD} column of the ADCM dataset.
+#' \code{CMDECOD} column of the `ADCM` dataset.
 #' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMINDC} column of the ADCM dataset.
+#' \code{CMINDC} column of the `ADCM` dataset.
 #' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMSTDY} column of the ADCM dataset.
+#' \code{CMSTDY} column of the `ADCM` dataset.
 #'
 #' @export
 #'

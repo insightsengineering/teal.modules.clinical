@@ -4,10 +4,10 @@
 #'
 #' @inheritParams template_arguments
 #' @param aeterm (`character`)\cr name of the reported term for the adverse event variable.
-#' @param aetime_start (`character`)\cr name of datetime start of adverse event variable.
-#' @param aetime_end (`character`)\cr name of datetime end of adverse event variable.
-#' @param dstime_start (`character`)\cr name of datetime first exposure to treatment variable.
-#' @param dstime_end (`character`)\cr name of datetime last exposure to treatment variable.
+#' @param aetime_start (`character`)\cr name of `datetime` start of adverse event variable.
+#' @param aetime_end (`character`)\cr name of `datetime` end of adverse event variable.
+#' @param dstime_start (`character`)\cr name of `datetime` first exposure to treatment variable.
+#' @param dstime_end (`character`)\cr name of `datetime` last exposure to treatment variable.
 #' @param cmdecod (`character`)\cr name of reported standardized name of drug, med, or therapy variable.
 #' @param aerelday_start (`character`)\cr name of start study day variable.
 #' @param aerelday_end (`character`)\cr name of end study day variable.
@@ -323,32 +323,32 @@ template_patient_timeline <- function(dataname = "ANL",
 
 #' Teal Module: Patient Profile Timeline Teal Module
 #'
-#' This teal module produces a patient profile timeline plot using ADaM datasets.
+#' This teal module produces a patient profile timeline plot using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param aeterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AETERM} column of the ADAE dataset.
-#' @param dataname_adcm (`character`)\cr name of ADCM dataset or equivalent.
-#' @param dataname_adae (`character`)\cr name of ADAE dataset or equivalent.
+#' \code{AETERM} column of the `ADAE` dataset.
+#' @param dataname_adcm (`character`)\cr name of `ADCM` dataset or equivalent.
+#' @param dataname_adae (`character`)\cr name of `ADAE` dataset or equivalent.
 #' @param aerelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ASTDY} column of the ADAE dataset.
+#' \code{ASTDY} column of the `ADAE` dataset.
 #' @param aerelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{AENDY}
-#' column of the ADAE dataset.
+#' column of the `ADAE` dataset.
 #' @param dsrelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{ASTDY}
-#' column of the ADCM dataset.
+#' column of the `ADCM` dataset.
 #' @param dsrelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{AENDY}
-#' column of the ADCM dataset.
+#' column of the `ADCM` dataset.
 #' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{cmdecod} column of the ADCM dataset.
+#' \code{cmdecod} column of the `ADCM` dataset.
 #' @param aetime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ASTDTM} column of the AE start of the ADAE dataset.
+#' \code{ASTDTM} column of the `AE` start of the `ADAE` dataset.
 #' @param aetime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AENDTM} column of the AE end of the ADAE dataset.
+#' \code{AENDTM} column of the `AE` end of the `ADAE` dataset.
 #' @param dstime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMASTDTM} column of treatment start of the ADCM dataset.
+#' \code{CMASTDTM} column of treatment start of the `ADCM` dataset.
 #' @param dstime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMAENDTM} column of treatment end of the ADCM dataset.
+#' \code{CMAENDTM} column of treatment end of the `ADCM` dataset.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @export

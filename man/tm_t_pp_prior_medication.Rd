@@ -30,16 +30,16 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ATIREL} column of the ADCM dataset.}
+\code{ATIREL} column of the \code{ADCM} dataset.}
 
 \item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMDECOD} column of the ADCM dataset.}
+\code{CMDECOD} column of the \code{ADCM} dataset.}
 
 \item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMINDC} column of the ADCM dataset.}
+\code{CMINDC} column of the \code{ADCM} dataset.}
 
 \item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMSTDY} column of the ADCM dataset.}
+\code{CMSTDY} column of the \code{ADCM} dataset.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
@@ -50,7 +50,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
-This teal module produces a patient prior medication report using ADaM datasets.
+This teal module produces a patient prior medication report using \code{ADaM} datasets.
 }
 \examples{
 adcm <- tmc_ex_adcm

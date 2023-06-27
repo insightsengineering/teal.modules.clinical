@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_ancova.R
 \name{template_ancova}
 \alias{template_ancova}
-\title{Template: ANCOVA summary}
+\title{Template: \code{ANCOVA} summary}
 \usage{
 template_ancova(
   dataname = "ANL",
@@ -60,7 +60,7 @@ names of the covariates variables.}
 with arm. If the interaction is not needed, the default option is \code{NULL}.}
 
 \item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select
-the specific ANCOVA results. If the interaction is not needed, the default option is \code{FALSE}.}
+the specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{paramcd_levels}{(\code{character})\cr
 variable levels for the studied parameter.}

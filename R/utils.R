@@ -1,6 +1,6 @@
 #' Concatenate expressions via a binary operator
 #'
-#' e.g. combine with `+` for ggplot without introducing parentheses due to associativity
+#' e.g. combine with `+` for `ggplot` without introducing parentheses due to associativity
 #'
 #' @param args arguments to concatenate with operator
 #' @param bin_op binary operator to concatenate it with
@@ -462,11 +462,11 @@ split_choices <- function(x) {
   return(split_x)
 }
 
-#' Extracts html id for data_extract_ui
-#' @description The data_extract_ui is located under extended html id.
+#' Extracts html id for \code{data_extract_ui}
+#' @description The \code{data_extract_ui} is located under extended html id.
 #'   We could not use \code{ns("original id")} for reference, as it is extended with specific suffixes.
 #' @param varname (`character`)\cr
-#'   the original html id.  This should be retrieved with \code{ns("original id")} in the ui function
+#'   the original html id.  This should be retrieved with \code{ns("original id")} in the UI function
 #'   or \code{session$ns("original id")}/"original id" in the server function.
 #' @param dataname (`character`)\cr
 #'   \code{dataname} from data_extract input.
@@ -507,7 +507,7 @@ split_interactions <- function(x, by = "\\*|:") {
 #' The function generate the standard expression for pre-processing of dataset
 #' in teal module applications. This is especially of interest when the same
 #' preprocessing steps needs to be applied similarly to several datasets
-#' (e.g. ADSL and ADRS).
+#' (e.g. `ADSL` and `ADRS`).
 #'
 #' @details
 #' In `teal.modules.clinical`, the user interface includes manipulation of
@@ -822,14 +822,14 @@ clean_description <- function(x) {
 }
 
 
-#' Utility function for extracting paramcd for forest plots
+#' Utility function for extracting `paramcd` for forest plots
 #'
-#' Utility function for extracting paramcd for forest plots
+#' Utility function for extracting `paramcd` for forest plots
 #'
 #' @param paramcd [`teal.transform::data_extract_spec()`]
 #' variable value designating the studied parameter.
 #'
-#' @param input shinyapp input
+#' @param input shiny app input
 #'
 #' @param filter_idx filter section index (default 1)
 #' @keywords internal
@@ -846,11 +846,11 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
 }
 
 
-#' Extract the associated param value for paramcd
+#' Extract the associated parameter value for `paramcd`
 #'
-#' Utility function for extracting the param value that is associated
-#' with the paramcd value label. If there is no param value for
-#' the paramcd label, the paramcd value is returned. This is used
+#' Utility function for extracting the parameter value that is associated
+#' with the `paramcd` value label. If there is no parameter value for
+#' the `paramcd` label, the `paramcd` value is returned. This is used
 #' for generating the title.
 #'
 #' @param anl Analysis dataset

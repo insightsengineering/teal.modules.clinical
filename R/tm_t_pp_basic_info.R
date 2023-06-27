@@ -45,12 +45,12 @@ template_basic_info <- function(dataname = "ANL",
 
 #' Teal Module: Patient Profile Basic Info Teal Module
 #'
-#' This teal module produces a patient profile basic info report using ADaM datasets.
+#' This teal module produces a patient profile basic info report using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param vars ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' ADSL columns to be shown in Basic Info tab.
+#' `ADSL` columns to be shown in Basic Info tab.
 #'
 #' @export
 #'

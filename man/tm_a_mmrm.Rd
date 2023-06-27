@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_a_mmrm.R
 \name{tm_a_mmrm}
 \alias{tm_a_mmrm}
-\title{Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis}
+\title{Teal Module: Teal module for Mixed Model Repeated Measurements (\code{MMRM}) analysis}
 \usage{
 tm_a_mmrm(
   label,
@@ -115,7 +115,7 @@ The argument is merged with option \code{teal.ggplot2_args} and with default mod
 \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
-Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
+Teal Module: Teal module for Mixed Model Repeated Measurements (\code{MMRM}) analysis
 }
 \note{
 The ordering of the input data sets can lead to slightly different numerical results or

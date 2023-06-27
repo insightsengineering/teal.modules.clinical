@@ -214,7 +214,7 @@ template_logistic <- function(dataname,
 
 #' Teal Module: Logistic Regression
 #'
-#' @description This module produces a multi-variable logistic regression table that matches LGRT02.
+#' @description This module produces a multi-variable logistic regression table that matches `LGRT02`.
 #'
 #' @inheritParams module_arguments
 #' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()]) or `NULL`\cr

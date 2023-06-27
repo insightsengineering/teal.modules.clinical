@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_paramcd_label}
 \alias{get_paramcd_label}
-\title{Extract the associated param value for paramcd}
+\title{Extract the associated parameter value for \code{paramcd}}
 \usage{
 get_paramcd_label(anl, paramcd)
 }
@@ -13,9 +13,9 @@ get_paramcd_label(anl, paramcd)
 variable value designating the studied parameter.}
 }
 \description{
-Utility function for extracting the param value that is associated
-with the paramcd value label. If there is no param value for
-the paramcd label, the paramcd value is returned. This is used
+Utility function for extracting the parameter value that is associated
+with the \code{paramcd} value label. If there is no parameter value for
+the \code{paramcd} label, the \code{paramcd} value is returned. This is used
 for generating the title.
 }
 \keyword{internal}

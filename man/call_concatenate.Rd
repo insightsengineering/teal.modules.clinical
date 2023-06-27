@@ -12,7 +12,7 @@ call_concatenate(args, bin_op = "+")
 \item{bin_op}{binary operator to concatenate it with}
 }
 \description{
-e.g. combine with \code{+} for ggplot without introducing parentheses due to associativity
+e.g. combine with \code{+} for \code{ggplot} without introducing parentheses due to associativity
 }
 \examples{
 \dontrun{

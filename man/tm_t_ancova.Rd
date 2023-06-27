@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_ancova.R
 \name{tm_t_ancova}
 \alias{tm_t_ancova}
-\title{Teal Module: ANCOVA Teal Module}
+\title{Teal Module: \code{ANCOVA} Teal Module}
 \usage{
 tm_t_ancova(
   label,
@@ -63,7 +63,7 @@ variables.}
 with arm. If the interaction is not needed, the default option is \code{NULL}.}
 
 \item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used
-to select the specific ANCOVA results when interact_var is discrete. If the interaction is not
+to select the specific \code{ANCOVA} results when interact_var is discrete. If the interaction is not
 needed, the default option is \code{FALSE}.}
 
 \item{avisit}{(\code{choices_selected} or \code{data_extract_spec})\cr
@@ -92,11 +92,11 @@ The argument is merged with option \code{teal.basic_table_args} and with default
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Teal Module: ANCOVA Teal Module
+Teal Module: \code{ANCOVA} Teal Module
 }
 \details{
 This module produces an analysis of variance summary table that is
-similar to AOVT01 when multiple endpoints are selected.
+similar to \code{AOVT01} when multiple endpoints are selected.
 When a single endpoint is selected, both unadjusted and adjusted comparison
 would be provided. This modules expects that the analysis data has the
 following variables:

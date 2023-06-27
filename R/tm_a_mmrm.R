@@ -1,4 +1,4 @@
-#' Template: Mixed Model Repeated Measurements (MMRM) analysis
+#' Template: Mixed Model Repeated Measurements (`MMRM`) analysis
 #'
 #' @inheritParams template_arguments
 #' @param method a string specifying the adjustment method.
@@ -153,7 +153,7 @@ template_fit_mmrm <- function(parentname,
 #' @describeIn template_fit_mmrm
 #'
 #' @inheritParams template_arguments
-#' @param fit_name name of fitted MMRM object
+#' @param fit_name name of fitted `MMRM` object
 #' @param show_relative should the "reduction" (`control - treatment`, default) or the "increase"
 #'   (`treatment - control`) be shown for the relative change from baseline
 #' @param table_type (`character`)\cr
@@ -431,7 +431,7 @@ template_mmrm_plots <- function(fit_name,
   y
 }
 
-#' Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
+#' Teal Module: Teal module for Mixed Model Repeated Measurements (`MMRM`) analysis
 #'
 #' @inheritParams module_arguments
 #' @param method (`choices_selected`)\cr

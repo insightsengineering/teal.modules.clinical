@@ -114,7 +114,7 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 }
 \description{
 This teal module produces a grid style Forest plot for time-to-event data
-with ADaM structure
+with \code{ADaM} structure
 }
 \examples{
 library(nestcolor)

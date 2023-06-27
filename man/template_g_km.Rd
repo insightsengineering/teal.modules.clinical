@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_km.R
 \name{template_g_km}
 \alias{template_g_km}
-\title{Template: Kaplan-Meier}
+\title{Template: \code{Kaplan-Meier}}
 \usage{
 template_g_km(
   dataname = "ANL",
@@ -97,7 +97,7 @@ median survival time per group.}
 title of the output.}
 }
 \description{
-Template: Kaplan-Meier
+Template: \code{Kaplan-Meier}
 }
 \seealso{
 \code{\link[=tm_g_km]{tm_g_km()}}

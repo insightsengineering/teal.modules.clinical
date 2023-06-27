@@ -234,7 +234,7 @@ template_abnormality <- function(parentname,
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
 #' @note Patients with the same abnormality at baseline as on the treatment visit can be
-#'   excluded in accordance with GDSR specifications by using `exclude_base_abn`.
+#'   excluded in accordance with `GDSR` specifications by using `exclude_base_abn`.
 #'
 #' @export
 #' @examples
