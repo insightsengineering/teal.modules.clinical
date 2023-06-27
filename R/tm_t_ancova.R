@@ -1,4 +1,4 @@
-#' Template: ANCOVA summary
+#' Template: `ANCOVA` summary
 #'
 #' Creates a valid expression for analysis of variance summary table.
 #' @inheritParams template_arguments
@@ -409,12 +409,12 @@ template_ancova <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: ANCOVA Teal Module
+#' Teal Module: `ANCOVA` Teal Module
 #'
 #' @inheritParams module_arguments
 #'
 #' @details This module produces an analysis of variance summary table that is
-#' similar to AOVT01 when multiple endpoints are selected.
+#' similar to `AOVT01` when multiple endpoints are selected.
 #' When a single endpoint is selected, both unadjusted and adjusted comparison
 #' would be provided. This modules expects that the analysis data has the
 #' following variables:

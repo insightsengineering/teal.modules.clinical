@@ -3,11 +3,11 @@
 #' Controls the arguments for Cox regressions and Survival analysis results.
 #'
 #' @param coxph (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_coxph].
+#'   parameters for comparison, specified using [tern::control_coxph()].
 #' @param surv_time (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_surv_time].
+#'   parameters for comparison, specified using [tern::control_surv_time()].
 #' @param surv_timepoint (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_surv_timepoint].
+#'   parameters for comparison, specified using [tern::control_surv_timepoint()].
 #' @keywords internal
 #'
 control_tte <- function(surv_time = list(
@@ -366,8 +366,8 @@ template_tte <- function(dataname = "ANL",
 #' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
 #'   information, optional.
 #'
-#' @details This module produces a response summary table that is similar to TTET01. The core functionality is based on
-#'   [coxph_pairwise()], [surv_timepoint()] and [surv_time()] from package `tern`.\cr
+#' @details This module produces a response summary table that is similar to `TTET01`. The core functionality is based
+#'   on [coxph_pairwise()], [surv_timepoint()] and [surv_time()] from package `tern`.\cr
 #'   The following variables are used in the module:
 #'
 #' \tabular{ll}{

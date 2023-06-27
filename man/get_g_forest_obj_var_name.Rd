@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_g_forest_obj_var_name}
 \alias{get_g_forest_obj_var_name}
-\title{Utility function for extracting paramcd for forest plots}
+\title{Utility function for extracting \code{paramcd} for forest plots}
 \usage{
 get_g_forest_obj_var_name(paramcd, input, filter_idx = 1)
 }
@@ -10,11 +10,11 @@ get_g_forest_obj_var_name(paramcd, input, filter_idx = 1)
 \item{paramcd}{\code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}}
 variable value designating the studied parameter.}
 
-\item{input}{shinyapp input}
+\item{input}{shiny app input}
 
 \item{filter_idx}{filter section index (default 1)}
 }
 \description{
-Utility function for extracting paramcd for forest plots
+Utility function for extracting \code{paramcd} for forest plots
 }
 \keyword{internal}

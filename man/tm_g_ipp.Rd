@@ -103,7 +103,7 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 \description{
 This teal module produces grid style Individual patient plot(s) that show
 trends in parameter values over time for each patient using data with
-ADaM structure.
+\code{ADaM} structure.
 }
 \examples{
 library(nestcolor)

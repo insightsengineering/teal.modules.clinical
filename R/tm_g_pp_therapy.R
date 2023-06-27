@@ -224,30 +224,30 @@ template_therapy <- function(dataname = "ANL",
 
 #' Teal Module: Patient Profile Therapy Teal Module
 #'
-#' This teal module produces a patient profile therapy plot using ADaM datasets.
+#' This teal module produces a patient profile therapy plot using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ATIREL} column of the ADCM dataset.
+#' \code{ATIREL} column of the `ADCM` dataset.
 #' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDECOD} column of the ADCM dataset.
+#' \code{CMDECOD} column of the `ADCM` dataset.
 #' @param cmdose ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDOSE} column of the ADCM dataset.
+#' \code{CMDOSE} column of the `ADCM` dataset.
 #' @param cmtrt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMTRT} column of the ADCM dataset.
+#' \code{CMTRT} column of the `ADCM` dataset.
 #' @param cmdosu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDOSU} column of the ADCM dataset.
+#' \code{CMDOSU} column of the `ADCM` dataset.
 #' @param cmroute ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMROUTE} column of the ADCM dataset.
+#' \code{CMROUTE} column of the `ADCM` dataset.
 #' @param cmdosfrq ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDOSFRQ} column of the ADCM dataset.
+#' \code{CMDOSFRQ} column of the `ADCM` dataset.
 #' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMSTDY} column of the ADCM dataset.
+#' \code{CMSTDY} column of the `ADCM` dataset.
 #' @param cmendy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMENDY} column of the ADCM dataset.
+#' \code{CMENDY} column of the `ADCM` dataset.
 #' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMINDC} column of the ADCM dataset.
+#' \code{CMINDC} column of the `ADCM` dataset.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @export

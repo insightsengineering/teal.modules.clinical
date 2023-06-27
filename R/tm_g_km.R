@@ -1,4 +1,4 @@
-#' Template: Kaplan-Meier
+#' Template: `Kaplan-Meier`
 #'
 #' @inheritParams template_arguments
 #' @inheritParams tern::g_km
@@ -226,10 +226,10 @@ template_g_km <- function(dataname = "ANL",
 }
 
 
-#' Teal Module: Kaplan-Meier
+#' Teal Module: `Kaplan-Meier`
 #'
-#' This teal module produces a grid style Kaplan-Meier plot for data with
-#' ADaM structure.
+#' This teal module produces a grid style `Kaplan-Meier` plot for data with
+#' `ADaM` structure.
 #'
 #' @inheritParams module_arguments
 #' @param facet_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr

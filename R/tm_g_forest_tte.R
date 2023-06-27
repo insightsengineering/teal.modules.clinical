@@ -208,7 +208,7 @@ template_forest_tte <- function(dataname = "ANL",
 #' Teal Module: Forest Survival Plot teal Module
 #'
 #' This teal module produces a grid style Forest plot for time-to-event data
-#' with ADaM structure
+#' with `ADaM` structure
 #'
 #' @inheritParams module_arguments
 #' @inheritParams tm_g_forest_rsp

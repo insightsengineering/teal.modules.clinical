@@ -5,7 +5,7 @@
 #' module.
 #' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
 #' module.
-#' @param id (`character`) \cr unique identifier of patients in datasets, default to "USUBJID".
+#' @param id (`character`) \cr unique identifier of patients in datasets, default to `"USUBJID"`.
 #' @param grade (`character`) \cr name of the severity level variable.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
 #' module.
@@ -16,7 +16,7 @@
 template_events_by_grade <- function(dataname,
                                      parentname,
                                      arm_var,
-                                     id = "USUBJID",
+                                     id = "",
                                      hlt,
                                      llt,
                                      label_hlt = NULL,
@@ -365,12 +365,12 @@ template_events_by_grade <- function(dataname,
 #' Template: Adverse Events grouped by Grade with threshold
 #'
 #' @inheritParams template_arguments
-#' @param id (`character`) \cr unique identifier of patients in datasets, default to "USUBJID".
+#' @param id (`character`) \cr unique identifier of patients in datasets, default to `"USUBJID"`.
 #' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
 #' module.
 #' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
 #' module.
-#' @param grade (`character`) \cr grade term which grading_groups is based on, default to "AETOXGR".
+#' @param grade (`character`) \cr grade term which grading_groups is based on, default to `"AETOXGR"`.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
 #' module.
 #' @param grading_groups (`character`) \cr list of grading groups.

@@ -40,34 +40,34 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ATIREL} column of the ADCM dataset.}
+\code{ATIREL} column of the \code{ADCM} dataset.}
 
 \item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMDECOD} column of the ADCM dataset.}
+\code{CMDECOD} column of the \code{ADCM} dataset.}
 
 \item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMINDC} column of the ADCM dataset.}
+\code{CMINDC} column of the \code{ADCM} dataset.}
 
 \item{cmdose}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMDOSE} column of the ADCM dataset.}
+\code{CMDOSE} column of the \code{ADCM} dataset.}
 
 \item{cmtrt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMTRT} column of the ADCM dataset.}
+\code{CMTRT} column of the \code{ADCM} dataset.}
 
 \item{cmdosu}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMDOSU} column of the ADCM dataset.}
+\code{CMDOSU} column of the \code{ADCM} dataset.}
 
 \item{cmroute}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMROUTE} column of the ADCM dataset.}
+\code{CMROUTE} column of the \code{ADCM} dataset.}
 
 \item{cmdosfrq}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMDOSFRQ} column of the ADCM dataset.}
+\code{CMDOSFRQ} column of the \code{ADCM} dataset.}
 
 \item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMSTDY} column of the ADCM dataset.}
+\code{CMSTDY} column of the \code{ADCM} dataset.}
 
 \item{cmendy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMENDY} column of the ADCM dataset.}
+\code{CMENDY} column of the \code{ADCM} dataset.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
@@ -97,7 +97,7 @@ The argument is merged with option \code{teal.ggplot2_args} and with default mod
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
-This teal module produces a patient profile therapy plot using ADaM datasets.
+This teal module produces a patient profile therapy plot using \code{ADaM} datasets.
 }
 \examples{
 library(nestcolor)

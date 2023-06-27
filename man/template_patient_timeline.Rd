@@ -28,13 +28,13 @@ analysis data used in teal module.}
 
 \item{aeterm}{(\code{character})\cr name of the reported term for the adverse event variable.}
 
-\item{aetime_start}{(\code{character})\cr name of datetime start of adverse event variable.}
+\item{aetime_start}{(\code{character})\cr name of \code{datetime} start of adverse event variable.}
 
-\item{aetime_end}{(\code{character})\cr name of datetime end of adverse event variable.}
+\item{aetime_end}{(\code{character})\cr name of \code{datetime} end of adverse event variable.}
 
-\item{dstime_start}{(\code{character})\cr name of datetime first exposure to treatment variable.}
+\item{dstime_start}{(\code{character})\cr name of \code{datetime} first exposure to treatment variable.}
 
-\item{dstime_end}{(\code{character})\cr name of datetime last exposure to treatment variable.}
+\item{dstime_end}{(\code{character})\cr name of \code{datetime} last exposure to treatment variable.}
 
 \item{cmdecod}{(\code{character})\cr name of reported standardized name of drug, med, or therapy variable.}
 

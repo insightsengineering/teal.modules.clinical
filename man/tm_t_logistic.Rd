@@ -76,7 +76,7 @@ The argument is merged with option \code{teal.basic_table_args} and with default
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-This module produces a multi-variable logistic regression table that matches LGRT02.
+This module produces a multi-variable logistic regression table that matches \code{LGRT02}.
 }
 \examples{
 adsl <- tmc_ex_adsl

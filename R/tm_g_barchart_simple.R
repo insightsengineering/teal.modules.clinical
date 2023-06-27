@@ -1,4 +1,4 @@
-#' Simple barchart plot that shows counts per category.
+#' Simple bar chart plot that shows counts per category.
 #'
 #' Categories can be defined up to four levels deep and are defined through
 #' `x`, `fill`, `x_facet` and `y_facet`. If any of them is `NULL`,
@@ -564,9 +564,9 @@ srv_g_barchart_simple <- function(id,
 
 # Helper functions for qenv ----
 
-#' `ggplot2` call to generate simple barchart
+#' `ggplot2` call to generate simple bar chart
 #'
-#' `ggplot2` call to generate simple barchart
+#' `ggplot2` call to generate simple bar chart
 #' @param yname (`NULL`, `character(1)`)\cr
 #'  name of the `yaxis` variable.
 #' @param xname (`NULL`, `character(1)`)\cr

@@ -15,7 +15,7 @@
 \alias{tmc_ex_adrs}
 \alias{tmc_ex_adtte}
 \alias{tmc_ex_advs}
-\title{Simulated CDISC Data for Examples}
+\title{Simulated \code{CDISC} Data for Examples}
 \format{
 \code{rds} (\code{data.frame})
 
@@ -69,33 +69,33 @@ tmc_ex_adtte
 tmc_ex_advs
 }
 \description{
-Simulated CDISC Data for Examples
+Simulated \code{CDISC} Data for Examples
 }
 \section{Functions}{
 \itemize{
-\item \code{tmc_ex_adsl}: ADSL data
+\item \code{tmc_ex_adsl}: \code{ADSL} data
 
-\item \code{tmc_ex_adae}: ADAE data
+\item \code{tmc_ex_adae}: \code{ADAE} data
 
-\item \code{tmc_ex_adaette}: ADAETTE data
+\item \code{tmc_ex_adaette}: \code{ADAETTE} data
 
-\item \code{tmc_ex_adcm}: ADCM data
+\item \code{tmc_ex_adcm}: \code{ADCM} data
 
-\item \code{tmc_ex_adeg}: ADEG data
+\item \code{tmc_ex_adeg}: \code{ADEG} data
 
-\item \code{tmc_ex_adex}: ADEX data
+\item \code{tmc_ex_adex}: \code{ADEX} data
 
-\item \code{tmc_ex_adlb}: ADLB data
+\item \code{tmc_ex_adlb}: \code{ADLB} data
 
-\item \code{tmc_ex_admh}: ADMH data
+\item \code{tmc_ex_admh}: \code{ADMH} data
 
-\item \code{tmc_ex_adqs}: ADQS data
+\item \code{tmc_ex_adqs}: \code{ADQS} data
 
-\item \code{tmc_ex_adrs}: ADRS data
+\item \code{tmc_ex_adrs}: \code{ADRS} data
 
-\item \code{tmc_ex_adtte}: ADTTE data
+\item \code{tmc_ex_adtte}: \code{ADTTE} data
 
-\item \code{tmc_ex_advs}: ADVS data
+\item \code{tmc_ex_advs}: \code{ADVS} data
 
 }}
 \keyword{datasets}
