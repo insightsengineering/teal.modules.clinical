@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.15.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.15.9003</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,15 +52,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -94,7 +85,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Example Data Generation</h1>
             
-            <h4 data-toc-skip class="date">2023-06-22</h4>
+            <h4 data-toc-skip class="date">2023-06-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/vignettes/generate_tmc_test_data.Rmd" class="external-link"><code>vignettes/generate_tmc_test_data.Rmd</code></a></small>
       <div class="d-none name"><code>generate_tmc_test_data.Rmd</code></div>
@@ -107,13 +98,13 @@
 <code>teal.modules.clinical</code><a class="anchor" aria-label="anchor" href="#generating-minimal-data-to-test-teal-modules-clinical"></a>
 </h2>
 <p>The following script is used to create and save cached synthetic
-CDISC data to the <code>data/</code> directory to use in examples and
-tests in the <code>teal.modules.clinical</code> package. This
-script/vignette was initialized by Emily de la Rua in
+<code>CDISC</code> data to the <code>data/</code> directory to use in
+examples and tests in the <code>teal.modules.clinical</code> package.
+This script/vignette was initialized by Emily de la Rua in
 <code>tern</code>.</p>
 <p><em>Disclaimer</em>: this vignette concerns mainly the development of
 minimal and stable test data and it is kept internal for feature
-traceability.</p>
+tracking.</p>
 </div>
 <div class="section level2">
 <h2 id="setup-helper-functions">Setup &amp; Helper Functions<a class="anchor" aria-label="anchor" href="#setup-helper-functions"></a>
@@ -239,7 +230,8 @@ traceability.</p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adsl">ADSL<a class="anchor" aria-label="anchor" href="#adsl"></a>
+<h2 id="adsl">
+<code>ADSL</code><a class="anchor" aria-label="anchor" href="#adsl"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adsl</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">N</span> <span class="op">=</span> <span class="fl">200</span><span class="op">)</span> <span class="op">{</span> <span class="co"># nolint</span></span>
@@ -346,7 +338,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adae">ADAE<a class="anchor" aria-label="anchor" href="#adae"></a>
+<h2 id="adae">
+<code>ADAE</code><a class="anchor" aria-label="anchor" href="#adae"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adae</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span>,</span>
@@ -528,7 +521,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adaette">ADAETTE<a class="anchor" aria-label="anchor" href="#adaette"></a>
+<h2 id="adaette">
+<code>ADAETTE</code><a class="anchor" aria-label="anchor" href="#adaette"></a>
 </h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adaette</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span><span class="op">)</span> <span class="op">{</span></span>
@@ -703,7 +697,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adcm">ADCM<a class="anchor" aria-label="anchor" href="#adcm"></a>
+<h2 id="adcm">
+<code>ADCM</code><a class="anchor" aria-label="anchor" href="#adcm"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adcm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span>,</span>
@@ -811,7 +806,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adeg">ADEG<a class="anchor" aria-label="anchor" href="#adeg"></a>
+<h2 id="adeg">
+<code>ADEG</code><a class="anchor" aria-label="anchor" href="#adeg"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adeg</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span>,</span>
@@ -1066,7 +1062,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adex">ADEX<a class="anchor" aria-label="anchor" href="#adex"></a>
+<h2 id="adex">
+<code>ADEX</code><a class="anchor" aria-label="anchor" href="#adex"></a>
 </h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adex</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span>,</span>
@@ -1275,7 +1272,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adlb">ADLB<a class="anchor" aria-label="anchor" href="#adlb"></a>
+<h2 id="adlb">
+<code>ADLB</code><a class="anchor" aria-label="anchor" href="#adlb"></a>
 </h2>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adlb</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span>,</span>
@@ -1579,7 +1577,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="admh">ADMH<a class="anchor" aria-label="anchor" href="#admh"></a>
+<h2 id="admh">
+<code>ADMH</code><a class="anchor" aria-label="anchor" href="#admh"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_admh</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span>,</span>
@@ -1662,7 +1661,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adqs">ADQS<a class="anchor" aria-label="anchor" href="#adqs"></a>
+<h2 id="adqs">
+<code>ADQS</code><a class="anchor" aria-label="anchor" href="#adqs"></a>
 </h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adqs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span>,</span>
@@ -1772,7 +1772,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adrs">ADRS<a class="anchor" aria-label="anchor" href="#adrs"></a>
+<h2 id="adrs">
+<code>ADRS</code><a class="anchor" aria-label="anchor" href="#adrs"></a>
 </h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adrs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1887,7 +1888,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="adtte">ADTTE<a class="anchor" aria-label="anchor" href="#adtte"></a>
+<h2 id="adtte">
+<code>ADTTE</code><a class="anchor" aria-label="anchor" href="#adtte"></a>
 </h2>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_adtte</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span><span class="op">)</span> <span class="op">{</span></span>
@@ -2012,7 +2014,8 @@ traceability.</p>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="advs">ADVS<a class="anchor" aria-label="anchor" href="#advs"></a>
+<h2 id="advs">
+<code>ADVS</code><a class="anchor" aria-label="anchor" href="#advs"></a>
 </h2>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">generate_advs</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">adsl</span> <span class="op">=</span> <span class="va">tmc_ex_adsl</span>,</span>
