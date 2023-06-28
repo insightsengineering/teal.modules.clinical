@@ -10,7 +10,7 @@
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @note
-#' The vitals plot supports horizontal lines for 6 PARAMCD levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
+#' The vitals plot supports horizontal lines for 6 `PARAMCD` levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
 #' and PULSE`)\cr when these levels are present in the analyzed dataset and the spelling matches.
 #' @keywords internal
 #'
@@ -174,14 +174,14 @@ template_vitals <- function(dataname = "ANL",
 
 #' Teal Module: Patient Profile Vitals Teal Module
 #'
-#' This teal module produces a patient profile vitals plot using ADaM datasets.
+#' This teal module produces a patient profile vitals plot using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{PARAMCD} column of the ADVS dataset.
+#' \code{PARAMCD} column of the `ADVS` dataset.
 #' @param aval ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AVAL} column of the ADVS dataset.
+#' \code{AVAL} column of the `ADVS` dataset.
 #' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' time variable to be represented in the vitals plot x-axis.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.

@@ -214,7 +214,7 @@ template_summary <- function(dataname,
 #' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
 #'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
 #'   `arm_var` levels are set to those used in the `parentname` dataset.
-#'   If `dataname` dataset and `parentname` dataset are the same (i.e. ADSL), then `drop_arm_levels` will always be
+#'   If `dataname` dataset and `parentname` dataset are the same (i.e. `ADSL`), then `drop_arm_levels` will always be
 #'   TRUE regardless of the user choice when `tm_t_summary` is called.
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,

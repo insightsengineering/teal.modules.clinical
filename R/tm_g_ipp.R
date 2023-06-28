@@ -161,7 +161,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' This teal module produces grid style Individual patient plot(s) that show
 #' trends in parameter values over time for each patient using data with
-#' ADaM structure.
+#' `ADaM` structure.
 #'
 #' @inheritParams template_g_ipp
 #' @inheritParams module_arguments

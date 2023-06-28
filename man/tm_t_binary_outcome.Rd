@@ -68,12 +68,12 @@ level, each within range of (0, 1).}
 
 \item{default_responses}{(\code{list} or \code{character}) \cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.
-A passed vector is broadcasted for all \code{paramcd} values. A passed \code{list} must be named
+A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named
 and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
 may contain default response values or named arrays \code{rsp} of default selected response
 values and \code{levels} of default level choices.}
 
-\item{rsp_table}{(\code{logical})\cr should the initial set-up of the module match RSPT01. (default FALSE)}
+\item{rsp_table}{(\code{logical})\cr should the initial set-up of the module match \code{RSPT01}. (default FALSE)}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}

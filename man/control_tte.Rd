@@ -13,13 +13,13 @@ control_tte(
 }
 \arguments{
 \item{surv_time}{(\code{list})\cr
-parameters for comparison, specified using \link[tern:control_surv_time]{tern::control_surv_time}.}
+parameters for comparison, specified using \code{\link[tern:control_surv_time]{tern::control_surv_time()}}.}
 
 \item{coxph}{(\code{list})\cr
-parameters for comparison, specified using \link[tern:control_coxph]{tern::control_coxph}.}
+parameters for comparison, specified using \code{\link[tern:control_coxph]{tern::control_coxph()}}.}
 
 \item{surv_timepoint}{(\code{list})\cr
-parameters for comparison, specified using \link[tern:control_surv_timepoint]{tern::control_surv_timepoint}.}
+parameters for comparison, specified using \code{\link[tern:control_surv_timepoint]{tern::control_surv_timepoint()}}.}
 }
 \description{
 Controls the arguments for Cox regressions and Survival analysis results.

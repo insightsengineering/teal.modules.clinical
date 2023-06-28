@@ -18,9 +18,9 @@ editor_options:
 
 ## Generating minimal data to test `teal.modules.clinical`
 
-The following script is used to create and save cached synthetic CDISC data to the `data/` directory to use in examples and tests in the `teal.modules.clinical` package. This script/vignette was initialized by Emily de la Rua in `tern`.
+The following script is used to create and save cached synthetic `CDISC` data to the `data/` directory to use in examples and tests in the `teal.modules.clinical` package. This script/vignette was initialized by Emily de la Rua in `tern`.
 
-_Disclaimer_: this vignette concerns mainly the development of minimal and stable test data and it is kept internal for feature traceability.
+_Disclaimer_: this vignette concerns mainly the development of minimal and stable test data and it is kept internal for feature tracking.
 
 ## Setup & Helper Functions
 
@@ -145,7 +145,7 @@ common_var_labels <- c(
 )
 ```
 
-## ADSL
+## `ADSL`
 
 ```{r adsl, eval=FALSE}
 generate_adsl <- function(N = 200) { # nolint
@@ -252,7 +252,7 @@ generate_adsl <- function(N = 200) { # nolint
 }
 ```
 
-## ADAE
+## `ADAE`
 
 ```{r adae, eval=FALSE}
 generate_adae <- function(adsl = tmc_ex_adsl,
@@ -434,7 +434,7 @@ generate_adae <- function(adsl = tmc_ex_adsl,
 }
 ```
 
-## ADAETTE
+## `ADAETTE`
 
 ```{r adaette, eval=FALSE}
 generate_adaette <- function(adsl = tmc_ex_adsl) {
@@ -609,7 +609,7 @@ generate_adaette <- function(adsl = tmc_ex_adsl) {
 }
 ```
 
-## ADCM
+## `ADCM`
 
 ```{r adcm, eval=FALSE}
 generate_adcm <- function(adsl = tmc_ex_adsl,
@@ -717,7 +717,7 @@ generate_adcm <- function(adsl = tmc_ex_adsl,
 }
 ```
 
-## ADEG
+## `ADEG`
 
 ```{r adeg, eval=FALSE}
 generate_adeg <- function(adsl = tmc_ex_adsl,
@@ -972,7 +972,7 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
 }
 ```
 
-## ADEX
+## `ADEX`
 
 ```{r adex, eval=FALSE}
 generate_adex <- function(adsl = tmc_ex_adsl,
@@ -1181,7 +1181,7 @@ generate_adex <- function(adsl = tmc_ex_adsl,
 }
 ```
 
-## ADLB
+## `ADLB`
 
 ```{r adlb, eval=FALSE}
 generate_adlb <- function(adsl = tmc_ex_adsl,
@@ -1485,7 +1485,7 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
 }
 ```
 
-## ADMH
+## `ADMH`
 
 ```{r admh, eval=FALSE}
 generate_admh <- function(adsl = tmc_ex_adsl,
@@ -1568,7 +1568,7 @@ generate_admh <- function(adsl = tmc_ex_adsl,
 }
 ```
 
-## ADQS
+## `ADQS`
 
 ```{r adqs, eval=FALSE}
 generate_adqs <- function(adsl = tmc_ex_adsl,
@@ -1678,7 +1678,7 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
 }
 ```
 
-## ADRS
+## `ADRS`
 
 ```{r adrs, eval=FALSE}
 generate_adrs <- function(adsl = tmc_ex_adsl) {
@@ -1793,7 +1793,7 @@ generate_adrs <- function(adsl = tmc_ex_adsl) {
 }
 ```
 
-## ADTTE
+## `ADTTE`
 
 ```{r adtte, eval=FALSE}
 generate_adtte <- function(adsl = tmc_ex_adsl) {
@@ -1918,7 +1918,7 @@ generate_adtte <- function(adsl = tmc_ex_adsl) {
 }
 ```
 
-## ADVS
+## `ADVS`
 
 ```{r advs, eval=FALSE}
 generate_advs <- function(adsl = tmc_ex_adsl,

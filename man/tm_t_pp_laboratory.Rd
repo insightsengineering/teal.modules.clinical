@@ -35,19 +35,19 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 Time variable to be represented in the laboratory table.}
 
 \item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AVAL} column of the ADLB dataset.}
+\code{AVAL} column of the \code{ADLB} dataset.}
 
 \item{avalu}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AVALU} column of the ADLB dataset.}
+\code{AVALU} column of the \code{ADLB} dataset.}
 
 \item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{PARAM} column of the ADLB dataset.}
+\code{PARAM} column of the \code{ADLB} dataset.}
 
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{PARAMCD} column of the ADLB dataset.}
+\code{PARAMCD} column of the \code{ADLB} dataset.}
 
 \item{anrind}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ANRIND} column of the ADLB dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".}
+\code{ANRIND} column of the \code{ADLB} dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
@@ -58,7 +58,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
-This teal module produces a patient profile laboratory table using ADaM datasets.
+This teal module produces a patient profile laboratory table using \code{ADaM} datasets.
 }
 \examples{
 adsl <- tmc_ex_adsl

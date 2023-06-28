@@ -6,7 +6,7 @@
 #'  the table row for "Total number of deaths".
 #' @param dcsreas_var (`character`)\cr
 #'   variable for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"`
-#'   are summarized in the table row for "Total number of patients withdrawn from study due to an AE".
+#'   are summarized in the table row for `"Total number of patients withdrawn from study due to an AE"`.
 #' @param flag_var_anl (`character`)\cr
 #'   flag variable from `dataset` used to count adverse event sub-groups (e.g. Serious
 #'   events, Related events, etc.). Variable labels are used as table row names if they exist.
@@ -482,7 +482,7 @@ template_events_summary <- function(anl_name,
 #'  the table row for "Total number of deaths".
 #' @param dcsreas_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable
 #'   for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"` are
-#'   summarized in the table row for "Total number of patients withdrawn from study due to an AE".
+#'   summarized in the table row for `"Total number of patients withdrawn from study due to an AE"`.
 #' @param flag_var_anl ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event
 #'   sub-groups (e.g. Serious events, Related events, etc.). Variable labels are used

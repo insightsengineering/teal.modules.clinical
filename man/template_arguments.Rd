@@ -86,7 +86,7 @@ variable names that can be used as \code{visit} variable. Must be a factor in \c
 with arm. If the interaction is not needed, the default option is \code{NULL}.}
 
 \item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select
-the specific ANCOVA results. If the interaction is not needed, the default option is \code{FALSE}.}
+the specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{by_vars}{(\code{character})\cr
 variable names used to split the summary by rows.}

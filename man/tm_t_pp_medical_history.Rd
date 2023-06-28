@@ -29,13 +29,13 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
 \item{mhterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{MHTERM} column of the ADMH dataset.}
+\code{MHTERM} column of the \code{ADMH} dataset.}
 
 \item{mhbodsys}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{MHBODSYS} column of the ADMH dataset.}
+\code{MHBODSYS} column of the \code{ADMH} dataset.}
 
 \item{mhdistat}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{MHDISTAT} column of the ADMH dataset.}
+\code{MHDISTAT} column of the \code{ADMH} dataset.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.
@@ -46,7 +46,7 @@ with text placed after the output to put the output into context. For example
 the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
-This teal module produces a patient medical history report using ADaM datasets.
+This teal module produces a patient medical history report using \code{ADaM} datasets.
 }
 \examples{
 adsl <- tmc_ex_adsl

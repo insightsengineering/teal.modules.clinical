@@ -21,7 +21,7 @@ template_a_gee(
 )
 }
 \arguments{
-\item{output_table}{(\code{character})\cr type of output table ("t_gee_cov", "t_gee_coef", "t_gee_lsmeans")}
+\item{output_table}{(\code{character})\cr type of output table (\verb{"t_gee_cov", "t_gee_coef", "t_gee_lsmeans"})}
 
 \item{data_model_fit}{(\code{character})\cr dataset used to fit the model by \code{tern.gee::fit_gee()}}
 

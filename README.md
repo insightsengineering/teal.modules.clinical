@@ -4,7 +4,7 @@
 [![Check 🛠](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/check.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/main/unit-test-report/) [![Docs 📚](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/)
 
 ![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.clinical?style=social)
-![GitHub Repo stars](https://img.shields.io/github/stars/insightsengineering/teal.modules.clinical?style=social)
+![GitHub repo stars](https://img.shields.io/github/stars/insightsengineering/teal.modules.clinical?style=social)
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/insightsengineering/teal.modules.clinical)
 ![GitHub contributors](https://img.shields.io/github/contributors/insightsengineering/teal.modules.clinical)
@@ -17,7 +17,7 @@
 [![Open Issues](https://img.shields.io/github/issues-raw/insightsengineering/teal.modules.clinical?color=red&label=open%20issues)](https://github.com/insightsengineering/teal.modules.clinical/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
 <!-- end badges -->
 
-This package contains a set of standard `teal` modules to be used with CDISC data in order to generate many of the standard outputs used in clinical trials.
+This package contains a set of standard `teal` modules to be used with `CDISC` data in order to generate many of the standard outputs used in clinical trials.
 
 These modules include, but are not limited to:
 
@@ -25,10 +25,10 @@ These modules include, but are not limited to:
 -   Data visualizations:
     -   forest plots (`tm_g_forest_rsp`/`tm_g_forest_tte`)
     -   line plots (`tm_g_lineplot`)
-    -   Kaplan-Meier plots (`tm_g_km`)
+    -   `Kaplan-Meier` plots (`tm_g_km`)
     -   ...
 -   Statistical model fits:
-    -   MMRM (`tm_a_mmrm`)
+    -   `MMRM` (`tm_a_mmrm`)
     -   logistic regression (`tm_t_logistic`)
     -   Cox regression (`tm_t_coxreg`)
     -   ...
