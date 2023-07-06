@@ -246,7 +246,7 @@ template_events <- function(dataname,
                 nonunique = nonunique_label
               )
             ) %>%
-            count_occurrences(vars = llt, .indent_mods = -1L) %>%
+            count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
             append_varlabels(dataname, llt, indent = 1L),
         env = list(
           dataname = as.name(dataname),

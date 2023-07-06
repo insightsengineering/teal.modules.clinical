@@ -29,8 +29,8 @@
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adae, "AEDECOD", 
-          indent = 1L)
+          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
+          "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -86,8 +86,8 @@
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adae, "AEDECOD", 
-          indent = 1L)
+          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
+          "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -181,8 +181,8 @@
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adae, "AEDECOD", 
-          indent = 1L)
+          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
+          "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -230,8 +230,8 @@
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adae, "AEDECOD", 
-          indent = 1L)
+          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
+          "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -296,8 +296,8 @@
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adae, "AEDECOD", 
-          indent = 1L)
+          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
+          "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
