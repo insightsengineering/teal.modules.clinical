@@ -539,7 +539,7 @@ srv_g_barchart_simple <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Barchart Plot")
         card$append_text("Barchart Plot", "header2")
         if (with_filter) {

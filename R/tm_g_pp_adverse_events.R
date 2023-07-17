@@ -559,7 +559,7 @@ srv_g_adverse_events <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Patient Profile Adverse Events Plot")
         card$append_text("Patient Profile Adverse Events Plot", "header2")
         if (with_filter) {
