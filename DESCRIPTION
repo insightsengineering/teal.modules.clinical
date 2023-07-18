@@ -34,7 +34,6 @@ Imports:
     checkmate,
     dplyr,
     DT,
-    formatters (>= 0.5.0),
     ggplot2,
     ggrepel,
     grid,

@@ -115,7 +115,7 @@ adsl <- tmc_ex_adsl \%>\%
     DTHFL = dplyr::case_when( # nolint
       !is.na(DTHDT) ~ "Y",
       TRUE ~ ""
-    ) \%>\% formatters::with_label("Subject Death Flag")
+    ) \%>\% teal.widgets::formatters_with_label("Subject Death Flag")
   )
 adae <- tmc_ex_adae
 
@@ -137,7 +137,7 @@ add_event_flags <- function(dat) {
     TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
     TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
   )
-  formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+  teal.widgets::formatters_var_labels(dat)[names(column_labels)] <- as.character(column_labels)
   dat
 }
 

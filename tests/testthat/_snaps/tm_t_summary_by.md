@@ -21,7 +21,7 @@
       lyt <- rtables::basic_table(title = "Summary Table for AVAL by AVISIT") %>% 
           rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", 
               first = FALSE)) %>% rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]], 
+          split_label = teal.widgets::formatters_var_labels(adlb, fill = FALSE)[["AVISIT"]], 
           split_fun = split_fun, label_pos = "topleft") %>% summarize_vars(vars = "AVAL", 
           na.rm = FALSE, na_level = "<Missing>", denom = "N_col", .stats = c("n", 
               "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
@@ -56,7 +56,7 @@
       lyt <- rtables::basic_table(title = "Summary Table for AVAL, CHG by AVISIT") %>% 
           rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", 
               first = FALSE)) %>% rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]], 
+          split_label = teal.widgets::formatters_var_labels(adlb, fill = FALSE)[["AVISIT"]], 
           split_fun = split_fun, label_pos = "topleft") %>% split_cols_by_multivar(vars = c("AVAL", 
           "CHG")) %>% summarize_colvars(vars = c("AVAL", "CHG"), na.rm = FALSE, 
           denom = "N_col", .stats = c("n", "mean_sd", "mean_ci", "median", 
@@ -97,10 +97,10 @@
       $layout
       lyt <- rtables::basic_table(title = "Summary Table for AVAL by SEX, COUNTRY") %>% 
           rtables::split_cols_by("ARM") %>% rtables::add_colcounts() %>% 
-          rtables::split_rows_by("SEX", split_label = formatters::var_labels(adsl, 
+          rtables::split_rows_by("SEX", split_label = teal.widgets::formatters_var_labels(adsl, 
               fill = FALSE)[["SEX"]], split_fun = split_fun, label_pos = "topleft") %>% 
           rtables::summarize_row_groups(var = "USUBJID", cfun = cfun_unique) %>% 
-          rtables::split_rows_by("COUNTRY", split_label = formatters::var_labels(adsl, 
+          rtables::split_rows_by("COUNTRY", split_label = teal.widgets::formatters_var_labels(adsl, 
               fill = FALSE)[["COUNTRY"]], split_fun = split_fun, label_pos = "topleft") %>% 
           rtables::summarize_row_groups(var = "USUBJID", cfun = cfun_unique)
       
@@ -134,7 +134,7 @@
       lyt <- rtables::basic_table(title = "Summary Table for AVAL by AVISIT") %>% 
           rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", 
               first = FALSE)) %>% rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]], 
+          split_label = teal.widgets::formatters_var_labels(adlb, fill = FALSE)[["AVISIT"]], 
           split_fun = split_fun, label_pos = "topleft") %>% summarize_vars(vars = "AVAL", 
           na.rm = FALSE, na_level = "<Missing>", denom = "N_col", .stats = c("n", 
               "count_fraction"))
@@ -169,7 +169,7 @@
       lyt <- rtables::basic_table(title = "Summary Table for AVAL by AVISIT") %>% 
           rtables::split_cols_by("ARM", split_fun = add_overall_level("All Patients", 
               first = FALSE)) %>% rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]], 
+          split_label = teal.widgets::formatters_var_labels(adlb, fill = FALSE)[["AVISIT"]], 
           split_fun = split_fun, label_pos = "topleft") %>% summarize_vars(vars = "AVAL", 
           na.rm = FALSE, na_level = "<Missing>", denom = "N_col", .stats = c("n", 
               "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 

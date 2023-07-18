@@ -144,7 +144,7 @@ template_exposure <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = formatters::var_labels(dataname[row_by_var], fill = TRUE),
+    expr = teal.widgets::formatters_var_labels(dataname[row_by_var], fill = TRUE),
     env = list(
       dataname = as.name(dataname),
       row_by_var = row_by_var
@@ -216,7 +216,7 @@ template_exposure <- function(parentname,
 #' adex <- tmc_ex_adex
 #'
 #' set.seed(1, kind = "Mersenne-Twister")
-#' labels <- formatters::var_labels(adex, fill = FALSE)
+#' labels <- teal.widgets::formatters_var_labels(adex, fill = FALSE)
 #' adex <- adex %>%
 #'   dplyr::distinct(USUBJID, .keep_all = TRUE) %>%
 #'   dplyr::mutate(
@@ -226,7 +226,7 @@ template_exposure <- function(parentname,
 #'     AVALU = "Days"
 #'   ) %>%
 #'   dplyr::bind_rows(adex)
-#' formatters::var_labels(adex) <- labels
+#' teal.widgets::formatters_var_labels(adex) <- labels
 #'
 #' app <- init(
 #'   data = cdisc_data(

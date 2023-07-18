@@ -155,7 +155,7 @@ template_abnormality <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = formatters::var_labels(dataname, fill = FALSE)[[by_var]],
+      expr = teal.widgets::formatters_var_labels(dataname, fill = FALSE)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -244,7 +244,7 @@ template_abnormality <- function(parentname,
 #'     ONTRTFL = dplyr::case_when(
 #'       AVISIT %in% c("SCREENING", "BASELINE") ~ "",
 #'       TRUE ~ "Y"
-#'     ) %>% formatters::with_label("On Treatment Record Flag")
+#'     ) %>% teal.widgets::formatters_with_label("On Treatment Record Flag")
 #'   )
 #'
 #' app <- init(

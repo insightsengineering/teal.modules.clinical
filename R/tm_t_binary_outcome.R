@@ -397,7 +397,7 @@ template_binary_outcome <- function(dataname,
 #' adrs <- tmc_ex_adrs %>%
 #'   dplyr::mutate(
 #'     AVALC = tern::d_onco_rsp_label(AVALC) %>%
-#'       formatters::with_label("Character Result/Finding")
+#'       teal.widgets::formatters_with_label("Character Result/Finding")
 #'   ) %>%
 #'   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
