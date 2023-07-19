@@ -683,7 +683,7 @@ srv_g_therapy <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Patient Profile Therapy Plot")
         card$append_text("Patient Profile Therapy Plot", "header2")
         if (with_filter) {

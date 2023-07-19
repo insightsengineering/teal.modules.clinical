@@ -946,7 +946,7 @@ srv_ancova <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("ANCOVA")
         card$append_text("ANCOVA", "header2")
         card$append_text("Analysis of Covariance", "header3")

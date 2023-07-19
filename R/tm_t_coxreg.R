@@ -1049,7 +1049,7 @@ srv_t_coxreg <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Cox Regression Table")
         card$append_text("Cox Regression Table", "header2")
         if (with_filter) {

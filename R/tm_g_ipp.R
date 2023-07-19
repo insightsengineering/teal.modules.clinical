@@ -612,7 +612,7 @@ srv_g_ipp <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Individual Patient Plot")
         card$append_text("Individual Patient Plot", "header2")
         if (with_filter) {

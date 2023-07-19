@@ -966,7 +966,7 @@ srv_t_events_summary <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Adverse Events Summary Table")
         card$append_text("Adverse Events Summary Table", "header2")
         if (with_filter) {
