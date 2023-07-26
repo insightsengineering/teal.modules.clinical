@@ -51,21 +51,17 @@ Please see [teal gallery](https://insightsengineering.github.io/teal.gallery/mai
 
 ## Installation
 
-You can install the latest released version of this package directly from GitHub by running the following:
+From July 2023 `insightsengineering` packages are available on [r-universe](https://r-universe.dev/).
 
-``` r
-if (!require("remotes")) install.packages("remotes")
-remotes::install_github("insightsengineering/teal.modules.clinical@*release")
+```r
+# stable versions
+install.packages('teal.modules.clinical', repos = c('https://insightsengineering.r-universe.dev', 'https://cloud.r-project.org'))
+
+# beta versions
+install.packages('teal.modules.clinical', repos = c('https://pharmaverse.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
-Note that it is recommended that you [create and use a `GITHUB_PAT`](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) when installing the latest version of this package from GitHub.
-
-You may need to manually install all of this package's dependencies prior to installing this package, as without the `dependencies = FALSE` argument to `install_github` it may produce an error.
-
-A stable release of all NEST packages from October 2022 is available [here](https://github.com/insightsengineering/depository#readme).
-
 See package vignettes `browseVignettes(package = "teal.modules.clinical")` for usage of this package.
-
 ## Acknowledgment
 
 This package is the result of the joint efforts of many developers and stakeholders. We would like to thank everyone who has contributed so far!
