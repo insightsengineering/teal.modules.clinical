@@ -169,7 +169,7 @@ template_events_by_grade <- function(dataname,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = teal.widgets::formatters_var_labels(dataname[term_var])
+            split_label = teal.data::formatters_var_labels(dataname[term_var])
           ) %>%
           summarize_num_patients(
             var = id,
@@ -203,7 +203,7 @@ template_events_by_grade <- function(dataname,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = teal.widgets::formatters_var_labels(dataname[hlt])
+            split_label = teal.data::formatters_var_labels(dataname[hlt])
           ) %>%
           summarize_occurrences_by_grade(
             var = grade,
@@ -216,7 +216,7 @@ template_events_by_grade <- function(dataname,
             indent_mod = -1L,
             split_fun = split_fun(grade),
             label_pos = "topleft",
-            split_label = teal.widgets::formatters_var_labels(dataname[llt])
+            split_label = teal.data::formatters_var_labels(dataname[llt])
           ) %>%
           summarize_num_patients(
             var = id,
@@ -784,10 +784,10 @@ template_events_col_by_grade <- function(dataname,
 #' @export
 #' @examples
 #' adsl <- tmc_ex_adsl
-#' lbls_adae <- teal.widgets::formatters_var_labels(tmc_ex_adae)
+#' lbls_adae <- teal.data::formatters_var_labels(tmc_ex_adae)
 #' adae <- tmc_ex_adae %>%
 #'   dplyr::mutate_if(is.character, as.factor) # be certain of having factors
-#' teal.widgets::formatters_var_labels(adae) <- lbls_adae
+#' teal.data::formatters_var_labels(adae) <- lbls_adae
 #'
 #' app <- init(
 #'   data = cdisc_data(

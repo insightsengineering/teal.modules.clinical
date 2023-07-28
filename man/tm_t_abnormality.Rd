@@ -115,7 +115,7 @@ adlb <- tmc_ex_adlb \%>\%
     ONTRTFL = dplyr::case_when(
       AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
       TRUE ~ "Y"
-    ) \%>\% teal.widgets::formatters_with_label("On Treatment Record Flag")
+    ) \%>\% teal.data::formatters_with_label("On Treatment Record Flag")
   )
 
 app <- init(

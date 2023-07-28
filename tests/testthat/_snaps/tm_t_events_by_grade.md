@@ -25,11 +25,11 @@
           rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
           grade_groups = grade_groups) %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEBODSYS"])) %>% 
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups) %>% 
           rtables::split_rows_by("AEDECOD", child_labels = "visible", 
               nested = TRUE, indent_mod = -1L, split_fun = split_fun("AESEV"), 
-              label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEDECOD"])) %>% 
+              label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEDECOD"])) %>% 
           summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -")) %>% 
           count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>% 
           append_varlabels(adae, "AESEV", indent = 2L)
@@ -80,11 +80,11 @@
           rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
           grade_groups = grade_groups) %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEBODSYS"])) %>% 
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups) %>% 
           rtables::split_rows_by("AEDECOD", child_labels = "visible", 
               nested = TRUE, indent_mod = -1L, split_fun = split_fun("AESEV"), 
-              label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEDECOD"])) %>% 
+              label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEDECOD"])) %>% 
           summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -")) %>% 
           count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>% 
           append_varlabels(adae, "AESEV", indent = 2L)
@@ -138,11 +138,11 @@
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups) %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = TRUE, indent_mod = -1L, split_fun = split_fun("AESEV"), 
-              label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEBODSYS"])) %>% 
+              label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEBODSYS"])) %>% 
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups) %>% 
           rtables::split_rows_by("AEDECOD", child_labels = "visible", 
               nested = TRUE, indent_mod = -1L, split_fun = split_fun("AESEV"), 
-              label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEDECOD"])) %>% 
+              label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEDECOD"])) %>% 
           summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -")) %>% 
           count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>% 
           append_varlabels(adae, "AESEV", indent = 2L)
@@ -191,7 +191,7 @@
           rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
           grade_groups = grade_groups) %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -")) %>% 
           count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>% 
           append_varlabels(adae, "AESEV", indent = 1L)

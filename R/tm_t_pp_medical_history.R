@@ -25,7 +25,7 @@ template_medical_history <- function(dataname = "ANL",
   table_list <- add_expr(
     list(),
     substitute(expr = {
-      labels <- teal.widgets::formatters_var_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
+      labels <- teal.data::formatters_var_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
       mhbodsys_label <- labels[mhbodsys_char]
 
       result_raw <-

@@ -25,7 +25,7 @@
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
@@ -82,7 +82,7 @@
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
@@ -177,7 +177,7 @@
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
@@ -226,7 +226,7 @@
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
@@ -292,7 +292,7 @@
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = teal.widgets::formatters_var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::formatters_var_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 

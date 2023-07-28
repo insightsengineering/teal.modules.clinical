@@ -90,10 +90,10 @@ Teal Module: Events by Grade
 }
 \examples{
 adsl <- tmc_ex_adsl
-lbls_adae <- teal.widgets::formatters_var_labels(tmc_ex_adae)
+lbls_adae <- teal.data::formatters_var_labels(tmc_ex_adae)
 adae <- tmc_ex_adae \%>\%
   dplyr::mutate_if(is.character, as.factor) # be certain of having factors
-teal.widgets::formatters_var_labels(adae) <- lbls_adae
+teal.data::formatters_var_labels(adae) <- lbls_adae
 
 app <- init(
   data = cdisc_data(

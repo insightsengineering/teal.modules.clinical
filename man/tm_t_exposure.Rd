@@ -99,7 +99,7 @@ adsl <- tmc_ex_adsl
 adex <- tmc_ex_adex
 
 set.seed(1, kind = "Mersenne-Twister")
-labels <- teal.widgets::formatters_var_labels(adex, fill = FALSE)
+labels <- teal.data::formatters_var_labels(adex, fill = FALSE)
 adex <- adex \%>\%
   dplyr::distinct(USUBJID, .keep_all = TRUE) \%>\%
   dplyr::mutate(
@@ -109,7 +109,7 @@ adex <- adex \%>\%
     AVALU = "Days"
   ) \%>\%
   dplyr::bind_rows(adex)
-teal.widgets::formatters_var_labels(adex) <- labels
+teal.data::formatters_var_labels(adex) <- labels
 
 app <- init(
   data = cdisc_data(

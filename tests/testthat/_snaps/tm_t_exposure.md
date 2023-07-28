@@ -20,7 +20,7 @@
                   " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
                   sprintf("(%s)", "Days")))), custom_label = "Total Number of Patients and Patient Time*") %>% 
           analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE) %>% 
-          append_topleft(c(teal.widgets::formatters_var_labels(adex["RACE"], fill = TRUE)))
+          append_topleft(c(teal.data::formatters_var_labels(adex["RACE"], fill = TRUE)))
       
       $table
       {
@@ -51,7 +51,7 @@
                   " ", paste("Sum of", "myTDURD"), paste("Sum of", 
                   "myTDURD", sprintf("(%s)", "Days")))), custom_label = "Total Number of Patients and Patient Time*") %>% 
           analyze_patients_exposure_in_cols(var = "myRACE", col_split = FALSE) %>% 
-          append_topleft(c(teal.widgets::formatters_var_labels(myadex["myRACE"], 
+          append_topleft(c(teal.data::formatters_var_labels(myadex["myRACE"], 
               fill = TRUE)))
       
       $table
@@ -83,7 +83,7 @@
                   " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
                   sprintf("(%s)", "Days")))), custom_label = "Total Number of Patients and Patient Time*") %>% 
           analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE) %>% 
-          append_topleft(c(teal.widgets::formatters_var_labels(adex["RACE"], fill = TRUE)))
+          append_topleft(c(teal.data::formatters_var_labels(adex["RACE"], fill = TRUE)))
       
       $table
       {

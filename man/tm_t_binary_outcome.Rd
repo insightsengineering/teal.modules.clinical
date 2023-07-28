@@ -127,7 +127,7 @@ adsl <- tmc_ex_adsl
 adrs <- tmc_ex_adrs \%>\%
   dplyr::mutate(
     AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
-      teal.widgets::formatters_with_label("Character Result/Finding")
+      teal.data::formatters_with_label("Character Result/Finding")
   ) \%>\%
   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 

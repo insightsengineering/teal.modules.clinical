@@ -111,12 +111,12 @@ adcm <- tmc_ex_adcm \%>\% dplyr::mutate(
     CMCAT == "medcl B" ~ 20,
     CMCAT == "medcl C" ~ 150,
     TRUE ~ 1
-  ) \%>\% teal.widgets::formatters_with_label("Study Day of Start of Medication"),
+  ) \%>\% teal.data::formatters_with_label("Study Day of Start of Medication"),
   CMENDY = dplyr::case_when(
     CMCAT == "medcl B" ~ 700,
     CMCAT == "medcl C" ~ 1000,
     TRUE ~ 500
-  ) \%>\% teal.widgets::formatters_with_label("Study Day of End of Medication"),
+  ) \%>\% teal.data::formatters_with_label("Study Day of End of Medication"),
   CMASTDTM = ASTDTM,
   CMAENDTM = AENDTM
 )
