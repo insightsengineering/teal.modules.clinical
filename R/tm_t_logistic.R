@@ -714,7 +714,7 @@ srv_t_logistic <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Logistic Regression Table")
         card$append_text("Logistic Regression Table", "header2")
         if (with_filter) {

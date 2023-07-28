@@ -898,7 +898,7 @@ srv_g_patient_timeline <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Patient Profile Timeline Plot")
         card$append_text("Patient Profile Timeline Plot", "header2")
         if (with_filter) {

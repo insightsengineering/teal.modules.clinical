@@ -794,7 +794,7 @@ srv_t_events_byterm <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Events by Term Table")
         card$append_text("Events by Term Table", "header2")
         if (with_filter) {
