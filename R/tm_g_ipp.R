@@ -586,7 +586,7 @@ srv_g_ipp <- function(id,
     })
 
     # Outputs to render.
-    plot_r <- shiny::reactive(teal.code::get_var(all_q(), "plot"),)
+    plot_r <- shiny::reactive(teal.code::get_var(all_q(), "plot"))
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(

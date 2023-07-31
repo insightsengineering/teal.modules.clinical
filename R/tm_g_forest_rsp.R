@@ -694,7 +694,7 @@ srv_g_forest_rsp <- function(id,
       teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(teal.code::get_var(all_q(), "p"),)
+    plot_r <- shiny::reactive(teal.code::get_var(all_q(), "p"))
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",

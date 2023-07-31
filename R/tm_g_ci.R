@@ -460,7 +460,7 @@ srv_g_ci <- function(id, # nolint
       teal.code::eval_code(anl_q(), list_calls)
     })
 
-    plot_r <- shiny::reactive(teal.code::get_var(anl_q(), "gg"),)
+    plot_r <- shiny::reactive(teal.code::get_var(anl_q(), "gg"))
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
