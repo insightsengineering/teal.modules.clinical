@@ -527,13 +527,13 @@ srv_g_adverse_events <- function(id,
       teal.code::eval_code(qenv2, as.expression(calls))
     })
     output$table <- DT::renderDataTable(
-      expr = all_q()[["table"]],
+      expr = teal.code::get_var(all_q(), "table"),
       options = list(pageLength = input$table_rows)
     )
 
     plot_r <- shiny::reactive({
       shiny::req(iv_r()$is_valid())
-      all_q()[["plot"]]
+      teal.code::get_var(all_q(), "plot")
     })
 
     pws <- teal.widgets::plot_with_settings_srv(

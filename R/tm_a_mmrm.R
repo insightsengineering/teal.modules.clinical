@@ -1396,8 +1396,8 @@ srv_mmrm <- function(id,
 
     plot_r <- shiny::reactive({
       switch(input$output_function,
-        g_mmrm_lsmeans = plot_q()[["lsmeans_plot"]],
-        g_mmrm_diagnostic = plot_q()[["diagnostic_plot"]]
+        g_mmrm_lsmeans = teal.code::get_var(plot_q(), "lsmeans_plot"),
+        g_mmrm_diagnostic = teal.code::get_var(plot_q(), "diagnostic_plot")
       )
     })
 

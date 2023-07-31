@@ -504,7 +504,7 @@ srv_g_vitals <- function(id,
         teal.code::eval_code(as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["result_plot"]])
+    plot_r <- shiny::reactive(teal.data::get_var(all_q(), "result_plot"))
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "vitals_plot",

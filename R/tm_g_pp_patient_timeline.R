@@ -793,7 +793,7 @@ srv_g_patient_timeline <- function(id,
       ae_chart_vars_null <- any(vapply(list(aeterm, aetime_start, aetime_end), is.null, FUN.VALUE = logical(1)))
       ds_chart_vars_null <- any(vapply(list(cmdecod, dstime_start, dstime_end), is.null, FUN.VALUE = logical(1)))
 
-      p_timeline_data <- anl_q()[["ANL"]]
+      p_timeline_data <- teal.code::get_var(anl_q(), "ANL")
       # time variables can not be NA
       p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
 
@@ -873,7 +873,7 @@ srv_g_patient_timeline <- function(id,
         teal.code::eval_code(as.expression(patient_timeline_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["patient_timeline_plot"]])
+    plot_r <- shiny::reactive(teal.code::get_var(all_q(), "patient_timeline_plot"))
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "patient_timeline_plot",

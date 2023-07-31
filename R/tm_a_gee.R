@@ -525,7 +525,7 @@ srv_gee <- function(id,
     })
 
     table_r <- shiny::reactive({
-      table_q()[["result_table"]]
+      teal.code::get_var(table_q(), "result_table")
     })
 
     teal.widgets::table_with_settings_srv(

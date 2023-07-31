@@ -623,7 +623,7 @@ srv_g_lineplot <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["plot"]])
+    plot_r <- shiny::reactive(teal.code::get_var(all_q(), "plot"))
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(

@@ -537,7 +537,7 @@ srv_g_forest_rsp <- function(id,
       ),
       handlerExpr = {
         shiny::req(anl_q())
-        anl <- anl_q()[["ANL"]]
+        anl <- teal.code::get_var(anl_q(), "ANL")
         aval_var <- anl_inputs()$columns_source$aval_var
         paramcd_level <- unlist(anl_inputs()$filter_info$paramcd[[1]]$selected)
         if (length(paramcd_level) == 0) {
@@ -694,7 +694,7 @@ srv_g_forest_rsp <- function(id,
       teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["p"]])
+    plot_r <- shiny::reactive(teal.code::get_var(all_q(), "p"),)
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",

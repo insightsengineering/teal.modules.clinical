@@ -412,7 +412,8 @@ srv_g_ci <- function(id, # nolint
 
     all_q <- shiny::reactive({
       teal::validate_inputs(iv_r())
-      teal::validate_has_data(anl_q()[["ANL"]], min_nrow = 2)
+      teal::validate_has_data(teal.code::get_var(anl_q(), "ANL"),
+                              min_nrow = 2)
 
       x <- anl_inputs()$columns_source$x_var
       y <- anl_inputs()$columns_source$y_var
@@ -420,7 +421,7 @@ srv_g_ci <- function(id, # nolint
 
       shiny::validate(
         shiny::need(
-          !all(is.na(anl_q()[["ANL"]][[y]])),
+          !all(is.na(teal.code::get_var(anl_q(), "ANL")[[y]])),
           "No valid data. Please check the filtering option for analysis value (y axis)"
         )
       )
@@ -459,7 +460,7 @@ srv_g_ci <- function(id, # nolint
       teal.code::eval_code(anl_q(), list_calls)
     })
 
-    plot_r <- shiny::reactive(all_q()[["gg"]])
+    plot_r <- shiny::reactive(teal.code::get_var(anl_q(), "gg"),)
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",

@@ -487,11 +487,11 @@ srv_g_barchart_simple <- function(id,
       teal.code::eval_code(qenv3, code = quote(print(plot)))
     })
 
-    plot_r <- shiny::reactive(all_q()[["plot"]])
+    plot_r <- shiny::reactive(teal.code::get_var(all_q(), "plot"))
 
     output$table <- shiny::renderTable({
       shiny::req(iv_r()$is_valid())
-      all_q()[["counts"]]
+      teal.code::get_var(all_q(), "counts")
     })
 
     # get grouping variables

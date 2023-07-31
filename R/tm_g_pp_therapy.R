@@ -650,14 +650,14 @@ srv_g_therapy <- function(id,
 
     output$therapy_table <- DT::renderDataTable(
       expr = {
-        all_q()[["therapy_table"]]
+        teal.data::get_var(all_q(), "therapy_table")
       },
       options = list(pageLength = input$therapy_table_rows)
     )
 
     plot_r <- shiny::reactive({
       shiny::req(iv_r()$is_valid())
-      all_q()[["therapy_plot"]]
+      teal.data::get_var(all_q(), "therapy_plot")
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
