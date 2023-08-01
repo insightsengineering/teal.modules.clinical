@@ -413,7 +413,8 @@ srv_g_ci <- function(id, # nolint
     all_q <- shiny::reactive({
       teal::validate_inputs(iv_r())
       teal::validate_has_data(teal.code::get_var(anl_q(), "ANL"),
-                              min_nrow = 2)
+        min_nrow = 2
+      )
 
       x <- anl_inputs()$columns_source$x_var
       y <- anl_inputs()$columns_source$y_var
