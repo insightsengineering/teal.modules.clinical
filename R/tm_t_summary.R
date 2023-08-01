@@ -317,7 +317,7 @@ tm_t_summary <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = dataname
+    datanames = dataname
   )
 }
 

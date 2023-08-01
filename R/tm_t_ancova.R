@@ -547,7 +547,7 @@ tm_t_ancova <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 

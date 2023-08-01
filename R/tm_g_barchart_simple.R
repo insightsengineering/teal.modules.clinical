@@ -176,7 +176,7 @@ tm_g_barchart_simple <- function(x = NULL,
       plot_width = plot_width,
       ggplot2_args = ggplot2_args
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 

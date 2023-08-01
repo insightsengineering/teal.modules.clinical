@@ -155,7 +155,7 @@ tm_t_pp_medical_history <- function(label,
         patient_col = patient_col
       )
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 

@@ -283,7 +283,7 @@ tm_g_pp_vitals <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 

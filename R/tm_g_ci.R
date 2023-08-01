@@ -304,7 +304,7 @@ tm_g_ci <- function(label,
     ),
     ui = ui_g_ci,
     ui_args = args,
-    filters = "all"
+    datanames = "all"
   )
 }
 
