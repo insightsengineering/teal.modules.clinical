@@ -331,7 +331,7 @@ tm_g_ipp <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 

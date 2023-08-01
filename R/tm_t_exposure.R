@@ -346,7 +346,7 @@ tm_t_exposure <- function(label,
         paramcd_label = paramcd_label
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 

@@ -108,7 +108,7 @@ tm_t_pp_basic_info <- function(label,
         patient_col = patient_col
       )
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 

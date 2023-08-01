@@ -360,7 +360,7 @@ tm_g_km <- function(label,
         plot_width = plot_width
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
