@@ -5,6 +5,7 @@
 #'
 #' @import teal
 #' @import tern
+#' @import teal.code
 #' @importFrom magrittr %>%
 #' @importFrom methods is
 #' @importFrom rlang := .data
