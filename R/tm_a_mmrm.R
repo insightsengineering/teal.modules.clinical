@@ -1437,7 +1437,7 @@ srv_mmrm <- function(id,
         card$set_name("MMRM")
         card$append_text("Mixed Model Repeated Measurements (MMRM) Analysis", "header2")
         card$append_text(
-          paste0(
+          paste(
             "Mixed Models procedure analyzes results from repeated measures designs",
             "in which the outcome is continuous and measured at fixed time points"
           ),
