@@ -870,7 +870,7 @@ srv_g_patient_timeline <- function(id,
           )
         )
       ) %>%
-        teal.code::eval_code(as.expression(patient_timeline_calls))
+        teal.code::eval_code(paste(unlist(patient_timeline_calls), collapse = "\n"))
     })
 
     plot_r <- shiny::reactive(all_q()[["patient_timeline_plot"]])
