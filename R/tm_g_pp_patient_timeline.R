@@ -317,7 +317,7 @@ template_patient_timeline <- function(dataname = "ANL",
     )
   }
 
-  y$chart <- bracket_expr(chart_list)
+  y$chart <- chart_list
   y
 }
 
