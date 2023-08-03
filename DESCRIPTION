@@ -35,7 +35,7 @@ Imports:
     dplyr,
     DT,
     formatters (>= 0.5.0),
-    ggplot2 (>= 3.4.2),
+    ggplot2 (>= 3.4.0),
     ggrepel,
     grid,
     lifecycle,
