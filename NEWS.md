@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.15.9011
+# teal.modules.clinical 0.8.15.9012
 
 ### Enhancements
 * Added more informative error message when grade mapping error occurs in `tm_t_abnormality_by_worst_grade`.
