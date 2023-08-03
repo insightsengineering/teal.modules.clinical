@@ -1,9 +1,10 @@
-# teal.modules.clinical 0.8.15.9011
+# teal.modules.clinical 0.8.15.9013
 
 ### Enhancements
 * Added more informative error message when grade mapping error occurs in `tm_t_abnormality_by_worst_grade`.
 * Fixed label indentation in `tm_t_abnormality_by_worst_grade`.
 * Added `total_label` argument to enable customization of the "All Patients" column/row label in the following modules: `tm_a_mmrm`, `tm_t_abnormality`, `tm_t_abnormality_by_worst_grade`, `tm_t_binary_outcome`, `tm_t_events`, `tm_t_events_by_grade`, `tm_t_events_patyear`, `tm_t_events_summary`, `tm_t_exposure`, `tm_t_mult_events`, `tm_t_shift_by_arm`, `tm_t_shift_by_arm_worst`, `tm_t_shift_by_grade`, `tm_t_smq`, `tm_t_summary`, `tm_t_summary_by`, and `tm_t_tte`.
+* Increased default width of `tm_g_forest_tte` plot to prevent overlapping text.
 * Improve default annotation table sizing in `tm_g_km`.
 
 ### Miscellaneous
