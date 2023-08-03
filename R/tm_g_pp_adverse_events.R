@@ -80,12 +80,12 @@ template_adverse_events <- function(dataname = "ANL",
           axis.ticks.y = quote(ggplot2::element_blank()),
           legend.position = "right",
           panel.grid.minor = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           )),
           panel.grid.major = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           ))
