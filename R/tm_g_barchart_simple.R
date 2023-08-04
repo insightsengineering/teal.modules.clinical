@@ -491,7 +491,7 @@ srv_g_barchart_simple <- function(id,
 
     output$table <- shiny::renderTable({
       shiny::req(iv_r()$is_valid())
-      all_q()[["counts"]]
+      teal.code::dev_suppress(all_q()[["counts"]])
     })
 
     # get grouping variables
