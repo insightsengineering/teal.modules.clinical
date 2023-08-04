@@ -47,12 +47,12 @@ template_vitals <- function(dataname = "ANL",
           plot.title = substitute(ggplot2::element_text(size = font), list(font = font_size)),
           legend.position = "top",
           panel.grid.minor = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           )),
           panel.grid.major = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           ))
