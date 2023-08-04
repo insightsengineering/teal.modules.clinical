@@ -527,7 +527,7 @@ srv_g_adverse_events <- function(id,
       teal.code::eval_code(qenv2, as.expression(calls))
     })
     output$table <- DT::renderDataTable(
-      expr = all_q()[["table"]],
+      expr = teal.code::dev_suppress(all_q()[["table"]]),
       options = list(pageLength = input$table_rows)
     )
 
