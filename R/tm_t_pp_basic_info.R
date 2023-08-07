@@ -119,7 +119,6 @@ ui_t_basic_info <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      teal.widgets::get_dt_rows(ns("basic_info_table"), ns("basic_info_table_rows")),
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
     encoding = shiny::div(
@@ -243,7 +242,9 @@ srv_t_basic_info <- function(id,
 
     output$basic_info_table <- DT::renderDataTable(
       expr = table_r(),
-      options = list(pageLength = input$basic_info_table_rows)
+      options = list(
+        lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
+      )
     )
 
     teal.widgets::verbatim_popup_srv(
