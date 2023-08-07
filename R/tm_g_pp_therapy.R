@@ -650,7 +650,7 @@ srv_g_therapy <- function(id,
 
     output$therapy_table <- DT::renderDataTable(
       expr = {
-        all_q()[["therapy_table"]]
+        teal.code::dev_suppress(all_q()[["therapy_table"]])
       },
       options = list(pageLength = input$therapy_table_rows)
     )
