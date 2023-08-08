@@ -50,9 +50,6 @@ template_patient_timeline <- function(dataname = "ANL",
     assertthat::is.string(patient_id)
   )
 
-  y <- list()
-  y$chart <- list()
-
   chart_list <- list()
   if (!relative_day) {
     parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
@@ -317,8 +314,7 @@ template_patient_timeline <- function(dataname = "ANL",
     )
   }
 
-  y$chart <- bracket_expr(chart_list)
-  y
+  chart_list
 }
 
 #' Teal Module: Patient Profile Timeline Teal Module
@@ -859,7 +855,7 @@ srv_g_patient_timeline <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      teal.code::eval_code(
+      qenv <- teal.code::eval_code(
         anl_q(),
         substitute(
           expr = {
@@ -869,8 +865,9 @@ srv_g_patient_timeline <- function(id,
             patient_id = patient_id()
           )
         )
-      ) %>%
-        teal.code::eval_code(as.expression(patient_timeline_calls))
+      )
+
+      teal.code::eval_code(object = qenv, as.expression(patient_timeline_calls))
     })
 
     plot_r <- shiny::reactive(all_q()[["patient_timeline_plot"]])
