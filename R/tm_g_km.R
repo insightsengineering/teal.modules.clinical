@@ -22,7 +22,7 @@ template_g_km <- function(dataname = "ANL",
                           strata_var = NULL,
                           time_points = NULL,
                           facet_var = "SEX",
-                          font_size = 8,
+                          font_size = 10,
                           conf_level = 0.95,
                           ties = "efron",
                           xlab = "Survival time",
@@ -31,6 +31,8 @@ template_g_km <- function(dataname = "ANL",
                           pval_method = "log-rank",
                           annot_surv_med = TRUE,
                           annot_coxph = TRUE,
+                          position_coxph = c(-0.04, 0.02),
+                          width_annots = list(surv_med = grid::unit(0.45, "npc"), coxph = grid::unit(0.6, "npc")),
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
   assertthat::assert_that(
@@ -187,7 +189,9 @@ template_g_km <- function(dataname = "ANL",
               ggtheme = ggplot2::theme_minimal(),
               annot_surv_med = annot_surv_med,
               annot_coxph = annot_coxph,
-              control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties)
+              control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+              position_coxph = position_coxph,
+              width_annots = width_annots
             )
           }
         }
@@ -214,6 +218,8 @@ template_g_km <- function(dataname = "ANL",
         pval_method = pval_method,
         annot_surv_med = annot_surv_med,
         annot_coxph = annot_coxph,
+        position_coxph = position_coxph,
+        width_annots = width_annots,
         ties = ties,
         ci_ribbon = ci_ribbon,
         title = title
@@ -506,7 +512,7 @@ ui_g_km <- function(id, ...) {
           shiny::numericInput(
             inputId = ns("font_size"),
             label = "Plot tables font size",
-            value = 8,
+            value = 10,
             min = 5,
             max = 15,
             step = 1,
