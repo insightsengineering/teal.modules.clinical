@@ -214,7 +214,6 @@ ui_g_laboratory <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      teal.widgets::get_dt_rows(ns("lab_values_table"), ns("lab_values_table_rows")),
       DT::DTOutput(outputId = ns("lab_values_table"))
     ),
     encoding = shiny::div(
@@ -415,7 +414,10 @@ srv_g_laboratory <- function(id,
     output$lab_values_table <- DT::renderDataTable(
       expr = table_r()$html,
       escape = FALSE,
-      options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)
+      options = list(
+        lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
+        scrollX = TRUE
+      )
     )
 
     teal.widgets::verbatim_popup_srv(
