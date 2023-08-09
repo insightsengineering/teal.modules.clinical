@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.15.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.15.9015</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,15 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -90,7 +81,7 @@
 <span>  strata_var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  time_points <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  facet_var <span class="op">=</span> <span class="st">"SEX"</span>,</span>
-<span>  font_size <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  font_size <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  ties <span class="op">=</span> <span class="st">"efron"</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Survival time"</span>,</span>
@@ -99,6 +90,8 @@
 <span>  pval_method <span class="op">=</span> <span class="st">"log-rank"</span>,</span>
 <span>  annot_surv_med <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  annot_coxph <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  position_coxph <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.04</span>, <span class="fl">0.02</span><span class="op">)</span>,</span>
+<span>  width_annots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>surv_med <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.45</span>, <span class="st">"npc"</span><span class="op">)</span>, coxph <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="st">"npc"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  ci_ribbon <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"KM Plot"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -206,6 +199,16 @@ median survival time per group.</p></dd>
 
 <dt>annot_coxph</dt>
 <dd><p>(<code>flag</code>)<br> add the annotation table from a <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> model.</p></dd>
+
+
+<dt>position_coxph</dt>
+<dd><p>(<code>numeric</code>)<br> x and y positions for plotting <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> model.</p></dd>
+
+
+<dt>width_annots</dt>
+<dd><p>(named <code>list</code> of <code>unit</code>s)<br> a named list of widths for annotation tables with names <code>surv_med</code>
+(median survival time table) and <code>coxph</code> (<code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> model table), where each value is the width
+(in units) to implement when printing the annotation table.</p></dd>
 
 
 <dt>ci_ribbon</dt>
