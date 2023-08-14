@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,7 @@
           aria-expanded="false" aria-haspopup="true"
           id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
 <!-- end dropdown for versions -->
@@ -71,6 +72,21 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.8.16" id="tealmodulesclinical-0816">teal.modules.clinical 0.8.16<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-0816"></a></h2>
+<div class="section level4">
+<h4 id="enhancements-0-8-16">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-16"></a></h4>
+<ul><li>Added more informative error message when grade mapping error occurs in <code>tm_t_abnormality_by_worst_grade</code>.</li>
+<li>Fixed label indentation in <code>tm_t_abnormality_by_worst_grade</code>.</li>
+<li>Added <code>total_label</code> argument to enable customization of the “All Patients” column/row label in the following modules: <code>tm_a_mmrm</code>, <code>tm_t_abnormality</code>, <code>tm_t_abnormality_by_worst_grade</code>, <code>tm_t_binary_outcome</code>, <code>tm_t_events</code>, <code>tm_t_events_by_grade</code>, <code>tm_t_events_patyear</code>, <code>tm_t_events_summary</code>, <code>tm_t_exposure</code>, <code>tm_t_mult_events</code>, <code>tm_t_shift_by_arm</code>, <code>tm_t_shift_by_arm_worst</code>, <code>tm_t_shift_by_grade</code>, <code>tm_t_smq</code>, <code>tm_t_summary</code>, <code>tm_t_summary_by</code>, and <code>tm_t_tte</code>.</li>
+<li>Increased default width of <code>tm_g_forest_tte</code> plot to prevent overlapping text.</li>
+<li>Improve default annotation table sizing in <code>tm_g_km</code>.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="miscellaneous-0-8-16">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-16"></a></h4>
+<ul><li>Updated <code>control_incidence_rate</code> parameter names in <code>tm_t_events_patyear</code> from <code>time_unit_input</code> and <code>time_unit_output</code> to <code>input_time_unit</code> and <code>num_pt_year</code>, respectively, after parameter names were changed in <code>tern</code>.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.15" id="tealmodulesclinical-0815">teal.modules.clinical 0.8.15<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-0815"></a></h2>
 <div class="section level4">
 <h4 id="breaking-changes-0-8-15">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-8-15"></a></h4>
@@ -83,7 +99,7 @@
 <li>Added new GEE module <code>tm_a_gee</code>.</li>
 <li>Added interface for selecting an interaction term to <code>tm_t_ancova</code>.</li>
 <li>Updated encoding input checks to use <code><a href="https://rstudio.github.io/shinyvalidate/reference/InputValidator.html" class="external-link">shinyvalidate::InputValidator</a></code> for better UI experience. Previously used <code><a href="https://rdrr.io/pkg/shiny/man/validate.html" class="external-link">shiny::validate</a></code>.</li>
-<li>Added option to <code>tm_a_mmrm</code> to allow for Kenward-Roger adjustments of standard errors and p-values.</li>
+<li>Added option to <code>tm_a_mmrm</code> to allow for <code>Kenward-Roger</code> adjustments of standard errors and p-values.</li>
 <li>Added option to choose facet scale options in <code>tm_g_barchart_simple</code>.</li>
 <li>Added <code>label</code> parameter to <code>cs_to_select_spec</code>/<code>cs_to_des_select</code> and <code>cs_to_filter_spec</code>/<code>cs_to_des_filter</code> to allow the user to customize the label printed over the selection field.</li>
 <li>Updated <code>tm_t_coxreg</code> module after refactoring <code>summarize_coxreg</code> in <code>tern</code> to fix indentation.</li>
@@ -169,7 +185,7 @@
 </ul></div>
 <div class="section level5">
 <h5 id="other-modules-0-8-13">Other modules<a class="anchor" aria-label="anchor" href="#other-modules-0-8-13"></a></h5>
-<ul><li>Updated <code>tm_t_binary_outcome</code> to enable an option to apply a continuity correction in the Newcombe method.</li>
+<ul><li>Updated <code>tm_t_binary_outcome</code> to enable an option to apply a continuity correction in the <code>Newcombe</code> method.</li>
 <li>Simplified the show R code for <code>tm_g_pp_patient_timeline</code> module.</li>
 <li>Improved the names of the code chunks shown in <code>Debug Info</code>.</li>
 <li>Improved the validation if treatment variable is not a factor.</li>
@@ -279,7 +295,7 @@
 <div class="section level4">
 <h4 id="bug-fixes-0-8-10">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-10"></a></h4>
 <ul><li>Corrected <code>tm_a_mmrm</code> to be able to consider the treatment variable in all interactions.</li>
-<li>Fixed <code>tm_t_binary_outcome</code> and <code>tm_t_rsp</code> to choose the correct CI estimation method for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with CMH weights).</li>
+<li>Fixed <code>tm_t_binary_outcome</code> and <code>tm_t_rsp</code> to choose the correct CI estimation method for Proportions Difference in Stratified Analysis (i.e. Wald-type confidence interval with <code>CMH</code> weights).</li>
 </ul></div>
 <div class="section level4">
 <h4 id="enhancements-0-8-10">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-10"></a></h4>
@@ -322,7 +338,7 @@
 <li>Added the option to choose the number of decimal places for rounding in <code>tm_t_pp_laboratory</code>.</li>
 <li>Added a check box to <code>tm_g_pp_patient_timeline</code> hiding/showing relative study days on the x-axis.</li>
 <li>Added a title with patient’s id to plots in patient profile modules.</li>
-<li>Made the grey error message in <code>tm_g_forest_tte</code> more informative when deselecting the <code>Endpoint</code> column in the left-hand encoding panel.</li>
+<li>Made the gray error message in <code>tm_g_forest_tte</code> more informative when deselecting the <code>Endpoint</code> column in the left-hand encoding panel.</li>
 <li>Added the twenty-fifth and seventy-fifth quantile to summary statistics in <code>tm_t_summary</code>.</li>
 <li>Added an interaction p-value column for <code>tm_t_coxreg</code>.</li>
 <li>Added a validation for <code>tm_t_ancova</code> when selected covariate variables contain one level.</li>
@@ -359,7 +375,7 @@
 <li>The timeline plot now supports more edge cases.</li>
 <li>In vitals tab, removed unused label text legend, updated plot to display stable colors per levels, cleared x-axis limit and fixed legend to update when filtering. Also added a note to clarify the supported horizontal lines cases.</li>
 <li>Updated adverse events tab to show a warning message instead of an empty plot when data is empty.</li>
-<li>Fixed PARAMCD selected levels for current patient.</li>
+<li>Fixed <code>PARAMCD</code> selected levels for current patient.</li>
 </ul></li>
 <li>For <code>tm_t_tte</code>:
 <ul><li>Updated the pre-processing code inside <code>template_tte</code> so that a dataset without any events still produces a table.</li>
@@ -388,7 +404,7 @@
 <h4 id="bug-fixes-0-8-8">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-8"></a></h4>
 <ul><li>Added a validation for the case when filtering out all rows in the therapy tab of <code>tm_g_patient_profile</code>.</li>
 <li>Updated the internals of the modules to read data from the correct field of the <code>filter_spec</code> objects.</li>
-<li>Fixed the reactivity between the filter panel and the PARAMCD variable levels input in <code>tm_g_patient_profile</code> vitals tab so that the plot does not get reset when filtering.</li>
+<li>Fixed the reactivity between the filter panel and the <code>PARAMCD</code> variable levels input in <code>tm_g_patient_profile</code> vitals tab so that the plot does not get reset when filtering.</li>
 <li>Updated the vitals plot tab in <code>tm_g_patient_profile</code> to drop NA entries in the plot.</li>
 <li>Updated <code>tm_t_coxreg</code> to take at values into account.</li>
 <li>Added a check in <code>tm_t_coxreg</code> to have interactions in univariate models but not in multivariate models.</li>
@@ -460,7 +476,7 @@
 <li>Updated <code>tm_t_tte</code> to optionally compare between arms, removed <code>conf_level</code> argument.</li>
 <li>Updated <code>tm_g_km</code> to optionally compare between arms.</li>
 <li>Extend <code>tm_g_km</code> to optionally scale X axis range in case of more than one plot.</li>
-<li>New <code>tm_a_mmrm</code> for MMRM analysis.</li>
+<li>New <code>tm_a_mmrm</code> for <code>MMRM</code> analysis.</li>
 <li>Deprecated <code>tm_t_mmrm</code> (superseded by <code>tm_a_mmrm</code>).</li>
 </ul></div>
     <div class="section level2">
@@ -489,7 +505,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.0" id="tealmodulesclinical-080">teal.modules.clinical 0.8.0<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-080"></a></h2>
-<ul><li>Optionally show KM and CoxPH table in <code>tm_g_km</code>.</li>
+<ul><li>Optionally show KM and <code>CoxPH</code> table in <code>tm_g_km</code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0" id="tealmodulesclinical-070">teal.modules.clinical 0.7.0<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-070"></a></h2>

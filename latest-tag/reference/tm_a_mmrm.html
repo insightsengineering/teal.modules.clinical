@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,7 @@
           aria-expanded="false" aria-haspopup="true"
           id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
 <!-- end dropdown for versions -->
@@ -66,13 +67,13 @@
 </nav><div class="container template-reference-topic">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis</h1>
+      <img src="" class="logo" alt=""><h1>Teal Module: Teal module for Mixed Model Repeated Measurements (<code>MMRM</code>) analysis</h1>
       <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/R/tm_a_mmrm.R" class="external-link"><code>R/tm_a_mmrm.R</code></a></small>
       <div class="d-none name"><code>tm_a_mmrm.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis</p>
+    <p>Teal Module: Teal module for Mixed Model Repeated Measurements (<code>MMRM</code>) analysis</p>
     </div>
 
     <div class="section level2">
@@ -95,6 +96,7 @@
 <span>    <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  plot_height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">700L</span>, <span class="fl">200L</span>, <span class="fl">2000L</span><span class="op">)</span>,</span>
 <span>  plot_width <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  total_label <span class="op">=</span> <span class="st">"All Patients"</span>,</span>
 <span>  pre_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  post_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  basic_table_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -191,6 +193,11 @@ the main plot and renders a slider on the plot to interactively adjust the plot
 width.</p></dd>
 
 
+<dt>total_label</dt>
+<dd><p>(<code>string</code>)<br> string to display as total column/row label if column/row is
+enabled (see <code>add_total</code>).</p></dd>
+
+
 <dt>pre_output</dt>
 <dd><p>optional, (<code>shiny.tag</code>)<br>
 with text placed before the output to put the output into context.
@@ -270,7 +277,7 @@ numerical precision.</p>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2023-05-31 23:41:25.7238 pid:3043 token:[] teal.modules.clinical Initializing tm_a_mmrm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2023-08-14 14:43:59.3152 pid:1183 token:[] teal.modules.clinical Initializing tm_a_mmrm</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

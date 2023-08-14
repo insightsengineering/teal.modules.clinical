@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,7 @@
           aria-expanded="false" aria-haspopup="true"
           id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
 <!-- end dropdown for versions -->
@@ -84,6 +85,7 @@
 <span>  grading_groups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>`Any Grade (%)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4"</span>, <span class="st">"5"</span><span class="op">)</span>, `Grade 1-2 (%)` <span class="op">=</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"2"</span><span class="op">)</span>, `Grade 3-4 (%)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"3"</span>, <span class="st">"4"</span><span class="op">)</span>, `Grade 5 (%)` <span class="op">=</span> <span class="st">"5"</span><span class="op">)</span>,</span>
 <span>  add_total <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  total_label <span class="op">=</span> <span class="st">"All Patients"</span>,</span>
 <span>  id <span class="op">=</span> <span class="st">"USUBJID"</span>,</span>
 <span>  <span class="va">hlt</span>,</span>
 <span>  <span class="va">llt</span>,</span>
@@ -125,7 +127,7 @@ whether to include column with total number of patients.</p></dd>
 
 
 <dt>id</dt>
-<dd><p>(<code>character</code>) <br> unique identifier of patients in datasets, default to "USUBJID".</p></dd>
+<dd><p>(<code>character</code>) <br> unique identifier of patients in datasets, default to <code>"USUBJID"</code>.</p></dd>
 
 
 <dt>hlt</dt>
@@ -149,7 +151,7 @@ module.</p></dd>
 
 
 <dt>grade</dt>
-<dd><p>(<code>character</code>) <br> grade term which grading_groups is based on, default to "AETOXGR".</p></dd>
+<dd><p>(<code>character</code>) <br> grade term which grading_groups is based on, default to <code>"AETOXGR"</code>.</p></dd>
 
 
 <dt>label_grade</dt>
