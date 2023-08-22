@@ -504,7 +504,7 @@ tm_t_tte <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -927,7 +927,7 @@ srv_t_tte <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Time To Event Table")
         card$append_text("Time To Event Table", "header2")
         if (with_filter) {

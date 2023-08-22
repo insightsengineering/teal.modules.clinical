@@ -155,7 +155,7 @@ tm_t_pp_medical_history <- function(label,
         patient_col = patient_col
       )
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 
@@ -337,7 +337,7 @@ srv_t_medical_history <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Patient Medical History Table")
         card$append_text("Patient Medical History Table", "header2")
         if (with_filter) {

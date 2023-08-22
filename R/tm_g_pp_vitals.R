@@ -47,12 +47,12 @@ template_vitals <- function(dataname = "ANL",
           plot.title = substitute(ggplot2::element_text(size = font), list(font = font_size)),
           legend.position = "top",
           panel.grid.minor = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           )),
           panel.grid.major = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           ))
@@ -283,7 +283,7 @@ tm_g_pp_vitals <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 
@@ -529,7 +529,7 @@ srv_g_vitals <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Patient Profile Vitals Plot")
         card$append_text("Patient Profile Vitals Plot", "header2")
         if (with_filter) {

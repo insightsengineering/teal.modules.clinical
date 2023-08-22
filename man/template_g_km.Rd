@@ -17,7 +17,7 @@ template_g_km(
   strata_var = NULL,
   time_points = NULL,
   facet_var = "SEX",
-  font_size = 8,
+  font_size = 10,
   conf_level = 0.95,
   ties = "efron",
   xlab = "Survival time",
@@ -26,6 +26,8 @@ template_g_km(
   pval_method = "log-rank",
   annot_surv_med = TRUE,
   annot_coxph = TRUE,
+  position_coxph = c(-0.04, 0.02),
+  width_annots = list(surv_med = grid::unit(0.45, "npc"), coxph = grid::unit(0.6, "npc")),
   ci_ribbon = FALSE,
   title = "KM Plot"
 )
@@ -90,6 +92,12 @@ name of the variable representing time units.}
 median survival time per group.}
 
 \item{annot_coxph}{(\code{flag})\cr add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
+
+\item{position_coxph}{(\code{numeric})\cr x and y positions for plotting \code{\link[survival:coxph]{survival::coxph()}} model.}
+
+\item{width_annots}{(named \code{list} of \code{unit}s)\cr a named list of widths for annotation tables with names \code{surv_med}
+(median survival time table) and \code{coxph} (\code{\link[survival:coxph]{survival::coxph()}} model table), where each value is the width
+(in units) to implement when printing the annotation table.}
 
 \item{ci_ribbon}{(\code{flag})\cr draw the confidence interval around the Kaplan-Meier curve.}
 

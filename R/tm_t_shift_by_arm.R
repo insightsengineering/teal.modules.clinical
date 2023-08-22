@@ -275,7 +275,7 @@ tm_t_shift_by_arm <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -529,7 +529,7 @@ srv_shift_by_arm <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Shift by Arm Table")
         card$append_text("Shift by Arm Table", "header2")
         if (with_filter) {

@@ -124,12 +124,12 @@ template_therapy <- function(dataname = "ANL",
           plot.title = substitute(ggplot2::element_text(size = font), list(font = font_size)),
           legend.position = "none",
           panel.grid.minor = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           )),
           panel.grid.major = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           ))
@@ -389,7 +389,7 @@ tm_g_pp_therapy <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 
@@ -650,7 +650,7 @@ srv_g_therapy <- function(id,
 
     output$therapy_table <- DT::renderDataTable(
       expr = {
-        all_q()[["therapy_table"]]
+        teal.code::dev_suppress(all_q()[["therapy_table"]])
       },
       options = list(pageLength = input$therapy_table_rows)
     )
@@ -683,7 +683,7 @@ srv_g_therapy <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Patient Profile Therapy Plot")
         card$append_text("Patient Profile Therapy Plot", "header2")
         if (with_filter) {

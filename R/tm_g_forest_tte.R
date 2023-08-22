@@ -302,7 +302,7 @@ tm_g_forest_tte <- function(label,
                             ),
                             fixed_symbol_size = TRUE,
                             plot_height = c(700L, 200L, 2000L),
-                            plot_width = c(980L, 500L, 2000L),
+                            plot_width = c(1200L, 800L, 3000L),
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
@@ -351,7 +351,7 @@ tm_g_forest_tte <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -653,7 +653,7 @@ srv_g_forest_tte <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Forest Survival Plot")
         card$append_text("Forest Survival Plot", "header2")
         if (with_filter) {

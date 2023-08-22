@@ -44,10 +44,14 @@
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
                       }, newpage = FALSE, vp = grid::viewport(layout.pos.row = plot_number, 
-                        layout.pos.col = 1), font_size = 8, ci_ribbon = FALSE, 
+                        layout.pos.col = 1), font_size = 10, ci_ribbon = FALSE, 
                       ggtheme = ggplot2::theme_minimal(), annot_surv_med = TRUE, 
                       annot_coxph = TRUE, control_coxph_pw = control_coxph(conf_level = 0.95, 
-                        pval_method = "log-rank", ties = "efron"))
+                        pval_method = "log-rank", ties = "efron"), 
+                      position_coxph = c(-0.04, 0.02), width_annots = list(surv_med = structure(0.45, 
+                        unit = 0L, class = c("simpleUnit", "unit", 
+                          "unit_v2")), coxph = structure(0.6, unit = 0L, 
+                        class = c("simpleUnit", "unit", "unit_v2"))))
               }
           }
           g_km_counter <- g_km_counter_generator()
@@ -107,10 +111,14 @@
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
                       }, newpage = FALSE, vp = grid::viewport(layout.pos.row = plot_number, 
-                        layout.pos.col = 1), font_size = 8, ci_ribbon = FALSE, 
+                        layout.pos.col = 1), font_size = 10, ci_ribbon = FALSE, 
                       ggtheme = ggplot2::theme_minimal(), annot_surv_med = TRUE, 
                       annot_coxph = TRUE, control_coxph_pw = control_coxph(conf_level = 0.95, 
-                        pval_method = "log-rank", ties = "efron"))
+                        pval_method = "log-rank", ties = "efron"), 
+                      position_coxph = c(-0.04, 0.02), width_annots = list(surv_med = structure(0.45, 
+                        unit = 0L, class = c("simpleUnit", "unit", 
+                          "unit_v2")), coxph = structure(0.6, unit = 0L, 
+                        class = c("simpleUnit", "unit", "unit_v2"))))
               }
           }
           g_km_counter <- g_km_counter_generator()
@@ -171,10 +179,14 @@
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
                       }, newpage = FALSE, vp = grid::viewport(layout.pos.row = plot_number, 
-                        layout.pos.col = 1), font_size = 8, ci_ribbon = FALSE, 
+                        layout.pos.col = 1), font_size = 10, ci_ribbon = FALSE, 
                       ggtheme = ggplot2::theme_minimal(), annot_surv_med = TRUE, 
                       annot_coxph = TRUE, control_coxph_pw = control_coxph(conf_level = 0.95, 
-                        pval_method = "log-rank", ties = "efron"))
+                        pval_method = "log-rank", ties = "efron"), 
+                      position_coxph = c(-0.04, 0.02), width_annots = list(surv_med = structure(0.45, 
+                        unit = 0L, class = c("simpleUnit", "unit", 
+                          "unit_v2")), coxph = structure(0.6, unit = 0L, 
+                        class = c("simpleUnit", "unit", "unit_v2"))))
               }
           }
           g_km_counter <- g_km_counter_generator()

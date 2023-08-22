@@ -1,21 +1,21 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.15.9006
-Date: 2023-07-04
+Version: 0.8.16.9002
+Date: 2023-08-21
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
     person("Mahmoud", "Hallal", , "mahmoud.hallal@roche.com", role = "aut"),
     person("Dawid", "Kaledkowski", , "dawid.kaledkowski@roche.com", role = "aut"),
-    person("Konrad", "Pagacz", , "konrad.pagacz@contractors.roche.com", role = "aut"),
     person("Rosemary", "Li", , "li.yaqiong@gene.com", role = "aut"),
     person("Heng", "Wang", , "wang.heng@gene.com", role = "aut"),
     person("Pawel", "Rucki", , "pawel.rucki@roche.com", role = "aut"),
-    person("Nikolas", "Burkoff", , "nikolas.burkoff@roche.com", role = "aut"),
-    person("F. Hoffmann-La Roche AG", role = c("cph", "fnd")),
+    person("Nikolas", "Burkoff", role = "aut"),
+    person("Konrad", "Pagacz", role = "aut"),
     person("Vaakesan", "Sundrelingam", role = "ctb"),
     person("Francois", "Collin", role = "ctb"),
-    person("Imanol", "Zubizarreta", role = "ctb")
+    person("Imanol", "Zubizarreta", role = "ctb"),
+    person("F. Hoffmann-La Roche AG", role = c("cph", "fnd"))
   )
 Description: Provides teal modules for the standard clinical trials
     outputs.  The teal modules add an encoding panel to interactively
@@ -25,8 +25,8 @@ URL: https://github.com/insightsengineering/teal.modules.clinical
 BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
-    R (>= 3.6),
-    teal (>= 0.13.0),
+    R (>= 4.0),
+    teal (>= 0.14.0),
     tern (>= 0.8.2)
 Imports:
     assertthat,
@@ -35,7 +35,7 @@ Imports:
     dplyr,
     DT,
     formatters (>= 0.5.0),
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     ggrepel,
     grid,
     lifecycle,
@@ -52,11 +52,11 @@ Imports:
     shinyWidgets,
     stats,
     styler,
-    teal.code (>= 0.3.0),
+    teal.code (>= 0.4.0),
     teal.logger (>= 0.1.1),
-    teal.reporter (>= 0.1.1),
-    teal.transform (>= 0.3.0),
-    teal.widgets (>= 0.3.0),
+    teal.reporter (>= 0.2.0),
+    teal.transform (>= 0.4.0),
+    teal.widgets (>= 0.4.0),
     tern.gee (>= 0.1.0),
     tern.mmrm (>= 0.2.1),
     tidyr,
@@ -67,21 +67,10 @@ Suggests:
     knitr,
     lubridate,
     nestcolor (>= 0.1.0),
-    teal.data (>= 0.1.2),
+    teal.data (>= 0.3.0),
     testthat (>= 3.0)
 VignetteBuilder:
     knitr
-Remotes:
-    insightsengineering/teal.code@*release,
-    insightsengineering/teal.data@*release,
-    insightsengineering/teal.logger@*release,
-    insightsengineering/teal.reporter@*release,
-    insightsengineering/teal.transform@*release,
-    insightsengineering/teal.widgets@*release,
-    insightsengineering/teal@*release,
-    insightsengineering/tern.gee@*release,
-    insightsengineering/tern.mmrm@*release,
-    insightsengineering/tern@*release
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8

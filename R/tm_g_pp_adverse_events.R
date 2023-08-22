@@ -80,12 +80,12 @@ template_adverse_events <- function(dataname = "ANL",
           axis.ticks.y = quote(ggplot2::element_blank()),
           legend.position = "right",
           panel.grid.minor = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           )),
           panel.grid.major = quote(ggplot2::element_line(
-            size = 0.5,
+            linewidth = 0.5,
             linetype = "dotted",
             colour = "grey"
           ))
@@ -292,7 +292,7 @@ tm_g_pp_adverse_events <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 
@@ -527,7 +527,7 @@ srv_g_adverse_events <- function(id,
       teal.code::eval_code(qenv2, as.expression(calls))
     })
     output$table <- DT::renderDataTable(
-      expr = all_q()[["table"]],
+      expr = teal.code::dev_suppress(all_q()[["table"]]),
       options = list(pageLength = input$table_rows)
     )
 
@@ -559,7 +559,7 @@ srv_g_adverse_events <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Patient Profile Adverse Events Plot")
         card$append_text("Patient Profile Adverse Events Plot", "header2")
         if (with_filter) {

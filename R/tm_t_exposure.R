@@ -346,7 +346,7 @@ tm_t_exposure <- function(label,
         paramcd_label = paramcd_label
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -624,7 +624,7 @@ srv_t_exposure <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Exposure for Risk Management Plan Table")
         card$append_text("Exposure for Risk Management Plan Table", "header2")
         if (with_filter) {

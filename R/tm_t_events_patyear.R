@@ -258,7 +258,7 @@ tm_t_events_patyear <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -556,7 +556,7 @@ srv_events_patyear <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Event Rates Adjusted For Patient-Years Table")
         card$append_text("Event Rates Adjusted For Patient-Years Table", "header2")
         if (with_filter) {

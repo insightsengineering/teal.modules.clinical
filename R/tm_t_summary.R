@@ -317,7 +317,7 @@ tm_t_summary <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = dataname
+    datanames = dataname
   )
 }
 
@@ -577,7 +577,7 @@ srv_summary <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Summary Table")
         card$append_text("Summary Table", "header2")
         if (with_filter) {

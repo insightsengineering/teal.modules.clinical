@@ -331,7 +331,7 @@ tm_g_lineplot <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -649,7 +649,7 @@ srv_g_lineplot <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Line Plot")
         card$append_text("Line Plot", "header2")
         if (with_filter) {

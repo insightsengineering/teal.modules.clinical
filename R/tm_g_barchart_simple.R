@@ -176,7 +176,7 @@ tm_g_barchart_simple <- function(x = NULL,
       plot_width = plot_width,
       ggplot2_args = ggplot2_args
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 
@@ -491,7 +491,7 @@ srv_g_barchart_simple <- function(id,
 
     output$table <- shiny::renderTable({
       shiny::req(iv_r()$is_valid())
-      all_q()[["counts"]]
+      teal.code::dev_suppress(all_q()[["counts"]])
     })
 
     # get grouping variables
@@ -539,7 +539,7 @@ srv_g_barchart_simple <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Barchart Plot")
         card$append_text("Barchart Plot", "header2")
         if (with_filter) {

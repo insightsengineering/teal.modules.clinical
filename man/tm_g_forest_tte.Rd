@@ -25,7 +25,7 @@ tm_g_forest_tte(
     "AVALU", fixed = TRUE),
   fixed_symbol_size = TRUE,
   plot_height = c(700L, 200L, 2000L),
-  plot_width = c(980L, 500L, 2000L),
+  plot_width = c(1200L, 800L, 3000L),
   pre_output = NULL,
   post_output = NULL,
   ggplot2_args = teal.widgets::ggplot2_args()

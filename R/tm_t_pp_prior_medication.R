@@ -152,7 +152,7 @@ tm_t_pp_prior_medication <- function(label,
         patient_col = patient_col
       )
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 
@@ -168,7 +168,6 @@ ui_t_prior_medication <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      teal.widgets::get_dt_rows(ns("prior_medication_table"), ns("prior_medication_table_rows")),
       DT::DTOutput(outputId = ns("prior_medication_table"))
     ),
     encoding = shiny::div(
@@ -326,7 +325,9 @@ srv_t_prior_medication <- function(id,
 
     output$prior_medication_table <- DT::renderDataTable(
       expr = table_r(),
-      options = list(pageLength = input$prior_medication_table_rows)
+      options = list(
+        lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
+      )
     )
 
     teal.widgets::verbatim_popup_srv(
@@ -344,7 +345,7 @@ srv_t_prior_medication <- function(id,
 
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Patient Prior Medication Table")
         card$append_text("Patient Prior Medication Table", "header2")
         if (with_filter) {

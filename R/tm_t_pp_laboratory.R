@@ -196,7 +196,7 @@ tm_t_pp_laboratory <- function(label,
         patient_col = patient_col
       )
     ),
-    filters = "all"
+    datanames = "all"
   )
 }
 
@@ -214,7 +214,6 @@ ui_g_laboratory <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      teal.widgets::get_dt_rows(ns("lab_values_table"), ns("lab_values_table_rows")),
       DT::DTOutput(outputId = ns("lab_values_table"))
     ),
     encoding = shiny::div(
@@ -415,7 +414,10 @@ srv_g_laboratory <- function(id,
     output$lab_values_table <- DT::renderDataTable(
       expr = table_r()$html,
       escape = FALSE,
-      options = list(pageLength = input$lab_values_table_rows, scrollX = TRUE)
+      options = list(
+        lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
+        scrollX = TRUE
+      )
     )
 
     teal.widgets::verbatim_popup_srv(
@@ -434,7 +436,7 @@ srv_g_laboratory <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Patient Profile Laboratory Table")
         card$append_text("Patient Profile Laboratory Table", "header2")
         if (with_filter) {

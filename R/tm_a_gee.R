@@ -223,7 +223,7 @@ tm_a_gee <- function(label,
         basic_table_args = basic_table_args
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -549,7 +549,7 @@ srv_gee <- function(id,
 
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("Generalized Estimating Equations (GEE) Analysis Table")
         card$append_text("Generalized Estimating Equations (GEE) Analysis Table", "header2")
         if (with_filter) {

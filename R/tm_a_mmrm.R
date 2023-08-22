@@ -578,7 +578,7 @@ tm_a_mmrm <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    filters = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -1433,11 +1433,11 @@ srv_mmrm <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment) {
-        card <- teal.reporter::TealReportCard$new()
+        card <- teal::TealReportCard$new()
         card$set_name("MMRM")
         card$append_text("Mixed Model Repeated Measurements (MMRM) Analysis", "header2")
         card$append_text(
-          paste0(
+          paste(
             "Mixed Models procedure analyzes results from repeated measures designs",
             "in which the outcome is continuous and measured at fixed time points"
           ),
