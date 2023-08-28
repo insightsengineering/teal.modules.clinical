@@ -13,12 +13,13 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(main_footer = "* Patient Time is the sum of TDURD") %>% 
+      lyt <- rtables::basic_table(main_footer = "* Patient time is the sum of TDURD") %>% 
           rtables::split_cols_by("SEX") %>% rtables::add_colcounts() %>% 
-          summarize_patients_exposure_in_cols(var = "AVAL", col_split = TRUE, 
-              .labels = c(n_patients = "Number of Patients", sum_exposure = ifelse("Days" == 
-                  " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
-                  sprintf("(%s)", "Days")))), custom_label = "Total Number of Patients and Patient Time*") %>% 
+          analyze_patients_exposure_in_cols(var = "RACE", ex_var = "AVAL", 
+              col_split = TRUE, add_total_level = TRUE, .labels = c(n_patients = "Number of Patients", 
+                  sum_exposure = ifelse("Days" == " ", paste("Sum of", 
+                      "TDURD"), paste("Sum of", "TDURD", sprintf("(%s)", 
+                      "Days")))), custom_label = "Total number of patients and patient time*") %>% 
           analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE) %>% 
           append_topleft(c(formatters::var_labels(adex["RACE"], fill = TRUE)))
       
@@ -44,12 +45,13 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(main_footer = "* Patient Time is the sum of myTDURD") %>% 
+      lyt <- rtables::basic_table(main_footer = "* Patient time is the sum of myTDURD") %>% 
           rtables::split_cols_by("SEX") %>% rtables::add_colcounts() %>% 
-          summarize_patients_exposure_in_cols(var = "myAVAL", col_split = TRUE, 
-              .labels = c(n_patients = "Number of Patients", sum_exposure = ifelse("Days" == 
-                  " ", paste("Sum of", "myTDURD"), paste("Sum of", 
-                  "myTDURD", sprintf("(%s)", "Days")))), custom_label = "Total Number of Patients and Patient Time*") %>% 
+          analyze_patients_exposure_in_cols(var = "myRACE", ex_var = "myAVAL", 
+              col_split = TRUE, add_total_level = TRUE, .labels = c(n_patients = "Number of Patients", 
+                  sum_exposure = ifelse("Days" == " ", paste("Sum of", 
+                      "myTDURD"), paste("Sum of", "myTDURD", sprintf("(%s)", 
+                      "Days")))), custom_label = "Total number of patients and patient time*") %>% 
           analyze_patients_exposure_in_cols(var = "myRACE", col_split = FALSE) %>% 
           append_topleft(c(formatters::var_labels(myadex["myRACE"], 
               fill = TRUE)))
@@ -76,12 +78,13 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(main_footer = "* Patient Time is the sum of Total Duration (Days)") %>% 
+      lyt <- rtables::basic_table(main_footer = "* Patient time is the sum of Total Duration (Days)") %>% 
           rtables::split_cols_by("SEX") %>% rtables::add_colcounts() %>% 
-          summarize_patients_exposure_in_cols(var = "AVAL", col_split = TRUE, 
-              .labels = c(n_patients = "Number of Patients", sum_exposure = ifelse("Days" == 
-                  " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
-                  sprintf("(%s)", "Days")))), custom_label = "Total Number of Patients and Patient Time*") %>% 
+          analyze_patients_exposure_in_cols(var = "RACE", ex_var = "AVAL", 
+              col_split = TRUE, add_total_level = TRUE, .labels = c(n_patients = "Number of Patients", 
+                  sum_exposure = ifelse("Days" == " ", paste("Sum of", 
+                      "TDURD"), paste("Sum of", "TDURD", sprintf("(%s)", 
+                      "Days")))), custom_label = "Total number of patients and patient time*") %>% 
           analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE) %>% 
           append_topleft(c(formatters::var_labels(adex["RACE"], fill = TRUE)))
       
