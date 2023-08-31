@@ -11,6 +11,9 @@
 #'   whether empty rows should be removed from the table.
 #' @param paramcd_label (`character`)\cr
 #'   the column from the dataset where the value will be used to label the argument `paramcd`.
+#' @param add_total_row (`flag`)\cr whether a "total" level should be added after the others which includes all the
+#'   levels that constitute the split. A custom label can be set for this level via the `total_row_label` argument.
+#' @param total_row_label (`character`)\cr string to display as total row label if row is enabled (see `add_total_row`).
 #' @seealso [tm_t_exposure()]
 #' @keywords internal
 #'
@@ -23,6 +26,8 @@ template_exposure <- function(parentname,
                               col_by_var,
                               add_total = FALSE,
                               total_label = "Total",
+                              add_total_row = TRUE,
+                              total_row_label = "Total number of patients and patient time*",
                               drop_levels = TRUE,
                               na_level = "<Missing>",
                               aval_var,
@@ -37,6 +42,8 @@ template_exposure <- function(parentname,
     assertthat::is.string(id_var),
     assertthat::is.flag(add_total),
     assertthat::is.string(total_label),
+    assertthat::is.flag(add_total_row),
+    assertthat::is.string(total_row_label),
     assertthat::is.string(na_level),
     assertthat::is.string(aval_var),
     assertthat::is.string(avalu_var) || length(avalu_var) == 0,
@@ -79,7 +86,7 @@ template_exposure <- function(parentname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
-        main_footer = paste0("* Patient Time is the sum of ", paramcd_label)
+        main_footer = paste0("* Patient time is the sum of ", paramcd_label)
       )
     )
   )
@@ -123,8 +130,11 @@ template_exposure <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      summarize_patients_exposure_in_cols(
-        var = aval_var, col_split = TRUE,
+      analyze_patients_exposure_in_cols(
+        var = row_by_var,
+        ex_var = aval_var,
+        col_split = TRUE,
+        add_total_level = add_total_row,
         .labels = c(
           n_patients = "Number of Patients",
           sum_exposure = ifelse(
@@ -133,12 +143,15 @@ template_exposure <- function(parentname,
             paste("Sum of", paramcd, sprintf("(%s)", avalu_var))
           )
         ),
-        custom_label = "Total Number of Patients and Patient Time*"
+        custom_label = total_row_label
       ),
       env = list(
+        row_by_var = row_by_var,
         aval_var = aval_var,
+        add_total_row = add_total_row,
         avalu_var = avalu_var,
-        paramcd = paramcd
+        paramcd = paramcd,
+        total_row_label = total_row_label
       )
     )
   )
@@ -296,6 +309,8 @@ tm_t_exposure <- function(label,
                           ),
                           add_total,
                           total_label = "All Patients",
+                          add_total_row = TRUE,
+                          total_row_label = "Total number of patients and patient time*",
                           na_level = "<Missing>",
                           pre_output = NULL,
                           post_output = NULL,
@@ -314,6 +329,8 @@ tm_t_exposure <- function(label,
   checkmate::assert_class(avalu_var, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_flag(add_total_row)
+  checkmate::assert_string(total_row_label)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -341,6 +358,7 @@ tm_t_exposure <- function(label,
         parentname = parentname,
         label = label,
         total_label = total_label,
+        total_row_label = total_row_label,
         na_level = na_level,
         basic_table_args = basic_table_args,
         paramcd_label = paramcd_label
@@ -400,6 +418,7 @@ ui_t_exposure <- function(id, ...) {
         data_extract_spec = a$row_by_var,
         is_single_dataset = is_single_dataset_value
       ),
+      shiny::checkboxInput(ns("add_total_row"), "Add Total row", value = a$add_total_row),
       shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
@@ -452,6 +471,7 @@ srv_t_exposure <- function(id,
                            na_level,
                            label,
                            total_label,
+                           total_row_label,
                            basic_table_args = basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -583,17 +603,19 @@ srv_t_exposure <- function(id,
       my_calls <- template_exposure(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        id_var <- names(merged$anl_input_r()$columns_source$id_var),
-        paramcd <- input_paramcd,
+        id_var = names(merged$anl_input_r()$columns_source$id_var),
+        paramcd = input_paramcd,
         paramcd_label = input_paramcd_label,
-        row_by_var <- names(merged$anl_input_r()$columns_source$row_by_var),
-        col_by_var <- names(merged$anl_input_r()$columns_source$col_by_var),
+        row_by_var = names(merged$anl_input_r()$columns_source$row_by_var),
+        col_by_var = names(merged$anl_input_r()$columns_source$col_by_var),
         add_total = input$add_total,
         total_label = total_label,
+        add_total_row = input$add_total_row,
+        total_row_label = total_row_label,
         drop_levels = TRUE,
         na_level = na_level,
-        aval_var <- names(merged$anl_input_r()$columns_source$aval_var),
-        avalu_var <- input_avalu_var,
+        aval_var = names(merged$anl_input_r()$columns_source$aval_var),
+        avalu_var = input_avalu_var,
         basic_table_args = basic_table_args
       )
       teal.code::eval_code(merged$anl_q(), as.expression(my_calls))

@@ -14,6 +14,8 @@ template_exposure(
   col_by_var,
   add_total = FALSE,
   total_label = "Total",
+  add_total_row = TRUE,
+  total_row_label = "Total number of patients and patient time*",
   drop_levels = TRUE,
   na_level = "<Missing>",
   aval_var,
@@ -45,6 +47,11 @@ variable name used to split the columns.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{add_total_row}{(\code{flag})\cr whether a "total" level should be added after the others which includes all the
+levels that constitute the split. A custom label can be set for this level via the \code{total_row_label} argument.}
+
+\item{total_row_label}{(\code{character})\cr string to display as total row label if row is enabled (see \code{add_total_row}).}
 
 \item{drop_levels}{(\code{flag})\cr
 whether empty rows should be removed from the table.}
