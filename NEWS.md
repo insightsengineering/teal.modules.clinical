@@ -12,6 +12,9 @@
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
 
+### Miscellaneous
+* Specified minimal version of package dependencies.
+
 # teal.modules.clinical 0.8.16.9010
 
 ### Enhancements
