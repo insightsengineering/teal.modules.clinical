@@ -511,7 +511,7 @@ tm_g_pp_patient_timeline <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    datanames = "all"
+    datanames = c(dataname_adcm, dataname_adae, parentname)
   )
 }
 
