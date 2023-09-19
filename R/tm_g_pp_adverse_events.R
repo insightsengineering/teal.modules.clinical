@@ -292,7 +292,7 @@ tm_g_pp_adverse_events <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    datanames = "all"
+    datanames = c(dataname, parentname)
   )
 }
 

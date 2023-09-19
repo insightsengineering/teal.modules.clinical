@@ -196,7 +196,7 @@ tm_t_pp_laboratory <- function(label,
         patient_col = patient_col
       )
     ),
-    datanames = "all"
+    datanames = c(dataname, parentname)
   )
 }
 
