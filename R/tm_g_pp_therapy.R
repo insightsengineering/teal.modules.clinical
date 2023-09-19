@@ -389,7 +389,7 @@ tm_g_pp_therapy <- function(label,
         ggplot2_args = ggplot2_args
       )
     ),
-    datanames = "all"
+    datanames = c(dataname, parentname)
   )
 }
 
