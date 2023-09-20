@@ -7,6 +7,7 @@
 * Increased default width of `tm_g_forest_tte` plot to prevent overlapping text.
 * Improve default annotation table sizing in `tm_g_km`.
 * Refactored `tm_t_exposure` to display "total" row as last row in table instead of as a summary row. Added parameters `add_total_row` to set whether the total row should be displayed and `total_row_label` to set the total row label.
+* Update `tm_t_events` to maintain indentation after pruning.
 
 ### Miscellaneous
 * Updated `control_incidence_rate` parameter names in `tm_t_events_patyear` from `time_unit_input` and `time_unit_output` to `input_time_unit` and `num_pt_year`, respectively, after parameter names were changed in `tern`.
