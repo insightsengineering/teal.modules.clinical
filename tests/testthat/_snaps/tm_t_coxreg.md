@@ -8,7 +8,8 @@
           anl <- adrs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(event = 1 - CNSR) %>% df_explicit_na(na_level = "")
+              dplyr::mutate(event = 1 - CNSR) %>% dplyr::mutate(across(where(is.factor) & 
+              NULL, droplevels)) %>% df_explicit_na(na_level = "")
           control <- list(pval_method = "wald", ties = "efron", conf_level = 0.95, 
               interaction = FALSE)
       }
@@ -38,7 +39,8 @@
           anl <- adrs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(event = 1 - CNSR) %>% df_explicit_na(na_level = "")
+              dplyr::mutate(event = 1 - CNSR) %>% dplyr::mutate(across(where(is.factor) & 
+              NULL, droplevels)) %>% df_explicit_na(na_level = "")
           control <- list(pval_method = "wald", ties = "efron", conf_level = 0.95, 
               interaction = TRUE)
       }
@@ -70,7 +72,8 @@
               ref = "A: Drug X")) %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
               dplyr::mutate(ARM = combine_levels(x = ARM, levels = c("B: Placebo", 
                   "C: Combination"))) %>% dplyr::mutate(event = 1 - 
-              CNSR) %>% df_explicit_na(na_level = "")
+              CNSR) %>% dplyr::mutate(across(where(is.factor) & c("AGE", 
+              "SEX"), droplevels)) %>% df_explicit_na(na_level = "")
       }
       
       $layout
