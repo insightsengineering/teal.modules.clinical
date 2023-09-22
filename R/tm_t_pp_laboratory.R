@@ -55,7 +55,7 @@ template_laboratory <- function(dataname = "ANL",
           tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
           dplyr::mutate(param_char := clean_description(.data[[param_char]]))
 
-        labor_table_raw <- as_listing(
+        labor_table_raw <- rlistings::as_listing(
           labor_table_raw,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
@@ -224,7 +224,7 @@ ui_g_laboratory <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      htmlOutput(ns("title")),
+      shiny::htmlOutput(ns("title")),
       DT::DTOutput(outputId = ns("lab_values_table"))
     ),
     encoding = shiny::div(
@@ -416,7 +416,7 @@ srv_g_laboratory <- function(id,
         teal.code::eval_code(as.expression(labor_calls))
     })
 
-    output$title <- renderText({
+    output$title <- shiny::renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 

@@ -54,7 +54,7 @@ template_adverse_events <- function(dataname = "ANL",
           dplyr::arrange(dplyr::desc(tox_grade)) %>%
           `colnames<-`(get_labels(dataname)$column_labels[vars])
 
-        table <- as_listing(
+        table <- rlistings::as_listing(
           table,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
@@ -320,7 +320,7 @@ ui_g_adverse_events <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      htmlOutput(ns("title")),
+      shiny::htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("table"), ns("table_rows")),
       DT::DTOutput(outputId = ns("table")),
       teal.widgets::plot_with_settings_ui(id = ns("chart"))
@@ -539,7 +539,7 @@ srv_g_adverse_events <- function(id,
       teal.code::eval_code(qenv2, as.expression(calls))
     })
 
-    output$title <- renderText({
+    output$title <- shiny::renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 

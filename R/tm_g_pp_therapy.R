@@ -88,7 +88,7 @@ template_therapy <- function(dataname = "ANL",
           get_labels(dataname)$column_labels[c(cmstdy_char, cmendy_char)]
         ))
 
-      therapy_table <- as_listing(
+      therapy_table <- rlistings::as_listing(
         therapy_table,
         key_cols = NULL,
         default_formatting = list(all = fmt_config(align = "left"))
@@ -420,7 +420,7 @@ ui_g_therapy <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      htmlOutput(ns("title")),
+      shiny::htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
       teal.widgets::plot_with_settings_ui(id = ns("therapy_plot"))
@@ -659,7 +659,7 @@ srv_g_therapy <- function(id,
         teal.code::eval_code(as.expression(my_calls))
     })
 
-    output$title <- renderText({
+    output$title <- shiny::renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 

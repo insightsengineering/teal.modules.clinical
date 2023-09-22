@@ -33,7 +33,7 @@ template_basic_info <- function(dataname = "ANL",
           dplyr::select(var, key, value) %>%
           dplyr::rename(` ` = var, `  ` = key, `   ` = value)
 
-        result <- as_listing(
+        result <- rlistings::as_listing(
           result,
           default_formatting = list(all = fmt_config(align = "left"))
         )
@@ -129,7 +129,7 @@ ui_t_basic_info <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
-      htmlOutput(ns("title")),
+      shiny::htmlOutput(ns("title")),
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
     encoding = shiny::div(
@@ -251,7 +251,7 @@ srv_t_basic_info <- function(id,
         teal.code::eval_code(as.expression(my_calls))
     })
 
-    output$title <- renderText({
+    output$title <- shiny::renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
