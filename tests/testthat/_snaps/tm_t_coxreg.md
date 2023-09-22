@@ -18,11 +18,10 @@
           main_footer = c("p-value method for Coxph (Hazard Ratio): wald", 
               "Ties for Coxph (Hazard Ratio): efron")) %>% rtables::append_topleft("OS") %>% 
           summarize_coxreg(variables = list(time = "AVAL", event = "event", 
-              arm = "ARMCD", covariates = NULL, strata = "STRATA1"), 
-              control = list(pval_method = "wald", ties = "efron", 
-                  conf_level = 0.95, interaction = FALSE), at = list(AGE = c(35, 
-                  45)), multivar = FALSE, .stats = c("n", "hr", "ci", 
-                  "pval"))
+              arm = "ARMCD", strata = "STRATA1"), control = list(pval_method = "wald", 
+              ties = "efron", conf_level = 0.95, interaction = FALSE), 
+              at = list(AGE = c(35, 45)), multivar = FALSE, .stats = c("n", 
+                  "hr", "ci", "pval"))
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl)
@@ -48,11 +47,10 @@
           main_footer = c("p-value method for Coxph (Hazard Ratio): wald", 
               "Ties for Coxph (Hazard Ratio): efron")) %>% rtables::append_topleft("OS") %>% 
           summarize_coxreg(variables = list(time = "AVAL", event = "event", 
-              arm = "ARMCD", covariates = NULL, strata = "STRATA1"), 
-              control = list(pval_method = "wald", ties = "efron", 
-                  conf_level = 0.95, interaction = TRUE), at = list(AGE = c(35, 
-                  45)), multivar = FALSE, .stats = c("n", "hr", "ci", 
-                  "pval", "pval_inter"))
+              arm = "ARMCD", strata = "STRATA1"), control = list(pval_method = "wald", 
+              ties = "efron", conf_level = 0.95, interaction = TRUE), 
+              at = list(AGE = c(35, 45)), multivar = FALSE, .stats = c("n", 
+                  "hr", "ci", "pval", "pval_inter"))
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl)
