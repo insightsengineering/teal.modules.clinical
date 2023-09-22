@@ -119,6 +119,7 @@ ui_t_basic_info <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
+      htmlOutput(ns("title")),
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
     encoding = shiny::div(
@@ -228,6 +229,7 @@ srv_t_basic_info <- function(id,
         anl_q(),
         substitute(
           expr = {
+            pt_id <- patient_id
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
           }, env = list(
             patient_col = patient_col,
@@ -236,6 +238,10 @@ srv_t_basic_info <- function(id,
         )
       ) %>%
         teal.code::eval_code(as.expression(my_calls))
+    })
+
+    output$title <- renderText({
+      paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
     table_r <- shiny::reactive(all_q()[["result"]])
@@ -264,12 +270,13 @@ srv_t_basic_info <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal::TealReportCard$new()
-        card$set_name("Patient Profile Basic Info Table")
-        card$append_text("Patient Profile Basic Info Table", "header2")
+        card$set_name("Patient Profile Basic Info")
+        card$append_text("Patient Profile Basic Info", "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
         card$append_text("Table", "header3")
+        card$append_text(paste("Patient ID:", all_q()[["pt_id"]]), "verbatim")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")

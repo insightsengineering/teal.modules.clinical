@@ -411,6 +411,7 @@ ui_g_therapy <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
+      htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
       teal.widgets::plot_with_settings_ui(id = ns("therapy_plot"))
@@ -638,6 +639,7 @@ srv_g_therapy <- function(id,
         merged$anl_q(),
         substitute(
           expr = {
+            pt_id <- patient_id
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
           }, env = list(
             patient_col = patient_col,
@@ -646,6 +648,10 @@ srv_g_therapy <- function(id,
         )
       ) %>%
         teal.code::eval_code(as.expression(my_calls))
+    })
+
+    output$title <- renderText({
+      paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
     output$therapy_table <- DT::renderDataTable(
@@ -684,11 +690,14 @@ srv_g_therapy <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal::TealReportCard$new()
-        card$set_name("Patient Profile Therapy Plot")
-        card$append_text("Patient Profile Therapy Plot", "header2")
+        card$set_name("Patient Profile Therapy")
+        card$append_text("Patient Profile Therapy", "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
+        card$append_text("Table", "header3")
+        card$append_text(paste("Patient ID:", all_q()[["pt_id"]]), "verbatim")
+        card$append_table(teal.code::dev_suppress(all_q()[["therapy_table"]]))
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {

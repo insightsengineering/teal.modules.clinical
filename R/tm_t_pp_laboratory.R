@@ -214,6 +214,7 @@ ui_g_laboratory <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
+      htmlOutput(ns("title")),
       DT::DTOutput(outputId = ns("lab_values_table"))
     ),
     encoding = shiny::div(
@@ -393,6 +394,7 @@ srv_g_laboratory <- function(id,
         anl_q(),
         substitute(
           expr = {
+            pt_id <- patient_id
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
           }, env = list(
             patient_col = patient_col,
@@ -401,6 +403,10 @@ srv_g_laboratory <- function(id,
         )
       ) %>%
         teal.code::eval_code(as.expression(labor_calls))
+    })
+
+    output$title <- renderText({
+      paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
     table_r <- shiny::reactive({
@@ -437,12 +443,13 @@ srv_g_laboratory <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal::TealReportCard$new()
-        card$set_name("Patient Profile Laboratory Table")
-        card$append_text("Patient Profile Laboratory Table", "header2")
+        card$set_name("Patient Profile Laboratory")
+        card$append_text("Patient Profile Laboratory", "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
         card$append_text("Table", "header3")
+        card$append_text(paste("Patient ID:", all_q()[["pt_id"]]), "verbatim")
         card$append_table(table_r()$raw)
         if (!comment == "") {
           card$append_text("Comment", "header3")
