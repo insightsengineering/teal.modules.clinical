@@ -4,10 +4,12 @@
 #'
 #' @inheritParams template_arguments
 #' @param vars (`character`)\cr variable names to be shown in Basic Info tab.
+#' @param patient_id (`character`)\cr patient ID.
 #' @keywords internal
 #'
 template_basic_info <- function(dataname = "ANL",
-                                vars) {
+                                vars,
+                                patient_id = NULL) {
   checkmate::assert_string(dataname)
   checkmate::assert_character(vars, min.len = 1)
 
@@ -27,13 +29,21 @@ template_basic_info <- function(dataname = "ANL",
         key <- get_labels(dataname)$column_labels[rownames(values)]
 
         result <-
-          data.frame(key = key, value = values) %>%
-          dplyr::select(key, value) %>%
-          dplyr::rename(`   ` = key, ` ` = value)
+          data.frame(var = rownames(values), key = key, value = values) %>%
+          dplyr::select(var, key, value) %>%
+          dplyr::rename(` ` = var, `  ` = key, `   ` = value)
+
+        result <- as_listing(
+          result,
+          default_formatting = list(all = fmt_config(align = "left"))
+        )
+        main_title(result) <- paste("Patient ID:", patient_id)
+
         result
       }, env = list(
         dataname = as.name(dataname),
-        vars = vars
+        vars = vars,
+        patient_id = patient_id
       )
     )
   )
@@ -222,7 +232,8 @@ srv_t_basic_info <- function(id,
       teal::validate_inputs(iv_r())
       my_calls <- template_basic_info(
         dataname = "ANL",
-        vars = anl_inputs()$columns_source$vars
+        vars = anl_inputs()$columns_source$vars,
+        patient_id = patient_id()
       )
 
       teal.code::eval_code(
@@ -270,13 +281,12 @@ srv_t_basic_info <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal::TealReportCard$new()
-        card$set_name("Patient Profile Basic Info")
-        card$append_text("Patient Profile Basic Info", "header2")
+        card$set_name("Patient Profile Basic Info Table")
+        card$append_text("Patient Profile Basic Info Table", "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
         card$append_text("Table", "header3")
-        card$append_text(paste("Patient ID:", all_q()[["pt_id"]]), "verbatim")
         card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")

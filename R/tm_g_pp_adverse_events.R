@@ -53,6 +53,14 @@ template_adverse_events <- function(dataname = "ANL",
           ) %>%
           dplyr::arrange(dplyr::desc(tox_grade)) %>%
           `colnames<-`(get_labels(dataname)$column_labels[vars])
+
+        table <- as_listing(
+          table,
+          key_cols = NULL,
+          default_formatting = list(all = fmt_config(align = "left"))
+        )
+        main_title(table) <- paste("Patient ID:", patient_id)
+
         table
       },
       env = list(
@@ -64,7 +72,8 @@ template_adverse_events <- function(dataname = "ANL",
         action = as.name(action),
         time = as.name(time),
         decod = `if`(is.null(decod), NULL, as.name(decod)),
-        vars = c(aeterm, tox_grade, causality, outcome, action, time, decod)
+        vars = c(aeterm, tox_grade, causality, outcome, action, time, decod),
+        patient_id = patient_id
       )
     )
   )
@@ -574,7 +583,6 @@ srv_g_adverse_events <- function(id,
           card$append_fs(filter_panel_api$get_filter_state())
         }
         card$append_text("Table", "header3")
-        card$append_text(paste("Patient ID:", all_q()[["pt_id"]]), "verbatim")
         card$append_table(teal.code::dev_suppress(all_q()[["table"]]))
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())

@@ -13,7 +13,7 @@ template_medical_history <- function(dataname = "ANL",
                                      mhterm = "MHTERM",
                                      mhbodsys = "MHBODSYS",
                                      mhdistat = "MHDISTAT",
-                                     patient_id) {
+                                     patient_id = NULL) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(mhterm),

@@ -9,6 +9,7 @@
 #' @param anrind (`character`)\cr name of the analysis reference range indicator variable.
 #' @param aval (`character`)\cr name of the analysis value variable.
 #' @param avalu (`character`)\cr name of the analysis value unit variable.
+#' @param patient_id (`character`)\cr patient ID.
 #' @param round_value (`numeric`)\cr number of decimal places to be used when rounding.
 #' @keywords internal
 #'
@@ -19,6 +20,7 @@ template_laboratory <- function(dataname = "ANL",
                                 timepoints = "ADY",
                                 aval = "AVAL",
                                 avalu = "AVALU",
+                                patient_id = NULL,
                                 round_value = 0L) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -49,14 +51,21 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::mutate(aval_anrind = paste(aval, anrind)) %>%
           dplyr::select(-c(aval, anrind))
 
+        labor_table_raw <- labor_table_base %>%
+          tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
+          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
+
+        labor_table_raw <- as_listing(
+          labor_table_raw,
+          key_cols = NULL,
+          default_formatting = list(all = fmt_config(align = "left"))
+        )
+        main_title(labor_table_raw) <- paste("Patient ID:", patient_id)
+
         labor_table_html <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
           dplyr::select(-aval_anrind) %>%
           tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind_col) %>%
-          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
-
-        labor_table_raw <- labor_table_base %>%
-          tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
           dplyr::mutate(param_char := clean_description(.data[[param_char]]))
 
         labor_table_html_dt <- DT::datatable(labor_table_html, escape = FALSE)
@@ -76,6 +85,7 @@ template_laboratory <- function(dataname = "ANL",
         avalu = as.name(avalu),
         timepoints = as.name(timepoints),
         anrind = as.name(anrind),
+        patient_id = patient_id,
         round_value = round_value
       )
     )
@@ -387,6 +397,7 @@ srv_g_laboratory <- function(id,
         param = input[[extract_input("param", dataname)]],
         paramcd = input[[extract_input("paramcd", dataname)]],
         anrind = input[[extract_input("anrind", dataname)]],
+        patient_id = patient_id(),
         round_value = as.integer(input$round_value)
       )
 
@@ -443,13 +454,12 @@ srv_g_laboratory <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal::TealReportCard$new()
-        card$set_name("Patient Profile Laboratory")
-        card$append_text("Patient Profile Laboratory", "header2")
+        card$set_name("Patient Profile Laboratory Table")
+        card$append_text("Patient Profile Laboratory Table", "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
         card$append_text("Table", "header3")
-        card$append_text(paste("Patient ID:", all_q()[["pt_id"]]), "verbatim")
         card$append_table(table_r()$raw)
         if (!comment == "") {
           card$append_text("Comment", "header3")

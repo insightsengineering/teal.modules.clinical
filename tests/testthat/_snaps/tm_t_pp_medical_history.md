@@ -16,6 +16,7 @@
               rtables::split_rows_by(colnames(result_raw)[2], split_fun = rtables::drop_split_levels, 
                   child_labels = "hidden") %>% rtables::analyze_colvars(function(x) x[seq_along(x)]) %>% 
               rtables::build_table(result_raw)
+          main_title(result) <- paste("Patient ID:", NULL)
           result
       }
 

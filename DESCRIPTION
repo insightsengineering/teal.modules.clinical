@@ -43,6 +43,7 @@ Imports:
     magrittr,
     methods,
     rlang,
+    rlistings (>= 0.2.4),
     rmarkdown,
     rtables (>= 0.6.1),
     scales,

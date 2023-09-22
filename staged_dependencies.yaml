@@ -11,6 +11,9 @@ upstream_repos:
   insightsengineering/tern.gee:
     repo: insightsengineering/tern.gee
     host: https://github.com
+  insightsengineering/rlistings:
+    repo: insightsengineering/rlistings
+    host: https://github.com
   insightsengineering/rtables:
     repo: insightsengineering/rtables
     host: https://github.com

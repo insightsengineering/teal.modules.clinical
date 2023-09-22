@@ -87,6 +87,14 @@ template_therapy <- function(dataname = "ANL",
           get_labels(dataname)$column_labels[c(cmindc_char, cmdecod_char)], "Dosage",
           get_labels(dataname)$column_labels[c(cmstdy_char, cmendy_char)]
         ))
+
+      therapy_table <- as_listing(
+        therapy_table,
+        key_cols = NULL,
+        default_formatting = list(all = fmt_config(align = "left"))
+      )
+      main_title(therapy_table) <- paste("Patient ID:", patient_id)
+
       therapy_table
     }, env = list(
       dataname = as.name(dataname),
@@ -108,7 +116,8 @@ template_therapy <- function(dataname = "ANL",
       cmroute_char = cmroute,
       cmdosfrq_char = cmdosfrq,
       cmendy_char = cmendy,
-      cmstdy_char = cmstdy
+      cmstdy_char = cmstdy,
+      patient_id = patient_id
     ))
   )
 
@@ -696,7 +705,6 @@ srv_g_therapy <- function(id,
           card$append_fs(filter_panel_api$get_filter_state())
         }
         card$append_text("Table", "header3")
-        card$append_text(paste("Patient ID:", all_q()[["pt_id"]]), "verbatim")
         card$append_table(teal.code::dev_suppress(all_q()[["therapy_table"]]))
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
