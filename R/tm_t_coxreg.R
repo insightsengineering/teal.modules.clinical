@@ -79,10 +79,9 @@ template_coxreg_u <- function(dataname,
     )
   )
 
-  variables <- list(
-    time = aval_var, event = "event", arm = arm_var, covariates = cov_var
-  )
+  variables <- list(time = aval_var, event = "event", arm = arm_var)
 
+  if (!is.null(cov_var)) variables$covariates <- cov_var
   if (!is.null(strata_var)) variables$strata <- strata_var
 
   y$data <- bracket_expr(data_list)
@@ -224,10 +223,9 @@ template_coxreg_m <- function(dataname,
     )
   )
 
-  variables <- list(
-    time = aval_var, event = "event", arm = arm_var, covariates = cov_var
-  )
+  variables <- list(time = aval_var, event = "event", arm = arm_var)
 
+  if (!is.null(cov_var)) variables$covariates <- cov_var
   if (!is.null(strata_var)) variables$strata <- strata_var
 
   y$data <- bracket_expr(data_list)
