@@ -485,7 +485,8 @@ srv_g_ci <- function(id, # nolint
     if (with_reporter) {
       card_fun <- function(comment, label) {
         card <- teal::TealReportCard$new()
-        title <- ifelse(label == "", "CI Plot", label)
+        title <- "CI Plot"
+        title <- ifelse(label == "", title, label)
         card$set_name(title)
         card$append_text(title, "header2")
         card$append_text("Confidence Interval Plot", "header3")

@@ -548,10 +548,12 @@ srv_gee <- function(id,
     )
 
     if (with_reporter) {
-      card_fun <- function(comment) {
+      card_fun <- function(comment, label) {
         card <- teal::TealReportCard$new()
-        card$set_name("Generalized Estimating Equations (GEE) Analysis Table")
-        card$append_text("Generalized Estimating Equations (GEE) Analysis Table", "header2")
+        title <- "Generalized Estimating Equations (GEE) Analysis Table"
+        title <- ifelse(label == "", title, label)
+        card$set_name(title)
+        card$append_text(title, "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
