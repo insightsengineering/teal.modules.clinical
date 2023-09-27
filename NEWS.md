@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.16.9005
+# teal.modules.clinical 0.8.16.9006
 
 ### Enhancements
 * Added more informative error message when grade mapping error occurs in `tm_t_abnormality_by_worst_grade`.
@@ -11,6 +11,9 @@
 * Updated default reference/comparison arm level selection to work when arm variable levels are filtered out.
 * Updated `tm_t_coxreg` to drop factor covariate variable levels that are not present to avoid errors when filtering.
 
+
+### Bug fixes
+* Fixed bug in `tm_t_coxreg` preventing table from being displayed when no covariates are selected.
 
 ### Miscellaneous
 * Updated `control_incidence_rate` parameter names in `tm_t_events_patyear` from `time_unit_input` and `time_unit_output` to `input_time_unit` and `num_pt_year`, respectively, after parameter names were changed in `tern`.
