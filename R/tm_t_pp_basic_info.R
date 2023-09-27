@@ -262,10 +262,12 @@ srv_t_basic_info <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
+      card_fun <- function(comment, label) {
         card <- teal::TealReportCard$new()
-        card$set_name("Patient Profile Basic Info Table")
-        card$append_text("Patient Profile Basic Info Table", "header2")
+        title <- "Patient Profile Basic Info Table"
+        title <- ifelse(label == "", title, label)
+        card$set_name(title)
+        card$append_text(title, "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }

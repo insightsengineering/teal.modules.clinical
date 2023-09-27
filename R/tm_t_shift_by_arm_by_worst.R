@@ -566,10 +566,12 @@ srv_shift_by_arm_by_worst <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
+      card_fun <- function(comment, label) {
         card <- teal::TealReportCard$new()
-        card$set_name("Shift by Arm by Worst Table")
-        card$append_text("Shift by Arm by Worst Table", "header2")
+        title <- "Shift by Arm by Worst Table"
+        title <- ifelse(label == "", title, label)
+        card$set_name(title)
+        card$append_text(title, "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
