@@ -61,6 +61,14 @@ template_coxreg_u <- function(dataname,
     )
   )
 
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = dplyr::mutate(across(where(is.factor) & cov_var, droplevels)),
+      env = list(cov_var = cov_var)
+    )
+  )
+
   data_pipe <- add_expr(data_pipe, quote(df_explicit_na(na_level = "")))
 
   data_list <- add_expr(
@@ -210,6 +218,14 @@ template_coxreg_m <- function(dataname,
     substitute(
       expr = dplyr::mutate(event = 1 - cnsr_var),
       env = list(cnsr_var = as.name(cnsr_var))
+    )
+  )
+
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = dplyr::mutate(across(where(is.factor) & cov_var, droplevels)),
+      env = list(cov_var = cov_var)
     )
   )
 
