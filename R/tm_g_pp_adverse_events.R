@@ -53,6 +53,14 @@ template_adverse_events <- function(dataname = "ANL",
           ) %>%
           dplyr::arrange(dplyr::desc(tox_grade)) %>%
           `colnames<-`(get_labels(dataname)$column_labels[vars])
+
+        table <- rlistings::as_listing(
+          table,
+          key_cols = NULL,
+          default_formatting = list(all = fmt_config(align = "left"))
+        )
+        main_title(table) <- paste("Patient ID:", patient_id)
+
         table
       },
       env = list(
@@ -64,7 +72,8 @@ template_adverse_events <- function(dataname = "ANL",
         action = as.name(action),
         time = as.name(time),
         decod = `if`(is.null(decod), NULL, as.name(decod)),
-        vars = c(aeterm, tox_grade, causality, outcome, action, time, decod)
+        vars = c(aeterm, tox_grade, causality, outcome, action, time, decod),
+        patient_id = patient_id
       )
     )
   )
@@ -311,6 +320,7 @@ ui_g_adverse_events <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
+      shiny::htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("table"), ns("table_rows")),
       DT::DTOutput(outputId = ns("table")),
       teal.widgets::plot_with_settings_ui(id = ns("chart"))
@@ -502,8 +512,10 @@ srv_g_adverse_events <- function(id,
       qenv2 <- teal.code::eval_code(
         qenv,
         substitute(
-          expr = ANL <- ANL[ANL[[patient_col]] == patient_id, ], # nolint
-          env = list(
+          expr = {
+            pt_id <- patient_id
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+          }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
           )
@@ -526,6 +538,11 @@ srv_g_adverse_events <- function(id,
 
       teal.code::eval_code(qenv2, as.expression(calls))
     })
+
+    output$title <- shiny::renderText({
+      paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
+    })
+
     output$table <- DT::renderDataTable(
       expr = teal.code::dev_suppress(all_q()[["table"]]),
       options = list(pageLength = input$table_rows)
@@ -566,6 +583,8 @@ srv_g_adverse_events <- function(id,
           with_filter = with_filter,
           filter_panel_api = filter_panel_api
         )
+        card$append_text("Table", "header3")
+        card$append_table(teal.code::dev_suppress(all_q()[["table"]]))
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {

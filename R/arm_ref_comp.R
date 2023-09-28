@@ -108,7 +108,7 @@ arm_ref_comp_observer <- function(session,
       teal::validate_has_elements(arm, "Treatment variable is empty.")
 
       arm_levels <- if (is.factor(arm)) {
-        levels(arm)
+        levels(droplevels(arm))
       } else {
         unique(arm)
       }
