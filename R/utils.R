@@ -825,11 +825,13 @@ clean_description <- function(x) {
 #' @param title (`character(1)`) title of the card (unless overwritten by label)
 #' @param label (`character(1)`) label provided by the user when adding the card
 #' @param description (`character(1)`) optional additional description
+#' @param with_filter (`logical(1)`) flag indicating to add filter state
+#' @param filter_panel_api (`FilterPanelAPI`) filter panel api instance
 #'
 #' @return (`TealReportCard`) populated with a title, description and filter state
 #'
 #' @keywords internal
-card_template <- function(title, label, description = NULL, with_filter) {
+card_template <- function(title, label, description = NULL, with_filter, filter_panel_api) {
   card <- teal::TealReportCard$new()
   title <- ifelse(label == "", title, label)
   card$set_name(title)
