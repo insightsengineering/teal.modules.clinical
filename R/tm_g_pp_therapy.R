@@ -181,10 +181,9 @@ template_therapy <- function(dataname = "ANL",
         ggplot2::ggplot(data = data, ggplot2::aes(fill = cmindc, color = cmindc, y = CMDECOD, x = CMSTDY)) +
         ggplot2::geom_segment(ggplot2::aes(xend = CMENDY, yend = CMDECOD), size = 2) +
         ggplot2::geom_text(
-          data =
-            data %>%
-              dplyr::select(CMDECOD, cmindc, CMSTDY) %>%
-              dplyr::distinct(),
+          data = data %>%
+            dplyr::select(CMDECOD, cmindc, CMSTDY) %>%
+            dplyr::distinct(),
           ggplot2::aes(x = CMSTDY, label = CMDECOD), color = "black",
           hjust = "left",
           vjust = "bottom",
