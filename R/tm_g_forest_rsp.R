@@ -723,7 +723,8 @@ srv_g_forest_rsp <- function(id,
           title = "Forest Response Plot",
           label = label,
           description = NULL,
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())

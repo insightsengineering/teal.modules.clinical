@@ -488,7 +488,8 @@ srv_g_ci <- function(id, # nolint
           title = "CI Plot",
           label = label,
           description = "Confidence Interval Plot",
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())

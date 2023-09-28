@@ -950,7 +950,8 @@ srv_ancova <- function(id,
           title = "ANCOVA",
           label = label,
           description = "Analysis of Covariance",
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
         card$append_table(table_r())

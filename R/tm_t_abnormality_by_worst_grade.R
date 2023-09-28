@@ -669,7 +669,8 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
           title = "Laboratory Test Results Table",
           label = label,
           description = "Laboratory test results with highest grade post-baseline Table",
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
         card$append_table(table_r())

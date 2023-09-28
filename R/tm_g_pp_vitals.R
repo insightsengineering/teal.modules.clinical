@@ -533,7 +533,8 @@ srv_g_vitals <- function(id,
           title = "Patient Profile Vitals Plot",
           label = label,
           description = NULL,
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())

@@ -738,7 +738,8 @@ srv_summary_by <- function(id,
           title = "Summarize Variables by Row Groups Table",
           label = label,
           description = NULL,
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
         card$append_table(table_r())

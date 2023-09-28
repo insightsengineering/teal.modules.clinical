@@ -931,7 +931,8 @@ srv_t_tte <- function(id,
           title = "Time To Event Table",
           label = label,
           description = NULL,
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
         card$append_table(table_r())

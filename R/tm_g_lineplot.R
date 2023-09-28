@@ -653,7 +653,8 @@ srv_g_lineplot <- function(id,
           title = "Line Plot",
           label = label,
           description = NULL,
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())

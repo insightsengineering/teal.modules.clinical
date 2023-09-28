@@ -1440,7 +1440,8 @@ srv_mmrm <- function(id,
             "Mixed Models procedure analyzes results from repeated measures designs",
             "in which the outcome is continuous and measured at fixed time points"
           ),
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         if (!is.null(table_r())) {
           card$append_text("Table", "header3")

@@ -554,7 +554,8 @@ srv_gee <- function(id,
           title = "Generalized Estimating Equations (GEE) Analysis Table",
           label = label,
           description = NULL,
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         table_type <- switch(input$output_table,
           "t_gee_cov" = "Residual Covariance Matrix Estimate",

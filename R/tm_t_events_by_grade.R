@@ -1198,7 +1198,8 @@ srv_t_events_by_grade <- function(id,
           title = "Events by Grade Table",
           label = label,
           description = NULL,
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
         card$append_table(table_r())

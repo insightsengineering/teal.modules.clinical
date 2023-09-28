@@ -778,7 +778,8 @@ srv_g_km <- function(id,
           title = "Kaplan Meier Plot",
           label = label,
           description = "Non-parametric method used to estimate the survival function from lifetime data",
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())

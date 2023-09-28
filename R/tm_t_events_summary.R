@@ -970,7 +970,8 @@ srv_t_events_summary <- function(id,
           title = "Adverse Events Summary Table",
           label = label,
           description = NULL,
-          with_filter = with_filter
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
         card$append_table(table_r())
