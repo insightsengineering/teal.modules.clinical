@@ -61,6 +61,14 @@ template_coxreg_u <- function(dataname,
     )
   )
 
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = dplyr::mutate(across(where(is.factor) & cov_var, droplevels)),
+      env = list(cov_var = cov_var)
+    )
+  )
+
   data_pipe <- add_expr(data_pipe, quote(df_explicit_na(na_level = "")))
 
   data_list <- add_expr(
@@ -79,10 +87,9 @@ template_coxreg_u <- function(dataname,
     )
   )
 
-  variables <- list(
-    time = aval_var, event = "event", arm = arm_var, covariates = cov_var
-  )
+  variables <- list(time = aval_var, event = "event", arm = arm_var)
 
+  if (!is.null(cov_var)) variables$covariates <- cov_var
   if (!is.null(strata_var)) variables$strata <- strata_var
 
   y$data <- bracket_expr(data_list)
@@ -214,6 +221,14 @@ template_coxreg_m <- function(dataname,
     )
   )
 
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = dplyr::mutate(across(where(is.factor) & cov_var, droplevels)),
+      env = list(cov_var = cov_var)
+    )
+  )
+
   data_pipe <- add_expr(data_pipe, quote(df_explicit_na(na_level = "")))
 
   data_list <- add_expr(
@@ -224,10 +239,9 @@ template_coxreg_m <- function(dataname,
     )
   )
 
-  variables <- list(
-    time = aval_var, event = "event", arm = arm_var, covariates = cov_var
-  )
+  variables <- list(time = aval_var, event = "event", arm = arm_var)
 
+  if (!is.null(cov_var)) variables$covariates <- cov_var
   if (!is.null(strata_var)) variables$strata <- strata_var
 
   y$data <- bracket_expr(data_list)
