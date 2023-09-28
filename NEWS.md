@@ -10,6 +10,8 @@
 * Updated `tm_t_events` to maintain indentation after pruning.
 * Updated default reference/comparison arm level selection to work when arm variable levels are filtered out.
 * Updated `tm_t_coxreg` to drop factor covariate variable levels that are not present to avoid errors when filtering.
+* Updated `tm_t_pp_basic_info`, `tm_t_pp_medical_history`, `tm_g_pp_therapy`, `tm_g_pp_adverse_events`, and `tm_t_pp_laboratory` to print patient ID above table.
+* Updated `tm_t_pp_basic_info`, `tm_g_pp_therapy`, `tm_g_pp_adverse_events`, and `tm_t_pp_laboratory` to use `rlistings` to print data neatly in reports.
 
 
 ### Bug fixes

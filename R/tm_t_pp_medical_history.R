@@ -6,12 +6,14 @@
 #' @param mhterm (`character`)\cr name of the reported name for medical history variable.
 #' @param mhbodsys (`character`)\cr name of the body system or organ class variable.
 #' @param mhdistat (`character`)\cr name of the status of the disease variable.
+#' @param patient_id (`character`)\cr patient ID.
 #' @keywords internal
 #'
 template_medical_history <- function(dataname = "ANL",
                                      mhterm = "MHTERM",
                                      mhbodsys = "MHBODSYS",
-                                     mhdistat = "MHDISTAT") {
+                                     mhdistat = "MHDISTAT",
+                                     patient_id = NULL) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(mhterm),
@@ -51,6 +53,8 @@ template_medical_history <- function(dataname = "ANL",
         rtables::analyze_colvars(function(x) x[seq_along(x)]) %>%
         rtables::build_table(result_raw)
 
+      main_title(result) <- paste("Patient ID:", patient_id)
+
       result
     }, env = list(
       dataname = as.name(dataname),
@@ -59,7 +63,8 @@ template_medical_history <- function(dataname = "ANL",
       mhdistat = as.name(mhdistat),
       mhbodsys_char = mhbodsys,
       mhterm_char = mhterm,
-      mhdistat_char = mhdistat
+      mhdistat_char = mhdistat,
+      patient_id = patient_id
     ))
   )
 
@@ -297,7 +302,8 @@ srv_t_medical_history <- function(id,
         dataname = "ANL",
         mhterm = input[[extract_input("mhterm", dataname)]],
         mhbodsys = input[[extract_input("mhbodsys", dataname)]],
-        mhdistat = input[[extract_input("mhdistat", dataname)]]
+        mhdistat = input[[extract_input("mhdistat", dataname)]],
+        patient_id = patient_id()
       )
 
       teal.code::eval_code(

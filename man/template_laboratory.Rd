@@ -12,6 +12,7 @@ template_laboratory(
   timepoints = "ADY",
   aval = "AVAL",
   avalu = "AVALU",
+  patient_id = NULL,
   round_value = 0L
 )
 }
@@ -31,6 +32,8 @@ the laboratory table.}
 \item{aval}{(\code{character})\cr name of the analysis value variable.}
 
 \item{avalu}{(\code{character})\cr name of the analysis value unit variable.}
+
+\item{patient_id}{(\code{character})\cr patient ID.}
 
 \item{round_value}{(\code{numeric})\cr number of decimal places to be used when rounding.}
 }

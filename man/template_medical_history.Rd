@@ -8,7 +8,8 @@ template_medical_history(
   dataname = "ANL",
   mhterm = "MHTERM",
   mhbodsys = "MHBODSYS",
-  mhdistat = "MHDISTAT"
+  mhdistat = "MHDISTAT",
+  patient_id = NULL
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ analysis data used in teal module.}
 \item{mhbodsys}{(\code{character})\cr name of the body system or organ class variable.}
 
 \item{mhdistat}{(\code{character})\cr name of the status of the disease variable.}
+
+\item{patient_id}{(\code{character})\cr patient ID.}
 }
 \description{
 Creates medical history template.

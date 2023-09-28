@@ -87,6 +87,14 @@ template_therapy <- function(dataname = "ANL",
           get_labels(dataname)$column_labels[c(cmindc_char, cmdecod_char)], "Dosage",
           get_labels(dataname)$column_labels[c(cmstdy_char, cmendy_char)]
         ))
+
+      therapy_table <- rlistings::as_listing(
+        therapy_table,
+        key_cols = NULL,
+        default_formatting = list(all = fmt_config(align = "left"))
+      )
+      main_title(therapy_table) <- paste("Patient ID:", patient_id)
+
       therapy_table
     }, env = list(
       dataname = as.name(dataname),
@@ -108,7 +116,8 @@ template_therapy <- function(dataname = "ANL",
       cmroute_char = cmroute,
       cmdosfrq_char = cmdosfrq,
       cmendy_char = cmendy,
-      cmstdy_char = cmstdy
+      cmstdy_char = cmstdy,
+      patient_id = patient_id
     ))
   )
 
@@ -172,10 +181,9 @@ template_therapy <- function(dataname = "ANL",
         ggplot2::ggplot(data = data, ggplot2::aes(fill = cmindc, color = cmindc, y = CMDECOD, x = CMSTDY)) +
         ggplot2::geom_segment(ggplot2::aes(xend = CMENDY, yend = CMDECOD), size = 2) +
         ggplot2::geom_text(
-          data =
-            data %>%
-              dplyr::select(CMDECOD, cmindc, CMSTDY) %>%
-              dplyr::distinct(),
+          data = data %>%
+            dplyr::select(CMDECOD, cmindc, CMSTDY) %>%
+            dplyr::distinct(),
           ggplot2::aes(x = CMSTDY, label = CMDECOD), color = "black",
           hjust = "left",
           vjust = "bottom",
@@ -411,6 +419,7 @@ ui_g_therapy <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
+      shiny::htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
       teal.widgets::plot_with_settings_ui(id = ns("therapy_plot"))
@@ -638,6 +647,7 @@ srv_g_therapy <- function(id,
         merged$anl_q(),
         substitute(
           expr = {
+            pt_id <- patient_id
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
           }, env = list(
             patient_col = patient_col,
@@ -646,6 +656,10 @@ srv_g_therapy <- function(id,
         )
       ) %>%
         teal.code::eval_code(as.expression(my_calls))
+    })
+
+    output$title <- shiny::renderText({
+      paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
     output$therapy_table <- DT::renderDataTable(
@@ -684,11 +698,13 @@ srv_g_therapy <- function(id,
     if (with_reporter) {
       card_fun <- function(comment) {
         card <- teal::TealReportCard$new()
-        card$set_name("Patient Profile Therapy Plot")
-        card$append_text("Patient Profile Therapy Plot", "header2")
+        card$set_name("Patient Profile Therapy")
+        card$append_text("Patient Profile Therapy", "header2")
         if (with_filter) {
           card$append_fs(filter_panel_api$get_filter_state())
         }
+        card$append_text("Table", "header3")
+        card$append_table(teal.code::dev_suppress(all_q()[["therapy_table"]]))
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {

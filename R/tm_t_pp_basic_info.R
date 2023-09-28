@@ -4,10 +4,12 @@
 #'
 #' @inheritParams template_arguments
 #' @param vars (`character`)\cr variable names to be shown in Basic Info tab.
+#' @param patient_id (`character`)\cr patient ID.
 #' @keywords internal
 #'
 template_basic_info <- function(dataname = "ANL",
-                                vars) {
+                                vars,
+                                patient_id = NULL) {
   checkmate::assert_string(dataname)
   checkmate::assert_character(vars, min.len = 1)
 
@@ -27,13 +29,21 @@ template_basic_info <- function(dataname = "ANL",
         key <- get_labels(dataname)$column_labels[rownames(values)]
 
         result <-
-          data.frame(key = key, value = values) %>%
-          dplyr::select(key, value) %>%
-          dplyr::rename(`   ` = key, ` ` = value)
+          data.frame(var = rownames(values), key = key, value = values) %>%
+          dplyr::select(var, key, value) %>%
+          dplyr::rename(` ` = var, `  ` = key, `   ` = value)
+
+        result <- rlistings::as_listing(
+          result,
+          default_formatting = list(all = fmt_config(align = "left"))
+        )
+        main_title(result) <- paste("Patient ID:", patient_id)
+
         result
       }, env = list(
         dataname = as.name(dataname),
-        vars = vars
+        vars = vars,
+        patient_id = patient_id
       )
     )
   )
@@ -119,6 +129,7 @@ ui_t_basic_info <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = shiny::div(
+      shiny::htmlOutput(ns("title")),
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
     encoding = shiny::div(
@@ -221,13 +232,15 @@ srv_t_basic_info <- function(id,
       teal::validate_inputs(iv_r())
       my_calls <- template_basic_info(
         dataname = "ANL",
-        vars = anl_inputs()$columns_source$vars
+        vars = anl_inputs()$columns_source$vars,
+        patient_id = patient_id()
       )
 
       teal.code::eval_code(
         anl_q(),
         substitute(
           expr = {
+            pt_id <- patient_id
             ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
           }, env = list(
             patient_col = patient_col,
@@ -236,6 +249,10 @@ srv_t_basic_info <- function(id,
         )
       ) %>%
         teal.code::eval_code(as.expression(my_calls))
+    })
+
+    output$title <- shiny::renderText({
+      paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
     table_r <- shiny::reactive(all_q()[["result"]])
