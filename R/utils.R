@@ -826,7 +826,8 @@ clean_description <- function(x) {
 #' @param label (`character(1)`) label provided by the user when adding the card
 #' @param description (`character(1)`) optional additional description
 #' @param with_filter (`logical(1)`) flag indicating to add filter state
-#' @param filter_panel_api (`FilterPanelAPI`) filter panel api instance
+#' @param filter_panel_api (`FilterPanelAPI`) object with API that allows the generation
+#' of the filter state in the report
 #'
 #' @return (`TealReportCard`) populated with a title, description and filter state
 #'

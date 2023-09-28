@@ -15,7 +15,8 @@ card_template(title, label, description = NULL, with_filter, filter_panel_api)
 
 \item{with_filter}{(\code{logical(1)}) flag indicating to add filter state}
 
-\item{filter_panel_api}{(\code{FilterPanelAPI}) filter panel api instance}
+\item{filter_panel_api}{(\code{FilterPanelAPI}) object with API that allows the generation
+of the filter state in the report}
 }
 \value{
 (\code{TealReportCard}) populated with a title, description and filter state
