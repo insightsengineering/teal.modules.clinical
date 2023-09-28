@@ -239,11 +239,10 @@ template_mmrm_tables <- function(parentname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr =
-          rtables::add_overall_col(total_label) %>%
-            rtables::split_rows_by(visit_var) %>%
-            tern.mmrm::summarize_lsmeans(arms = FALSE) %>%
-            rtables::append_topleft(paste0("  ", paramcd)),
+        expr = rtables::add_overall_col(total_label) %>%
+          rtables::split_rows_by(visit_var) %>%
+          tern.mmrm::summarize_lsmeans(arms = FALSE) %>%
+          rtables::append_topleft(paste0("  ", paramcd)),
         env = list(
           total_label = total_label,
           visit_var = visit_var,

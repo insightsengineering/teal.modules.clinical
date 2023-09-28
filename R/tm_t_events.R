@@ -228,26 +228,25 @@ template_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr =
-          rtables::split_rows_by(
-            hlt,
-            child_labels = "visible",
-            nested = FALSE,
-            indent_mod = -1L,
-            split_fun = split_fun,
-            label_pos = "topleft",
-            split_label = formatters::var_labels(dataname[hlt])
+        expr = rtables::split_rows_by(
+          hlt,
+          child_labels = "visible",
+          nested = FALSE,
+          indent_mod = -1L,
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = formatters::var_labels(dataname[hlt])
+        ) %>%
+          summarize_num_patients(
+            var = "USUBJID",
+            .stats = c("unique", "nonunique"),
+            .labels = c(
+              unique = unique_label,
+              nonunique = nonunique_label
+            )
           ) %>%
-            summarize_num_patients(
-              var = "USUBJID",
-              .stats = c("unique", "nonunique"),
-              .labels = c(
-                unique = unique_label,
-                nonunique = nonunique_label
-              )
-            ) %>%
-            count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
-            append_varlabels(dataname, llt, indent = 1L),
+          count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
+          append_varlabels(dataname, llt, indent = 1L),
         env = list(
           dataname = as.name(dataname),
           hlt = hlt,
