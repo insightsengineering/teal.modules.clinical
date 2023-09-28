@@ -887,14 +887,12 @@ srv_t_shift_by_grade <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal::TealReportCard$new()
-        title <- "Grade Summary Table"
-        title <- ifelse(label == "", title, label)
-        card$set_name(title)
-        card$append_text(title, "header2")
-        if (with_filter) {
-          card$append_fs(filter_panel_api$get_filter_state())
-        }
+        card <- card_template(
+          title = "Grade Summary Table",
+          label = label,
+          description = NULL,
+          with_filter = with_filter
+        )
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

@@ -946,15 +946,12 @@ srv_ancova <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal::TealReportCard$new()
-        title <- "ANCOVA"
-        title <- ifelse(label == "", title, label)
-        card$set_name(title)
-        card$append_text(title, "header2")
-        card$append_text("Analysis of Covariance", "header3")
-        if (with_filter) {
-          card$append_fs(filter_panel_api$get_filter_state())
-        }
+        card <- card_template(
+          title = "ANCOVA",
+          label = label,
+          description = "Analysis of Covariance",
+          with_filter = with_filter
+        )
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

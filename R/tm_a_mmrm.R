@@ -1433,21 +1433,15 @@ srv_mmrm <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal::TealReportCard$new()
-        title <- "Mixed Model Repeated Measurements (MMRM) Analysis"
-        title <- ifelse(label == "", title, label)
-        card$set_name(title)
-        card$append_text(title, "header2")
-        card$append_text(
-          paste(
+        card <- card_template(
+          title = "Mixed Model Repeated Measurements (MMRM) Analysis",
+          label = label,
+          description = paste(
             "Mixed Models procedure analyzes results from repeated measures designs",
             "in which the outcome is continuous and measured at fixed time points"
           ),
-          "header3"
+          with_filter = with_filter
         )
-        if (with_filter) {
-          card$append_fs(filter_panel_api$get_filter_state())
-        }
         if (!is.null(table_r())) {
           card$append_text("Table", "header3")
           card$append_table(table_r())
