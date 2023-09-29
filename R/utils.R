@@ -834,7 +834,7 @@ clean_description <- function(x) {
 #' @keywords internal
 card_template <- function(title, label, description = NULL, with_filter, filter_panel_api) {
   card <- teal::TealReportCard$new()
-  title <- ifelse(label == "", title, label)
+  title <- if (label == "") title else label
   card$set_name(title)
   card$append_text(title, "header2")
   if (!is.null(description)) {
