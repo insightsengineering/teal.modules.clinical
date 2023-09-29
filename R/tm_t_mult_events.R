@@ -148,9 +148,8 @@ template_mult_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr =
-          count_occurrences(vars = llt, .indent_mods = -1L) %>%
-            append_varlabels(dataname, llt, indent = 0L),
+        expr = count_occurrences(vars = llt, .indent_mods = -1L) %>%
+          append_varlabels(dataname, llt, indent = 0L),
         env = list(
           dataname = as.name(dataname), llt = llt
         )
@@ -203,18 +202,17 @@ template_mult_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr =
-          summarize_num_patients(
-            var = "USUBJID",
-            count_by = seq_var,
-            .stats = c("unique", "nonunique"),
-            .labels = c(
-              unique = unique_label,
-              nonunique = nonunique_label
-            )
-          ) %>%
-            count_occurrences(vars = llt, .indent_mods = -1L) %>%
-            append_varlabels(dataname, llt, indent = indent_space),
+        expr = summarize_num_patients(
+          var = "USUBJID",
+          count_by = seq_var,
+          .stats = c("unique", "nonunique"),
+          .labels = c(
+            unique = unique_label,
+            nonunique = nonunique_label
+          )
+        ) %>%
+          count_occurrences(vars = llt, .indent_mods = -1L) %>%
+          append_varlabels(dataname, llt, indent = indent_space),
         env = list(
           dataname = as.name(dataname), llt = llt,
           unique_label = unique_label, nonunique_label = nonunique_label,
