@@ -833,6 +833,12 @@ clean_description <- function(x) {
 #'
 #' @keywords internal
 card_template <- function(title, label, description = NULL, with_filter, filter_panel_api) {
+  checkmate::assert_string(title)
+  checkmate::assert_string(label)
+  checkmate::assert_string(description, null.ok = TRUE)
+  checkmate::assert_flag(with_filter)
+  checkmate::assert_class(filter_panel_api, classes = "FilterPanelAPI")
+
   card <- teal::TealReportCard$new()
   title <- if (label == "") title else label
   card$set_name(title)
