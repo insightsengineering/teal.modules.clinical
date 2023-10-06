@@ -24,8 +24,7 @@ control_tte <- function(
     surv_timepoint = control_surv_timepoint(
       conf_level = 0.95,
       conf_type = c("plain", "none", "log", "log-log")
-    )
-  ) {
+    )) {
   list(
     surv_time = do.call("control_surv_time", surv_time),
     coxph = do.call("control_coxph", coxph),
