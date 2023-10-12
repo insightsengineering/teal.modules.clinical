@@ -665,7 +665,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal.reporter::card_template(
+        card <- teal::card_template(
           title = "Laboratory Test Results Table",
           label = label,
           description = "Laboratory test results with highest grade post-baseline Table",

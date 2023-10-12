@@ -567,7 +567,7 @@ srv_shift_by_arm_by_worst <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal.reporter::card_template(
+        card <- teal::card_template(
           title = "Shift by Arm by Worst Table",
           label = label,
           with_filter = with_filter,

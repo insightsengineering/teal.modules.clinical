@@ -280,7 +280,7 @@ srv_t_basic_info <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal.reporter::card_template(
+        card <- teal::card_template(
           title = "Patient Profile Basic Info Table",
           label = label,
           with_filter = with_filter,

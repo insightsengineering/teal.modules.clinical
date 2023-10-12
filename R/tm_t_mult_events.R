@@ -590,7 +590,7 @@ srv_t_mult_events_byterm <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal.reporter::card_template(
+        card <- teal::card_template(
           title = "Multiple Events by Term Table",
           label = label,
           with_filter = with_filter,

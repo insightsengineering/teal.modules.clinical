@@ -646,7 +646,7 @@ srv_t_exposure <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal.reporter::card_template(
+        card <- teal::card_template(
           title = "Exposure for Risk Management Plan Table",
           label = label,
           with_filter = with_filter,

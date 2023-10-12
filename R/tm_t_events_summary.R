@@ -966,7 +966,7 @@ srv_t_events_summary <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal.reporter::card_template(
+        card <- teal::card_template(
           title = "Adverse Events Summary Table",
           label = label,
           with_filter = with_filter,
