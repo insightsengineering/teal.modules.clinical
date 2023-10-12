@@ -734,7 +734,7 @@ srv_summary_by <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal::card_template(
+        card <- teal::report_card_template(
           title = "Summarize Variables by Row Groups Table",
           label = label,
           with_filter = with_filter,

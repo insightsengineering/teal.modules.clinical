@@ -345,7 +345,7 @@ srv_t_prior_medication <- function(id,
 
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal::card_template(
+        card <- teal::report_card_template(
           title = "Patient Prior Medication Table",
           label = label,
           with_filter = with_filter,

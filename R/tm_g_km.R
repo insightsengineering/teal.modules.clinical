@@ -774,7 +774,7 @@ srv_g_km <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal::card_template(
+        card <- teal::report_card_template(
           title = "Kaplan Meier Plot",
           label = label,
           description = "Non-parametric method used to estimate the survival function from lifetime data",

@@ -556,7 +556,7 @@ srv_events_patyear <- function(id,
     ### REPORTER
     if (with_reporter) {
       card_fun <- function(comment, label) {
-        card <- teal::card_template(
+        card <- teal::report_card_template(
           title = "Event Rates Adjusted For Patient-Years Table",
           label = label,
           with_filter = with_filter,
