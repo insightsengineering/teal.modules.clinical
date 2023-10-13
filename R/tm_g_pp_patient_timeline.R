@@ -831,8 +831,10 @@ srv_g_patient_timeline <- function(id,
       shiny::validate(
         shiny::need(
           !input$relday_x_axis ||
-            (sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
-              sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0),
+            (
+              sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
+                sum(stats::complete.cases(p_time_data_pat[, c(dsrelday_start_name, dsrelday_end_name)])) > 0
+            ),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )
@@ -894,13 +896,13 @@ srv_g_patient_timeline <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
-        card <- teal::TealReportCard$new()
-        card$set_name("Patient Profile Timeline Plot")
-        card$append_text("Patient Profile Timeline Plot", "header2")
-        if (with_filter) {
-          card$append_fs(filter_panel_api$get_filter_state())
-        }
+      card_fun <- function(comment, label) {
+        card <- teal::report_card_template(
+          title = "Patient Profile Timeline Plot",
+          label = label,
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
+        )
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {

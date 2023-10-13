@@ -492,8 +492,10 @@ srv_t_logistic <- function(id,
       iv$add_validator(iv_arco)
       # Conditional validator for interaction values.
       iv_int <- shinyvalidate::InputValidator$new()
-      iv_int$condition(~ length(input$interaction_var) > 0L &&
-        is.numeric(merged$anl_q()[["ANL"]][[input$interaction_var]]))
+      iv_int$condition(
+        ~ length(input$interaction_var) > 0L &&
+          is.numeric(merged$anl_q()[["ANL"]][[input$interaction_var]])
+      )
       iv_int$add_rule("interaction_values", shinyvalidate::sv_required(
         "If interaction is specified the level should be entered."
       ))
@@ -713,13 +715,13 @@ srv_t_logistic <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
-        card <- teal::TealReportCard$new()
-        card$set_name("Logistic Regression Table")
-        card$append_text("Logistic Regression Table", "header2")
-        if (with_filter) {
-          card$append_fs(filter_panel_api$get_filter_state())
-        }
+      card_fun <- function(comment, label) {
+        card <- teal::report_card_template(
+          title = "Logistic Regression Table",
+          label = label,
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
+        )
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

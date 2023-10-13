@@ -228,26 +228,25 @@ template_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr =
-          rtables::split_rows_by(
-            hlt,
-            child_labels = "visible",
-            nested = FALSE,
-            indent_mod = -1L,
-            split_fun = split_fun,
-            label_pos = "topleft",
-            split_label = formatters::var_labels(dataname[hlt])
+        expr = rtables::split_rows_by(
+          hlt,
+          child_labels = "visible",
+          nested = FALSE,
+          indent_mod = -1L,
+          split_fun = split_fun,
+          label_pos = "topleft",
+          split_label = formatters::var_labels(dataname[hlt])
+        ) %>%
+          summarize_num_patients(
+            var = "USUBJID",
+            .stats = c("unique", "nonunique"),
+            .labels = c(
+              unique = unique_label,
+              nonunique = nonunique_label
+            )
           ) %>%
-            summarize_num_patients(
-              var = "USUBJID",
-              .stats = c("unique", "nonunique"),
-              .labels = c(
-                unique = unique_label,
-                nonunique = nonunique_label
-              )
-            ) %>%
-            count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
-            append_varlabels(dataname, llt, indent = 1L),
+          count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
+          append_varlabels(dataname, llt, indent = 1L),
         env = list(
           dataname = as.name(dataname),
           hlt = hlt,
@@ -793,13 +792,13 @@ srv_t_events_byterm <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
-        card <- teal::TealReportCard$new()
-        card$set_name("Events by Term Table")
-        card$append_text("Events by Term Table", "header2")
-        if (with_filter) {
-          card$append_fs(filter_panel_api$get_filter_state())
-        }
+      card_fun <- function(comment, label) {
+        card <- teal::report_card_template(
+          title = "Events by Term Table",
+          label = label,
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
+        )
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {

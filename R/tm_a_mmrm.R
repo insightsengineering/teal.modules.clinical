@@ -239,11 +239,10 @@ template_mmrm_tables <- function(parentname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr =
-          rtables::add_overall_col(total_label) %>%
-            rtables::split_rows_by(visit_var) %>%
-            tern.mmrm::summarize_lsmeans(arms = FALSE) %>%
-            rtables::append_topleft(paste0("  ", paramcd)),
+        expr = rtables::add_overall_col(total_label) %>%
+          rtables::split_rows_by(visit_var) %>%
+          tern.mmrm::summarize_lsmeans(arms = FALSE) %>%
+          rtables::append_topleft(paste0("  ", paramcd)),
         env = list(
           total_label = total_label,
           visit_var = visit_var,
@@ -1432,20 +1431,17 @@ srv_mmrm <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
-        card <- teal::TealReportCard$new()
-        card$set_name("MMRM")
-        card$append_text("Mixed Model Repeated Measurements (MMRM) Analysis", "header2")
-        card$append_text(
-          paste(
+      card_fun <- function(comment, label) {
+        card <- teal::report_card_template(
+          title = "Mixed Model Repeated Measurements (MMRM) Analysis",
+          label = label,
+          description = paste(
             "Mixed Models procedure analyzes results from repeated measures designs",
             "in which the outcome is continuous and measured at fixed time points"
           ),
-          "header3"
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
         )
-        if (with_filter) {
-          card$append_fs(filter_panel_api$get_filter_state())
-        }
         if (!is.null(table_r())) {
           card$append_text("Table", "header3")
           card$append_table(table_r())

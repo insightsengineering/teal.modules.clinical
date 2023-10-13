@@ -821,7 +821,6 @@ clean_description <- function(x) {
   x
 }
 
-
 #' Utility function for extracting `paramcd` for forest plots
 #'
 #' Utility function for extracting `paramcd` for forest plots

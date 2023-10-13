@@ -10,20 +10,21 @@
 #'   parameters for comparison, specified using [tern::control_surv_timepoint()].
 #' @keywords internal
 #'
-control_tte <- function(surv_time = list(
-                          conf_level = 0.95,
-                          conf_type = "plain",
-                          quantiles = c(0.25, 0.75)
-                        ),
-                        coxph = list(
-                          pval_method = "log-rank",
-                          ties = "efron",
-                          conf_level = 0.95
-                        ),
-                        surv_timepoint = control_surv_timepoint(
-                          conf_level = 0.95,
-                          conf_type = c("plain", "none", "log", "log-log")
-                        )) {
+control_tte <- function(
+    surv_time = list(
+      conf_level = 0.95,
+      conf_type = "plain",
+      quantiles = c(0.25, 0.75)
+    ),
+    coxph = list(
+      pval_method = "log-rank",
+      ties = "efron",
+      conf_level = 0.95
+    ),
+    surv_timepoint = control_surv_timepoint(
+      conf_level = 0.95,
+      conf_type = c("plain", "none", "log", "log-log")
+    )) {
   list(
     surv_time = do.call("control_surv_time", surv_time),
     coxph = do.call("control_coxph", coxph),
@@ -926,13 +927,13 @@ srv_t_tte <- function(id,
 
     ### REPORTER
     if (with_reporter) {
-      card_fun <- function(comment) {
-        card <- teal::TealReportCard$new()
-        card$set_name("Time To Event Table")
-        card$append_text("Time To Event Table", "header2")
-        if (with_filter) {
-          card$append_fs(filter_panel_api$get_filter_state())
-        }
+      card_fun <- function(comment, label) {
+        card <- teal::report_card_template(
+          title = "Time To Event Table",
+          label = label,
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
+        )
         card$append_text("Table", "header3")
         card$append_table(table_r())
         if (!comment == "") {
