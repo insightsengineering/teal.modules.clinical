@@ -436,8 +436,8 @@ ui_g_lineplot <- function(id, ...) {
           shiny::checkboxGroupInput(
             ns("whiskers"),
             "Whiskers to display",
-            choices = c("Lower", "Upper"),
-            selected = c("Lower", "Upper")
+            choices = c("Upper", "Lower"),
+            selected = c("Upper", "Lower")
           ),
           shiny::radioButtons(
             ns("mid_type"),
@@ -601,11 +601,12 @@ srv_g_lineplot <- function(id,
 
       whiskers_selected <- if ("Lower" %in% input$whiskers) 1 else NULL
       if ("Upper" %in% input$whiskers) whiskers_selected <- c(whiskers_selected, 2)
-      input_interval <- if (is.null(whiskers_selected)) NULL else input$interval
-      input_whiskers <- if (is.null(input_interval)) {
-        NULL
+      if (is.null(input$interval) || is.null(whiskers_selected)) {
+        input_whiskers <- NULL
+        input_interval <- NULL
       } else {
-        names(tern::s_summary(0)[[input_interval]][whiskers_selected])
+        input_interval <- input$interval
+        input_whiskers <- names(tern::s_summary(0)[[input_interval]][whiskers_selected])
       }
       input_param <- as.character(unique(ANL[[names(merged$anl_input_r()$columns_source$param)[1]]]))
 
