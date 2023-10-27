@@ -121,12 +121,16 @@ template_g_lineplot <- function(dataname = "ANL",
     user_plot = ggplot2_args,
     module_plot = teal.widgets::ggplot2_args(
       labs = list(
-        title = sprintf(
-          "Plot of %s and %s %s of %s by Visit",
-          names(which(mid_choices == mid)),
-          `if`(interval %in% c("mean_ci", "median_ci"), paste0(conf_level * 100, "%"), ""),
-          names(which(interval_choices == interval)),
-          y
+        title = paste0(
+          "Plot of ", names(which(mid_choices == mid)),
+          if (!is.null(interval)) {
+            paste0(
+              " and ",
+              if (interval %in% c("mean_ci", "median_ci")) paste0(conf_level * 100, "% "),
+              names(which(interval_choices == interval))
+            )
+          },
+          " of ", y, " by Visit"
         ),
         subtitle = "",
         y = sprintf("%s %s Values for", y, names(which(mid_choices == mid)))
@@ -291,7 +295,7 @@ tm_g_lineplot <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(mid)
-  checkmate::assert_string(interval)
+  checkmate::assert_string(interval, null.ok = TRUE)
   whiskers <- match.arg(whiskers)
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -432,8 +436,8 @@ ui_g_lineplot <- function(id, ...) {
           shiny::checkboxGroupInput(
             ns("whiskers"),
             "Whiskers to display",
-            choices = c("Lower", "Upper"),
-            selected = c("Lower", "Upper")
+            choices = c("Upper", "Lower"),
+            selected = c("Upper", "Lower")
           ),
           shiny::radioButtons(
             ns("mid_type"),
@@ -542,8 +546,6 @@ srv_g_lineplot <- function(id,
           message_fmt = "Please choose a confidence level between 0 and 1", inclusive = c(FALSE, FALSE)
         )
       )
-      iv$add_rule("interval", shinyvalidate::sv_required("Please select an interval for the midpoint statistic"))
-      iv$add_rule("whiskers", shinyvalidate::sv_required("At least one of the whiskers must be selected"))
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
@@ -597,9 +599,15 @@ srv_g_lineplot <- function(id,
       ANL <- merged$anl_q()[["ANL"]] # nolint
       teal::validate_has_data(ANL, 2)
 
-      whiskers_selected <- ifelse(input$whiskers == "Lower", 1, ifelse(input$whiskers == "Upper", 2, 1:2))
-      input_whiskers <- names(tern::s_summary(0)[[input$interval]][whiskers_selected])
-      input_interval <- input$interval
+      whiskers_selected <- if ("Lower" %in% input$whiskers) 1 else NULL
+      if ("Upper" %in% input$whiskers) whiskers_selected <- c(whiskers_selected, 2)
+      if (is.null(input$interval) || is.null(whiskers_selected)) {
+        input_whiskers <- NULL
+        input_interval <- NULL
+      } else {
+        input_interval <- input$interval
+        input_whiskers <- names(tern::s_summary(0)[[input_interval]][whiskers_selected])
+      }
       input_param <- as.character(unique(ANL[[names(merged$anl_input_r()$columns_source$param)[1]]]))
 
       my_calls <- template_g_lineplot(
