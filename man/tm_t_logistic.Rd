@@ -96,8 +96,8 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADRS", adrs)
+    ADSL = adsl,
+    ADRS = adrs
   ),
   modules = modules(
     tm_t_logistic(

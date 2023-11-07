@@ -95,8 +95,8 @@ adsl <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% adae$USUBJID)
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADAE", adae)
+    ADSL = adsl,
+    ADAE = adae
   ),
   modules = modules(
     tm_g_pp_adverse_events(

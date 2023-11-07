@@ -94,8 +94,8 @@ template_medical_history <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADMH", admh)
+#'     ADSL = adsl,
+#'     ADMH = admh
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_medical_history(

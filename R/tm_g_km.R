@@ -263,8 +263,8 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADTTE", adtte)
+#'     ADSL = adsl,
+#'     ADTTE = adtte
 #'   ),
 #'   modules = modules(
 #'     tm_g_km(

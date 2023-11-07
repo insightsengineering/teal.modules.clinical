@@ -372,9 +372,9 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADAE", adae),
-#'     cdisc_dataset("ADCM", adcm, keys = adcm_keys)
+#'     ADSL = adsl,
+#'     ADAE = adae,
+#'     ADCM = adcm # TODO use adcm_keys
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_patient_timeline(

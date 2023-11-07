@@ -57,8 +57,8 @@ adae <- tmc_ex_adae
 
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", adsl),
-    teal.data::cdisc_dataset("ADAE", adae)
+    ADSL = adsl,
+    ADAE = adae
   ),
   modules = list(
     tm_g_barchart_simple(
@@ -80,7 +80,7 @@ if (interactive()) shiny::shinyApp(app$ui, app$server)
 `teal.modules.clinical` exports modules and needs support from other libraries to run a `teal` app and flesh out its 
 functionality. In the example above, `tm_g_barchart_simple` is the only function from `teal.modules.clinical` where as 
 `init` is a `teal` function, `data_extract_spec`, `select_spec` and `variable_choices` are `teal.transform` functions 
-and `cdisc_dataset` and `cdisc_data` are `teal.data` functions.
+and `cdisc_data` are `teal.data` functions.
 
 
 Let's break the above app into pieces:
@@ -103,8 +103,8 @@ argument indicates the modules included in the application. Here, we include onl
 ```r
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", adsl),
-    teal.data::cdisc_dataset("ADAE", adae)
+    ADSL = adsl,
+    ADAE = adae
   ),
   modules = list(
     tm_g_barchart_simple(
@@ -128,7 +128,7 @@ Some of `teal.modules.clinical` modules allow specifying arguments using `teal.t
 ```r
 adsl <- tmc_ex_adsl
 app <- teal::init(
-  data = teal.data::cdisc_data(teal.data::cdisc_dataset("ADSL", adsl)),
+  data = teal.data::cdisc_data(ADSL = adsl),
   modules = list(
     tm_t_summary(
       label = "Demographic Table",

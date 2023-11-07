@@ -160,8 +160,8 @@ template_events_patyear <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADAETTE", adaette)
+#'     ADSL = adsl,
+#'     ADAETTE = adaette
 #'   ),
 #'   modules = modules(
 #'     tm_t_events_patyear(

@@ -79,8 +79,8 @@ advs <- tmc_ex_advs
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADVS", advs)
+    ADSL = adsl,
+    ADVS = advs
   ),
   modules = modules(
     tm_g_pp_vitals(

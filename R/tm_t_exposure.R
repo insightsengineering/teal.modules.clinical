@@ -243,8 +243,8 @@ template_exposure <- function(parentname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADEX", adex)
+#'     ADSL = adsl,
+#'     ADEX = adex
 #'   ),
 #'   modules = modules(
 #'     tm_t_exposure(

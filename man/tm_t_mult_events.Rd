@@ -86,8 +86,8 @@ adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", 
 
 app <- teal::init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADCM", adcm, keys = adcm_keys)
+    ADSL = adsl,
+    ADCM = adcm # TODO use adcm_keys
   ),
   modules = modules(
     tm_t_mult_events(

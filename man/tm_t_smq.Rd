@@ -113,8 +113,8 @@ cs_scopes <- choices_selected(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADAE", adae)
+    ADSL = adsl,
+    ADAE = adae
   ),
   modules = modules(
     tm_t_smq(

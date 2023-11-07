@@ -368,8 +368,8 @@ template_coxreg_m <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADTTE", adtte)
+#'     ADSL = adsl,
+#'     ADTTE = adtte
 #'   ),
 #'   modules = modules(
 #'     tm_t_coxreg(
@@ -439,13 +439,8 @@ template_coxreg_m <- function(dataname,
 #' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset(
-#'       dataname = "ADSL",
-#'       x = adsl
-#'     ),
-#'     cdisc_dataset(
-#'       dataname = "ADTTE",
-#'       x = adtte
+#'     ADSL = adsl,
+#'     ADTTE = adtte
 #'     )
 #'   ),
 #'   modules = modules(

@@ -41,7 +41,7 @@ adsl <- tmc_ex_adsl
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl)
+    ADSL = adsl
   ),
   modules = modules(
     tm_t_pp_basic_info(

@@ -101,8 +101,8 @@ adeg <- tmc_ex_adeg
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADEG", adeg)
+    ADSL = adsl,
+    ADEG = adeg
   ),
   modules = modules(
     tm_t_shift_by_arm_by_worst(

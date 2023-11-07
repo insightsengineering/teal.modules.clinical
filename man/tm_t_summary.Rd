@@ -102,7 +102,7 @@ stopifnot(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl)
+    ADSL = adsl
   ),
   modules = modules(
     tm_t_summary(

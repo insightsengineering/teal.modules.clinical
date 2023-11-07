@@ -61,8 +61,8 @@ adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", 
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADCM", adcm, keys = adcm_keys)
+    ADSL = adsl,
+    ADCM = adcm
   ),
   modules = modules(
     tm_t_pp_prior_medication(

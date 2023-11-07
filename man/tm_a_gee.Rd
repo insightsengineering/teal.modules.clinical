@@ -104,8 +104,8 @@ adqs <- tmc_ex_adqs \%>\%
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADQS", adqs)
+    ADSL = adsl,
+    ADQS = adqs
   ),
   modules = modules(
     tm_a_gee(

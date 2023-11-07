@@ -286,8 +286,8 @@ template_mult_events <- function(dataname,
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADCM", adcm, keys = adcm_keys)
+#'     ADSL = adsl,
+#'     ADCM = adcm # TODO use adcm_keys
 #'   ),
 #'   modules = modules(
 #'     tm_t_mult_events(

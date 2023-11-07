@@ -115,8 +115,8 @@ adlb <- tmc_ex_adlb
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADLB", adlb)
+    ADSL = adsl,
+    ADLB = adlb
   ),
   modules = modules(
     tm_t_shift_by_grade(

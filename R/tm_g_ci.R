@@ -197,8 +197,8 @@ template_g_ci <- function(dataname, # nolint
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADLB", adlb)
+#'     ADSL = adsl,
+#'     ADLB = adlb
 #'   ),
 #'   modules = modules(
 #'     tm_g_ci(
