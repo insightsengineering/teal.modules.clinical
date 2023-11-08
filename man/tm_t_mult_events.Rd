@@ -80,14 +80,19 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Multiple Events by Term
 }
 \examples{
-adsl <- tmc_ex_adsl
-adcm <- tmc_ex_adcm
+ADSL <- tmc_ex_adsl
+ADCM <- tmc_ex_adcm
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 
 app <- teal::init(
   data = cdisc_data(
-    ADSL = adsl,
-    ADCM = adcm # TODO use adcm_keys
+    ADSL = ADSL,
+    ADCM = ADCM,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADCM <- tmc_ex_adcm
+    ",
+    join_keys = join_keys #TODO join_key
   ),
   modules = modules(
     tm_t_mult_events(
@@ -96,11 +101,11 @@ app <- teal::init(
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       seq_var = choices_selected("CMSEQ", selected = "CMSEQ", fixed = TRUE),
       hlt = choices_selected(
-        choices = variable_choices(adcm, c("ATC1", "ATC2", "ATC3", "ATC4")),
+        choices = variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
       ),
       llt = choices_selected(
-        choices = variable_choices(adcm, c("CMDECOD")),
+        choices = variable_choices(ADCM, c("CMDECOD")),
         selected = c("CMDECOD")
       ),
       add_total = TRUE,

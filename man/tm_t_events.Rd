@@ -88,13 +88,17 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Events by Term
 }
 \examples{
-adsl <- tmc_ex_adsl
-adae <- tmc_ex_adae
+ADSL <- tmc_ex_adsl
+ADAE <- tmc_ex_adae
 
 app <- teal::init(
   data = cdisc_data(
-    ADSL = adsl,
-    ADAE = adae
+    ADSL = ADSL,
+    ADAE = ADAE,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADAE <- tmc_ex_adae
+    "
   ),
   modules = modules(
     tm_t_events(
@@ -102,11 +106,11 @@ app <- teal::init(
       dataname = "ADAE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       llt = choices_selected(
-        choices = variable_choices(adae, c("AETERM", "AEDECOD")),
+        choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
         selected = c("AEDECOD")
       ),
       hlt = choices_selected(
-        choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
+        choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
         selected = "AEBODSYS"
       ),
       add_total = TRUE,

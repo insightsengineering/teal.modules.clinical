@@ -16,14 +16,17 @@
 #' @examples
 #' library(nestcolor)
 #'
-#' adsl <- tmc_ex_adsl %>% dplyr::mutate(ITTFL = factor("Y") %>%
+#' ADSL <- tmc_ex_adsl %>% dplyr::mutate(ITTFL = factor("Y") %>%
 #'   formatters::with_label("Intent-To-Treat Population Flag"))
-#' adae <- tmc_ex_adae %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+#' ADAE <- tmc_ex_adae %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ADSL = adsl,
-#'     ADAE = adae
+#'     ADSL = ADSL,
+#'     ADAE = ADAE,
+#'     code = "ADSL <- tmc_ex_adsl %>% dplyr::mutate(ITTFL = factor(\"Y\") %>%
+#'               formatters::with_label(\"Intent-To-Treat Population Flag\"))
+#'             ADAE <- tmc_ex_adae %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == \"MILD\") & (ARM == \"A: Drug X\")))"
 #'   ),
 #'   modules = modules(
 #'     tm_g_barchart_simple(
@@ -32,7 +35,7 @@
 #'         dataname = "ADSL",
 #'         select = select_spec(
 #'           choices = variable_choices(
-#'             adsl,
+#'             ADSL,
 #'             c(
 #'               "ARM", "ACTARM", "SEX",
 #'               "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -47,7 +50,7 @@
 #'           dataname = "ADSL",
 #'           select = select_spec(
 #'             choices = variable_choices(
-#'               adsl,
+#'               ADSL,
 #'               c(
 #'                 "ARM", "ACTARM", "SEX",
 #'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -60,7 +63,7 @@
 #'         data_extract_spec(
 #'           dataname = "ADAE",
 #'           select = select_spec(
-#'             choices = variable_choices(adae, c("AETOXGR", "AESEV", "AESER")),
+#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
 #'             selected = NULL,
 #'             multiple = FALSE
 #'           )
@@ -70,7 +73,7 @@
 #'         data_extract_spec(
 #'           dataname = "ADAE",
 #'           select = select_spec(
-#'             choices = variable_choices(adae, c("AETOXGR", "AESEV", "AESER")),
+#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
 #'             selected = "AETOXGR",
 #'             multiple = FALSE
 #'           )
@@ -79,7 +82,7 @@
 #'           dataname = "ADSL",
 #'           select = select_spec(
 #'             choices = variable_choices(
-#'               adsl,
+#'               ADSL,
 #'               c(
 #'                 "ARM", "ACTARM", "SEX",
 #'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -94,7 +97,7 @@
 #'         data_extract_spec(
 #'           dataname = "ADAE",
 #'           select = select_spec(
-#'             choices = variable_choices(adae, c("AETOXGR", "AESEV", "AESER")),
+#'             choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
 #'             selected = "AESEV",
 #'             multiple = FALSE
 #'           )
@@ -103,7 +106,7 @@
 #'           dataname = "ADSL",
 #'           select = select_spec(
 #'             choices = variable_choices(
-#'               adsl,
+#'               ADSL,
 #'               c(
 #'                 "ARM", "ACTARM", "SEX",
 #'                 "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -374,7 +377,7 @@ srv_g_barchart_simple <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = get_join_keys(data),
+      join_keys = teal.data::get_join_keys(data),
       selector_list = selector_list
     )
 

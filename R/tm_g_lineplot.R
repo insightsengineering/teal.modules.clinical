@@ -218,28 +218,32 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' adsl <- tmc_ex_adsl
-#' adlb <- tmc_ex_adlb %>% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+#' ADSL <- tmc_ex_adsl
+#' ADLB <- tmc_ex_adlb %>% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ADSL = adsl,
-#'     ADLB = adlb
+#'     ADSL = ADSL,
+#'     ADLB = ADLB,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADLB <- tmc_ex_adlb %>% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_g_lineplot(
 #'       label = "Line Plot",
 #'       dataname = "ADLB",
 #'       strata = choices_selected(
-#'         variable_choices(adsl, c("ARM", "ARMCD", "ACTARMCD")),
+#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
 #'       y = choices_selected(
-#'         variable_choices(adlb, c("AVAL", "BASE", "CHG", "PCHG")),
+#'         variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
 #'         "AVAL"
 #'       ),
 #'       param = choices_selected(
-#'         value_choices(adlb, "PARAMCD", "PARAM"),
+#'         value_choices(ADLB, "PARAMCD", "PARAM"),
 #'         "ALT"
 #'       )
 #'     )
@@ -551,7 +555,7 @@ srv_g_lineplot <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = get_join_keys(data),
+      join_keys = teal.data::get_join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )

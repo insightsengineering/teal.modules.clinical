@@ -263,16 +263,27 @@ template_therapy <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' adcm <- tmc_ex_adcm
-#' adsl <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% adcm$USUBJID)
-#' adcm$CMASTDTM <- adcm$ASTDTM
-#' adcm$CMAENDTM <- adcm$AENDTM
+#' ADCM <- tmc_ex_adcm
+#' ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#' ADCM$CMASTDTM <- ADCM$ASTDTM
+#' ADCM$CMAENDTM <- ADCM$AENDTM
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     ADSL = adsl,
-#'     ADCM = adcm # TODO use adcm_keys
+#'     ADSL = ADSL,
+#'     ADCM = adcm,
+#'     code = "
+#'       ADCM <- tmc_ex_adcm
+#'       ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#'       ADCM$CMASTDTM <- ADCM$ASTDTM
+#'       ADCM$CMAENDTM <- ADCM$AENDTM
+#'     ",
+#'     join_keys = join_keys(
+#'       join_key("ADSL", keys = get_cdisc_keys("ADSL")),
+#'       join_key("ADCM", keys =  adcm_keys),
+#'       join_key("ADCM", "ADSL", keys =  c("USUBJID", "STUDYID"))
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_therapy(
@@ -282,43 +293,43 @@ template_therapy <- function(dataname = "ANL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       atirel = choices_selected(
-#'         choices = variable_choices(adcm, "ATIREL"),
+#'         choices = variable_choices(ADCM, "ATIREL"),
 #'         selected = c("ATIREL")
 #'       ),
 #'       cmdecod = choices_selected(
-#'         choices = variable_choices(adcm, "CMDECOD"),
+#'         choices = variable_choices(ADCM, "CMDECOD"),
 #'         selected = "CMDECOD"
 #'       ),
 #'       cmindc = choices_selected(
-#'         choices = variable_choices(adcm, "CMINDC"),
+#'         choices = variable_choices(ADCM, "CMINDC"),
 #'         selected = "CMINDC"
 #'       ),
 #'       cmdose = choices_selected(
-#'         choices = variable_choices(adcm, "CMDOSE"),
+#'         choices = variable_choices(ADCM, "CMDOSE"),
 #'         selected = "CMDOSE"
 #'       ),
 #'       cmtrt = choices_selected(
-#'         choices = variable_choices(adcm, "CMTRT"),
+#'         choices = variable_choices(ADCM, "CMTRT"),
 #'         selected = "CMTRT"
 #'       ),
 #'       cmdosu = choices_selected(
-#'         choices = variable_choices(adcm, "CMDOSU"),
+#'         choices = variable_choices(ADCM, "CMDOSU"),
 #'         selected = c("CMDOSU")
 #'       ),
 #'       cmroute = choices_selected(
-#'         choices = variable_choices(adcm, "CMROUTE"),
+#'         choices = variable_choices(ADCM, "CMROUTE"),
 #'         selected = "CMROUTE"
 #'       ),
 #'       cmdosfrq = choices_selected(
-#'         choices = variable_choices(adcm, "CMDOSFRQ"),
+#'         choices = variable_choices(ADCM, "CMDOSFRQ"),
 #'         selected = "CMDOSFRQ"
 #'       ),
 #'       cmstdy = choices_selected(
-#'         choices = variable_choices(adcm, "ASTDY"),
+#'         choices = variable_choices(ADCM, "ASTDY"),
 #'         selected = "ASTDY"
 #'       ),
 #'       cmendy = choices_selected(
-#'         choices = variable_choices(adcm, "AENDY"),
+#'         choices = variable_choices(ADCM, "AENDY"),
 #'         selected = "AENDY"
 #'       )
 #'     )
@@ -602,7 +613,7 @@ srv_g_therapy <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = get_join_keys(data),
+      join_keys = teal.data::get_join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::left_join"
     )
