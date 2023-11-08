@@ -292,7 +292,11 @@ template_mult_events <- function(dataname,
 #'       ADSL <- tmc_ex_adsl
 #'       ADCM <- tmc_ex_adcm
 #'     ",
-#'     join_keys = join_keys #TODO join_key
+#'     join_keys = join_keys(
+#'       join_key("ADSL", keys = get_cdisc_keys("ADSL")),
+#'       join_key("ADCM", keys =  adcm_keys),
+#'       join_key("ADCM", "ADSL", keys =  c("USUBJID", "STUDYID"))
+#'     )
 #'   ),
 #'   modules = modules(
 #'     tm_t_mult_events(

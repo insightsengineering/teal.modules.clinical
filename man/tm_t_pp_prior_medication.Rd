@@ -69,7 +69,11 @@ app <- init(
       ADCM$CMASTDTM <- ADCM$ASTDTM
       ADCM$CMAENDTM <- ADCM$AENDTM
     ",
-    join_keys = join_keys #TODO Join- key
+    join_keys = join_keys(
+      join_key("ADSL", keys = get_cdisc_keys("ADSL")),
+      join_key("ADCM", keys =  adcm_keys),
+      join_key("ADCM", "ADSL", keys =  c("USUBJID", "STUDYID"))
+    )
   ),
   modules = modules(
     tm_t_pp_prior_medication(
