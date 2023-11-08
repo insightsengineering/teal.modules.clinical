@@ -148,7 +148,6 @@ data <- within(data, {
 
   ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
   aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
-
 })
 
 datanames <- c("ADSL", "ADAE")

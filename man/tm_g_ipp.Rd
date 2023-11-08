@@ -108,9 +108,13 @@ trends in parameter values over time for each patient using data with
 \examples{
 library(nestcolor)
 
-ADSL <- tmc_ex_adsl \%>\% dplyr::slice(1:20) \%>\% df_explicit_na()
-ADLB <- tmc_ex_adlb \%>\% dplyr::filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
-  df_explicit_na() \%>\% dplyr::filter(AVISIT != "SCREENING")
+ADSL <- tmc_ex_adsl \%>\%
+  dplyr::slice(1:20) \%>\%
+  df_explicit_na()
+ADLB <- tmc_ex_adlb \%>\%
+  dplyr::filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
+  df_explicit_na() \%>\%
+  dplyr::filter(AVISIT != "SCREENING")
 
 app <- init(
   data = cdisc_data(

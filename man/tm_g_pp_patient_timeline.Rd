@@ -128,7 +128,7 @@ data <- within(data, {
 
 datanames(data) <- c("ADSL", "ADAE", "ADCM")
 data@join_keys <- join_keys(
-  join_key("ADSL",keys =  get_cdisc_keys("ADSL")),
+  join_key("ADSL", keys = get_cdisc_keys("ADSL")),
   join_key("ADAE", keys = get_cdisc_keys("ADAE")),
   join_key("ADCM", keys = adcm_keys),
   join_key("ADAE", "ADSL", c("USUBJID", "STUDYID")),

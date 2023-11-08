@@ -281,8 +281,8 @@ template_therapy <- function(dataname = "ANL",
 #'     ",
 #'     join_keys = join_keys(
 #'       join_key("ADSL", keys = get_cdisc_keys("ADSL")),
-#'       join_key("ADCM", keys =  adcm_keys),
-#'       join_key("ADCM", "ADSL", keys =  c("USUBJID", "STUDYID"))
+#'       join_key("ADCM", keys = adcm_keys),
+#'       join_key("ADCM", "ADSL", keys = c("USUBJID", "STUDYID"))
 #'     )
 #'   ),
 #'   modules = modules(
