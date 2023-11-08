@@ -111,7 +111,7 @@ adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", 
 app <- init(
   data = cdisc_data(
     ADSL = ADSL,
-    ADCM = adcm,
+    ADCM = ADCM,
     code = "
       ADCM <- tmc_ex_adcm
       ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADCM$USUBJID)

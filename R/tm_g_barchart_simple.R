@@ -16,17 +16,21 @@
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl %>% dplyr::mutate(ITTFL = factor("Y") %>%
+#' ADSL <- tmc_ex_adsl %>%
+#'   dplyr::mutate(ITTFL = factor("Y") %>%
 #'   formatters::with_label("Intent-To-Treat Population Flag"))
-#' ADAE <- tmc_ex_adae %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+#' ADAE <- tmc_ex_adae %>%
+#'   dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     ADSL = ADSL,
 #'     ADAE = ADAE,
-#'     code = "ADSL <- tmc_ex_adsl %>% dplyr::mutate(ITTFL = factor(\"Y\") %>%
+#'     code = "ADSL <- tmc_ex_adsl %>%
+#'               dplyr::mutate(ITTFL = factor(\"Y\") %>%
 #'               formatters::with_label(\"Intent-To-Treat Population Flag\"))
-#'             ADAE <- tmc_ex_adae %>% dplyr::filter(!((AETOXGR == 1) & (AESEV == \"MILD\") & (ARM == \"A: Drug X\")))"
+#'             ADAE <- tmc_ex_adae %>%
+#'               dplyr::filter(!((AETOXGR == 1) & (AESEV == \"MILD\") & (ARM == \"A: Drug X\")))"
 #'   ),
 #'   modules = modules(
 #'     tm_g_barchart_simple(

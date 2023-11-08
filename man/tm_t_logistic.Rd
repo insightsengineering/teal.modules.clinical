@@ -101,7 +101,7 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADRS <- tmc_ex_adrs \%>\%
-        dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
+        dplyr::filter(PARAMCD \%in\% c(\"BESRSPI\", \"INVET\"))
     "
   ),
   modules = modules(
