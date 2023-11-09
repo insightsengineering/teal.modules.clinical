@@ -298,7 +298,7 @@ srv_t_prior_medication <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::left_join"
     )
 

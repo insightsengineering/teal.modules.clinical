@@ -151,7 +151,7 @@ data <- within(data, {
 })
 datanames <- c("ADSL", "ADTTE")
 datanames(data) <- datanames
-data@join_keys <- cdisc_join_keys(!!!datanames)
+join_keys(data) <- cdisc_join_keys(!!!datanames)
 
 app <- init(
   data = data,
@@ -219,7 +219,7 @@ data <- within(data, {
 
 datanames <- c("ADSL", "ADTTE")
 datanames(data) <- datanames
-data@join_keys <- cdisc_join_keys(!!!datanames)
+join_keys(data) <- cdisc_join_keys(!!!datanames)
 
 ## Teal application
 ## ================

@@ -794,7 +794,7 @@ template_events_col_by_grade <- function(dataname,
 #'
 #' datanames <- c("ADSL", "ADAE")
 #' datanames(data) <- datanames
-#' data@join_keys <- cdisc_join_keys(!!!datanames)
+#' join_keys(data) <- cdisc_join_keys(!!!datanames)
 #'
 #' app <- init(
 #'   data = data,
@@ -1046,14 +1046,14 @@ srv_t_events_by_grade <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       anl_name = "ANL_ADSL"
     )
 

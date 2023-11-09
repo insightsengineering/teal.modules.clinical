@@ -371,7 +371,7 @@ template_coxreg_m <- function(dataname,
 #' })
 #' datanames <- c("ADSL", "ADTTE")
 #' datanames(data) <- datanames
-#' data@join_keys <- cdisc_join_keys(!!!datanames)
+#' join_keys(data) <- cdisc_join_keys(!!!datanames)
 #'
 #' app <- init(
 #'   data = data,
@@ -439,7 +439,7 @@ template_coxreg_m <- function(dataname,
 #'
 #' datanames <- c("ADSL", "ADTTE")
 #' datanames(data) <- datanames
-#' data@join_keys <- cdisc_join_keys(!!!datanames)
+#' join_keys(data) <- cdisc_join_keys(!!!datanames)
 #'
 #' ## Teal application
 #' ## ================
@@ -790,7 +790,7 @@ srv_t_coxreg <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )

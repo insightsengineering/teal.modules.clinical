@@ -796,13 +796,13 @@ srv_t_tte <- function(id,
     anl_merge_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var, strata_var = strata_var),
       anl_name = "ANL_ADSL"
     )

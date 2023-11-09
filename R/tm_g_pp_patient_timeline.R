@@ -375,7 +375,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #' })
 #'
 #' datanames(data) <- c("ADSL", "ADAE", "ADCM")
-#' data@join_keys <- join_keys(
+#' join_keys(data) <- join_keys(
 #'   join_key("ADSL", keys = get_cdisc_keys("ADSL")),
 #'   join_key("ADAE", keys = get_cdisc_keys("ADAE")),
 #'   join_key("ADCM", keys = adcm_keys),
@@ -772,7 +772,7 @@ srv_g_patient_timeline <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list
     )
 

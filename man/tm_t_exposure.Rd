@@ -123,7 +123,7 @@ data <- within(data, {
 
 datanames <- c("ADSL", "ADEX")
 datanames(data) <- datanames
-data@join_keys <- cdisc_join_keys(!!!datanames)
+join_keys(data) <- cdisc_join_keys(!!!datanames)
 
 app <- init(
   data = data,

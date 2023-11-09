@@ -145,7 +145,7 @@ template_a_gee <- function(output_table,
 #' })
 #' datanames <- c("ADSL", "ADQS")
 #' datanames(data) <- datanames
-#' data@join_keys <- cdisc_join_keys(!!!datanames)
+#' join_keys(data) <- cdisc_join_keys(!!!datanames)
 #'
 #' app <- init(
 #'   data = data,
@@ -447,14 +447,14 @@ srv_gee <- function(id,
       datasets = data,
       selector_list = selector_list,
       merge_function = "dplyr::inner_join",
-      join_keys = teal.data::get_join_keys(data)
+      join_keys = teal.data::join_keys(data)
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL",
-      join_keys = teal.data::get_join_keys(data)
+      join_keys = teal.data::join_keys(data)
     )
 
     anl_q <- shiny::reactive({

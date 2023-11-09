@@ -496,7 +496,7 @@ srv_g_adverse_events <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::get_join_keys(data)
+      join_keys = teal.data::join_keys(data)
     )
 
     anl_q <- shiny::reactive(

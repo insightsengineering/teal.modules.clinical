@@ -488,7 +488,7 @@ srv_t_mult_events_byterm <- function(id,
     anl_merge_inputs <- teal.transform::merge_expression_srv(
       id = "anl_merge",
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
@@ -496,7 +496,7 @@ srv_t_mult_events_byterm <- function(id,
     adsl_merge_inputs <- teal.transform::merge_expression_module(
       id = "adsl_merge",
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
