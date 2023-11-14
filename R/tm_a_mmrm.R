@@ -476,7 +476,7 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' datanames <- c("ADSL", "ADQS")
 #' datanames(data) <- datanames
-#' join_keys(data) <- cdisc_join_keys(!!!datanames)
+#' join_keys(data) <- default_cdisc_join_keys[datanames]
 #' app <- init(
 #'   data = data,
 #'   modules = modules(

@@ -246,7 +246,7 @@ template_exposure <- function(parentname,
 #'
 #' datanames <- c("ADSL", "ADEX")
 #' datanames(data) <- datanames
-#' join_keys(data) <- cdisc_join_keys(!!!datanames)
+#' join_keys(data) <- default_cdisc_join_keys[datanames]
 #'
 #' app <- init(
 #'   data = data,

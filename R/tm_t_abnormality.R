@@ -251,7 +251,7 @@ template_abnormality <- function(parentname,
 #' })
 #' datanames <- c("ADSL", "ADLB")
 #' datanames(data) <- datanames
-#' join_keys(data) <- cdisc_join_keys(!!!datanames)
+#' join_keys(data) <- default_cdisc_join_keys[datanames]
 #'
 #' app <- init(
 #'   data = data,
