@@ -47,7 +47,7 @@ analysis data used in teal module.}
 \item{parentname}{(\code{character})\cr
 parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{strata}{(\code{character} or \code{NA})\cr strata variable name.}
+\item{strata}{(\code{character} or \code{NA})\cr deprecated - group variable name.}
 
 \item{x}{(\code{character})\cr x variable name.}
 
