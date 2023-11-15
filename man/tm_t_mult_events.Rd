@@ -84,6 +84,9 @@ ADSL <- tmc_ex_adsl
 ADCM <- tmc_ex_adcm
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 
+join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
+join_keys[["ADCM"]][["ADCM"]] <- adcm_keys
+
 app <- teal::init(
   data = cdisc_data(
     ADSL = ADSL,
@@ -92,11 +95,7 @@ app <- teal::init(
       ADSL <- tmc_ex_adsl
       ADCM <- tmc_ex_adcm
     ",
-    join_keys = join_keys(
-      join_key("ADSL", keys = get_cdisc_keys("ADSL")),
-      join_key("ADCM", keys = adcm_keys),
-      join_key("ADCM", "ADSL", keys = c("USUBJID", "STUDYID"))
-    )
+    join_keys = join_keys
   ),
   modules = modules(
     tm_t_mult_events(

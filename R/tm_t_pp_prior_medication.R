@@ -78,6 +78,9 @@ template_prior_medication <- function(dataname = "ANL",
 #' ADCM$CMAENDTM <- ADCM$AENDTM
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
+#' join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
+#' join_keys[["ADCM"]][["ADCM"]] <- adcm_keys
+#'
 #' app <- init(
 #'   data = cdisc_data(
 #'     ADSL = ADSL,
@@ -88,11 +91,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
 #'     ",
-#'     join_keys = join_keys(
-#'       join_key("ADSL", keys = get_cdisc_keys("ADSL")),
-#'       join_key("ADCM", keys = adcm_keys),
-#'       join_key("ADCM", "ADSL", keys = c("USUBJID", "STUDYID"))
-#'     )
+#'     join_keys = join_keys
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_prior_medication(
