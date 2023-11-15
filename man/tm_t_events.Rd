@@ -16,6 +16,7 @@ tm_t_events(
   total_label = "All Patients",
   event_type = "event",
   sort_criteria = c("freq_desc", "alpha"),
+  sort_freq_col = total_label,
   prune_freq = 0,
   prune_diff = 0,
   drop_arm_levels = TRUE,
@@ -57,8 +58,10 @@ enabled (see \code{add_total}).}
 Default is "event".}
 
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
-by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
+on column \code{sort_freq_col} by decreasing number of patients with event. Alternative option \code{alpha} sorts events
 alphabetically.}
+
+\item{sort_freq_col}{(\code{character})\cr column to sort by frequency on if \code{sort_criteria} is set to \code{freq_desc}.}
 
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 

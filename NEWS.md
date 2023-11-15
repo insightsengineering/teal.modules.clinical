@@ -13,6 +13,7 @@
 * Updated `tm_t_pp_basic_info`, `tm_t_pp_medical_history`, `tm_g_pp_therapy`, `tm_g_pp_adverse_events`, and `tm_t_pp_laboratory` to print patient ID above table.
 * Updated `tm_t_pp_basic_info`, `tm_g_pp_therapy`, `tm_g_pp_adverse_events`, and `tm_t_pp_laboratory` to use `rlistings` to print data neatly in reports.
 * Updated `tm_g_lineplot` to allow user to remove interval from plot.
+* Added parameter `sort_freq_col` to `tm_t_events` to allow the user to select column to use when sorting by decreasing frequency.
 
 
 ### Bug fixes
