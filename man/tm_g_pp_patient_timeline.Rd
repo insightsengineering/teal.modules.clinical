@@ -127,14 +127,12 @@ data <- within(data, {
 })
 
 datanames(data) <- c("ADSL", "ADAE", "ADCM")
-join_keys(data) <- join_keys(
-  join_key("ADSL", keys = get_cdisc_keys("ADSL")),
-  join_key("ADAE", keys = get_cdisc_keys("ADAE")),
-  join_key("ADCM", keys = adcm_keys),
-  join_key("ADAE", "ADSL", c("USUBJID", "STUDYID")),
-  join_key("ADAE", "ADCM", c("USUBJID", "STUDYID")),
-  join_key("ADCM", "ADSL", c("USUBJID", "STUDYID")),
-)
+join_keys(data)[["ADSL"]][["ADSL"]] <- get_cdisc_keys("ADSL")
+join_keys(data)[["ADAE"]][["ADAE"]] <- get_cdisc_keys("ADAE")
+join_keys(data)[["ADCM"]][["ADCM"]] <- adcm_keys
+join_keys(data)[["ADAE"]][["ADSL"]] <- c("USUBJID", "STUDYID")
+join_keys(data)[["ADAE"]][["ADCM"]] <- c("USUBJID", "STUDYID")
+join_keys(data)[["ADCM"]][["ADSL"]] <- c("USUBJID", "STUDYID")
 
 app <- init(
   data = data,
