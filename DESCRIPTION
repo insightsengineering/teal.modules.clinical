@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9010
-Date: 2023-10-27
+Version: 0.8.16.9011
+Date: 2023-11-16
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -54,6 +54,7 @@ Imports:
     stats,
     styler,
     teal.code (>= 0.4.0),
+    teal.data (>= 0.3.0.9009),
     teal.logger (>= 0.1.1),
     teal.reporter (>= 0.2.0),
     teal.transform (>= 0.4.0),
@@ -68,7 +69,6 @@ Suggests:
     knitr,
     lubridate,
     nestcolor (>= 0.1.0),
-    teal.data (>= 0.3.0),
     testthat (>= 3.0)
 VignetteBuilder:
     knitr
