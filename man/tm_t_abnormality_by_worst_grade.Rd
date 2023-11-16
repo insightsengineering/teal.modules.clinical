@@ -128,11 +128,9 @@ app <- init(
       add_total = FALSE
     )
   ),
-  filter = (
-    list(
-      ADSL = list(SAFFL = "Y"),
-      ADLB = list(ONTRTFL = "Y")
-    )
+  filter = teal_slices(
+    teal_slice("ADSL", "SAFFL", selected = "Y"),
+    teal_slice("ADLB", "ONTRTFL", selected = "Y")
   )
 )
 if (interactive()) {

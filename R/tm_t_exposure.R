@@ -273,9 +273,7 @@ template_exposure <- function(parentname,
 #'       add_total = FALSE
 #'     )
 #'   ),
-#'   filter = list(
-#'     ADSL = list(SAFFL = "Y")
-#'   )
+#'   filter = teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
 #' )
 #' if (interactive()) {
 #'   shinyApp(app$ui, app$server)
