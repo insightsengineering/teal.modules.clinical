@@ -446,7 +446,7 @@ srv_summary <- function(id,
       id = "anl_merge",
       datasets = data,
       selector_list = selector_list,
-      join_keys = get_join_keys(data),
+      join_keys = teal.data::get_join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
@@ -454,7 +454,7 @@ srv_summary <- function(id,
       id = "adsl_merge",
       datasets = data,
       data_extract = list(arm_var = arm_var),
-      join_keys = get_join_keys(data),
+      join_keys = teal.data::get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
