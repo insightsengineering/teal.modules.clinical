@@ -30,7 +30,7 @@ template_g_lineplot(
 \item{dataname}{(\code{character})\cr
 analysis data used in teal module.}
 
-\item{strata}{(\code{character} or \code{NA})\cr strata variable name.}
+\item{strata}{(\code{character} or \code{NA})\cr deprecated - group variable name.}
 
 \item{x}{(\code{character})\cr x variable name.}
 

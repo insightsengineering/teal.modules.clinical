@@ -54,6 +54,7 @@ Imports:
     stats,
     styler,
     teal.code (>= 0.4.0),
+    teal.data (>= 0.3.0.9009),
     teal.logger (>= 0.1.1),
     teal.reporter (>= 0.2.0),
     teal.transform (>= 0.4.0),
@@ -68,7 +69,6 @@ Suggests:
     knitr,
     lubridate,
     nestcolor (>= 0.1.0),
-    teal.data (>= 0.3.0),
     testthat (>= 3.0)
 VignetteBuilder:
     knitr
