@@ -20,6 +20,7 @@ template_events(
   prune_freq = 0,
   prune_diff = 0,
   drop_arm_levels = TRUE,
+  incl_overall_sum = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
@@ -65,6 +66,9 @@ rates between any two columns.}
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
+\item{incl_overall_sum}{(\code{flag})\cr  whether two rows which summarize the overall number of adverse events
+should be included at the top of the table.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
