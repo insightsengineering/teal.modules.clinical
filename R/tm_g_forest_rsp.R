@@ -514,13 +514,13 @@ srv_g_forest_rsp <- function(id,
       datasets = data,
       selector_list = selector_list,
       merge_function = "dplyr::inner_join",
-      join_keys = get_join_keys(data)
+      join_keys = teal.data::get_join_keys(data)
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
-      join_keys = get_join_keys(data),
+      join_keys = teal.data::get_join_keys(data),
       anl_name = "ANL_ADSL"
     )
 

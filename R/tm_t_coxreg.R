@@ -788,7 +788,7 @@ srv_t_coxreg <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = get_join_keys(data),
+      join_keys = teal.data::get_join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
