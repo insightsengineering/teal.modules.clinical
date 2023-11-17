@@ -285,7 +285,7 @@ template_mult_events <- function(dataname,
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
-#' join_keys[["ADCM"]][["ADCM"]] <- adcm_keys
+#' join_keys["ADCM", "ADCM"] <- adcm_keys
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
