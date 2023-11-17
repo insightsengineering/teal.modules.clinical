@@ -376,8 +376,8 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' datanames(data) <- c("ADSL", "ADAE", "ADCM")
 #' join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADAE", "ADCM")]
-#' join_keys(data)[["ADCM"]][["ADCM"]] <- adcm_keys
-#' join_keys(data)[["ADAE"]][["ADCM"]] <- c("STUDYID", "USUBJID")
+#' join_keys(data)["ADCM", "ADCM"] <- adcm_keys
+#' join_keys(data)["ADAE", "ADCM"] <- c("STUDYID", "USUBJID")
 #'
 #' app <- init(
 #'   data = data,
