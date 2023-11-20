@@ -168,36 +168,40 @@ template_shift_by_arm <- function(dataname,
 #'
 #' @export
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adeg <- tmc_ex_adeg
+#' ADSL <- tmc_ex_adsl
+#' ADEG <- tmc_ex_adeg
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADEG", adeg)
+#'     ADSL = ADSL,
+#'     ADEG = ADEG,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADEG <- tmc_ex_adeg
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_shift_by_arm(
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
 #'       arm_var = choices_selected(
-#'         variable_choices(adsl, subset = c("ARM", "ARMCD")),
+#'         variable_choices(ADSL, subset = c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       paramcd = choices_selected(
-#'         value_choices(adeg, "PARAMCD"),
+#'         value_choices(ADEG, "PARAMCD"),
 #'         selected = "HR"
 #'       ),
 #'       visit_var = choices_selected(
-#'         value_choices(adeg, "AVISIT"),
+#'         value_choices(ADEG, "AVISIT"),
 #'         selected = "POST-BASELINE MINIMUM"
 #'       ),
 #'       aval_var = choices_selected(
-#'         variable_choices(adeg, subset = "ANRIND"),
+#'         variable_choices(ADEG, subset = "ANRIND"),
 #'         selected = "ANRIND", fixed = TRUE
 #'       ),
 #'       base_var = choices_selected(
-#'         variable_choices(adeg, subset = "BNRIND"),
+#'         variable_choices(ADEG, subset = "BNRIND"),
 #'         selected = "BNRIND", fixed = TRUE
 #'       ),
 #'       useNA = "ifany"
@@ -426,14 +430,14 @@ srv_shift_by_arm <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )

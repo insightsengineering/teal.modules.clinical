@@ -109,8 +109,8 @@ to be meaningful.
 }
 }
 \examples{
-adsl <- tmc_ex_adsl
-adqs <- tmc_ex_adqs
+ADSL <- tmc_ex_adsl
+ADQS <- tmc_ex_adqs
 
 arm_ref_comp <- list(
   ARM = list(
@@ -125,36 +125,40 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADQS", adqs)
+    ADSL = ADSL,
+    ADQS = ADQS,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADQS <- tmc_ex_adqs
+    "
   ),
   modules = modules(
     tm_t_ancova(
       label = "ANCOVA Table",
       dataname = "ADQS",
       avisit = choices_selected(
-        choices = value_choices(adqs, "AVISIT"),
+        choices = value_choices(ADQS, "AVISIT"),
         selected = "WEEK 1 DAY 8"
       ),
       arm_var = choices_selected(
-        choices = variable_choices(adsl, c("ARM", "ACTARMCD", "ARMCD")),
+        choices = variable_choices(ADSL, c("ARM", "ACTARMCD", "ARMCD")),
         selected = "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,
       aval_var = choices_selected(
-        choices = variable_choices(adqs, c("CHG", "AVAL")),
+        choices = variable_choices(ADQS, c("CHG", "AVAL")),
         selected = "CHG"
       ),
       cov_var = choices_selected(
-        choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
+        choices = variable_choices(ADQS, c("BASE", "STRATA1", "SEX")),
         selected = "STRATA1"
       ),
       paramcd = choices_selected(
-        choices = value_choices(adqs, "PARAMCD", "PARAM"),
+        choices = value_choices(ADQS, "PARAMCD", "PARAM"),
         selected = "FKSI-FWB"
       ),
       interact_var = choices_selected(
-        choices = variable_choices(adqs, c("BASE", "STRATA1", "SEX")),
+        choices = variable_choices(ADQS, c("BASE", "STRATA1", "SEX")),
         selected = "STRATA1"
       )
     )

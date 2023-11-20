@@ -74,13 +74,17 @@ This teal module produces a patient profile vitals plot using \code{ADaM} datase
 \examples{
 library(nestcolor)
 
-adsl <- tmc_ex_adsl
-advs <- tmc_ex_advs
+ADSL <- tmc_ex_adsl
+ADVS <- tmc_ex_advs
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADVS", advs)
+    ADSL = ADSL,
+    ADVS = ADVS,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADVS <- tmc_ex_advs
+    "
   ),
   modules = modules(
     tm_g_pp_vitals(
@@ -90,15 +94,15 @@ app <- init(
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
       paramcd = choices_selected(
-        choices = variable_choices(advs, "PARAMCD"),
+        choices = variable_choices(ADVS, "PARAMCD"),
         selected = "PARAMCD"
       ),
       xaxis = choices_selected(
-        choices = variable_choices(advs, "ADY"),
+        choices = variable_choices(ADVS, "ADY"),
         selected = "ADY"
       ),
       aval = choices_selected(
-        choices = variable_choices(advs, "AVAL"),
+        choices = variable_choices(ADVS, "AVAL"),
         selected = "AVAL"
       )
     )

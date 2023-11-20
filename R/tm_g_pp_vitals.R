@@ -191,13 +191,17 @@ template_vitals <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' adsl <- tmc_ex_adsl
-#' advs <- tmc_ex_advs
+#' ADSL <- tmc_ex_adsl
+#' ADVS <- tmc_ex_advs
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADVS", advs)
+#'     ADSL = ADSL,
+#'     ADVS = ADVS,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADVS <- tmc_ex_advs
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_vitals(
@@ -207,15 +211,15 @@ template_vitals <- function(dataname = "ANL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       paramcd = choices_selected(
-#'         choices = variable_choices(advs, "PARAMCD"),
+#'         choices = variable_choices(ADVS, "PARAMCD"),
 #'         selected = "PARAMCD"
 #'       ),
 #'       xaxis = choices_selected(
-#'         choices = variable_choices(advs, "ADY"),
+#'         choices = variable_choices(ADVS, "ADY"),
 #'         selected = "ADY"
 #'       ),
 #'       aval = choices_selected(
-#'         choices = variable_choices(advs, "AVAL"),
+#'         choices = variable_choices(ADVS, "AVAL"),
 #'         selected = "AVAL"
 #'       )
 #'     )
@@ -425,7 +429,7 @@ srv_g_vitals <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::left_join"
     )

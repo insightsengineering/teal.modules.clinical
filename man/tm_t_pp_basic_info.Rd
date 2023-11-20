@@ -37,11 +37,12 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient profile basic info report using \code{ADaM} datasets.
 }
 \examples{
-adsl <- tmc_ex_adsl
+ADSL <- tmc_ex_adsl
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl)
+    ADSL = ADSL,
+    code = "ADSL <- tmc_ex_adsl"
   ),
   modules = modules(
     tm_t_pp_basic_info(
@@ -49,7 +50,7 @@ app <- init(
       dataname = "ADSL",
       patient_col = "USUBJID",
       vars = choices_selected(
-        choices = variable_choices(adsl),
+        choices = variable_choices(ADSL),
         selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
       )
     )

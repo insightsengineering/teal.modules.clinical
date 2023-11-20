@@ -109,40 +109,43 @@ Patients with the same abnormality at baseline as on the treatment visit can be
 excluded in accordance with \code{GDSR} specifications by using \code{exclude_base_abn}.
 }
 \examples{
-adsl <- tmc_ex_adsl
-adlb <- tmc_ex_adlb \%>\%
-  dplyr::mutate(
-    ONTRTFL = dplyr::case_when(
-      AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
-      TRUE ~ "Y"
-    ) \%>\% formatters::with_label("On Treatment Record Flag")
-  )
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADLB <- tmc_ex_adlb \%>\%
+    dplyr::mutate(
+      ONTRTFL = dplyr::case_when(
+        AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
+        TRUE ~ "Y"
+      ) \%>\% formatters::with_label("On Treatment Record Flag")
+    )
+})
+datanames <- c("ADSL", "ADLB")
+datanames(data) <- datanames
+join_keys(data) <- default_cdisc_join_keys[datanames]
 
 app <- init(
-  data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADLB", adlb)
-  ),
+  data = data,
   modules = modules(
     tm_t_abnormality(
       label = "Abnormality Table",
       dataname = "ADLB",
       arm_var = choices_selected(
-        choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
+        choices = variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       add_total = FALSE,
       by_vars = choices_selected(
-        choices = variable_choices(adlb, subset = c("LBCAT", "PARAM", "AVISIT")),
+        choices = variable_choices(data[["ADLB"]], subset = c("LBCAT", "PARAM", "AVISIT")),
         selected = c("LBCAT", "PARAM"),
         keep_order = TRUE
       ),
       baseline_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(adlb, subset = "BNRIND"),
+        teal.transform::variable_choices(data[["ADLB"]], subset = "BNRIND"),
         selected = "BNRIND", fixed = TRUE
       ),
       grade = choices_selected(
-        choices = variable_choices(adlb, subset = "ANRIND"),
+        choices = variable_choices(data[["ADLB"]], subset = "ANRIND"),
         selected = "ANRIND",
         fixed = TRUE
       ),

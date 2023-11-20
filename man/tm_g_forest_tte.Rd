@@ -119,9 +119,9 @@ with \code{ADaM} structure
 \examples{
 library(nestcolor)
 
-adsl <- tmc_ex_adsl
-adtte <- tmc_ex_adtte
-adsl$RACE <- droplevels(adsl$RACE) \%>\% formatters::with_label("Race")
+ADSL <- tmc_ex_adsl
+ADTTE <- tmc_ex_adtte
+ADSL$RACE <- droplevels(ADSL$RACE) \%>\% formatters::with_label("Race")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -136,28 +136,33 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADTTE", adtte)
+    ADSL = ADSL,
+    ADTTE = ADTTE,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADTTE <- tmc_ex_adtte
+      ADSL$RACE <- droplevels(ADSL$RACE) \%>\% formatters::with_label(\"Race\")
+    "
   ),
   modules = modules(
     tm_g_forest_tte(
       label = "Forest Survival",
       dataname = "ADTTE",
       arm_var = choices_selected(
-        variable_choices(adsl, c("ARM", "ARMCD")),
+        variable_choices(ADSL, c("ARM", "ARMCD")),
         "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(
-        value_choices(adtte, "PARAMCD", "PARAM"),
+        value_choices(ADTTE, "PARAMCD", "PARAM"),
         "OS"
       ),
       subgroup_var = choices_selected(
-        variable_choices(adsl, names(adsl)),
+        variable_choices(ADSL, names(ADSL)),
         c("BMRKR2", "SEX")
       ),
       strata_var = choices_selected(
-        variable_choices(adsl, c("STRATA1", "STRATA2")),
+        variable_choices(ADSL, c("STRATA1", "STRATA2")),
         "STRATA2"
       ),
       plot_height = c(600, 200, 2000)

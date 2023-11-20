@@ -118,13 +118,17 @@ template_laboratory <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adlb <- tmc_ex_adlb
+#' ADSL <- tmc_ex_adsl
+#' ADLB <- tmc_ex_adlb
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADLB", adlb)
+#'     ADSL = ADSL,
+#'     ADLB = ADLB,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADLB <- tmc_ex_adlb
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_laboratory(
@@ -132,27 +136,27 @@ template_laboratory <- function(dataname = "ANL",
 #'       dataname = "ADLB",
 #'       patient_col = "USUBJID",
 #'       paramcd = choices_selected(
-#'         choices = variable_choices(adlb, "PARAMCD"),
+#'         choices = variable_choices(ADLB, "PARAMCD"),
 #'         selected = "PARAMCD"
 #'       ),
 #'       param = choices_selected(
-#'         choices = variable_choices(adlb, "PARAM"),
+#'         choices = variable_choices(ADLB, "PARAM"),
 #'         selected = "PARAM"
 #'       ),
 #'       timepoints = choices_selected(
-#'         choices = variable_choices(adlb, "ADY"),
+#'         choices = variable_choices(ADLB, "ADY"),
 #'         selected = "ADY"
 #'       ),
 #'       anrind = choices_selected(
-#'         choices = variable_choices(adlb, "ANRIND"),
+#'         choices = variable_choices(ADLB, "ANRIND"),
 #'         selected = "ANRIND"
 #'       ),
 #'       aval = choices_selected(
-#'         choices = variable_choices(adlb, "AVAL"),
+#'         choices = variable_choices(ADLB, "AVAL"),
 #'         selected = "AVAL"
 #'       ),
 #'       avalu = choices_selected(
-#'         choices = variable_choices(adlb, "AVALU"),
+#'         choices = variable_choices(ADLB, "AVALU"),
 #'         selected = "AVALU"
 #'       )
 #'     )
@@ -377,7 +381,7 @@ srv_g_laboratory <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list
     )
 

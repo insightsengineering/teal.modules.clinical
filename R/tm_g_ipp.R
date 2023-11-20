@@ -188,49 +188,56 @@ template_g_ipp <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' adsl <- tmc_ex_adsl %>% dplyr::slice(1:20)
-#' adlb <- tmc_ex_adlb %>% dplyr::filter(USUBJID %in% adsl$USUBJID)
-#'
-#' adsl <- df_explicit_na(adsl)
-#' adlb <- df_explicit_na(adlb) %>% dplyr::filter(AVISIT != "SCREENING")
+#' ADSL <- tmc_ex_adsl %>%
+#'   dplyr::slice(1:20) %>%
+#'   df_explicit_na()
+#' ADLB <- tmc_ex_adlb %>%
+#'   dplyr::filter(USUBJID %in% ADSL$USUBJID) %>%
+#'   df_explicit_na() %>%
+#'   dplyr::filter(AVISIT != "SCREENING")
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADLB", adlb)
+#'     ADSL = ADSL,
+#'     ADLB = ADLB,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl %>% dplyr::slice(1:20) %>% df_explicit_na()
+#'       ADLB <- tmc_ex_adlb %>% dplyr::filter(USUBJID %in% ADSL$USUBJID) %>%
+#'         df_explicit_na() %>% dplyr::filter(AVISIT != \"SCREENING\")
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_g_ipp(
 #'       label = "Individual Patient Plot",
 #'       dataname = "ADLB",
 #'       arm_var = choices_selected(
-#'         value_choices(adlb, "ARMCD"),
+#'         value_choices(ADLB, "ARMCD"),
 #'         "ARM A"
 #'       ),
 #'       paramcd = choices_selected(
-#'         value_choices(adlb, "PARAMCD"),
+#'         value_choices(ADLB, "PARAMCD"),
 #'         "ALT"
 #'       ),
 #'       aval_var = choices_selected(
-#'         variable_choices(adlb, c("AVAL", "CHG")),
+#'         variable_choices(ADLB, c("AVAL", "CHG")),
 #'         "AVAL"
 #'       ),
 #'       avalu_var = choices_selected(
-#'         variable_choices(adlb, c("AVALU")),
+#'         variable_choices(ADLB, c("AVALU")),
 #'         "AVALU",
 #'         fixed = TRUE
 #'       ),
 #'       id_var = choices_selected(
-#'         variable_choices(adlb, c("USUBJID")),
+#'         variable_choices(ADLB, c("USUBJID")),
 #'         "USUBJID",
 #'         fixed = TRUE
 #'       ),
 #'       visit_var = choices_selected(
-#'         variable_choices(adlb, c("AVISIT")),
+#'         variable_choices(ADLB, c("AVISIT")),
 #'         "AVISIT"
 #'       ),
 #'       base_var = choices_selected(
-#'         variable_choices(adlb, c("BASE")),
+#'         variable_choices(ADLB, c("BASE")),
 #'         "BASE",
 #'         fixed = TRUE
 #'       ),
@@ -492,12 +499,12 @@ srv_g_ipp <- function(id,
       datasets = data,
       selector_list = selector_list,
       merge_function = "dplyr::inner_join",
-      join_keys = teal.data::get_join_keys(data)
+      join_keys = teal.data::join_keys(data)
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var, id_var = id_var),
       anl_name = "ANL_ADSL"
     )

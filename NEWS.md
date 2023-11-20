@@ -1,3 +1,8 @@
+# teal.modules.clinical 0.8.16.9011
+
+### Enhancements
+* Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
+
 # teal.modules.clinical 0.8.16.9010
 
 ### Enhancements
@@ -13,7 +18,7 @@
 * Updated `tm_t_pp_basic_info`, `tm_t_pp_medical_history`, `tm_g_pp_therapy`, `tm_g_pp_adverse_events`, and `tm_t_pp_laboratory` to print patient ID above table.
 * Updated `tm_t_pp_basic_info`, `tm_g_pp_therapy`, `tm_g_pp_adverse_events`, and `tm_t_pp_laboratory` to use `rlistings` to print data neatly in reports.
 * Updated `tm_g_lineplot` to allow user to remove interval from plot.
-
+* Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
 
 ### Bug fixes
 * Fixed bug in `tm_t_coxreg` preventing table from being displayed when no covariates are selected.

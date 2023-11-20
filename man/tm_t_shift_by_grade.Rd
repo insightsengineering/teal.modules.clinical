@@ -110,41 +110,45 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Grade Summary Table
 }
 \examples{
-adsl <- tmc_ex_adsl
-adlb <- tmc_ex_adlb
+ADSL <- tmc_ex_adsl
+ADLB <- tmc_ex_adlb
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADLB", adlb)
+    ADSL = ADSL,
+    ADLB = ADLB,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADLB <- tmc_ex_adlb
+    "
   ),
   modules = modules(
     tm_t_shift_by_grade(
       label = "Grade Laboratory Abnormality Table",
       dataname = "ADLB",
       arm_var = choices_selected(
-        choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
+        choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       paramcd = choices_selected(
-        choices = value_choices(adlb, "PARAMCD", "PARAM"),
+        choices = value_choices(ADLB, "PARAMCD", "PARAM"),
         selected = "ALT"
       ),
       worst_flag_var = choices_selected(
-        choices = variable_choices(adlb, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+        choices = variable_choices(ADLB, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
         selected = c("WGRLOVFL")
       ),
       worst_flag_indicator = choices_selected(
-        value_choices(adlb, "WGRLOVFL"),
+        value_choices(ADLB, "WGRLOVFL"),
         selected = "Y", fixed = TRUE
       ),
       anl_toxgrade_var = choices_selected(
-        choices = variable_choices(adlb, subset = c("ATOXGR")),
+        choices = variable_choices(ADLB, subset = c("ATOXGR")),
         selected = c("ATOXGR"),
         fixed = TRUE
       ),
       base_toxgrade_var = choices_selected(
-        choices = variable_choices(adlb, subset = c("BTOXGR")),
+        choices = variable_choices(ADLB, subset = c("BTOXGR")),
         selected = c("BTOXGR"),
         fixed = TRUE
       ),

@@ -383,8 +383,8 @@ template_tte <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adtte <- tmc_ex_adtte
+#' ADSL <- tmc_ex_adsl
+#' ADTTE <- tmc_ex_adtte
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -399,29 +399,33 @@ template_tte <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADTTE", adtte)
+#'     ADSL = ADSL,
+#'     ADTTE = ADTTE,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADTTE <- tmc_ex_adtte
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_tte(
 #'       label = "Time To Event Table",
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(
-#'         variable_choices(adsl, c("ARM", "ARMCD", "ACTARMCD")),
+#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
-#'         value_choices(adtte, "PARAMCD", "PARAM"),
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
 #'         "OS"
 #'       ),
 #'       strata_var = choices_selected(
-#'         variable_choices(adsl, c("SEX", "BMRKR2")),
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         "SEX"
 #'       ),
 #'       time_points = choices_selected(c(182, 243), 182),
 #'       event_desc_var = choices_selected(
-#'         variable_choices(adtte, "EVNTDESC"),
+#'         variable_choices(ADTTE, "EVNTDESC"),
 #'         "EVNTDESC",
 #'         fixed = TRUE
 #'       )
@@ -792,13 +796,13 @@ srv_t_tte <- function(id,
     anl_merge_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var, strata_var = strata_var),
       anl_name = "ANL_ADSL"
     )

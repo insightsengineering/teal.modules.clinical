@@ -393,8 +393,8 @@ template_binary_outcome <- function(dataname,
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adrs <- tmc_ex_adrs %>%
+#' ADSL <- tmc_ex_adsl
+#' ADRS <- tmc_ex_adrs %>%
 #'   dplyr::mutate(
 #'     AVALC = tern::d_onco_rsp_label(AVALC) %>%
 #'       formatters::with_label("Character Result/Finding")
@@ -407,24 +407,33 @@ template_binary_outcome <- function(dataname,
 #' )
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADRS", adrs)
+#'     ADSL = ADSL,
+#'     ADRS = ADRS,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADRS <- tmc_ex_adrs %>%
+#'         dplyr::mutate(
+#'           AVALC = tern::d_onco_rsp_label(AVALC) %>%
+#'             formatters::with_label(\"Character Result/Finding\")
+#'         ) %>%
+#'         dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_binary_outcome(
 #'       label = "Responders",
 #'       dataname = "ADRS",
 #'       paramcd = choices_selected(
-#'         choices = value_choices(adrs, "PARAMCD", "PARAM"),
+#'         choices = value_choices(ADRS, "PARAMCD", "PARAM"),
 #'         selected = "BESRSPI"
 #'       ),
 #'       arm_var = choices_selected(
-#'         choices = variable_choices(adrs, c("ARM", "ARMCD", "ACTARMCD")),
+#'         choices = variable_choices(ADRS, c("ARM", "ARMCD", "ACTARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       strata_var = choices_selected(
-#'         choices = variable_choices(adrs, c("SEX", "BMRKR2", "RACE")),
+#'         choices = variable_choices(ADRS, c("SEX", "BMRKR2", "RACE")),
 #'         select = "RACE"
 #'       ),
 #'       default_responses = list(
@@ -783,13 +792,13 @@ srv_t_binary_outcome <- function(id,
       datasets = data,
       selector_list = selector_list,
       merge_function = "dplyr::inner_join",
-      join_keys = teal.data::get_join_keys(data)
+      join_keys = teal.data::join_keys(data)
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var, strata_var = strata_var),
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       anl_name = "ANL_ADSL"
     )
 

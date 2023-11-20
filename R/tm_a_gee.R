@@ -128,24 +128,27 @@ template_a_gee <- function(output_table,
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adqs <- tmc_ex_adqs %>%
-#'   dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
-#'   dplyr::mutate(
-#'     AVISIT = as.factor(AVISIT),
-#'     AVISITN = rank(AVISITN) %>%
-#'       as.factor() %>%
-#'       as.numeric() %>%
-#'       as.factor(),
-#'     AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
-#'   ) %>%
-#'   droplevels()
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADQS <- tmc_ex_adqs %>%
+#'     dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
+#'     dplyr::mutate(
+#'       AVISIT = as.factor(AVISIT),
+#'       AVISITN = rank(AVISITN) %>%
+#'         as.factor() %>%
+#'         as.numeric() %>%
+#'         as.factor(),
+#'       AVALBIN = AVAL < 50 #' Just as an example to get a binary endpoint.
+#'     ) %>%
+#'     droplevels()
+#' })
+#' datanames <- c("ADSL", "ADQS")
+#' datanames(data) <- datanames
+#' join_keys(data) <- default_cdisc_join_keys[datanames]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADQS", adqs)
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_a_gee(
 #'       label = "GEE",
@@ -155,7 +158,7 @@ template_a_gee <- function(output_table,
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
 #'       paramcd = choices_selected(
-#'         choices = value_choices(adqs, "PARAMCD", "PARAM"),
+#'         choices = value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
 #'         selected = "FKSI-FWB"
 #'       ),
 #'       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
@@ -444,14 +447,14 @@ srv_gee <- function(id,
       datasets = data,
       selector_list = selector_list,
       merge_function = "dplyr::inner_join",
-      join_keys = teal.data::get_join_keys(data)
+      join_keys = teal.data::join_keys(data)
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL",
-      join_keys = teal.data::get_join_keys(data)
+      join_keys = teal.data::join_keys(data)
     )
 
     anl_q <- shiny::reactive({

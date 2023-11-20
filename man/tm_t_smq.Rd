@@ -94,41 +94,45 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Adverse Events Table by Standardized \code{MedDRA} Query.
 }
 \examples{
-adsl <- tmc_ex_adsl
-adae <- tmc_ex_adae
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADAE <- tmc_ex_adae
 
-names_baskets <- grep("^(SMQ|CQ).*NAM$", names(adae), value = TRUE)
-names_scopes <- grep("^SMQ.*SC$", names(adae), value = TRUE)
+  names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
+  names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
 
-cs_baskets <- choices_selected(
-  choices = variable_choices(adae, subset = names_baskets),
-  selected = names_baskets
-)
+  cs_baskets <- choices_selected(
+    choices = variable_choices(ADAE, subset = names_baskets),
+    selected = names_baskets
+  )
 
-cs_scopes <- choices_selected(
-  choices = variable_choices(adae, subset = names_scopes),
-  selected = names_scopes,
-  fixed = TRUE
-)
+  cs_scopes <- choices_selected(
+    choices = variable_choices(ADAE, subset = names_scopes),
+    selected = names_scopes,
+    fixed = TRUE
+  )
+})
+
+datanames <- c("ADSL", "ADAE")
+datanames(data) <- datanames
+join_keys(data) <- default_cdisc_join_keys[datanames]
 
 app <- init(
-  data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADAE", adae)
-  ),
+  data = data,
   modules = modules(
     tm_t_smq(
       label = "Adverse Events by SMQ Table",
       dataname = "ADAE",
       arm_var = choices_selected(
-        choices = variable_choices(adsl, subset = c("ARM", "SEX")),
+        choices = variable_choices(data[["ADSL"]], subset = c("ARM", "SEX")),
         selected = "ARM"
       ),
       add_total = FALSE,
-      baskets = cs_baskets,
-      scopes = cs_scopes,
+      baskets = data[["cs_baskets"]],
+      scopes = data[["cs_scopes"]],
       llt = choices_selected(
-        choices = variable_choices(adae, subset = c("AEDECOD")),
+        choices = variable_choices(data[["ADAE"]], subset = c("AEDECOD")),
         selected = "AEDECOD"
       )
     )

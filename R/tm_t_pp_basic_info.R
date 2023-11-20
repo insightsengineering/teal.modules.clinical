@@ -65,11 +65,12 @@ template_basic_info <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
+#' ADSL <- tmc_ex_adsl
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl)
+#'     ADSL = ADSL,
+#'     code = "ADSL <- tmc_ex_adsl"
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_basic_info(
@@ -77,7 +78,7 @@ template_basic_info <- function(dataname = "ANL",
 #'       dataname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       vars = choices_selected(
-#'         choices = variable_choices(adsl),
+#'         choices = variable_choices(ADSL),
 #'         selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
 #'       )
 #'     )
@@ -218,7 +219,7 @@ srv_t_basic_info <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::left_join"
     )

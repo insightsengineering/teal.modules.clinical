@@ -245,25 +245,30 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adlb <- tmc_ex_adlb %>%
+#' ADSL <- tmc_ex_adsl
+#' ADLB <- tmc_ex_adlb %>%
 #'   dplyr::filter(!AVISIT %in% c("SCREENING", "BASELINE"))
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADLB", adlb)
+#'     ADSL = ADSL,
+#'     ADLB = ADLB,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADLB <- tmc_ex_adlb %>%
+#'         dplyr::filter(!AVISIT %in% c(\"SCREENING\", \"BASELINE\"))
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_abnormality_by_worst_grade(
 #'       label = "Laboratory Test Results with Highest Grade Post-Baseline",
 #'       dataname = "ADLB",
 #'       arm_var = choices_selected(
-#'         choices = variable_choices(adsl, subset = c("ARM", "ARMCD")),
+#'         choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       paramcd = choices_selected(
-#'         choices = value_choices(adlb, "PARAMCD", "PARAM"),
+#'         choices = value_choices(ADLB, "PARAMCD", "PARAM"),
 #'         selected = c("ALT", "CRP", "IGA")
 #'       ),
 #'       add_total = FALSE
@@ -527,13 +532,13 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
     anl_inputs <- teal.transform::merge_expression_srv(
       selector_list = selector_list,
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )

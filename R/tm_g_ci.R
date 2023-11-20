@@ -192,13 +192,17 @@ template_g_ci <- function(dataname, # nolint
 #' @examples
 #' library(nestcolor)
 #'
-#' adsl <- tmc_ex_adsl
-#' adlb <- tmc_ex_adlb
+#' ADSL <- tmc_ex_adsl
+#' ADLB <- tmc_ex_adlb
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADLB", adlb)
+#'     ADSL = ADSL,
+#'     ADLB = ADLB,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADLB <- tmc_ex_adlb
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_g_ci(
@@ -217,15 +221,15 @@ template_g_ci <- function(dataname, # nolint
 #'         filter = list(
 #'           filter_spec(
 #'             vars = "PARAMCD",
-#'             choices = levels(adlb$PARAMCD),
-#'             selected = levels(adlb$PARAMCD)[1],
+#'             choices = levels(ADLB$PARAMCD),
+#'             selected = levels(ADLB$PARAMCD)[1],
 #'             multiple = FALSE,
 #'             label = "Select lab:"
 #'           ),
 #'           filter_spec(
 #'             vars = "AVISIT",
-#'             choices = levels(adlb$AVISIT),
-#'             selected = levels(adlb$AVISIT)[1],
+#'             choices = levels(ADLB$AVISIT),
+#'             selected = levels(ADLB$AVISIT)[1],
 #'             multiple = FALSE,
 #'             label = "Select visit:"
 #'           )
@@ -399,7 +403,7 @@ srv_g_ci <- function(id, # nolint
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list
     )
 

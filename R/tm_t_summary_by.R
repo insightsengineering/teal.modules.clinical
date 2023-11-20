@@ -331,34 +331,38 @@ template_summary_by <- function(parentname,
 #'
 #' @export
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adlb <- tmc_ex_adlb
+#' ADSL <- tmc_ex_adsl
+#' ADLB <- tmc_ex_adlb
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADLB", adlb)
+#'     ADSL = ADSL,
+#'     ADLB = ADLB,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADLB <- tmc_ex_adlb
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_summary_by(
 #'       label = "Summary by Row Groups Table",
 #'       dataname = "ADLB",
 #'       arm_var = choices_selected(
-#'         choices = variable_choices(adsl, c("ARM", "ARMCD")),
+#'         choices = variable_choices(ADSL, c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       add_total = TRUE,
 #'       by_vars = choices_selected(
-#'         choices = variable_choices(adlb, c("PARAM", "AVISIT")),
+#'         choices = variable_choices(ADLB, c("PARAM", "AVISIT")),
 #'         selected = c("AVISIT")
 #'       ),
 #'       summarize_vars = choices_selected(
-#'         choices = variable_choices(adlb, c("AVAL", "CHG")),
+#'         choices = variable_choices(ADLB, c("AVAL", "CHG")),
 #'         selected = c("AVAL")
 #'       ),
 #'       useNA = "ifany",
 #'       paramcd = choices_selected(
-#'         choices = value_choices(adlb, "PARAMCD", "PARAM"),
+#'         choices = value_choices(ADLB, "PARAMCD", "PARAM"),
 #'         selected = "ALT"
 #'       )
 #'     )
@@ -626,14 +630,14 @@ srv_summary_by <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       selector_list = selector_list,
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       id = "adsl_merge",
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
