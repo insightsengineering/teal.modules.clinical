@@ -26,7 +26,7 @@ BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.0),
-    teal (>= 0.14.0),
+    teal (>= 0.14.0.9019),
     tern (>= 0.8.2)
 Imports:
     assertthat,
@@ -54,10 +54,10 @@ Imports:
     stats,
     styler,
     teal.code (>= 0.4.0),
-    teal.data (>= 0.3.0.9009),
+    teal.data (>= 0.3.0.9010),
     teal.logger (>= 0.1.1),
     teal.reporter (>= 0.2.0),
-    teal.transform (>= 0.4.0),
+    teal.transform (>= 0.4.0.9007),
     teal.widgets (>= 0.4.0),
     tern.gee (>= 0.1.0),
     tern.mmrm (>= 0.2.1),
