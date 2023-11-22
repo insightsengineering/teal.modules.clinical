@@ -329,7 +329,8 @@ srv_g_barchart_simple <- function(id,
                                   ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     rule_dupl <- function(others) {
@@ -381,17 +382,16 @@ srv_g_barchart_simple <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       selector_list = selector_list
     )
 
     anl_q <- shiny::reactive({
-      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      qenv <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
-      qenv
+      data() %>%
+        teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     count_q <- shiny::reactive({
+
       qenv <- anl_q()
       teal::validate_has_data(qenv[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
@@ -433,7 +433,7 @@ srv_g_barchart_simple <- function(id,
         qenv3,
         teal.transform::get_anl_relabel_call(
           columns_source = anl_inputs()$columns_source,
-          datasets = data,
+          datasets = data(),
           anl_name = "counts"
         )
       )
