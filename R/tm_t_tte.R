@@ -722,8 +722,7 @@ srv_t_tte <- function(id,
                       basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
+  checkmate::assert_class(data, "tdata")
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
@@ -732,7 +731,7 @@ srv_t_tte <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      data = reactive(data()[[parentname]]),
+      data = data[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
       on_off = shiny::reactive(input$compare_arms)
@@ -797,6 +796,7 @@ srv_t_tte <- function(id,
     anl_merge_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
@@ -808,9 +808,9 @@ srv_t_tte <- function(id,
     )
 
     anl_q <- shiny::reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_merge_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
+      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
+      qenv1 <- teal.code::eval_code(qenv, as.expression(anl_merge_inputs()$expr))
+      teal.code::eval_code(qenv1, as.expression(adsl_merge_inputs()$expr))
     })
 
     # Prepare the analysis environment (filter data, check data, populate envir).
@@ -869,6 +869,7 @@ srv_t_tte <- function(id,
       validate_checks()
 
       anl_m <- anl_merge_inputs()
+      qenv <- anl_q()
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
 
@@ -908,7 +909,7 @@ srv_t_tte <- function(id,
         basic_table_args = basic_table_args
       )
 
-      anl_q() %>% teal.code::eval_code(as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
     table_r <- shiny::reactive(all_q()[["table"]])
