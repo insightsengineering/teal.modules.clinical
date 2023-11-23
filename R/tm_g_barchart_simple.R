@@ -391,7 +391,6 @@ srv_g_barchart_simple <- function(id,
     })
 
     count_q <- shiny::reactive({
-
       anl_q <- anl_q()
       teal::validate_has_data(anl_q[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
@@ -448,17 +447,6 @@ srv_g_barchart_simple <- function(id,
       teal::validate_inputs(iv_r())
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
-      ANL <- count_q()[["ANL"]] # nolint
-
-      qenv2 <- teal.code::eval_code(count_q(), substitute(
-        env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
-        plot_title <- sprintf(
-          "Number of patients (total N = %s) for each combination of (%s)",
-          nrow(ANL),
-          groupby_vars
-        )
-      ))
-
       y_lab <- substitute(
         column_annotation_label(counts, y_name),
         list(y_name = get_n_name(groupby_vars))
@@ -492,11 +480,22 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      qenv3 <- teal.code::eval_code(qenv2, code = plot_call)
+      ANL <- count_q()[["ANL"]] # nolint
+
+      all_q <-  count_q() %>%
+        teal.code::eval_code(, substitute(
+          env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
+          plot_title <- sprintf(
+            "Number of patients (total N = %s) for each combination of (%s)",
+            nrow(ANL),
+            groupby_vars
+          )
+        )) %>%
+        teal.code::eval_code(code = plot_call)
 
       # explicitly calling print on the plot inside the qenv evaluates
       # the ggplot call and therefore catches errors
-      teal.code::eval_code(qenv3, code = quote(print(plot)))
+      teal.code::eval_code(all_q, code = quote(print(plot)))
     })
 
     plot_r <- shiny::reactive(all_q()[["plot"]])
