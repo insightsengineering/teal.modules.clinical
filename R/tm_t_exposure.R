@@ -477,7 +477,8 @@ srv_t_exposure <- function(id,
                            basic_table_args = basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(isolate(data()), "teal_data")
   shiny::moduleServer(id, function(input, output, session) {
     rule_intersection <- function(other) {
       function(value) {
@@ -526,19 +527,17 @@ srv_t_exposure <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       data_extract = list(col_by_var = col_by_var),
       anl_name = "ANL_ADSL"
     )
 
     anl_q <- shiny::reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+      data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
