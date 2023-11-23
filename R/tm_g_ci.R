@@ -409,7 +409,6 @@ srv_g_ci <- function(id, # nolint
     )
 
     anl_q <- shiny::reactive({
-      req(anl_inputs())
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
