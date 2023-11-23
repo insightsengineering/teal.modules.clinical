@@ -391,10 +391,10 @@ srv_events_patyear <- function(id,
 
   shiny::moduleServer(id, function(input, output, session) {
     shiny::observeEvent(anl_q(), {
-      data <- merged$anl_q()[["ANL"]]
+      data_anl <- merged$anl_q()[["ANL"]]
       aval_unit_var <- merged$anl_input_r()$columns_source$avalu_var
       if (length(aval_unit_var) > 0) {
-        choices <- stats::na.omit(unique(data()[[aval_unit_var]]))
+        choices <- stats::na.omit(unique(data_anl[[aval_unit_var]]))
         choices <- gsub("s$", "", tolower(choices))
 
         shiny::updateSelectInput(
