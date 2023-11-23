@@ -392,8 +392,8 @@ srv_g_barchart_simple <- function(id,
 
     count_q <- shiny::reactive({
 
-      qenv <- anl_q()
-      teal::validate_has_data(qenv[["ANL"]], 2)
+      anl_q <- anl_q()
+      teal::validate_has_data(anl_q[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
 
       # count
@@ -409,34 +409,39 @@ srv_g_barchart_simple <- function(id,
         count_str_to_col_exprs <- sapply(groupby_vars[-1], count_str_to_column_expr)
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
-      qenv2 <- teal.code::eval_code(qenv, code = count_exprs)
+
+      data_list <- sapply(teal.data::datanames(data()), function(x) reactive(data()[[x]]),
+                          simplify = FALSE)
+
+      anl_q <- anl_q %>%
+        teal.code::eval_code(code = count_exprs)
 
       # add label and slice(1) as all patients in the same subgroup have same n_'s
-      qenv3 <- teal.code::eval_code(
-        qenv2,
-        as.expression(
-          c(
-            bquote(attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count"),
-            bquote(
-              counts <- counts %>%
-                dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
-                dplyr::slice(1) %>%
-                dplyr::ungroup() %>%
-                dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
+      anl_q <- anl_q %>%
+        teal.code::eval_code(
+          as.expression(
+            c(
+              bquote(attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count"),
+              bquote(
+                counts <- counts %>%
+                  dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
+                  dplyr::slice(1) %>%
+                  dplyr::ungroup() %>%
+                  dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
+              )
             )
           )
         )
-      )
 
       # dplyr::select loses labels
-      teal.code::eval_code(
-        qenv3,
-        teal.transform::get_anl_relabel_call(
-          columns_source = anl_inputs()$columns_source,
-          datasets = data(),
-          anl_name = "counts"
+      anl_q %>%
+        teal.code::eval_code(
+          teal.transform::get_anl_relabel_call(
+            columns_source = anl_inputs()$columns_source,
+            datasets = data_list,
+            anl_name = "counts"
+          )
         )
-      )
     })
 
     all_q <- shiny::reactive({
