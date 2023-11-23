@@ -825,7 +825,7 @@ srv_mmrm <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     # Reactive responsible for sending a disable/enable signal
@@ -854,7 +854,7 @@ srv_mmrm <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname), # From UI.
-      data = reactive(data()[[parentname]]),
+      data = shiny::reactive(data()[[parentname]]),
       arm_ref_comp = arm_ref_comp,
       module = "tm_mmrm"
     )
