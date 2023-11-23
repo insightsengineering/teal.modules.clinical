@@ -483,7 +483,7 @@ srv_g_barchart_simple <- function(id,
       ANL <- count_q()[["ANL"]] # nolint
 
       all_q <-  count_q() %>%
-        teal.code::eval_code(, substitute(
+        teal.code::eval_code(substitute(
           env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
           plot_title <- sprintf(
             "Number of patients (total N = %s) for each combination of (%s)",
