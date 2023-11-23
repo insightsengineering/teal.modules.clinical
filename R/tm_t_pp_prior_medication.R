@@ -317,7 +317,6 @@ srv_t_prior_medication <- function(id,
         cmstdy = input[[extract_input("cmstdy", dataname)]]
       )
 
-
       anl_q() %>%
         teal.code::eval_code(
         substitute(
