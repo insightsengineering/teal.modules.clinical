@@ -410,7 +410,8 @@ srv_g_barchart_simple <- function(id,
       }
 
       data_list <- sapply(teal.data::datanames(data()), function(x) reactive(data()[[x]]),
-                          simplify = FALSE)
+        simplify = FALSE
+      )
 
       anl_q <- anl_q %>%
         teal.code::eval_code(code = count_exprs)
@@ -482,7 +483,7 @@ srv_g_barchart_simple <- function(id,
 
       ANL <- count_q()[["ANL"]] # nolint
 
-      all_q <-  count_q() %>%
+      all_q <- count_q() %>%
         teal.code::eval_code(substitute(
           env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
           plot_title <- sprintf(

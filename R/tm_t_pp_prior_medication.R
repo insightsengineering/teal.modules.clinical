@@ -319,15 +319,15 @@ srv_t_prior_medication <- function(id,
 
       anl_q() %>%
         teal.code::eval_code(
-        substitute(
-          expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
-          }, env = list(
-            patient_col = patient_col,
-            patient_id = patient_id()
+          substitute(
+            expr = {
+              ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            }, env = list(
+              patient_col = patient_col,
+              patient_id = patient_id()
+            )
           )
-        )
-      ) %>%
+        ) %>%
         teal.code::eval_code(as.expression(my_calls))
     })
 
