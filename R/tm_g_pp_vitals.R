@@ -65,23 +65,37 @@ template_vitals <- function(dataname = "ANL",
   vital_plot <- add_expr(
     list(),
     substitute_names(
+      names = list(
+        dataname = as.name(dataname),
+        paramcd = as.name(paramcd),
+        xaxis = as.name(xaxis),
+        aval = as.name(aval)
+      ),
+      others = list(paramcd_levels = paramcd_levels),
       expr = {
         vitals <-
           dataname %>%
           dplyr::group_by(paramcd, xaxis) %>%
-          dplyr::filter(paramcd %in% paramcd_levels_chars) %>%
+          dplyr::filter(paramcd %in% paramcd_levels) %>%
           dplyr::summarise(aval = max(aval, na.rm = TRUE)) %>%
           dplyr::mutate(
             aval = ifelse(is.infinite(aval), NA, aval),
             xaxis = as.numeric(xaxis) # difftime fails ggplot2::scale_x_continuous
           )
+      }
+    )
+  )
 
+  vital_plot <- add_expr(
+    vital_plot,
+    substitute(
+      expr = {
         max_day <- max(vitals[[xaxis_char]], na.rm = TRUE)
         max_aval <- max(vitals[[aval_char]], na.rm = TRUE)
         max_aval_seq <- seq(0, max_aval, 10)
 
         full_vita <- levels(dataname[[paramcd_char]])
-        provided_vita <- paramcd_levels_chars
+        provided_vita <- paramcd_levels
         known_vita <- c("SYSBP", "DIABP", "TEMP", "RESP", "OXYSAT", "PULSE")
 
         paramcd_levels_e <- known_vita[stats::na.omit(match(provided_vita, known_vita))]
@@ -156,16 +170,14 @@ template_vitals <- function(dataname = "ANL",
 
         print(result_plot)
       },
-      names = list(
+      env = list(
         dataname = as.name(dataname),
         paramcd = as.name(paramcd),
-        xaxis = as.name(xaxis),
-        aval = as.name(aval)
-      ),
-      others = list(
         paramcd_char = paramcd,
-        paramcd_levels_chars = paramcd_levels,
+        paramcd_levels = paramcd_levels,
+        xaxis = as.name(xaxis),
         xaxis_char = xaxis,
+        aval = as.name(aval),
         aval_char = aval,
         patient_id = patient_id,
         font_size_var = font_size,
