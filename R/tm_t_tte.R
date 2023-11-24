@@ -723,7 +723,7 @@ srv_t_tte <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
@@ -732,7 +732,7 @@ srv_t_tte <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      data = reactive(data()[[parentname]]),
+      data = shiny::reactive(data()[[parentname]]),
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
       on_off = shiny::reactive(input$compare_arms)

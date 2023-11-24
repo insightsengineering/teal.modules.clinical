@@ -330,7 +330,7 @@ srv_g_barchart_simple <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     rule_dupl <- function(others) {
@@ -409,7 +409,7 @@ srv_g_barchart_simple <- function(id,
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
 
-      data_list <- sapply(teal.data::datanames(data()), function(x) reactive(data()[[x]]),
+      data_list <- sapply(teal.data::datanames(data()), function(x) shiny::reactive(data()[[x]]),
         simplify = FALSE
       )
 

@@ -311,7 +311,7 @@ srv_g_laboratory <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     patient_id <- shiny::reactive(input$patient_id)
@@ -342,7 +342,7 @@ srv_g_laboratory <- function(id,
     )
 
     # Update round_values
-    aval_values <- isolate(data())[[dataname]][, aval$select$selected]
+    aval_values <- shiny::isolate(data())[[dataname]][, aval$select$selected]
     decimal_nums <- aval_values[trunc(aval_values) != aval_values]
     max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", decimal_nums)))
 
