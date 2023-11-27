@@ -680,7 +680,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(all_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
