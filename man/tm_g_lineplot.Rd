@@ -26,7 +26,7 @@ tm_g_lineplot(
   interval = "mean_ci",
   mid = "mean",
   whiskers = c("mean_ci_lwr", "mean_ci_upr"),
-  table = NULL,
+  table = c("n", "mean_sd", "median", "range"),
   mid_type = "pl",
   mid_point_size = c(2, 1, 5),
   table_font_size = c(4, 2, 6),
