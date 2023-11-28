@@ -3,6 +3,9 @@
 ### Enhancements
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
 
+### Bug fixes
+* Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
+
 # teal.modules.clinical 0.8.16.9010
 
 ### Enhancements
