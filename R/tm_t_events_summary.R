@@ -981,7 +981,7 @@ srv_t_events_summary <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(table_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(table_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
