@@ -42,8 +42,10 @@
       
       $sort
       {
+          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+              "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
-              scorefun = cont_n_onecol(ncol(result))) %>% sort_at_path(path = c("AEBODSYS", 
+              scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
               ncol(result))))
           pruned_and_sorted_result
@@ -99,8 +101,10 @@
       
       $sort
       {
+          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+              "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
-              scorefun = cont_n_onecol(ncol(result))) %>% sort_at_path(path = c("AEBODSYS", 
+              scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
               ncol(result))))
           pruned_and_sorted_result
@@ -142,6 +146,8 @@
       
       $sort
       {
+          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+              "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("CMDECOD"), 
               scorefun = score_occurrences)
           pruned_and_sorted_result
@@ -247,8 +253,10 @@
       
       $sort
       {
+          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+              "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
-              scorefun = cont_n_onecol(ncol(result))) %>% sort_at_path(path = c("AEBODSYS", 
+              scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
               ncol(result))))
           criteria_fun <- function(tr) {
@@ -313,8 +321,10 @@
       
       $sort
       {
+          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+              "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
-              scorefun = cont_n_onecol(ncol(result))) %>% sort_at_path(path = c("AEBODSYS", 
+              scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
               ncol(result))))
           criteria_fun <- function(tr) {
