@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.16.9014
+# teal.modules.clinical 0.8.16.9015
 
 ### Enhancements
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
