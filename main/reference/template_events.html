@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9015</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9016</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,16 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -90,9 +80,11 @@
 <span>  total_label <span class="op">=</span> <span class="st">"All Patients"</span>,</span>
 <span>  event_type <span class="op">=</span> <span class="st">"event"</span>,</span>
 <span>  sort_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"freq_desc"</span>, <span class="st">"alpha"</span><span class="op">)</span>,</span>
+<span>  sort_freq_col <span class="op">=</span> <span class="va">total_label</span>,</span>
 <span>  prune_freq <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  prune_diff <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  drop_arm_levels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  incl_overall_sum <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  basic_table_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://github.com/insightsengineering/teal.widgets/reference/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -146,8 +138,12 @@ Default is "event".</p></dd>
 
 <dt>sort_criteria</dt>
 <dd><p>(<code>character</code>)<br> how to sort the final table. Default option <code>freq_desc</code> sorts
-by decreasing total number of patients with event. Alternative option <code>alpha</code> sorts events
+on column <code>sort_freq_col</code> by decreasing number of patients with event. Alternative option <code>alpha</code> sorts events
 alphabetically.</p></dd>
+
+
+<dt>sort_freq_col</dt>
+<dd><p>(<code>character</code>)<br> column to sort by frequency on if <code>sort_criteria</code> is set to <code>freq_desc</code>.</p></dd>
 
 
 <dt>prune_freq</dt>
@@ -163,6 +159,11 @@ rates between any two columns.</p></dd>
 <dd><p>(<code>logical</code>)<br> drop the unused <code>arm_var</code> levels.
 When <code>TRUE</code>, <code>arm_var</code> levels are set to those used in the <code>dataname</code> dataset. When <code>FALSE</code>,
 <code>arm_var</code> levels are set to those used in the <code>parantname</code> dataset.</p></dd>
+
+
+<dt>incl_overall_sum</dt>
+<dd><p>(<code>flag</code>)<br>  whether two rows which summarize the overall number of adverse events
+should be included at the top of the table.</p></dd>
 
 
 <dt>basic_table_args</dt>
