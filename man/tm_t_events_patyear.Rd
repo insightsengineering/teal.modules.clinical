@@ -89,33 +89,40 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal module: Event rates adjusted for patient-years
 }
 \examples{
-adsl <- tmc_ex_adsl
-adaette <- tmc_ex_adaette \%>\%
+ADSL <- tmc_ex_adsl
+ADAETTE <- tmc_ex_adaette \%>\%
   dplyr::filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
   dplyr::mutate(is_event = CNSR == 0) \%>\%
   dplyr::mutate(n_events = as.integer(is_event))
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADAETTE", adaette)
+    ADSL = ADSL,
+    ADAETTE = ADAETTE,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADAETTE <- tmc_ex_adaette \%>\%
+        dplyr::filter(PARAMCD \%in\% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) \%>\%
+        dplyr::mutate(is_event = CNSR == 0) \%>\%
+        dplyr::mutate(n_events = as.integer(is_event))
+    "
   ),
   modules = modules(
     tm_t_events_patyear(
       label = "AE Rate Adjusted for Patient-Years At Risk Table",
       dataname = "ADAETTE",
       arm_var = choices_selected(
-        choices = variable_choices(adsl, c("ARM", "ARMCD")),
+        choices = variable_choices(ADSL, c("ARM", "ARMCD")),
         selected = "ARMCD"
       ),
       add_total = TRUE,
       events_var = choices_selected(
-        choices = variable_choices(adaette, "n_events"),
+        choices = variable_choices(ADAETTE, "n_events"),
         selected = "n_events",
         fixed = TRUE
       ),
       paramcd = choices_selected(
-        choices = value_choices(adaette, "PARAMCD", "PARAM"),
+        choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
         selected = "AETTE1"
       )
     )

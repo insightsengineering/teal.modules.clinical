@@ -462,13 +462,17 @@ template_events <- function(dataname,
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adae <- tmc_ex_adae
+#' ADSL <- tmc_ex_adsl
+#' ADAE <- tmc_ex_adae
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADAE", adae)
+#'     ADSL = ADSL,
+#'     ADAE = ADAE,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADAE <- tmc_ex_adae
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_events(
@@ -476,11 +480,11 @@ template_events <- function(dataname,
 #'       dataname = "ADAE",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       llt = choices_selected(
-#'         choices = variable_choices(adae, c("AETERM", "AEDECOD")),
+#'         choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
 #'         selected = c("AEDECOD")
 #'       ),
 #'       hlt = choices_selected(
-#'         choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
+#'         choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
 #'         selected = "AEBODSYS"
 #'       ),
 #'       add_total = TRUE,
@@ -698,7 +702,7 @@ srv_t_events_byterm <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
@@ -707,7 +711,7 @@ srv_t_events_byterm <- function(id,
       datasets = data,
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL",
-      join_keys = teal.data::get_join_keys(data)
+      join_keys = teal.data::join_keys(data)
     )
 
     anl_q <- shiny::reactive({

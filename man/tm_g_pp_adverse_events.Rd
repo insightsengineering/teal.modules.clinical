@@ -90,13 +90,17 @@ This teal module produces a patient profile adverse events table and plot using 
 \examples{
 library(nestcolor)
 
-adae <- tmc_ex_adae
-adsl <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% adae$USUBJID)
+ADAE <- tmc_ex_adae
+ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADAE$USUBJID)
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADAE", adae)
+    ADSL = ADSL,
+    ADAE = ADAE,
+    code = "
+      ADAE <- tmc_ex_adae
+      ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADAE$USUBJID)
+    "
   ),
   modules = modules(
     tm_g_pp_adverse_events(
@@ -106,27 +110,27 @@ app <- init(
       patient_col = "USUBJID",
       plot_height = c(600L, 200L, 2000L),
       aeterm = choices_selected(
-        choices = variable_choices(adae, "AETERM"),
+        choices = variable_choices(ADAE, "AETERM"),
         selected = "AETERM"
       ),
       tox_grade = choices_selected(
-        choices = variable_choices(adae, "AETOXGR"),
+        choices = variable_choices(ADAE, "AETOXGR"),
         selected = "AETOXGR"
       ),
       causality = choices_selected(
-        choices = variable_choices(adae, "AEREL"),
+        choices = variable_choices(ADAE, "AEREL"),
         selected = "AEREL"
       ),
       outcome = choices_selected(
-        choices = variable_choices(adae, "AEOUT"),
+        choices = variable_choices(ADAE, "AEOUT"),
         selected = "AEOUT"
       ),
       action = choices_selected(
-        choices = variable_choices(adae, "AEACN"),
+        choices = variable_choices(ADAE, "AEACN"),
         selected = "AEACN"
       ),
       time = choices_selected(
-        choices = variable_choices(adae, "ASTDY"),
+        choices = variable_choices(ADAE, "ASTDY"),
         selected = "ASTDY"
       ),
       decod = NULL

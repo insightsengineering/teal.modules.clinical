@@ -52,13 +52,17 @@ A simple application including a bar chart module could look like this:
 library(teal.modules.clinical)
 library(nestcolor)
 
-adsl <- tmc_ex_adsl
-adae <- tmc_ex_adae
+ADSL <- tmc_ex_adsl
+ADAE <- tmc_ex_adae
 
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", adsl),
-    teal.data::cdisc_dataset("ADAE", adae)
+    ADSL = ADSL,
+    ADAE = ADAE,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADAE <- tmc_ex_adae
+    "
   ),
   modules = list(
     tm_g_barchart_simple(
@@ -66,7 +70,7 @@ app <- teal::init(
       x = teal.transform::data_extract_spec(
         dataname = "ADAE",
         select = teal.transform::select_spec(
-          choices = teal.transform::variable_choices(adae),
+          choices = teal.transform::variable_choices(ADAE),
           multiple = FALSE
         )
       )
@@ -80,7 +84,7 @@ if (interactive()) shiny::shinyApp(app$ui, app$server)
 `teal.modules.clinical` exports modules and needs support from other libraries to run a `teal` app and flesh out its 
 functionality. In the example above, `tm_g_barchart_simple` is the only function from `teal.modules.clinical` where as 
 `init` is a `teal` function, `data_extract_spec`, `select_spec` and `variable_choices` are `teal.transform` functions 
-and `cdisc_dataset` and `cdisc_data` are `teal.data` functions.
+and `cdisc_data` are `teal.data` functions.
 
 
 Let's break the above app into pieces:
@@ -90,8 +94,8 @@ library(nestcolor)
 ```
 The above lines load the libraries used in this example. We will use the example data provided in the `teal.modules.clinical` package:
 ```r
-adsl <- tmc_ex_adsl
-adae <- tmc_ex_adae
+ADSL <- tmc_ex_adsl
+ADAE <- tmc_ex_adae
 ```
 `nestcolor` is an optional package that can be loaded in to apply the standardized NEST color palette to all module plots.
 
@@ -103,15 +107,19 @@ argument indicates the modules included in the application. Here, we include onl
 ```r
 app <- teal::init(
   data = teal.data::cdisc_data(
-    teal.data::cdisc_dataset("ADSL", adsl),
-    teal.data::cdisc_dataset("ADAE", adae)
+    ADSL = ADSL,
+    ADAE = ADAE,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADAE <- tmc_ex_adae
+    "
   ),
   modules = list(
     tm_g_barchart_simple(
       label = "ADAE Analysis", 
       x = teal.transform::data_extract_spec(
         dataname = "ADAE",
-        select = teal.transform::select_spec(choices = teal.transform::variable_choices(adae), multiple = FALSE)
+        select = teal.transform::select_spec(choices = teal.transform::variable_choices(ADAE), multiple = FALSE)
       )
     )
   )
@@ -126,9 +134,9 @@ if (interactive()) shiny::shinyApp(app$ui, app$server)
 Some of `teal.modules.clinical` modules allow specifying arguments using `teal.transform::choices_selected` such as
 `tm_t_summary` module in this example:
 ```r
-adsl <- tmc_ex_adsl
+ADSL <- tmc_ex_adsl
 app <- teal::init(
-  data = teal.data::cdisc_data(teal.data::cdisc_dataset("ADSL", adsl)),
+  data = teal.data::cdisc_data(ADSL = ADSL, code = "ADSL <- tmc_ex_adsl"),
   modules = list(
     tm_t_summary(
       label = "Demographic Table",

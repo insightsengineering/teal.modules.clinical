@@ -104,8 +104,8 @@ This teal module produces a grid style \code{Kaplan-Meier} plot for data with
 \examples{
 library(nestcolor)
 
-adsl <- tmc_ex_adsl
-adtte <- tmc_ex_adtte
+ADSL <- tmc_ex_adsl
+ADTTE <- tmc_ex_adtte
 
 arm_ref_comp <- list(
   ACTARMCD = list(
@@ -120,28 +120,32 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADTTE", adtte)
+    ADSL = ADSL,
+    ADTTE = ADTTE,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADTTE <- tmc_ex_adtte
+    "
   ),
   modules = modules(
     tm_g_km(
       label = "Kaplan-Meier Plot",
       dataname = "ADTTE",
       arm_var = choices_selected(
-        variable_choices(adsl, c("ARM", "ARMCD", "ACTARMCD")),
+        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
       ),
       paramcd = choices_selected(
-        value_choices(adtte, "PARAMCD", "PARAM"),
+        value_choices(ADTTE, "PARAMCD", "PARAM"),
         "OS"
       ),
       arm_ref_comp = arm_ref_comp,
       strata_var = choices_selected(
-        variable_choices(adsl, c("SEX", "BMRKR2")),
+        variable_choices(ADSL, c("SEX", "BMRKR2")),
         "SEX"
       ),
       facet_var = choices_selected(
-        variable_choices(adsl, c("SEX", "BMRKR2")),
+        variable_choices(ADSL, c("SEX", "BMRKR2")),
         NULL
       )
     )

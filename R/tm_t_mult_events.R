@@ -280,14 +280,22 @@ template_mult_events <- function(dataname,
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adcm <- tmc_ex_adcm
+#' ADSL <- tmc_ex_adsl
+#' ADCM <- tmc_ex_adcm
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+#'
+#' join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
+#' join_keys["ADCM", "ADCM"] <- adcm_keys
 #'
 #' app <- teal::init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADCM", adcm, keys = adcm_keys)
+#'     ADSL = ADSL,
+#'     ADCM = ADCM,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADCM <- tmc_ex_adcm
+#'     ",
+#'     join_keys = join_keys
 #'   ),
 #'   modules = modules(
 #'     tm_t_mult_events(
@@ -296,11 +304,11 @@ template_mult_events <- function(dataname,
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       seq_var = choices_selected("CMSEQ", selected = "CMSEQ", fixed = TRUE),
 #'       hlt = choices_selected(
-#'         choices = variable_choices(adcm, c("ATC1", "ATC2", "ATC3", "ATC4")),
+#'         choices = variable_choices(ADCM, c("ATC1", "ATC2", "ATC3", "ATC4")),
 #'         selected = c("ATC1", "ATC2", "ATC3", "ATC4")
 #'       ),
 #'       llt = choices_selected(
-#'         choices = variable_choices(adcm, c("CMDECOD")),
+#'         choices = variable_choices(ADCM, c("CMDECOD")),
 #'         selected = c("CMDECOD")
 #'       ),
 #'       add_total = TRUE,
@@ -479,7 +487,7 @@ srv_t_mult_events_byterm <- function(id,
     anl_merge_inputs <- teal.transform::merge_expression_srv(
       id = "anl_merge",
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
@@ -487,7 +495,7 @@ srv_t_mult_events_byterm <- function(id,
     adsl_merge_inputs <- teal.transform::merge_expression_module(
       id = "adsl_merge",
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )

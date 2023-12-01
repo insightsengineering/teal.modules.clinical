@@ -91,18 +91,26 @@ Teal Module: Summary of Variables
 }
 \examples{
 # Preparation of the test case
-adsl <- tmc_ex_adsl
-adsl$EOSDY[1] <- NA_integer_
+ADSL <- tmc_ex_adsl
+ADSL$EOSDY[1] <- NA_integer_
 
 # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
 stopifnot(
-  any(is.na(adsl$EOSDY)),
-  any(is.na(adsl$DCSREAS))
+  any(is.na(ADSL$EOSDY)),
+  any(is.na(ADSL$DCSREAS))
 )
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl)
+    ADSL = ADSL,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADSL$EOSDY[1] <- NA_integer_
+      stopifnot(
+        any(is.na(ADSL$EOSDY)),
+        any(is.na(ADSL$DCSREAS))
+      )
+    "
   ),
   modules = modules(
     tm_t_summary(

@@ -89,13 +89,17 @@ template_medical_history <- function(dataname = "ANL",
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' admh <- tmc_ex_admh
+#' ADSL <- tmc_ex_adsl
+#' ADMH <- tmc_ex_admh
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADMH", admh)
+#'     ADSL = ADSL,
+#'     ADMH = ADMH,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADMH <- tmc_ex_admh
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_pp_medical_history(
@@ -104,15 +108,15 @@ template_medical_history <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       mhterm = choices_selected(
-#'         choices = variable_choices(admh, c("MHTERM")),
+#'         choices = variable_choices(ADMH, c("MHTERM")),
 #'         selected = "MHTERM"
 #'       ),
 #'       mhbodsys = choices_selected(
-#'         choices = variable_choices(admh, "MHBODSYS"),
+#'         choices = variable_choices(ADMH, "MHBODSYS"),
 #'         selected = "MHBODSYS"
 #'       ),
 #'       mhdistat = choices_selected(
-#'         choices = variable_choices(admh, "MHDISTAT"),
+#'         choices = variable_choices(ADMH, "MHDISTAT"),
 #'         selected = "MHDISTAT"
 #'       )
 #'     )
@@ -278,7 +282,7 @@ srv_t_medical_history <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::left_join"
     )

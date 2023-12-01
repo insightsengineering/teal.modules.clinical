@@ -110,48 +110,52 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Adverse Events Summary
 }
 \examples{
-adsl <- tmc_ex_adsl \%>\%
-  dplyr::mutate(
-    DTHFL = dplyr::case_when( # nolint
-      !is.na(DTHDT) ~ "Y",
-      TRUE ~ ""
-    ) \%>\% formatters::with_label("Subject Death Flag")
-  )
-adae <- tmc_ex_adae
-
-add_event_flags <- function(dat) {
-  dat <- dat \%>\%
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl \%>\%
     dplyr::mutate(
-      TMPFL_SER = AESER == "Y",
-      TMPFL_REL = AEREL == "Y",
-      TMPFL_GR5 = AETOXGR == "5",
-      TMP_SMQ01 = !is.na(SMQ01NAM),
-      TMP_SMQ02 = !is.na(SMQ02NAM),
-      TMP_CQ01 = !is.na(CQ01NAM)
+      DTHFL = dplyr::case_when( #' nolint
+        !is.na(DTHDT) ~ "Y",
+        TRUE ~ ""
+      ) \%>\% formatters::with_label("Subject Death Flag")
     )
-  column_labels <- list(
-    TMPFL_SER = "Serious AE",
-    TMPFL_REL = "Related AE",
-    TMPFL_GR5 = "Grade 5 AE",
-    TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
-    TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-    TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
-  )
-  formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
-  dat
-}
+  ADAE <- tmc_ex_adae
 
-# Generating user-defined event flags.
-adae <- adae \%>\% add_event_flags()
+  add_event_flags <- function(dat) {
+    dat <- dat \%>\%
+      dplyr::mutate(
+        TMPFL_SER = AESER == "Y",
+        TMPFL_REL = AEREL == "Y",
+        TMPFL_GR5 = AETOXGR == "5",
+        TMP_SMQ01 = !is.na(SMQ01NAM),
+        TMP_SMQ02 = !is.na(SMQ02NAM),
+        TMP_CQ01 = !is.na(CQ01NAM)
+      )
+    column_labels <- list(
+      TMPFL_SER = "Serious AE",
+      TMPFL_REL = "Related AE",
+      TMPFL_GR5 = "Grade 5 AE",
+      TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
+      TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
+      TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
+    )
+    formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+    dat
+  }
 
-ae_anl_vars <- names(adae)[startsWith(names(adae), "TMPFL_")]
-aesi_vars <- names(adae)[startsWith(names(adae), "TMP_")]
+  #' Generating user-defined event flags.
+  ADAE <- ADAE \%>\% add_event_flags()
+
+  ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
+  aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
+})
+
+datanames <- c("ADSL", "ADAE")
+datanames(data) <- datanames
+join_keys(data) <- default_cdisc_join_keys[datanames]
 
 app <- init(
-  data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADAE", adae)
-  ),
+  data = data,
   modules = modules(
     tm_t_events_summary(
       label = "Adverse Events Summary",
@@ -161,14 +165,14 @@ app <- init(
         selected = "ARM"
       ),
       flag_var_anl = choices_selected(
-        choices = variable_choices("ADAE", ae_anl_vars),
-        selected = ae_anl_vars[1],
+        choices = variable_choices("ADAE", data[["ae_anl_vars"]]),
+        selected = data[["ae_anl_vars"]][1],
         keep_order = TRUE,
         fixed = FALSE
       ),
       flag_var_aesi = choices_selected(
-        choices = variable_choices("ADAE", aesi_vars),
-        selected = aesi_vars[1],
+        choices = variable_choices("ADAE", data[["aesi_vars"]]),
+        selected = data[["aesi_vars"]][1],
         keep_order = TRUE,
         fixed = FALSE
       ),

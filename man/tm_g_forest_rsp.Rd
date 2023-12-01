@@ -114,8 +114,8 @@ This teal module produces a grid style Forest plot for response data with \code{
 \examples{
 library(nestcolor)
 
-adsl <- tmc_ex_adsl
-adrs <- tmc_ex_adrs \%>\%
+ADSL <- tmc_ex_adsl
+ADRS <- tmc_ex_adrs \%>\%
   dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
     formatters::with_label("Character Result/Finding")) \%>\%
   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
@@ -133,28 +133,35 @@ arm_ref_comp <- list(
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADRS", adrs)
+    ADSL = ADSL,
+    ADRS = ADRS,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADRS <- tmc_ex_adrs \%>\%
+        dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
+          formatters::with_label(\"Character Result/Finding\")) \%>\%
+        dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
+    "
   ),
   modules = modules(
     tm_g_forest_rsp(
       label = "Forest Response",
       dataname = "ADRS",
       arm_var = choices_selected(
-        variable_choices(adsl, c("ARM", "ARMCD")),
+        variable_choices(ADSL, c("ARM", "ARMCD")),
         "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(
-        value_choices(adrs, "PARAMCD", "PARAM"),
+        value_choices(ADRS, "PARAMCD", "PARAM"),
         "INVET"
       ),
       subgroup_var = choices_selected(
-        variable_choices(adsl, names(adsl)),
+        variable_choices(ADSL, names(ADSL)),
         c("BMRKR2", "SEX")
       ),
       strata_var = choices_selected(
-        variable_choices(adsl, c("STRATA1", "STRATA2")),
+        variable_choices(ADSL, c("STRATA1", "STRATA2")),
         "STRATA2"
       ),
       plot_height = c(600L, 200L, 2000L),

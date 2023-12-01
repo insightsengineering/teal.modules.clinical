@@ -228,8 +228,8 @@ template_logistic <- function(dataname,
 #'
 #' @export
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adrs <- tmc_ex_adrs %>%
+#' ADSL <- tmc_ex_adsl
+#' ADRS <- tmc_ex_adrs %>%
 #'   dplyr::filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
 #' arm_ref_comp <- list(
@@ -245,20 +245,25 @@ template_logistic <- function(dataname,
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADRS", adrs)
+#'     ADSL = ADSL,
+#'     ADRS = ADRS,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADRS <- tmc_ex_adrs %>%
+#'         dplyr::filter(PARAMCD %in% c(\"BESRSPI\", \"INVET\"))
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",
 #'       dataname = "ADRS",
 #'       arm_var = choices_selected(
-#'         choices = variable_choices(adrs, c("ARM", "ARMCD")),
+#'         choices = variable_choices(ADRS, c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
-#'         choices = value_choices(adrs, "PARAMCD", "PARAM"),
+#'         choices = value_choices(ADRS, "PARAMCD", "PARAM"),
 #'         selected = "BESRSPI"
 #'       ),
 #'       cov_var = choices_selected(
@@ -518,13 +523,13 @@ srv_t_logistic <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       selector_list = selector_list,
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )

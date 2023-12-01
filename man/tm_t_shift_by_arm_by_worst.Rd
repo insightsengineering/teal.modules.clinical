@@ -96,40 +96,44 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Shift by Arm by Worst
 }
 \examples{
-adsl <- tmc_ex_adsl
-adeg <- tmc_ex_adeg
+ADSL <- tmc_ex_adsl
+ADEG <- tmc_ex_adeg
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADEG", adeg)
+    ADSL = ADSL,
+    ADEG = ADEG,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADEG <- tmc_ex_adeg
+    "
   ),
   modules = modules(
     tm_t_shift_by_arm_by_worst(
       label = "Shift by Arm Table",
       dataname = "ADEG",
       arm_var = choices_selected(
-        variable_choices(adsl, subset = c("ARM", "ARMCD")),
+        variable_choices(ADSL, subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       paramcd = choices_selected(
-        value_choices(adeg, "PARAMCD"),
+        value_choices(ADEG, "PARAMCD"),
         selected = "ECGINTP"
       ),
       worst_flag_var = choices_selected(
-        variable_choices(adeg, c("WORS02FL", "WORS01FL")),
+        variable_choices(ADEG, c("WORS02FL", "WORS01FL")),
         selected = "WORS02FL"
       ),
       worst_flag = choices_selected(
-        value_choices(adeg, "WORS02FL"),
+        value_choices(ADEG, "WORS02FL"),
         selected = "Y", fixed = TRUE
       ),
       aval_var = choices_selected(
-        variable_choices(adeg, c("AVALC", "ANRIND")),
+        variable_choices(ADEG, c("AVALC", "ANRIND")),
         selected = "AVALC"
       ),
       base_var = choices_selected(
-        variable_choices(adeg, c("BASEC", "BNRIND")),
+        variable_choices(ADEG, c("BASEC", "BNRIND")),
         selected = "BASEC"
       ),
       useNA = "ifany"

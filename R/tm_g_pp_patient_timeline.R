@@ -352,30 +352,35 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' adae <- tmc_ex_adae
-#' adsl <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% adae$USUBJID)
-#' adcm <- tmc_ex_adcm %>% dplyr::mutate(
-#'   CMSTDY = dplyr::case_when(
-#'     CMCAT == "medcl B" ~ 20,
-#'     CMCAT == "medcl C" ~ 150,
-#'     TRUE ~ 1
-#'   ) %>% formatters::with_label("Study Day of Start of Medication"),
-#'   CMENDY = dplyr::case_when(
-#'     CMCAT == "medcl B" ~ 700,
-#'     CMCAT == "medcl C" ~ 1000,
-#'     TRUE ~ 500
-#'   ) %>% formatters::with_label("Study Day of End of Medication"),
-#'   CMASTDTM = ASTDTM,
-#'   CMAENDTM = AENDTM
-#' )
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADAE <- tmc_ex_adae
+#'   ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADAE$USUBJID)
+#'   ADCM <- tmc_ex_adcm %>% dplyr::mutate(
+#'     CMSTDY = dplyr::case_when(
+#'       CMCAT == "medcl B" ~ 20,
+#'       CMCAT == "medcl C" ~ 150,
+#'       TRUE ~ 1
+#'     ) %>% formatters::with_label("Study Day of Start of Medication"),
+#'     CMENDY = dplyr::case_when(
+#'       CMCAT == "medcl B" ~ 700,
+#'       CMCAT == "medcl C" ~ 1000,
+#'       TRUE ~ 500
+#'     ) %>% formatters::with_label("Study Day of End of Medication"),
+#'     CMASTDTM = ASTDTM,
+#'     CMAENDTM = AENDTM
+#'   )
+#' })
+#'
+#' datanames(data) <- c("ADSL", "ADAE", "ADCM")
+#' join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADAE", "ADCM")]
+#' join_keys(data)["ADCM", "ADCM"] <- adcm_keys
+#' join_keys(data)["ADAE", "ADCM"] <- c("STUDYID", "USUBJID")
+#'
 #' app <- init(
-#'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADAE", adae),
-#'     cdisc_dataset("ADCM", adcm, keys = adcm_keys)
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_pp_patient_timeline(
 #'       label = "Patient Timeline",
@@ -385,43 +390,43 @@ template_patient_timeline <- function(dataname = "ANL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       cmdecod = choices_selected(
-#'         choices = variable_choices(adcm, "CMDECOD"),
+#'         choices = variable_choices(data[["ADCM"]], "CMDECOD"),
 #'         selected = "CMDECOD",
 #'       ),
 #'       aeterm = choices_selected(
-#'         choices = variable_choices(adae, "AETERM"),
+#'         choices = variable_choices(data[["ADAE"]], "AETERM"),
 #'         selected = c("AETERM")
 #'       ),
 #'       aetime_start = choices_selected(
-#'         choices = variable_choices(adae, "ASTDTM"),
+#'         choices = variable_choices(data[["ADAE"]], "ASTDTM"),
 #'         selected = c("ASTDTM")
 #'       ),
 #'       aetime_end = choices_selected(
-#'         choices = variable_choices(adae, "AENDTM"),
+#'         choices = variable_choices(data[["ADAE"]], "AENDTM"),
 #'         selected = c("AENDTM")
 #'       ),
 #'       dstime_start = choices_selected(
-#'         choices = variable_choices(adcm, "CMASTDTM"),
+#'         choices = variable_choices(data[["ADCM"]], "CMASTDTM"),
 #'         selected = c("CMASTDTM")
 #'       ),
 #'       dstime_end = choices_selected(
-#'         choices = variable_choices(adcm, "CMAENDTM"),
+#'         choices = variable_choices(data[["ADCM"]], "CMAENDTM"),
 #'         selected = c("CMAENDTM")
 #'       ),
 #'       aerelday_start = choices_selected(
-#'         choices = variable_choices(adae, "ASTDY"),
+#'         choices = variable_choices(data[["ADAE"]], "ASTDY"),
 #'         selected = c("ASTDY")
 #'       ),
 #'       aerelday_end = choices_selected(
-#'         choices = variable_choices(adae, "AENDY"),
+#'         choices = variable_choices(data[["ADAE"]], "AENDY"),
 #'         selected = c("AENDY")
 #'       ),
 #'       dsrelday_start = choices_selected(
-#'         choices = variable_choices(adcm, "ASTDY"),
+#'         choices = variable_choices(data[["ADCM"]], "ASTDY"),
 #'         selected = c("ASTDY")
 #'       ),
 #'       dsrelday_end = choices_selected(
-#'         choices = variable_choices(adcm, "AENDY"),
+#'         choices = variable_choices(data[["ADCM"]], "AENDY"),
 #'         selected = c("AENDY")
 #'       )
 #'     )
@@ -762,7 +767,7 @@ srv_g_patient_timeline <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list
     )
 

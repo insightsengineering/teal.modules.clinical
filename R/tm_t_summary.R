@@ -225,18 +225,26 @@ template_summary <- function(dataname,
 #' @export
 #' @examples
 #' # Preparation of the test case
-#' adsl <- tmc_ex_adsl
-#' adsl$EOSDY[1] <- NA_integer_
+#' ADSL <- tmc_ex_adsl
+#' ADSL$EOSDY[1] <- NA_integer_
 #'
 #' # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
 #' stopifnot(
-#'   any(is.na(adsl$EOSDY)),
-#'   any(is.na(adsl$DCSREAS))
+#'   any(is.na(ADSL$EOSDY)),
+#'   any(is.na(ADSL$DCSREAS))
 #' )
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl)
+#'     ADSL = ADSL,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADSL$EOSDY[1] <- NA_integer_
+#'       stopifnot(
+#'         any(is.na(ADSL$EOSDY)),
+#'         any(is.na(ADSL$DCSREAS))
+#'       )
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_t_summary(
@@ -446,7 +454,7 @@ srv_summary <- function(id,
       id = "anl_merge",
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
@@ -454,7 +462,7 @@ srv_summary <- function(id,
       id = "adsl_merge",
       datasets = data,
       data_extract = list(arm_var = arm_var),
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       anl_name = "ANL_ADSL"
     )
 

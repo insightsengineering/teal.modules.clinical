@@ -96,36 +96,40 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Shift by Arm
 }
 \examples{
-adsl <- tmc_ex_adsl
-adeg <- tmc_ex_adeg
+ADSL <- tmc_ex_adsl
+ADEG <- tmc_ex_adeg
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADEG", adeg)
+    ADSL = ADSL,
+    ADEG = ADEG,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADEG <- tmc_ex_adeg
+    "
   ),
   modules = modules(
     tm_t_shift_by_arm(
       label = "Shift by Arm Table",
       dataname = "ADEG",
       arm_var = choices_selected(
-        variable_choices(adsl, subset = c("ARM", "ARMCD")),
+        variable_choices(ADSL, subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       paramcd = choices_selected(
-        value_choices(adeg, "PARAMCD"),
+        value_choices(ADEG, "PARAMCD"),
         selected = "HR"
       ),
       visit_var = choices_selected(
-        value_choices(adeg, "AVISIT"),
+        value_choices(ADEG, "AVISIT"),
         selected = "POST-BASELINE MINIMUM"
       ),
       aval_var = choices_selected(
-        variable_choices(adeg, subset = "ANRIND"),
+        variable_choices(ADEG, subset = "ANRIND"),
         selected = "ANRIND", fixed = TRUE
       ),
       base_var = choices_selected(
-        variable_choices(adeg, subset = "BNRIND"),
+        variable_choices(ADEG, subset = "BNRIND"),
         selected = "BNRIND", fixed = TRUE
       ),
       useNA = "ifany"

@@ -49,13 +49,17 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient medical history report using \code{ADaM} datasets.
 }
 \examples{
-adsl <- tmc_ex_adsl
-admh <- tmc_ex_admh
+ADSL <- tmc_ex_adsl
+ADMH <- tmc_ex_admh
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADMH", admh)
+    ADSL = ADSL,
+    ADMH = ADMH,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADMH <- tmc_ex_admh
+    "
   ),
   modules = modules(
     tm_t_pp_medical_history(
@@ -64,15 +68,15 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       mhterm = choices_selected(
-        choices = variable_choices(admh, c("MHTERM")),
+        choices = variable_choices(ADMH, c("MHTERM")),
         selected = "MHTERM"
       ),
       mhbodsys = choices_selected(
-        choices = variable_choices(admh, "MHBODSYS"),
+        choices = variable_choices(ADMH, "MHBODSYS"),
         selected = "MHBODSYS"
       ),
       mhdistat = choices_selected(
-        choices = variable_choices(admh, "MHDISTAT"),
+        choices = variable_choices(ADMH, "MHDISTAT"),
         selected = "MHDISTAT"
       )
     )

@@ -65,14 +65,21 @@ it is ignored.
 \examples{
 library(nestcolor)
 
-adsl <- tmc_ex_adsl \%>\% dplyr::mutate(ITTFL = factor("Y") \%>\%
-  formatters::with_label("Intent-To-Treat Population Flag"))
-adae <- tmc_ex_adae \%>\% dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+ADSL <- tmc_ex_adsl \%>\%
+  dplyr::mutate(ITTFL = factor("Y") \%>\%
+    formatters::with_label("Intent-To-Treat Population Flag"))
+ADAE <- tmc_ex_adae \%>\%
+  dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADAE", adae)
+    ADSL = ADSL,
+    ADAE = ADAE,
+    code = "ADSL <- tmc_ex_adsl \%>\%
+              dplyr::mutate(ITTFL = factor(\"Y\") \%>\%
+              formatters::with_label(\"Intent-To-Treat Population Flag\"))
+            ADAE <- tmc_ex_adae \%>\%
+              dplyr::filter(!((AETOXGR == 1) & (AESEV == \"MILD\") & (ARM == \"A: Drug X\")))"
   ),
   modules = modules(
     tm_g_barchart_simple(
@@ -81,7 +88,7 @@ app <- init(
         dataname = "ADSL",
         select = select_spec(
           choices = variable_choices(
-            adsl,
+            ADSL,
             c(
               "ARM", "ACTARM", "SEX",
               "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -96,7 +103,7 @@ app <- init(
           dataname = "ADSL",
           select = select_spec(
             choices = variable_choices(
-              adsl,
+              ADSL,
               c(
                 "ARM", "ACTARM", "SEX",
                 "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -109,7 +116,7 @@ app <- init(
         data_extract_spec(
           dataname = "ADAE",
           select = select_spec(
-            choices = variable_choices(adae, c("AETOXGR", "AESEV", "AESER")),
+            choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
             selected = NULL,
             multiple = FALSE
           )
@@ -119,7 +126,7 @@ app <- init(
         data_extract_spec(
           dataname = "ADAE",
           select = select_spec(
-            choices = variable_choices(adae, c("AETOXGR", "AESEV", "AESER")),
+            choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
             selected = "AETOXGR",
             multiple = FALSE
           )
@@ -128,7 +135,7 @@ app <- init(
           dataname = "ADSL",
           select = select_spec(
             choices = variable_choices(
-              adsl,
+              ADSL,
               c(
                 "ARM", "ACTARM", "SEX",
                 "RACE", "ITTFL", "SAFFL", "STRATA2"
@@ -143,7 +150,7 @@ app <- init(
         data_extract_spec(
           dataname = "ADAE",
           select = select_spec(
-            choices = variable_choices(adae, c("AETOXGR", "AESEV", "AESER")),
+            choices = variable_choices(ADAE, c("AETOXGR", "AESEV", "AESER")),
             selected = "AESEV",
             multiple = FALSE
           )
@@ -152,7 +159,7 @@ app <- init(
           dataname = "ADSL",
           select = select_spec(
             choices = variable_choices(
-              adsl,
+              ADSL,
               c(
                 "ARM", "ACTARM", "SEX",
                 "RACE", "ITTFL", "SAFFL", "STRATA2"

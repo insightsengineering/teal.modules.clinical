@@ -247,8 +247,8 @@ template_g_km <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' adsl <- tmc_ex_adsl
-#' adtte <- tmc_ex_adtte
+#' ADSL <- tmc_ex_adsl
+#' ADTTE <- tmc_ex_adtte
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -263,28 +263,32 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADTTE", adtte)
+#'     ADSL = ADSL,
+#'     ADTTE = ADTTE,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADTTE <- tmc_ex_adtte
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_g_km(
 #'       label = "Kaplan-Meier Plot",
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(
-#'         variable_choices(adsl, c("ARM", "ARMCD", "ACTARMCD")),
+#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
 #'       paramcd = choices_selected(
-#'         value_choices(adtte, "PARAMCD", "PARAM"),
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
 #'         "OS"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       strata_var = choices_selected(
-#'         variable_choices(adsl, c("SEX", "BMRKR2")),
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         "SEX"
 #'       ),
 #'       facet_var = choices_selected(
-#'         variable_choices(adsl, c("SEX", "BMRKR2")),
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         NULL
 #'       )
 #'     )
@@ -652,7 +656,7 @@ srv_g_km <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )

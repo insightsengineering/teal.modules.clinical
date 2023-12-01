@@ -53,16 +53,26 @@ the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 This teal module produces a patient prior medication report using \code{ADaM} datasets.
 }
 \examples{
-adcm <- tmc_ex_adcm
-adsl <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% adcm$USUBJID)
-adcm$CMASTDTM <- adcm$ASTDTM
-adcm$CMAENDTM <- adcm$AENDTM
+ADCM <- tmc_ex_adcm
+ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADCM$USUBJID)
+ADCM$CMASTDTM <- ADCM$ASTDTM
+ADCM$CMAENDTM <- ADCM$AENDTM
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+
+join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
+join_keys["ADCM", "ADCM"] <- adcm_keys
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADCM", adcm, keys = adcm_keys)
+    ADSL = ADSL,
+    ADCM = ADCM,
+    code = "
+      ADCM <- tmc_ex_adcm
+      ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADCM$USUBJID)
+      ADCM$CMASTDTM <- ADCM$ASTDTM
+      ADCM$CMAENDTM <- ADCM$AENDTM
+    ",
+    join_keys = join_keys
   ),
   modules = modules(
     tm_t_pp_prior_medication(
@@ -71,19 +81,19 @@ app <- init(
       parentname = "ADSL",
       patient_col = "USUBJID",
       atirel = choices_selected(
-        choices = variable_choices(adcm, "ATIREL"),
+        choices = variable_choices(ADCM, "ATIREL"),
         selected = "ATIREL"
       ),
       cmdecod = choices_selected(
-        choices = variable_choices(adcm, "CMDECOD"),
+        choices = variable_choices(ADCM, "CMDECOD"),
         selected = "CMDECOD"
       ),
       cmindc = choices_selected(
-        choices = variable_choices(adcm, "CMINDC"),
+        choices = variable_choices(ADCM, "CMINDC"),
         selected = "CMINDC"
       ),
       cmstdy = choices_selected(
-        choices = variable_choices(adcm, "ASTDY"),
+        choices = variable_choices(ADCM, "ASTDY"),
         selected = "ASTDY"
       )
     )

@@ -89,32 +89,36 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 Teal Module: Events by Grade
 }
 \examples{
-adsl <- tmc_ex_adsl
-lbls_adae <- formatters::var_labels(tmc_ex_adae)
-adae <- tmc_ex_adae \%>\%
-  dplyr::mutate_if(is.character, as.factor) # be certain of having factors
-formatters::var_labels(adae) <- lbls_adae
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  lbls_adae <- formatters::var_labels(tmc_ex_adae)
+  ADAE <- tmc_ex_adae \%>\%
+    dplyr::mutate_if(is.character, as.factor) #' be certain of having factors
+  formatters::var_labels(ADAE) <- lbls_adae
+})
+
+datanames <- c("ADSL", "ADAE")
+datanames(data) <- datanames
+join_keys(data) <- default_cdisc_join_keys[datanames]
 
 app <- init(
-  data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADAE", adae)
-  ),
+  data = data,
   modules = modules(
     tm_t_events_by_grade(
       label = "Adverse Events by Grade Table",
       dataname = "ADAE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       llt = choices_selected(
-        choices = variable_choices(adae, c("AETERM", "AEDECOD")),
+        choices = variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
         selected = c("AEDECOD")
       ),
       hlt = choices_selected(
-        choices = variable_choices(adae, c("AEBODSYS", "AESOC")),
+        choices = variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
         selected = "AEBODSYS"
       ),
       grade = choices_selected(
-        choices = variable_choices(adae, c("AETOXGR", "AESEV")),
+        choices = variable_choices(data[["ADAE"]], c("AETOXGR", "AESEV")),
         selected = "AETOXGR"
       )
     )

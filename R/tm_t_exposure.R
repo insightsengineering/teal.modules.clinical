@@ -225,45 +225,49 @@ template_exposure <- function(parentname,
 #' @export
 #'
 #' @examples
-#' adsl <- tmc_ex_adsl
-#' adex <- tmc_ex_adex
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADEX <- tmc_ex_adex
 #'
-#' set.seed(1, kind = "Mersenne-Twister")
-#' labels <- formatters::var_labels(adex, fill = FALSE)
-#' adex <- adex %>%
-#'   dplyr::distinct(USUBJID, .keep_all = TRUE) %>%
-#'   dplyr::mutate(
-#'     PARAMCD = "TDURD",
-#'     PARAM = "Overall duration (days)",
-#'     AVAL = sample(x = seq(1, 200), size = dplyr::n(), replace = TRUE),
-#'     AVALU = "Days"
-#'   ) %>%
-#'   dplyr::bind_rows(adex)
-#' formatters::var_labels(adex) <- labels
+#'   set.seed(1, kind = "Mersenne-Twister")
+#'   labels <- formatters::var_labels(ADEX, fill = FALSE)
+#'   ADEX <- ADEX %>%
+#'     dplyr::distinct(USUBJID, .keep_all = TRUE) %>%
+#'     dplyr::mutate(
+#'       PARAMCD = "TDURD",
+#'       PARAM = "Overall duration (days)",
+#'       AVAL = sample(x = seq(1, 200), size = dplyr::n(), replace = TRUE),
+#'       AVALU = "Days"
+#'     ) %>%
+#'     dplyr::bind_rows(ADEX)
+#'   formatters::var_labels(ADEX) <- labels
+#' })
+#'
+#' datanames <- c("ADSL", "ADEX")
+#' datanames(data) <- datanames
+#' join_keys(data) <- default_cdisc_join_keys[datanames]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADEX", adex)
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_exposure(
 #'       label = "Duration of Exposure Table",
 #'       dataname = "ADEX",
 #'       paramcd = choices_selected(
-#'         choices = value_choices(adex, "PARAMCD", "PARAM"),
+#'         choices = value_choices(data[["ADEX"]], "PARAMCD", "PARAM"),
 #'         selected = "TDURD"
 #'       ),
 #'       col_by_var = choices_selected(
-#'         choices = variable_choices(adex, subset = c("SEX", "ARM")),
+#'         choices = variable_choices(data[["ADEX"]], subset = c("SEX", "ARM")),
 #'         selected = "SEX"
 #'       ),
 #'       row_by_var = choices_selected(
-#'         choices = variable_choices(adex, subset = c("RACE", "REGION1", "STRATA1", "SEX")),
+#'         choices = variable_choices(data[["ADEX"]], subset = c("RACE", "REGION1", "STRATA1", "SEX")),
 #'         selected = "RACE"
 #'       ),
 #'       parcat = choices_selected(
-#'         choices = value_choices(adex, "PARCAT2"),
+#'         choices = value_choices(data[["ADEX"]], "PARCAT2"),
 #'         selected = "Drug A"
 #'       ),
 #'       add_total = FALSE
@@ -522,13 +526,13 @@ srv_t_exposure <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       data_extract = list(col_by_var = col_by_var),
       anl_name = "ANL_ADSL"
     )

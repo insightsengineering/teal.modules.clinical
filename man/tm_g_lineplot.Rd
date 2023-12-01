@@ -26,7 +26,7 @@ tm_g_lineplot(
   interval = "mean_ci",
   mid = "mean",
   whiskers = c("mean_ci_lwr", "mean_ci_upr"),
-  table = NULL,
+  table = c("n", "mean_sd", "median", "range"),
   mid_type = "pl",
   mid_point_size = c(2, 1, 5),
   table_font_size = c(4, 2, 6),
@@ -121,28 +121,32 @@ This teal module produces a grid style Line Plot for data with
 \examples{
 library(nestcolor)
 
-adsl <- tmc_ex_adsl
-adlb <- tmc_ex_adlb \%>\% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+ADSL <- tmc_ex_adsl
+ADLB <- tmc_ex_adlb \%>\% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
 
 app <- init(
   data = cdisc_data(
-    cdisc_dataset("ADSL", adsl),
-    cdisc_dataset("ADLB", adlb)
+    ADSL = ADSL,
+    ADLB = ADLB,
+    code = "
+      ADSL <- tmc_ex_adsl
+      ADLB <- tmc_ex_adlb \%>\% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+    "
   ),
   modules = modules(
     tm_g_lineplot(
       label = "Line Plot",
       dataname = "ADLB",
       strata = choices_selected(
-        variable_choices(adsl, c("ARM", "ARMCD", "ACTARMCD")),
+        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
       ),
       y = choices_selected(
-        variable_choices(adlb, c("AVAL", "BASE", "CHG", "PCHG")),
+        variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
         "AVAL"
       ),
       param = choices_selected(
-        value_choices(adlb, "PARAMCD", "PARAM"),
+        value_choices(ADLB, "PARAMCD", "PARAM"),
         "ALT"
       )
     )

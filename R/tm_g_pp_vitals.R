@@ -64,108 +64,128 @@ template_vitals <- function(dataname = "ANL",
 
   vital_plot <- add_expr(
     list(),
-    substitute(expr = {
-      vitals <-
-        dataname %>%
-        dplyr::group_by(paramcd, xaxis) %>%
-        dplyr::filter(paramcd %in% paramcd_levels_chars) %>%
-        dplyr::summarise(AVAL = max(aval, na.rm = TRUE)) %>%
-        dplyr::mutate(AVAL = ifelse(is.infinite(AVAL), NA, AVAL))
+    substitute_names(
+      names = list(
+        dataname = as.name(dataname),
+        paramcd = as.name(paramcd),
+        xaxis = as.name(xaxis),
+        aval = as.name(aval)
+      ),
+      others = list(paramcd_levels = paramcd_levels),
+      expr = {
+        vitals <-
+          dataname %>%
+          dplyr::group_by(paramcd, xaxis) %>%
+          dplyr::filter(paramcd %in% paramcd_levels) %>%
+          dplyr::summarise(aval = max(aval, na.rm = TRUE)) %>%
+          dplyr::mutate(
+            aval = ifelse(is.infinite(aval), NA, aval),
+            xaxis = as.numeric(xaxis) # difftime fails ggplot2::scale_x_continuous
+          )
+      }
+    )
+  )
 
-      max_day <- max(vitals[[xaxis_char]], na.rm = TRUE)
-      max_aval <- max(vitals[[aval_char]], na.rm = TRUE)
-      max_aval_seq <- seq(0, max_aval, 10)
+  vital_plot <- add_expr(
+    vital_plot,
+    substitute(
+      expr = {
+        max_day <- max(vitals[[xaxis_char]], na.rm = TRUE)
+        max_aval <- max(vitals[[aval_char]], na.rm = TRUE)
+        max_aval_seq <- seq(0, max_aval, 10)
 
-      full_vita <- levels(dataname[[paramcd_char]])
-      provided_vita <- paramcd_levels_chars
-      known_vita <- c("SYSBP", "DIABP", "TEMP", "RESP", "OXYSAT", "PULSE")
+        full_vita <- levels(dataname[[paramcd_char]])
+        provided_vita <- paramcd_levels
+        known_vita <- c("SYSBP", "DIABP", "TEMP", "RESP", "OXYSAT", "PULSE")
 
-      paramcd_levels_e <- known_vita[stats::na.omit(match(provided_vita, known_vita))]
-      len_paramcd_levels_e <- length(paramcd_levels_e)
+        paramcd_levels_e <- known_vita[stats::na.omit(match(provided_vita, known_vita))]
+        len_paramcd_levels_e <- length(paramcd_levels_e)
 
-      all_colors <- stats::setNames(nestcolor::color_palette(length(full_vita), "stream"), full_vita)
-      vars_colors <- all_colors[provided_vita]
-      names(vars_colors) <- provided_vita
+        all_colors <- stats::setNames(nestcolor::color_palette(length(full_vita), "stream"), full_vita)
+        vars_colors <- all_colors[provided_vita]
+        names(vars_colors) <- provided_vita
 
-      base_stats <- stats::setNames(c(140, 90, 38, 20, 94, 100), known_vita)
-      paramcd_stats_e <- base_stats[paramcd_levels_e]
+        base_stats <- stats::setNames(c(140, 90, 38, 20, 94, 100), known_vita)
+        paramcd_stats_e <- base_stats[paramcd_levels_e]
 
-      base_labels <- stats::setNames(c("140mmHg", "90mmHg", "38\u00B0 C", "20/min", "94%", "100bpm"), known_vita)
-      paramcd_labels_e <- base_labels[paramcd_levels_e]
+        base_labels <- stats::setNames(c("140mmHg", "90mmHg", "38\u00B0 C", "20/min", "94%", "100bpm"), known_vita)
+        paramcd_labels_e <- base_labels[paramcd_levels_e]
 
-      base_stats_df <- data.frame(
-        x = rep(1, len_paramcd_levels_e),
-        y = paramcd_stats_e,
-        label = paramcd_labels_e,
-        color = paramcd_levels_e
+        base_stats_df <- data.frame(
+          x = rep(1, len_paramcd_levels_e),
+          y = paramcd_stats_e,
+          label = paramcd_labels_e,
+          color = paramcd_levels_e
+        )
+
+        result_plot <- ggplot2::ggplot(data = vitals, mapping = ggplot2::aes(x = xaxis)) + # replaced VSDY
+          ggplot2::geom_line(
+            data = vitals,
+            mapping = ggplot2::aes(y = aval, color = paramcd),
+            size = 1.5,
+            alpha = 0.5
+          ) +
+          ggplot2::scale_color_manual(
+            values = vars_colors
+          ) +
+          ggplot2::geom_text(
+            data = base_stats_df,
+            ggplot2::aes(x = x, y = y, label = label, color = color),
+            alpha = 1,
+            nudge_y = 2.2,
+            size = font_size_var / 3.5,
+            show.legend = FALSE
+          ) +
+          ggplot2::geom_hline(
+            data = base_stats_df,
+            ggplot2::aes(yintercept = y, color = color),
+            linetype = 2,
+            alpha = 0.5,
+            size = 1,
+            show.legend = FALSE
+          ) +
+          ggplot2::scale_y_continuous(
+            breaks = seq(0, max(vitals[[xaxis_char]], na.rm = TRUE), 50),
+            minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = TRUE), 10)
+          ) +
+          ggplot2::geom_text(
+            data = data.frame(
+              x = rep(max_day, length(max_aval_seq)),
+              y = max_aval_seq,
+              l = as.character(max_aval_seq)
+            ),
+            ggplot2::aes(
+              x = x,
+              y = y,
+              label = l
+            ),
+            color = "black",
+            alpha = 1,
+            nudge_y = 2.2,
+            size = font_size_var / 3.5
+          ) +
+          labs +
+          ggthemes +
+          themes
+
+        print(result_plot)
+      },
+      env = list(
+        dataname = as.name(dataname),
+        paramcd = as.name(paramcd),
+        paramcd_char = paramcd,
+        paramcd_levels = paramcd_levels,
+        xaxis = as.name(xaxis),
+        xaxis_char = xaxis,
+        aval = as.name(aval),
+        aval_char = aval,
+        patient_id = patient_id,
+        font_size_var = font_size,
+        labs = parsed_ggplot2_args$labs,
+        ggthemes = parsed_ggplot2_args$ggtheme,
+        themes = parsed_ggplot2_args$theme
       )
-
-      result_plot <- ggplot2::ggplot(data = vitals, mapping = ggplot2::aes(x = xaxis)) + # replaced VSDY
-        ggplot2::geom_line(
-          data = vitals,
-          mapping = ggplot2::aes(y = aval, color = paramcd),
-          size = 1.5,
-          alpha = 0.5
-        ) +
-        ggplot2::scale_color_manual(
-          values = vars_colors,
-        ) +
-        ggplot2::geom_text(
-          data = base_stats_df,
-          ggplot2::aes(x = x, y = y, label = label, color = color),
-          alpha = 1,
-          nudge_y = 2.2,
-          size = font_size_var / 3.5,
-          show.legend = FALSE
-        ) +
-        ggplot2::geom_hline(
-          data = base_stats_df,
-          ggplot2::aes(yintercept = y, color = color),
-          linetype = 2,
-          alpha = 0.5,
-          size = 1,
-          show.legend = FALSE
-        ) +
-        ggplot2::scale_y_continuous(
-          breaks = seq(0, max(vitals[[xaxis_char]], na.rm = TRUE), 50),
-          minor_breaks = seq(0, max(vitals[[aval_char]], na.rm = TRUE), 10)
-        ) +
-        ggplot2::geom_text(
-          data = data.frame(
-            x = rep(max_day, length(max_aval_seq)),
-            y = max_aval_seq,
-            l = as.character(max_aval_seq)
-          ),
-          ggplot2::aes(
-            x = x,
-            y = y,
-            label = l
-          ),
-          color = "black",
-          alpha = 1,
-          nudge_y = 2.2,
-          size = font_size_var / 3.5
-        ) +
-        labs +
-        ggthemes +
-        themes
-
-      print(result_plot)
-    }, env = list(
-      dataname = as.name(dataname),
-      paramcd = as.name(paramcd),
-      paramcd_char = paramcd,
-      paramcd_levels_chars = paramcd_levels,
-      xaxis = as.name(xaxis),
-      xaxis_char = xaxis,
-      aval = as.name(aval),
-      aval_char = aval,
-      patient_id = patient_id,
-      font_size_var = font_size,
-      labs = parsed_ggplot2_args$labs,
-      ggthemes = parsed_ggplot2_args$ggtheme,
-      themes = parsed_ggplot2_args$theme
-    ))
+    )
   )
 
   y$plot <- bracket_expr(vital_plot)
@@ -191,13 +211,17 @@ template_vitals <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #'
-#' adsl <- tmc_ex_adsl
-#' advs <- tmc_ex_advs
+#' ADSL <- tmc_ex_adsl
+#' ADVS <- tmc_ex_advs
 #'
 #' app <- init(
 #'   data = cdisc_data(
-#'     cdisc_dataset("ADSL", adsl),
-#'     cdisc_dataset("ADVS", advs)
+#'     ADSL = ADSL,
+#'     ADVS = ADVS,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADVS <- tmc_ex_advs
+#'     "
 #'   ),
 #'   modules = modules(
 #'     tm_g_pp_vitals(
@@ -207,15 +231,15 @@ template_vitals <- function(dataname = "ANL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       paramcd = choices_selected(
-#'         choices = variable_choices(advs, "PARAMCD"),
+#'         choices = variable_choices(ADVS, "PARAMCD"),
 #'         selected = "PARAMCD"
 #'       ),
 #'       xaxis = choices_selected(
-#'         choices = variable_choices(advs, "ADY"),
+#'         choices = variable_choices(ADVS, "ADY"),
 #'         selected = "ADY"
 #'       ),
 #'       aval = choices_selected(
-#'         choices = variable_choices(advs, "AVAL"),
+#'         choices = variable_choices(ADVS, "AVAL"),
 #'         selected = "AVAL"
 #'       )
 #'     )
@@ -425,7 +449,7 @@ srv_g_vitals <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::get_join_keys(data),
+      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::left_join"
     )
