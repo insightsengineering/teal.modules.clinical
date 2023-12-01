@@ -16,9 +16,11 @@
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
 * Added parameter `sort_freq_col` to `tm_t_events` to allow the user to select column to use when sorting by decreasing frequency.
 * Added parameter `incl_overall_sum` to `tm_t_events` to allow the user to choose whether overall summary rows are included at the top of the table.
+* Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
 
 ### Bug fixes
 * Fixed bug in `tm_t_coxreg` preventing table from being displayed when no covariates are selected.
+* Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
 
 ### Miscellaneous
 * Updated `control_incidence_rate` parameter names in `tm_t_events_patyear` from `time_unit_input` and `time_unit_output` to `input_time_unit` and `num_pt_year`, respectively, after parameter names were changed in `tern`.
