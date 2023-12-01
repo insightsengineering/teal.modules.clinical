@@ -56,7 +56,7 @@ Imports:
     teal.code (>= 0.4.0),
     teal.data (>= 0.3.0.9010),
     teal.logger (>= 0.1.1),
-    teal.reporter (>= 0.2.0),
+    teal.reporter (>= 0.2.1),
     teal.transform (>= 0.4.0.9007),
     teal.widgets (>= 0.4.0),
     tern.gee (>= 0.1.0),
