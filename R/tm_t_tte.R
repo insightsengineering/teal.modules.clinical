@@ -324,8 +324,7 @@ template_tte <- function(dataname = "ANL",
             conf_level = conf_level,
             conf_type = conf_type
           ),
-          .indent_mods = indents,
-          table_names = "time_points"
+          .indent_mods = indents
         ),
         env = list(
           aval_var = aval_var,
