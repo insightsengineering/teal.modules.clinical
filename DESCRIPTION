@@ -27,14 +27,14 @@ BugReports:
 Depends:
     R (>= 4.0),
     teal (>= 0.14.0.9027),
-    tern (>= 0.9.2.9017)
+    tern (>= 0.9.3.9000)
 Imports:
     assertthat,
     broom,
     checkmate,
     dplyr,
     DT,
-    formatters (>= 0.5.0),
+    formatters (>= 0.5.5.9000),
     ggplot2 (>= 3.4.0),
     ggrepel,
     grid,
@@ -45,7 +45,7 @@ Imports:
     rlang,
     rlistings (>= 0.2.4),
     rmarkdown,
-    rtables (>= 0.6.1),
+    rtables (>= 0.6.6.9000),
     scales,
     shiny,
     shinyjs,
@@ -59,8 +59,8 @@ Imports:
     teal.reporter (>= 0.2.1),
     teal.transform (>= 0.4.0.9011),
     teal.widgets (>= 0.4.0),
-    tern.gee (>= 0.1.0),
-    tern.mmrm (>= 0.2.1),
+    tern.gee (>= 0.1.1),
+    tern.mmrm (>= 0.3.0),
     tidyr,
     utils,
     vistime
