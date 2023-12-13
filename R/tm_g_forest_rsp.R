@@ -36,7 +36,7 @@ template_forest_rsp <- function(dataname = "ANL",
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 rel_width_forest = 0.25,
-                                font_size = 5,
+                                font_size = 15,
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -47,6 +47,7 @@ template_forest_rsp <- function(dataname = "ANL",
     is.null(subgroup_var) || is.character(subgroup_var)
   )
   checkmate::assert_number(rel_width_forest, lower = 0, upper = 1)
+  checkmate::assert_number(font_size)
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -165,7 +166,7 @@ template_forest_rsp <- function(dataname = "ANL",
     user_plot = ggplot2_args,
     module_plot = teal.widgets::ggplot2_args(
       labs = list(
-        title = paste0("Forest plot of best overall response for ", obj_var_name),
+        title = paste("Forest Plot of Best Overall Response for", obj_var_name),
         caption = ""
       )
     )
@@ -176,38 +177,40 @@ template_forest_rsp <- function(dataname = "ANL",
   plot_list <- add_expr(
     plot_list,
     substitute(
-    expr = {
-      f <- g_forest(
-        tbl = result,
-        col_symbol_size = col_s_size,
-        font_size = font_size,
-        as_list = TRUE
+      expr = {
+        f <- g_forest(
+          tbl = result,
+          col_symbol_size = col_s_size,
+          font_size = font_size,
+          as_list = TRUE
+        )
+      },
+      env = list(
+        col_s_size = col_symbol_size,
+        font_size = font_size
       )
-    },
-    env = list(
-      col_s_size = col_symbol_size,
-      font_size = font_size
     )
-  ))
+  )
 
   plot_list <- add_expr(
     plot_list,
     substitute(
-    expr = {
-      p <- cowplot::plot_grid(
-        f[["table"]] + ggplot2::labs(title = ggplot2_args_title),
-        f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
-        align = "h",
-        axis = "tblr",
-        rel_widths = c(1 - rel_width_forest, rel_width_forest)
+      expr = {
+        p <- cowplot::plot_grid(
+          f[["table"]] + ggplot2::labs(title = ggplot2_args_title),
+          f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
+          align = "h",
+          axis = "tblr",
+          rel_widths = c(1 - rel_width_forest, rel_width_forest)
+        )
+      },
+      env = list(
+        rel_width_forest = rel_width_forest,
+        ggplot2_args_title = all_ggplot2_args$labs$title,
+        ggplot2_args_caption = all_ggplot2_args$labs$caption
       )
-    },
-    env = list(
-      rel_width_forest = rel_width_forest,
-      ggplot2_args_title = all_ggplot2_args$labs$title,
-      ggplot2_args_caption = all_ggplot2_args$labs$caption
     )
-  ))
+  )
 
   # Plot output.
   y$plot <- plot_list
@@ -340,7 +343,7 @@ tm_g_forest_rsp <- function(label,
                             plot_height = c(500L, 200L, 2000L),
                             plot_width = c(1500L, 800L, 3000L),
                             rel_width_forest = c(25L, 0L, 100L),
-                            font_size = c(5L, 1L, 10L),
+                            font_size = c(15L, 1L, 30L),
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
