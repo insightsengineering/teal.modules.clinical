@@ -43,3 +43,4 @@ SECURITY.md
 ^\.pre-commit-config\.yaml$
 ^LICENSE\.md$
 coverage.*
+^pkgdown$
