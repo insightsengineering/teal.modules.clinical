@@ -163,40 +163,53 @@ template_forest_rsp <- function(dataname = "ANL",
   all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
     user_plot = ggplot2_args,
     module_plot = teal.widgets::ggplot2_args(
-      labs = list(title = paste0("Forest plot of best overall response for ", obj_var_name), caption = "")
+      labs = list(
+        title = paste0("Forest plot of best overall response for ", obj_var_name),
+        caption = ""
+      )
     )
   )
 
-  plot_call <- substitute(
-    expr = g_forest(
-      tbl = result,
-      col_symbol_size = col_s_size,
-      rel_width_forest = rel_width_forest,
-      font_size = font_size
-    ),
+  plot_list <- list()
+
+  plot_list <- add_expr(
+    plot_list,
+    substitute(
+    expr = {
+      f <- g_forest(
+        tbl = result,
+        col_symbol_size = col_s_size,
+        font_size = font_size,
+        as_list = TRUE
+      )
+    },
     env = list(
       col_s_size = col_symbol_size,
-      rel_width_forest = rel_width_forest,
       font_size = font_size
     )
-  )
+  ))
 
-  # plot_call <- substitute(
-  #   decorate_grob(p, titles = title, footnotes = caption, gp_footnotes = grid::gpar(fontsize = 12)),
-  #   env = list(title = all_ggplot2_args$labs$title, caption = all_ggplot2_args$labs$caption, p = plot_call)
-  # )
-
-  plot_call <- substitute(
+  plot_list <- add_expr(
+    plot_list,
+    substitute(
     expr = {
-      p <- plot_call
-      # grid::grid.newpage()
-      # grid::grid.draw(p)
+      p <- cowplot::plot_grid(
+        f[["table"]] + ggplot2::labs(title = ggplot2_args_title),
+        f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
+        align = "h",
+        axis = "tblr",
+        rel_widths = c(1 - rel_width_forest, rel_width_forest)
+      )
     },
-    env = list(plot_call = plot_call)
-  )
+    env = list(
+      rel_width_forest = rel_width_forest,
+      ggplot2_args_title = all_ggplot2_args$labs$title,
+      ggplot2_args_caption = all_ggplot2_args$labs$caption
+    )
+  ))
 
   # Plot output.
-  y$plot <- plot_call
+  y$plot <- plot_list
 
   y
 }
@@ -210,14 +223,6 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @param fixed_symbol_size (`logical`)\cr
 #' When (`TRUE`), the same symbol size is used for plotting each estimate.
 #' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `caption`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).
-#'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
 #' @export
 #'
