@@ -223,6 +223,14 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @param fixed_symbol_size (`logical`)\cr
 #' When (`TRUE`), the same symbol size is used for plotting each estimate.
 #' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `caption`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body).
+#'
+#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
 #' @export
 #'
@@ -328,7 +336,7 @@ tm_g_forest_rsp <- function(label,
                             fixed_symbol_size = TRUE,
                             conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
-                            plot_height = c(700L, 200L, 2000L),
+                            plot_height = c(500L, 200L, 2000L),
                             plot_width = c(1500L, 800L, 3000L),
                             rel_width_forest = c(25L, 0L, 100L),
                             font_size = c(5L, 1L, 10L),

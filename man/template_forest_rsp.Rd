@@ -17,6 +17,8 @@ template_forest_rsp(
   strata_var = NULL,
   conf_level = 0.95,
   col_symbol_size = NULL,
+  rel_width_forest = 0.25,
+  font_size = 5,
   ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
