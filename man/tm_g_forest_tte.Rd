@@ -24,8 +24,10 @@ tm_g_forest_tte(
     teal.transform::choices_selected(teal.transform::variable_choices(dataname, "AVALU"),
     "AVALU", fixed = TRUE),
   fixed_symbol_size = TRUE,
-  plot_height = c(700L, 200L, 2000L),
-  plot_width = c(1200L, 800L, 3000L),
+  plot_height = c(500L, 200L, 2000L),
+  plot_width = c(1500L, 800L, 3000L),
+  rel_width_forest = c(25L, 0L, 100L),
+  font_size = c(15L, 1L, 30L),
   pre_output = NULL,
   post_output = NULL,
   ggplot2_args = teal.widgets::ggplot2_args()
@@ -164,8 +166,7 @@ app <- init(
       strata_var = choices_selected(
         variable_choices(ADSL, c("STRATA1", "STRATA2")),
         "STRATA2"
-      ),
-      plot_height = c(600, 200, 2000)
+      )
     )
   )
 )

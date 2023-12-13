@@ -33,12 +33,14 @@
       }
       
       $plot
-      {
-          p <- decorate_grob(g_forest(tbl = result, col_symbol_size = NULL), 
-              titles = c("Forest Plot of Survival Duration for ", "Stratified by STRATA2"
-              ), footnotes = "", gp_footnotes = grid::gpar(fontsize = 12))
-          grid::grid.newpage()
-          grid::grid.draw(p)
-      }
+      $plot[[1]]
+      f <- g_forest(tbl = result, col_symbol_size = NULL, font_size = 15, 
+          as_list = TRUE)
+      
+      $plot[[2]]
+      p <- cowplot::plot_grid(f[["table"]] + ggplot2::labs(title = "Forest Plot of Survival Duration for \nStratified by STRATA2", 
+          subtitle = NULL), f[["plot"]] + ggplot2::labs(caption = ""), 
+          align = "h", axis = "tblr", rel_widths = c(1 - 0.25, 0.25))
+      
       
 
