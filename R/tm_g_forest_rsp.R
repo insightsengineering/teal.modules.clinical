@@ -2,6 +2,7 @@
 #'
 #' Creates a valid expression for response forest plot.
 #'
+#' @inheritParams tern::g_forest
 #' @inheritParams template_arguments
 #' @param obj_var_name (`character`)\cr additional text string append to output title.
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
