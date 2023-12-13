@@ -329,7 +329,8 @@ srv_g_barchart_simple <- function(id,
                                   ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     rule_dupl <- function(others) {
@@ -381,19 +382,17 @@ srv_g_barchart_simple <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       selector_list = selector_list
     )
 
     anl_q <- shiny::reactive({
-      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      qenv <- teal.code::eval_code(qenv, as.expression(anl_inputs()$expr))
-      qenv
+      data() %>%
+        teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     count_q <- shiny::reactive({
-      qenv <- anl_q()
-      teal::validate_has_data(qenv[["ANL"]], 2)
+      anl_q <- anl_q()
+      teal::validate_has_data(anl_q[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
 
       # count
@@ -409,50 +408,45 @@ srv_g_barchart_simple <- function(id,
         count_str_to_col_exprs <- sapply(groupby_vars[-1], count_str_to_column_expr)
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
-      qenv2 <- teal.code::eval_code(qenv, code = count_exprs)
+
+      data_list <- sapply(teal.data::datanames(data()), function(x) shiny::reactive(data()[[x]]),
+        simplify = FALSE
+      )
+
+      anl_q <- anl_q %>%
+        teal.code::eval_code(code = count_exprs)
 
       # add label and slice(1) as all patients in the same subgroup have same n_'s
-      qenv3 <- teal.code::eval_code(
-        qenv2,
-        as.expression(
-          c(
-            bquote(attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count"),
-            bquote(
-              counts <- counts %>%
-                dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
-                dplyr::slice(1) %>%
-                dplyr::ungroup() %>%
-                dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
+      anl_q <- anl_q %>%
+        teal.code::eval_code(
+          as.expression(
+            c(
+              bquote(attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count"),
+              bquote(
+                counts <- counts %>%
+                  dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
+                  dplyr::slice(1) %>%
+                  dplyr::ungroup() %>%
+                  dplyr::select(.(as.vector(groupby_vars)), dplyr::starts_with("n_"))
+              )
             )
           )
         )
-      )
 
       # dplyr::select loses labels
-      teal.code::eval_code(
-        qenv3,
-        teal.transform::get_anl_relabel_call(
-          columns_source = anl_inputs()$columns_source,
-          datasets = data,
-          anl_name = "counts"
+      anl_q %>%
+        teal.code::eval_code(
+          teal.transform::get_anl_relabel_call(
+            columns_source = anl_inputs()$columns_source,
+            datasets = data_list,
+            anl_name = "counts"
+          )
         )
-      )
     })
 
     all_q <- shiny::reactive({
       teal::validate_inputs(iv_r())
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
-
-      ANL <- count_q()[["ANL"]] # nolint
-
-      qenv2 <- teal.code::eval_code(count_q(), substitute(
-        env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
-        plot_title <- sprintf(
-          "Number of patients (total N = %s) for each combination of (%s)",
-          nrow(ANL),
-          groupby_vars
-        )
-      ))
 
       y_lab <- substitute(
         column_annotation_label(counts, y_name),
@@ -487,11 +481,22 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      qenv3 <- teal.code::eval_code(qenv2, code = plot_call)
+      ANL <- count_q()[["ANL"]] # nolint
+
+      all_q <- count_q() %>%
+        teal.code::eval_code(substitute(
+          env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
+          plot_title <- sprintf(
+            "Number of patients (total N = %s) for each combination of (%s)",
+            nrow(ANL),
+            groupby_vars
+          )
+        )) %>%
+        teal.code::eval_code(code = plot_call)
 
       # explicitly calling print on the plot inside the qenv evaluates
       # the ggplot call and therefore catches errors
-      teal.code::eval_code(qenv3, code = quote(print(plot)))
+      teal.code::eval_code(all_q, code = quote(print(plot)))
     })
 
     plot_r <- shiny::reactive(all_q()[["plot"]])
@@ -558,7 +563,7 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(all_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

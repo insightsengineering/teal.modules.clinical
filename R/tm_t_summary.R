@@ -431,7 +431,8 @@ srv_summary <- function(id,
                         basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
   shiny::moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
@@ -454,7 +455,6 @@ srv_summary <- function(id,
       id = "anl_merge",
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
@@ -462,12 +462,11 @@ srv_summary <- function(id,
       id = "adsl_merge",
       datasets = data,
       data_extract = list(arm_var = arm_var),
-      join_keys = teal.data::join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
     anl_q <- shiny::reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+      data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
@@ -482,7 +481,7 @@ srv_summary <- function(id,
       choices_classes <- sapply(
         names(merged$anl_input_r()$columns_source$summarize_vars),
         function(x) {
-          summarize_var_data <- data[[summarize_vars$dataname]]()[[x]]
+          summarize_var_data <- data()[[summarize_vars$dataname]][[x]]
           inherits(summarize_var_data, "numeric") |
             inherits(summarize_var_data, "integer")
         }
@@ -543,7 +542,7 @@ srv_summary <- function(id,
       validate_checks()
 
       summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
-      var_labels <- formatters::var_labels(data[[dataname]]()[, summarize_vars, drop = FALSE])
+      var_labels <- formatters::var_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
@@ -597,7 +596,7 @@ srv_summary <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(all_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

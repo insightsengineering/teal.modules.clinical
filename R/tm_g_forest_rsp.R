@@ -510,7 +510,8 @@ srv_g_forest_rsp <- function(id,
                              ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
@@ -520,7 +521,7 @@ srv_g_forest_rsp <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      data = data[[parentname]],
+      data = data()[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte"
     )
@@ -556,21 +557,19 @@ srv_g_forest_rsp <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      merge_function = "dplyr::inner_join",
-      join_keys = teal.data::join_keys(data)
+      merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
-      join_keys = teal.data::join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
     anl_q <- shiny::reactive({
-      q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
-      teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
+      data() %>%
+        teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
+        teal.code::eval_code(code = as.expression(adsl_inputs()$expr))
     })
 
     shiny::observeEvent(
@@ -624,10 +623,9 @@ srv_g_forest_rsp <- function(id,
     validate_checks <- shiny::reactive({
       teal::validate_inputs(iv_r())
       shiny::req(anl_q())
-      qenv <- anl_q()
-      adsl_filtered <- qenv[[parentname]]
-      anl_filtered <- qenv[[dataname]]
-      anl <- qenv[["ANL"]]
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
+      anl <- anl_q()[["ANL"]]
 
       anl_m <- anl_inputs()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
@@ -651,7 +649,7 @@ srv_g_forest_rsp <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      teal::validate_one_row_per_id(qenv[["ANL"]], key = c("USUBJID", "STUDYID", input_paramcd))
+      teal::validate_one_row_per_id(anl_q()[["ANL"]], key = c("USUBJID", "STUDYID", input_paramcd))
 
       if (length(input_subgroup_var) > 0) {
         shiny::validate(
@@ -703,14 +701,13 @@ srv_g_forest_rsp <- function(id,
         )
       }
 
-      validate_has_data(qenv[["ANL"]], min_nrow = 1)
+      validate_has_data(anl_q()[["ANL"]], min_nrow = 1)
       NULL
     })
 
     # The R-code corresponding to the analysis.
     all_q <- shiny::reactive({
       validate_checks()
-      qenv <- anl_q()
       anl_m <- anl_inputs()
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
@@ -736,7 +733,7 @@ srv_g_forest_rsp <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      teal.code::eval_code(qenv, as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(my_calls))
     })
 
     plot_r <- shiny::reactive(all_q()[["p"]])
@@ -776,7 +773,7 @@ srv_g_forest_rsp <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(all_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

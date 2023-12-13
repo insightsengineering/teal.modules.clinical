@@ -746,7 +746,8 @@ srv_t_binary_outcome <- function(id,
                                  basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
@@ -756,7 +757,7 @@ srv_t_binary_outcome <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      data = data[[parentname]],
+      data = data()[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_binary_outcome",
       on_off = shiny::reactive(input$compare_arms)
@@ -791,21 +792,19 @@ srv_t_binary_outcome <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      merge_function = "dplyr::inner_join",
-      join_keys = teal.data::join_keys(data)
+      merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var, strata_var = strata_var),
-      join_keys = teal.data::join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
     anl_q <- shiny::reactive({
-      q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
-      teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
+      data() %>%
+        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
     shiny::observeEvent(
@@ -1030,7 +1029,7 @@ srv_t_binary_outcome <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(table_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(table_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

@@ -463,7 +463,8 @@ srv_g_ipp <- function(id,
                       ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
@@ -498,8 +499,7 @@ srv_g_ipp <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
-      merge_function = "dplyr::inner_join",
-      join_keys = teal.data::join_keys(data)
+      merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
@@ -510,18 +510,17 @@ srv_g_ipp <- function(id,
     )
 
     anl_q <- shiny::reactive({
-      q <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      qenv <- teal.code::eval_code(q, as.expression(anl_inputs()$expr))
-      teal.code::eval_code(qenv, as.expression(adsl_inputs()$expr))
+      data() %>%
+        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- shiny::reactive({
       teal::validate_inputs(iv_r())
 
-      qenv <- anl_q()
-      adsl_filtered <- qenv[[parentname]]
-      anl_filtered <- qenv[[dataname]]
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
 
       anl_m <- anl_inputs()
       input_arm_var <- unlist(arm_var$filter)["vars_selected"]
@@ -557,10 +556,9 @@ srv_g_ipp <- function(id,
     # The R-code corresponding to the analysis.
     all_q <- shiny::reactive({
       validate_checks()
-      qenv <- anl_q()
       anl_m <- anl_inputs()
 
-      ANL <- qenv[["ANL"]] # nolint
+      ANL <- anl_q()[["ANL"]] # nolint
       teal::validate_has_data(ANL, 2)
 
       arm_var <- unlist(arm_var$filter)["vars_selected"]
@@ -589,7 +587,7 @@ srv_g_ipp <- function(id,
         ggplot2_args = ggplot2_args,
         add_avalu = input$add_avalu
       )
-      teal.code::eval_code(qenv, as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(my_calls))
     })
 
     # Outputs to render.
@@ -631,7 +629,7 @@ srv_g_ipp <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(all_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
