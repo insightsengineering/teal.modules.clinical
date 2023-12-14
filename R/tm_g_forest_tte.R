@@ -228,6 +228,7 @@ template_forest_tte <- function(dataname = "ANL",
 #' This teal module produces a grid style Forest plot for time-to-event data
 #' with `ADaM` structure
 #'
+#' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
 #' @inheritParams tm_g_forest_rsp
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr

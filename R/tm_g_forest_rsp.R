@@ -222,6 +222,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' This teal module produces a grid style Forest plot for response data with `ADaM` structure.
 #'
+#' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
 #' @inheritParams tm_t_binary_outcome
 #' @param fixed_symbol_size (`logical`)\cr
