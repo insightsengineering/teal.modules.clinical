@@ -59,7 +59,7 @@ Imports:
     teal.reporter (>= 0.2.1),
     teal.transform (>= 0.4.0.9011),
     teal.widgets (>= 0.4.0),
-    tern.gee (>= 0.1.1),
+    tern.gee (>= 0.1.3),
     tern.mmrm (>= 0.3.0),
     tidyr,
     utils,
