@@ -84,8 +84,8 @@ template_therapy <- function(dataname = "ANL",
         dplyr::arrange(cmindc, cmdecod, cmstdy) %>%
         dplyr::distinct() %>%
         `colnames<-`(c(
-          get_labels(dataname)$column_labels[c(cmindc_char, cmdecod_char)], "Dosage",
-          get_labels(dataname)$column_labels[c(cmstdy_char, cmendy_char)]
+          col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char)], "Dosage",
+          col_labels(dataname, fill = TRUE)[c(cmstdy_char, cmendy_char)]
         ))
 
       therapy_table <- rlistings::as_listing(

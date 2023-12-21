@@ -52,7 +52,7 @@ template_adverse_events <- function(dataname = "ANL",
             aeterm, tox_grade, causality, outcome, action, time, decod
           ) %>%
           dplyr::arrange(dplyr::desc(tox_grade)) %>%
-          `colnames<-`(get_labels(dataname)$column_labels[vars])
+          `colnames<-`(col_labels(dataname, fill = TRUE)[vars])
 
         table <- rlistings::as_listing(
           table,
