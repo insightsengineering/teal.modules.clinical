@@ -26,7 +26,7 @@ template_basic_info <- function(dataname = "ANL",
           utils::head(1) %>%
           t()
 
-        key <- get_labels(dataname)$column_labels[rownames(values)]
+        key <- col_labels(dataname, fill = TRUE)[rownames(values)]
 
         result <-
           data.frame(var = rownames(values), key = key, value = values) %>%
