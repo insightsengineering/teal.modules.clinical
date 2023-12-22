@@ -34,7 +34,7 @@ template_prior_medication <- function(dataname = "ANL",
         dplyr::select(cmindc, cmdecod, cmstdy) %>%
         dplyr::filter(!is.na(cmdecod)) %>%
         dplyr::distinct() %>%
-        `colnames<-`(get_labels(dataname)$column_labels[c(cmindc_char, cmdecod_char, cmstdy_char)])
+        `colnames<-`(col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char, cmstdy_char)])
       result
     }, env = list(
       dataname = as.name(dataname),
