@@ -28,11 +28,12 @@ Depends:
     R (>= 4.0),
     teal (>= 0.14.0.9027),
     teal.transform (>= 0.4.0.9011),
-    tern (>= 0.9.3)
+    tern (>= 0.9.3.9002)
 Imports:
     assertthat,
     broom,
     checkmate,
+    cowplot (>= 0.7.0),
     dplyr,
     DT,
     formatters (>= 0.5.5),
@@ -44,7 +45,7 @@ Imports:
     magrittr,
     methods,
     rlang,
-    rlistings (>= 0.2.4),
+    rlistings (>= 0.2.7),
     rmarkdown,
     rtables (>= 0.6.6),
     scales,
