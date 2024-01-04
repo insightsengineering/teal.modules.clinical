@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9022
-Date: 2023-12-18
+Version: 0.8.16.9024
+Date: 2024-01-03
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -28,11 +28,12 @@ Depends:
     R (>= 4.0),
     teal (>= 0.14.0.9027),
     teal.transform (>= 0.4.0.9011),
-    tern (>= 0.9.3)
+    tern (>= 0.9.3.9002)
 Imports:
     assertthat,
     broom (>= 0.7.10),
     checkmate (>= 2.1.0),
+    cowplot (>= 0.7.0),
     dplyr (>= 1.0.5),
     DT (>= 0.13),
     formatters (>= 0.5.5),
@@ -44,7 +45,7 @@ Imports:
     magrittr (>= 1.5),
     methods,
     rlang (>= 1.0.0),
-    rlistings (>= 0.2.4),
+    rlistings (>= 0.2.7),
     rmarkdown (>= 2.19),
     rtables (>= 0.6.6),
     scales,
@@ -79,6 +80,7 @@ Config/Needs/verdepcheck:
     cran/assertthat,
     tidymodels/broom,
     mllg/checkmate,
+    wilkelab/cowplot,
     tidyverse/dplyr,
     rstudio/DT,
     insightsengineering/formatters,
