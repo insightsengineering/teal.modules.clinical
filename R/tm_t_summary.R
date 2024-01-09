@@ -29,7 +29,6 @@ template_summary <- function(dataname,
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
-    is.character(arm_var),
     is.character(sum_vars),
     assertthat::is.flag(add_total),
     assertthat::is.string(total_label),
@@ -38,6 +37,7 @@ template_summary <- function(dataname,
     assertthat::is.string(na_level),
     assertthat::is.flag(drop_arm_levels)
   )
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
     numeric_stats,

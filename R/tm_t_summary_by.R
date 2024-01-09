@@ -36,7 +36,6 @@ template_summary_by <- function(parentname,
   assertthat::assert_that(
     assertthat::is.string(parentname),
     assertthat::is.string(dataname),
-    #assertthat::is.string(arm_var),
     assertthat::is.string(id_var),
     is.character(sum_vars),
     is.character(by_vars),
@@ -51,6 +50,7 @@ template_summary_by <- function(parentname,
     is.character(numeric_stats),
     assertthat::is.flag(drop_zero_levels)
   )
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   denominator <- match.arg(denominator)
 
   y <- list()
