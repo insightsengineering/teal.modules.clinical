@@ -421,7 +421,7 @@ tm_t_summary_by <- function(label,
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var =  cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     id_var = cs_to_des_select(id_var, dataname = dataname),
     paramcd = `if`(
       is.null(paramcd),
