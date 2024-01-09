@@ -155,7 +155,6 @@ template_summary_by <- function(parentname,
   env_vars <- list(
     sum_vars = sum_vars,
     sum_var_labels = var_labels[sum_vars],
-    show_labels = show_labels,
     na.rm = na.rm,
     na_level = na_level,
     denom = ifelse(denominator == "n", "n", "N_col"),
