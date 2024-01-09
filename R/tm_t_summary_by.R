@@ -607,7 +607,9 @@ srv_summary_by <- function(id,
     }
 
     validation_rules <- list(
-      arm_var = shinyvalidate::sv_required("Please select a treatment variable."),
+      arm_var = ~ if (length(.) != 1 && length(.) != 2) {
+        "Please select 1 or 2 column variables"
+      },
       id_var = shinyvalidate::sv_required("Please select a subject identifier."),
       summarize_vars = shinyvalidate::sv_required("Please select a summarize variable.")
     )
