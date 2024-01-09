@@ -77,10 +77,21 @@ template_summary_by <- function(parentname,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
+      arm_var = arm_var[[1]],
       drop_arm_levels = drop_arm_levels
     )
   )
+  if (length(arm_var) == 2) {
+    data_list <- add_expr(
+      data_list,
+      prepare_arm_levels(
+        dataname = "anl",
+        parentname = parentname,
+        arm_var = arm_var[[2]],
+        drop_arm_levels = drop_arm_levels
+      )
+    )
+  }
 
   data_list <- add_expr(
     data_list,
@@ -425,7 +436,7 @@ tm_t_summary_by <- function(label,
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var =  cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     id_var = cs_to_des_select(id_var, dataname = dataname),
     paramcd = `if`(
       is.null(paramcd),
@@ -671,7 +682,7 @@ srv_summary_by <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_by_vars, input_summarize_vars, input_id_var),
-        arm_var = input_arm_var
+        arm_var = input_arm_var[[1]]
       )
 
       if (input$parallel_vars) {
