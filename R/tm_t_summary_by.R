@@ -36,7 +36,7 @@ template_summary_by <- function(parentname,
   assertthat::assert_that(
     assertthat::is.string(parentname),
     assertthat::is.string(dataname),
-    assertthat::is.string(arm_var),
+    #assertthat::is.string(arm_var),
     assertthat::is.string(id_var),
     is.character(sum_vars),
     is.character(by_vars),
@@ -72,26 +72,15 @@ template_summary_by <- function(parentname,
     )
   )
 
-  data_list <- add_expr(
-    data_list,
+  prepare_arm_levels_call <- lapply(arm_var, function(x) {
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var[[1]],
+      arm_var = x,
       drop_arm_levels = drop_arm_levels
     )
-  )
-  if (length(arm_var) == 2) {
-    data_list <- add_expr(
-      data_list,
-      prepare_arm_levels(
-        dataname = "anl",
-        parentname = parentname,
-        arm_var = arm_var[[2]],
-        drop_arm_levels = drop_arm_levels
-      )
-    )
-  }
+  })
+  data_list <- c(data_list, prepare_arm_levels_call)
 
   data_list <- add_expr(
     data_list,
@@ -117,7 +106,6 @@ template_summary_by <- function(parentname,
     )
   }
 
-  layout_list <- list()
 
   table_title <- paste("Summary Table for", paste(sum_vars, collapse = ", "), "by", paste(by_vars, collapse = ", "))
 
@@ -128,56 +116,54 @@ template_summary_by <- function(parentname,
     )
   )
 
+  layout_list <- list()
   layout_list <- add_expr(
     layout_list,
     parsed_basic_table_args
   )
 
-  layout_list <- add_expr(
-    layout_list,
-    if (add_total) {
+  split_cols_call <- lapply(arm_var, function(x) {
+    if (drop_arm_levels) {
       substitute(
-        expr = rtables::split_cols_by(
-          arm_var,
-          split_fun = add_overall_level(total_label, first = FALSE)
-        ),
-        env = list(
-          arm_var = arm_var,
-          total_label = total_label
-        )
+        expr = rtables::split_cols_by(x, split_fun = drop_split_levels),
+        env = list(x = x)
       )
     } else {
       substitute(
-        expr = rtables::split_cols_by(arm_var),
-        env = list(arm_var = arm_var)
+        expr = rtables::split_cols_by(x),
+        env = list(x = x)
       )
     }
-  )
+  })
+  layout_list <- c(layout_list, split_cols_call)
+
+  if (add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = rtables::add_overall_col(total_label),
+        env = list(total_label = total_label)
+      )
+    )
+  }
 
   layout_list <- add_expr(
     layout_list,
     quote(rtables::add_colcounts())
   )
 
-  if (denominator == "omit") {
-    env_vars <- list(
-      sum_vars = sum_vars,
-      sum_var_labels = var_labels[sum_vars],
-      na.rm = na.rm,
-      na_level = na_level,
-      denom = ifelse(denominator == "n", "n", "N_col"),
-      stats = c(numeric_stats, "count")
+  env_vars <- list(
+    sum_vars = sum_vars,
+    sum_var_labels = var_labels[sum_vars],
+    show_labels = show_labels,
+    na.rm = na.rm,
+    na_level = na_level,
+    denom = ifelse(denominator == "n", "n", "N_col"),
+    stats = c(
+      numeric_stats,
+      ifelse(denominator == "omit", "count", "count_fraction")
     )
-  } else {
-    env_vars <- list(
-      sum_vars = sum_vars,
-      sum_var_labels = var_labels[sum_vars],
-      na.rm = na.rm,
-      na_level = na_level,
-      denom = ifelse(denominator == "n", "n", "N_col"),
-      stats = c(numeric_stats, "count_fraction")
-    )
-  }
+  )
 
   for (by_var in by_vars) {
     split_label <- substitute(
