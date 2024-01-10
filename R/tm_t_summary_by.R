@@ -80,7 +80,7 @@ template_summary_by <- function(parentname,
       drop_arm_levels = drop_arm_levels
     )
   })
-  data_list <- c(data_list, prepare_arm_levels_call)
+  data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
 
   data_list <- add_expr(
     data_list,
@@ -135,7 +135,7 @@ template_summary_by <- function(parentname,
       )
     }
   })
-  layout_list <- c(layout_list, split_cols_call)
+  layout_list <- Reduce(add_expr, split_cols_call, init = layout_list)
 
   if (add_total) {
     layout_list <- add_expr(
