@@ -33,7 +33,6 @@ Imports:
     assertthat,
     broom,
     checkmate,
-    cowplot (>= 0.7.0),
     dplyr,
     DT,
     formatters (>= 0.5.5),
