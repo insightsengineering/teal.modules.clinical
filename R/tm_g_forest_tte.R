@@ -29,8 +29,6 @@ template_forest_tte <- function(dataname = "ANL",
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 time_unit_var = "AVALU",
-                                rel_width_forest = 0.25,
-                                font_size = 15,
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -38,8 +36,6 @@ template_forest_tte <- function(dataname = "ANL",
     assertthat::is.string(obj_var_name),
     is.character(subgroup_var) || is.null(subgroup_var)
   )
-  checkmate::assert_number(rel_width_forest, lower = 0, upper = 1)
-  checkmate::assert_number(font_size)
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -166,59 +162,45 @@ template_forest_tte <- function(dataname = "ANL",
     user_plot = ggplot2_args,
     module_plot = teal.widgets::ggplot2_args(
       labs = list(
-        title = paste(
-          paste("Forest Plot of Survival Duration for", obj_var_name),
-          ifelse(is.null(strata_var), "", paste("Stratified by", paste(strata_var, collapse = " and "))),
-          sep = "\n"
-        ),
+        title = paste("Forest Plot of Survival Duration for", obj_var_name),
+        subtitle = ifelse(is.null(strata_var), "", paste("Stratified by", paste(strata_var, collapse = " and "))),
         caption = ""
       )
     )
   )
 
-  plot_list <- list()
+  plot_call <- substitute(
+    expr = g_forest(
+      tbl = result,
+      col_symbol_size = col_s_size
+    ),
+    env = list(col_s_size = col_symbol_size)
+  )
 
-  plot_list <- add_expr(
-    plot_list,
-    substitute(
-      expr = {
-        f <- g_forest(
-          tbl = result,
-          col_symbol_size = col_s_size,
-          font_size = font_size,
-          as_list = TRUE
-        )
-      },
-      env = list(
-        col_s_size = col_symbol_size,
-        font_size = font_size
-      )
+  plot_call <- substitute(
+    decorate_grob(p, titles = title, footnotes = caption, gp_footnotes = grid::gpar(fontsize = 12)),
+    env = list(
+      title = `if`(
+        all_ggplot2_args$labs$subtitle == "",
+        all_ggplot2_args$labs$title,
+        c(all_ggplot2_args$labs$title, all_ggplot2_args$labs$subtitle)
+      ),
+      caption = all_ggplot2_args$labs$caption,
+      p = plot_call
     )
   )
 
-  plot_list <- add_expr(
-    plot_list,
-    substitute(
-      expr = {
-        p <- cowplot::plot_grid(
-          f[["table"]] + ggplot2::labs(title = ggplot2_args_title, subtitle = ggplot2_args_subtitle),
-          f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
-          align = "h",
-          axis = "tblr",
-          rel_widths = c(1 - rel_width_forest, rel_width_forest)
-        )
-      },
-      env = list(
-        rel_width_forest = rel_width_forest,
-        ggplot2_args_title = all_ggplot2_args$labs$title,
-        ggplot2_args_subtitle = all_ggplot2_args$labs$subtitle,
-        ggplot2_args_caption = all_ggplot2_args$labs$caption
-      )
-    )
+  plot_call <- substitute(
+    env = list(plot_call = plot_call),
+    expr = {
+      p <- plot_call
+      grid::grid.newpage()
+      grid::grid.draw(p)
+    }
   )
 
   # Plot output.
-  y$plot <- plot_list
+  y$plot <- plot_call
 
   y
 }
@@ -228,7 +210,6 @@ template_forest_tte <- function(dataname = "ANL",
 #' This teal module produces a grid style Forest plot for time-to-event data
 #' with `ADaM` structure
 #'
-#' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
 #' @inheritParams tm_g_forest_rsp
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
@@ -290,7 +271,8 @@ template_forest_tte <- function(dataname = "ANL",
 #'       strata_var = choices_selected(
 #'         variable_choices(ADSL, c("STRATA1", "STRATA2")),
 #'         "STRATA2"
-#'       )
+#'       ),
+#'       plot_height = c(600, 200, 2000)
 #'     )
 #'   )
 #' )
@@ -324,10 +306,8 @@ tm_g_forest_tte <- function(label,
                               fixed = TRUE
                             ),
                             fixed_symbol_size = TRUE,
-                            plot_height = c(500L, 200L, 2000L),
-                            plot_width = c(1500L, 800L, 3000L),
-                            rel_width_forest = c(25L, 0L, 100L),
-                            font_size = c(15L, 1L, 30L),
+                            plot_height = c(700L, 200L, 2000L),
+                            plot_width = c(1200L, 800L, 3000L),
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
@@ -463,18 +443,6 @@ ui_g_forest_tte <- function(id, ...) {
             label = "Time Unit Variable",
             data_extract_spec = a$time_unit_var,
             is_single_dataset = is_single_dataset_value
-          ),
-          teal.widgets::optionalSliderInputValMinMax(
-            ns("rel_width_forest"),
-            "Relative Width of Forest Plot (%)",
-            a$rel_width_forest,
-            ticks = FALSE, step = 1
-          ),
-          teal.widgets::optionalSliderInputValMinMax(
-            ns("font_size"),
-            "Table Font Size",
-            a$font_size,
-            ticks = FALSE, step = 1
           )
         )
       )
@@ -656,8 +624,6 @@ srv_g_forest_tte <- function(id,
         conf_level = as.numeric(input$conf_level),
         col_symbol_size = if (!input$fixed_symbol_size) 1,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-        rel_width_forest = input$rel_width_forest / 100,
-        font_size = input$font_size,
         ggplot2_args = ggplot2_args
       )
       teal.code::eval_code(anl_q(), as.expression(my_calls))
