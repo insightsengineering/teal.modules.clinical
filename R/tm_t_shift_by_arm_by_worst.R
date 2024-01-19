@@ -238,12 +238,12 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        worst_flag_var,
                                        worst_flag,
                                        treatment_flag_var = teal.transform::choices_selected(
-                                         teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
-                                         selected = "ONTRTFL", fixed = TRUE
+                                         choices = teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
+                                         selected = "ONTRTFL"
                                        ),
                                        treatment_flag = teal.transform::choices_selected(
-                                         teal.transform::value_choices(dataname, "ONTRTFL"),
-                                         selected = "Y", fixed = TRUE
+                                         choices = teal.transform::value_choices(dataname, "ONTRTFL"),
+                                         selected = teal.transform::value_choices(dataname, "ONTRTFL")
                                        ),
                                        useNA = c("ifany", "no"), # nolint
                                        na_level = "<Missing>",
@@ -264,7 +264,6 @@ tm_t_shift_by_arm_by_worst <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-
   args <- as.list(environment())
 
 
@@ -272,6 +271,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
+    treatment_flag = treatment_flag,
     worst_flag_var = cs_to_des_select(worst_flag_var, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     base_var = cs_to_des_select(base_var, dataname = dataname)
@@ -379,12 +379,10 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
             is_single_dataset = is_single_dataset_value
           ),
           teal.widgets::optionalSelectInput(
-            ns("treatment_flag"),
-            "Value Indicating On Treatment",
-            a$treatment_flag$choices,
-            a$treatment_flag$selected,
+            inputId = ns("treatment_flag"),
+            label = "Value Indicating On Treatment",
             multiple = FALSE,
-            fixed = a$treatment_flag$fixed
+            fixed = isTRUE(a$treatment_flag$fixed)
           )
         )
       )
@@ -408,6 +406,7 @@ srv_shift_by_arm_by_worst <- function(id,
                                       arm_var,
                                       paramcd,
                                       treatment_flag_var,
+                                      treatment_flag,
                                       worst_flag_var,
                                       aval_var,
                                       base_var,
@@ -442,6 +441,16 @@ srv_shift_by_arm_by_worst <- function(id,
         paramcd = shinyvalidate::sv_required("An endpoint is required")
       )
     )
+
+    isolate({
+      resolved <- teal.transform:::resolve_delayed(treatment_flag, as.list(data()@env))
+      teal.widgets::updateOptionalSelectInput(
+        session = session,
+        inputId = "treatment_flag",
+        choices = resolved$choices,
+        selected = resolved$selected
+      )
+    })
 
     iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
