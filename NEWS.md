@@ -8,6 +8,7 @@
 * Added parameter `sort_freq_col` to `tm_t_events` to allow the user to select column to use when sorting by decreasing frequency.
 * Added parameter `incl_overall_sum` to `tm_t_events` to allow the user to choose whether overall summary rows are included at the top of the table.
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
+* Updated `tm_g_forest_rsp` and `tm_g_forest_tte` to use refactored version of `g_forest`. Plots are now displayed as `ggplot` objects instead of `grob` objects. Added parameters `font_size` and `rel_width_forest` to control font size and width of plot relative to table, respectively.
 
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
