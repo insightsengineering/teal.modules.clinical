@@ -58,7 +58,7 @@ and only once ready, integrate it in the Shiny App. The following are a
 few practical examples demonstrating how NSE works.
 The choice was made to focus on `substitute`.
 
-# Basic
+# The Basics
 
 ## NSE Principle
 
