@@ -100,7 +100,7 @@ data <- within(data, {
         as.factor() \%>\%
         as.numeric() \%>\%
         as.factor(),
-      AVALBIN = AVAL < 50 #' Just as an example to get a binary endpoint.
+      AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
     ) \%>\%
     droplevels()
 })

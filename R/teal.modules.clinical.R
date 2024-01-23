@@ -4,6 +4,7 @@
 #' The teal modules add an encoding panel to interactively change the encodings within teal.
 #'
 #' @import teal
+#' @import teal.transform
 #' @import tern
 #' @importFrom magrittr %>%
 #' @importFrom methods is

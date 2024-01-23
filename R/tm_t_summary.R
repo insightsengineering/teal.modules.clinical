@@ -29,7 +29,6 @@ template_summary <- function(dataname,
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
-    is.character(arm_var),
     is.character(sum_vars),
     assertthat::is.flag(add_total),
     assertthat::is.string(total_label),
@@ -38,6 +37,7 @@ template_summary <- function(dataname,
     assertthat::is.string(na_level),
     assertthat::is.flag(drop_arm_levels)
   )
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
     numeric_stats,
@@ -48,7 +48,9 @@ template_summary <- function(dataname,
 
   y <- list()
 
+  # Data processing
   data_list <- list()
+
   data_list <- add_expr(
     data_list,
     substitute(
@@ -62,27 +64,15 @@ template_summary <- function(dataname,
     )
   )
 
-
-  data_list <- add_expr(
-    data_list,
+  prepare_arm_levels_call <- lapply(arm_var, function(x) {
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var[[1]],
+      arm_var = x,
       drop_arm_levels = drop_arm_levels
     )
-  )
-  if (length(arm_var) == 2) {
-    data_list <- add_expr(
-      data_list,
-      prepare_arm_levels(
-        dataname = "anl",
-        parentname = parentname,
-        arm_var = arm_var[[2]],
-        drop_arm_levels = drop_arm_levels
-      )
-    )
-  }
+  })
+  data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
 
   data_list <- add_expr(
     data_list,
@@ -109,29 +99,23 @@ template_summary <- function(dataname,
     layout_list,
     parsed_basic_table_args
   )
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      expr = rtables::split_cols_by(arm_var),
-      env = list(arm_var = arm_var[[1]])
-    )
-  )
-  if (length(arm_var) == 2) {
-    layout_list <- add_expr(
-      layout_list,
-      if (drop_arm_levels) {
-        substitute(
-          expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
-          env = list(nested_col = arm_var[[2]])
-        )
-      } else {
-        substitute(
-          expr = rtables::split_cols_by(nested_col),
-          env = list(nested_col = arm_var[[2]])
-        )
-      }
-    )
-  }
+
+  # Build layout
+  split_cols_call <- lapply(arm_var, function(x) {
+    if (drop_arm_levels) {
+      substitute(
+        expr = rtables::split_cols_by(x, split_fun = drop_split_levels),
+        env = list(x = x)
+      )
+    } else {
+      substitute(
+        expr = rtables::split_cols_by(x),
+        env = list(x = x)
+      )
+    }
+  })
+  layout_list <- Reduce(add_expr, split_cols_call, init = layout_list)
+
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
@@ -431,7 +415,8 @@ srv_summary <- function(id,
                         basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
   shiny::moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
@@ -454,7 +439,6 @@ srv_summary <- function(id,
       id = "anl_merge",
       datasets = data,
       selector_list = selector_list,
-      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
@@ -462,12 +446,11 @@ srv_summary <- function(id,
       id = "adsl_merge",
       datasets = data,
       data_extract = list(arm_var = arm_var),
-      join_keys = teal.data::join_keys(data),
       anl_name = "ANL_ADSL"
     )
 
     anl_q <- shiny::reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+      data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
@@ -482,7 +465,7 @@ srv_summary <- function(id,
       choices_classes <- sapply(
         names(merged$anl_input_r()$columns_source$summarize_vars),
         function(x) {
-          summarize_var_data <- data[[summarize_vars$dataname]]()[[x]]
+          summarize_var_data <- data()[[summarize_vars$dataname]][[x]]
           inherits(summarize_var_data, "numeric") |
             inherits(summarize_var_data, "integer")
         }
@@ -543,7 +526,7 @@ srv_summary <- function(id,
       validate_checks()
 
       summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
-      var_labels <- formatters::var_labels(data[[dataname]]()[, summarize_vars, drop = FALSE])
+      var_labels <- formatters::var_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
@@ -597,7 +580,7 @@ srv_summary <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(all_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
