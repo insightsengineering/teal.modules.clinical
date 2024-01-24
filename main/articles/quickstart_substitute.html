@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9026</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9027</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,16 +52,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -119,7 +109,7 @@ non-standard evaluation. For instance, if we consider <code>a</code>
 defined such as <code>a &lt;- 5</code>, then the expression
 <code>a</code> returns 5, the <code>substitute(a)</code> returns the
 code to obtain the value: <code>a</code>.</p>
-<p>The principle on which relies <code>teal</code> is to:</p>
+<p>This is the principle <code>teal</code> relies on to:</p>
 <ol style="list-style-type: lower-roman">
 <li>generate expressions.</li>
 <li>return the result of the expression in the result panel of the
@@ -129,27 +119,27 @@ app.</li>
 </ol>
 <p>The expression returning the displayed value must be reactive. The
 information in the encoding in one hand and the filtering panel on the
-other hand modify the expression and the displayed value. As so, teal
-needs to work both on expressions and values and relies heavily on
-NSE.</p>
+other hand modify the expression and the displayed value. As such,
+<code>teal</code> needs to work both on expressions and values and
+relies heavily on NSE.</p>
 <p>The NSE is an advanced notion and mixing it with Shiny app
-development is a source of difficulties:</p>
+development is a source of difficulties such as:</p>
 <ul>
-<li>hindered efficient coding as the Shiny app must be run to check the
-good execution of the code.</li>
+<li>hindered coding efficiency as the Shiny app must be run in order to
+check the correct execution of the code.</li>
 <li>limited possibilities for testing.</li>
 </ul>
 <p>As an alternative, it is possible to focus first on the NSE aspects
-in plain R, and secondly, only once ready, integrate it in the Shiny
-App. Hereafter, are few practical examples demonstrating how NSE works.
-The choice was made to focus on <code>substitute</code>.</p>
+in plain R, and only once ready, integrate it in the Shiny App. The
+following are a few practical examples demonstrating how NSE works. The
+choice was made to focus on <code>substitute</code>.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="basic">Basic<a class="anchor" aria-label="anchor" href="#basic"></a>
+<h2 id="the-basics">The Basics<a class="anchor" aria-label="anchor" href="#the-basics"></a>
 </h2>
 <div class="section level3">
-<h3 id="principle">Principle<a class="anchor" aria-label="anchor" href="#principle"></a>
+<h3 id="nse-principle">NSE Principle<a class="anchor" aria-label="anchor" href="#nse-principle"></a>
 </h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span><span class="op">)</span></span>
@@ -161,11 +151,11 @@ The choice was made to focus on <code>substitute</code>.</p>
 <ul>
 <li>
 <code>substitute</code> returns the code and not the value,</li>
-<li>it even does not try the code, therefore it is possible to return an
-expression which does not make sense (yet), for instance involving two
-non defined objects.</li>
+<li>it does not attempt to run the code, therefore it is possible to
+return an expression which does not make sense (yet), for instance
+involving two non defined objects.</li>
 <li>If the values of <code>a</code> and <code>b</code> exist, the
-expression can run without error (below).</li>
+expression can run without error:</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -220,7 +210,7 @@ values were substituted (argument <code>env</code>).</li>
 <code>substitute</code> returned a non-evaluated expression, use
 <code><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval()</a></code> to evaluate it.</li>
 </ul>
-<p>With a slightly more elaborated expression:</p>
+<p>With a slightly more elaborate expression:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">non_evaluated_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,</span>
@@ -240,8 +230,8 @@ values were substituted (argument <code>env</code>).</li>
 <div class="section level3">
 <h3 id="replace-an-object-name">Replace an object name<a class="anchor" aria-label="anchor" href="#replace-an-object-name"></a>
 </h3>
-<p>In formulas, character strings are not accepted, how to operate the
-substitution?</p>
+<p>In formulas, character strings are not accepted, how do we execute
+the substitution?</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Error expected:</span></span>
 <span><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
@@ -267,9 +257,10 @@ substitution?</p>
 <span><span class="co">## plot("Sepal.Width" ~ "Sepal.Length", data = iris, main = "Iris, again ...")</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">plot_expr</span><span class="op">)</span></span>
 <span><span class="co">## Error in terms.formula(formula, data = data): invalid term in model formula</span></span></code></pre></div>
-<p>The object names have a special <code>name</code> <em>class</em>;
+<p>The object names have a specific <em>class</em> (<code>name</code>);
 <code>as.names</code> coerces a character string to an object name
-(alternatively, <code>as.symbol</code> provides identical result):</p>
+(alternatively, <code>as.symbol</code> provides an identical
+result):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot_expr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span></span>
 <span>  expr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">iris</span>, main <span class="op">=</span> <span class="va">text</span><span class="op">)</span>,</span>
@@ -285,7 +276,7 @@ substitution?</p>
 <p><img src="quickstart_substitute_files/figure-html/unnamed-chunk-9-1.svg" width="700"></p>
 </div>
 <div class="section level3">
-<h3 id="what-with-dataframe-name">What with dataframe name?<a class="anchor" aria-label="anchor" href="#what-with-dataframe-name"></a>
+<h3 id="what-about-dataframe-names">What about dataframe names?<a class="anchor" aria-label="anchor" href="#what-about-dataframe-names"></a>
 </h3>
 <p>Lets imagine a pipe-flavored expression, with <code>df</code> being
 the term corresponding to the dataframe which should be substituted:
@@ -370,9 +361,9 @@ use <code>substitute</code>.</li>
 <div class="section level3">
 <h3 id="direct-use-of-substitute">Direct use of <code>substitute</code><a class="anchor" aria-label="anchor" href="#direct-use-of-substitute"></a>
 </h3>
-<p>The <code>substitute</code> approach can be used with the new
+<p>The <code>substitute</code> approach can be used with the
 <code>rtables</code> pipelines.</p>
-<p>Lets prepare an example for reporting data from LB domain. The
+<p>Lets prepare an example for reporting data from the LB domain. The
 example is based on the template <code>LBT01</code>; the target is to
 report in columns the lab test result per study arm, as values
 (<code>AVAL</code>) and changes from baseline (<code>CHG</code>), per
@@ -380,30 +371,10 @@ analysis visit in rows.</p>
 <p>The data can be prepared as follows:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/rtables" class="external-link">rtables</a></span><span class="op">)</span></span>
-<span><span class="co">## Loading required package: formatters</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Attaching package: 'rtables'</span></span>
-<span><span class="co">## The following object is masked from 'package:utils':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     str</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## Attaching package: 'dplyr'</span></span>
-<span><span class="co">## The following objects are masked from 'package:stats':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     filter, lag</span></span>
-<span><span class="co">## The following objects are masked from 'package:base':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     intersect, setdiff, setequal, union</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/tern" class="external-link">tern</a></span><span class="op">)</span></span>
-<span><span class="co">## Registered S3 method overwritten by 'tern':</span></span>
-<span><span class="co">##   method   from </span></span>
-<span><span class="co">##   tidy.glm broom</span></span>
 <span></span>
 <span><span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu">teal.modules.clinical</span><span class="fu">::</span><span class="va"><a href="../reference/ex_data.html">tmc_ex_adlb</a></span></span>
-<span><span class="co">## Registered S3 method overwritten by 'teal':</span></span>
-<span><span class="co">##   method        from      </span></span>
-<span><span class="co">##   c.teal_slices teal.slice</span></span>
 <span><span class="va">adlb_f</span> <span class="op">&lt;-</span> <span class="va">adlb</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
 <span>    <span class="va">PARAM</span> <span class="op">==</span> <span class="st">"Alanine Aminotransferase Measurement"</span> <span class="op">&amp;</span></span>
