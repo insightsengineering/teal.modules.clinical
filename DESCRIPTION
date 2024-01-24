@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9026
-Date: 2024-01-18
+Version: 0.8.16.9027
+Date: 2024-01-23
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -69,7 +69,7 @@ Suggests:
     knitr,
     lubridate,
     nestcolor (>= 0.1.0),
-    testthat (>= 3.0)
+    testthat (>= 3.1.5)
 VignetteBuilder:
     knitr
 Config/Needs/website: insightsengineering/nesttemplate
