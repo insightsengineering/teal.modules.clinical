@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9024
-Date: 2024-01-03
+Version: 0.8.16.9028
+Date: 2024-01-24
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -28,12 +28,11 @@ Depends:
     R (>= 4.0),
     teal (>= 0.14.0.9027),
     teal.transform (>= 0.4.0.9011),
-    tern (>= 0.9.3.9002)
+    tern (== 0.9.3)
 Imports:
     assertthat,
     broom (>= 0.7.10),
     checkmate (>= 2.1.0),
-    cowplot (>= 0.7.0),
     dplyr (>= 1.0.5),
     DT (>= 0.13),
     formatters (>= 0.5.5),
@@ -70,7 +69,7 @@ Suggests:
     knitr (>= 1.34),
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
-    testthat (>= 3.0.4)
+    testthat (>= 3.1.5)
 VignetteBuilder:
     knitr
 Config/Needs/verdepcheck:
@@ -80,7 +79,6 @@ Config/Needs/verdepcheck:
     cran/assertthat,
     tidymodels/broom,
     mllg/checkmate,
-    wilkelab/cowplot,
     tidyverse/dplyr,
     rstudio/DT,
     insightsengineering/formatters,
@@ -119,4 +117,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
