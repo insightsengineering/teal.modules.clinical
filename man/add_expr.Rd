@@ -24,11 +24,10 @@ list. The list of expressions can be later used to generate a pipeline,
 for instance with \code{pipe_expr}.
 }
 \examples{
-
 lyt <- list()
-lyt <- teal.modules.clinical:::add_expr(lyt, substitute(rtables::basic_table()))
+lyt <- teal.modules.clinical:::add_expr(lyt, substitute(basic_table()))
 lyt <- teal.modules.clinical:::add_expr(
-  lyt, substitute(rtables::split_cols_by(var = arm), env = list(armcd = "ARMCD"))
+  lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
 )
 lyt <- teal.modules.clinical:::add_expr(
   lyt,
@@ -38,6 +37,6 @@ lyt <- teal.modules.clinical:::add_expr(
     )
   )
 )
-lyt <- teal.modules.clinical:::add_expr(lyt, quote(rtables::build_table(df = dta)))
+lyt <- teal.modules.clinical:::add_expr(lyt, quote(build_table(df = dta)))
 teal.modules.clinical:::pipe_expr(lyt)
 }

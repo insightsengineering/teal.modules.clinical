@@ -25,10 +25,10 @@
 #' adae <- tmc_ex_adae
 #'
 #' ui <- fluidPage(
-#'   shiny::sliderInput("obs", "Max Age",
+#'   sliderInput("obs", "Max Age",
 #'     min = 0, max = 100, value = 100
 #'   ),
-#'   shiny::sliderInput("maxgr", "Max Grade",
+#'   sliderInput("maxgr", "Max Grade",
 #'     min = 0, max = 5, value = 5
 #'   ),
 #'   plotOutput("plot")

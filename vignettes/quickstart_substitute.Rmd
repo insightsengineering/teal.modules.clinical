@@ -268,7 +268,7 @@ library(rtables)
 library(dplyr)
 library(tern)
 
-adlb <- teal.modules.clinical::tmc_ex_adlb
+adlb <- tmc_ex_adlb
 adlb_f <- adlb %>%
   filter(
     PARAM == "Alanine Aminotransferase Measurement" &
@@ -546,7 +546,7 @@ It is now possible to modify the studied parameter (`PARAMCD`)
 in addition to the study arm and visit variables names.
 
 ```{r}
-adlb <- teal.modules.clinical::tmc_ex_adlb
+adlb <- tmc_ex_adlb
 result <- rtables_expr(
   df = adlb, paramcd = "CRP", arm = "ARM", visit = "AVISIT",
   .stats = c("n", "mean_sd")

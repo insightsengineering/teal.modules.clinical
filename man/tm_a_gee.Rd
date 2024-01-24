@@ -127,7 +127,7 @@ app <- init(
   )
 )
 if (interactive()) {
-  shiny::shinyApp(app$ui, app$server)
+  shinyApp(app$ui, app$server)
 }
 
 }

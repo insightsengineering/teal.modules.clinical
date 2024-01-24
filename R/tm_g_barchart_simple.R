@@ -18,7 +18,7 @@
 #'
 #' ADSL <- tmc_ex_adsl %>%
 #'   dplyr::mutate(ITTFL = factor("Y") %>%
-#'     formatters::with_label("Intent-To-Treat Population Flag"))
+#'     with_label("Intent-To-Treat Population Flag"))
 #' ADAE <- tmc_ex_adae %>%
 #'   dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #'
@@ -28,7 +28,7 @@
 #'     ADAE = ADAE,
 #'     code = "ADSL <- tmc_ex_adsl %>%
 #'               dplyr::mutate(ITTFL = factor(\"Y\") %>%
-#'               formatters::with_label(\"Intent-To-Treat Population Flag\"))
+#'               with_label(\"Intent-To-Treat Population Flag\"))
 #'             ADAE <- tmc_ex_adae %>%
 #'               dplyr::filter(!((AETOXGR == 1) & (AESEV == \"MILD\") & (ARM == \"A: Drug X\")))"
 #'   ),

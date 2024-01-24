@@ -108,7 +108,7 @@ data <- within(data, {
   ADEX <- tmc_ex_adex
 
   set.seed(1, kind = "Mersenne-Twister")
-  labels <- formatters::var_labels(ADEX, fill = FALSE)
+  labels <- var_labels(ADEX, fill = FALSE)
   ADEX <- ADEX \%>\%
     dplyr::distinct(USUBJID, .keep_all = TRUE) \%>\%
     dplyr::mutate(
@@ -118,7 +118,7 @@ data <- within(data, {
       AVALU = "Days"
     ) \%>\%
     dplyr::bind_rows(ADEX)
-  formatters::var_labels(ADEX) <- labels
+  var_labels(ADEX) <- labels
 })
 
 datanames <- c("ADSL", "ADEX")

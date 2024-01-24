@@ -396,8 +396,8 @@ template_binary_outcome <- function(dataname,
 #' ADSL <- tmc_ex_adsl
 #' ADRS <- tmc_ex_adrs %>%
 #'   dplyr::mutate(
-#'     AVALC = tern::d_onco_rsp_label(AVALC) %>%
-#'       formatters::with_label("Character Result/Finding")
+#'     AVALC = d_onco_rsp_label(AVALC) %>%
+#'       with_label("Character Result/Finding")
 #'   ) %>%
 #'   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
@@ -413,8 +413,8 @@ template_binary_outcome <- function(dataname,
 #'       ADSL <- tmc_ex_adsl
 #'       ADRS <- tmc_ex_adrs %>%
 #'         dplyr::mutate(
-#'           AVALC = tern::d_onco_rsp_label(AVALC) %>%
-#'             formatters::with_label(\"Character Result/Finding\")
+#'           AVALC = d_onco_rsp_label(AVALC) %>%
+#'             with_label(\"Character Result/Finding\")
 #'         ) %>%
 #'         dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
 #'     "

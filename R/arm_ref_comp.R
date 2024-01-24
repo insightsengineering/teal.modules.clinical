@@ -25,7 +25,6 @@
 #' @keywords internal
 #'
 #' @examples
-#'
 #' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 #' arm_var <- choices_selected(c("ARM", "ARMCD"), "ARMCD")
 #'
@@ -40,10 +39,10 @@
 #'         choices = arm_var$choices,
 #'         selected = arm_var$selected
 #'       ),
-#'       shiny::uiOutput("arms_buckets")
+#'       uiOutput("arms_buckets")
 #'     ),
 #'     mainPanel(
-#'       shiny::textOutput("result")
+#'       textOutput("result")
 #'     )
 #'   )
 #' )
@@ -59,16 +58,16 @@
 #'     module = "example"
 #'   )
 #'
-#'   output$result <- shiny::renderText({
+#'   output$result <- renderText({
 #'     iv <- shinyvalidate::InputValidator$new()
 #'     iv$add_validator(iv_arm_ref)
 #'     iv$enable()
-#'     teal::validate_inputs(iv)
+#'     validate_inputs(iv)
 #'     "Valid selection has been made!"
 #'   })
 #' }
 #' if (interactive()) {
-#'   shiny::shinyApp(ui, server)
+#'   shinyApp(ui, server)
 #' }
 arm_ref_comp_observer <- function(session,
                                   input,

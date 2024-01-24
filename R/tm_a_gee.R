@@ -166,7 +166,7 @@ template_a_gee <- function(output_table,
 #'   )
 #' )
 #' if (interactive()) {
-#'   shiny::shinyApp(app$ui, app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 tm_a_gee <- function(label,

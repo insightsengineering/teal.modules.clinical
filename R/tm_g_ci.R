@@ -253,10 +253,6 @@ template_g_ci <- function(dataname, # nolint
 #'         )
 #'       )
 #'     )
-#'   ),
-#'   header = "Example of Confidence Interval Plot",
-#'   footer = shiny::tags$p(
-#'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
 #' if (interactive()) {

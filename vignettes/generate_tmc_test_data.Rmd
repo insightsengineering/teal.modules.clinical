@@ -12,7 +12,7 @@ vignette: >
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 editor_options:
-    markdown: 
+    markdown:
         wrap: 72
 ---
 
@@ -30,7 +30,7 @@ library(formatters)
 
 study_duration_secs <- lubridate::seconds(lubridate::years(2))
 
-sample_fct <- function(x, N, ...) { # nolint
+sample_fct <- function(x, N, ...) {
   checkmate::assert_number(N)
   factor(sample(x, N, replace = TRUE, ...), levels = if (is.factor(x)) levels(x) else x)
 }
@@ -148,7 +148,7 @@ common_var_labels <- c(
 ## `ADSL`
 
 ```{r adsl, eval=FALSE}
-generate_adsl <- function(N = 200) { # nolint
+generate_adsl <- function(N = 200) {
   set.seed(1)
   sys_dtm <- lubridate::fast_strptime("20/2/2019 11:16:16.683", "%d/%m/%Y %H:%M:%OS", tz = "UTC")
   country_site_prob <- c(.5, .121, .077, .077, .075, .052, .046, .025, .014, .003)
@@ -1718,8 +1718,8 @@ generate_adrs <- function(adsl = tmc_ex_adsl) {
       avisit <- c("SCREENING", "BASELINE", "CYCLE 2 DAY 1", "CYCLE 4 DAY 1", "END OF INDUCTION", "FOLLOW UP")
 
       # meaningful date information
-      TRTSTDT <- lubridate::date(pinfo$TRTSDTM) # nolint
-      TRTENDT <- lubridate::date(dplyr::if_else( # nolint
+      TRTSTDT <- lubridate::date(pinfo$TRTSDTM)
+      TRTENDT <- lubridate::date(dplyr::if_else(
         !is.na(pinfo$TRTEDTM), pinfo$TRTEDTM,
         lubridate::floor_date(TRTSTDT + study_duration_secs, unit = "day")
       ))

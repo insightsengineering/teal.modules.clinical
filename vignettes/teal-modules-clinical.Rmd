@@ -15,12 +15,12 @@ vignette: >
 ---
 ### Introduction
 `teal.modules.clinical` is a package implementing a number of `teal` modules helpful for exploring clinical
-trials data, specifically targeted at data following the [`ADaM`](https://www.cdisc.org/standards/foundational/adam) 
-standards. `teal.modules.clinical` modules can be used with data other than `ADaM` standard clinical data but some 
+trials data, specifically targeted at data following the [`ADaM`](https://www.cdisc.org/standards/foundational/adam)
+standards. `teal.modules.clinical` modules can be used with data other than `ADaM` standard clinical data but some
 features of the package will make little sense then.
 
 The concepts presented here require knowledge about the core features of `teal`, specifically on how to launch a `teal`
-application and how to pass data into it. Therefore, it is highly recommended to refer to the [`README`](https://insightsengineering.github.io/teal/index.html) file and 
+application and how to pass data into it. Therefore, it is highly recommended to refer to the [`README`](https://insightsengineering.github.io/teal/index.html) file and
 the introductory [`vignette`](https://insightsengineering.github.io/teal/articles/teal.html) of the `teal` package.
 
 ### Main features
@@ -45,7 +45,7 @@ their severity, the current therapy, their laboratory results and more.
 See [`package functions / modules`](https://insightsengineering.github.io/teal.modules.clinical/reference/index.html).
 
 ### A simple application
-A `teal.modules.clinical` module needs to be embedded inside a `shiny` / `teal` application to interact with it. 
+A `teal.modules.clinical` module needs to be embedded inside a `shiny` / `teal` application to interact with it.
 A simple application including a bar chart module could look like this:
 
 ```r
@@ -55,7 +55,7 @@ library(nestcolor)
 ADSL <- tmc_ex_adsl
 ADAE <- tmc_ex_adae
 
-app <- teal::init(
+app <- init(
   data = teal.data::cdisc_data(
     ADSL = ADSL,
     ADAE = ADAE,
@@ -66,7 +66,7 @@ app <- teal::init(
   ),
   modules = list(
     tm_g_barchart_simple(
-      label = "ADAE Analysis", 
+      label = "ADAE Analysis",
       x = teal.transform::data_extract_spec(
         dataname = "ADAE",
         select = teal.transform::select_spec(
@@ -78,12 +78,12 @@ app <- teal::init(
   )
 )
 
-if (interactive()) shiny::shinyApp(app$ui, app$server)
+if (interactive()) shinyApp(app$ui, app$server)
 ```
 
-`teal.modules.clinical` exports modules and needs support from other libraries to run a `teal` app and flesh out its 
-functionality. In the example above, `tm_g_barchart_simple` is the only function from `teal.modules.clinical` where as 
-`init` is a `teal` function, `data_extract_spec`, `select_spec` and `variable_choices` are `teal.transform` functions 
+`teal.modules.clinical` exports modules and needs support from other libraries to run a `teal` app and flesh out its
+functionality. In the example above, `tm_g_barchart_simple` is the only function from `teal.modules.clinical` where as
+`init` is a `teal` function, `data_extract_spec`, `select_spec` and `variable_choices` are `teal.transform` functions
 and `cdisc_data` are `teal.data` functions.
 
 
@@ -105,7 +105,7 @@ In the next step, we use `teal` to create `shiny` `ui` and `server` functions so
 argument tells `teal` about the input data - the two `ADaM` datasets `adsl` and `adae` - and the `modules`
 argument indicates the modules included in the application. Here, we include only one - `tm_g_barchart_simple`.
 ```r
-app <- teal::init(
+app <- init(
   data = teal.data::cdisc_data(
     ADSL = ADSL,
     ADAE = ADAE,
@@ -116,7 +116,7 @@ app <- teal::init(
   ),
   modules = list(
     tm_g_barchart_simple(
-      label = "ADAE Analysis", 
+      label = "ADAE Analysis",
       x = teal.transform::data_extract_spec(
         dataname = "ADAE",
         select = teal.transform::select_spec(choices = teal.transform::variable_choices(ADAE), multiple = FALSE)
@@ -128,14 +128,14 @@ app <- teal::init(
 
 Ultimately, the example uses `shiny` to launch the application:
 ```r
-if (interactive()) shiny::shinyApp(app$ui, app$server)
+if (interactive()) shinyApp(app$ui, app$server)
 ```
 
 Some of `teal.modules.clinical` modules allow specifying arguments using `teal.transform::choices_selected` such as
 `tm_t_summary` module in this example:
 ```r
 ADSL <- tmc_ex_adsl
-app <- teal::init(
+app <- init(
   data = teal.data::cdisc_data(ADSL = ADSL, code = "ADSL <- tmc_ex_adsl"),
   modules = list(
     tm_t_summary(
@@ -149,7 +149,7 @@ app <- teal::init(
     )
   )
 )
-if (interactive()) shiny::shinyApp(app$ui, app$server)
+if (interactive()) shinyApp(app$ui, app$server)
 ```
 
 Refer to the [API reference](https://insightsengineering.github.io/teal.modules.clinical/reference/index.html) of the

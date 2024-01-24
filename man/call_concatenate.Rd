@@ -15,7 +15,6 @@ call_concatenate(args, bin_op = "+")
 e.g. combine with \code{+} for \code{ggplot} without introducing parentheses due to associativity
 }
 \examples{
-\dontrun{
 # What we want to achieve
 call("+", quote(f), quote(g))
 call("+", quote(f), call("+", quote(g), quote(h))) # parentheses not wanted
@@ -35,5 +34,4 @@ eval(
     list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
   )
 )
-}
 }

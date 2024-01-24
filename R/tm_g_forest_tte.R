@@ -247,7 +247,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' ADSL <- tmc_ex_adsl
 #' ADTTE <- tmc_ex_adtte
-#' ADSL$RACE <- droplevels(ADSL$RACE) %>% formatters::with_label("Race")
+#' ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -267,7 +267,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADTTE <- tmc_ex_adtte
-#'       ADSL$RACE <- droplevels(ADSL$RACE) %>% formatters::with_label(\"Race\")
+#'       ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label(\"Race\")
 #'     "
 #'   ),
 #'   modules = modules(

@@ -58,7 +58,6 @@ and comparison arm
 Updates the reference and comparison Treatments when the selected Treatment variable changes
 }
 \examples{
-
 arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 arm_var <- choices_selected(c("ARM", "ARMCD"), "ARMCD")
 
@@ -73,10 +72,10 @@ ui <- fluidPage(
         choices = arm_var$choices,
         selected = arm_var$selected
       ),
-      shiny::uiOutput("arms_buckets")
+      uiOutput("arms_buckets")
     ),
     mainPanel(
-      shiny::textOutput("result")
+      textOutput("result")
     )
   )
 )
@@ -92,16 +91,16 @@ server <- function(input, output, session) {
     module = "example"
   )
 
-  output$result <- shiny::renderText({
+  output$result <- renderText({
     iv <- shinyvalidate::InputValidator$new()
     iv$add_validator(iv_arm_ref)
     iv$enable()
-    teal::validate_inputs(iv)
+    validate_inputs(iv)
     "Valid selection has been made!"
   })
 }
 if (interactive()) {
-  shiny::shinyApp(ui, server)
+  shinyApp(ui, server)
 }
 }
 \keyword{internal}

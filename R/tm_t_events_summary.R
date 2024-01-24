@@ -500,10 +500,10 @@ template_events_summary <- function(anl_name,
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl %>%
 #'     dplyr::mutate(
-#'       DTHFL = dplyr::case_when( #' nolint
+#'       DTHFL = dplyr::case_when(
 #'         !is.na(DTHDT) ~ "Y",
 #'         TRUE ~ ""
-#'       ) %>% formatters::with_label("Subject Death Flag")
+#'       ) %>% with_label("Subject Death Flag")
 #'     )
 #'   ADAE <- tmc_ex_adae
 #'
@@ -525,7 +525,7 @@ template_events_summary <- function(anl_name,
 #'       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
 #'       TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'     )
-#'     formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'     var_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'     dat
 #'   }
 #'

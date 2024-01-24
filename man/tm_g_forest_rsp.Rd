@@ -123,8 +123,8 @@ library(nestcolor)
 
 ADSL <- tmc_ex_adsl
 ADRS <- tmc_ex_adrs \%>\%
-  dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
-    formatters::with_label("Character Result/Finding")) \%>\%
+  dplyr::mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
+    with_label("Character Result/Finding")) \%>\%
   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
 arm_ref_comp <- list(
@@ -145,8 +145,8 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADRS <- tmc_ex_adrs \%>\%
-        dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
-          formatters::with_label(\"Character Result/Finding\")) \%>\%
+        dplyr::mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
+          with_label(\"Character Result/Finding\")) \%>\%
         dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
     "
   ),

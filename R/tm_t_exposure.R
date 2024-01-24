@@ -231,7 +231,7 @@ template_exposure <- function(parentname,
 #'   ADEX <- tmc_ex_adex
 #'
 #'   set.seed(1, kind = "Mersenne-Twister")
-#'   labels <- formatters::var_labels(ADEX, fill = FALSE)
+#'   labels <- var_labels(ADEX, fill = FALSE)
 #'   ADEX <- ADEX %>%
 #'     dplyr::distinct(USUBJID, .keep_all = TRUE) %>%
 #'     dplyr::mutate(
@@ -241,7 +241,7 @@ template_exposure <- function(parentname,
 #'       AVALU = "Days"
 #'     ) %>%
 #'     dplyr::bind_rows(ADEX)
-#'   formatters::var_labels(ADEX) <- labels
+#'   var_labels(ADEX) <- labels
 #' })
 #'
 #' datanames <- c("ADSL", "ADEX")

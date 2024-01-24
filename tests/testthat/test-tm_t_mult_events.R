@@ -76,7 +76,7 @@ testthat::test_that("template_mult_events generates correct expressions with no 
     arm_var = "ARM",
     seq_var = "ASEQ",
     hlt = NULL,
-    ll = "CMDECOD",
+    llt = "CMDECOD",
     add_total = TRUE,
     event_type = "treatment",
     drop_arm_levels = TRUE

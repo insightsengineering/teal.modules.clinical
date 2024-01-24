@@ -363,12 +363,12 @@ template_patient_timeline <- function(dataname = "ANL",
 #'       CMCAT == "medcl B" ~ 20,
 #'       CMCAT == "medcl C" ~ 150,
 #'       TRUE ~ 1
-#'     ) %>% formatters::with_label("Study Day of Start of Medication"),
+#'     ) %>% with_label("Study Day of Start of Medication"),
 #'     CMENDY = dplyr::case_when(
 #'       CMCAT == "medcl B" ~ 700,
 #'       CMCAT == "medcl C" ~ 1000,
 #'       TRUE ~ 500
-#'     ) %>% formatters::with_label("Study Day of End of Medication"),
+#'     ) %>% with_label("Study Day of End of Medication"),
 #'     CMASTDTM = ASTDTM,
 #'     CMAENDTM = AENDTM
 #'   )

@@ -117,7 +117,7 @@ data <- within(data, {
       ONTRTFL = dplyr::case_when(
         AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
         TRUE ~ "Y"
-      ) \%>\% formatters::with_label("On Treatment Record Flag")
+      ) \%>\% with_label("On Treatment Record Flag")
     )
 })
 datanames <- c("ADSL", "ADLB")
@@ -140,8 +140,8 @@ app <- init(
         selected = c("LBCAT", "PARAM"),
         keep_order = TRUE
       ),
-      baseline_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "BNRIND"),
+      baseline_var = choices_selected(
+        variable_choices(data[["ADLB"]], subset = "BNRIND"),
         selected = "BNRIND", fixed = TRUE
       ),
       grade = choices_selected(

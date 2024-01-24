@@ -17,14 +17,16 @@ The package \code{prettycode} must be installed to turn on colored output,
 hence the warning.
 }
 \examples{
+\dontshow{if (require("prettycode")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 expr <- quote(
-  rtables::basic_table() \%>\%
-    rtables::split_cols_by(var = "ARMCD") \%>\%
+  basic_table() \%>\%
+    split_cols_by(var = "ARMCD") \%>\%
     test_proportion_diff(
       vars = "rsp", method = "cmh", variables = list(strata = "strat")
     ) \%>\%
-    rtables::build_table(df = dta)
+    build_table(df = dta)
 )
 
-teal.modules.clinical:::styled_expr(expr)
+styled_expr(expr)
+\dontshow{\}) # examplesIf}
 }
