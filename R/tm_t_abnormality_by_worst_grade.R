@@ -327,7 +327,8 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                               ),
                                               selected = teal.transform::value_choices(
                                                 dataname,
-                                                var_choices = "WGRLOFL"
+                                                var_choices = "WGRLOFL",
+                                                subset = function(data) unique(data$WGRLOFL)[1]
                                               )
                                             ),
                                             add_total = TRUE,
@@ -460,7 +461,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
           teal.widgets::optionalSelectInput(
             ns("worst_flag_indicator"),
             label = "Value Indicating Worst Grade",
-            multiple = isTRUE(a$worst_flag_indicator$multiple),
+            multiple = FALSE,
             fixed_on_single = TRUE
           ),
           shiny::checkboxInput(
@@ -506,7 +507,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
 
   shiny::moduleServer(id, function(input, output, session) {
     isolate({
-      resolved <- teal.transform:::resolve_delayed(worst_flag_indicator, as.list(data()@env))
+      resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env))
       teal.widgets::updateOptionalSelectInput(
         session = session,
         inputId = "worst_flag_indicator",
@@ -580,7 +581,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_paramcd_var <- names(merged$anl_input_r()$columns_source$paramcd)
       input_atoxgr <- names(merged$anl_input_r()$columns_source$atoxgr_var)
-      input_worst_flag_indicator <- input$worst_flag_indicator
       input_worst_high_flag_var <- names(merged$anl_input_r()$columns_source$worst_high_flag_var)
       input_worst_low_flag_var <- names(merged$anl_input_r()$columns_source$worst_low_flag_var)
 

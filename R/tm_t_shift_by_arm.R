@@ -229,8 +229,8 @@ tm_t_shift_by_arm <- function(label,
                                 selected = "ONTRTFL", fixed = TRUE
                               ),
                               treatment_flag = teal.transform::choices_selected(
-                                teal.transform::value_choices(dataname, "ONTRTFL"),
-                                selected = "Y", fixed = TRUE
+                                choices = teal.transform::value_choices(dataname, "ONTRTFL"),
+                                selected = teal.transform::value_choices(dataname, var_choices = "ONTRTFL")
                               ),
                               useNA = c("ifany", "no"), # nolint
                               na_level = "<Missing>",
@@ -276,6 +276,7 @@ tm_t_shift_by_arm <- function(label,
         label = label,
         total_label = total_label,
         na_level = na_level,
+        treatment_flag = treatment_flag,
         basic_table_args = basic_table_args
       )
     ),
@@ -357,11 +358,9 @@ ui_shift_by_arm <- function(id, ...) {
           ),
           teal.widgets::optionalSelectInput(
             ns("treatment_flag"),
-            "Value Indicating On Treatment",
-            a$treatment_flag$choices,
-            a$treatment_flag$selected,
+            label = "Value Indicating On Treatment",
             multiple = FALSE,
-            fixed = a$treatment_flag$fixed
+            fixed = isTRUE(a$treatment_flag$fixed)
           )
         )
       )
@@ -386,6 +385,7 @@ srv_shift_by_arm <- function(id,
                              paramcd,
                              visit_var,
                              treatment_flag_var,
+                             treatment_flag,
                              aval_var,
                              base_var,
                              label,
@@ -419,6 +419,16 @@ srv_shift_by_arm <- function(id,
         visit_var = shinyvalidate::sv_required("A visit is required")
       )
     )
+
+    isolate({
+      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
+      teal.widgets::updateOptionalSelectInput(
+        session = session,
+        inputId = "treatment_flag",
+        choices = resolved$choices,
+        selected = resolved$selected
+      )
+    })
 
     iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()

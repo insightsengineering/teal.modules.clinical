@@ -242,8 +242,12 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                          selected = "ONTRTFL"
                                        ),
                                        treatment_flag = teal.transform::choices_selected(
-                                         choices = teal.transform::value_choices(dataname, "ONTRTFL"),
-                                         selected = teal.transform::value_choices(dataname, "ONTRTFL")
+                                          choices = teal.transform::value_choices(dataname, "ONTRTFL"),
+                                          selected = teal.transform::value_choices(
+                                            dataname,
+                                            var_choices = "ONTRTFL",
+                                            subset = function(data) unique(data$ONTRTFL)[1]
+                                          )
                                        ),
                                        useNA = c("ifany", "no"), # nolint
                                        na_level = "<Missing>",
@@ -271,7 +275,6 @@ tm_t_shift_by_arm_by_worst <- function(label,
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
-    treatment_flag = treatment_flag,
     worst_flag_var = cs_to_des_select(worst_flag_var, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     base_var = cs_to_des_select(base_var, dataname = dataname)
@@ -289,6 +292,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        treatment_flag = treatment_flag,
         total_label = total_label,
         na_level = na_level,
         basic_table_args = basic_table_args
@@ -382,7 +386,7 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
             inputId = ns("treatment_flag"),
             label = "Value Indicating On Treatment",
             multiple = FALSE,
-            fixed = isTRUE(a$treatment_flag$fixed)
+            fixed_on_single = isTRUE(a$treatment_flag$fixed)
           )
         )
       )
@@ -443,7 +447,7 @@ srv_shift_by_arm_by_worst <- function(id,
     )
 
     isolate({
-      resolved <- teal.transform:::resolve_delayed(treatment_flag, as.list(data()@env))
+      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
       teal.widgets::updateOptionalSelectInput(
         session = session,
         inputId = "treatment_flag",
