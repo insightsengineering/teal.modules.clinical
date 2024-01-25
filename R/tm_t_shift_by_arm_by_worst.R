@@ -379,7 +379,7 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
             inputId = ns("treatment_flag"),
             label = "Value Indicating On Treatment",
             multiple = FALSE,
-            fixed_on_single = isTRUE(a$treatment_flag$fixed)
+            fixed_on_single = TRUE
           )
         )
       )

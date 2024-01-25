@@ -226,7 +226,7 @@ tm_t_shift_by_arm <- function(label,
                               base_var,
                               treatment_flag_var = teal.transform::choices_selected(
                                 teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
-                                selected = "ONTRTFL", fixed = TRUE
+                                selected = "ONTRTFL"
                               ),
                               treatment_flag = teal.transform::choices_selected("Y"),
                               useNA = c("ifany", "no"), # nolint
@@ -357,7 +357,7 @@ ui_shift_by_arm <- function(id, ...) {
             ns("treatment_flag"),
             label = "Value Indicating On Treatment",
             multiple = FALSE,
-            fixed = isTRUE(a$treatment_flag$fixed)
+            fixed_on_single = TRUE
           )
         )
       )
