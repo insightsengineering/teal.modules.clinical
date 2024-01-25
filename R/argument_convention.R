@@ -49,6 +49,7 @@
 #'   names of the covariates variables.
 #' @param aval_var (`character`)\cr
 #'   name of the analysis variable.
+#' @param base_var `r lifecycle::badge("deprecated")` Please use the `baseline_var` argument instead.
 #' @param cnsr_var (`character`)\cr
 #'   name of the censoring variable.
 #' @param conf_level (`numeric`)\cr

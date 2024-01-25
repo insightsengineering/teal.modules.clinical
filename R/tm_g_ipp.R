@@ -31,12 +31,22 @@ template_g_ipp <- function(dataname = "ANL",
                            avalu_var = "AVALU",
                            id_var = "USUBJID",
                            visit_var = "AVISIT",
+                           base_var = lifecycle::deprecated(),
                            baseline_var = "BASE",
                            add_baseline_hline = FALSE,
                            separate_by_obs = FALSE,
                            ggplot2_args = teal.widgets::ggplot2_args(),
                            suppress_legend = FALSE,
                            add_avalu = TRUE) {
+  if (lifecycle::is_present(base_var)) {
+    baseline_var <- base_var
+    warning(
+      "The `base_var` argument of `template_g_ipp()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "Please use the `baseline_var` argument instead.",
+      call. = FALSE
+    )
+  }
+
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(paramcd),

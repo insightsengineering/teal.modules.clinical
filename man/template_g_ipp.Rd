@@ -15,6 +15,7 @@ template_g_ipp(
   avalu_var = "AVALU",
   id_var = "USUBJID",
   visit_var = "AVISIT",
+  base_var = lifecycle::deprecated(),
   baseline_var = "BASE",
   add_baseline_hline = FALSE,
   separate_by_obs = FALSE,
@@ -48,6 +49,8 @@ name of the analysis variable.}
 the variable name for subject id.}
 
 \item{visit_var}{(\code{string})\cr variable name designating the visit timepoint variable.}
+
+\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
 \item{baseline_var}{(\code{string})\cr variable name designating the baseline values of analysis variable.}
 
