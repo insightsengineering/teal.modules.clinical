@@ -417,7 +417,7 @@ srv_shift_by_arm <- function(id,
       )
     )
 
-   shiny::isolate({
+    shiny::isolate({
       resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
       teal.widgets::updateOptionalSelectInput(
         session = session,
