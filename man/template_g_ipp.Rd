@@ -42,7 +42,7 @@ variable names that can be used as \code{arm_var}.}
 \item{aval_var}{(\code{character})\cr
 name of the analysis variable.}
 
-\item{avalu_var}{(\code{string})\cr variable name designating the unit of the analysis variable.}
+\item{avalu_var}{(\code{character})\cr name of the analysis value unit variable.}
 
 \item{id_var}{(\code{character})\cr
 the variable name for subject id.}
