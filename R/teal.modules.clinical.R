@@ -12,9 +12,6 @@
 #' @importFrom methods is
 #' @importFrom rlang := .data
 #' @importFrom tern.gee lsmeans
-#'
-#' @name teal.modules.clinical
-#' @keywords internal
 
 # We need this to avoid R CMD check warning about missing global definitions.
 utils::globalVariables(c(
