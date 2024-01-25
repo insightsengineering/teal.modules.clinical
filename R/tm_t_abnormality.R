@@ -298,27 +298,10 @@ tm_t_abnormality <- function(label,
                              by_vars,
                              grade,
                              abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-                             id_var = teal.transform::choices_selected(
-                               teal.transform::variable_choices(dataname, subset = "USUBJID"),
-                               selected = "USUBJID", fixed = TRUE
-                             ),
-                             baseline_var = teal.transform::choices_selected(
-                               teal.transform::variable_choices(dataname, subset = "BNRIND"),
-                               selected = "BNRIND", fixed = TRUE
-                             ),
-                             treatment_flag_var = teal.transform::choices_selected(
-                               teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
-                               selected = "ONTRTFL", fixed = TRUE
-                             ),
-                             treatment_flag = teal.transform::choices_selected(
-                               choices = teal.transform::value_choices(dataname, "ONTRTFL"),
-                               selected = teal.transform::value_choices(
-                                  dataname,
-                                  var_choices = "ONTRTFL",
-                                  subset = function(data) unique(data$ONTRTFL)[1]
-                                ),
-                               fixed = TRUE
-                             ),
+                             id_var = teal.transform::choices_selected("USUBJID", fixed = TRUE),
+                             baseline_var = teal.transform::choices_selected("BNRIND", fixed = TRUE),
+                             treatment_flag_var = teal.transform::choices_selected("ONTRTFL", fixed = TRUE),
+                             treatment_flag = teal.transform::choices_selected("Y"),
                              add_total = TRUE,
                              total_label = "All Patients",
                              exclude_base_abn = FALSE,
@@ -465,7 +448,7 @@ ui_t_abnormality <- function(id, ...) {
             ns("treatment_flag"),
             label = "Value Indicating On Treatment",
             multiple = FALSE,
-            fixed = isTRUE(a$treatment_flag$fixed)
+            fixed_on_single = TRUE
           )
         )
       )

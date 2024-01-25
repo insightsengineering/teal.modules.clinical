@@ -10,21 +10,12 @@ tm_t_abnormality_by_worst_grade(
   parentname = ifelse(inherits(arm_var, "data_extract_spec"),
     teal.transform::datanames_input(arm_var), "ADSL"),
   arm_var,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
+  id_var = teal.transform::choices_selected("USUBJID", fixed = TRUE),
   paramcd,
-  atoxgr_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "ATOXGR"), selected = "ATOXGR", fixed = TRUE),
-  worst_high_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "WGRHIFL"), selected = "WGRHIFL", fixed = TRUE),
-  worst_low_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "WGRLOFL"), selected = "WGRLOFL", fixed = TRUE),
-  worst_flag_indicator =
-    teal.transform::choices_selected(teal.transform::value_choices(dataname, var_choices
-    = "WGRLOFL"), selected = "Y", fixed = TRUE),
+  atoxgr_var = teal.transform::choices_selected("ATOXGR", fixed = TRUE),
+  worst_high_flag_var = teal.transform::choices_selected("WGRHIFL", fixed = TRUE),
+  worst_low_flag_var = teal.transform::choices_selected("WGRLOFL", fixed = TRUE),
+  worst_flag_indicator = teal.transform::choices_selected("Y"),
   add_total = TRUE,
   total_label = "All Patients",
   drop_arm_levels = TRUE,

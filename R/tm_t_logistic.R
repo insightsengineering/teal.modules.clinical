@@ -288,10 +288,7 @@ tm_t_logistic <- function(label,
                           arm_ref_comp = NULL,
                           paramcd,
                           cov_var = NULL,
-                          avalc_var = teal.transform::choices_selected(
-                            teal.transform::variable_choices(dataname, "AVALC"), "AVALC",
-                            fixed = TRUE
-                          ),
+                          avalc_var = teal.transform::choices_selected("AVALC", fixed = TRUE),
                           conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
                           post_output = NULL,
