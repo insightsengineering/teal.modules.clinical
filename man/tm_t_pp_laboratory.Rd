@@ -11,7 +11,8 @@ tm_t_pp_laboratory(
   patient_col = "USUBJID",
   timepoints = NULL,
   aval = NULL,
-  avalu = NULL,
+  avalu = lifecycle::deprecated(),
+  avalu_var = NULL,
   param = NULL,
   paramcd = NULL,
   anrind = NULL,
@@ -37,7 +38,9 @@ Time variable to be represented in the laboratory table.}
 \item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 \code{AVAL} column of the \code{ADLB} dataset.}
 
-\item{avalu}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
+
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 \code{AVALU} column of the \code{ADLB} dataset.}
 
 \item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
@@ -98,7 +101,7 @@ app <- init(
         choices = variable_choices(ADLB, "AVAL"),
         selected = "AVAL"
       ),
-      avalu = choices_selected(
+      avalu_var = choices_selected(
         choices = variable_choices(ADLB, "AVALU"),
         selected = "AVALU"
       )

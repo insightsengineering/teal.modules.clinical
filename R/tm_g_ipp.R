@@ -114,7 +114,6 @@ template_g_ipp <- function(dataname = "ANL",
         id = id_var,
         add_baseline_hline = add_baseline_hline,
         base = base_var,
-        avalu = avalu_var,
         arm = arm_var
       )
     )
