@@ -496,7 +496,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
-    isolate({
+    shiny::isolate({
       resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env))
       teal.widgets::updateOptionalSelectInput(
         session = session,
