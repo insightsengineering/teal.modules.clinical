@@ -269,8 +269,8 @@ template_abnormality <- function(parentname,
 #'         selected = c("LBCAT", "PARAM"),
 #'         keep_order = TRUE
 #'       ),
-#'       baseline_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(data[["ADLB"]], subset = "BNRIND"),
+#'       baseline_var = choices_selected(
+#'         variable_choices(data[["ADLB"]], subset = "BNRIND"),
 #'         selected = "BNRIND", fixed = TRUE
 #'       ),
 #'       grade = choices_selected(

@@ -224,7 +224,10 @@ tm_t_shift_by_arm <- function(label,
                               visit_var,
                               aval_var,
                               base_var,
-                              treatment_flag_var = teal.transform::choices_selected("ONTRTFL", fixed = TRUE),
+                              treatment_flag_var = teal.transform::choices_selected(
+                                teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
+                                selected = "ONTRTFL", fixed = TRUE
+                              ),
                               treatment_flag = teal.transform::choices_selected("Y"),
                               useNA = c("ifany", "no"), # nolint
                               na_level = "<Missing>",

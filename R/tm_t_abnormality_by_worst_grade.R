@@ -291,14 +291,34 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                               "ADSL"
                                             ),
                                             arm_var,
-                                            id_var = teal.transform::choices_selected("USUBJID", fixed = TRUE),
+                                            id_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
+                                                dataname,
+                                                subset = "USUBJID"
+                                              ),
+                                              selected = "USUBJID", fixed = TRUE
+                                            ),
                                             paramcd,
-                                            atoxgr_var = teal.transform::choices_selected("ATOXGR", fixed = TRUE),
+                                            atoxgr_var = teal.transform::choices_selected(
+                                              teal.transform::variable_choices(
+                                                dataname,
+                                                subset = "ATOXGR"
+                                              ),
+                                              selected = "ATOXGR", fixed = TRUE
+                                            ),
                                             worst_high_flag_var = teal.transform::choices_selected(
-                                              "WGRHIFL", fixed = TRUE
+                                              teal.transform::variable_choices(
+                                                dataname,
+                                                subset = "WGRHIFL"
+                                              ),
+                                              selected = "WGRHIFL", fixed = TRUE
                                             ),
                                             worst_low_flag_var = teal.transform::choices_selected(
-                                              "WGRLOFL", fixed = TRUE
+                                              teal.transform::variable_choices(
+                                                dataname,
+                                                subset = "WGRLOFL"
+                                              ),
+                                              selected = "WGRLOFL", fixed = TRUE
                                             ),
                                             worst_flag_indicator = teal.transform::choices_selected("Y"),
                                             add_total = TRUE,
