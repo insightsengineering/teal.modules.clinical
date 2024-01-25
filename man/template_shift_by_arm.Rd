@@ -13,7 +13,7 @@ template_shift_by_arm(
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
   aval_var = "ANRIND",
-  base_var = "BNRIND",
+  baseline_var = "BNRIND",
   na.rm = FALSE,
   na_level = "<Missing>",
   add_total = FALSE,
@@ -44,7 +44,7 @@ records in \code{treatment_flag_var}.}
 
 \item{aval_var}{(\code{character})\cr the variable name for the analysis reference range indicator.}
 
-\item{base_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+\item{baseline_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
 
 \item{na.rm}{(\code{logical})\cr
 whether \code{NA} values should be removed prior to analysis.}

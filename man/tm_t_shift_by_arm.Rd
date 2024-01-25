@@ -13,7 +13,7 @@ tm_t_shift_by_arm(
   paramcd,
   visit_var,
   aval_var,
-  base_var,
+  baseline_var,
   treatment_flag_var =
     teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
     "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
@@ -58,7 +58,9 @@ in \code{dataname}.}
 object with all available choices and preselected option for the analysis
 variable.}
 
-\item{base_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices
+and preselected option for variable values that can be used as \code{baseline_var}.}
 
 \item{treatment_flag_var}{(\code{choices_selected} or \code{data_extract_spec})\cr on treatment flag variable.}
 
@@ -128,7 +130,7 @@ app <- init(
         variable_choices(ADEG, subset = "ANRIND"),
         selected = "ANRIND", fixed = TRUE
       ),
-      base_var = choices_selected(
+      baseline_var = choices_selected(
         variable_choices(ADEG, subset = "BNRIND"),
         selected = "BNRIND", fixed = TRUE
       ),
