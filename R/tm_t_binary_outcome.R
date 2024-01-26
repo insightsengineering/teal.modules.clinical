@@ -66,7 +66,7 @@ template_binary_outcome <- function(dataname,
                                       )
                                     ),
                                     add_total = FALSE,
-                                    total_label = "All Patients",
+                                    total_label = default_total_label(),
                                     basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -486,7 +486,7 @@ tm_t_binary_outcome <- function(label,
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 rsp_table = FALSE,
                                 add_total = FALSE,
-                                total_label = "All Patients",
+                                total_label = default_total_label(),
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args()) {
