@@ -16,10 +16,8 @@ tm_t_shift_by_arm(
   base_var,
   treatment_flag_var =
     teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag =
-    teal.transform::choices_selected(teal.transform::value_choices(dataname, "ONTRTFL"),
-    selected = "Y", fixed = TRUE),
+    "ONTRTFL"), selected = "ONTRTFL"),
+  treatment_flag = teal.transform::choices_selected("Y"),
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   add_total = FALSE,
