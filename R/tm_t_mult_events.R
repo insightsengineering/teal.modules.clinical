@@ -15,7 +15,7 @@ template_mult_events <- function(dataname,
                                  hlt,
                                  llt,
                                  add_total = TRUE,
-                                 total_label = "All Patients",
+                                 total_label = default_total_label(),
                                  event_type = "event",
                                  drop_arm_levels = TRUE,
                                  basic_table_args = teal.widgets::basic_table_args()) {
@@ -331,7 +331,7 @@ tm_t_mult_events <- function(label, # nolint
                              hlt,
                              llt,
                              add_total = TRUE,
-                             total_label = "All Patients",
+                             total_label = default_total_label(),
                              event_type = "event",
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
@@ -462,7 +462,8 @@ srv_t_mult_events_byterm <- function(id,
                                      basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
@@ -487,7 +488,6 @@ srv_t_mult_events_byterm <- function(id,
     anl_merge_inputs <- teal.transform::merge_expression_srv(
       id = "anl_merge",
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
@@ -495,15 +495,14 @@ srv_t_mult_events_byterm <- function(id,
     adsl_merge_inputs <- teal.transform::merge_expression_module(
       id = "adsl_merge",
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
 
     anl_q <- shiny::reactive({
-      qenv <- teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data))
-      qenv2 <- teal.code::eval_code(qenv, as.expression(anl_merge_inputs()$expr))
-      teal.code::eval_code(qenv2, as.expression(adsl_merge_inputs()$expr))
+      data() %>%
+        teal.code::eval_code(as.expression(anl_merge_inputs()$expr)) %>%
+        teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
     })
 
     validate_checks <- shiny::reactive({
@@ -540,14 +539,14 @@ srv_t_mult_events_byterm <- function(id,
     all_q <- shiny::reactive({
       validate_checks()
 
-      qenv <- anl_q()
+      anl_q <- anl_q()
       anl_m <- anl_merge_inputs()
 
       input_hlt <- names(anl_m$columns_source$hlt)
       input_llt <- names(anl_m$columns_source$llt)
 
-      hlt_labels <- mapply(function(x) rtables::obj_label(qenv[["ANL"]][[x]]), input_hlt)
-      llt_labels <- mapply(function(x) rtables::obj_label(qenv[["ANL"]][[x]]), input_llt)
+      hlt_labels <- mapply(function(x) rtables::obj_label(anl_q[["ANL"]][[x]]), input_hlt)
+      llt_labels <- mapply(function(x) rtables::obj_label(anl_q[["ANL"]][[x]]), input_llt)
 
       basic_table_args$title <- ifelse(
         is.null(basic_table_args$title),
@@ -573,7 +572,7 @@ srv_t_mult_events_byterm <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(qenv, as.expression(my_calls))
+      teal.code::eval_code(anl_q, as.expression(my_calls))
     })
 
     # Outputs to render.
@@ -610,7 +609,7 @@ srv_t_mult_events_byterm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(all_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

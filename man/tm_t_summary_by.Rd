@@ -16,7 +16,7 @@ tm_t_summary_by(
     subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   parallel_vars = FALSE,
   row_groups = FALSE,
   useNA = c("ifany", "no"),

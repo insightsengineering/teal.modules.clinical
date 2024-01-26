@@ -4,16 +4,16 @@
 #' The teal modules add an encoding panel to interactively change the encodings within teal.
 #'
 #' @import teal
+#' @import teal.transform
 #' @import tern
 #' @importFrom dplyr %>%
 #' @importFrom methods is
 #' @importFrom rlang := .data
 #' @importFrom tern.gee lsmeans
 #'
-#' @docType package
 #' @name teal.modules.clinical
 #' @keywords internal
-NULL
+"_PACKAGE"
 
 # We need this to avoid R CMD check warning about missing global definitions.
 utils::globalVariables(c(

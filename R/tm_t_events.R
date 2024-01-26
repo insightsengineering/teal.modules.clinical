@@ -8,8 +8,11 @@
 #' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
 #'   Default is "event".
 #' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
-#'   by decreasing total number of patients with event. Alternative option `alpha` sorts events
+#'   on column `sort_freq_col` by decreasing number of patients with event. Alternative option `alpha` sorts events
 #'   alphabetically.
+#' @param sort_freq_col (`character`)\cr column to sort by frequency on if `sort_criteria` is set to `freq_desc`.
+#' @param incl_overall_sum (`flag`)\cr  whether two rows which summarize the overall number of adverse events
+#'   should be included at the top of the table.
 #'
 #' @seealso [tm_t_events()]
 #' @keywords internal
@@ -22,12 +25,14 @@ template_events <- function(dataname,
                             label_hlt = NULL,
                             label_llt = NULL,
                             add_total = TRUE,
-                            total_label = "All Patients",
+                            total_label = default_total_label(),
                             event_type = "event",
                             sort_criteria = c("freq_desc", "alpha"),
+                            sort_freq_col = total_label,
                             prune_freq = 0,
                             prune_diff = 0,
                             drop_arm_levels = TRUE,
+                            incl_overall_sum = TRUE,
                             basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -189,20 +194,23 @@ template_events <- function(dataname,
   unique_label <- paste0("Total number of patients with at least one ", event_type)
   nonunique_label <- paste0("Overall total number of ", event_type, "s")
 
-  layout_list <- add_expr(
-    layout_list,
-    substitute(
-      summarize_num_patients(
-        var = "USUBJID",
-        .stats = c("unique", "nonunique"),
-        .labels = c(
-          unique = unique_label,
-          nonunique = nonunique_label
-        )
-      ),
-      env = list(unique_label = unique_label, nonunique_label = nonunique_label)
+  if (incl_overall_sum) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        summarize_num_patients(
+          var = "USUBJID",
+          .stats = c("unique", "nonunique"),
+          .labels = c(
+            unique = unique_label,
+            nonunique = nonunique_label
+          )
+        ),
+        env = list(unique_label = unique_label, nonunique_label = nonunique_label)
+      )
     )
-  )
+  }
+
 
   one_term <- is.null(hlt) || is.null(llt)
 
@@ -362,10 +370,17 @@ template_events <- function(dataname,
     }
   } else {
     # Sort by decreasing frequency.
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = idx_split_col <- which(sapply(col_paths(result), tail, 1) == sort_freq_col),
+        env = list(sort_freq_col = sort_freq_col)
+      )
+    )
 
     # When the "All Patients" column is present we only use that for scoring.
     scorefun_hlt <- if (add_total) {
-      quote(cont_n_onecol(ncol(result)))
+      quote(cont_n_onecol(idx_split_col))
     } else {
       quote(cont_n_allcols)
     }
@@ -492,12 +507,14 @@ tm_t_events <- function(label,
                         hlt,
                         llt,
                         add_total = TRUE,
-                        total_label = "All Patients",
+                        total_label = default_total_label(),
                         event_type = "event",
                         sort_criteria = c("freq_desc", "alpha"),
+                        sort_freq_col = total_label,
                         prune_freq = 0,
                         prune_diff = 0,
                         drop_arm_levels = TRUE,
+                        incl_overall_sum = TRUE,
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args()) {
@@ -508,9 +525,11 @@ tm_t_events <- function(label,
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(sort_freq_col)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
   checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_flag(incl_overall_sum)
   sort_criteria <- match.arg(sort_criteria)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -537,6 +556,8 @@ tm_t_events <- function(label,
         event_type = event_type,
         label = label,
         total_label = total_label,
+        sort_freq_col = sort_freq_col,
+        incl_overall_sum = incl_overall_sum,
         basic_table_args = basic_table_args
       )
     ),
@@ -596,7 +617,7 @@ ui_t_events_byterm <- function(id, ...) {
           selected = a$sort_criteria,
           multiple = FALSE
         ),
-        shiny::helpText("Pruning Options"),
+        shiny::helpText(shiny::strong("Pruning Options:")),
         shiny::numericInput(
           inputId = ns("prune_freq"),
           label = "Minimum Incidence Rate(%) in any of the treatment groups",
@@ -638,12 +659,15 @@ srv_t_events_byterm <- function(id,
                                 hlt,
                                 llt,
                                 drop_arm_levels,
+                                incl_overall_sum,
                                 label,
                                 total_label,
+                                sort_freq_col,
                                 basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
@@ -679,7 +703,6 @@ srv_t_events_byterm <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::inner_join"
     )
@@ -687,12 +710,11 @@ srv_t_events_byterm <- function(id,
     adsl_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL",
-      join_keys = teal.data::join_keys(data)
+      anl_name = "ANL_ADSL"
     )
 
     anl_q <- shiny::reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+      data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
@@ -761,9 +783,11 @@ srv_t_events_byterm <- function(id,
         total_label = total_label,
         event_type = event_type,
         sort_criteria = input$sort_criteria,
+        sort_freq_col = sort_freq_col,
         prune_freq = input$prune_freq / 100,
         prune_diff = input$prune_diff / 100,
         drop_arm_levels = input$drop_arm_levels,
+        incl_overall_sum = incl_overall_sum,
         basic_table_args = basic_table_args
       )
 
@@ -809,7 +833,7 @@ srv_t_events_byterm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(table_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(table_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

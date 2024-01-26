@@ -28,7 +28,7 @@ tm_t_shift_by_grade(
   id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,

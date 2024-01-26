@@ -12,7 +12,7 @@ tm_t_summary(
   arm_var,
   summarize_vars,
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",

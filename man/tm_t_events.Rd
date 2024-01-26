@@ -13,12 +13,14 @@ tm_t_events(
   hlt,
   llt,
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   event_type = "event",
   sort_criteria = c("freq_desc", "alpha"),
+  sort_freq_col = total_label,
   prune_freq = 0,
   prune_diff = 0,
   drop_arm_levels = TRUE,
+  incl_overall_sum = TRUE,
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
@@ -57,8 +59,10 @@ enabled (see \code{add_total}).}
 Default is "event".}
 
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
-by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
+on column \code{sort_freq_col} by decreasing number of patients with event. Alternative option \code{alpha} sorts events
 alphabetically.}
+
+\item{sort_freq_col}{(\code{character})\cr column to sort by frequency on if \code{sort_criteria} is set to \code{freq_desc}.}
 
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
@@ -68,6 +72,9 @@ rates between any two columns.}
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+
+\item{incl_overall_sum}{(\code{flag})\cr  whether two rows which summarize the overall number of adverse events
+should be included at the top of the table.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

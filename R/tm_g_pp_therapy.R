@@ -84,8 +84,8 @@ template_therapy <- function(dataname = "ANL",
         dplyr::arrange(cmindc, cmdecod, cmstdy) %>%
         dplyr::distinct() %>%
         `colnames<-`(c(
-          get_labels(dataname)$column_labels[c(cmindc_char, cmdecod_char)], "Dosage",
-          get_labels(dataname)$column_labels[c(cmstdy_char, cmendy_char)]
+          col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char)], "Dosage",
+          col_labels(dataname, fill = TRUE)[c(cmstdy_char, cmendy_char)]
         ))
 
       therapy_table <- rlistings::as_listing(
@@ -554,13 +554,14 @@ srv_g_therapy <- function(id,
                           ggplot2_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(data[[parentname]]()[[patient_col]]))
+    patient_data_base <- shiny::reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
       choices = patient_data_base(), selected = patient_data_base()[1]
@@ -612,13 +613,12 @@ srv_g_therapy <- function(id,
 
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       selector_list = selector_list,
       merge_function = "dplyr::left_join"
     )
 
     anl_q <- shiny::reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+      data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
@@ -721,7 +721,7 @@ srv_g_therapy <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(all_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

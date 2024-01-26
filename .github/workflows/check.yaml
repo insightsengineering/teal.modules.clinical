@@ -21,7 +21,7 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
   r-cmd:
     name: R CMD Check 🧬
-    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
+    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@install-tern-from-cran
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
@@ -37,6 +37,7 @@ jobs:
         checking S3 generic/method consistency .* NOTE
         checking Rd .usage sections .* NOTE
         checking for unstated dependencies in vignettes .* NOTE
+        checking top-level files .* NOTE
       unit-test-report-brand: >-
         https://raw.githubusercontent.com/insightsengineering/hex-stickers/main/thumbs/teal.png
   coverage:
@@ -50,7 +51,7 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/linter.yaml@main
   roxygen:
     name: Roxygen 🅾
-    uses: insightsengineering/r.pkg.template/.github/workflows/roxygen.yaml@main
+    uses: insightsengineering/r.pkg.template/.github/workflows/roxygen.yaml@install-tern-from-cran
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
