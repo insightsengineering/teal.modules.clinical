@@ -33,7 +33,7 @@
           surv_timepoint(vars = "AVAL", var_labels = as.character(anl$AVALU[1]), 
               is_event = "is_event", time_point = c(183, 365, 548), 
               method = "surv", control = control_surv_timepoint(conf_level = 0.95, 
-                  conf_type = "plain"), .indent_mods = NULL, table_names = "time_points")
+                  conf_type = "plain"), .indent_mods = NULL)
       
       $table
       {
@@ -77,7 +77,7 @@
           surv_timepoint(vars = "AVAL", var_labels = as.character(anl$AVALU[1]), 
               is_event = "is_event", time_point = c(183, 365, 548), 
               method = "surv", control = control_surv_timepoint(conf_level = 0.95, 
-                  conf_type = "plain"), .indent_mods = NULL, table_names = "time_points")
+                  conf_type = "plain"), .indent_mods = NULL)
       
       $table
       {
@@ -135,7 +135,7 @@
               method = "both", control = control_surv_timepoint(conf_level = 0.95, 
                   conf_type = "plain"), .indent_mods = c(pt_at_risk = 0L, 
                   event_free_rate = 0L, rate_ci = 0L, rate_diff = 1L, 
-                  rate_diff_ci = 1L, ztest_pval = 1L), table_names = "time_points")
+                  rate_diff_ci = 1L, ztest_pval = 1L))
       
       $table
       {
@@ -189,7 +189,7 @@
               method = "both", control = control_surv_timepoint(conf_level = 0.95, 
                   conf_type = "plain"), .indent_mods = c(pt_at_risk = 0L, 
                   event_free_rate = 0L, rate_ci = 0L, rate_diff = 1L, 
-                  rate_diff_ci = 1L, ztest_pval = 1L), table_names = "time_points")
+                  rate_diff_ci = 1L, ztest_pval = 1L))
       
       $table
       {

@@ -1,4 +1,4 @@
-test_that("`as_num` as a wide interpretation of input to extract numerics.", {
+testthat::test_that("`as_num` as a wide interpretation of input to extract numerics.", {
   dta <- list(
     character = c("text10,20.5letter30.!", "!-.40$$-50e5[", NA),
     factor    = factor(c("]+60e-6, 7.7%%8L", "%90sep.100\"1L", NA_character_)),

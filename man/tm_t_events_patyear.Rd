@@ -17,7 +17,7 @@ tm_t_events_patyear(
   avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVALU"), "AVALU", fixed = TRUE),
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
   drop_arm_levels = TRUE,

@@ -21,7 +21,7 @@ template_summary_by <- function(parentname,
                                 by_vars,
                                 var_labels = character(),
                                 add_total = TRUE,
-                                total_label = "All Patients",
+                                total_label = default_total_label(),
                                 parallel_vars = FALSE,
                                 row_groups = FALSE,
                                 na.rm = FALSE, # nolint
@@ -36,7 +36,6 @@ template_summary_by <- function(parentname,
   assertthat::assert_that(
     assertthat::is.string(parentname),
     assertthat::is.string(dataname),
-    assertthat::is.string(arm_var),
     assertthat::is.string(id_var),
     is.character(sum_vars),
     is.character(by_vars),
@@ -51,6 +50,7 @@ template_summary_by <- function(parentname,
     is.character(numeric_stats),
     assertthat::is.flag(drop_zero_levels)
   )
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   denominator <- match.arg(denominator)
 
   y <- list()
@@ -72,15 +72,15 @@ template_summary_by <- function(parentname,
     )
   )
 
-  data_list <- add_expr(
-    data_list,
+  prepare_arm_levels_call <- lapply(arm_var, function(x) {
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
+      arm_var = x,
       drop_arm_levels = drop_arm_levels
     )
-  )
+  })
+  data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
 
   data_list <- add_expr(
     data_list,
@@ -106,7 +106,6 @@ template_summary_by <- function(parentname,
     )
   }
 
-  layout_list <- list()
 
   table_title <- paste("Summary Table for", paste(sum_vars, collapse = ", "), "by", paste(by_vars, collapse = ", "))
 
@@ -117,56 +116,53 @@ template_summary_by <- function(parentname,
     )
   )
 
+  layout_list <- list()
   layout_list <- add_expr(
     layout_list,
     parsed_basic_table_args
   )
 
-  layout_list <- add_expr(
-    layout_list,
-    if (add_total) {
+  split_cols_call <- lapply(arm_var, function(x) {
+    if (drop_arm_levels) {
       substitute(
-        expr = rtables::split_cols_by(
-          arm_var,
-          split_fun = add_overall_level(total_label, first = FALSE)
-        ),
-        env = list(
-          arm_var = arm_var,
-          total_label = total_label
-        )
+        expr = rtables::split_cols_by(x, split_fun = drop_split_levels),
+        env = list(x = x)
       )
     } else {
       substitute(
-        expr = rtables::split_cols_by(arm_var),
-        env = list(arm_var = arm_var)
+        expr = rtables::split_cols_by(x),
+        env = list(x = x)
       )
     }
-  )
+  })
+  layout_list <- Reduce(add_expr, split_cols_call, init = layout_list)
+
+  if (add_total) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = rtables::add_overall_col(total_label),
+        env = list(total_label = total_label)
+      )
+    )
+  }
 
   layout_list <- add_expr(
     layout_list,
     quote(rtables::add_colcounts())
   )
 
-  if (denominator == "omit") {
-    env_vars <- list(
-      sum_vars = sum_vars,
-      sum_var_labels = var_labels[sum_vars],
-      na.rm = na.rm,
-      na_level = na_level,
-      denom = ifelse(denominator == "n", "n", "N_col"),
-      stats = c(numeric_stats, "count")
+  env_vars <- list(
+    sum_vars = sum_vars,
+    sum_var_labels = var_labels[sum_vars],
+    na.rm = na.rm,
+    na_level = na_level,
+    denom = ifelse(denominator == "n", "n", "N_col"),
+    stats = c(
+      numeric_stats,
+      ifelse(denominator == "omit", "count", "count_fraction")
     )
-  } else {
-    env_vars <- list(
-      sum_vars = sum_vars,
-      sum_var_labels = var_labels[sum_vars],
-      na.rm = na.rm,
-      na_level = na_level,
-      denom = ifelse(denominator == "n", "n", "N_col"),
-      stats = c(numeric_stats, "count_fraction")
-    )
-  }
+  )
 
   for (by_var in by_vars) {
     split_label <- substitute(
@@ -387,7 +383,7 @@ tm_t_summary_by <- function(label,
                             ),
                             paramcd = NULL,
                             add_total = TRUE,
-                            total_label = "All Patients",
+                            total_label = default_total_label(),
                             parallel_vars = FALSE,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint
@@ -425,7 +421,7 @@ tm_t_summary_by <- function(label,
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     id_var = cs_to_des_select(id_var, dataname = dataname),
     paramcd = `if`(
       is.null(paramcd),
@@ -599,7 +595,8 @@ srv_summary_by <- function(id,
                            basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
-  checkmate::assert_class(data, "tdata")
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
     vars <- list(arm_var = arm_var, id_var = id_var, summarize_vars = summarize_vars, by_vars = by_vars)
@@ -609,7 +606,9 @@ srv_summary_by <- function(id,
     }
 
     validation_rules <- list(
-      arm_var = shinyvalidate::sv_required("Please select a treatment variable."),
+      arm_var = ~ if (length(.) != 1 && length(.) != 2) {
+        "Please select 1 or 2 column variables"
+      },
       id_var = shinyvalidate::sv_required("Please select a subject identifier."),
       summarize_vars = shinyvalidate::sv_required("Please select a summarize variable.")
     )
@@ -630,20 +629,18 @@ srv_summary_by <- function(id,
     anl_inputs <- teal.transform::merge_expression_srv(
       selector_list = selector_list,
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       merge_function = "dplyr::inner_join"
     )
 
     adsl_inputs <- teal.transform::merge_expression_module(
       id = "adsl_merge",
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var),
       anl_name = "ANL_ADSL"
     )
 
     anl_q <- shiny::reactive({
-      teal.code::new_qenv(tdata2env(data), code = get_code_tdata(data)) %>%
+      data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
@@ -672,7 +669,7 @@ srv_summary_by <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_by_vars, input_summarize_vars, input_id_var),
-        arm_var = input_arm_var
+        arm_var = input_arm_var[[1]]
       )
 
       if (input$parallel_vars) {
@@ -750,7 +747,7 @@ srv_summary_by <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(paste(teal.code::get_code(all_q()), collapse = "\n"))
+        card$append_src(teal.code::get_code(all_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

@@ -15,7 +15,7 @@ template_events_summary(
   aeseq_var = "AESEQ",
   llt = "AEDECOD",
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   count_subj = TRUE,
   count_pt = TRUE,
   count_events = TRUE

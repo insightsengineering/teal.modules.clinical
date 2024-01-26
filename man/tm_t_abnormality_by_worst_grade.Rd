@@ -26,7 +26,7 @@ tm_t_abnormality_by_worst_grade(
     teal.transform::choices_selected(teal.transform::value_choices(dataname, var_choices
     = "WGRLOFL"), selected = "Y", fixed = TRUE),
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,

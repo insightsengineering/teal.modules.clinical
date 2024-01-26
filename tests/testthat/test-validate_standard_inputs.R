@@ -27,13 +27,11 @@ testthat::test_that("validate_arm throws specific shiny error if arm_vec has jus
 })
 
 testthat::test_that("validate_arm throws no error if arm_vec is a factor", {
-  testthat::expect_error(
-    validate_arm(factor(c("A", "B"), levels = c("A", "B"))),
-    NA
+  testthat::expect_no_error(
+    validate_arm(factor(c("A", "B"), levels = c("A", "B")))
   )
 
-  testthat::expect_error(
-    validate_arm(factor(c("A", "B"), levels = c("A", "B", "C"))),
-    NA
+  testthat::expect_no_error(
+    validate_arm(factor(c("A", "B"), levels = c("A", "B", "C")))
   )
 })
