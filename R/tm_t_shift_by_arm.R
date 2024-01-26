@@ -107,7 +107,9 @@ template_shift_by_arm <- function(dataname,
             split_label = obj_label(dataname$arm_var)
           ) %>%
           add_rowcounts() %>%
-          summarize_vars(baseline_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction") %>%
+          summarize_vars(
+            baseline_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction"
+          ) %>%
           append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
           aval_var = aval_var,
@@ -136,7 +138,9 @@ template_shift_by_arm <- function(dataname,
             split_label = obj_label(dataname$arm_var)
           ) %>%
           add_rowcounts() %>%
-          summarize_vars(baseline_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction") %>%
+          summarize_vars(
+            baseline_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction"
+          ) %>%
           append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
           aval_var = aval_var,

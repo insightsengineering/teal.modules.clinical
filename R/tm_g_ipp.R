@@ -480,7 +480,6 @@ srv_g_ipp <- function(id,
                       plot_width,
                       label,
                       ggplot2_args) {
-
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
