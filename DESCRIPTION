@@ -52,7 +52,6 @@ Imports:
     shinyvalidate,
     shinyWidgets,
     stats,
-    styler,
     teal.code (>= 0.4.0),
     teal.data (>= 0.3.0.9010),
     teal.logger (>= 0.1.1),
@@ -79,4 +78,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
