@@ -13,7 +13,7 @@ template_summary_by(
   by_vars,
   var_labels = character(),
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   parallel_vars = FALSE,
   row_groups = FALSE,
   na.rm = FALSE,
