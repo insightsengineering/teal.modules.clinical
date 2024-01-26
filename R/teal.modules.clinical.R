@@ -3,8 +3,6 @@
 #' Provides teal modules for the standard clinical trials outputs.
 #' The teal modules add an encoding panel to interactively change the encodings within teal.
 #'
-"_PACKAGE"
-
 #' @import teal
 #' @import teal.transform
 #' @import tern
@@ -12,6 +10,10 @@
 #' @importFrom methods is
 #' @importFrom rlang := .data
 #' @importFrom tern.gee lsmeans
+#'
+#' @name teal.modules.clinical
+#' @keywords internal
+"_PACKAGE"
 
 # We need this to avoid R CMD check warning about missing global definitions.
 utils::globalVariables(c(
