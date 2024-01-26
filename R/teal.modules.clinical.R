@@ -8,7 +8,7 @@
 #' @import tern
 #' @importFrom dplyr %>%
 #' @importFrom methods is
-#' @importFrom rlang := .data
+#' @importFrom rlang .data
 #' @importFrom tern.gee lsmeans
 #'
 #' @name teal.modules.clinical

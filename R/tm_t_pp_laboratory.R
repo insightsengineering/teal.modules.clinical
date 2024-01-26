@@ -59,8 +59,8 @@ template_laboratory <- function(dataname = "ANL",
             timevar = "INDEX"
           )
         colnames(labor_table_raw)[-c(1:3)] <- unique(labor_table_base$INDEX)
-        labor_table_raw <- labor_table_raw %>%
-          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
+
+        labor_table_raw[[param_char]] <- clean_description(labor_table_raw[[param_char]])
 
         labor_table_raw <- rlistings::as_listing(
           labor_table_raw,
@@ -79,8 +79,7 @@ template_laboratory <- function(dataname = "ANL",
             timevar = "INDEX"
           )
         colnames(labor_table_html)[-c(1:3)] <- unique(labor_table_base$INDEX)
-        labor_table_html <- labor_table_html %>%
-          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
+        labor_table_html[[param_char]] <- clean_description(labor_table_html[[param_char]])
 
         labor_table_html_dt <- DT::datatable(labor_table_html, escape = FALSE)
         labor_table_html_dt$dependencies <- c(
