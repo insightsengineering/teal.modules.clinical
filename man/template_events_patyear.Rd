@@ -33,7 +33,7 @@ variable names that can be used as \code{arm_var}.}
 \item{label_paramcd}{(\code{string})\cr title of table based on \code{paramcd}}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}

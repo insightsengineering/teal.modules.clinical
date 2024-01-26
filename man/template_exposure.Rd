@@ -60,7 +60,7 @@ whether empty rows should be removed from the table.}
 in character or factor variables in the data.}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
 \item{avalu_var}{(\code{character})\cr
 name of the analysis unit variable.}
