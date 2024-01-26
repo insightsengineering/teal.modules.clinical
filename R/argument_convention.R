@@ -9,100 +9,67 @@
 #' single reference point to import the `roxygen` argument description with:
 #' `@inheritParams template_arguments`
 #'
-#' @param arm_var (`character`)\cr
-#'   variable names that can be used as `arm_var`.
-#' @param id_var (`character`)\cr
-#'   the variable name for subject id.
-#' @param sum_vars (`character`)\cr
-#'   names of the variables that should be summarized.
-#' @param compare_arm (`logical`)\cr
-#'   triggers the comparison between study arms.
-#' @param combine_comp_arms (`logical`)\cr
-#'   triggers the combination of comparison arms.
-#' @param parentname (`character`)\cr
-#'   parent analysis data used in teal module, usually this refers to `ADSL`.
-#' @param dataname (`character`)\cr
-#'   analysis data used in teal module.
-#' @param anl_name (`character`)\cr
-#'   analysis data used in teal module.
-#' @param paramcd (`character`)\cr
-#'   variable value designating the studied parameter.
-#' @param ref_arm (`character`)\cr
-#'   the level of reference arm in case of arm comparison.
-#' @param comp_arm (`character`)\cr
-#'   the level of comparison arm in case of arm comparison.
-#' @param na.rm (`logical`)\cr
-#'   whether `NA` values should be removed prior to analysis.
-#' @param useNA (`character`)\cr
-#'   whether missing data (`NA`) should be displayed as a level.
-#' @param na_level (`string`)\cr used to replace all `NA` or empty values
-#'   in character or factor variables in the data.
-#' @param denominator (`character`)\cr
-#'   chooses how percentages are calculated. With option `N`, the reference
-#'   population from the column total is used as the denominator. With option
-#'   `n`, the number of non-missing records in this row and column intersection
-#'   is used as the denominator. If `omit` is chosen, then the percentage is
-#'   omitted.
-#' @param var_labels optional, (named `character`)\cr
-#'   variable labels for relabeling the analysis variables.
-#' @param cov_var (`character`)\cr
-#'   names of the covariates variables.
-#' @param aval_var (`character`)\cr
-#'   name of the analysis variable.
-#' @param cnsr_var (`character`)\cr
-#'   name of the censoring variable.
-#' @param conf_level (`numeric`)\cr
-#'   value for the confidence level within the range of (0, 1).
-#' @param add_total (`logical`)\cr
-#'   whether to include column with total number of patients.
-#' @param hlt (`character`)\cr
-#'   name of the variable with high level term for events.
-#' @param llt (`character`)\cr
-#'   name of the variable with low level term for events.
-#' @param visit_var (`character`)\cr
-#'   variable names that can be used as `visit` variable. Must be a factor in `dataname`.
+#' @param arm_var (`character`)\cr variable names that can be used as `arm_var`.
+#' @param id_var (`character`)\cr the variable name for subject id.
+#' @param sum_vars (`character`)\cr names of the variables that should be summarized.
+#' @param compare_arm (`logical`)\cr triggers the comparison between study arms.
+#' @param combine_comp_arms (`logical`)\cr triggers the combination of comparison arms.
+#' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
+#' @param dataname (`character`)\cr analysis data used in teal module.
+#' @param anl_name (`character`)\cr analysis data used in teal module.
+#' @param paramcd (`character`)\cr variable value designating the studied parameter.
+#' @param ref_arm (`character`)\cr the level of reference arm in case of arm comparison.
+#' @param comp_arm (`character`)\cr the level of comparison arm in case of arm comparison.
+#' @param na.rm (`logical`)\cr whether `NA` values should be removed prior to analysis.
+#' @param useNA (`character`)\cr whether missing data (`NA`) should be displayed as a level.
+#' @param na_level (`string`)\cr used to replace all `NA` or empty values in character or factor variables in the data.
+#' @param denominator (`character`)\cr chooses how percentages are calculated. With option `N`, the reference
+#'   population from the column total is used as the denominator. With option `n`, the number of non-missing records in
+#'   this row and column intersection is used as the denominator. If `omit` is chosen, then the percentage is omitted.
+#' @param var_labels optional, (named `character`)\cr variable labels for relabeling the analysis variables.
+#' @param cov_var (`character`)\cr names of the covariates variables.
+#' @param aval_var (`character`)\cr name of the analysis variable.
+#' @param base_var `r lifecycle::badge("deprecated")` Please use the `baseline_var` argument instead.
+#' @param cnsr_var (`character`)\cr name of the censoring variable.
+#' @param conf_level (`numeric`)\cr value for the confidence level within the range of (0, 1).
+#' @param add_total (`logical`)\cr whether to include column with total number of patients.
+#' @param hlt (`character`)\cr name of the variable with high level term for events.
+#' @param llt (`character`)\cr name of the variable with low level term for events.
+#' @param visit_var (`character`)\cr variable names that can be used as `visit` variable. Must be a factor in
+#'   `dataname`.
 #' @param include_interact (`logical`)\cr whether an interaction term should be included in the model.
-#' @param interact_var (`character`)\cr name of the variable that should have interactions
-#'   with arm. If the interaction is not needed, the default option is `NULL`.
-#' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select
-#'   the specific `ANCOVA` results. If the interaction is not needed, the default option is `FALSE`.
-#' @param by_vars (`character`)\cr
-#'   variable names used to split the summary by rows.
-#' @param time_points (`character`)\cr
-#'   time points that can be used in [tern::surv_timepoint()].
-#' @param time_unit_var (`character`)\cr
-#'   name of the variable representing time units.
-#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
-#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
-#'   `arm_var` levels are set to those used in the `parantname` dataset.
+#' @param interact_var (`character`)\cr name of the variable that should have interactions with arm. If the interaction
+#'   is not needed, the default option is `NULL`.
+#' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select the
+#'   specific `ANCOVA` results. If the interaction is not needed, the default option is `FALSE`.
+#' @param by_vars (`character`)\cr variable names used to split the summary by rows.
+#' @param time_points (`character`)\cr time points that can be used in [tern::surv_timepoint()].
+#' @param time_unit_var (`character`)\cr name of the variable representing time units.
+#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels. When `TRUE`, `arm_var` levels are set to
+#'   those used in the `dataname` dataset. When `FALSE`, `arm_var` levels are set to those used in the `parantname`
+#'   dataset.
 #' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
-#' @param strata_var (`character`)\cr
-#'   names of the variables for stratified analysis.
-#' @param title (`character`)\cr
-#'   title of the output.
+#' @param strata_var (`character`)\cr names of the variables for stratified analysis.
+#' @param title (`character`)\cr title of the output.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
-#' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
-#'   rates between any two columns.
+#' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in rates between
+#'   any two columns.
 #' @param treatment_flag_var (`character`)\cr name of the on treatment flag variable.
-#' @param treatment_flag (`character`)\cr name of the value indicating on treatment
-#'   records in `treatment_flag_var`.
-#' @param basic_table_args optional, (`basic_table_args`)\cr
-#'   object created by [teal.widgets::basic_table_args()] with settings for the module table.
-#'   The argument is merged with option `teal.basic_table_args` and with default module arguments
-#'   (hard coded in the module body).
+#' @param treatment_flag (`character`)\cr name of the value indicating on treatment records in `treatment_flag_var`.
+#' @param basic_table_args optional, (`basic_table_args`)\cr object created by [teal.widgets::basic_table_args()] with
+#'   settings for the module table. The argument is merged with option `teal.basic_table_args` and with default module
+#'   arguments (hard coded in the module body).
 #'
 #'   For more details, see the vignette: `vignette("custom-basic-table-arguments", package = "teal.widgets")`.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#'   object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#'   The argument is merged with option `teal.ggplot2_args` and with default module arguments
-#'   (hard coded in the module body).
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings for
+#'   the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments (hard
+#'   coded in the module body).
 #'
 #'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#'
 #' @name template_arguments
 #' @keywords internal
-#'
 NULL
-
 
 #' Standard Module Arguments
 #'

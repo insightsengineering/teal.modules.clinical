@@ -171,19 +171,19 @@ template_adverse_events <- function(dataname = "ANL",
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param aeterm
 #' ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AETERM} column of the `ADAE` dataset.
+#' `AETERM` column of the `ADAE` dataset.
 #' @param tox_grade ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AETOXGR} column of the `ADAE` dataset.
+#' `AETOXGR` column of the `ADAE` dataset.
 #' @param causality ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AEREL} column of the `ADAE` dataset.
+#' `AEREL` column of the `ADAE` dataset.
 #' @param outcome ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AEOUT} column of the `ADAE` dataset.
+#' `AEOUT` column of the `ADAE` dataset.
 #' @param action ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AEACN} column of the `ADAE` dataset.
+#' `AEACN` column of the `ADAE` dataset.
 #' @param time ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ASTDY} column of the `ADAE` dataset.
+#' `ASTDY` column of the `ADAE` dataset.
 #' @param decod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AEDECOD} column of the `ADAE` dataset.
+#' `AEDECOD` column of the `ADAE` dataset.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @export
