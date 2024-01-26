@@ -21,9 +21,7 @@ tm_t_abnormality(
   treatment_flag_var =
     teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
     "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag =
-    teal.transform::choices_selected(teal.transform::value_choices(dataname, "ONTRTFL"),
-    selected = "Y", fixed = TRUE),
+  treatment_flag = teal.transform::choices_selected("Y"),
   add_total = TRUE,
   total_label = default_total_label(),
   exclude_base_abn = FALSE,
@@ -140,8 +138,8 @@ app <- init(
         selected = c("LBCAT", "PARAM"),
         keep_order = TRUE
       ),
-      baseline_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "BNRIND"),
+      baseline_var = choices_selected(
+        variable_choices(data[["ADLB"]], subset = "BNRIND"),
         selected = "BNRIND", fixed = TRUE
       ),
       grade = choices_selected(
