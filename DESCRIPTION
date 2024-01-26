@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9028
-Date: 2024-01-24
+Version: 0.8.16.9029
+Date: 2024-01-26
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -117,4 +117,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.1

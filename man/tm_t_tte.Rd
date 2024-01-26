@@ -27,7 +27,7 @@ tm_t_tte(
     "AVALU", fixed = TRUE),
   event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
