@@ -22,9 +22,7 @@ tm_t_abnormality_by_worst_grade(
   worst_low_flag_var =
     teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
     "WGRLOFL"), selected = "WGRLOFL", fixed = TRUE),
-  worst_flag_indicator =
-    teal.transform::choices_selected(teal.transform::value_choices(dataname, var_choices
-    = "WGRLOFL"), selected = "Y", fixed = TRUE),
+  worst_flag_indicator = teal.transform::choices_selected("Y"),
   add_total = TRUE,
   total_label = default_total_label(),
   drop_arm_levels = TRUE,

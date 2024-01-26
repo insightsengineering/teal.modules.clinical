@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9030
+Version: 0.8.16.9031
 Date: 2024-01-26
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
@@ -28,7 +28,7 @@ Depends:
     R (>= 4.0),
     teal (>= 0.14.0.9027),
     teal.transform (>= 0.4.0.9011),
-    tern (== 0.9.3)
+    tern (>= 0.9.3)
 Imports:
     assertthat,
     broom,

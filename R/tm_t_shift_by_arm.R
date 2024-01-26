@@ -243,12 +243,9 @@ tm_t_shift_by_arm <- function(label,
                               baseline_var,
                               treatment_flag_var = teal.transform::choices_selected(
                                 teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
-                                selected = "ONTRTFL", fixed = TRUE
+                                selected = "ONTRTFL"
                               ),
-                              treatment_flag = teal.transform::choices_selected(
-                                teal.transform::value_choices(dataname, "ONTRTFL"),
-                                selected = "Y", fixed = TRUE
-                              ),
+                              treatment_flag = teal.transform::choices_selected("Y"),
                               useNA = c("ifany", "no"), # nolint
                               na_level = "<Missing>",
                               add_total = FALSE,
@@ -304,6 +301,7 @@ tm_t_shift_by_arm <- function(label,
         label = label,
         total_label = total_label,
         na_level = na_level,
+        treatment_flag = treatment_flag,
         basic_table_args = basic_table_args
       )
     ),
@@ -385,11 +383,9 @@ ui_shift_by_arm <- function(id, ...) {
           ),
           teal.widgets::optionalSelectInput(
             ns("treatment_flag"),
-            "Value Indicating On Treatment",
-            a$treatment_flag$choices,
-            a$treatment_flag$selected,
+            label = "Value Indicating On Treatment",
             multiple = FALSE,
-            fixed = a$treatment_flag$fixed
+            fixed_on_single = TRUE
           )
         )
       )
@@ -414,6 +410,7 @@ srv_shift_by_arm <- function(id,
                              paramcd,
                              visit_var,
                              treatment_flag_var,
+                             treatment_flag,
                              aval_var,
                              baseline_var,
                              label,
@@ -447,6 +444,16 @@ srv_shift_by_arm <- function(id,
         visit_var = shinyvalidate::sv_required("A visit is required")
       )
     )
+
+    shiny::isolate({
+      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
+      teal.widgets::updateOptionalSelectInput(
+        session = session,
+        inputId = "treatment_flag",
+        choices = resolved$choices,
+        selected = resolved$selected
+      )
+    })
 
     iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
