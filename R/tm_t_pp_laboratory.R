@@ -196,7 +196,7 @@ tm_t_pp_laboratory <- function(label,
       call. = FALSE
     )
   } else {
-    avalu <- avalu_var
+    avalu <- avalu_var # resolves missing argument error
   }
 
   logger::log_info("Initializing tm_t_pp_laboratory")
