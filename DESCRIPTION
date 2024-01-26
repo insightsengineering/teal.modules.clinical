@@ -59,7 +59,6 @@ Imports:
     teal.widgets (>= 0.4.0),
     tern.gee (>= 0.1.0),
     tern.mmrm (>= 0.2.1),
-    tidyr,
     utils,
     vistime
 Suggests:
