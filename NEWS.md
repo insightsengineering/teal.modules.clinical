@@ -12,6 +12,9 @@
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
 
+### Miscellaneous
+* Deprecated the `aval` argument in `tm_t_pp_laboratory` and `tm_g_pp_vitals` and replaced it with the `aval_var` argument.
+
 # teal.modules.clinical 0.8.16.9010
 
 ### Enhancements
