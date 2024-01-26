@@ -308,7 +308,7 @@ tm_t_exposure <- function(label,
                             fixed = TRUE
                           ),
                           add_total,
-                          total_label = "All Patients",
+                          total_label = default_total_label(),
                           add_total_row = TRUE,
                           total_row_label = "Total number of patients and patient time*",
                           na_level = "<Missing>",

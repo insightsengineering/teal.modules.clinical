@@ -23,7 +23,7 @@ tm_t_events_summary(
   aeseq_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AESEQ"), "AESEQ", fixed = TRUE),
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   count_subj = TRUE,
   count_pt = TRUE,
   count_events = TRUE,

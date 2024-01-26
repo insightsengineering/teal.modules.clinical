@@ -16,7 +16,7 @@ template_abnormality(
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
   na_level = "<Missing>",
