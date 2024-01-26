@@ -15,7 +15,7 @@ substitute_q(qexpr, env)
 The modified expression.
 }
 \description{
-This version of substitute is needed because \code{substitute} does not
+This version of substitute is needed because \code{\link[=substitute]{substitute()}} does not
 evaluate it's first argument, and it's often useful to be able to modify
 a quoted expression.
 }

@@ -38,27 +38,20 @@ tm_t_shift_by_grade(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
+option for variable names that can be used as \code{arm_var}. It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
 
 \item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for variable names that can be used as visit.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
 
 \item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for variable names that can be used as worst flag variable.}
@@ -72,37 +65,31 @@ variable for analysis toxicity grade.}
 \item{base_toxgrade_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 variable for baseline toxicity grade.}
 
-\item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object specifying the variable name for subject id.}
+\item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object specifying the variable name for subject id.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
-\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is enabled (see
+\code{add_total}).}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels. When \code{TRUE}, \code{arm_var} levels are set to
+those used in the \code{dataname} dataset. When \code{FALSE}, \code{arm_var} levels are set to those used in the \code{parantname}
+dataset.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
-For example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context. For
+example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
+example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values in character or factor variables in the data.}
 
 \item{code_missing_baseline}{(\code{character})\cr whether missing baseline should be considered
 as grade 0.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
+settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
+arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

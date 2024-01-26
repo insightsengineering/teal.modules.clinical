@@ -33,29 +33,23 @@ tm_g_ipp(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices
 and preselected option for variable values that can be used as \code{arm_var}.}
 
-\item{paramcd}{(\code{character})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{id_var}{(\code{character})\cr
-the variable name for subject id.}
+\item{id_var}{(\code{character})\cr the variable name for subject id.}
 
 \item{visit_var}{(\code{string})\cr variable name designating the visit timepoint variable.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis variable.}
 
 \item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices
@@ -73,23 +67,17 @@ and preselected option for variable values that can be used as \code{base_var}.}
 
 \item{add_avalu}{(\code{flag})\cr allow user to not display value unit in the plot.}
 
-\item{plot_height}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the height of
-the main plot and renders a slider on the plot to interactively adjust the plot
-height.}
+\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the height
+of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{plot_width}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the width of
-the main plot and renders a slider on the plot to interactively adjust the plot
-width.}
+\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
-For example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context. For
+example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
+example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.

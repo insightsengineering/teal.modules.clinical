@@ -17,8 +17,7 @@ template_laboratory(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 

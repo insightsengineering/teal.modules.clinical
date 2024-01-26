@@ -23,40 +23,33 @@ template_logistic(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}. No arm or treatment variable is included in the logistic model is
 being \code{NULL}.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis variable.}
 
 \item{paramcd}{(\code{character})\cr response parameter value to use in the table title.}
 
 \item{label_paramcd}{(\code{character})\cr Label of response parameter value to use in the table title.}
 
-\item{cov_var}{(\code{character})\cr
-names of the covariates variables.}
+\item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
 \item{interaction_var}{(\code{character})\cr
 names of the variables that can be used for interaction variable selection.}
 
-\item{ref_arm}{(\code{character})\cr
-the level of reference arm in case of arm comparison.}
+\item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr
-the level of comparison arm in case of arm comparison.}
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
 \item{topleft}{(\code{character})\cr
 the top-left annotation in the table.}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{combine_comp_arms}{(\code{logical})\cr
-triggers the combination of comparison arms.}
+\item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
 \item{responder_val}{(\code{character})\cr
 values of the responder variable corresponding with a successful response.}
@@ -64,10 +57,9 @@ values of the responder variable corresponding with a successful response.}
 \item{at}{optional, (\code{NULL} or \code{numeric})\cr
 values for the interaction variable. Otherwise the median is used.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
+settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
+arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

@@ -24,17 +24,13 @@ template_exposure(
 )
 }
 \arguments{
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{id_var}{(\code{character})\cr
-the variable name for subject id.}
+\item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{paramcd}{(\code{character})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
 \item{paramcd_label}{(\code{character})\cr
 the column from the dataset where the value will be used to label the argument \code{paramcd}.}
@@ -45,8 +41,7 @@ variable name used to split the rows.}
 \item{col_by_var}{(\code{character})\cr
 variable name used to split the columns.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
 \item{add_total_row}{(\code{flag})\cr whether a "total" level should be added after the others which includes all the
 levels that constitute the split. A custom label can be set for this level via the \code{total_row_label} argument.}
@@ -56,19 +51,16 @@ levels that constitute the split. A custom label can be set for this level via t
 \item{drop_levels}{(\code{flag})\cr
 whether empty rows should be removed from the table.}
 
-\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values in character or factor variables in the data.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis variable.}
 
 \item{avalu_var}{(\code{character})\cr
 name of the analysis unit variable.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
+settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
+arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

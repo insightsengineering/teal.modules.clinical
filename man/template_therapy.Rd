@@ -22,8 +22,7 @@ template_therapy(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{atirel}{(\code{character})\cr name of time relation of medication variable.}
 
@@ -49,10 +48,9 @@ analysis data used in teal module.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
-(hard coded in the module body).
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for
+the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments (hard
+coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }

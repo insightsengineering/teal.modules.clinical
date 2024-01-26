@@ -25,14 +25,11 @@ tm_g_pp_adverse_events(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr patient ID column to be used.}
 
@@ -59,28 +56,21 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
 
-\item{plot_height}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the height of
-the main plot and renders a slider on the plot to interactively adjust the plot
-height.}
+\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the height
+of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{plot_width}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the width of
-the main plot and renders a slider on the plot to interactively adjust the plot
-width.}
+\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
-For example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context. For
+example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
+example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
-(hard coded in the module body).
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for
+the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments (hard
+coded in the module body).
 
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }

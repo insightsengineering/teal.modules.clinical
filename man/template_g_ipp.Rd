@@ -24,14 +24,11 @@ template_g_ipp(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{paramcd}{(\code{character})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{arm_levels}{(\code{character})\cr vector of all arm variable levels.}
 
@@ -39,13 +36,11 @@ variable names that can be used as \code{arm_var}.}
 
 \item{paramcd_first}{(\code{string})\cr \code{paramcd} value.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis variable.}
 
 \item{avalu_var}{(\code{string})\cr variable name designating the unit of the analysis variable.}
 
-\item{id_var}{(\code{character})\cr
-the variable name for subject id.}
+\item{id_var}{(\code{character})\cr the variable name for subject id.}
 
 \item{visit_var}{(\code{string})\cr variable name designating the visit timepoint variable.}
 
