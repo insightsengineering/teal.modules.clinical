@@ -45,4 +45,7 @@ SECURITY.md
 coverage.*
 ^pkgdown$
 ^tests/node_modules$
+^tests/cypress.config.js$
+^tests/package.json$
+^tests/package-lock.json$
 
