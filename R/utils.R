@@ -882,3 +882,54 @@ as_numeric_from_comma_sep_str <- function(input_string, sep = ",") {
   }
   return(split_as_numeric)
 }
+
+#' Default string for total column label
+#'
+#' @description `r lifecycle::badge("stable")`
+#'
+#' The default string used as a label for the "total" column. This value is used as the default
+#' value for the `total_label` argument throughout the `teal.modules.clinical` package. If not specified
+#' for each module by the user via the `total_label` argument, or in the R environment options via
+#' [set_default_total_label()], then `"All Patients"` is used.
+#'
+#' @param total_label (`string`)\cr Single string value to set in the R environment options as
+#'   the default label to use for the "total" column. Use `getOption("tmc_default_total_label")` to
+#'   check the current value set in the R environment (defaults to `"All Patients"` if not set).
+#'
+#' @name default_total_label
+NULL
+
+#' @describeIn default_total_label Getter for default total column label.
+#'
+#' @return
+#' * `default_total_label` returns the current value if an R environment option has been set
+#'   for `"tmc_default_total_label"`, or `"All Patients"` otherwise.
+#'
+#' @examples
+#' # Default settings
+#' default_total_label()
+#' getOption("tmc_default_total_label")
+#'
+#' # Set custom value
+#' set_default_total_label("All Patients")
+#'
+#' # Settings after value has been set
+#' default_total_label()
+#' getOption("tmc_default_total_label")
+#'
+#' @export
+default_total_label <- function() {
+  getOption("tmc_default_total_label", default = "All Patients")
+}
+
+#' @describeIn default_total_label Setter for default total column label. Sets the
+#'   option `"tmc_default_total_label"` within the R environment.
+#'
+#' @return
+#' * `set_default_total_label` has no return value.
+#'
+#' @export
+set_default_total_label <- function(total_label) {
+  checkmate::assert_character(total_label, len = 1, null.ok = TRUE)
+  options("tmc_default_total_label" = total_label)
+}

@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.16.9028
+# teal.modules.clinical 0.8.16.9029
 
 ### Breaking Changes
 + Adapted all modules to use `teal_data` objects.
@@ -8,6 +8,7 @@
 * Added parameter `sort_freq_col` to `tm_t_events` to allow the user to select column to use when sorting by decreasing frequency.
 * Added parameter `incl_overall_sum` to `tm_t_events` to allow the user to choose whether overall summary rows are included at the top of the table.
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
+* Added `default_total_label` and `set_default_total_label` functions to get and set default total column label (`total_label`) for modules.
 
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.

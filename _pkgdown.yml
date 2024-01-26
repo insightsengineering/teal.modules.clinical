@@ -48,6 +48,7 @@ reference:
       - cs_to_des_select
       - cs_to_filter_spec
       - cs_to_select_spec
+      - default_total_label
       - extract_input
       - get_var_labels
       - h_concat_expr

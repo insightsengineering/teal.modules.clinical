@@ -16,7 +16,7 @@ template_summary <- function(dataname,
                              sum_vars,
                              show_labels = c("default", "visible", "hidden"),
                              add_total = TRUE,
-                             total_label = "All Patients",
+                             total_label = default_total_label(),
                              var_labels = character(),
                              na.rm = FALSE, # nolint
                              na_level = "<Missing>",
@@ -258,7 +258,7 @@ tm_t_summary <- function(label,
                          arm_var,
                          summarize_vars,
                          add_total = TRUE,
-                         total_label = "All Patients",
+                         total_label = default_total_label(),
                          useNA = c("ifany", "no"), # nolint
                          na_level = "<Missing>",
                          numeric_stats = c(

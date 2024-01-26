@@ -22,7 +22,7 @@ template_shift_by_arm <- function(dataname,
                                   na.rm = FALSE, # nolint
                                   na_level = "<Missing>",
                                   add_total = FALSE,
-                                  total_label = "All Patients",
+                                  total_label = default_total_label(),
                                   basic_table_args = teal.widgets::basic_table_args()) {
   if (lifecycle::is_present(base_var)) {
     baseline_var <- base_var
@@ -252,7 +252,7 @@ tm_t_shift_by_arm <- function(label,
                               useNA = c("ifany", "no"), # nolint
                               na_level = "<Missing>",
                               add_total = FALSE,
-                              total_label = "All Patients",
+                              total_label = default_total_label(),
                               pre_output = NULL,
                               post_output = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
