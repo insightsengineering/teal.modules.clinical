@@ -893,7 +893,7 @@ as_numeric_from_comma_sep_str <- function(input_string, sep = ",") {
 #' [set_default_total_label()], then `"All Patients"` is used.
 #'
 #' @param total_label (`string`)\cr Single string value to set in the R environment options as
-#'   the default value to use as the total column label. Use `getOption("tmc_default_total_label")` to
+#'   the default label to use for the "total" column. Use `getOption("tmc_default_total_label")` to
 #'   check the current value set in the R environment (defaults to `"All Patients"` if not set).
 #'
 #' @name default_total_label

@@ -11,7 +11,7 @@ set_default_total_label(total_label)
 }
 \arguments{
 \item{total_label}{(\code{string})\cr Single string value to set in the R environment options as
-the default value to use as the total column label. Use \code{getOption("tmc_default_total_label")} to
+the default label to use for the "total" column. Use \code{getOption("tmc_default_total_label")} to
 check the current value set in the R environment (defaults to \code{"All Patients"} if not set).}
 }
 \value{
