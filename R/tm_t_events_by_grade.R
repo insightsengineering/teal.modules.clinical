@@ -5,8 +5,8 @@
 #' module.
 #' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
 #' module.
-#' @param id (`character`) \cr unique identifier of patients in datasets, default to `"USUBJID"`.
-#' @param grade (`character`) \cr name of the severity level variable.
+#' @param id (`character`)\cr unique identifier of patients in datasets, default to `"USUBJID"`.
+#' @param grade (`character`)\cr name of the severity level variable.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
 #' module.
 #'
@@ -373,7 +373,7 @@ template_events_by_grade <- function(dataname,
 #' @param grade (`character`) \cr grade term which grading_groups is based on, default to `"AETOXGR"`.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
 #' module.
-#' @param grading_groups (`character`) \cr list of grading groups.
+#' @param grading_groups (`character`)\cr list of grading groups.
 #'
 #' @seealso [tm_t_events_by_grade()]
 #' @keywords internal
@@ -778,8 +778,8 @@ template_events_col_by_grade <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
-#' @param col_by_grade (`flag`) \cr whether to display the grading groups in nested columns.
-#' @param grading_groups (`character`) \cr list of grading groups used when col_by_grade = TRUE.
+#' @param col_by_grade (`flag`)\cr whether to display the grading groups in nested columns.
+#' @param grading_groups (`character`)\cr list of grading groups used when col_by_grade = TRUE.
 #'
 #' @export
 #' @examples

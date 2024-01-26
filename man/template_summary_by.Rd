@@ -51,10 +51,10 @@ variable labels for relabeling the analysis variables.}
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
 
-\item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
+\item{parallel_vars}{(\code{logical})\cr used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
-\item{row_groups}{(\code{logical}) used to display \code{summarize_vars} as row groups
+\item{row_groups}{(\code{logical})\cr used to display \code{summarize_vars} as row groups
 (\code{FALSE} on default).}
 
 \item{na.rm}{(\code{logical})\cr
@@ -78,7 +78,7 @@ omitted.}
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
-\item{drop_zero_levels}{(\code{logical}) used to remove rows with zero counts from the result table.}
+\item{drop_zero_levels}{(\code{logical})\cr used to remove rows with zero counts from the result table.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.

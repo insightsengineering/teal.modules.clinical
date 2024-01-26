@@ -28,7 +28,7 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
 
-\item{seq_var}{(\code{numeric}) \cr Analysis Sequence Number. Used for counting the unique number of events.}
+\item{seq_var}{(\code{numeric})\cr Analysis Sequence Number. Used for counting the unique number of events.}
 
 \item{hlt}{(\code{character})\cr
 name of the variable with high level term for events.}

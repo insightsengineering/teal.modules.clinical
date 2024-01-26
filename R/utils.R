@@ -52,9 +52,9 @@ count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars 
 #' Get variable labels
 #'
 #' @description `r lifecycle::badge("deprecated")`
-#' @param datasets (`teal::FilteredData`) Data built up by teal
-#' @param dataname (`character`) name of the dataset
-#' @param vars (`character`) Column names in the data
+#' @param datasets (`teal::FilteredData`)\cr Data built up by teal
+#' @param dataname (`character`)\cr name of the dataset
+#' @param vars (`character`)\cr Column names in the data
 #'
 #' @return  `character` variable labels.
 #'
@@ -310,7 +310,7 @@ cs_to_filter_spec <- function(cs, multiple = FALSE, label = "Filter by") {
 #' Convert choices_selected to data_extract_spec with only select_spec
 #'
 #' @inheritParams cs_to_select_spec
-#' @param dataname (`character`) name of the data
+#' @param dataname (`character`)\cr name of the data
 #'
 #' @export
 #' @return ([teal.transform::data_extract_spec()])

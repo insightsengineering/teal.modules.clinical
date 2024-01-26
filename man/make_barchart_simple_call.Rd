@@ -52,7 +52,7 @@ whether to rotate y-axis label by 45 degrees.}
 \item{expand_y_range}{(\code{NULL}, \code{numeric(1)})\cr
 fraction of y-axis range to expand further up.}
 
-\item{facet_scales}{(\code{fixed}, \code{free_x}, \code{free_y} or \code{free}) value
+\item{facet_scales}{(\code{fixed}, \code{free_x}, \code{free_y} or \code{free})\cr value
 passed to \code{scales} argument of \code{ggplot2::facet_grid}}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr

@@ -35,7 +35,7 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
 
-\item{grading_groups}{(\code{character}) \cr list of grading groups.}
+\item{grading_groups}{(\code{character})\cr list of grading groups.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}

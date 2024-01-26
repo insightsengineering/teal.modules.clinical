@@ -67,10 +67,10 @@ whether to include column with total number of patients.}
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
 enabled (see \code{add_total}).}
 
-\item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
+\item{parallel_vars}{(\code{logical})\cr used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
-\item{row_groups}{(\code{logical}) used to display \code{summarize_vars} as row groups
+\item{row_groups}{(\code{logical})\cr used to display \code{summarize_vars} as row groups
 (\code{FALSE} on default).}
 
 \item{useNA}{(\code{character})\cr
@@ -95,7 +95,7 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 If \code{dataname} dataset and \code{parentname} dataset are the same (i.e. \code{ADSL}), then \code{drop_arm_levels} will always be
 TRUE regardless of the user choice when \code{tm_t_summary_by} is called.}
 
-\item{drop_zero_levels}{(\code{logical}) used to remove rows with zero counts from the result table.}
+\item{drop_zero_levels}{(\code{logical})\cr used to remove rows with zero counts from the result table.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr
 with text placed before the output to put the output into context.

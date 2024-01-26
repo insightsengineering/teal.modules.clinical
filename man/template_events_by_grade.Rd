@@ -33,7 +33,7 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}
 
-\item{id}{(\code{character}) \cr unique identifier of patients in datasets, default to \code{"USUBJID"}.}
+\item{id}{(\code{character})\cr unique identifier of patients in datasets, default to \code{"USUBJID"}.}
 
 \item{hlt}{(\code{character})\cr
 name of the variable with high level term for events.}
@@ -47,7 +47,7 @@ module.}
 \item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
 module.}
 
-\item{grade}{(\code{character}) \cr name of the severity level variable.}
+\item{grade}{(\code{character})\cr name of the severity level variable.}
 
 \item{label_grade}{(\code{string})\cr label of the \code{grade} variable from \code{dataname}. The label will be extracted from the
 module.}

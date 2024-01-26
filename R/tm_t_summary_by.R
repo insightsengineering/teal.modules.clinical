@@ -1,14 +1,14 @@
 #' Template: Summarize Variables by Row Groups Module
 #'
 #' @inheritParams template_arguments
-#' @param parallel_vars (`logical`) used to display `summarize_vars` as parallel columns
+#' @param parallel_vars (`logical`)\cr used to display `summarize_vars` as parallel columns
 #'  (`FALSE` on default). Can be used only if all chosen analysis variables are numeric.
-#' @param row_groups (`logical`) used to display `summarize_vars` as row groups
+#' @param row_groups (`logical`)\cr used to display `summarize_vars` as row groups
 #'  (`FALSE` on default).
 #' @param numeric_stats (`character`)\cr
 #'  selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
 #'  `median`, `median_ci`, `quantiles`, `range`. All are selected by default.
-#' @param drop_zero_levels (`logical`) used to remove rows with zero counts from the result table.
+#' @param drop_zero_levels (`logical`)\cr used to remove rows with zero counts from the result table.
 #'
 #' @seealso [tm_t_summary_by()]
 #' @keywords internal
@@ -321,7 +321,7 @@ template_summary_by <- function(parentname,
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
 #'   `median`, `median_ci`, `range`, `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
-#' @param drop_zero_levels (`logical`) used to remove rows with zero counts from the result table.
+#' @param drop_zero_levels (`logical`)\cr used to remove rows with zero counts from the result table.
 #' @inheritParams module_arguments
 #' @inheritParams template_summary_by
 #'
