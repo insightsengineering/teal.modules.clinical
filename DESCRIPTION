@@ -40,7 +40,6 @@ Imports:
     grid,
     lifecycle,
     logger (>= 0.2.0),
-    magrittr,
     methods,
     rlang,
     rlistings (>= 0.2.4),

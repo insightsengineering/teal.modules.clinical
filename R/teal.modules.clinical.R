@@ -5,7 +5,7 @@
 #'
 #' @import teal
 #' @import tern
-#' @importFrom magrittr %>%
+#' @importFrom dplyr %>%
 #' @importFrom methods is
 #' @importFrom rlang := .data
 #' @importFrom tern.gee lsmeans
