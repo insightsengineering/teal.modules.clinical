@@ -8,8 +8,12 @@ Cypress.Commands.add(
 
     function checkForChanges() {
       cy.get(selector).then(($el) => {
-        // Check for shiny-output-error class anywhere in the body
-        if (Cypress.$("body").find(".shiny-output-error").length > 0) {
+        // Check for Shiny errors in the body, But not Shiny validaiton errors
+        if (
+          Cypress.$("body")
+            .find(".shiny-output-error")
+            .not(".shiny-output-error-validation").length > 0
+        ) {
           throw new Error(
             "shiny-output-error class detected during stability check"
           );
