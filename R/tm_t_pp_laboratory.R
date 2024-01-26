@@ -196,7 +196,7 @@ tm_t_pp_laboratory <- function(label,
       call. = FALSE
     )
   } else {
-    aval <- aval_var
+    aval <- aval_var # resolves missing argument error
   }
 
   logger::log_info("Initializing tm_t_pp_laboratory")
