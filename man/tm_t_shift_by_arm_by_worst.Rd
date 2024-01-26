@@ -21,7 +21,7 @@ tm_t_shift_by_arm_by_worst(
   useNA = c("ifany", "no"),
   na_level = "<Missing>",
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()

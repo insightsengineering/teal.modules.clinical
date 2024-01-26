@@ -40,7 +40,7 @@ template_events_summary <- function(anl_name,
                                     aeseq_var = "AESEQ",
                                     llt = "AEDECOD",
                                     add_total = TRUE,
-                                    total_label = "All Patients",
+                                    total_label = default_total_label(),
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
@@ -268,7 +268,10 @@ template_events_summary <- function(anl_name,
   if (add_total) {
     layout_anl_list <- add_expr(
       layout_anl_list,
-      quote(rtables::add_overall_col(label = "All Patients"))
+      substitute(
+        expr = rtables::add_overall_col(label = tot_label),
+        env = list(tot_label = total_label)
+      )
     )
   }
 
@@ -597,7 +600,7 @@ tm_t_events_summary <- function(label,
                                   fixed = TRUE
                                 ),
                                 add_total = TRUE,
-                                total_label = "All Patients",
+                                total_label = default_total_label(),
                                 count_subj = TRUE,
                                 count_pt = TRUE,
                                 count_events = TRUE,

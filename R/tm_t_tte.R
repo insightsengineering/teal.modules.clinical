@@ -62,7 +62,7 @@ template_tte <- function(dataname = "ANL",
                          event_desc_var = "EVNTDESC",
                          control = control_tte(),
                          add_total = FALSE,
-                         total_label = "All Patients",
+                         total_label = default_total_label(),
                          basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -463,7 +463,7 @@ tm_t_tte <- function(label,
                      ),
                      event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
-                     total_label = "All Patients",
+                     total_label = default_total_label(),
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args()) {

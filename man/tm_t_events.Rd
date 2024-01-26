@@ -13,7 +13,7 @@ tm_t_events(
   hlt,
   llt,
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   event_type = "event",
   sort_criteria = c("freq_desc", "alpha"),
   sort_freq_col = total_label,
