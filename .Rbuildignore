@@ -44,3 +44,5 @@ SECURITY.md
 ^LICENSE\.md$
 coverage.*
 ^pkgdown$
+^tests/node_modules$
+
