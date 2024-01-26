@@ -345,4 +345,3 @@ testthat::test_that("default_total_label works properly", {
   testthat::expect_silent(set_default_total_label("Total Pts"))
   testthat::expect_equal(default_total_label(), "Total Pts")
 })
-
