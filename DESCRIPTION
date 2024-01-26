@@ -42,7 +42,6 @@ Imports:
     lifecycle,
     logger (>= 0.2.0),
     methods,
-    rlang,
     rlistings (>= 0.2.7),
     rmarkdown,
     rtables (>= 0.6.6),

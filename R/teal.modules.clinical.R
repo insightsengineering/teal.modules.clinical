@@ -6,9 +6,8 @@
 #' @import teal
 #' @import teal.transform
 #' @import tern
-#' @importFrom dplyr %>%
+#' @importFrom dplyr %>% .data
 #' @importFrom methods is
-#' @importFrom rlang .data
 #' @importFrom tern.gee lsmeans
 #'
 #' @name teal.modules.clinical
