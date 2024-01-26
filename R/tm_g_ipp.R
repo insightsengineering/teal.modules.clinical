@@ -309,7 +309,7 @@ tm_g_ipp <- function(label,
       call. = FALSE
     )
   } else {
-    base_var <- baseline_var
+    base_var <- baseline_var # resolves missing argument error
   }
 
   logger::log_info("Initializing tm_g_ipp")
