@@ -30,14 +30,12 @@
           vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
       
       $plot
-      $plot[[1]]
-      f <- g_forest(tbl = result, col_symbol_size = NULL, font_size = 15, 
-          as_list = TRUE)
-      
-      $plot[[2]]
-      p <- cowplot::plot_grid(f[["table"]] + ggplot2::labs(title = "Forest Plot of Best Overall Response for "), 
-          f[["plot"]] + ggplot2::labs(caption = ""), align = "h", axis = "tblr", 
-          rel_widths = c(1 - 0.25, 0.25))
-      
+      {
+          p <- decorate_grob(g_forest(tbl = result, col_symbol_size = NULL), 
+              titles = "Forest plot of best overall response for ", 
+              footnotes = "", gp_footnotes = grid::gpar(fontsize = 12))
+          grid::grid.newpage()
+          grid::grid.draw(p)
+      }
       
 

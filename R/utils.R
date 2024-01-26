@@ -802,7 +802,7 @@ color_lab_values <- function(x,
   }
 }
 
-#' Clean a categorical variable descriptions
+#' Clean up categorical variable description
 #'
 #' Cleaning categorical variable descriptions before presenting.
 #'
