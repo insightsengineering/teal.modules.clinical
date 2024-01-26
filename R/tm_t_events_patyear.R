@@ -15,7 +15,7 @@ template_events_patyear <- function(dataname,
                                     label_paramcd,
                                     aval_var = "AVAL",
                                     add_total = TRUE,
-                                    total_label = "All Patients",
+                                    total_label = default_total_label(),
                                     control = control_incidence_rate(),
                                     drop_arm_levels = TRUE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
@@ -214,7 +214,7 @@ tm_t_events_patyear <- function(label,
                                   fixed = TRUE
                                 ),
                                 add_total = TRUE,
-                                total_label = "All Patients",
+                                total_label = default_total_label(),
                                 conf_level = teal.transform::choices_selected(
                                   c(0.95, 0.9, 0.8), 0.95,
                                   keep_order = TRUE
