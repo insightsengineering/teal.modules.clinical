@@ -19,7 +19,7 @@ template_summary <- function(dataname,
                              total_label = default_total_label(),
                              var_labels = character(),
                              na.rm = FALSE, # nolint
-                             na_level = "<Missing>",
+                             na_level = default_na_str(),
                              numeric_stats = c(
                                "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                              ),
@@ -77,8 +77,11 @@ template_summary <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_lvl),
+      env = list(
+        parentname = as.name(parentname),
+        na_lvl = na_level
+      )
     )
   )
 
@@ -260,7 +263,7 @@ tm_t_summary <- function(label,
                          add_total = TRUE,
                          total_label = default_total_label(),
                          useNA = c("ifany", "no"), # nolint
-                         na_level = "<Missing>",
+                         na_level = default_na_str(),
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                          ),

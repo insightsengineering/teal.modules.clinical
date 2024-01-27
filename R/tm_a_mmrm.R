@@ -22,6 +22,7 @@ template_fit_mmrm <- function(parentname,
                               visit_var,
                               cov_var,
                               conf_level = 0.95,
+                              na_level = default_na_str(),
                               method = "Satterthwaite",
                               cor_struct = "unstructured",
                               weights_emmeans = "proportional",
@@ -44,7 +45,6 @@ template_fit_mmrm <- function(parentname,
         ref_arm_val = ref_arm_val
       )
     )
-
 
     parent_list <- add_expr(
       parent_list,
@@ -96,8 +96,20 @@ template_fit_mmrm <- function(parentname,
       )
     )
   }
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
-  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = "")))
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = df_explicit_na(na_level = na_lvl),
+      env = list(na_lvl = na_level)
+    )
+  )
+  parent_list <- add_expr(
+    parent_list,
+    substitute(
+      expr = df_explicit_na(na_level = na_lvl),
+      env = list(na_lvl = na_level)
+    )
+  )
 
   y$data <- substitute(
     expr = {
@@ -263,7 +275,7 @@ template_mmrm_tables <- function(parentname,
         expr = {
           lsmeans_table <- rtables::build_table(
             lyt = lyt,
-            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = ""),
+            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
             alt_counts_df = parentname
           )
           lsmeans_table
@@ -523,6 +535,7 @@ tm_a_mmrm <- function(label,
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
                       total_label = default_total_label(),
+                      na_level = default_na_str(),
                       pre_output = NULL,
                       post_output = NULL,
                       basic_table_args = teal.widgets::basic_table_args(),
@@ -531,6 +544,7 @@ tm_a_mmrm <- function(label,
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_string(dataname)
   checkmate::assert_class(method, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
@@ -576,6 +590,7 @@ tm_a_mmrm <- function(label,
         total_label = total_label,
         plot_height = plot_height,
         plot_width = plot_width,
+        na_level = na_level,
         basic_table_args = basic_table_args,
         ggplot2_args = ggplot2_args
       )
@@ -818,6 +833,7 @@ srv_mmrm <- function(id,
                      arm_ref_comp,
                      label,
                      total_label,
+                     na_level,
                      plot_height,
                      plot_width,
                      basic_table_args,
@@ -1216,6 +1232,7 @@ srv_mmrm <- function(id,
         visit_var = as.vector(anl_m_inputs$columns_source$visit_var),
         cov_var = input[[extract_input("cov_var", dataname)]],
         conf_level = as.numeric(input$conf_level),
+        na_level = na_level,
         method = as.character(input$method),
         cor_struct = input$cor_struct,
         weights_emmeans = input$weights_emmeans,

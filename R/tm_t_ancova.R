@@ -33,6 +33,7 @@ template_ancova <- function(dataname = "ANL",
                             label_paramcd = NULL,
                             visit_levels = "",
                             visit_var = "AVISIT",
+                            na_level = default_na_str(),
                             conf_level = 0.95,
                             basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
@@ -42,6 +43,7 @@ template_ancova <- function(dataname = "ANL",
     assertthat::is.string(label_aval) || is.null(label_aval),
     assertthat::is.flag(combine_comp_arms),
     assertthat::is.string(aval_var),
+    assertthat::is.string(na_level),
     is.character(cov_var),
     assertthat::is.flag(include_interact),
     all(sapply(interact_y, assertthat::is.string)) || isFALSE(interact_y),
@@ -109,8 +111,20 @@ template_ancova <- function(dataname = "ANL",
     )
   }
 
-  anl_list <- add_expr(anl_list, quote(df_explicit_na(na_level = "")))
-  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = "")))
+  anl_list <- add_expr(
+    anl_list,
+    substitute(
+      expr = df_explicit_na(na_level = na_lvl),
+      env = list(na_lvl = na_level)
+    )
+  )
+  parent_list <- add_expr(
+    parent_list,
+    substitute(
+      expr = df_explicit_na(na_level = na_lvl),
+      env = list(na_lvl = na_level)
+    )
+  )
 
   data_list <- add_expr(
     data_list,
@@ -504,6 +518,7 @@ tm_t_ancova <- function(label,
                         interact_y = FALSE,
                         avisit,
                         paramcd,
+                        na_level = default_na_str(),
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
@@ -512,6 +527,7 @@ tm_t_ancova <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_string(na_level)
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -548,6 +564,7 @@ tm_t_ancova <- function(label,
         arm_ref_comp = arm_ref_comp,
         include_interact = include_interact,
         label = label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -676,6 +693,7 @@ srv_ancova <- function(id,
                        paramcd,
                        avisit,
                        label,
+                       na_level,
                        basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -917,6 +935,7 @@ srv_ancova <- function(id,
         visit_levels = visit_levels,
         visit_var = unlist(avisit$filter)["vars_selected"],
         conf_level = as.numeric(input$conf_level),
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
       teal.code::eval_code(merged$anl_q(), as.expression(my_calls))

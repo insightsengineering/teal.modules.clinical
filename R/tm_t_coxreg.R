@@ -23,6 +23,7 @@ template_coxreg_u <- function(dataname,
                               strata_var = NULL,
                               combine_comp_arms = FALSE,
                               control = control_coxreg(),
+                              na_level = default_na_str(),
                               append = FALSE,
                               basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
@@ -69,7 +70,13 @@ template_coxreg_u <- function(dataname,
     )
   )
 
-  data_pipe <- add_expr(data_pipe, quote(df_explicit_na(na_level = "")))
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = df_explicit_na(na_level = na_lvl),
+      env = list(na_lvl = na_level)
+    )
+  )
 
   data_list <- add_expr(
     data_list,
@@ -184,6 +191,7 @@ template_coxreg_m <- function(dataname,
                               strata_var = NULL,
                               combine_comp_arms = FALSE,
                               control = control_coxreg(),
+                              na_level = default_na_str(),
                               basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -229,7 +237,13 @@ template_coxreg_m <- function(dataname,
     )
   )
 
-  data_pipe <- add_expr(data_pipe, quote(df_explicit_na(na_level = "")))
+  data_pipe <- add_expr(
+    data_pipe,
+    substitute(
+      expr = df_explicit_na(na_level = na_lvl),
+      env = list(na_lvl = na_level)
+    )
+  )
 
   data_list <- add_expr(
     data_list,
@@ -490,6 +504,7 @@ tm_t_coxreg <- function(label,
                           fixed = TRUE
                         ),
                         multivariate = TRUE,
+                        na_level = default_na_str(),
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
@@ -498,6 +513,7 @@ tm_t_coxreg <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_string(na_level)
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -526,6 +542,7 @@ tm_t_coxreg <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -685,6 +702,7 @@ srv_t_coxreg <- function(id,
                          cov_var,
                          arm_ref_comp,
                          label,
+                         na_level,
                          basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -948,6 +966,7 @@ srv_t_coxreg <- function(id,
           strata_var = strata_var,
           combine_comp_arms = combine_comp_arms,
           control = control,
+          na_level = na_level,
           basic_table_args = basic_table_args
         )
       } else {
@@ -964,6 +983,7 @@ srv_t_coxreg <- function(id,
           strata_var = strata_var,
           combine_comp_arms = combine_comp_arms,
           control = control,
+          na_level = na_level,
           append = TRUE,
           basic_table_args = basic_table_args
         )
