@@ -36,7 +36,8 @@
 #' @param useNA (`character`)\cr
 #'   whether missing data (`NA`) should be displayed as a level.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values
-#'   in character or factor variables in the data.
+#'   in character or factor variables in the data. Defaults to `""`. To set a
+#'   default `na_level` to apply in all modules, run `set_default_na_str("new_default")`.
 #' @param denominator (`character`)\cr
 #'   chooses how percentages are calculated. With option `N`, the reference
 #'   population from the column total is used as the denominator. With option
@@ -144,7 +145,8 @@ NULL
 #' @param useNA (`character`)\cr
 #'   whether missing data (`NA`) should be displayed as a level.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values
-#'   in character or factor variables in the data.
+#'   in character or factor variables in the data. Defaults to `""`. To set a
+#'   default `na_level` to apply in all modules, run `set_default_na_str("new_default")`.
 #' @param denominator (`character`)\cr
 #'   chooses how percentages are calculated. With option `N`, the reference
 #'   population from the column total is used as the denominator. With option
@@ -175,7 +177,8 @@ NULL
 #'   for variable names that can be used as `visit` variable. Must be a factor
 #'   in `dataname`.
 #' @param total_label (`string`)\cr string to display as total column/row label if column/row is
-#'   enabled (see `add_total`).
+#'   enabled (see `add_total`). Defaults to `"All Patients"`. To set a new default `total_label` to
+#'   apply in all modules, run `set_default_total_label("new_default")`.
 #' @param include_interact (`logical`)\cr whether an interaction term should be included in the model.
 #' @param interact_var (`character`)\cr name of the variable that should have interactions
 #'   with arm. If the interaction is not needed, the default option is `NULL`.

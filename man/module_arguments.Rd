@@ -43,7 +43,8 @@ variable value designating the studied parameter.}
 whether missing data (\code{NA}) should be displayed as a level.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+in character or factor variables in the data. Defaults to \code{""}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{denominator}{(\code{character})\cr
 chooses how percentages are calculated. With option \code{N}, the reference
@@ -85,7 +86,8 @@ for variable names that can be used as \code{visit} variable. Must be a factor
 in \code{dataname}.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
 

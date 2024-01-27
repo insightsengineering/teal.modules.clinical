@@ -15,6 +15,7 @@ template_logistic(
   ref_arm,
   comp_arm,
   topleft = "Logistic Regression",
+  na_level = default_na_str(),
   conf_level = 0.95,
   combine_comp_arms = FALSE,
   responder_val = c("CR", "PR"),
@@ -51,6 +52,10 @@ the level of comparison arm in case of arm comparison.}
 
 \item{topleft}{(\code{character})\cr
 the top-left annotation in the table.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{""}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{conf_level}{(\code{numeric})\cr
 value for the confidence level within the range of (0, 1).}

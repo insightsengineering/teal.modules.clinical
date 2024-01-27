@@ -14,6 +14,7 @@ template_events(
   label_llt = NULL,
   add_total = TRUE,
   total_label = default_total_label(),
+  na_level = default_na_str(),
   event_type = "event",
   sort_criteria = c("freq_desc", "alpha"),
   sort_freq_col = total_label,
@@ -48,6 +49,10 @@ module.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{""}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment).
 Default is "event".}

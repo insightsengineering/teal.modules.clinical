@@ -15,6 +15,7 @@ tm_t_logistic(
   cov_var = NULL,
   avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "AVALC"), "AVALC", fixed = TRUE),
+  na_level = default_na_str(),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
   pre_output = NULL,
@@ -55,6 +56,10 @@ variables.}
 
 \item{avalc_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices and preselected option for the analysis variable (categorical).}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{""}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{conf_level}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the confidence

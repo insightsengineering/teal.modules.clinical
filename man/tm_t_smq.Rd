@@ -17,7 +17,7 @@ tm_t_smq(
   total_label = default_total_label(),
   sort_criteria = c("freq_desc", "alpha"),
   drop_arm_levels = TRUE,
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   smq_varlabel = "Standardized MedDRA Query",
   baskets,
   scopes,
@@ -53,7 +53,8 @@ name of the variable with low level term for events.}
 whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
 by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
@@ -64,7 +65,8 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+in character or factor variables in the data. Defaults to \code{""}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ}
 created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
