@@ -47,8 +47,9 @@
 #'   variable labels for relabeling the analysis variables.
 #' @param cov_var (`character`)\cr
 #'   names of the covariates variables.
+#' @param aval `r lifecycle::badge("deprecated")` Please use the `aval_var` argument instead.
 #' @param aval_var (`character`)\cr
-#'   name of the analysis variable.
+#'   name of the analysis value variable.
 #' @param cnsr_var (`character`)\cr
 #'   name of the censoring variable.
 #' @param conf_level (`numeric`)\cr
@@ -155,6 +156,7 @@ NULL
 #' @param cov_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for the covariates
 #'   variables.
+#' @param aval `r lifecycle::badge("deprecated")` Please use the `aval_var` argument instead.
 #' @param aval_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for the analysis
 #'   variable.

@@ -7,7 +7,6 @@
 #' @param timepoints (`character`)\cr name of time variable used for
 #' the laboratory table.
 #' @param anrind (`character`)\cr name of the analysis reference range indicator variable.
-#' @param aval (`character`)\cr name of the analysis value variable.
 #' @param avalu (`character`)\cr name of the analysis value unit variable.
 #' @param patient_id (`character`)\cr patient ID.
 #' @param round_value (`numeric`)\cr number of decimal places to be used when rounding.
@@ -18,17 +17,27 @@ template_laboratory <- function(dataname = "ANL",
                                 param = "PARAM",
                                 anrind = "ANRIND",
                                 timepoints = "ADY",
-                                aval = "AVAL",
+                                aval = lifecycle::deprecated(),
+                                aval_var = "AVAL",
                                 avalu = "AVALU",
                                 patient_id = NULL,
                                 round_value = 0L) {
+  if (lifecycle::is_present(aval)) {
+    aval_var <- aval
+    warning(
+      "The `aval` argument of `template_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "Please use the `aval_var` argument instead.",
+      call. = FALSE
+    )
+  }
+
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(paramcd),
     assertthat::is.string(param),
     assertthat::is.string(anrind),
     assertthat::is.string(timepoints),
-    assertthat::is.string(aval),
+    assertthat::is.string(aval_var),
     assertthat::is.string(avalu),
     is.integer(round_value) && round_value >= 0
   )
@@ -42,14 +51,14 @@ template_laboratory <- function(dataname = "ANL",
       expr = {
         dataname[, aval_char] <- round(dataname[, aval_char], round_value)
         labor_table_base <- dataname %>%
-          dplyr::select(timepoints, paramcd, param, aval, avalu, anrind) %>%
+          dplyr::select(timepoints, paramcd, param, aval_var, avalu, anrind) %>%
           dplyr::arrange(timepoints) %>%
           dplyr::select(-timepoints) %>%
           dplyr::group_by(paramcd, param) %>%
           dplyr::mutate(INDEX = dplyr::row_number()) %>%
           dplyr::ungroup() %>%
-          dplyr::mutate(aval_anrind = paste(aval, anrind)) %>%
-          dplyr::select(-c(aval, anrind))
+          dplyr::mutate(aval_anrind = paste(aval_var, anrind)) %>%
+          dplyr::select(-c(aval_var, anrind))
 
         labor_table_raw <- labor_table_base %>%
           tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
@@ -80,8 +89,8 @@ template_laboratory <- function(dataname = "ANL",
         param = as.name(param),
         param_char = param,
         paramcd = as.name(paramcd),
-        aval = as.name(aval),
-        aval_char = aval,
+        aval_var = as.name(aval_var),
+        aval_char = aval_var,
         avalu = as.name(avalu),
         timepoints = as.name(timepoints),
         anrind = as.name(anrind),
@@ -109,7 +118,7 @@ template_laboratory <- function(dataname = "ANL",
 #' Time variable to be represented in the laboratory table.
 #' @param anrind ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' \code{ANRIND} column of the `ADLB` dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".
-#' @param aval ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param aval_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' \code{AVAL} column of the `ADLB` dataset.
 #' @param avalu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' \code{AVALU} column of the `ADLB` dataset.
@@ -151,7 +160,7 @@ template_laboratory <- function(dataname = "ANL",
 #'         choices = variable_choices(ADLB, "ANRIND"),
 #'         selected = "ANRIND"
 #'       ),
-#'       aval = choices_selected(
+#'       aval_var = choices_selected(
 #'         choices = variable_choices(ADLB, "AVAL"),
 #'         selected = "AVAL"
 #'       ),
@@ -171,13 +180,25 @@ tm_t_pp_laboratory <- function(label,
                                parentname = "ADSL",
                                patient_col = "USUBJID",
                                timepoints = NULL,
-                               aval = NULL,
+                               aval = lifecycle::deprecated(),
+                               aval_var = NULL,
                                avalu = NULL,
                                param = NULL,
                                paramcd = NULL,
                                anrind = NULL,
                                pre_output = NULL,
                                post_output = NULL) {
+  if (lifecycle::is_present(aval)) {
+    aval_var <- aval
+    warning(
+      "The `aval` argument of `tm_t_pp_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "Please use the `aval_var` argument instead.",
+      call. = FALSE
+    )
+  } else {
+    aval <- aval_var # resolves missing argument error
+  }
+
   logger::log_info("Initializing tm_t_pp_laboratory")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -189,7 +210,7 @@ tm_t_pp_laboratory <- function(label,
   args <- as.list(environment())
   data_extract_list <- list(
     timepoints = `if`(is.null(timepoints), NULL, cs_to_des_select(timepoints, dataname = dataname)),
-    aval = `if`(is.null(aval), NULL, cs_to_des_select(aval, dataname = dataname)),
+    aval_var = `if`(is.null(aval_var), NULL, cs_to_des_select(aval_var, dataname = dataname)),
     avalu = `if`(is.null(avalu), NULL, cs_to_des_select(avalu, dataname = dataname)),
     param = `if`(is.null(param), NULL, cs_to_des_select(param, dataname = dataname)),
     paramcd = `if`(is.null(paramcd), NULL, cs_to_des_select(paramcd, dataname = dataname)),
@@ -218,7 +239,7 @@ ui_g_laboratory <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     ui_args$timepoints,
-    ui_args$aval,
+    ui_args$aval_var,
     ui_args$avalu,
     ui_args$param,
     ui_args$paramcd,
@@ -236,7 +257,7 @@ ui_g_laboratory <- function(id, ...) {
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
-      teal.transform::datanames_input(ui_args[c("timepoints", "aval", "avalu", "param", "paramcd", "anrind")]),
+      teal.transform::datanames_input(ui_args[c("timepoints", "aval_var", "avalu", "param", "paramcd", "anrind")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
@@ -262,9 +283,9 @@ ui_g_laboratory <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
-        id = ns("aval"),
+        id = ns("aval_var"),
         label = "Select AVAL variable:",
-        data_extract_spec = ui_args$aval,
+        data_extract_spec = ui_args$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
@@ -302,7 +323,7 @@ srv_g_laboratory <- function(id,
                              parentname,
                              patient_col,
                              timepoints,
-                             aval,
+                             aval_var,
                              avalu,
                              param,
                              paramcd,
@@ -342,7 +363,7 @@ srv_g_laboratory <- function(id,
     )
 
     # Update round_values
-    aval_values <- shiny::isolate(data())[[dataname]][, aval$select$selected]
+    aval_values <- shiny::isolate(data())[[dataname]][, aval_var$select$selected]
     decimal_nums <- aval_values[trunc(aval_values) != aval_values]
     max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", decimal_nums)))
 
@@ -357,7 +378,7 @@ srv_g_laboratory <- function(id,
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         timepoints = timepoints,
-        aval = aval,
+        aval_var = aval_var,
         avalu = avalu,
         param = param,
         paramcd = paramcd,
@@ -366,7 +387,7 @@ srv_g_laboratory <- function(id,
       datasets = data,
       select_validation_rule = list(
         timepoints = shinyvalidate::sv_required("Please select timepoints variable."),
-        aval = shinyvalidate::sv_required("Please select AVAL variable."),
+        aval_var = shinyvalidate::sv_required("Please select AVAL variable."),
         avalu = shinyvalidate::sv_required("Please select AVALU variable."),
         param = shinyvalidate::sv_required("Please select PARAM variable."),
         paramcd = shinyvalidate::sv_required("Please select PARAMCD variable."),
@@ -396,7 +417,7 @@ srv_g_laboratory <- function(id,
       labor_calls <- template_laboratory(
         dataname = "ANL",
         timepoints = input[[extract_input("timepoints", dataname)]],
-        aval = input[[extract_input("aval", dataname)]],
+        aval_var = input[[extract_input("aval_var", dataname)]],
         avalu = input[[extract_input("avalu", dataname)]],
         param = input[[extract_input("param", dataname)]],
         paramcd = input[[extract_input("paramcd", dataname)]],

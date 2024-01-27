@@ -28,7 +28,7 @@ template_a_gee(
 \item{dataname_lsmeans}{(\code{character})\cr dataset used for \code{alt_counts_df} argument of \code{rtables::build_table()}}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
 \item{id_var}{(\code{character})\cr
 the variable name for subject id.}

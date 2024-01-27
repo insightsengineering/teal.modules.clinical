@@ -31,7 +31,7 @@ variable names that can be used as \code{arm_var}. No arm or treatment variable 
 being \code{NULL}.}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
 \item{paramcd}{(\code{character})\cr response parameter value to use in the table title.}
 
