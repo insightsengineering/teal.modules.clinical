@@ -55,7 +55,7 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 analysis data used in teal module.}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
 \item{arm_var}{(\code{character})\cr
 variable names that can be used as \code{arm_var}.}

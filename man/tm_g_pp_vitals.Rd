@@ -10,7 +10,8 @@ tm_g_pp_vitals(
   parentname = "ADSL",
   patient_col = "USUBJID",
   paramcd = NULL,
-  aval = NULL,
+  aval = lifecycle::deprecated(),
+  aval_var = NULL,
   xaxis = NULL,
   font_size = c(12L, 12L, 25L),
   plot_height = c(700L, 200L, 2000L),
@@ -35,7 +36,9 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 \code{PARAMCD} column of the \code{ADVS} dataset.}
 
-\item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
+
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 \code{AVAL} column of the \code{ADVS} dataset.}
 
 \item{xaxis}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
@@ -101,7 +104,7 @@ app <- init(
         choices = variable_choices(ADVS, "ADY"),
         selected = "ADY"
       ),
-      aval = choices_selected(
+      aval_var = choices_selected(
         choices = variable_choices(ADVS, "AVAL"),
         selected = "AVAL"
       )

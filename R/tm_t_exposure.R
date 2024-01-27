@@ -5,8 +5,6 @@
 #'   variable name used to split the rows.
 #' @param col_by_var (`character`)\cr
 #'   variable name used to split the columns.
-#' @param avalu_var (`character`)\cr
-#'   name of the analysis unit variable.
 #' @param drop_levels (`flag`)\cr
 #'   whether empty rows should be removed from the table.
 #' @param paramcd_label (`character`)\cr

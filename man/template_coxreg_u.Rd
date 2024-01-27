@@ -36,7 +36,7 @@ variable names that can be used as \code{arm_var}.}
 name of the censoring variable.}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
 \item{ref_arm}{(\code{character})\cr
 the level of reference arm in case of arm comparison.}

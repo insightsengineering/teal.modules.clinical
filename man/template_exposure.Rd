@@ -61,10 +61,9 @@ in character or factor variables in the data. Defaults to \code{""}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
-\item{avalu_var}{(\code{character})\cr
-name of the analysis unit variable.}
+\item{avalu_var}{(\code{character})\cr name of the analysis value unit variable.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.

@@ -50,7 +50,7 @@ triggers the comparison between study arms.}
 triggers the combination of comparison arms.}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
 \item{cnsr_var}{(\code{character})\cr
 name of the censoring variable.}
