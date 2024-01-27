@@ -64,6 +64,10 @@ names of the covariates variables.}
 \item{aval_var}{(\code{character})\cr
 name of the analysis value variable.}
 
+\item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
+
+\item{avalu_var}{(\code{character})\cr name of the analysis value unit variable.}
+
 \item{cnsr_var}{(\code{character})\cr
 name of the censoring variable.}
 

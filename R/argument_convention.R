@@ -50,6 +50,8 @@
 #' @param aval `r lifecycle::badge("deprecated")` Please use the `aval_var` argument instead.
 #' @param aval_var (`character`)\cr
 #'   name of the analysis value variable.
+#' @param avalu `r lifecycle::badge("deprecated")` Please use the `avalu_var` argument instead.
+#' @param avalu_var (`character`)\cr name of the analysis value unit variable.
 #' @param cnsr_var (`character`)\cr
 #'   name of the censoring variable.
 #' @param conf_level (`numeric`)\cr
@@ -160,6 +162,7 @@ NULL
 #' @param aval_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for the analysis
 #'   variable.
+#' @param avalu `r lifecycle::badge("deprecated")` Please use the `avalu_var` argument instead.
 #' @param cnsr_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for the censoring
 #'   variable.

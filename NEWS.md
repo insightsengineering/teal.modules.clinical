@@ -15,6 +15,7 @@
 
 ### Miscellaneous
 * Deprecated the `aval` argument in `tm_t_pp_laboratory` and `tm_g_pp_vitals` and replaced it with the `aval_var` argument.
+* Deprecated the `avalu` argument in `tm_t_pp_laboratory` and replaced it with the `avalu_var` argument.
 
 # teal.modules.clinical 0.8.16.9010
 
