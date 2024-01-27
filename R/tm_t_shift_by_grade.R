@@ -24,7 +24,7 @@ template_shift_by_grade <- function(parentname,
                                     drop_arm_levels = TRUE,
                                     add_total = FALSE,
                                     total_label = default_total_label(),
-                                    na_level = "<Missing>",
+                                    na_level = default_na_str(),
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
@@ -569,7 +569,7 @@ tm_t_shift_by_grade <- function(label,
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
-                                na_level = "<Missing>",
+                                na_level = default_na_str(),
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_grade")

@@ -21,7 +21,7 @@ template_shift_by_arm_by_worst <- function(dataname,
                                            aval_var = "ANRIND",
                                            base_var = "BNRIND",
                                            na.rm = FALSE, # nolint
-                                           na_level = "<Missing>",
+                                           na_level = default_na_str(),
                                            add_total = FALSE,
                                            total_label = default_total_label(),
                                            basic_table_args = teal.widgets::basic_table_args()) {
@@ -243,7 +243,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        ),
                                        treatment_flag = teal.transform::choices_selected("Y"),
                                        useNA = c("ifany", "no"), # nolint
-                                       na_level = "<Missing>",
+                                       na_level = default_na_str(),
                                        add_total = FALSE,
                                        total_label = default_total_label(),
                                        pre_output = NULL,
