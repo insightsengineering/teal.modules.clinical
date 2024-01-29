@@ -22,7 +22,6 @@ template_ancova(
   label_paramcd = NULL,
   visit_levels = "",
   visit_var = "AVISIT",
-  na_level = default_na_str(),
   conf_level = 0.95,
   basic_table_args = teal.widgets::basic_table_args()
 )
@@ -77,10 +76,6 @@ variable levels for studied visits.}
 
 \item{visit_var}{(\code{character})\cr
 variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
-
-\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data. Defaults to \code{""}. To set a
-default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{conf_level}{(\code{numeric})\cr
 value for the confidence level within the range of (0, 1).}

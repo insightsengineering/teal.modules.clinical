@@ -18,7 +18,6 @@ tm_t_ancova(
   interact_y = FALSE,
   avisit,
   paramcd,
-  na_level = default_na_str(),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
   pre_output = NULL,
@@ -72,10 +71,6 @@ value of analysis visit \code{AVISIT} of interest.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
 variable value designating the studied parameter.}
-
-\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data. Defaults to \code{""}. To set a
-default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{conf_level}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the confidence

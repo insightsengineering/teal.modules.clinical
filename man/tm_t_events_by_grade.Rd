@@ -20,6 +20,7 @@ tm_t_events_by_grade(
   prune_diff = 0,
   add_total = TRUE,
   total_label = default_total_label(),
+  na_level = default_na_str(),
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
@@ -66,6 +67,10 @@ whether to include column with total number of patients.}
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},

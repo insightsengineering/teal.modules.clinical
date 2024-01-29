@@ -21,6 +21,7 @@ template_events_col_by_grade(
   label_grade = NULL,
   prune_freq = 0.1,
   prune_diff = 0,
+  na_level = default_na_str(),
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
 )
@@ -63,6 +64,10 @@ module.}
 
 \item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
 rates between any two columns.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},

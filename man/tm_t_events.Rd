@@ -58,7 +58,7 @@ enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new 
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data. Defaults to \code{""}. To set a
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment).
