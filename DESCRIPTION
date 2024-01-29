@@ -65,6 +65,7 @@ Suggests:
     knitr,
     lubridate,
     nestcolor (>= 0.1.0),
+    styler,
     testthat (>= 3.1.5)
 VignetteBuilder:
     knitr
