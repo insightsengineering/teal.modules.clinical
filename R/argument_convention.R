@@ -148,7 +148,7 @@ NULL
 #' @param useNA (`character`)\cr
 #'   whether missing data (`NA`) should be displayed as a level.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values
-#'   in character or factor variables in the data. Defaults to `""`. To set a
+#'   in character or factor variables in the data. Defaults to `"<Missing>"`. To set a
 #'   default `na_level` to apply in all modules, run `set_default_na_str("new_default")`.
 #' @param denominator (`character`)\cr
 #'   chooses how percentages are calculated. With option `N`, the reference
