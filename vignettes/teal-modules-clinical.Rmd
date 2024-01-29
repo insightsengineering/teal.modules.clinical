@@ -15,8 +15,8 @@ vignette: >
 ---
 ### Introduction
 `teal.modules.clinical` is a package implementing a number of `teal` modules helpful for exploring clinical
-trials data, specifically targeted at data following the [`ADaM`](https://www.cdisc.org/standards/foundational/adam)
-standards. `teal.modules.clinical` modules can be used with data other than `ADaM` standard clinical data but some
+trials data, specifically targeted towards data following the [`ADaM`](https://www.cdisc.org/standards/foundational/adam)
+standards. `teal.modules.clinical` modules can be used with data other than `ADaM` standard clinical data, but some
 features of the package will make little sense then.
 
 The concepts presented here require knowledge about the core features of `teal`, specifically on how to launch a `teal`

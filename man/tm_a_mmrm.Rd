@@ -22,7 +22,7 @@ tm_a_mmrm(
     TRUE),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),

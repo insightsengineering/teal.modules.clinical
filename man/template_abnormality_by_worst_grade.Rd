@@ -15,7 +15,7 @@ template_abnormality_by_worst_grade(
   worst_low_flag_var = "WGRLOFL",
   worst_flag_indicator = "Y",
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
 )

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{clean_description}
 \alias{clean_description}
-\title{Clean a categorical variable descriptions}
+\title{Clean up categorical variable description}
 \usage{
 clean_description(x)
 }
