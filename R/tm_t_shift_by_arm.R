@@ -46,18 +46,18 @@ template_shift_by_arm <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_level),
-      env = list(parentname = as.name(parentname), na_level = na_level)
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dataname <- df_explicit_na(dataname, na_level = na_level) %>%
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str) %>%
         dplyr::filter(treatment_flag_var == treatment_flag),
       env = list(
         dataname = as.name(dataname),
-        na_level = na_level,
+        na_str = na_level,
         treatment_flag_var = as.name(treatment_flag_var),
         treatment_flag = treatment_flag
       )
@@ -97,7 +97,7 @@ template_shift_by_arm <- function(dataname,
             split_label = obj_label(dataname$arm_var)
           ) %>%
           add_rowcounts() %>%
-          summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction") %>%
+          summarize_vars(base_var, denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction") %>%
           append_varlabels(dataname, base_var, indent = 1L),
         env = list(
           aval_var = aval_var,
@@ -106,7 +106,7 @@ template_shift_by_arm <- function(dataname,
           dataname = as.name(dataname),
           visit_var = visit_var,
           na.rm = na.rm,
-          na_level = na_level,
+          na_str = na_level,
           total_label = total_label,
           expr_basic_table_args = parsed_basic_table_args
         )
@@ -126,7 +126,7 @@ template_shift_by_arm <- function(dataname,
             split_label = obj_label(dataname$arm_var)
           ) %>%
           add_rowcounts() %>%
-          summarize_vars(base_var, denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction") %>%
+          summarize_vars(base_var, denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction") %>%
           append_varlabels(dataname, base_var, indent = 1L),
         env = list(
           aval_var = aval_var,
@@ -135,7 +135,7 @@ template_shift_by_arm <- function(dataname,
           dataname = as.name(dataname),
           visit_var = visit_var,
           na.rm = na.rm,
-          na_level = na_level,
+          na_str = na_level,
           expr_basic_table_args = parsed_basic_table_args
         )
       )

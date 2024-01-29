@@ -111,11 +111,11 @@ template_smq <- function(dataname,
     substitute(
       anl <- df_explicit_na(
         dataname,
-        na_level = na_level
+        na_level = na_str
       ),
       env = list(
         dataname = as.name("anl"),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -125,11 +125,11 @@ template_smq <- function(dataname,
     substitute(
       parentname <- df_explicit_na(
         parentname,
-        na_level = na_level
+        na_level = na_str
       ),
       env = list(
         parentname = as.name(parentname),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )

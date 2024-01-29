@@ -206,9 +206,10 @@ template_events <- function(dataname,
           .labels = c(
             unique = unique_label,
             nonunique = nonunique_label
-          )
+          ),
+          na_str = na_str
         ),
-        env = list(unique_label = unique_label, nonunique_label = nonunique_label)
+        env = list(unique_label = unique_label, nonunique_label = nonunique_label, na_str = na_level)
       )
     )
   }
@@ -253,7 +254,8 @@ template_events <- function(dataname,
             .labels = c(
               unique = unique_label,
               nonunique = nonunique_label
-            )
+            ),
+            na_str = na_str
           ) %>%
           count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
           append_varlabels(dataname, llt, indent = 1L),
@@ -262,7 +264,8 @@ template_events <- function(dataname,
           hlt = hlt,
           llt = llt,
           unique_label = unique_label,
-          nonunique_label = nonunique_label
+          nonunique_label = nonunique_label,
+          na_str = na_level
         )
       )
     )

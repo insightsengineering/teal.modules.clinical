@@ -75,10 +75,10 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = na_level),
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
       env = list(
         dataname = as.name("anl"),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -86,10 +86,10 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = na_level),
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
       env = list(
         parentname = as.name(parentname),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )

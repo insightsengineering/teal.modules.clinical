@@ -139,14 +139,16 @@ template_coxreg_u <- function(dataname,
         control = control,
         at = at,
         multivar = multivariate,
-        .stats = stats
+        .stats = stats,
+        na_str = na_str
       ),
       env = list(
         multivariate = FALSE,
         variables = variables,
         control = control,
         at = at,
-        stats = if (control$interaction) c(stats, "pval_inter") else stats
+        stats = if (control$interaction) c(stats, "pval_inter") else stats,
+        na_str = na_level
       )
     )
   )
@@ -297,13 +299,15 @@ template_coxreg_m <- function(dataname,
         variables = variables,
         control = control,
         multivar = multivariate,
-        .stats = stats
+        .stats = stats,
+        na_str = na_str
       ),
       env = list(
         variables = variables,
         control = control,
         multivariate = TRUE,
-        stats = stats
+        stats = stats,
+        na_str = na_level
       )
     )
   )

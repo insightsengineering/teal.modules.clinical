@@ -62,12 +62,12 @@ template_summary_by <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_level),
+        df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_str),
       env = list(
         df = as.name(dataname),
         by_vars = by_vars,
         sum_vars = sum_vars,
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -85,8 +85,8 @@ template_summary_by <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = na_level),
-      env = list(parentname = as.name(parentname), na_level = na_level)
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
@@ -193,9 +193,10 @@ template_summary_by <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = rtables::summarize_row_groups(var = id_var, cfun = cfun_unique),
+          expr = rtables::summarize_row_groups(var = id_var, cfun = cfun_unique, na_str = na_str),
           env = list(
-            id_var = id_var
+            id_var = id_var,
+            na_str = na_level
           )
         )
       )
@@ -230,7 +231,8 @@ template_summary_by <- function(parentname,
             expr = summarize_colvars(
               na.rm = na.rm,
               denom = denom,
-              .stats = stats
+              .stats = stats,
+              na_str = na_level
             ),
             env = env_vars
           )
@@ -240,7 +242,8 @@ template_summary_by <- function(parentname,
               vars = sum_vars,
               na.rm = na.rm,
               denom = denom,
-              .stats = stats
+              .stats = stats,
+              na_str = na_level
             ),
             env = env_vars
           )

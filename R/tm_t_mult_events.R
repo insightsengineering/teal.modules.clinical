@@ -89,8 +89,8 @@ template_mult_events <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_lvl),
-      env = list(parentname = as.name(parentname), na_lvl = na_level)
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
