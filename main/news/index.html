@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9034</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9035</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,16 +34,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -72,25 +62,26 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.8.16.9034" id="tealmodulesclinical-08169034">teal.modules.clinical 0.8.16.9034<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08169034"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.16.9035" id="tealmodulesclinical-08169035">teal.modules.clinical 0.8.16.9035<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08169035"></a></h2>
 <div class="section level4">
-<h4 id="breaking-changes-0-8-16-9034">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-8-16-9034"></a></h4>
+<h4 id="breaking-changes-0-8-16-9035">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-8-16-9035"></a></h4>
 <ul><li>Adapted all modules to use <code>teal_data</code> objects.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="enhancements-0-8-16-9034">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-16-9034"></a></h4>
+<h4 id="enhancements-0-8-16-9035">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-16-9035"></a></h4>
 <ul><li>Updated the documentation and vignettes to demonstrate method to pass <code>teal_data</code> object to <code><a href="https://insightsengineering.github.io/teal/reference/init.html" class="external-link">teal::init()</a></code>.</li>
 <li>Added parameter <code>sort_freq_col</code> to <code>tm_t_events</code> to allow the user to select column to use when sorting by decreasing frequency.</li>
 <li>Added parameter <code>incl_overall_sum</code> to <code>tm_t_events</code> to allow the user to choose whether overall summary rows are included at the top of the table.</li>
 <li>Updated the documentation and vignettes to demonstrate method to pass <code>teal_data</code> object to <code><a href="https://insightsengineering.github.io/teal/reference/init.html" class="external-link">teal::init()</a></code>.</li>
 <li>Added <code>default_total_label</code> and <code>set_default_total_label</code> functions to get and set default total column label (<code>total_label</code>) for modules.</li>
+<li>Implemented <code><a href="https://rdrr.io/pkg/tern/man/default_na_str.html" class="external-link">tern::default_na_str</a></code> and <code><a href="https://rdrr.io/pkg/tern/man/default_na_str.html" class="external-link">tern::set_default_na_str</a></code> functions to get and set default missing value replacement string (<code>na_level</code>) for modules.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-8-16-9034">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-16-9034"></a></h4>
+<h4 id="bug-fixes-0-8-16-9035">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-16-9035"></a></h4>
 <ul><li>Fixed bug in <code>tm_g_lineplot</code> forcing module to initialize with a table.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="miscellaneous-0-8-16-9034">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-16-9034"></a></h4>
+<h4 id="miscellaneous-0-8-16-9035">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-16-9035"></a></h4>
 <ul><li>Deprecated the <code>aval</code> argument in <code>tm_t_pp_laboratory</code> and <code>tm_g_pp_vitals</code> and replaced it with the <code>aval_var</code> argument.</li>
 <li>Deprecated the <code>avalu</code> argument in <code>tm_t_pp_laboratory</code> and replaced it with the <code>avalu_var</code> argument.</li>
 <li>Deprecated the <code>base_var</code> argument in <code>tm_g_ipp</code>, <code>tm_t_shift_by_arm</code>, and <code>template_shift_by_arm_by_worst</code> and replaced it with the <code>baseline_var</code> argument.</li>
