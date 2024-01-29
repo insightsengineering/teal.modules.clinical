@@ -1,7 +1,6 @@
 #' Template: Individual Patient Plots
 #'
 #' @inheritParams template_arguments
-#' @param avalu_var (`string`)\cr variable name designating the unit of the analysis variable.
 #' @param base_var (`string`)\cr variable name designating the baseline values of analysis variable.
 #' @param visit_var (`string`)\cr variable name designating the visit timepoint variable.
 #' @param add_baseline_hline (`flag`)\cr adds horizontal line at baseline y-value on plot
@@ -114,7 +113,6 @@ template_g_ipp <- function(dataname = "ANL",
         id = id_var,
         add_baseline_hline = add_baseline_hline,
         base = base_var,
-        avalu = avalu_var,
         arm = arm_var
       )
     )

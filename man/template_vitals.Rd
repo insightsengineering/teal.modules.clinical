@@ -9,7 +9,8 @@ template_vitals(
   paramcd = "PARAMCD",
   paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
   xaxis = "ADY",
-  aval = "AVAL",
+  aval = lifecycle::deprecated(),
+  aval_var = "AVAL",
   patient_id,
   font_size = 12L,
   ggplot2_args = teal.widgets::ggplot2_args()
@@ -25,7 +26,10 @@ analysis data used in teal module.}
 
 \item{xaxis}{(\code{character})\cr name of time variable used for the x-axis.}
 
-\item{aval}{(\code{character})\cr name of the analysis value variable.}
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
+
+\item{aval_var}{(\code{character})\cr
+name of the analysis value variable.}
 
 \item{patient_id}{(\code{character})\cr patient ID.}
 
