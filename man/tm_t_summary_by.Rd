@@ -20,7 +20,7 @@ tm_t_summary_by(
   parallel_vars = FALSE,
   row_groups = FALSE,
   useNA = c("ifany", "no"),
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   numeric_stats = c("n", "mean_sd", "median", "range"),
   denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed =
     TRUE),
@@ -65,7 +65,8 @@ variable value designating the studied parameter.}
 whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
@@ -77,7 +78,8 @@ enabled (see \code{add_total}).}
 whether missing data (\code{NA}) should be displayed as a level.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{numeric_stats}{(\code{character})\cr
 selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},

@@ -20,7 +20,7 @@ template_shift_by_arm <- function(dataname,
                                   base_var = lifecycle::deprecated(),
                                   baseline_var = "BNRIND",
                                   na.rm = FALSE, # nolint
-                                  na_level = "<Missing>",
+                                  na_level = default_na_str(),
                                   add_total = FALSE,
                                   total_label = default_total_label(),
                                   basic_table_args = teal.widgets::basic_table_args()) {
@@ -56,18 +56,18 @@ template_shift_by_arm <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_level),
-      env = list(parentname = as.name(parentname), na_level = na_level)
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dataname <- df_explicit_na(dataname, na_level = na_level) %>%
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str) %>%
         dplyr::filter(treatment_flag_var == treatment_flag),
       env = list(
         dataname = as.name(dataname),
-        na_level = na_level,
+        na_str = na_level,
         treatment_flag_var = as.name(treatment_flag_var),
         treatment_flag = treatment_flag
       )
@@ -109,7 +109,7 @@ template_shift_by_arm <- function(dataname,
           add_rowcounts() %>%
           summarize_vars(
             baseline_var,
-            denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction"
+            denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction"
           ) %>%
           append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
@@ -119,7 +119,7 @@ template_shift_by_arm <- function(dataname,
           dataname = as.name(dataname),
           visit_var = visit_var,
           na.rm = na.rm,
-          na_level = na_level,
+          na_str = na_level,
           total_label = total_label,
           expr_basic_table_args = parsed_basic_table_args
         )
@@ -141,7 +141,7 @@ template_shift_by_arm <- function(dataname,
           add_rowcounts() %>%
           summarize_vars(
             baseline_var,
-            denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction"
+            denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction"
           ) %>%
           append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
@@ -151,7 +151,7 @@ template_shift_by_arm <- function(dataname,
           dataname = as.name(dataname),
           visit_var = visit_var,
           na.rm = na.rm,
-          na_level = na_level,
+          na_str = na_level,
           expr_basic_table_args = parsed_basic_table_args
         )
       )
@@ -247,7 +247,7 @@ tm_t_shift_by_arm <- function(label,
                               ),
                               treatment_flag = teal.transform::choices_selected("Y"),
                               useNA = c("ifany", "no"), # nolint
-                              na_level = "<Missing>",
+                              na_level = default_na_str(),
                               add_total = FALSE,
                               total_label = default_total_label(),
                               pre_output = NULL,

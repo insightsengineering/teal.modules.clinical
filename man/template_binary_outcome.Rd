@@ -22,6 +22,7 @@ template_binary_outcome(
     list(method_ci = "cmh", method_test = "cmh", strat = NULL)),
   add_total = FALSE,
   total_label = default_total_label(),
+  na_level = default_na_str(),
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
@@ -64,6 +65,10 @@ response estimations.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.

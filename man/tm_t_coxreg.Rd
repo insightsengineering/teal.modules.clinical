@@ -19,6 +19,7 @@ tm_t_coxreg(
   cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "CNSR"), "CNSR", fixed = TRUE),
   multivariate = TRUE,
+  na_level = default_na_str(),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
   pre_output = NULL,
@@ -72,6 +73,10 @@ variable.}
 If \code{FALSE}, the univariable approach is used
 (equivalent to \code{COXT01} standard) instead of the multi-variable model
 (equivalent to \code{COXT02} standard).}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{conf_level}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the confidence

@@ -17,6 +17,7 @@ template_coxreg_u(
   strata_var = NULL,
   combine_comp_arms = FALSE,
   control = control_coxreg(),
+  na_level = default_na_str(),
   append = FALSE,
   basic_table_args = teal.widgets::basic_table_args()
 )
@@ -56,6 +57,10 @@ names of the variables for stratified analysis.}
 triggers the combination of comparison arms.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis, see \code{\link[=control_coxreg]{control_coxreg()}}.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{append}{(\code{logical})\cr if the result should be appended to the previous one.}
 

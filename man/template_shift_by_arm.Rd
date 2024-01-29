@@ -16,7 +16,7 @@ template_shift_by_arm(
   base_var = lifecycle::deprecated(),
   baseline_var = "BNRIND",
   na.rm = FALSE,
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   add_total = FALSE,
   total_label = default_total_label(),
   basic_table_args = teal.widgets::basic_table_args()
@@ -53,7 +53,8 @@ records in \code{treatment_flag_var}.}
 whether \code{NA} values should be removed prior to analysis.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include row with total number of patients.}

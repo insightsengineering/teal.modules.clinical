@@ -13,7 +13,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -63,7 +63,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "ATC2", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -117,7 +117,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "ATC2", "ATC3", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -174,7 +174,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "ATC2", "ATC3", "ATC4", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -235,7 +235,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               "CMDECOD"))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -281,7 +281,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep

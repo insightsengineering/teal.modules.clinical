@@ -13,6 +13,7 @@ template_events_patyear(
   aval_var = "AVAL",
   add_total = TRUE,
   total_label = default_total_label(),
+  na_level = default_na_str(),
   control = control_incidence_rate(),
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
@@ -37,6 +38,10 @@ name of the analysis value variable.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis.}
 

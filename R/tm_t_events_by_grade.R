@@ -27,6 +27,7 @@ template_events_by_grade <- function(dataname,
                                      prune_diff = 0,
                                      add_total = TRUE,
                                      total_label = default_total_label(),
+                                     na_level = default_na_str(),
                                      drop_arm_levels = TRUE,
                                      basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
@@ -42,6 +43,7 @@ template_events_by_grade <- function(dataname,
     assertthat::is.string(label_grade) || is.null(label_grade),
     assertthat::is.flag(add_total),
     assertthat::is.string(total_label),
+    assertthat::is.string(na_level),
     assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_scalar(prune_freq)
@@ -74,22 +76,22 @@ template_events_by_grade <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname),
-      env = list(dataname = as.name(dataname))
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      env = list(dataname = as.name(dataname), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname),
-      env = list(dataname = as.name("anl"))
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      env = list(dataname = as.name("anl"), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
@@ -160,7 +162,8 @@ template_events_by_grade <- function(dataname,
         expr = rtables::add_colcounts() %>%
           summarize_occurrences_by_grade(
             var = grade,
-            grade_groups = grade_groups
+            grade_groups = grade_groups,
+            na_str = na_str
           ) %>%
           rtables::split_rows_by(
             term_var,
@@ -174,16 +177,18 @@ template_events_by_grade <- function(dataname,
           summarize_num_patients(
             var = id,
             .stats = "unique",
-            .labels = c("- Any Intensity -")
+            .labels = c("- Any Intensity -"),
+            na_str = na_str
           ) %>%
-          count_occurrences_by_grade(var = grade, .indent_mods = -1L) %>%
+          count_occurrences_by_grade(var = grade, .indent_mods = -1L, na_str = na_str) %>%
           append_varlabels(dataname, grade, indent = 1L),
         env = list(
           id = id,
           arm_var = arm_var,
           term_var = term_var,
           grade = grade,
-          dataname = as.name(dataname)
+          dataname = as.name(dataname),
+          na_str = na_level
         )
       )
     )
@@ -194,7 +199,8 @@ template_events_by_grade <- function(dataname,
         expr = rtables::add_colcounts() %>%
           summarize_occurrences_by_grade(
             var = grade,
-            grade_groups = grade_groups
+            grade_groups = grade_groups,
+            na_str = na_str
           ) %>%
           rtables::split_rows_by(
             hlt,
@@ -207,7 +213,8 @@ template_events_by_grade <- function(dataname,
           ) %>%
           summarize_occurrences_by_grade(
             var = grade,
-            grade_groups = grade_groups
+            grade_groups = grade_groups,
+            na_str = na_str
           ) %>%
           rtables::split_rows_by(
             llt,
@@ -221,9 +228,10 @@ template_events_by_grade <- function(dataname,
           summarize_num_patients(
             var = id,
             .stats = "unique",
-            .labels = c("- Any Intensity -")
+            .labels = c("- Any Intensity -"),
+            na_str = na_str
           ) %>%
-          count_occurrences_by_grade(var = grade, .indent_mods = -1L) %>%
+          count_occurrences_by_grade(var = grade, .indent_mods = -1L, na_str = na_str) %>%
           append_varlabels(dataname, grade, indent = 2L),
         env = list(
           id = id,
@@ -231,7 +239,8 @@ template_events_by_grade <- function(dataname,
           hlt = hlt,
           llt = llt,
           grade = grade,
-          dataname = as.name(dataname)
+          dataname = as.name(dataname),
+          na_str = na_level
         )
       )
     )
@@ -398,6 +407,7 @@ template_events_col_by_grade <- function(dataname,
                                          label_grade = NULL,
                                          prune_freq = 0.1,
                                          prune_diff = 0,
+                                         na_level = default_na_str(),
                                          drop_arm_levels = TRUE,
                                          basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
@@ -414,6 +424,7 @@ template_events_col_by_grade <- function(dataname,
     assertthat::is.string(label_hlt) || is.null(label_hlt),
     assertthat::is.string(label_llt) || is.null(label_llt),
     assertthat::is.string(label_grade) || is.null(label_grade),
+    assertthat::is.string(na_level),
     assertthat::is.flag(drop_arm_levels)
   )
   checkmate::assert_scalar(prune_freq)
@@ -494,7 +505,10 @@ template_events_col_by_grade <- function(dataname,
   )
   data_pipe <- add_expr(
     data_pipe,
-    quote(df_explicit_na())
+    substitute(
+      expr = df_explicit_na(na_level = na_str),
+      env = list(na_str = na_level)
+    )
   )
   data_pipe <- pipe_expr(data_pipe)
   data_list <- add_expr(
@@ -844,6 +858,7 @@ tm_t_events_by_grade <- function(label,
                                  prune_diff = 0,
                                  add_total = TRUE,
                                  total_label = default_total_label(),
+                                 na_level = default_na_str(),
                                  drop_arm_levels = TRUE,
                                  pre_output = NULL,
                                  post_output = NULL,
@@ -854,6 +869,7 @@ tm_t_events_by_grade <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_flag(col_by_grade)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
@@ -884,6 +900,7 @@ tm_t_events_by_grade <- function(label,
         label = label,
         total_label = total_label,
         grading_groups = grading_groups,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -994,6 +1011,7 @@ srv_t_events_by_grade <- function(id,
                                   grading_groups,
                                   drop_arm_levels,
                                   total_label,
+                                  na_level,
                                   basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -1144,6 +1162,7 @@ srv_t_events_by_grade <- function(id,
           label_grade = label_grade,
           prune_freq = input$prune_freq / 100,
           prune_diff = input$prune_diff / 100,
+          na_level = na_level,
           drop_arm_levels = input$drop_arm_levels,
           basic_table_args = basic_table_args
         )
@@ -1163,6 +1182,7 @@ srv_t_events_by_grade <- function(id,
           prune_diff = input$prune_diff / 100,
           add_total = input$add_total,
           total_label = total_label,
+          na_level = na_level,
           drop_arm_levels = input$drop_arm_levels,
           basic_table_args = basic_table_args
         )

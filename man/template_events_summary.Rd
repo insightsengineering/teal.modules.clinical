@@ -16,6 +16,7 @@ template_events_summary(
   llt = "AEDECOD",
   add_total = TRUE,
   total_label = default_total_label(),
+  na_level = default_na_str(),
   count_subj = TRUE,
   count_pt = TRUE,
   count_events = TRUE
@@ -57,6 +58,10 @@ name of the variable with low level term for events.}
 
 \item{add_total}{(\code{logical})\cr
 whether to include column with total number of patients.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{count_subj}{(\code{logical})\cr w
 whether to show count of unique subjects based on \code{USUBJID}. Only applies if event flag
