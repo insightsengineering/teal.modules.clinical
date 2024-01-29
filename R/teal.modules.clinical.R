@@ -11,7 +11,6 @@
 #' @importFrom rlang := .data
 #' @importFrom tern.gee lsmeans
 #'
-#' @name teal.modules.clinical
 #' @keywords internal
 "_PACKAGE"
 
