@@ -12,7 +12,8 @@ tm_t_shift_by_arm_by_worst(
   arm_var,
   paramcd,
   aval_var,
-  base_var,
+  base_var = lifecycle::deprecated(),
+  baseline_var,
   worst_flag_var,
   worst_flag,
   treatment_flag_var = teal.transform::choices_selected(choices =
@@ -51,7 +52,11 @@ variable value designating the studied parameter.}
 object with all available choices and preselected option for the analysis
 variable.}
 
-\item{base_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
+
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices
+and preselected option for variable values that can be used as \code{baseline_var}.}
 
 \item{worst_flag_var}{(\code{character})\cr Worst flag variable.}
 
@@ -129,7 +134,7 @@ app <- init(
         variable_choices(ADEG, c("AVALC", "ANRIND")),
         selected = "AVALC"
       ),
-      base_var = choices_selected(
+      baseline_var = choices_selected(
         variable_choices(ADEG, c("BASEC", "BNRIND")),
         selected = "BASEC"
       ),
