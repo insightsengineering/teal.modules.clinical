@@ -16,6 +16,7 @@ template_events_patyear <- function(dataname,
                                     aval_var = "AVAL",
                                     add_total = TRUE,
                                     total_label = default_total_label(),
+                                    na_level = default_na_str(),
                                     control = control_incidence_rate(),
                                     drop_arm_levels = TRUE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
@@ -43,15 +44,15 @@ template_events_patyear <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl"))
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      env = list(dataname = as.name("anl"), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
@@ -215,6 +216,7 @@ tm_t_events_patyear <- function(label,
                                 ),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
+                                na_level = default_na_str(),
                                 conf_level = teal.transform::choices_selected(
                                   c(0.95, 0.9, 0.8), 0.95,
                                   keep_order = TRUE
@@ -235,6 +237,7 @@ tm_t_events_patyear <- function(label,
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -262,6 +265,7 @@ tm_t_events_patyear <- function(label,
         parentname = parentname,
         label = label,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -381,6 +385,7 @@ srv_events_patyear <- function(id,
                                events_var,
                                add_total,
                                total_label,
+                               na_level,
                                drop_arm_levels,
                                label,
                                basic_table_args) {
@@ -511,6 +516,7 @@ srv_events_patyear <- function(id,
         label_paramcd = label_paramcd,
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         control = control_incidence_rate(
           conf_level = as.numeric(input$conf_level), # nolint
           conf_type = if (input$conf_method == "Normal (rate)") {

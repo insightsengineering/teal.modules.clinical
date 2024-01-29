@@ -9,6 +9,7 @@
 * Added parameter `incl_overall_sum` to `tm_t_events` to allow the user to choose whether overall summary rows are included at the top of the table.
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
 * Added `default_total_label` and `set_default_total_label` functions to get and set default total column label (`total_label`) for modules.
+* Implemented `tern::default_na_str` and `tern::set_default_na_str` functions to get and set default missing value replacement string (`na_level`) for modules.
 
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.

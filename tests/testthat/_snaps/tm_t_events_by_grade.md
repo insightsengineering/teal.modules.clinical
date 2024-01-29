@@ -10,9 +10,9 @@
           arm_levels <- levels(anl[["ACTARM"]])
           adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
-          adae <- df_explicit_na(adae)
-          anl <- df_explicit_na(anl)
-          adsl <- df_explicit_na(adsl)
+          adae <- df_explicit_na(adae, na_level = "<Missing>")
+          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
           grade_groups <- list(`- Any Intensity -` = levels(adae$AESEV))
       }
       
@@ -23,16 +23,17 @@
       lyt <- rtables::basic_table(title = "Adverse Event summary by Analysis Toxicity Grade: Body System or Organ Class and Dictionary-Derived Term") %>% 
           rtables::split_cols_by("ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
           rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
-          grade_groups = grade_groups) %>% rtables::split_rows_by("AEBODSYS", 
+          grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
           split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
-          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups) %>% 
-          rtables::split_rows_by("AEDECOD", child_labels = "visible", 
-              nested = TRUE, indent_mod = -1L, split_fun = split_fun("AESEV"), 
-              label_pos = "topleft", split_label = formatters::var_labels(adae["AEDECOD"])) %>% 
-          summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -")) %>% 
-          count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>% 
-          append_varlabels(adae, "AESEV", indent = 2L)
+          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
+              na_str = "<Missing>") %>% rtables::split_rows_by("AEDECOD", 
+          child_labels = "visible", nested = TRUE, indent_mod = -1L, 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEDECOD"])) %>% 
+          summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -"), 
+              na_str = "<Missing>") %>% count_occurrences_by_grade(var = "AESEV", 
+          .indent_mods = -1L, na_str = "<Missing>") %>% append_varlabels(adae, 
+          "AESEV", indent = 2L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -65,9 +66,9 @@
           arm_levels <- levels(anl[["ACTARM"]])
           adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
-          adae <- df_explicit_na(adae)
-          anl <- df_explicit_na(anl)
-          adsl <- df_explicit_na(adsl)
+          adae <- df_explicit_na(adae, na_level = "<Missing>")
+          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
           grade_groups <- list(`- Any Intensity -` = levels(adae$AESEV))
       }
       
@@ -78,16 +79,17 @@
       lyt <- rtables::basic_table(title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class and Dictionary-Derived Term") %>% 
           rtables::split_cols_by("ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
           rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
-          grade_groups = grade_groups) %>% rtables::split_rows_by("AEBODSYS", 
+          grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
           split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
-          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups) %>% 
-          rtables::split_rows_by("AEDECOD", child_labels = "visible", 
-              nested = TRUE, indent_mod = -1L, split_fun = split_fun("AESEV"), 
-              label_pos = "topleft", split_label = formatters::var_labels(adae["AEDECOD"])) %>% 
-          summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -")) %>% 
-          count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>% 
-          append_varlabels(adae, "AESEV", indent = 2L)
+          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
+              na_str = "<Missing>") %>% rtables::split_rows_by("AEDECOD", 
+          child_labels = "visible", nested = TRUE, indent_mod = -1L, 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEDECOD"])) %>% 
+          summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -"), 
+              na_str = "<Missing>") %>% count_occurrences_by_grade(var = "AESEV", 
+          .indent_mods = -1L, na_str = "<Missing>") %>% append_varlabels(adae, 
+          "AESEV", indent = 2L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -123,9 +125,9 @@
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
           arm_levels <- levels(adsl[["ACTARM"]])
           anl <- anl %>% dplyr::mutate(ACTARM = factor(ACTARM, levels = arm_levels))
-          adae <- df_explicit_na(adae)
-          anl <- df_explicit_na(anl)
-          adsl <- df_explicit_na(adsl)
+          adae <- df_explicit_na(adae, na_level = "<Missing>")
+          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
           grade_groups <- list(`- Any Intensity -` = levels(adae$AESEV))
       }
       
@@ -135,17 +137,18 @@
       $layout
       lyt <- rtables::basic_table(title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class and Dictionary-Derived Term") %>% 
           rtables::split_cols_by("ACTARM") %>% rtables::add_colcounts() %>% 
-          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups) %>% 
-          rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
-              nested = TRUE, indent_mod = -1L, split_fun = split_fun("AESEV"), 
-              label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
-          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups) %>% 
-          rtables::split_rows_by("AEDECOD", child_labels = "visible", 
-              nested = TRUE, indent_mod = -1L, split_fun = split_fun("AESEV"), 
-              label_pos = "topleft", split_label = formatters::var_labels(adae["AEDECOD"])) %>% 
-          summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -")) %>% 
-          count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>% 
-          append_varlabels(adae, "AESEV", indent = 2L)
+          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
+              na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
+          child_labels = "visible", nested = TRUE, indent_mod = -1L, 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
+              na_str = "<Missing>") %>% rtables::split_rows_by("AEDECOD", 
+          child_labels = "visible", nested = TRUE, indent_mod = -1L, 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEDECOD"])) %>% 
+          summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -"), 
+              na_str = "<Missing>") %>% count_occurrences_by_grade(var = "AESEV", 
+          .indent_mods = -1L, na_str = "<Missing>") %>% append_varlabels(adae, 
+          "AESEV", indent = 2L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -176,9 +179,9 @@
           arm_levels <- levels(anl[["ACTARM"]])
           adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
-          adae <- df_explicit_na(adae)
-          anl <- df_explicit_na(anl)
-          adsl <- df_explicit_na(adsl)
+          adae <- df_explicit_na(adae, na_level = "<Missing>")
+          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
           grade_groups <- list(`- Any Intensity -` = levels(adae$AESEV))
       }
       
@@ -189,12 +192,13 @@
       lyt <- rtables::basic_table(title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class") %>% 
           rtables::split_cols_by("ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
           rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
-          grade_groups = grade_groups) %>% rtables::split_rows_by("AEBODSYS", 
+          grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
           split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
-          summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -")) %>% 
-          count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L) %>% 
-          append_varlabels(adae, "AESEV", indent = 1L)
+          summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -"), 
+              na_str = "<Missing>") %>% count_occurrences_by_grade(var = "AESEV", 
+          .indent_mods = -1L, na_str = "<Missing>") %>% append_varlabels(adae, 
+          "AESEV", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -231,7 +235,7 @@
                   "4"), `Grade 5 (%)` = "5")))
           anl <- anl %>% dplyr::group_by(USUBJID, ACTARM, AEBODSYS, 
               AEDECOD) %>% dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>% 
-              dplyr::ungroup() %>% df_explicit_na()
+              dplyr::ungroup() %>% df_explicit_na(na_level = "<Missing>")
       }
       
       $layout
@@ -298,7 +302,7 @@
                   "4"), `Grade 5 (%)` = "5")))
           anl <- anl %>% dplyr::group_by(USUBJID, ACTARM, AEDECOD) %>% 
               dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>% 
-              dplyr::ungroup() %>% df_explicit_na()
+              dplyr::ungroup() %>% df_explicit_na(na_level = "<Missing>")
       }
       
       $layout
@@ -359,7 +363,7 @@
               "4"), `Grade 5 (%)` = "5")))
           anl <- anl %>% dplyr::group_by(USUBJID, ACTARM, AEDECOD) %>% 
               dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>% 
-              dplyr::ungroup() %>% df_explicit_na()
+              dplyr::ungroup() %>% df_explicit_na(na_level = "<Missing>")
       }
       
       $layout
@@ -418,7 +422,7 @@
               "4"), `Grade 5 (%)` = "5")))
           anl <- anl %>% dplyr::group_by(USUBJID, ACTARM, AEDECOD) %>% 
               dplyr::summarize(MAXAETOXGR = factor(max(as.numeric(AETOXGR)))) %>% 
-              dplyr::ungroup() %>% df_explicit_na()
+              dplyr::ungroup() %>% df_explicit_na(na_level = "<Missing>")
       }
       
       $layout

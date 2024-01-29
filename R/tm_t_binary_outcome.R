@@ -67,6 +67,7 @@ template_binary_outcome <- function(dataname,
                                     ),
                                     add_total = FALSE,
                                     total_label = default_total_label(),
+                                    na_level = default_na_str(),
                                     basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -77,6 +78,7 @@ template_binary_outcome <- function(dataname,
     assertthat::is.flag(combine_comp_arms),
     assertthat::is.flag(show_rsp_cat),
     assertthat::is.flag(add_total),
+    assertthat::is.string(na_level),
     assertthat::is.string(total_label)
   )
 
@@ -116,7 +118,7 @@ template_binary_outcome <- function(dataname,
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na()
+      parentname <- arm_preparation %>% df_explicit_na(na_level = na_str)
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -128,7 +130,8 @@ template_binary_outcome <- function(dataname,
         comp_arm = comp_arm,
         ref_arm_val = ref_arm_val,
         compare_arm = compare_arm
-      )
+      ),
+      na_str = na_level
     )
   )
 
@@ -487,6 +490,7 @@ tm_t_binary_outcome <- function(label,
                                 rsp_table = FALSE,
                                 add_total = FALSE,
                                 total_label = default_total_label(),
+                                na_level = default_na_str(),
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args()) {
@@ -497,6 +501,7 @@ tm_t_binary_outcome <- function(label,
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert(
     checkmate::check_class(default_responses, classes = "list"),
     checkmate::check_class(default_responses, classes = "character"),
@@ -531,6 +536,7 @@ tm_t_binary_outcome <- function(label,
         total_label = total_label,
         default_responses = default_responses,
         rsp_table = rsp_table,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -743,6 +749,7 @@ srv_t_binary_outcome <- function(id,
                                  label,
                                  default_responses,
                                  rsp_table,
+                                 na_level,
                                  basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -984,6 +991,7 @@ srv_t_binary_outcome <- function(id,
         ),
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
 

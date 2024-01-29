@@ -28,7 +28,7 @@ tm_t_abnormality(
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
@@ -74,7 +74,8 @@ records in \code{treatment_flag_var}.}
 whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{exclude_base_abn}{(\code{logical})\cr whether to exclude patients who had abnormal values at baseline.}
 

@@ -41,6 +41,7 @@ template_events_summary <- function(anl_name,
                                     llt = "AEDECOD",
                                     add_total = TRUE,
                                     total_label = default_total_label(),
+                                    na_level = default_na_str(),
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
@@ -52,6 +53,7 @@ template_events_summary <- function(anl_name,
     assertthat::is.string(dcsreas_var),
     assertthat::is.flag(add_total),
     assertthat::is.string(total_label),
+    assertthat::is.string(na_level),
     is.character(flag_var_anl) || is.null(NULL),
     is.character(flag_var_aesi) || is.null(NULL),
     assertthat::is.string(aeseq_var),
@@ -146,15 +148,15 @@ template_events_summary <- function(anl_name,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl"))
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      env = list(dataname = as.name("anl"), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
@@ -601,6 +603,7 @@ tm_t_events_summary <- function(label,
                                 ),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
+                                na_level = default_na_str(),
                                 count_subj = TRUE,
                                 count_pt = TRUE,
                                 count_events = TRUE,
@@ -613,6 +616,7 @@ tm_t_events_summary <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_flag(count_subj)
   checkmate::assert_flag(count_pt)
   checkmate::assert_flag(count_events)
@@ -652,6 +656,7 @@ tm_t_events_summary <- function(label,
         parentname = parentname,
         label = label,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -788,6 +793,7 @@ srv_t_events_summary <- function(id,
                                  llt,
                                  label,
                                  total_label,
+                                 na_level,
                                  basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -920,6 +926,7 @@ srv_t_events_summary <- function(id,
         llt = as.vector(merged$anl_input_r()$columns_source$llt),
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         count_subj = input$count_subj,
         count_pt = input$count_pt,
         count_events = input$count_events

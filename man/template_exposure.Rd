@@ -17,7 +17,7 @@ template_exposure(
   add_total_row = TRUE,
   total_row_label = "Total number of patients and patient time*",
   drop_levels = TRUE,
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   aval_var,
   avalu_var,
   basic_table_args = teal.widgets::basic_table_args()
@@ -57,7 +57,8 @@ levels that constitute the split. A custom label can be set for this level via t
 whether empty rows should be removed from the table.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{aval_var}{(\code{character})\cr
 name of the analysis value variable.}
