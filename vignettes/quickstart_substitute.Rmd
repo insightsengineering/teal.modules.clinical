@@ -264,9 +264,8 @@ per analysis visit in rows.
 The data can be prepared as follows:
 
 ```{r, message=FALSE}
-library(rtables)
+library(teal.modules.clinical)
 library(dplyr)
-library(tern)
 
 adlb <- tmc_ex_adlb
 adlb_f <- adlb %>%
