@@ -10,8 +10,10 @@ tm_t_pp_laboratory(
   parentname = "ADSL",
   patient_col = "USUBJID",
   timepoints = NULL,
-  aval = NULL,
-  avalu = NULL,
+  aval = lifecycle::deprecated(),
+  aval_var = NULL,
+  avalu = lifecycle::deprecated(),
+  avalu_var = NULL,
   param = NULL,
   paramcd = NULL,
   anrind = NULL,
@@ -34,10 +36,14 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 \item{timepoints}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 Time variable to be represented in the laboratory table.}
 
-\item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
+
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 \code{AVAL} column of the \code{ADLB} dataset.}
 
-\item{avalu}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
+
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 \code{AVALU} column of the \code{ADLB} dataset.}
 
 \item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
@@ -94,11 +100,11 @@ app <- init(
         choices = variable_choices(ADLB, "ANRIND"),
         selected = "ANRIND"
       ),
-      aval = choices_selected(
+      aval_var = choices_selected(
         choices = variable_choices(ADLB, "AVAL"),
         selected = "AVAL"
       ),
-      avalu = choices_selected(
+      avalu_var = choices_selected(
         choices = variable_choices(ADLB, "AVALU"),
         selected = "AVALU"
       )

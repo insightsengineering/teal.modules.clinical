@@ -46,7 +46,7 @@ the level of comparison arm in case of arm comparison.}
 triggers the combination of comparison arms.}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
 \item{label_aval}{(\code{character})\cr
 label of value variable used for title rendering.}

@@ -320,13 +320,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                               ),
                                               selected = "WGRLOFL", fixed = TRUE
                                             ),
-                                            worst_flag_indicator = teal.transform::choices_selected(
-                                              teal.transform::value_choices(
-                                                dataname,
-                                                var_choices = "WGRLOFL"
-                                              ),
-                                              selected = "Y", fixed = TRUE
-                                            ),
+                                            worst_flag_indicator = teal.transform::choices_selected("Y"),
                                             add_total = TRUE,
                                             total_label = default_total_label(),
                                             drop_arm_levels = TRUE,
@@ -371,6 +365,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
         dataname = dataname,
         parentname = parentname,
         label = label,
+        worst_flag_indicator = worst_flag_indicator,
         total_label = total_label,
         basic_table_args = basic_table_args
       )
@@ -456,10 +451,8 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
           teal.widgets::optionalSelectInput(
             ns("worst_flag_indicator"),
             label = "Value Indicating Worst Grade",
-            choices = a$worst_flag_indicator$choices,
-            selected = a$worst_flag_indicator$selected,
             multiple = FALSE,
-            fixed = a$worst_flag_indicator$fixed
+            fixed_on_single = TRUE
           ),
           shiny::checkboxInput(
             ns("drop_arm_levels"),
@@ -489,6 +482,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
                                              arm_var,
                                              paramcd,
                                              atoxgr_var,
+                                             worst_flag_indicator,
                                              worst_low_flag_var,
                                              worst_high_flag_var,
                                              add_total,
@@ -502,6 +496,16 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
+    shiny::isolate({
+      resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env))
+      teal.widgets::updateOptionalSelectInput(
+        session = session,
+        inputId = "worst_flag_indicator",
+        choices = resolved$choices,
+        selected = resolved$selected
+      )
+    })
+
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -517,8 +521,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
         id_var = shinyvalidate::sv_required("Please select a Subject Identifier."),
         atoxgr_var = shinyvalidate::sv_required("Please select Analysis Toxicity Grade variable."),
         worst_low_flag_var = shinyvalidate::sv_required("Please select the Worst Low Grade flag variable."),
-        worst_high_flag_var = shinyvalidate::sv_required("Please select the Worst High Grade flag variable."),
-        worst_flag_indicator = shinyvalidate::sv_required("Please select the value indicating worst grade.")
+        worst_high_flag_var = shinyvalidate::sv_required("Please select the Worst High Grade flag variable.")
       ),
       filter_validation_rule = list(
         paramcd = shinyvalidate::sv_required("Please select at least one Laboratory parameter.")
@@ -528,6 +531,12 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
     iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()
       teal.transform::compose_and_enable_validators(iv, selector_list)
+      iv$add_rule(
+        "worst_flag_indicator",
+        ~ if (length(.) == 0) {
+          "Please select the value indicating worst grade."
+        }
+      )
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
