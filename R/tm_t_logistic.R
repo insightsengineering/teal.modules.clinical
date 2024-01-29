@@ -30,7 +30,6 @@ template_logistic <- function(dataname,
                               ref_arm,
                               comp_arm,
                               topleft = "Logistic Regression",
-                              na_level = default_na_str(),
                               conf_level = 0.95,
                               combine_comp_arms = FALSE,
                               responder_val = c("CR", "PR"),
@@ -41,7 +40,6 @@ template_logistic <- function(dataname,
     assertthat::is.string(dataname),
     assertthat::is.string(aval_var),
     assertthat::is.string(paramcd),
-    assertthat::is.string(na_level),
     assertthat::is.string(label_paramcd) || is.null(label_paramcd),
     assertthat::is.string(topleft) || is.null(topleft),
     is.character(cov_var) || is.null(cov_var),
@@ -104,13 +102,8 @@ template_logistic <- function(dataname,
     substitute(
       expr = ANL <- df %>% # nolint
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
-        df_explicit_na(na_level = na_lvl),
-      env = list(
-        df = as.name("ANL"),
-        aval_var = as.name(aval_var),
-        responder_val = responder_val,
-        na_lvl = na_level
-      )
+        df_explicit_na(na_level = "_NA_"),
+      env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )
 
@@ -169,13 +162,7 @@ template_logistic <- function(dataname,
     )
   }
 
-  model_list <- add_expr(
-    model_list,
-    substitute(
-      expr = df_explicit_na(na_level = na_lvl),
-      env = list(na_lvl = na_level)
-    )
-  )
+  model_list <- add_expr(model_list, quote(df_explicit_na(na_level = "_NA_")))
 
   y$model <- substitute(
     expr = mod <- model_pipe,
@@ -305,7 +292,6 @@ tm_t_logistic <- function(label,
                             teal.transform::variable_choices(dataname, "AVALC"), "AVALC",
                             fixed = TRUE
                           ),
-                          na_level = default_na_str(),
                           conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
                           post_output = NULL,
@@ -314,7 +300,6 @@ tm_t_logistic <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_string(na_level)
   checkmate::assert_multi_class(arm_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
   checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"))
@@ -346,7 +331,6 @@ tm_t_logistic <- function(label,
         label = label,
         dataname = dataname,
         parentname = parentname,
-        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -467,7 +451,6 @@ srv_t_logistic <- function(id,
                            avalc_var,
                            cov_var,
                            label,
-                           na_level,
                            basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -711,7 +694,6 @@ srv_t_logistic <- function(id,
         conf_level = as.numeric(input$conf_level),
         at = if (at_flag) at_values else NULL,
         responder_val = input$responders,
-        na_level = na_level,
         basic_table_args = basic_table_args
       )
 
