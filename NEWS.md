@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.16.9034
+# teal.modules.clinical 0.8.16.9035
 
 ### Breaking Changes
 + Adapted all modules to use `teal_data` objects.
@@ -17,6 +17,7 @@
 ### Miscellaneous
 * Deprecated the `aval` argument in `tm_t_pp_laboratory` and `tm_g_pp_vitals` and replaced it with the `aval_var` argument.
 * Deprecated the `avalu` argument in `tm_t_pp_laboratory` and replaced it with the `avalu_var` argument.
+* Deprecated the `base_var` argument in `tm_g_ipp`, `tm_t_shift_by_arm`, and `template_shift_by_arm_by_worst` and replaced it with the `baseline_var` argument.
 * Specified minimal version of package dependencies.
 
 # teal.modules.clinical 0.8.16.9010

@@ -69,6 +69,8 @@ name of the analysis value variable.}
 
 \item{avalu_var}{(\code{character})\cr name of the analysis value unit variable.}
 
+\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
+
 \item{cnsr_var}{(\code{character})\cr
 name of the censoring variable.}
 

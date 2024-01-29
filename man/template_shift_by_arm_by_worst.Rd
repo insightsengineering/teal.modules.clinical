@@ -14,7 +14,8 @@ template_shift_by_arm_by_worst(
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
   aval_var = "ANRIND",
-  base_var = "BNRIND",
+  base_var = lifecycle::deprecated(),
+  baseline_var = "BNRIND",
   na.rm = FALSE,
   na_level = default_na_str(),
   add_total = FALSE,
@@ -46,7 +47,9 @@ records in \code{treatment_flag_var}.}
 
 \item{aval_var}{(\code{character})\cr the variable name for the analysis reference range indicator.}
 
-\item{base_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
+
+\item{baseline_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
 
 \item{na.rm}{(\code{logical})\cr
 whether \code{NA} values should be removed prior to analysis.}

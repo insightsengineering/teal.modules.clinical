@@ -2,7 +2,7 @@
 #'
 #' @inheritParams template_arguments
 #' @param aval_var (`character`)\cr the variable name for the analysis reference range indicator.
-#' @param base_var (`character`)\cr the variable name for the baseline reference range indicator.
+#' @param baseline_var (`character`)\cr the variable name for the baseline reference range indicator.
 #' @param add_total (`logical`)\cr
 #'   whether to include row with total number of patients.
 #'
@@ -17,12 +17,22 @@ template_shift_by_arm <- function(dataname,
                                   treatment_flag_var = "ONTRTFL",
                                   treatment_flag = "Y",
                                   aval_var = "ANRIND",
-                                  base_var = "BNRIND",
+                                  base_var = lifecycle::deprecated(),
+                                  baseline_var = "BNRIND",
                                   na.rm = FALSE, # nolint
                                   na_level = default_na_str(),
                                   add_total = FALSE,
                                   total_label = default_total_label(),
                                   basic_table_args = teal.widgets::basic_table_args()) {
+  if (lifecycle::is_present(base_var)) {
+    baseline_var <- base_var
+    warning(
+      "The `base_var` argument of `template_shift_by_arm()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "Please use the `baseline_var` argument instead.",
+      call. = FALSE
+    )
+  }
+
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(parentname),
@@ -30,7 +40,7 @@ template_shift_by_arm <- function(dataname,
     assertthat::is.string(visit_var),
     assertthat::is.string(paramcd),
     assertthat::is.string(aval_var),
-    assertthat::is.string(base_var),
+    assertthat::is.string(baseline_var),
     assertthat::is.flag(na.rm),
     assertthat::is.string(na_level),
     assertthat::is.string(treatment_flag_var),
@@ -67,8 +77,8 @@ template_shift_by_arm <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = attr(dataname$base_var, "label") <- "Baseline Assessment",
-      env = list(dataname = as.name(dataname), base_var = base_var)
+      expr = attr(dataname$baseline_var, "label") <- "Baseline Assessment",
+      env = list(dataname = as.name(dataname), baseline_var = baseline_var)
     )
   )
 
@@ -97,12 +107,15 @@ template_shift_by_arm <- function(dataname,
             split_label = obj_label(dataname$arm_var)
           ) %>%
           add_rowcounts() %>%
-          summarize_vars(base_var, denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction") %>%
-          append_varlabels(dataname, base_var, indent = 1L),
+          summarize_vars(
+            baseline_var,
+            denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction"
+          ) %>%
+          append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
           aval_var = aval_var,
           arm_var = arm_var,
-          base_var = base_var,
+          baseline_var = baseline_var,
           dataname = as.name(dataname),
           visit_var = visit_var,
           na.rm = na.rm,
@@ -126,12 +139,15 @@ template_shift_by_arm <- function(dataname,
             split_label = obj_label(dataname$arm_var)
           ) %>%
           add_rowcounts() %>%
-          summarize_vars(base_var, denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction") %>%
-          append_varlabels(dataname, base_var, indent = 1L),
+          summarize_vars(
+            baseline_var,
+            denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction"
+          ) %>%
+          append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
           aval_var = aval_var,
           arm_var = arm_var,
-          base_var = base_var,
+          baseline_var = baseline_var,
           dataname = as.name(dataname),
           visit_var = visit_var,
           na.rm = na.rm,
@@ -200,7 +216,7 @@ template_shift_by_arm <- function(dataname,
 #'         variable_choices(ADEG, subset = "ANRIND"),
 #'         selected = "ANRIND", fixed = TRUE
 #'       ),
-#'       base_var = choices_selected(
+#'       baseline_var = choices_selected(
 #'         variable_choices(ADEG, subset = "BNRIND"),
 #'         selected = "BNRIND", fixed = TRUE
 #'       ),
@@ -223,7 +239,8 @@ tm_t_shift_by_arm <- function(label,
                               paramcd,
                               visit_var,
                               aval_var,
-                              base_var,
+                              base_var = lifecycle::deprecated(),
+                              baseline_var,
                               treatment_flag_var = teal.transform::choices_selected(
                                 teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
                                 selected = "ONTRTFL"
@@ -236,6 +253,17 @@ tm_t_shift_by_arm <- function(label,
                               pre_output = NULL,
                               post_output = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
+  if (lifecycle::is_present(base_var)) {
+    baseline_var <- base_var
+    warning(
+      "The `base_var` argument of `tm_t_shift_by_arm()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "Please use the `baseline_var` argument instead.",
+      call. = FALSE
+    )
+  } else {
+    base_var <- baseline_var # resolves missing argument error
+  }
+
   logger::log_info("Initializing tm_t_shift_by_arm")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -257,7 +285,7 @@ tm_t_shift_by_arm <- function(label,
     visit_var = cs_to_des_filter(visit_var, dataname = dataname),
     treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    base_var = cs_to_des_select(base_var, dataname = dataname)
+    baseline_var = cs_to_des_select(baseline_var, dataname = dataname)
   )
 
   module(
@@ -294,7 +322,7 @@ ui_shift_by_arm <- function(id, ...) {
     a$treatment_flag_var,
     a$treatment_flag,
     a$aval_var,
-    a$base_var
+    a$baseline_var
   )
 
   teal.widgets::standard_layout(
@@ -305,7 +333,7 @@ ui_shift_by_arm <- function(id, ...) {
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c(
-        "arm_var", "paramcd_var", "paramcd", "aval_var", "base_var", "visit_var", "treamtment_flag_var"
+        "arm_var", "paramcd_var", "paramcd", "aval_var", "baseline_var", "visit_var", "treamtment_flag_var"
       )]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -332,9 +360,9 @@ ui_shift_by_arm <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
-        id = ns("base_var"),
+        id = ns("baseline_var"),
         label = "Select Baseline Reference Range Indicator Variable",
-        data_extract_spec = a$base_var,
+        data_extract_spec = a$baseline_var,
         is_single_dataset = is_single_dataset_value
       ),
       shiny::checkboxInput(ns("add_total"), "Add All Patients row", value = a$add_total),
@@ -384,7 +412,7 @@ srv_shift_by_arm <- function(id,
                              treatment_flag_var,
                              treatment_flag,
                              aval_var,
-                             base_var,
+                             baseline_var,
                              label,
                              na_level,
                              add_total,
@@ -401,7 +429,7 @@ srv_shift_by_arm <- function(id,
         paramcd = paramcd,
         visit_var = visit_var,
         aval_var = aval_var,
-        base_var = base_var,
+        baseline_var = baseline_var,
         treatment_flag_var = treatment_flag_var
       ),
       datasets = data,
@@ -409,7 +437,7 @@ srv_shift_by_arm <- function(id,
         aval_var = shinyvalidate::sv_required("An analysis range indicator required"),
         arm_var = shinyvalidate::sv_required("A treatment variable is required"),
         treatment_flag_var = shinyvalidate::sv_required("An on treatment flag variable is required"),
-        base_var = shinyvalidate::sv_required("A baseline reference range indicator is required")
+        baseline_var = shinyvalidate::sv_required("A baseline reference range indicator is required")
       ),
       filter_validation_rule = list(
         paramcd = shinyvalidate::sv_required("An endpoint is required"),
@@ -469,7 +497,7 @@ srv_shift_by_arm <- function(id,
 
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_aval_var <- names(merged$anl_input_r()$columns_source$aval_var)
-      input_base_var <- names(merged$anl_input_r()$columns_source$base_var)
+      input_baseline_var <- names(merged$anl_input_r()$columns_source$baseline_var)
       input_treatment_flag_var <- names(merged$anl_input_r()$columns_source$treatment_flag_var)
 
       shiny::validate(
@@ -486,7 +514,7 @@ srv_shift_by_arm <- function(id,
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", input_aval_var, input_base_var),
+        anlvars = c("USUBJID", "STUDYID", input_aval_var, input_baseline_var),
         arm_var = input_arm_var
       )
     })
@@ -503,7 +531,7 @@ srv_shift_by_arm <- function(id,
         treatment_flag_var = names(merged$anl_input_r()$columns_source$treatment_flag_var),
         treatment_flag = input$treatment_flag,
         aval_var = names(merged$anl_input_r()$columns_source$aval_var),
-        base_var = names(merged$anl_input_r()$columns_source$base_var),
+        baseline_var = names(merged$anl_input_r()$columns_source$baseline_var),
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
         na_level = na_level,
         add_total = input$add_total,

@@ -53,6 +53,7 @@
 #'   name of the analysis value variable.
 #' @param avalu `r lifecycle::badge("deprecated")` Please use the `avalu_var` argument instead.
 #' @param avalu_var (`character`)\cr name of the analysis value unit variable.
+#' @param base_var `r lifecycle::badge("deprecated")` Please use the `baseline_var` argument instead.
 #' @param cnsr_var (`character`)\cr
 #'   name of the censoring variable.
 #' @param conf_level (`numeric`)\cr
@@ -165,6 +166,10 @@ NULL
 #'   object with all available choices and preselected option for the analysis
 #'   variable.
 #' @param avalu `r lifecycle::badge("deprecated")` Please use the `avalu_var` argument instead.
+#' @param base_var `r lifecycle::badge("deprecated")` Please use the `baseline_var` argument instead.
+#' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#'   object with all available choices
+#'   and preselected option for variable values that can be used as `baseline_var`.
 #' @param cnsr_var (`choices_selected` or `data_extract_spec`)\cr
 #'   object with all available choices and preselected option for the censoring
 #'   variable.
