@@ -60,10 +60,9 @@ whether empty rows should be removed from the table.}
 in character or factor variables in the data.}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
-\item{avalu_var}{(\code{character})\cr
-name of the analysis unit variable.}
+\item{avalu_var}{(\code{character})\cr name of the analysis value unit variable.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr
 object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.

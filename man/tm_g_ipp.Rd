@@ -55,7 +55,7 @@ the variable name for subject id.}
 \item{visit_var}{(\code{string})\cr variable name designating the visit timepoint variable.}
 
 \item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+name of the analysis value variable.}
 
 \item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices
