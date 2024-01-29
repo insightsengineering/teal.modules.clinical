@@ -258,61 +258,61 @@ template_mmrm_tables <- function(parentname,
   )
 
   switch(table_type,
-         t_mmrm_lsmeans = {
-           y$lsmeans_table <- substitute(
-             expr = {
-               lsmeans_table <- rtables::build_table(
-                 lyt = lyt,
-                 df = df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
-                 alt_counts_df = parentname
-               )
-               lsmeans_table
-             },
-             env = list(
-               parentname = as.name(parentname),
-               fit_mmrm = as.name(fit_name)
-             )
-           )
-         },
-         t_mmrm_cov = {
-           y$cov_matrix <- substitute(
-             expr = {
-               cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
-               subtitles(cov_matrix) <- st
-               cov_matrix
-             },
-             env = list(
-               fit_mmrm = as.name(fit_name),
-               st = basic_table_args$subtitles
-             )
-           )
-         },
-         t_mmrm_fixed = {
-           y$fixed_effects <- substitute(
-             expr = {
-               fixed_effects <- tern.mmrm::as.rtable(fit_mmrm, type = "fixed")
-               subtitles(fixed_effects) <- st
-               fixed_effects
-             },
-             env = list(
-               fit_mmrm = as.name(fit_name),
-               st = basic_table_args$subtitles
-             )
-           )
-         },
-         t_mmrm_diagnostic = {
-           y$diagnostic_table <- substitute(
-             expr = {
-               diagnostic_table <- tern.mmrm::as.rtable(fit_mmrm, type = "diagnostic")
-               subtitles(diagnostic_table) <- st
-               diagnostic_table
-             },
-             env = list(
-               fit_mmrm = as.name(fit_name),
-               st = basic_table_args$subtitles
-             )
-           )
-         }
+    t_mmrm_lsmeans = {
+      y$lsmeans_table <- substitute(
+        expr = {
+          lsmeans_table <- rtables::build_table(
+            lyt = lyt,
+            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
+            alt_counts_df = parentname
+          )
+          lsmeans_table
+        },
+        env = list(
+          parentname = as.name(parentname),
+          fit_mmrm = as.name(fit_name)
+        )
+      )
+    },
+    t_mmrm_cov = {
+      y$cov_matrix <- substitute(
+        expr = {
+          cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
+          subtitles(cov_matrix) <- st
+          cov_matrix
+        },
+        env = list(
+          fit_mmrm = as.name(fit_name),
+          st = basic_table_args$subtitles
+        )
+      )
+    },
+    t_mmrm_fixed = {
+      y$fixed_effects <- substitute(
+        expr = {
+          fixed_effects <- tern.mmrm::as.rtable(fit_mmrm, type = "fixed")
+          subtitles(fixed_effects) <- st
+          fixed_effects
+        },
+        env = list(
+          fit_mmrm = as.name(fit_name),
+          st = basic_table_args$subtitles
+        )
+      )
+    },
+    t_mmrm_diagnostic = {
+      y$diagnostic_table <- substitute(
+        expr = {
+          diagnostic_table <- tern.mmrm::as.rtable(fit_mmrm, type = "diagnostic")
+          subtitles(diagnostic_table) <- st
+          diagnostic_table
+        },
+        env = list(
+          fit_mmrm = as.name(fit_name),
+          st = basic_table_args$subtitles
+        )
+      )
+    }
   )
   y
 }
@@ -1235,21 +1235,21 @@ srv_mmrm <- function(id,
       g_mmrm_lsmeans_select <- input$g_mmrm_lsmeans_select
 
       output_title <- switch(output_function,
-                             "t_mmrm_cov" = "Residual Covariance Matrix Estimate",
-                             "t_mmrm_diagnostic" = "Model Fit Statistics",
-                             "t_mmrm_fixed" = "Fixed Effects Estimates",
-                             "t_mmrm_lsmeans" = "LS Means and Contrasts Estimates",
-                             "g_mmrm_diagnostic" = switch(g_mmrm_diagnostic_type,
-                                                          "fit-residual" = "Marginal Fitted Values vs. Residuals",
-                                                          "q-q-residual" = "Q-Q Normal Plot for Standardized Residuals"
-                             ),
-                             "g_mmrm_lsmeans" = if (setequal(g_mmrm_lsmeans_select, c("estimates", "contrasts"))) {
-                               "LS Means Estimates and Contrasts"
-                             } else if (identical(g_mmrm_lsmeans_select, "estimates")) {
-                               "LS Means Estimates"
-                             } else {
-                               "LS Means Contrasts"
-                             }
+        "t_mmrm_cov" = "Residual Covariance Matrix Estimate",
+        "t_mmrm_diagnostic" = "Model Fit Statistics",
+        "t_mmrm_fixed" = "Fixed Effects Estimates",
+        "t_mmrm_lsmeans" = "LS Means and Contrasts Estimates",
+        "g_mmrm_diagnostic" = switch(g_mmrm_diagnostic_type,
+          "fit-residual" = "Marginal Fitted Values vs. Residuals",
+          "q-q-residual" = "Q-Q Normal Plot for Standardized Residuals"
+        ),
+        "g_mmrm_lsmeans" = if (setequal(g_mmrm_lsmeans_select, c("estimates", "contrasts"))) {
+          "LS Means Estimates and Contrasts"
+        } else if (identical(g_mmrm_lsmeans_select, "estimates")) {
+          "LS Means Estimates"
+        } else {
+          "LS Means Contrasts"
+        }
       )
       output_title
     })
@@ -1331,7 +1331,7 @@ srv_mmrm <- function(id,
           subtitle = paste0(
             "Endpoint: ", fit$fit$data$PARAMCD[1],
             ifelse(is.null(fit$vars$covariates), "",
-                   paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
+              paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
             )
           ),
           caption = paste(
@@ -1388,17 +1388,17 @@ srv_mmrm <- function(id,
 
     table_r <- shiny::reactive({
       switch(input$output_function,
-             t_mmrm_lsmeans = table_q()[["lsmeans_table"]],
-             t_mmrm_diagnostic = table_q()[["diagnostic_table"]],
-             t_mmrm_fixed = table_q()[["fixed_effects"]],
-             t_mmrm_cov = table_q()[["cov_matrix"]]
+        t_mmrm_lsmeans = table_q()[["lsmeans_table"]],
+        t_mmrm_diagnostic = table_q()[["diagnostic_table"]],
+        t_mmrm_fixed = table_q()[["fixed_effects"]],
+        t_mmrm_cov = table_q()[["cov_matrix"]]
       )
     })
 
     plot_r <- shiny::reactive({
       switch(input$output_function,
-             g_mmrm_lsmeans = plot_q()[["lsmeans_plot"]],
-             g_mmrm_diagnostic = plot_q()[["diagnostic_plot"]]
+        g_mmrm_lsmeans = plot_q()[["lsmeans_plot"]],
+        g_mmrm_diagnostic = plot_q()[["diagnostic_plot"]]
       )
     })
 
