@@ -14,7 +14,7 @@ tm_t_mult_events(
   hlt,
   llt,
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   event_type = "event",
   drop_arm_levels = TRUE,
   pre_output = NULL,

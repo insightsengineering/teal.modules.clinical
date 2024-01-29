@@ -22,7 +22,7 @@ tm_t_binary_outcome(
     "Partial Response (PR)", "M"),
   rsp_table = FALSE,
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()

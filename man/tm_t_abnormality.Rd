@@ -21,11 +21,9 @@ tm_t_abnormality(
   treatment_flag_var =
     teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
     "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag =
-    teal.transform::choices_selected(teal.transform::value_choices(dataname, "ONTRTFL"),
-    selected = "Y", fixed = TRUE),
+  treatment_flag = teal.transform::choices_selected("Y"),
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
   pre_output = NULL,

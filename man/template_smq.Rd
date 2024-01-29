@@ -10,7 +10,7 @@ template_smq(
   arm_var,
   llt = "AEDECOD",
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   sort_criteria = c("freq_desc", "alpha"),
   drop_arm_levels = TRUE,
   na_level = "<Missing>",

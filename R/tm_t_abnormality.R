@@ -24,7 +24,7 @@ template_abnormality <- function(parentname,
                                  treatment_flag_var = "ONTRTFL",
                                  treatment_flag = "Y",
                                  add_total = FALSE,
-                                 total_label = "All Patients",
+                                 total_label = default_total_label(),
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE,
                                  na_level = "<Missing>",
@@ -310,12 +310,9 @@ tm_t_abnormality <- function(label,
                                teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
                                selected = "ONTRTFL", fixed = TRUE
                              ),
-                             treatment_flag = teal.transform::choices_selected(
-                               teal.transform::value_choices(dataname, "ONTRTFL"),
-                               selected = "Y", fixed = TRUE
-                             ),
+                             treatment_flag = teal.transform::choices_selected("Y"),
                              add_total = TRUE,
-                             total_label = "All Patients",
+                             total_label = default_total_label(),
                              exclude_base_abn = FALSE,
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
@@ -365,6 +362,7 @@ tm_t_abnormality <- function(label,
         dataname = dataname,
         parentname = parentname,
         abnormal = abnormal,
+        treatment_flag = treatment_flag,
         label = label,
         total_label = total_label,
         na_level = na_level,
@@ -457,11 +455,9 @@ ui_t_abnormality <- function(id, ...) {
           ),
           teal.widgets::optionalSelectInput(
             ns("treatment_flag"),
-            "Value Indicating On Treatment",
-            a$treatment_flag$choices,
-            a$treatment_flag$selected,
+            label = "Value Indicating On Treatment",
             multiple = FALSE,
-            fixed = a$treatment_flag$fixed
+            fixed_on_single = TRUE
           )
         )
       )
@@ -489,6 +485,7 @@ srv_t_abnormality <- function(id,
                               grade,
                               baseline_var,
                               treatment_flag_var,
+                              treatment_flag,
                               add_total,
                               total_label,
                               drop_arm_levels,
@@ -532,6 +529,16 @@ srv_t_abnormality <- function(id,
         )
       )
     )
+
+    shiny::isolate({
+      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
+      teal.widgets::updateOptionalSelectInput(
+        session = session,
+        inputId = "treatment_flag",
+        choices = resolved$choices,
+        selected = resolved$selected
+      )
+    })
 
     iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()

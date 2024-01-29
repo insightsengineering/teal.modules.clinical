@@ -11,7 +11,7 @@ template_events_col_by_grade(
   grading_groups = list(`Any Grade (\%)` = c("1", "2", "3", "4", "5"), `Grade 1-2 (\%)` =
     c("1", "2"), `Grade 3-4 (\%)` = c("3", "4"), `Grade 5 (\%)` = "5"),
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   id = "USUBJID",
   hlt,
   llt,

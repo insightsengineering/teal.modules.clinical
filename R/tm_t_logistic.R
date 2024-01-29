@@ -552,6 +552,9 @@ srv_t_logistic <- function(id,
         responder_choices <- c("CR", "PR")
         responder_sel <- c("CR", "PR")
       } else {
+        if (length(avalc_var) == 0) {
+          return(NULL)
+        }
         responder_choices <- unique(merged$anl_q()[["ANL"]][[avalc_var]])
         responder_sel <- intersect(responder_choices, shiny::isolate(input$responders))
       }

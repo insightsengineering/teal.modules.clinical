@@ -167,7 +167,7 @@ template_mmrm_tables <- function(parentname,
                                  paramcd,
                                  show_relative = c("increase", "reduction", "none"),
                                  table_type = "t_mmrm_cov",
-                                 total_label = "All Patients",
+                                 total_label = default_total_label(),
                                  basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -522,7 +522,7 @@ tm_a_mmrm <- function(label,
                       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
-                      total_label = "All Patients",
+                      total_label = default_total_label(),
                       pre_output = NULL,
                       post_output = NULL,
                       basic_table_args = teal.widgets::basic_table_args(),

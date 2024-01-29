@@ -16,11 +16,12 @@
       
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
-          rtables::split_cols_by("ARM") %>% rtables::add_colcounts() %>% 
-          summarize_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
-              na.rm = FALSE, na_level = "<Missing>", denom = "N_col", 
-              .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", 
-                  "quantiles", "range", "geom_mean", "count_fraction"))
+          rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
+          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
+          "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
+          na_level = "<Missing>", denom = "N_col", .stats = c("n", 
+              "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
+              "range", "geom_mean", "count_fraction"))
       
       $table
       {
@@ -82,12 +83,13 @@
       
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
-          rtables::split_cols_by("ARM") %>% rtables::split_cols_by("STRATA1", 
-          split_fun = drop_split_levels) %>% rtables::add_colcounts() %>% 
-          summarize_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
-              na.rm = FALSE, na_level = "<Missing>", denom = "N_col", 
-              .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", 
-                  "quantiles", "range", "geom_mean", "count_fraction"))
+          rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
+          rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>% 
+          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
+          "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
+          na_level = "<Missing>", denom = "N_col", .stats = c("n", 
+              "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
+              "range", "geom_mean", "count_fraction"))
       
       $table
       {
@@ -118,13 +120,13 @@
       
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
-          rtables::split_cols_by("ARM") %>% rtables::split_cols_by("STRATA1", 
-          split_fun = drop_split_levels) %>% rtables::add_overall_col("All Patients") %>% 
-          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
-          "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
-          na_level = "<Missing>", denom = "N_col", .stats = c("n", 
-              "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
-              "range", "geom_mean", "count_fraction"))
+          rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
+          rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>% 
+          rtables::add_overall_col("All Patients") %>% rtables::add_colcounts() %>% 
+          summarize_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
+              na.rm = FALSE, na_level = "<Missing>", denom = "N_col", 
+              .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", 
+                  "quantiles", "range", "geom_mean", "count_fraction"))
       
       $table
       {
@@ -155,11 +157,12 @@
       
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
-          rtables::split_cols_by("ARM") %>% rtables::split_cols_by("STRATA1", 
-          split_fun = drop_split_levels) %>% rtables::add_colcounts() %>% 
-          summarize_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
-              na.rm = FALSE, na_level = "<Missing>", denom = "N_col", 
-              .stats = c("n", "count_fraction"))
+          rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
+          rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>% 
+          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
+          "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
+          na_level = "<Missing>", denom = "N_col", .stats = c("n", 
+              "count_fraction"))
       
       $table
       {
