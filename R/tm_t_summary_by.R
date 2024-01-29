@@ -251,7 +251,7 @@ template_summary_by <- function(parentname,
       } else {
         if (length(var_labels > 0)) {
           substitute(
-            expr = summarize_vars(
+            expr = analyze_vars(
               vars = sum_vars,
               var_labels = sum_var_labels,
               na.rm = na.rm,
@@ -263,7 +263,7 @@ template_summary_by <- function(parentname,
           )
         } else {
           substitute(
-            expr = summarize_vars(
+            expr = analyze_vars(
               vars = sum_vars,
               na.rm = na.rm,
               na_level = na_level,

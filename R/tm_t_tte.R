@@ -210,7 +210,7 @@ template_tte <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = rtables::add_colcounts() %>%
-        summarize_vars(
+        analyze_vars(
           "is_event",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Patients with event (%)"),
@@ -226,7 +226,7 @@ template_tte <- function(dataname = "ANL",
         ) %>%
         rtables::split_rows_by(event_desc_var, split_fun = drop_split_levels) %>%
         rtables::summarize_row_groups(format = "xx", na_str = na_str) %>%
-        summarize_vars(
+        analyze_vars(
           "is_not_event",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Patients without event (%)"),

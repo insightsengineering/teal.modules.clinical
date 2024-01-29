@@ -248,7 +248,7 @@
           child_labels = "visible", nested = FALSE, split_fun = trim_levels_in_group("AEDECOD")) %>% 
           append_varlabels(df = anl, vars = "AEBODSYS") %>% summarize_num_patients(var = "USUBJID", 
           .stats = "unique", .labels = "Total number of patients with at least one adverse event", 
-          ) %>% summarize_vars("AEDECOD", na.rm = FALSE, denom = "N_col", 
+          ) %>% analyze_vars("AEDECOD", na.rm = FALSE, denom = "N_col", 
           .stats = "count_fraction", .formats = c(count_fraction = format_fraction_threshold(0.01))) %>% 
           append_varlabels(df = anl, vars = "AEDECOD", indent = 1L)
       
@@ -311,7 +311,7 @@
               first = FALSE)) %>% split_cols_by_groups("MAXAETOXGR", 
           groups = list(`Any Grade (%)` = c("1", "2", "3", "4", "5"), 
               `Grade 1-2 (%)` = c("1", "2"), `Grade 3-4 (%)` = c("3", 
-                  "4"), `Grade 5 (%)` = "5")) %>% summarize_vars("AEDECOD", 
+                  "4"), `Grade 5 (%)` = "5")) %>% analyze_vars("AEDECOD", 
           na.rm = FALSE, denom = "N_col", .stats = "count_fraction", 
           .formats = c(count_fraction = format_fraction_threshold(0.01))) %>% 
           append_varlabels(df = anl, vars = "AEDECOD")
@@ -371,7 +371,7 @@
           rtables::split_cols_by(var = "ACTARM") %>% split_cols_by_groups("MAXAETOXGR", 
           groups = list(`Any Grade (%)` = c("1", "2", "3", "4", "5"), 
               `Grade 1-2 (%)` = c("1", "2"), `Grade 3-4 (%)` = c("3", 
-                  "4"), `Grade 5 (%)` = "5")) %>% summarize_vars("AEDECOD", 
+                  "4"), `Grade 5 (%)` = "5")) %>% analyze_vars("AEDECOD", 
           na.rm = FALSE, denom = "N_col", .stats = "count_fraction", 
           .formats = c(count_fraction = format_fraction_threshold(0.01))) %>% 
           append_varlabels(df = anl, vars = "AEDECOD")
@@ -430,7 +430,7 @@
           rtables::split_cols_by(var = "ACTARM") %>% split_cols_by_groups("MAXAETOXGR", 
           groups = list(`Any Grade (%)` = c("1", "2", "3", "4", "5"), 
               `Grade 1-2 (%)` = c("1", "2"), `Grade 3-4 (%)` = c("3", 
-                  "4"), `Grade 5 (%)` = "5")) %>% summarize_vars("AEDECOD", 
+                  "4"), `Grade 5 (%)` = "5")) %>% analyze_vars("AEDECOD", 
           na.rm = FALSE, denom = "N_col", .stats = "count_fraction", 
           .formats = c(count_fraction = format_fraction_threshold(0.01))) %>% 
           append_varlabels(df = anl, vars = "AEDECOD")

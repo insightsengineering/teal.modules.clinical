@@ -150,7 +150,7 @@ template_summary <- function(dataname,
     layout_list,
     if (length(var_labels) > 0) {
       substitute(
-        expr = summarize_vars(
+        expr = analyze_vars(
           vars = sum_vars,
           var_labels = sum_var_labels,
           show_labels = show_labels,
@@ -163,7 +163,7 @@ template_summary <- function(dataname,
       )
     } else {
       substitute(
-        expr = summarize_vars(
+        expr = analyze_vars(
           vars = sum_vars,
           show_labels = show_labels,
           na.rm = na.rm,
