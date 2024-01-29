@@ -17,7 +17,7 @@
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
-          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
+          rtables::add_colcounts() %>% analyze_vars(vars = c("RACE", 
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
           na_level = "<Missing>", denom = "N_col", .stats = c("n", 
               "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
@@ -48,7 +48,7 @@
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
           rtables::split_cols_by("ARMCD") %>% rtables::add_overall_col("All Patients") %>% 
-          rtables::add_colcounts() %>% summarize_vars(vars = "RACE", 
+          rtables::add_colcounts() %>% analyze_vars(vars = "RACE", 
           var_labels = c(RACE = "Race"), show_labels = "visible", na.rm = TRUE, 
           na_level = "<Missing>", denom = "N_col", .stats = c("n", 
               "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
@@ -85,7 +85,7 @@
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
           rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>% 
-          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
+          rtables::add_colcounts() %>% analyze_vars(vars = c("RACE", 
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
           na_level = "<Missing>", denom = "N_col", .stats = c("n", 
               "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
@@ -123,7 +123,7 @@
           rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
           rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% rtables::add_colcounts() %>% 
-          summarize_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
+          analyze_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
               na.rm = FALSE, na_level = "<Missing>", denom = "N_col", 
               .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", 
                   "quantiles", "range", "geom_mean", "count_fraction"))
@@ -159,7 +159,7 @@
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
           rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>% 
-          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
+          rtables::add_colcounts() %>% analyze_vars(vars = c("RACE", 
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
           na_level = "<Missing>", denom = "N_col", .stats = c("n", 
               "count_fraction"))

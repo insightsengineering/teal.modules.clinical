@@ -597,7 +597,7 @@ template_events_col_by_grade <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      summarize_vars(
+      analyze_vars(
         llt,
         na.rm = FALSE,
         denom = "N_col",

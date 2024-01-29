@@ -117,7 +117,7 @@ template_shift_by_arm_by_worst <- function(dataname,
             split_label = obj_label(dataname$arm_var)
           ) %>%
           add_rowcounts() %>%
-          summarize_vars(
+          analyze_vars(
             baseline_var,
             denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction"
           ) %>%
@@ -148,7 +148,7 @@ template_shift_by_arm_by_worst <- function(dataname,
             split_label = obj_label(dataname$arm_var)
           ) %>%
           add_rowcounts() %>%
-          summarize_vars(
+          analyze_vars(
             baseline_var,
             denom = "N_row", na_level = na_level, na.rm = na.rm, .stats = "count_fraction"
           ) %>%

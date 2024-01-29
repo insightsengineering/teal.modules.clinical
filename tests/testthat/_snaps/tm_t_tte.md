@@ -19,12 +19,12 @@
       lyt <- rtables::basic_table(title = "Time-To-Event Table for OS", 
           main_footer = "Confidence Level Type for Survfit: plain") %>% 
           rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
-          summarize_vars("is_event", .stats = "count_fraction", .labels = c(count_fraction = "Patients with event (%)")) %>% 
+          analyze_vars("is_event", .stats = "count_fraction", .labels = c(count_fraction = "Patients with event (%)")) %>% 
           rtables::split_rows_by("EVNT1", split_label = "Earliest contributing event", 
               split_fun = keep_split_levels("Patients with event (%)"), 
               label_pos = "visible", child_labels = "hidden", indent_mod = 1L, 
               ) %>% rtables::split_rows_by("EVNTDESC", split_fun = drop_split_levels) %>% 
-          rtables::summarize_row_groups(format = "xx") %>% summarize_vars("is_not_event", 
+          rtables::summarize_row_groups(format = "xx") %>% analyze_vars("is_not_event", 
           .stats = "count_fraction", .labels = c(count_fraction = "Patients without event (%)"), 
           nested = FALSE, show_labels = "hidden") %>% surv_time(vars = "AVAL", 
           var_labels = paste0("Time to Event (", as.character(anl$AVALU[1]), 
@@ -63,12 +63,12 @@
       lyt <- rtables::basic_table(title = "Time-To-Event Table for OS", 
           main_footer = "Confidence Level Type for Survfit: plain") %>% 
           rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
-          summarize_vars("is_event", .stats = "count_fraction", .labels = c(count_fraction = "Patients with event (%)")) %>% 
+          analyze_vars("is_event", .stats = "count_fraction", .labels = c(count_fraction = "Patients with event (%)")) %>% 
           rtables::split_rows_by("EVNT1", split_label = "Earliest contributing event", 
               split_fun = keep_split_levels("Patients with event (%)"), 
               label_pos = "visible", child_labels = "hidden", indent_mod = 1L, 
               ) %>% rtables::split_rows_by("EVNTDESC", split_fun = drop_split_levels) %>% 
-          rtables::summarize_row_groups(format = "xx") %>% summarize_vars("is_not_event", 
+          rtables::summarize_row_groups(format = "xx") %>% analyze_vars("is_not_event", 
           .stats = "count_fraction", .labels = c(count_fraction = "Patients without event (%)"), 
           nested = FALSE, show_labels = "hidden") %>% surv_time(vars = "AVAL", 
           var_labels = paste0("Time to Event (", as.character(anl$AVALU[1]), 
@@ -115,13 +115,13 @@
           main_footer = c("p-value method for Coxph (Hazard Ratio): log-rank", 
               "Ties for Coxph (Hazard Ratio): efron", "Confidence Level Type for Survfit: plain")) %>% 
           split_cols_by_groups(var = "ARM", groups_list = groups, ref_group = names(groups)[1]) %>% 
-          rtables::add_colcounts() %>% summarize_vars("is_event", .stats = "count_fraction", 
+          rtables::add_colcounts() %>% analyze_vars("is_event", .stats = "count_fraction", 
           .labels = c(count_fraction = "Patients with event (%)")) %>% 
           rtables::split_rows_by("EVNT1", split_label = "Earliest contributing event", 
               split_fun = keep_split_levels("Patients with event (%)"), 
               label_pos = "visible", child_labels = "hidden", indent_mod = 1L, 
               ) %>% rtables::split_rows_by("EVNTDESC", split_fun = drop_split_levels) %>% 
-          rtables::summarize_row_groups(format = "xx") %>% summarize_vars("is_not_event", 
+          rtables::summarize_row_groups(format = "xx") %>% analyze_vars("is_not_event", 
           .stats = "count_fraction", .labels = c(count_fraction = "Patients without event (%)"), 
           nested = FALSE, show_labels = "hidden") %>% surv_time(vars = "AVAL", 
           var_labels = paste0("Time to Event (", as.character(anl$AVALU[1]), 
@@ -170,12 +170,12 @@
           main_footer = c("p-value method for Coxph (Hazard Ratio): log-rank", 
               "Ties for Coxph (Hazard Ratio): efron", "Confidence Level Type for Survfit: plain")) %>% 
           rtables::split_cols_by(var = "ARM", ref_group = "") %>% rtables::add_colcounts() %>% 
-          summarize_vars("is_event", .stats = "count_fraction", .labels = c(count_fraction = "Patients with event (%)")) %>% 
+          analyze_vars("is_event", .stats = "count_fraction", .labels = c(count_fraction = "Patients with event (%)")) %>% 
           rtables::split_rows_by("EVNT1", split_label = "Earliest contributing event", 
               split_fun = keep_split_levels("Patients with event (%)"), 
               label_pos = "visible", child_labels = "hidden", indent_mod = 1L, 
               ) %>% rtables::split_rows_by("EVNTDESC", split_fun = drop_split_levels) %>% 
-          rtables::summarize_row_groups(format = "xx") %>% summarize_vars("is_not_event", 
+          rtables::summarize_row_groups(format = "xx") %>% analyze_vars("is_not_event", 
           .stats = "count_fraction", .labels = c(count_fraction = "Patients without event (%)"), 
           nested = FALSE, show_labels = "hidden") %>% surv_time(vars = "AVAL", 
           var_labels = paste0("Time to Event (", as.character(anl$AVALU[1]), 
