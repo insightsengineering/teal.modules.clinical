@@ -27,7 +27,7 @@ template_exposure <- function(parentname,
                               add_total_row = TRUE,
                               total_row_label = "Total number of patients and patient time*",
                               drop_levels = TRUE,
-                              na_level = "<Missing>",
+                              na_level = default_na_str(),
                               aval_var,
                               avalu_var,
                               basic_table_args = teal.widgets::basic_table_args()) {
@@ -64,10 +64,10 @@ template_exposure <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = na_level),
+      dataname <- df_explicit_na(dataname, na_level = na_str),
       env = list(
         dataname = as.name("anl"),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -133,6 +133,7 @@ template_exposure <- function(parentname,
         ex_var = aval_var,
         col_split = TRUE,
         add_total_level = add_total_row,
+        na_str = na_str,
         .labels = c(
           n_patients = "Number of Patients",
           sum_exposure = ifelse(
@@ -147,6 +148,7 @@ template_exposure <- function(parentname,
         row_by_var = row_by_var,
         aval_var = aval_var,
         add_total_row = add_total_row,
+        na_str = na_level,
         avalu_var = avalu_var,
         paramcd = paramcd,
         total_row_label = total_row_label
@@ -167,11 +169,13 @@ template_exposure <- function(parentname,
     substitute(
       analyze_patients_exposure_in_cols(
         var = row_by_var,
-        col_split = FALSE
+        col_split = FALSE,
+        na_str = na_str
       ) %>%
         append_topleft(c(split_label)),
       env = list(
         row_by_var = row_by_var,
+        na_str = na_level,
         split_label = split_label
       )
     )
@@ -311,7 +315,7 @@ tm_t_exposure <- function(label,
                           total_label = default_total_label(),
                           add_total_row = TRUE,
                           total_row_label = "Total number of patients and patient time*",
-                          na_level = "<Missing>",
+                          na_level = default_na_str(),
                           pre_output = NULL,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args()) {

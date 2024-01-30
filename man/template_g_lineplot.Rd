@@ -27,8 +27,7 @@ template_g_lineplot(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{strata}{(\code{character} or \code{NA})\cr deprecated - group variable name.}
 
@@ -63,8 +62,7 @@ All the statistics indicated in \code{table} variable must be present in the obj
 \item{mid_type}{(\code{character})\cr controls the type of the \code{mid} plot, it can be point (\code{p}), line (\code{l}),
 or point and line (\code{pl}).}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
 \item{incl_screen}{(\code{logical})\cr
 should the screening visit be included.}

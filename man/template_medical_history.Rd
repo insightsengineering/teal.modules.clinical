@@ -13,8 +13,7 @@ template_medical_history(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{mhterm}{(\code{character})\cr name of the reported name for medical history variable.}
 

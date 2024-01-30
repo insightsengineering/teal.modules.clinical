@@ -21,25 +21,19 @@ template_forest_rsp(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{character})\cr
-the level of reference arm in case of arm comparison.}
+\item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr
-the level of comparison arm in case of arm comparison.}
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
 \item{obj_var_name}{(\code{character})\cr additional text string append to output title.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis value variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
 \item{responders}{(\code{character})\cr values of \code{aval_var} that are considered to be responders.}
 
@@ -48,8 +42,7 @@ name of the analysis value variable.}
 \item{strata_var}{(\code{character})\cr
 names of the variables for stratified analysis.}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
 \item{col_symbol_size}{(\code{integer})\cr column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used

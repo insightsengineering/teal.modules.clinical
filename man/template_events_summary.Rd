@@ -16,20 +16,18 @@ template_events_summary(
   llt = "AEDECOD",
   add_total = TRUE,
   total_label = default_total_label(),
+  na_level = default_na_str(),
   count_subj = TRUE,
   count_pt = TRUE,
   count_events = TRUE
 )
 }
 \arguments{
-\item{anl_name}{(\code{character})\cr
-analysis data used in teal module.}
+\item{anl_name}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{dthfl_var}{(\code{character})\cr
 variable for subject death flag from \code{parentname}. Records with `"Y"`` are summarized in
@@ -52,11 +50,13 @@ row names if they exist.}
 variable for adverse events sequence number from \code{dataset}. Used for counting total
 number of events.}
 
-\item{llt}{(\code{character})\cr
-name of the variable with low level term for events.}
+\item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{count_subj}{(\code{logical})\cr w
 whether to show count of unique subjects based on \code{USUBJID}. Only applies if event flag

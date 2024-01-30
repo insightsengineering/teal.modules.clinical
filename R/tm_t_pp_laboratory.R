@@ -133,17 +133,17 @@ template_laboratory <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{PARAMCD} column of the `ADLB` dataset.
+#' `PARAMCD` column of the `ADLB` dataset.
 #' @param param ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{PARAM} column of the `ADLB` dataset.
+#' `PARAM` column of the `ADLB` dataset.
 #' @param timepoints ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' Time variable to be represented in the laboratory table.
 #' @param anrind ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ANRIND} column of the `ADLB` dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".
+#' `ANRIND` column of the `ADLB` dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".
 #' @param aval_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AVAL} column of the `ADLB` dataset.
+#' `AVAL` column of the `ADLB` dataset.
 #' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AVALU} column of the `ADLB` dataset.
+#' `AVALU` column of the `ADLB` dataset.
 #' @inheritParams module_arguments
 #'
 #' @export

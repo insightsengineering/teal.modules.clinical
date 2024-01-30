@@ -23,50 +23,42 @@ tm_t_binary_outcome(
   rsp_table = FALSE,
   add_total = FALSE,
   total_label = default_total_label(),
+  na_level = default_na_str(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr
-If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
 
-\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-names of the variables for stratified analysis.}
+\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr names of the variables for stratified analysis.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis
-variable.}
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
+option for the analysis variable.}
 
-\item{conf_level}{(\code{choices_selected})\cr
-object with all available choices and preselected option for the confidence
-level, each within range of (0, 1).}
+\item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
+confidence level, each within range of (0, 1).}
 
-\item{default_responses}{(\code{list} or \code{character}) \cr defines
+\item{default_responses}{(\code{list} or \code{character})\cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.
 A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named
 and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
@@ -75,24 +67,25 @@ values and \code{levels} of default level choices.}
 
 \item{rsp_table}{(\code{logical})\cr should the initial set-up of the module match \code{RSPT01}. (default FALSE)}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
+
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

@@ -7,11 +7,11 @@
 check_arm_ref_comp(x, df_to_check, module)
 }
 \arguments{
-\item{x}{(\code{character}) Name of the variable}
+\item{x}{(\code{character})\cr Name of the variable}
 
-\item{df_to_check}{(\code{data.frame}) table to check}
+\item{df_to_check}{(\code{data.frame})\cr table to check}
 
-\item{module}{\code{character} teal module the ref and comp are called in}
+\item{module}{(\code{character})\cr teal module the ref and comp are called in}
 }
 \value{
 \code{TRUE} or \code{FALSE} whether the variable is in ref or comp

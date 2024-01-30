@@ -27,40 +27,32 @@ template_ancova(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{character})\cr
-the level of reference arm in case of arm comparison.}
+\item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr
-the level of comparison arm in case of arm comparison.}
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{combine_comp_arms}{(\code{logical})\cr
-triggers the combination of comparison arms.}
+\item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis value variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
 \item{label_aval}{(\code{character})\cr
 label of value variable used for title rendering.}
 
-\item{cov_var}{(\code{character})\cr
-names of the covariates variables.}
+\item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
 
-\item{interact_var}{(\code{character})\cr name of the variable that should have interactions
-with arm. If the interaction is not needed, the default option is \code{NULL}.}
+\item{interact_var}{(\code{character})\cr name of the variable that should have interactions with arm. If the
+interaction is not needed, the default option is \code{NULL}.}
 
-\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select
-the specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
+\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select the
+specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{paramcd_levels}{(\code{character})\cr
 variable levels for the studied parameter.}
@@ -74,16 +66,14 @@ variable label used for title rendering.}
 \item{visit_levels}{(\code{character})\cr
 variable levels for studied visits.}
 
-\item{visit_var}{(\code{character})\cr
-variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+\item{visit_var}{(\code{character})\cr variable names that can be used as \code{visit} variable. Must be a factor in
+\code{dataname}.}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
