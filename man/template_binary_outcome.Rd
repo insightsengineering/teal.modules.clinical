@@ -48,7 +48,7 @@ template_binary_outcome(
 \item{show_rsp_cat}{(\code{logical})\cr display the multinomial response estimations.}
 
 \item{responder_val}{(\code{character})\cr the short label for observations to
-translate \code{AVALC} into responder / non-responder.}
+translate \code{AVALC} into responder/non-responder.}
 
 \item{responder_val_levels}{(\code{character})\cr the levels of responses that will be shown in the multinomial
 response estimations.}
@@ -68,7 +68,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Creates a valid expression for binary outcome analysis.
+Creates a valid expression to generate a binary outcome analysis.
 }
 \examples{
 if (interactive()) {

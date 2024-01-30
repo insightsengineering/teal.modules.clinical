@@ -58,14 +58,13 @@ option for the analysis variable.}
 \item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
 confidence level, each within range of (0, 1).}
 
-\item{default_responses}{(\code{list} or \code{character})\cr defines
-the default codes for the response variable in the module per value of \code{paramcd}.
-A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named
-and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
-may contain default response values or named arrays \code{rsp} of default selected response
-values and \code{levels} of default level choices.}
+\item{default_responses}{(\code{list} or \code{character})\cr defines the default codes for the response variable in the
+module per value of \code{paramcd}. If a \code{vector} is passed, values are transmitted for all \code{paramcd} values. If a
+\code{list} is passed, it must be named and contain arrays, with each name corresponding to a single value of
+\code{paramcd}. Each array may contain either default response values or two named arrays: \code{rsp} of default selected
+response values, and \code{levels} of default level choices.}
 
-\item{rsp_table}{(\code{logical})\cr should the initial set-up of the module match \code{RSPT01}. (default FALSE)}
+\item{rsp_table}{(\code{logical})\cr whether the initial set-up of the module should match \code{RSPT01}. Defaults to \code{FALSE}.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -90,30 +89,23 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-an \code{\link[teal:module]{teal::module()}} object
+a \code{\link[teal:module]{teal::module()}} object.
 }
 \description{
-This module produces a binary outcome response summary
-table, with the option to match the STREAM template \code{RSPT01}.
+This module produces a binary outcome response summary table, with the option to match the template for
+standardized response table \code{RSPT01}.
 }
 \details{
-Additional standard UI inputs include \code{responders},
-\code{ref_arm}, \code{comp_arm} and \code{combine_comp_arms} (default FALSE)
-
-Default values of the inputs \code{var_arm}, \code{ref_arm} and
-\code{comp_arm} are set to NULL, and updated accordingly based on selection
-of \code{paramcd} and \code{var_arm}
-
-This display order of response categories in partitioned statistics section
-inherits the factor level order of the source data. Use
-\code{\link[base:factor]{base::factor()}} and its \code{levels} argument to manipulate
-the source data in order to include/exclude or re-categorize response
-categories and arrange the display order. If response categories are
-"Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\\%
-confidence interval will not be calculated.
-
-Reference arms automatically combined if multiple arms selected as
-reference group.
+\itemize{
+\item Additional standard UI inputs include: \code{responders}, \code{ref_arm}, \code{comp_arm} and \code{combine_comp_arms}. Inputs
+\code{var_arm}, \code{ref_arm} and \code{comp_arm} are set to \code{NULL} by default, and are updated accordingly based on
+selection of \code{paramcd} and \code{var_arm}. Input \code{combine_comp_arms} defaults to \code{FALSE}.
+\item The display order of response categories inherits the factor level order of the source data. Use
+\code{\link[base:factor]{base::factor()}} and its \code{levels} argument to manipulate the source data in order to include/exclude
+or re-categorize response categories and arrange the display order. If response categories are \code{"Missing"},
+\code{"Not Evaluable (NE)"}, or \code{"Missing or unevaluable"}, 95\% confidence interval will not be calculated.
+\item Reference arms are automatically combined if multiple arms selected as reference group.
+}
 }
 \examples{
 ADSL <- tmc_ex_adsl

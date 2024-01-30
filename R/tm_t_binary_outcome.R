@@ -1,18 +1,18 @@
 #' Template: Binary Outcome
 #'
-#' Creates a valid expression for binary outcome analysis.
+#' Creates a valid expression to generate a binary outcome analysis.
 #'
 #' @inheritParams template_arguments
 #' @param control (`list`)\cr list of settings for the analysis.
 #' @param responder_val (`character`)\cr the short label for observations to
-#'   translate `AVALC` into responder / non-responder.
+#'   translate `AVALC` into responder/non-responder.
 #' @param responder_val_levels (`character`)\cr the levels of responses that will be shown in the multinomial
-#' response estimations.
+#'   response estimations.
 #' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
 #' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_binary_outcome()]
-#' @keywords internal
+#'
 #' @examples
 #' if (interactive()) {
 #'   # Preparation of the test case.
@@ -37,6 +37,7 @@
 #'   b$table
 #' }
 #'
+#' @keywords internal
 template_binary_outcome <- function(dataname,
                                     parentname,
                                     arm_var,
@@ -50,20 +51,9 @@ template_binary_outcome <- function(dataname,
                                     responder_val = c("Complete Response (CR)", "Partial Response (PR)"),
                                     responder_val_levels = responder_val,
                                     control = list(
-                                      global = list(
-                                        method = "waldcc",
-                                        conf_level = 0.95
-                                      ),
-                                      unstrat = list(
-                                        method_ci = "waldcc",
-                                        method_test = "schouten",
-                                        odds = TRUE
-                                      ),
-                                      strat = list(
-                                        method_ci = "cmh",
-                                        method_test = "cmh",
-                                        strat = NULL
-                                      )
+                                      global = list(method = "waldcc", conf_level = 0.95),
+                                      unstrat = list(method_ci = "waldcc", method_test = "schouten", odds = TRUE),
+                                      strat = list(method_ci = "cmh", method_test = "cmh", strat = NULL)
                                     ),
                                     add_total = FALSE,
                                     total_label = default_total_label(),
@@ -359,41 +349,30 @@ template_binary_outcome <- function(dataname,
 
 #' Teal Module: Binary Outcome Table
 #'
-#' @description
-#'   This module produces a binary outcome response summary
-#'   table, with the option to match the STREAM template `RSPT01`.
+#' This module produces a binary outcome response summary table, with the option to match the template for
+#' standardized response table `RSPT01`.
 #'
 #' @inheritParams module_arguments
-#' @param default_responses (`list` or `character`)\cr defines
-#'   the default codes for the response variable in the module per value of `paramcd`.
-#'   A passed vector is transmitted for all `paramcd` values. A passed `list` must be named
-#'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
-#'   may contain default response values or named arrays `rsp` of default selected response
-#'   values and `levels` of default level choices.
+#' @param default_responses (`list` or `character`)\cr defines the default codes for the response variable in the
+#'   module per value of `paramcd`. If a `vector` is passed, values are transmitted for all `paramcd` values. If a
+#'   `list` is passed, it must be named and contain arrays, with each name corresponding to a single value of
+#'   `paramcd`. Each array may contain either default response values or two named arrays: `rsp` of default selected
+#'   response values, and `levels` of default level choices.
+#' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
 #'
-#' @param rsp_table (`logical`)\cr should the initial set-up of the module match `RSPT01`. (default FALSE)
+#' @details
+#' * Additional standard UI inputs include: `responders`, `ref_arm`, `comp_arm` and `combine_comp_arms`. Inputs
+#'   `var_arm`, `ref_arm` and `comp_arm` are set to `NULL` by default, and are updated accordingly based on
+#'   selection of `paramcd` and `var_arm`. Input `combine_comp_arms` defaults to `FALSE`.
 #'
-#' @details Additional standard UI inputs include `responders`,
-#'   `ref_arm`, `comp_arm` and `combine_comp_arms` (default FALSE)
+#' * The display order of response categories inherits the factor level order of the source data. Use
+#'   [base::factor()] and its `levels` argument to manipulate the source data in order to include/exclude
+#'   or re-categorize response categories and arrange the display order. If response categories are `"Missing"`,
+#'   `"Not Evaluable (NE)"`, or `"Missing or unevaluable"`, 95% confidence interval will not be calculated.
 #'
-#'   Default values of the inputs `var_arm`, `ref_arm` and
-#'   `comp_arm` are set to NULL, and updated accordingly based on selection
-#'   of `paramcd` and `var_arm`
+#' * Reference arms are automatically combined if multiple arms selected as reference group.
 #'
-#'   This display order of response categories in partitioned statistics section
-#'   inherits the factor level order of the source data. Use
-#'   [base::factor()] and its `levels` argument to manipulate
-#'   the source data in order to include/exclude or re-categorize response
-#'   categories and arrange the display order. If response categories are
-#'   "Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\%
-#'   confidence interval will not be calculated.
-#'
-#'   Reference arms automatically combined if multiple arms selected as
-#'   reference group.
-#'
-#' @return an [teal::module()] object
-#'
-#' @export
+#' @return a [teal::module()] object.
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -466,6 +445,7 @@ template_binary_outcome <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_binary_outcome <- function(label,
                                 dataname,
                                 parentname = ifelse(
@@ -544,6 +524,7 @@ tm_t_binary_outcome <- function(label,
   )
 }
 
+#' @keywords internal
 ui_t_binary_outcome <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -732,7 +713,7 @@ ui_t_binary_outcome <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_binary_outcome <- function(id,
                                  data,
                                  reporter,
