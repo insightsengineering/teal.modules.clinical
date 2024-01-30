@@ -12,7 +12,7 @@ templates that are used repeatedly to express an analysis."><!-- mathjax --><scr
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9036</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9037</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,16 +36,6 @@ templates that are used repeatedly to express an analysis."><!-- mathjax --><scr
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -82,103 +72,20 @@ templates that are used repeatedly to express an analysis.</p>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>arm_var</dt>
-<dd><p>(<code>character</code>)<br>
-variable names that can be used as <code>arm_var</code>.</p></dd>
-
-
-<dt>id_var</dt>
-<dd><p>(<code>character</code>)<br>
-the variable name for subject id.</p></dd>
-
-
-<dt>sum_vars</dt>
-<dd><p>(<code>character</code>)<br>
-names of the variables that should be summarized.</p></dd>
-
-
-<dt>compare_arm</dt>
-<dd><p>(<code>logical</code>)<br>
-triggers the comparison between study arms.</p></dd>
-
-
-<dt>combine_comp_arms</dt>
-<dd><p>(<code>logical</code>)<br>
-triggers the combination of comparison arms.</p></dd>
-
-
-<dt>parentname</dt>
-<dd><p>(<code>character</code>)<br>
-parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></dd>
-
-
-<dt>dataname</dt>
-<dd><p>(<code>character</code>)<br>
-analysis data used in teal module.</p></dd>
+    <dl><dt>add_total</dt>
+<dd><p>(<code>logical</code>)<br> whether to include column with total number of patients.</p></dd>
 
 
 <dt>anl_name</dt>
-<dd><p>(<code>character</code>)<br>
-analysis data used in teal module.</p></dd>
+<dd><p>(<code>character</code>)<br> analysis data used in teal module.</p></dd>
 
 
-<dt>paramcd</dt>
-<dd><p>(<code>character</code>)<br>
-variable value designating the studied parameter.</p></dd>
-
-
-<dt>ref_arm</dt>
-<dd><p>(<code>character</code>)<br>
-the level of reference arm in case of arm comparison.</p></dd>
-
-
-<dt>comp_arm</dt>
-<dd><p>(<code>character</code>)<br>
-the level of comparison arm in case of arm comparison.</p></dd>
-
-
-<dt>na.rm</dt>
-<dd><p>(<code>logical</code>)<br>
-whether <code>NA</code> values should be removed prior to analysis.</p></dd>
-
-
-<dt>useNA</dt>
-<dd><p>(<code>character</code>)<br>
-whether missing data (<code>NA</code>) should be displayed as a level.</p></dd>
-
-
-<dt>na_level</dt>
-<dd><p>(<code>string</code>)<br> used to replace all <code>NA</code> or empty values
-in character or factor variables in the data. Defaults to <code>"&lt;Missing&gt;"</code>. To set a
-default <code>na_level</code> to apply in all modules, run <code>set_default_na_str("new_default")</code>.</p></dd>
-
-
-<dt>denominator</dt>
-<dd><p>(<code>character</code>)<br>
-chooses how percentages are calculated. With option <code>N</code>, the reference
-population from the column total is used as the denominator. With option
-<code>n</code>, the number of non-missing records in this row and column intersection
-is used as the denominator. If <code>omit</code> is chosen, then the percentage is
-omitted.</p></dd>
-
-
-<dt>var_labels</dt>
-<dd><p>optional, (named <code>character</code>)<br>
-variable labels for relabeling the analysis variables.</p></dd>
-
-
-<dt>cov_var</dt>
-<dd><p>(<code>character</code>)<br>
-names of the covariates variables.</p></dd>
+<dt>arm_var</dt>
+<dd><p>(<code>character</code>)<br> variable names that can be used as <code>arm_var</code>.</p></dd>
 
 
 <dt>aval</dt>
 <dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Please use the <code>aval_var</code> argument instead.</p></dd>
-
-
-<dt>aval_var</dt>
-<dd><p>(<code>character</code>)<br>
-name of the analysis value variable.</p></dd>
 
 
 <dt>avalu</dt>
@@ -189,67 +96,58 @@ name of the analysis value variable.</p></dd>
 <dd><p>(<code>character</code>)<br> name of the analysis value unit variable.</p></dd>
 
 
+<dt>aval_var</dt>
+<dd><p>(<code>character</code>)<br> name of the analysis value variable.</p></dd>
+
+
 <dt>base_var</dt>
 <dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Please use the <code>baseline_var</code> argument instead.</p></dd>
 
 
-<dt>cnsr_var</dt>
-<dd><p>(<code>character</code>)<br>
-name of the censoring variable.</p></dd>
-
-
-<dt>conf_level</dt>
-<dd><p>(<code>numeric</code>)<br>
-value for the confidence level within the range of (0, 1).</p></dd>
-
-
-<dt>add_total</dt>
-<dd><p>(<code>logical</code>)<br>
-whether to include column with total number of patients.</p></dd>
-
-
-<dt>hlt</dt>
-<dd><p>(<code>character</code>)<br>
-name of the variable with high level term for events.</p></dd>
-
-
-<dt>llt</dt>
-<dd><p>(<code>character</code>)<br>
-name of the variable with low level term for events.</p></dd>
-
-
-<dt>visit_var</dt>
-<dd><p>(<code>character</code>)<br>
-variable names that can be used as <code>visit</code> variable. Must be a factor in <code>dataname</code>.</p></dd>
-
-
-<dt>include_interact</dt>
-<dd><p>(<code>logical</code>)<br> whether an interaction term should be included in the model.</p></dd>
-
-
-<dt>interact_var</dt>
-<dd><p>(<code>character</code>)<br> name of the variable that should have interactions
-with arm. If the interaction is not needed, the default option is <code>NULL</code>.</p></dd>
-
-
-<dt>interact_y</dt>
-<dd><p>(<code>character</code>)<br> a selected item from the interact_var column which will be used to select
-the specific <code>ANCOVA</code> results. If the interaction is not needed, the default option is <code>FALSE</code>.</p></dd>
+<dt>basic_table_args</dt>
+<dd><p>optional, (<code>basic_table_args</code>)<br> object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">teal.widgets::basic_table_args()</a></code>
+with settings for the module table. The argument is merged with option <code>teal.basic_table_args</code> and with default
+module arguments (hard coded in the module body).</p>
+<p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.widgets")</code>.</p></dd>
 
 
 <dt>by_vars</dt>
-<dd><p>(<code>character</code>)<br>
-variable names used to split the summary by rows.</p></dd>
+<dd><p>(<code>character</code>)<br> variable names used to split the summary by rows.</p></dd>
 
 
-<dt>time_points</dt>
-<dd><p>(<code>character</code>)<br>
-time points that can be used in <code><a href="https://rdrr.io/pkg/tern/man/survival_timepoint.html" class="external-link">tern::surv_timepoint()</a></code>.</p></dd>
+<dt>cnsr_var</dt>
+<dd><p>(<code>character</code>)<br> name of the censoring variable.</p></dd>
 
 
-<dt>time_unit_var</dt>
-<dd><p>(<code>character</code>)<br>
-name of the variable representing time units.</p></dd>
+<dt>combine_comp_arms</dt>
+<dd><p>(<code>logical</code>)<br> triggers the combination of comparison arms.</p></dd>
+
+
+<dt>compare_arm</dt>
+<dd><p>(<code>logical</code>)<br> triggers the comparison between study arms.</p></dd>
+
+
+<dt>comp_arm</dt>
+<dd><p>(<code>character</code>)<br> the level of comparison arm in case of arm comparison.</p></dd>
+
+
+<dt>conf_level</dt>
+<dd><p>(<code>numeric</code>)<br> value for the confidence level within the range of (0, 1).</p></dd>
+
+
+<dt>cov_var</dt>
+<dd><p>(<code>character</code>)<br> names of the covariates variables.</p></dd>
+
+
+<dt>dataname</dt>
+<dd><p>(<code>character</code>)<br> analysis data used in teal module.</p></dd>
+
+
+<dt>denominator</dt>
+<dd><p>(<code>character</code>)<br> chooses how percentages are calculated. With option <code>N</code>, the reference
+population from the column total is used as the denominator. With option <code>n</code>, the number of non-missing
+records in this row and column intersection is used as the denominator. If <code>omit</code> is chosen, then the
+percentage is omitted.</p></dd>
 
 
 <dt>drop_arm_levels</dt>
@@ -258,22 +156,55 @@ When <code>TRUE</code>, <code>arm_var</code> levels are set to those used in the
 <code>arm_var</code> levels are set to those used in the <code>parantname</code> dataset.</p></dd>
 
 
-<dt>subgroup_var</dt>
-<dd><p>(<code>character</code>)<br> with variable names that can be used as subgroups.</p></dd>
+<dt>ggplot2_args</dt>
+<dd><p>optional, (<code>ggplot2_args</code>)<br> object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings
+for the module plot. The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
+(hard coded in the module body).</p>
+<p>For more details, see the vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.widgets")</code>.</p></dd>
 
 
-<dt>strata_var</dt>
-<dd><p>(<code>character</code>)<br>
-names of the variables for stratified analysis.</p></dd>
+<dt>hlt</dt>
+<dd><p>(<code>character</code>)<br> name of the variable with high level term for events.</p></dd>
 
 
-<dt>title</dt>
-<dd><p>(<code>character</code>)<br>
-title of the output.</p></dd>
+<dt>id_var</dt>
+<dd><p>(<code>character</code>)<br> the variable name for subject id.</p></dd>
 
 
-<dt>prune_freq</dt>
-<dd><p>(<code>number</code>)<br> threshold to use for trimming table using event incidence rate in any column.</p></dd>
+<dt>include_interact</dt>
+<dd><p>(<code>logical</code>)<br> whether an interaction term should be included in the model.</p></dd>
+
+
+<dt>interact_var</dt>
+<dd><p>(<code>character</code>)<br> name of the variable that should have interactions with arm. If the
+interaction is not needed, the default option is <code>NULL</code>.</p></dd>
+
+
+<dt>interact_y</dt>
+<dd><p>(<code>character</code>)<br> a selected item from the interact_var column which will be used to select the
+specific <code>ANCOVA</code> results. If the interaction is not needed, the default option is <code>FALSE</code>.</p></dd>
+
+
+<dt>llt</dt>
+<dd><p>(<code>character</code>)<br> name of the variable with low level term for events.</p></dd>
+
+
+<dt>na_level</dt>
+<dd><p>(<code>string</code>)<br> used to replace all <code>NA</code> or empty values
+in character or factor variables in the data. Defaults to <code>"&lt;Missing&gt;"</code>. To set a
+default <code>na_level</code> to apply in all modules, run <code>set_default_na_str("new_default")</code>.</p></dd>
+
+
+<dt>na.rm</dt>
+<dd><p>(<code>logical</code>)<br> whether <code>NA</code> values should be removed prior to analysis.</p></dd>
+
+
+<dt>paramcd</dt>
+<dd><p>(<code>character</code>)<br> variable value designating the studied parameter.</p></dd>
+
+
+<dt>parentname</dt>
+<dd><p>(<code>character</code>)<br> parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></dd>
 
 
 <dt>prune_diff</dt>
@@ -281,8 +212,36 @@ title of the output.</p></dd>
 rates between any two columns.</p></dd>
 
 
-<dt>treatment_flag_var</dt>
-<dd><p>(<code>character</code>)<br> name of the on treatment flag variable.</p></dd>
+<dt>prune_freq</dt>
+<dd><p>(<code>number</code>)<br> threshold to use for trimming table using event incidence rate in any column.</p></dd>
+
+
+<dt>ref_arm</dt>
+<dd><p>(<code>character</code>)<br> the level of reference arm in case of arm comparison.</p></dd>
+
+
+<dt>strata_var</dt>
+<dd><p>(<code>character</code>)<br> names of the variables for stratified analysis.</p></dd>
+
+
+<dt>subgroup_var</dt>
+<dd><p>(<code>character</code>)<br> with variable names that can be used as subgroups.</p></dd>
+
+
+<dt>sum_vars</dt>
+<dd><p>(<code>character</code>)<br> names of the variables that should be summarized.</p></dd>
+
+
+<dt>time_points</dt>
+<dd><p>(<code>character</code>)<br> time points that can be used in <code><a href="https://rdrr.io/pkg/tern/man/survival_timepoint.html" class="external-link">tern::surv_timepoint()</a></code>.</p></dd>
+
+
+<dt>time_unit_var</dt>
+<dd><p>(<code>character</code>)<br> name of the variable representing time units.</p></dd>
+
+
+<dt>title</dt>
+<dd><p>(<code>character</code>)<br> title of the output.</p></dd>
 
 
 <dt>treatment_flag</dt>
@@ -290,20 +249,21 @@ rates between any two columns.</p></dd>
 records in <code>treatment_flag_var</code>.</p></dd>
 
 
-<dt>basic_table_args</dt>
-<dd><p>optional, (<code>basic_table_args</code>)<br>
-object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">teal.widgets::basic_table_args()</a></code> with settings for the module table.
-The argument is merged with option <code>teal.basic_table_args</code> and with default module arguments
-(hard coded in the module body).</p>
-<p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.widgets")</code>.</p></dd>
+<dt>treatment_flag_var</dt>
+<dd><p>(<code>character</code>)<br> name of the on treatment flag variable.</p></dd>
 
 
-<dt>ggplot2_args</dt>
-<dd><p>optional, (<code>ggplot2_args</code>)<br>
-object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings for the module plot.
-The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
-(hard coded in the module body).</p>
-<p>For more details, see the vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.widgets")</code>.</p></dd>
+<dt>useNA</dt>
+<dd><p>(<code>character</code>)<br> whether missing data (<code>NA</code>) should be displayed as a level.</p></dd>
+
+
+<dt>var_labels</dt>
+<dd><p>optional, (named <code>character</code>)<br> variable labels for relabeling the analysis variables.</p></dd>
+
+
+<dt>visit_var</dt>
+<dd><p>(<code>character</code>)<br> variable names that can be used as <code>visit</code> variable. Must be a factor in
+<code>dataname</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

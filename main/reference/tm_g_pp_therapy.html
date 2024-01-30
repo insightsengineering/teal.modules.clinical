@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9036</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9037</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,16 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -105,18 +95,15 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>label</dt>
-<dd><p>(<code>character</code>)<br>
-menu item label of the module in the teal app.</p></dd>
+<dd><p>(<code>character</code>)<br> menu item label of the module in the teal app.</p></dd>
 
 
 <dt>dataname</dt>
-<dd><p>(<code>character</code>)<br>
-analysis data used in teal module.</p></dd>
+<dd><p>(<code>character</code>)<br> analysis data used in teal module.</p></dd>
 
 
 <dt>parentname</dt>
-<dd><p>(<code>character</code>)<br>
-parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></dd>
+<dd><p>(<code>character</code>)<br> parent analysis data used in teal module, usually this refers to <code>ADSL</code>.</p></dd>
 
 
 <dt>patient_col</dt>
@@ -168,35 +155,28 @@ parent analysis data used in teal module, usually this refers to <code>ADSL</cod
 
 
 <dt>plot_height</dt>
-<dd><p>optional, (<code>numeric</code>)<br>
-a vector of length three with <code>c(value, min, max)</code>. Specifies the height of
-the main plot and renders a slider on the plot to interactively adjust the plot
-height.</p></dd>
+<dd><p>optional, (<code>numeric</code>)<br> a vector of length three with <code>c(value, min, max)</code>. Specifies the
+height of the main plot and renders a slider on the plot to interactively adjust the plot height.</p></dd>
 
 
 <dt>plot_width</dt>
-<dd><p>optional, (<code>numeric</code>)<br>
-a vector of length three with <code>c(value, min, max)</code>. Specifies the width of
-the main plot and renders a slider on the plot to interactively adjust the plot
-width.</p></dd>
+<dd><p>optional, (<code>numeric</code>)<br> a vector of length three with <code>c(value, min, max)</code>. Specifies the width
+of the main plot and renders a slider on the plot to interactively adjust the plot width.</p></dd>
 
 
 <dt>pre_output</dt>
-<dd><p>optional, (<code>shiny.tag</code>)<br>
-with text placed before the output to put the output into context.
+<dd><p>optional, (<code>shiny.tag</code>)<br> with text placed before the output to put the output into context.
 For example a title.</p></dd>
 
 
 <dt>post_output</dt>
-<dd><p>optional, (<code>shiny.tag</code>)<br>
-with text placed after the output to put the output into context. For example
-the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
+<dd><p>optional, (<code>shiny.tag</code>)<br> with text placed after the output to put the output into context.
+For example the <code><a href="https://rdrr.io/pkg/shiny/man/helpText.html" class="external-link">shiny::helpText()</a></code> elements are useful.</p></dd>
 
 
 <dt>ggplot2_args</dt>
-<dd><p>optional, (<code>ggplot2_args</code>)<br>
-object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings for the module plot.
-The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
+<dd><p>optional, (<code>ggplot2_args</code>)<br> object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings
+for the module plot. The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
 (hard coded in the module body).</p>
 <p>For more details, see the help vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.widgets")</code>.</p></dd>
 
@@ -277,7 +257,7 @@ The argument is merged with option <code>teal.ggplot2_args</code> and with defau
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2024-01-30 00:03:18.8036 pid:1578 token:[] teal.modules.clinical Initializing tm_g_pp_therapy</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2024-01-30 02:43:54.2186 pid:1578 token:[] teal.modules.clinical Initializing tm_g_pp_therapy</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'package:nestcolor' may not be available when loading</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu">shinyApp</span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span></span>

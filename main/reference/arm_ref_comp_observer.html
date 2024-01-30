@@ -12,7 +12,7 @@ Updates the reference and comparison Treatments when the selected Treatment vari
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9036</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9037</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,16 +36,6 @@ Updates the reference and comparison Treatments when the selected Treatment vari
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -100,56 +90,56 @@ Updates the reference and comparison Treatments when the selected Treatment vari
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>session</dt>
-<dd><p>(<code>environment</code>) shiny session</p></dd>
+<dd><p>(<code>environment</code>)<br> shiny session</p></dd>
 
 
 <dt>input</dt>
-<dd><p>(<code>character</code>) shiny input</p></dd>
+<dd><p>(<code>character</code>)<br> shiny input</p></dd>
 
 
 <dt>output</dt>
-<dd><p>(<code>character</code>) shiny input</p></dd>
+<dd><p>(<code>character</code>)<br> shiny input</p></dd>
 
 
 <dt>id_ref</dt>
-<dd><p>(<code>character</code>) id of reference Treatment input UI element</p></dd>
+<dd><p>(<code>character</code>)<br> id of reference Treatment input UI element</p></dd>
 
 
 <dt>id_comp</dt>
-<dd><p>(<code>character</code>) id of comparison group input UI element</p></dd>
+<dd><p>(<code>character</code>)<br> id of comparison group input UI element</p></dd>
 
 
 <dt>id_arm_var</dt>
-<dd><p>(<code>character</code>) id of Treatment variable input UI element</p></dd>
+<dd><p>(<code>character</code>)<br> id of Treatment variable input UI element</p></dd>
 
 
 <dt>data</dt>
-<dd><p>(<code>reactive</code> or <code>data.frame</code>) dataset used to validate Treatment reference inputs and
+<dd><p>(<code>reactive</code> or <code>data.frame</code>)<br> dataset used to validate Treatment reference inputs and
 set <code>id_ref</code> input.</p></dd>
 
 
 <dt>arm_ref_comp</dt>
-<dd><p>(<code>unknown</code>) Treatment reference and compare variables provided as a
+<dd><p>(<code>unknown</code>)<br> Treatment reference and compare variables provided as a
 nested list where each Treatment variable corresponds a list specifying the default levels for the
 reference and comparison treatments.</p></dd>
 
 
 <dt>module</dt>
-<dd><p>(<code>character</code>) name of the module where this is called (this is only used
+<dd><p>(<code>character</code>)<br> name of the module where this is called (this is only used
 to produce more informative error messages)</p></dd>
 
 
 <dt>on_off</dt>
-<dd><p>(<code>logical</code>) A reactive that can be used to
-stop the whole observer if FALSE.</p></dd>
+<dd><p>(<code>logical</code>)<br> A reactive that can be used to
+stop the whole observer if <code>FALSE</code>.</p></dd>
 
 
 <dt>input_id</dt>
-<dd><p>(<code>character</code>) unique id that the buckets will be referenced with.</p></dd>
+<dd><p>(<code>character</code>)<br> unique id that the buckets will be referenced with.</p></dd>
 
 
 <dt>output_id</dt>
-<dd><p>(<code>character</code>) name of the UI id that the output will be written to.</p></dd>
+<dd><p>(<code>character</code>)<br> name of the UI id that the output will be written to.</p></dd>
 
 </dl></div>
     <div class="section level2">
