@@ -12,7 +12,8 @@ template_events_patyear(
   label_paramcd,
   aval_var = "AVAL",
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
+  na_level = default_na_str(),
   control = control_incidence_rate(),
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
@@ -23,15 +24,20 @@ template_events_patyear(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
 \item{events_var}{(\code{integer})\cr number of observed events.}
 
 \item{label_paramcd}{(\code{string})\cr title of table based on \code{paramcd}}
 
-\item{aval_var}{(\code{character})\cr name of the analysis variable.}
+\item{aval_var}{(\code{character})\cr
+name of the analysis value variable.}
 
-\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
+
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values in character or factor variables in the data.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis.}
 
@@ -39,9 +45,10 @@ template_events_patyear(
 those used in the \code{dataname} dataset. When \code{FALSE}, \code{arm_var} levels are set to those used in the \code{parantname}
 dataset.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
-settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
-arguments (hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

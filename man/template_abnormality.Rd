@@ -16,10 +16,10 @@ template_abnormality(
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   basic_table_args = teal.widgets::basic_table_args(),
   tbl_title
 )
@@ -29,7 +29,8 @@ template_abnormality(
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
@@ -47,7 +48,8 @@ name of the variable for baseline abnormality grade.}
 
 \item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment records in \code{treatment_flag_var}.}
 
-\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 
 \item{exclude_base_abn}{(\code{logical})\cr whether to exclude patients who had abnormal values at baseline.}
 
@@ -57,9 +59,10 @@ dataset.}
 
 \item{na_level}{(\code{character})\cr the NA level in the input dataset, default to \code{"<Missing>"}.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
-settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
-arguments (hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 

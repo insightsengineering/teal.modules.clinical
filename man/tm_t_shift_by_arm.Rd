@@ -13,17 +13,16 @@ tm_t_shift_by_arm(
   paramcd,
   visit_var,
   aval_var,
-  base_var,
+  base_var = lifecycle::deprecated(),
+  baseline_var,
   treatment_flag_var =
     teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
-  treatment_flag =
-    teal.transform::choices_selected(teal.transform::value_choices(dataname, "ONTRTFL"),
-    selected = "Y", fixed = TRUE),
+    "ONTRTFL"), selected = "ONTRTFL"),
+  treatment_flag = teal.transform::choices_selected("Y"),
   useNA = c("ifany", "no"),
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
@@ -36,19 +35,27 @@ tm_t_shift_by_arm(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for variable names that can be used as \code{arm_var}. It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
+object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
+second variable will be nested under the first variable.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
 
 \item{visit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the analysis variable.}
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the analysis
+variable.}
 
-\item{base_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
+
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices
+and preselected option for variable values that can be used as \code{baseline_var}.}
 
 \item{treatment_flag_var}{(\code{choices_selected} or \code{data_extract_spec})\cr on treatment flag variable.}
 
@@ -71,9 +78,10 @@ example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
 example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
-settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
-arguments (hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
@@ -113,7 +121,7 @@ app <- init(
         variable_choices(ADEG, subset = "ANRIND"),
         selected = "ANRIND", fixed = TRUE
       ),
-      base_var = choices_selected(
+      baseline_var = choices_selected(
         variable_choices(ADEG, subset = "BNRIND"),
         selected = "BNRIND", fixed = TRUE
       ),

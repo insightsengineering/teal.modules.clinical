@@ -10,10 +10,10 @@ template_smq(
   arm_var,
   llt = "AEDECOD",
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   sort_criteria = c("freq_desc", "alpha"),
   drop_arm_levels = TRUE,
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
   id_var = "USUBJID",
@@ -25,11 +25,13 @@ template_smq(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
-\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
 by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
@@ -49,9 +51,10 @@ variable names of the selected Standardized/Customized queries}
 
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
-settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
-arguments (hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

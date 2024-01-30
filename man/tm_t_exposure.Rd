@@ -22,10 +22,10 @@ tm_t_exposure(
   avalu_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     subset = "AVALU"), selected = "AVALU", fixed = TRUE),
   add_total,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   add_total_row = TRUE,
   total_row_label = "Total number of patients and patient time*",
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
@@ -57,13 +57,15 @@ the column from the dataset where the value will be used to label the argument \
 object with all available choices and preselected option for
 parameter category values.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the analysis variable.}
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the analysis
+variable.}
 
 \item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with the analysis unit variable.}
 
-\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is enabled (see
 \code{add_total}).}
@@ -81,9 +83,10 @@ example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
 example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
-settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
-arguments (hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

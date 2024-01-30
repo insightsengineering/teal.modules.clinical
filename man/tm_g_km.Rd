@@ -36,14 +36,19 @@ tm_g_km(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for variable names that can be used as \code{arm_var}. It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
+object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
+second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
-an arm variable in \code{ADSL} and the element must be another list (possibly with delayed
-\code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}} with the elements named \code{ref}
-and \code{comp} that the defined the default reference and comparison arms when the arm variable is changed.}
+\item{arm_ref_comp}{optional, (\code{list})\cr
+If specified it must be a named list with each element corresponding to
+an arm variable in \code{ADSL} and the element must be another list (possibly
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
+with the elements named \code{ref} and \code{comp} that the defined the default
+reference and comparison arms when the arm variable is changed.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
 
@@ -56,8 +61,9 @@ for variable names that can be used for facet plotting.}
 \item{time_unit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and
 preselected option for the time unit variable.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the analysis variable.}
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the analysis
+variable.}
 
 \item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the censoring variable.}

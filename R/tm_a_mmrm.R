@@ -96,8 +96,8 @@ template_fit_mmrm <- function(parentname,
       )
     )
   }
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
-  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = "")))
+  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = default_na_str())))
+  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = default_na_str())))
 
   y$data <- substitute(
     expr = {
@@ -167,7 +167,7 @@ template_mmrm_tables <- function(parentname,
                                  paramcd,
                                  show_relative = c("increase", "reduction", "none"),
                                  table_type = "t_mmrm_cov",
-                                 total_label = "All Patients",
+                                 total_label = default_total_label(),
                                  basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -263,7 +263,7 @@ template_mmrm_tables <- function(parentname,
         expr = {
           lsmeans_table <- rtables::build_table(
             lyt = lyt,
-            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = ""),
+            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
             alt_counts_df = parentname
           )
           lsmeans_table
@@ -522,7 +522,7 @@ tm_a_mmrm <- function(label,
                       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
-                      total_label = "All Patients",
+                      total_label = default_total_label(),
                       pre_output = NULL,
                       post_output = NULL,
                       basic_table_args = teal.widgets::basic_table_args(),

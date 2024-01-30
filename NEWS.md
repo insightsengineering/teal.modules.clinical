@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.16.9028
+# teal.modules.clinical 0.8.16.9037
 
 ### Breaking Changes
 + Adapted all modules to use `teal_data` objects.
@@ -8,9 +8,18 @@
 * Added parameter `sort_freq_col` to `tm_t_events` to allow the user to select column to use when sorting by decreasing frequency.
 * Added parameter `incl_overall_sum` to `tm_t_events` to allow the user to choose whether overall summary rows are included at the top of the table.
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
+* Added `default_total_label` and `set_default_total_label` functions to get and set default total column label (`total_label`) for modules.
+* Implemented `tern::default_na_str` and `tern::set_default_na_str` functions to get and set default missing value replacement string (`na_level`) for modules.
 
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
+
+### Miscellaneous
+* Deprecated the `aval` argument in `tm_t_pp_laboratory` and `tm_g_pp_vitals` and replaced it with the `aval_var` argument.
+* Deprecated the `avalu` argument in `tm_t_pp_laboratory` and replaced it with the `avalu_var` argument.
+* Deprecated the `base_var` argument in `tm_g_ipp`, `tm_t_shift_by_arm`, and `template_shift_by_arm_by_worst` and replaced it with the `baseline_var` argument.
+* Specified minimal version of package dependencies.
+* Replaced usage of deprecated `summarize_vars` function with `analyze_vars`.
 
 # teal.modules.clinical 0.8.16.9010
 
@@ -72,7 +81,7 @@
 
 ### Enhancements
 * Updated all synthetic data for tests to version `rcd_2022_02_28`.
-* Updated all test files in `tests/testthat/` to `synthetic_cdisc_data("2022_02_28")` 
+* Updated all test files in `tests/testthat/` to `synthetic_cdisc_data("2022_02_28")`
 * Reverted missing data checkbox in `tm_t_summary` (encoding and filtering should be separate).
 * Implemented a new widget that allows dragging and dropping to select comparison groups.
 * Added the `teal.reporter` functionality to all modules.
@@ -324,8 +333,8 @@
 ### Miscellaneous
 * Removed redundant `Analysis Data:` label from Encodings Panel.
 * Removed limit requiring 15 or fewer columns for tabulation modules. New upper threshold is 100 columns.
-* Decreased the lower limit for number of observations required by modules. Safety tables require at least one record. 
-  Requirements for efficacy outputs per treatment group: `tm_a_mmrm` requires five records, `tm_t_logistic` and `tm_t_coxreg` require two records, and the remaining modules require at 
+* Decreased the lower limit for number of observations required by modules. Safety tables require at least one record.
+  Requirements for efficacy outputs per treatment group: `tm_a_mmrm` requires five records, `tm_t_logistic` and `tm_t_coxreg` require two records, and the remaining modules require at
   least one record per treatment group. For graphs, the lower threshold is two records.
 * Removed argument `cnsr_val` from `tm_t_events_patyear` and added new argument `events_var`.
 * `arm_ref_comp_observer` to include `parentname` argument.

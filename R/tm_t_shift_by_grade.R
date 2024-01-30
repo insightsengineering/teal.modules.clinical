@@ -23,8 +23,8 @@ template_shift_by_grade <- function(parentname,
                                     paramcd = "PARAMCD",
                                     drop_arm_levels = TRUE,
                                     add_total = FALSE,
-                                    total_label = "All Patients",
-                                    na_level = "<Missing>",
+                                    total_label = default_total_label(),
+                                    na_level = default_na_str(),
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
@@ -75,10 +75,10 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = na_level),
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
       env = list(
         dataname = as.name("anl"),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -86,10 +86,10 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = na_level),
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
       env = list(
         parentname = as.name(parentname),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -565,11 +565,11 @@ tm_t_shift_by_grade <- function(label,
                                   selected = "USUBJID", fixed = TRUE
                                 ),
                                 add_total = FALSE,
-                                total_label = "All Patients",
+                                total_label = default_total_label(),
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
-                                na_level = "<Missing>",
+                                na_level = default_na_str(),
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_grade")

@@ -25,7 +25,8 @@ template_events <- function(dataname,
                             label_hlt = NULL,
                             label_llt = NULL,
                             add_total = TRUE,
-                            total_label = "All Patients",
+                            total_label = default_total_label(),
+                            na_level = default_na_str(),
                             event_type = "event",
                             sort_criteria = c("freq_desc", "alpha"),
                             sort_freq_col = total_label,
@@ -45,6 +46,7 @@ template_events <- function(dataname,
     is.character(c(llt, hlt)),
     assertthat::is.flag(add_total),
     assertthat::is.string(total_label),
+    assertthat::is.string(na_level),
     assertthat::is.string(event_type),
     assertthat::is.flag(drop_arm_levels)
   )
@@ -90,8 +92,8 @@ template_events <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_lvl),
+      env = list(parentname = as.name(parentname), na_lvl = na_level)
     )
   )
 
@@ -204,9 +206,10 @@ template_events <- function(dataname,
           .labels = c(
             unique = unique_label,
             nonunique = nonunique_label
-          )
+          ),
+          na_str = na_str
         ),
-        env = list(unique_label = unique_label, nonunique_label = nonunique_label)
+        env = list(unique_label = unique_label, nonunique_label = nonunique_label, na_str = na_level)
       )
     )
   }
@@ -251,7 +254,8 @@ template_events <- function(dataname,
             .labels = c(
               unique = unique_label,
               nonunique = nonunique_label
-            )
+            ),
+            na_str = na_str
           ) %>%
           count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
           append_varlabels(dataname, llt, indent = 1L),
@@ -260,7 +264,8 @@ template_events <- function(dataname,
           hlt = hlt,
           llt = llt,
           unique_label = unique_label,
-          nonunique_label = nonunique_label
+          nonunique_label = nonunique_label,
+          na_str = na_level
         )
       )
     )
@@ -507,7 +512,8 @@ tm_t_events <- function(label,
                         hlt,
                         llt,
                         add_total = TRUE,
-                        total_label = "All Patients",
+                        total_label = default_total_label(),
+                        na_level = default_na_str(),
                         event_type = "event",
                         sort_criteria = c("freq_desc", "alpha"),
                         sort_freq_col = total_label,
@@ -525,6 +531,7 @@ tm_t_events <- function(label,
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_string(sort_freq_col)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
@@ -556,6 +563,7 @@ tm_t_events <- function(label,
         event_type = event_type,
         label = label,
         total_label = total_label,
+        na_level = na_level,
         sort_freq_col = sort_freq_col,
         incl_overall_sum = incl_overall_sum,
         basic_table_args = basic_table_args
@@ -662,6 +670,7 @@ srv_t_events_byterm <- function(id,
                                 incl_overall_sum,
                                 label,
                                 total_label,
+                                na_level,
                                 sort_freq_col,
                                 basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
@@ -781,6 +790,7 @@ srv_t_events_byterm <- function(id,
         label_llt = label_llt,
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         event_type = event_type,
         sort_criteria = input$sort_criteria,
         sort_freq_col = sort_freq_col,

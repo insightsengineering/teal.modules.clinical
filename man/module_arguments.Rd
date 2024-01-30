@@ -4,25 +4,44 @@
 \alias{module_arguments}
 \title{Standard Module Arguments}
 \arguments{
-\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
+object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
+second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
-an arm variable in \code{ADSL} and the element must be another list (possibly with delayed
-\code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}} with the elements named \code{ref}
-and \code{comp} that the defined the default reference and comparison arms when the arm variable is changed.}
+\item{arm_ref_comp}{optional, (\code{list})\cr
+If specified it must be a named list with each element corresponding to
+an arm variable in \code{ADSL} and the element must be another list (possibly
+with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
+with the elements named \code{ref} and \code{comp} that the defined the default
+reference and comparison arms when the arm variable is changed.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for variable names that can be used as \code{arm_var}. It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
+\item{avisit}{(\code{choices_selected} or \code{data_extract_spec})\cr
+value of analysis visit \code{AVISIT} of interest.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the analysis variable.}
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
-\item{avisit}{(\code{choices_selected} or \code{data_extract_spec})\cr value of analysis visit \code{AVISIT} of interest.}
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
+object with all available choices and preselected option for the analysis
+variable.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
-settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
-arguments (hard coded in the module body).
+\item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
+
+\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
+
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+object with all available choices
+and preselected option for variable values that can be used as \code{baseline_var}.}
+
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 

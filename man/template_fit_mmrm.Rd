@@ -34,7 +34,7 @@ template_mmrm_tables(
   paramcd,
   show_relative = c("increase", "reduction", "none"),
   table_type = "t_mmrm_cov",
-  total_label = "All Patients",
+  total_label = default_total_label(),
   basic_table_args = teal.widgets::basic_table_args()
 )
 
@@ -51,9 +51,11 @@ template_mmrm_plots(
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{aval_var}{(\code{character})\cr name of the analysis variable.}
+\item{aval_var}{(\code{character})\cr
+name of the analysis value variable.}
 
-\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
@@ -90,9 +92,10 @@ machine (not default).}
 \item{table_type}{(\code{character})\cr
 type of table to output.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
-settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
-arguments (hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 

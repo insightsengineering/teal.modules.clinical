@@ -22,11 +22,9 @@ tm_t_abnormality_by_worst_grade(
   worst_low_flag_var =
     teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
     "WGRLOFL"), selected = "WGRLOFL", fixed = TRUE),
-  worst_flag_indicator =
-    teal.transform::choices_selected(teal.transform::value_choices(dataname, var_choices
-    = "WGRLOFL"), selected = "Y", fixed = TRUE),
+  worst_flag_indicator = teal.transform::choices_selected("Y"),
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
@@ -40,9 +38,12 @@ tm_t_abnormality_by_worst_grade(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for variable names that can be used as \code{arm_var}. It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var}, second variable will be nested under the first variable.}
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
+object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
+second variable will be nested under the first variable.}
 
 \item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object specifying the variable name for subject id.}
 
@@ -62,7 +63,8 @@ object with all available choices and preselected option for variable names that
 \item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 value indicating worst grade.}
 
-\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is enabled (see
 \code{add_total}).}
@@ -77,9 +79,10 @@ example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
 example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
-settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
-arguments (hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

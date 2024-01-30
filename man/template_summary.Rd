@@ -11,10 +11,10 @@ template_summary(
   sum_vars,
   show_labels = c("default", "visible", "hidden"),
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   var_labels = character(),
   na.rm = FALSE,
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
   denominator = c("N", "n", "omit"),
@@ -27,14 +27,16 @@ template_summary(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr
+variable names that can be used as \code{arm_var}.}
 
 \item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
 
 \item{show_labels}{(\code{character})\cr
 defines whether the labels for \code{sum_vars} should display. For details see \code{\link[rtables:analyze]{rtables::analyze()}}.}
 
-\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr
+whether to include column with total number of patients.}
 
 \item{var_labels}{optional, (named \code{character})\cr variable labels for relabeling the analysis variables.}
 
@@ -54,9 +56,10 @@ this row and column intersection is used as the denominator. If \code{omit} is c
 those used in the \code{dataname} dataset. When \code{FALSE}, \code{arm_var} levels are set to those used in the \code{parantname}
 dataset.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with
-settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default module
-arguments (hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr
+object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
+The argument is merged with option \code{teal.basic_table_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
