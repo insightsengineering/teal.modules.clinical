@@ -7,14 +7,14 @@
 cs_to_select_spec(cs, multiple = FALSE, ordered = FALSE, label = "Select")
 }
 \arguments{
-\item{cs}{(\code{choices_selected}) object to be transformed. See \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for details.}
+\item{cs}{(\code{choices_selected})\cr object to be transformed. See \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} for details.}
 
-\item{multiple}{(\code{logical}) Whether multiple values shall be allowed in the
-shiny \code{\link[shiny]{selectInput}}.}
+\item{multiple}{(\code{logical})\cr Whether multiple values shall be allowed in the
+shiny \code{\link[shiny:selectInput]{shiny::selectInput()}}.}
 
-\item{ordered}{(\code{logical(1)}) Flags whether selection order should be tracked.}
+\item{ordered}{(\code{logical(1)})\cr Flags whether selection order should be tracked.}
 
-\item{label}{(\code{character}) Label to print over the selection field. For no label, set to \code{NULL}.}
+\item{label}{(\code{character})\cr Label to print over the selection field. For no label, set to \code{NULL}.}
 }
 \value{
 (\code{select_spec})

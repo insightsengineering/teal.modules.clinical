@@ -61,13 +61,13 @@ template_prior_medication <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ATIREL} column of the `ADCM` dataset.
+#' `ATIREL` column of the `ADCM` dataset.
 #' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDECOD} column of the `ADCM` dataset.
+#' `CMDECOD` column of the `ADCM` dataset.
 #' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMINDC} column of the `ADCM` dataset.
+#' `CMINDC` column of the `ADCM` dataset.
 #' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMSTDY} column of the `ADCM` dataset.
+#' `CMSTDY` column of the `ADCM` dataset.
 #'
 #' @export
 #'

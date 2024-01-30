@@ -4,7 +4,7 @@
 #' @param aval_var (`character`)\cr the variable name for the analysis reference range indicator.
 #' @param baseline_var (`character`)\cr the variable name for the baseline reference range indicator.
 #' @param add_total (`logical`)\cr whether to include row with total number of patients.
-#' @param worst_flag_var  (`character`)\cr Worst flag variable.
+#' @param worst_flag_var (`character`)\cr Worst flag variable.
 #' @param worst_flag (`character`)\cr Worst flag value.
 #'
 #' @seealso [tm_t_shift_by_arm()]

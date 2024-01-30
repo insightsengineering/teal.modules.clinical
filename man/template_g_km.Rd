@@ -33,39 +33,29 @@ template_g_km(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{character})\cr
-the level of reference arm in case of arm comparison.}
+\item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr
-the level of comparison arm in case of arm comparison.}
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{compare_arm}{(\code{logical})\cr
-triggers the comparison between study arms.}
+\item{compare_arm}{(\code{logical})\cr triggers the comparison between study arms.}
 
-\item{combine_comp_arms}{(\code{logical})\cr
-triggers the combination of comparison arms.}
+\item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis value variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
-\item{cnsr_var}{(\code{character})\cr
-name of the censoring variable.}
+\item{cnsr_var}{(\code{character})\cr name of the censoring variable.}
 
 \item{xticks}{(\code{numeric}, \code{number}, or \code{NULL})\cr numeric vector of ticks or single number with spacing
 between ticks on the x axis. If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
 an optimal tick position on the x axis.}
 
-\item{strata_var}{(\code{character})\cr
-names of the variables for stratified analysis.}
+\item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
-\item{time_points}{(\code{character})\cr
-time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
+\item{time_points}{(\code{character})\cr time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
 \item{facet_var}{(\code{character})\cr
 object with all available choices and preselected option
@@ -73,16 +63,14 @@ for variable names that can be used for facet plotting.}
 
 \item{font_size}{(\code{number})\cr font size to be used.}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
 \item{ties}{(\code{string})\cr among \code{exact} (equivalent to \code{DISCRETE} in SAS), \code{efron} and \code{breslow},
 see \code{\link[survival:coxph]{survival::coxph()}}. Note: there is no equivalent of SAS \code{EXACT} method in R.}
 
 \item{xlab}{(\code{string})\cr label of x-axis.}
 
-\item{time_unit_var}{(\code{character})\cr
-name of the variable representing time units.}
+\item{time_unit_var}{(\code{character})\cr name of the variable representing time units.}
 
 \item{yval}{(\code{string})\cr value of y-axis. Options are \code{Survival} (default) and \code{Failure} probability.}
 
@@ -101,8 +89,7 @@ median survival time per group.}
 
 \item{ci_ribbon}{(\code{flag})\cr draw the confidence interval around the Kaplan-Meier curve.}
 
-\item{title}{(\code{character})\cr
-title of the output.}
+\item{title}{(\code{character})\cr title of the output.}
 }
 \description{
 Template: \code{Kaplan-Meier}

@@ -52,9 +52,9 @@ count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars 
 #' Get variable labels
 #'
 #' @description `r lifecycle::badge("deprecated")`
-#' @param datasets (`teal::FilteredData`) Data built up by teal
-#' @param dataname (`character`) name of the dataset
-#' @param vars (`character`) Column names in the data
+#' @param datasets (`teal::FilteredData`)\cr Data built up by teal
+#' @param dataname (`character`)\cr name of the dataset
+#' @param vars (`character`)\cr Column names in the data
 #'
 #' @return  `character` variable labels.
 #'
@@ -259,11 +259,11 @@ bracket_expr <- function(exprs) {
 
 #' Convert choices_selected to select_spec
 #'
-#' @param cs (`choices_selected`) object to be transformed. See [teal.transform::choices_selected()] for details.
-#' @param multiple (\code{logical}) Whether multiple values shall be allowed in the
-#'  shiny \code{\link[shiny]{selectInput}}.
-#' @param ordered (`logical(1)`) Flags whether selection order should be tracked.
-#' @param label (`character`) Label to print over the selection field. For no label, set to `NULL`.
+#' @param cs (`choices_selected`)\cr object to be transformed. See [teal.transform::choices_selected()] for details.
+#' @param multiple (`logical`)\cr Whether multiple values shall be allowed in the
+#'  shiny [shiny::selectInput()].
+#' @param ordered (`logical(1)`)\cr Flags whether selection order should be tracked.
+#' @param label (`character`)\cr Label to print over the selection field. For no label, set to `NULL`.
 #' @export
 #' @return (`select_spec`)
 cs_to_select_spec <- function(cs, multiple = FALSE, ordered = FALSE, label = "Select") {
@@ -310,7 +310,7 @@ cs_to_filter_spec <- function(cs, multiple = FALSE, label = "Filter by") {
 #' Convert choices_selected to data_extract_spec with only select_spec
 #'
 #' @inheritParams cs_to_select_spec
-#' @param dataname (`character`) name of the data
+#' @param dataname (`character`)\cr name of the data
 #'
 #' @export
 #' @return ([teal.transform::data_extract_spec()])
@@ -462,17 +462,17 @@ split_choices <- function(x) {
   return(split_x)
 }
 
-#' Extracts html id for \code{data_extract_ui}
-#' @description The \code{data_extract_ui} is located under extended html id.
-#'   We could not use \code{ns("original id")} for reference, as it is extended with specific suffixes.
+#' Extracts html id for `data_extract_ui`
+#' @description The `data_extract_ui` is located under extended html id.
+#'   We could not use `ns("original id")` for reference, as it is extended with specific suffixes.
 #' @param varname (`character`)\cr
-#'   the original html id.  This should be retrieved with \code{ns("original id")} in the UI function
-#'   or \code{session$ns("original id")}/"original id" in the server function.
+#'   the original html id.  This should be retrieved with `ns("original id")` in the UI function
+#'   or `session$ns("original id")`/"original id" in the server function.
 #' @param dataname (`character`)\cr
-#'   \code{dataname} from data_extract input.
-#'   This might be retrieved like \code{data_extract_spec(...)[[1]]$dataname}.
+#'   `dataname` from data_extract input.
+#'   This might be retrieved like `data_extract_spec(...)[[1]]$dataname`.
 #' @param filter optional, (`logical`)\cr
-#'   if the connected \code{extract_data_spec} has objects passed to its `filter` argument
+#'   if the connected `extract_data_spec` has objects passed to its `filter` argument
 #'
 #' @export
 extract_input <- function(varname, dataname, filter = FALSE) {
