@@ -29,8 +29,7 @@ template_g_ipp(
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{arm_levels}{(\code{character})\cr vector of all arm variable levels.}
 
@@ -38,8 +37,7 @@ variable names that can be used as \code{arm_var}.}
 
 \item{paramcd_first}{(\code{string})\cr \code{paramcd} value.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis value variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
 \item{avalu_var}{(\code{string})\cr variable name designating the unit of the analysis variable.}
 

@@ -32,8 +32,7 @@ the laboratory table.}
 
 \item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis value variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
 \item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
 

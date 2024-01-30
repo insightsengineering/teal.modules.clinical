@@ -35,8 +35,7 @@ template_g_km(
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
@@ -46,8 +45,7 @@ variable names that can be used as \code{arm_var}.}
 
 \item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis value variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
 \item{cnsr_var}{(\code{character})\cr name of the censoring variable.}
 

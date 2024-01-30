@@ -38,30 +38,27 @@ tm_g_forest_tte(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr
-If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{subgroup_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for variable names that can be used as the default subgroups.}
+\item{subgroup_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and
+preselected option for variable names that can be used as the default subgroups.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
 
 \item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr names of the variables for stratified analysis.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis
-variable.}
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
+option for the analysis variable.}
 
 \item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the censoring variable.}
@@ -76,17 +73,17 @@ preselected option for the time unit variable.}
 When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
-\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the height
-of the main plot and renders a slider on the plot to interactively adjust the plot height.}
+\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
 \item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
 of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context. For
-example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
-example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.

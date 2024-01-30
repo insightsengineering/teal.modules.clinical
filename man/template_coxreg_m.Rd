@@ -26,13 +26,11 @@ template_coxreg_m(
 
 \item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{cnsr_var}{(\code{character})\cr name of the censoring variable.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis value variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
@@ -51,12 +49,13 @@ effect should be estimated.}
 \item{control}{(\code{list})\cr list of settings for the analysis,
 see \code{\link[=control_coxreg]{control_coxreg()}}.}
 
-\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values in character or factor variables in the data.}
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

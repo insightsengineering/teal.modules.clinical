@@ -17,8 +17,7 @@ prepare_arm(
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 

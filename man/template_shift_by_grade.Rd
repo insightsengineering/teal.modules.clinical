@@ -28,8 +28,7 @@ template_shift_by_grade(
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
@@ -46,22 +45,22 @@ variable names that can be used as \code{arm_var}.}
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels. When \code{TRUE}, \code{arm_var} levels are set to
-those used in the \code{dataname} dataset. When \code{FALSE}, \code{arm_var} levels are set to those used in the \code{parantname}
-dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
-\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values in character or factor variables in the data.}
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{code_missing_baseline}{(\code{character})\cr whether missing baseline should be considered
 as grade 0.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

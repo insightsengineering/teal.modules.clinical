@@ -52,9 +52,8 @@ and preselected option for variable values that can be used as \code{arm_var}.}
 \item{visit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis
-variable.}
+\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
+option for the analysis variable.}
 
 \item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 object with all available choices
@@ -62,9 +61,8 @@ and preselected option for variable values that can be used as \code{avalu_var}.
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices
-and preselected option for variable values that can be used as \code{baseline_var}.}
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
 
 \item{add_baseline_hline}{(\code{flag})\cr adds horizontal line at baseline y-value on plot}
 
@@ -74,17 +72,17 @@ and preselected option for variable values that can be used as \code{baseline_va
 
 \item{add_avalu}{(\code{flag})\cr allow user to not display value unit in the plot.}
 
-\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the height
-of the main plot and renders a slider on the plot to interactively adjust the plot height.}
+\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
 \item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
 of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context. For
-example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
-example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
 object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.

@@ -23,11 +23,11 @@ tm_t_pp_basic_info(
 \item{vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 \code{ADSL} columns to be shown in Basic Info tab.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context. For
-example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
-example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \description{
 This teal module produces a patient profile basic info report using \code{ADaM} datasets.

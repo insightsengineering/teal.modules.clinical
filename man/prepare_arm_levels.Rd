@@ -11,12 +11,11 @@ prepare_arm_levels(dataname, parentname, arm_var, drop_arm_levels = TRUE)
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels. When \code{TRUE}, \code{arm_var} levels are set to
-those used in the \code{dataname} dataset. When \code{FALSE}, \code{arm_var} levels are set to those used in the \code{parantname}
-dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 }
 \description{
 This function generates the standard expression for pre-processing of dataset

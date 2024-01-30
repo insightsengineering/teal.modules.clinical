@@ -39,15 +39,17 @@ second variable will be nested under the first variable.}
 \item{summarize_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr names of the variables that should be
 summarized.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
-\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is enabled (see
-\code{add_total}).}
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
-\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values in character or factor variables in the data.}
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{numeric_stats}{(\code{character})\cr
 selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
@@ -55,8 +57,9 @@ selected statistics for numeric summarize variables to be displayed. Possible va
 selected.}
 
 \item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
-population from the column total is used as the denominator. With option \code{n}, the number of non-missing records in
-this row and column intersection is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
+population from the column total is used as the denominator. With option
+\code{n}, the number of non-missing records in this row and column intersection
+is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
@@ -64,16 +67,15 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 If \code{dataname} dataset and \code{parentname} dataset are the same (i.e. \code{ADSL}), then \code{drop_arm_levels} will always be
 TRUE regardless of the user choice when \code{tm_t_summary} is called.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context. For
-example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
-example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

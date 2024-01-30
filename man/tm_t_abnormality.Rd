@@ -39,8 +39,7 @@ tm_t_abnormality(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
@@ -62,33 +61,32 @@ variable for baseline abnormality grade.}
 
 \item{treatment_flag_var}{(\code{choices_selected} or \code{data_extract_spec})\cr on treatment flag variable.}
 
-\item{treatment_flag}{(\code{choices_selected}] or \code{data_extract_spec})\cr value indicating on treatment records in
-\code{treatment_flag_var}.}
+\item{treatment_flag}{(\code{choices_selected}] or \code{data_extract_spec})\cr value indicating on treatment
+records in \code{treatment_flag_var}.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
-\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is enabled (see
-\code{add_total}).}
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{exclude_base_abn}{(\code{logical})\cr whether to exclude patients who had abnormal values at baseline.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels. When \code{TRUE}, \code{arm_var} levels are set to
-those used in the \code{dataname} dataset. When \code{FALSE}, \code{arm_var} levels are set to those used in the \code{parantname}
-dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
+When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
+\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context. For
-example a title.}
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context. For
-example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{na_level}{(\code{character})\cr the NA level in the input dataset, default to \code{"<Missing>"}.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

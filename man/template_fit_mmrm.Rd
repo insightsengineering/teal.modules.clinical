@@ -51,11 +51,9 @@ template_mmrm_plots(
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis value variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
@@ -92,10 +90,9 @@ machine (not default).}
 \item{table_type}{(\code{character})\cr
 type of table to output.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
@@ -103,9 +100,9 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 
 \item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \code{\link[tern.mmrm:g_mmrm_diagnostic]{tern.mmrm::g_mmrm_diagnostic()}}}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for
-the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments (hard
-coded in the module body).
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
