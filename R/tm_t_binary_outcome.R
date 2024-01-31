@@ -350,7 +350,7 @@ template_binary_outcome <- function(dataname,
 #' Teal Module: Binary Outcome Table
 #'
 #' This module produces a binary outcome response summary table, with the option to match the template for
-#' standardized response table `RSPT01`.
+#' response table `RSPT01` available in the TLG Catalog [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html).
 #'
 #' @inheritParams module_arguments
 #' @param default_responses (`list` or `character`)\cr defines the default codes for the response variable in the
@@ -361,10 +361,6 @@ template_binary_outcome <- function(dataname,
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
 #'
 #' @details
-#' * Additional standard UI inputs include: `responders`, `ref_arm`, `comp_arm` and `combine_comp_arms`. Inputs
-#'   `var_arm`, `ref_arm` and `comp_arm` are set to `NULL` by default, and are updated accordingly based on
-#'   selection of `paramcd` and `var_arm`. Input `combine_comp_arms` defaults to `FALSE`.
-#'
 #' * The display order of response categories inherits the factor level order of the source data. Use
 #'   [base::factor()] and its `levels` argument to manipulate the source data in order to include/exclude
 #'   or re-categorize response categories and arrange the display order. If response categories are `"Missing"`,
@@ -372,7 +368,7 @@ template_binary_outcome <- function(dataname,
 #'
 #' * Reference arms are automatically combined if multiple arms selected as reference group.
 #'
-#' @return a [teal::module()] object.
+#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl

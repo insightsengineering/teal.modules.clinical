@@ -89,17 +89,14 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object.
+a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
 }
 \description{
 This module produces a binary outcome response summary table, with the option to match the template for
-standardized response table \code{RSPT01}.
+response table \code{RSPT01} available in the TLG Catalog \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html}{here}.
 }
 \details{
 \itemize{
-\item Additional standard UI inputs include: \code{responders}, \code{ref_arm}, \code{comp_arm} and \code{combine_comp_arms}. Inputs
-\code{var_arm}, \code{ref_arm} and \code{comp_arm} are set to \code{NULL} by default, and are updated accordingly based on
-selection of \code{paramcd} and \code{var_arm}. Input \code{combine_comp_arms} defaults to \code{FALSE}.
 \item The display order of response categories inherits the factor level order of the source data. Use
 \code{\link[base:factor]{base::factor()}} and its \code{levels} argument to manipulate the source data in order to include/exclude
 or re-categorize response categories and arrange the display order. If response categories are \code{"Missing"},
