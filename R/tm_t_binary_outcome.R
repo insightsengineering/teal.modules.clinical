@@ -350,7 +350,8 @@ template_binary_outcome <- function(dataname,
 #' Teal Module: Binary Outcome Table
 #'
 #' This module produces a binary outcome response summary table, with the option to match the template for
-#' response table `RSPT01` available in the TLG Catalog [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html).
+#' response table `RSPT01` available in the TLG Catalog [here](
+#' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html).
 #'
 #' @inheritParams module_arguments
 #' @param default_responses (`list` or `character`)\cr defines the default codes for the response variable in the
