@@ -121,7 +121,7 @@ template_events_summary <- function(anl_name,
           )
       },
       env = list(
-        a = as.name(llt),
+        a = llt,
         usubjid = as.name("USUBJID"),
         aeseq_var = as.name(aeseq_var)
       )
