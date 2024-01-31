@@ -1,6 +1,6 @@
 #' Template: Line Plot
 #'
-#' Creates a valid expression to generate a binary outcome analysis.
+#' Creates a valid expression to generate a [ggplot2::ggplot()] line plot.
 #'
 #' @inheritParams tern::g_lineplot
 #' @inheritParams tern::control_lineplot_vars
@@ -197,10 +197,12 @@ template_g_lineplot <- function(dataname = "ANL",
 
 #' Teal Module: Line Plot
 #'
-#' This module produces a grid-style line plot for standard ADaM data.
+#' This module produces a [ggplot2::ggplot()] type line plot, with optional summary table, for standard ADaM data.
 #'
 #' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
+#'
+#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
 #'
 #' @examples
 #' library(nestcolor)

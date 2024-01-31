@@ -82,7 +82,7 @@ the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
-Creates a valid expression to generate a binary outcome analysis.
+Creates a valid expression to generate a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} line plot.
 }
 \seealso{
 \code{\link[=tm_g_lineplot]{tm_g_lineplot()}}

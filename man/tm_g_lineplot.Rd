@@ -102,8 +102,11 @@ the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+}
 \description{
-This module produces a grid-style line plot for standard ADaM data.
+This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type line plot, with optional summary table, for standard ADaM data.
 }
 \examples{
 library(nestcolor)
