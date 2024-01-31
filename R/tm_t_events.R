@@ -103,7 +103,7 @@ template_events <- function(dataname,
         data_list,
         substitute(
           expr = anl[[hlt]] <- as.character(anl[[hlt]]),
-          env = list(hlt = as.name(hlt))
+          env = list(hlt = hlt)
         )
       )
     }
@@ -112,8 +112,8 @@ template_events <- function(dataname,
       data_list <- add_expr(
         data_list,
         substitute(
-          expr = anl[[hlt]] <- as.character(anl[[hlt]]),
-          env = list(llt = as.name(llt))
+          expr = anl[[llt]] <- as.character(anl[[llt]]),
+          env = list(llt = llt)
         )
       )
     }
