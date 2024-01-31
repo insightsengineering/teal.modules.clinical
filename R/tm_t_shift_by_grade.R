@@ -1,16 +1,15 @@
 #' Template: Grade Summary Table
 #'
+#' Creates a valid expression to generate a grade summary table.
+#'
 #' @inheritParams template_arguments
-#' @param worst_flag_var (`character`)\cr name of the worst flag variable.
-#' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #' @param anl_toxgrade_var (`character`)\cr name of the variable indicating the analysis toxicity grade.
-#' @param base_toxgrade_var (`character`)\cr name of the variable indicating the base toxicity grade.
-#' @param code_missing_baseline (`character`)\cr whether missing baseline should be considered
-#' as grade 0.
+#' @param base_toxgrade_var (`character`)\cr name of the variable indicating the baseline toxicity grade.
+#' @param code_missing_baseline (`logical`)\cr whether missing baseline grades should be counted as grade 0.
 #'
 #' @seealso [tm_t_shift_by_grade()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_shift_by_grade <- function(parentname,
                                     dataname,
                                     arm_var = "ARM",
@@ -463,20 +462,15 @@ template_shift_by_grade <- function(parentname,
 
 #' Teal Module: Grade Summary Table
 #'
+#' This module produces a summary table of worst grades per subject by visit and parameter.
+#'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_grade
-#' @param visit_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' object with all available choices and preselected option for variable names that can be used as visit.
-#' @param worst_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' object with all available choices and preselected option for variable names that can be used as worst flag variable.
-#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' value indicating worst grade.
 #' @param anl_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' variable for analysis toxicity grade.
+#'   variable for analysis toxicity grade.
 #' @param base_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' variable for baseline toxicity grade.
+#'   variable for baseline toxicity grade.
 #'
-#' @export
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADLB <- tmc_ex_adlb
@@ -529,6 +523,7 @@ template_shift_by_grade <- function(parentname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_shift_by_grade <- function(label,
                                 dataname,
                                 parentname = ifelse(
@@ -624,7 +619,7 @@ tm_t_shift_by_grade <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_shift_by_grade <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -731,7 +726,7 @@ ui_t_shift_by_grade <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_shift_by_grade <- function(id,
                                  data,
                                  reporter,

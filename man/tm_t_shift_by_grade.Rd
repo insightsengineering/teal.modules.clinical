@@ -50,13 +50,13 @@ It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices and preselected option for variable names that can be used as visit.}
+\item{visit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
+option for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
 
-\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices and preselected option for variable names that can be used as worst flag variable.}
+\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+with all available choices and preselected option for variable names that can be used as worst flag variable.}
 
 \item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
 value indicating worst grade.}
@@ -89,8 +89,7 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{code_missing_baseline}{(\code{character})\cr whether missing baseline should be considered
-as grade 0.}
+\item{code_missing_baseline}{(\code{logical})\cr whether missing baseline grades should be counted as grade 0.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
@@ -99,7 +98,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Teal Module: Grade Summary Table
+This module produces a summary table of worst grades per subject by visit and parameter.
 }
 \examples{
 ADSL <- tmc_ex_adsl
