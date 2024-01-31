@@ -72,7 +72,7 @@ template_laboratory <- function(dataname = "ANL",
         labor_table_raw <- labor_table_base %>%
           reshape(
             direction = "wide",
-            idvar = c("paramcd", "param", "avalu"),
+            idvar = c(paramcd_char, param_char, avalu_char),
             v.names = "aval_anrind",
             timevar = "INDEX"
           )
@@ -92,7 +92,7 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::select(-aval_anrind) %>%
           reshape(
             direction = "wide",
-            idvar = c("paramcd", "param", "avalu"),
+            idvar = c(paramcd_char, param_char, avalu_char),
             v.names = "aval_anrind_col",
             timevar = "INDEX"
           )
@@ -111,9 +111,11 @@ template_laboratory <- function(dataname = "ANL",
         param = as.name(param),
         param_char = param,
         paramcd = as.name(paramcd),
+        paramcd_char = paramcd,
         aval_var = as.name(aval_var),
         aval_char = aval_var,
         avalu_var = as.name(avalu_var),
+        avalu_char = avalu_var,
         timepoints = as.name(timepoints),
         anrind = as.name(anrind),
         patient_id = patient_id,
