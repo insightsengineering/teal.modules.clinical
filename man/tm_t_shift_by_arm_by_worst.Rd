@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_shift_by_arm_by_worst.R
 \name{tm_t_shift_by_arm_by_worst}
 \alias{tm_t_shift_by_arm_by_worst}
-\title{Teal Module: Shift by Arm by Worst}
+\title{Teal Module: Shift by Arm by Worst Analysis Indicator Level}
 \usage{
 tm_t_shift_by_arm_by_worst(
   label,
@@ -51,9 +51,10 @@ option for the analysis variable.}
 \item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
 all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
 
-\item{worst_flag_var}{(\code{character})\cr Worst flag variable.}
+\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+with all available choices and preselected option for variable names that can be used as worst flag variable.}
 
-\item{worst_flag}{(\code{character})\cr Worst flag value.}
+\item{worst_flag}{(\code{character})\cr value indicating worst analysis indicator level.}
 
 \item{treatment_flag_var}{(\code{choices_selected} or \code{data_extract_spec})\cr on treatment flag variable.}
 
@@ -66,8 +67,7 @@ records in \code{treatment_flag_var}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include row with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include row with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
@@ -85,8 +85,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+}
 \description{
-Teal Module: Shift by Arm by Worst
+This module produces a summary table of worst analysis indicator variable level per subject by arm.
 }
 \examples{
 ADSL <- tmc_ex_adsl

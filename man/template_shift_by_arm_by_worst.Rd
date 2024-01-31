@@ -32,20 +32,20 @@ template_shift_by_arm_by_worst(
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{worst_flag_var}{(\code{character})\cr Worst flag variable.}
+\item{worst_flag_var}{(\code{character})\cr name of the worst flag variable.}
 
-\item{worst_flag}{(\code{character})\cr Worst flag value.}
+\item{worst_flag}{(\code{character})\cr value indicating worst analysis indicator level.}
 
 \item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
 
 \item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
 records in \code{treatment_flag_var}.}
 
-\item{aval_var}{(\code{character})\cr the variable name for the analysis reference range indicator.}
+\item{aval_var}{(\code{character})\cr name of the analysis reference range indicator variable.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+\item{baseline_var}{(\code{character})\cr name of the baseline reference range indicator variable.}
 
 \item{na.rm}{(\code{logical})\cr whether \code{NA} values should be removed prior to analysis.}
 
@@ -62,7 +62,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Template: Shift by Arm
+Creates a valid expression to generate a summary table of analysis indicator levels by arm.
 }
 \seealso{
 \code{\link[=tm_t_shift_by_arm]{tm_t_shift_by_arm()}}
