@@ -41,7 +41,7 @@ template_shift_by_grade(
 
 \item{anl_toxgrade_var}{(\code{character})\cr name of the variable indicating the analysis toxicity grade.}
 
-\item{base_toxgrade_var}{(\code{character})\cr name of the variable indicating the base toxicity grade.}
+\item{base_toxgrade_var}{(\code{character})\cr name of the variable indicating the baseline toxicity grade.}
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
@@ -55,8 +55,7 @@ When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{datan
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{code_missing_baseline}{(\code{character})\cr whether missing baseline should be considered
-as grade 0.}
+\item{code_missing_baseline}{(\code{logical})\cr whether missing baseline grades should be counted as grade 0.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
@@ -65,7 +64,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Template: Grade Summary Table
+Creates a valid expression to generate a grade summary table.
 }
 \seealso{
 \code{\link[=tm_t_shift_by_grade]{tm_t_shift_by_grade()}}
