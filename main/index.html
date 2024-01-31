@@ -31,7 +31,7 @@
     
     <a class="navbar-brand me-2" href="index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9038</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9039</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,16 +56,6 @@
 <li class="nav-item">
   <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -105,52 +95,50 @@
 <ul>
 <li>Data visualizations:
 <ul>
-<li>forest plots (<code>tm_g_forest_rsp</code>/<code>tm_g_forest_tte</code>)</li>
-<li>line plots (<code>tm_g_lineplot</code>)</li>
-<li>
-<code>Kaplan-Meier</code> plots (<code>tm_g_km</code>)</li>
+<li>Forest plots (<code><a href="reference/tm_g_forest_rsp.html">tm_g_forest_rsp()</a></code>/<code><a href="reference/tm_g_forest_tte.html">tm_g_forest_tte()</a></code>)</li>
+<li>Line plots (<code><a href="reference/tm_g_lineplot.html">tm_g_lineplot()</a></code>)</li>
+<li>Kaplan-Meier plots (<code><a href="reference/tm_g_km.html">tm_g_km()</a></code>)</li>
 <li>…</li>
 </ul>
 </li>
 <li>Statistical model fits:
 <ul>
-<li>
-<code>MMRM</code> (<code>tm_a_mmrm</code>)</li>
-<li>logistic regression (<code>tm_t_logistic</code>)</li>
-<li>Cox regression (<code>tm_t_coxreg</code>)</li>
+<li>MMRM (<code><a href="reference/tm_a_mmrm.html">tm_a_mmrm()</a></code>)</li>
+<li>Logistic regression (<code><a href="reference/tm_t_logistic.html">tm_t_logistic()</a></code>)</li>
+<li>Cox regression (<code><a href="reference/tm_t_coxreg.html">tm_t_coxreg()</a></code>)</li>
 <li>…</li>
 </ul>
 </li>
 <li>Summary tables:
 <ul>
-<li>unique patients (<code>tm_t_summary</code>)</li>
-<li>exposure across patients (<code>tm_t_exposure</code>)</li>
-<li>change from baseline for parameters (<code>tm_t_summary_by</code>)</li>
+<li>Unique patients (<code><a href="reference/tm_t_summary.html">tm_t_summary()</a></code>)</li>
+<li>Exposure across patients (<code><a href="reference/tm_t_exposure.html">tm_t_exposure()</a></code>)</li>
+<li>Change from baseline for parameters (<code><a href="reference/tm_t_summary_by.html">tm_t_summary_by()</a></code>)</li>
 <li>…</li>
 </ul>
 </li>
 <li>Patient-level profile modules:
 <ul>
-<li>table of basic information about chosen patient (<code>tm_t_pp_basic_info</code>)</li>
-<li>plot of patient vitals over time (<code>tm_g_pp_vitals</code>)</li>
-<li>general timeline for individual patients (<code>tm_g_pp_patient_timeline</code>)</li>
+<li>Table of basic information about chosen patient (<code><a href="reference/tm_t_pp_basic_info.html">tm_t_pp_basic_info()</a></code>)</li>
+<li>Plot of patient vitals over time (<code><a href="reference/tm_g_pp_vitals.html">tm_g_pp_vitals()</a></code>)</li>
+<li>General timeline for individual patients (<code><a href="reference/tm_g_pp_patient_timeline.html">tm_g_pp_patient_timeline()</a></code>)</li>
 <li>…</li>
 </ul>
 </li>
 </ul>
-<!-- markdownlint-enable MD007 MD030 --><p>Most of the modules in <code>teal.modules.clinical</code> use functions from the R package <a href="https://insightsengineering.github.io/tern/" class="external-link">tern</a> in order to produce their output.</p>
-<p>Please see <a href="https://insightsengineering.github.io/teal.gallery/main/" class="external-link">teal gallery</a> and <a href="https://insightsengineering.github.io/tlg-catalog/" class="external-link">TLG Catalog</a> for examples of <code>teal</code> apps created using modules from this package.</p>
+<!-- markdownlint-enable MD007 MD030 --><p>Most modules in the package are implemented using functions from the R package <a href="https://insightsengineering.github.io/tern/" class="external-link"><code>tern</code></a> in order to produce their output.</p>
+<p>Please see the <a href="https://insightsengineering.github.io/teal.gallery/" class="external-link">Teal Gallery</a> and <a href="https://insightsengineering.github.io/tlg-catalog/" class="external-link">TLG Catalog</a> for examples of <code>shiny</code> apps created using modules from this package.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>From July 2023 <code>insightsengineering</code> packages are available on <a href="https://r-universe.dev/" class="external-link">r-universe</a>.</p>
+<p>As of July 2023, all <code>insightsengineering</code> packages are available on <a href="https://r-universe.dev/" class="external-link">r-universe</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># stable versions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'teal.modules.clinical'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://insightsengineering.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># beta versions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'teal.modules.clinical'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://pharmaverse.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>See package vignettes <code>browseVignettes(package = "teal.modules.clinical")</code> for usage of this package.</p>
+<p>See package vignettes (<code>browseVignettes(package = "teal.modules.clinical")</code>) for usage of this package.</p>
 </div>
 <div class="section level2">
 <h2 id="acknowledgment">Acknowledgment<a class="anchor" aria-label="anchor" href="#acknowledgment"></a>
