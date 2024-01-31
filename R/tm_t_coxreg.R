@@ -323,13 +323,14 @@ template_coxreg_m <- function(dataname,
 
 #' Teal Module: Cox Regression Model
 #'
-#' Teal module to fit Cox univariable or multi-variable models, consistent with
-#' `COXT01` and `COXT02` standard outputs, respectively.
+#' Teal module to fit Cox univariable or multi-variable models, consistent with the TLG Catalog
+#' templates for Cox regression tables `COXT01` and `COXT02`, respectively. See the TLG Catalog entries
+#' for `COXT01` [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt01.html)
+#' and `COXT02` [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt02.html).
 #'
 #' @inheritParams module_arguments
-#' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used
-#'   (equivalent to `COXT01` standard) instead of the multi-variable model
-#'   (equivalent to `COXT02` standard).
+#' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used instead of the
+#'   multi-variable model.
 #'
 #' @details
 #' The Cox Proportional Hazards (PH) model is the most commonly used method to
@@ -351,6 +352,8 @@ template_coxreg_m <- function(dataname,
 #' * The likelihood ratio test is not supported for models that include strata - the Wald
 #'   test will be substituted in these cases.
 #' * Multi-variable is the default choice for backward compatibility.
+#'
+#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
 #'
 #' @examples
 #' ## First example

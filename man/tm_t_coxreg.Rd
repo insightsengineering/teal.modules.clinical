@@ -59,9 +59,8 @@ option for the analysis variable.}
 \item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the censoring variable.}
 
-\item{multivariate}{(\code{logical})\cr if \code{FALSE}, the univariable approach is used
-(equivalent to \code{COXT01} standard) instead of the multi-variable model
-(equivalent to \code{COXT02} standard).}
+\item{multivariate}{(\code{logical})\cr if \code{FALSE}, the univariable approach is used instead of the
+multi-variable model.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
@@ -82,9 +81,14 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+}
 \description{
-Teal module to fit Cox univariable or multi-variable models, consistent with
-\code{COXT01} and \code{COXT02} standard outputs, respectively.
+Teal module to fit Cox univariable or multi-variable models, consistent with the TLG Catalog
+templates for Cox regression tables \code{COXT01} and \code{COXT02}, respectively. See the TLG Catalog entries
+for \code{COXT01} \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt01.html}{here}
+and \code{COXT02} \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt02.html}{here}.
 }
 \details{
 The Cox Proportional Hazards (PH) model is the most commonly used method to
