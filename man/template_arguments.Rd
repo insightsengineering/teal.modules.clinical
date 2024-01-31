@@ -111,6 +111,10 @@ records in \code{treatment_flag_var}.}
 
 \item{visit_var}{(\code{character})\cr variable names that can be used as \code{visit} variable. Must be a factor in
 \code{dataname}.}
+
+\item{worst_flag_indicator}{(\code{character})\cr value indicating worst grade.}
+
+\item{worst_flag_var}{(\code{character})\cr name of the worst flag variable.}
 }
 \description{
 The documentation to this function lists all the arguments in teal module

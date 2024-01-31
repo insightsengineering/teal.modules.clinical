@@ -1,15 +1,16 @@
 #' Template: Shift by Arm
 #'
+#' Creates a valid expression to generate a summary table of analysis indicator levels by arm.
+#'
 #' @inheritParams template_arguments
-#' @param aval_var (`character`)\cr the variable name for the analysis reference range indicator.
-#' @param baseline_var (`character`)\cr the variable name for the baseline reference range indicator.
 #' @param add_total (`logical`)\cr whether to include row with total number of patients.
-#' @param worst_flag_var (`character`)\cr Worst flag variable.
-#' @param worst_flag (`character`)\cr Worst flag value.
+#' @param aval_var (`character`)\cr name of the analysis reference range indicator variable.
+#' @param baseline_var (`character`)\cr name of the baseline reference range indicator variable.
+#' @param worst_flag (`character`)\cr value indicating worst analysis indicator level.
 #'
 #' @seealso [tm_t_shift_by_arm()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_shift_by_arm_by_worst <- function(dataname,
                                            parentname,
                                            arm_var = "ARM",
@@ -183,14 +184,13 @@ template_shift_by_arm_by_worst <- function(dataname,
   y
 }
 
-#' Teal Module: Shift by Arm by Worst
+#' Teal Module: Shift by Arm by Worst Analysis Indicator Level
+#'
+#' This module produces a summary table of worst analysis indicator variable level per subject by arm.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_arm_by_worst
-#' @param add_total (`logical`)\cr
-#'   whether to include row with total number of patients.
-#'
-#' @export
+#' @param add_total (`logical`)\cr whether to include row with total number of patients.
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -241,6 +241,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_shift_by_arm_by_worst <- function(label,
                                        dataname,
                                        parentname = ifelse(
@@ -324,7 +325,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_shift_by_arm_by_worst <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -422,7 +423,7 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_shift_by_arm_by_worst <- function(id,
                                       data,
                                       reporter,
