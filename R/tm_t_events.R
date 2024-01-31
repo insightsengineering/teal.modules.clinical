@@ -2,9 +2,9 @@
 #'
 #' @inheritParams template_arguments
 #' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#' module.
+#'   module.
 #' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#' module.
+#'   module.
 #' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
 #'   Default is "event".
 #' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
@@ -15,8 +15,8 @@
 #'   should be included at the top of the table.
 #'
 #' @seealso [tm_t_events()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_events <- function(dataname,
                             parentname,
                             arm_var,
@@ -461,10 +461,14 @@ template_events <- function(dataname,
 
 #' Teal Module: Events by Term
 #'
+#' @description Template for generating a table of events by term. Please, check out the
+#'  [TLG-catalog](https://insightsengineering.github.io/tlg-catalog/stable/) for
+#'  additional examples and information.
+#'
 #' @inheritParams module_arguments
 #' @inheritParams template_events
 #'
-#' @export
+#' @return a `teal_module` object which can be added to a teal app via [teal::init()].
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -501,6 +505,7 @@ template_events <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_events <- function(label,
                         dataname,
                         parentname = ifelse(
@@ -573,7 +578,7 @@ tm_t_events <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_events_byterm <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -655,7 +660,7 @@ ui_t_events_byterm <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_events_byterm <- function(id,
                                 data,
                                 filter_panel_api,

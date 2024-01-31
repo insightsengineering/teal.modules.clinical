@@ -87,8 +87,13 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object which can be added to a teal app via \code{\link[teal:init]{teal::init()}}.
+}
 \description{
-Teal Module: Events by Term
+Template for generating a table of events by term. Please, check out the
+\href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG-catalog} for
+additional examples and information.
 }
 \examples{
 ADSL <- tmc_ex_adsl
