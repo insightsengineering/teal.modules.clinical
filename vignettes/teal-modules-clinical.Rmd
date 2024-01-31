@@ -161,4 +161,4 @@ if (interactive()) shiny::shinyApp(app$ui, app$server)
 ```
 
 Please refer to the [API reference](https://insightsengineering.github.io/teal.modules.clinical/reference/index.html) 
-of specific modules for more examples and information on the levels of customization available.
+of specific modules for more examples and information on the customization options available.

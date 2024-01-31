@@ -47,7 +47,7 @@ These modules include, but are not limited to:
 
 Most modules in the package are implemented using functions from the R package [`tern`](https://insightsengineering.github.io/tern/) in order to produce their output.
 
-Please see the [Teal Gallery](https://insightsengineering.github.io/teal.gallery/) and [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/) for examples of `teal` apps created using modules from this package.
+Please see the [Teal Gallery](https://insightsengineering.github.io/teal.gallery/) and [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/) for examples of `shiny` apps created using modules from this package.
 
 ## Installation
 
