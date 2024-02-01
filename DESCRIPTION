@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9042
-Date: 2024-01-31
+Version: 0.8.16.9043
+Date: 2024-02-01
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -55,7 +55,7 @@ Imports:
     stats,
     styler (>= 1.2.0),
     teal.code (>= 0.4.1.9009),
-    teal.data (>= 0.3.0.9018),
+    teal.data (>= 0.4.0),
     teal.logger (>= 0.1.1),
     teal.reporter (>= 0.2.1),
     teal.widgets (>= 0.4.0),
