@@ -1,15 +1,12 @@
 #' Template: Summary of Variables
 #'
-#' @param show_labels (`character`)\cr
-#'   defines whether the labels for `sum_vars` should display. For details see [rtables::analyze()].
-#' @param numeric_stats (`character`)\cr
-#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. All are selected by default.
 #' @inheritParams template_arguments
+#' @param show_labels (`character`)\cr defines whether variable labels should be displayed. Options are
+#'   `"default"`, `"visible"`, and `"hidden"`.
 #'
 #' @seealso [tm_t_summary()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_summary <- function(dataname,
                              parentname,
                              arm_var,
@@ -194,32 +191,15 @@ template_summary <- function(dataname,
 
 #' Teal Module: Summary of Variables
 #'
-#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
-#'   second variable will be nested under the first variable.
-#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
-#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
-#'   `arm_var` levels are set to those used in the `parentname` dataset.
-#'   If `dataname` dataset and `parentname` dataset are the same (i.e. `ADSL`), then `drop_arm_levels` will always be
-#'   TRUE regardless of the user choice when `tm_t_summary` is called.
-#' @param numeric_stats (`character`)\cr
-#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are
-#'   selected.
-#' @inheritParams module_arguments
+#' This module produces a table to summarize variables.
 #'
-#' @export
+#' @inheritParams module_arguments
+#' @inheritParams template_summary
+#'
 #' @examples
-#' # Preparation of the test case
+#' # Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.
 #' ADSL <- tmc_ex_adsl
 #' ADSL$EOSDY[1] <- NA_integer_
-#'
-#' # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
-#' stopifnot(
-#'   any(is.na(ADSL$EOSDY)),
-#'   any(is.na(ADSL$DCSREAS))
-#' )
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -227,10 +207,6 @@ template_summary <- function(dataname,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADSL$EOSDY[1] <- NA_integer_
-#'       stopifnot(
-#'         any(is.na(ADSL$EOSDY)),
-#'         any(is.na(ADSL$DCSREAS))
-#'       )
 #'     "
 #'   ),
 #'   modules = modules(
@@ -251,6 +227,7 @@ template_summary <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_summary <- function(label,
                          dataname,
                          parentname = ifelse(
@@ -316,7 +293,7 @@ tm_t_summary <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_summary <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -401,7 +378,7 @@ ui_summary <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_summary <- function(id,
                         data,
                         reporter,
