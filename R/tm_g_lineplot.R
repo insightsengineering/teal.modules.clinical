@@ -202,7 +202,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @inherit module_arguments return
 #'
 #' @examples
 #' library(nestcolor)
