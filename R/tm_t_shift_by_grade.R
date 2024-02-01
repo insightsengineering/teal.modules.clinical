@@ -475,6 +475,9 @@ template_shift_by_grade <- function(parentname,
 #'
 #' @inherit module_arguments return
 #'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
+#'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADLB <- tmc_ex_adlb

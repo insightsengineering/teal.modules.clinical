@@ -177,3 +177,7 @@ if (interactive()) {
 }
 
 }
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
+}

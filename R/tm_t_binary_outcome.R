@@ -345,6 +345,9 @@ template_binary_outcome <- function(dataname,
 #'
 #' @inherit module_arguments return
 #'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
+#'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADRS <- tmc_ex_adrs %>%
