@@ -1,14 +1,14 @@
-#' Template: Prior Medication
+#' Template: Patient Prior Medication
 #'
-#' Creates a prior medication template.
+#' Creates a valid expression to generate a patient prior medication report using ADaM datasets.
 #'
 #' @inheritParams template_arguments
-#' @param atirel (`character`)\cr name of time relation of medication variable.
-#' @param cmdecod (`character`)\cr name of standardized medication name variable.
-#' @param cmindc (`character`)\cr name of indication variable.
-#' @param cmstdy (`character`)\cr name of study day of start of medication variable.
-#' @keywords internal
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_t_pp_prior_medication()]
+#'
+#' @keywords internal
 template_prior_medication <- function(dataname = "ANL",
                                       atirel = "ATIREL",
                                       cmdecod = "CMDECOD",
@@ -54,23 +54,14 @@ template_prior_medication <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Patient Prior Medication Teal Module
+#' teal Module: Patient Prior Medication
 #'
-#' This teal module produces a patient prior medication report using `ADaM` datasets.
+#' This module produces a patient prior medication report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_prior_medication
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `ATIREL` column of the `ADCM` dataset.
-#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMDECOD` column of the `ADCM` dataset.
-#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMINDC` column of the `ADCM` dataset.
-#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMSTDY` column of the `ADCM` dataset.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ADCM <- tmc_ex_adcm
@@ -123,6 +114,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_pp_prior_medication <- function(label,
                                      dataname = "ADCM",
                                      parentname = "ADSL",
@@ -167,6 +159,7 @@ tm_t_pp_prior_medication <- function(label,
   )
 }
 
+#' @keywords internal
 ui_t_prior_medication <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -227,7 +220,7 @@ ui_t_prior_medication <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_t_prior_medication <- function(id,
                                    data,
                                    reporter,
