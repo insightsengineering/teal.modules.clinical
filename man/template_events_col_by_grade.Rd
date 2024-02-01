@@ -37,6 +37,10 @@ template_events_col_by_grade(
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
+
 \item{id}{(\code{character}) \cr unique identifier of patients in datasets, default to \code{"USUBJID"}.}
 
 \item{hlt}{(\code{character})\cr name of the variable with high level term for events.}

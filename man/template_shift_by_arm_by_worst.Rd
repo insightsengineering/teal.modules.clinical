@@ -55,6 +55,10 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 
 \item{add_total}{(\code{logical})\cr whether to include row with total number of patients.}
 
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
+
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).

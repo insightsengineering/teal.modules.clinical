@@ -192,7 +192,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #' @inheritParams template_shift_by_arm_by_worst
 #' @param add_total (`logical`)\cr whether to include row with total number of patients.
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
