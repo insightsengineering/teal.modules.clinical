@@ -318,7 +318,7 @@ template_summary_by <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams template_summary_by
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
