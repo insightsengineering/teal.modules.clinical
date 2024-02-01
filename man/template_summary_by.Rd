@@ -43,6 +43,10 @@ template_summary_by(
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
+
 \item{parallel_vars}{(\code{logical})\cr used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
