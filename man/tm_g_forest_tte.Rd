@@ -69,8 +69,7 @@ confidence level, each within range of (0, 1).}
 \item{time_unit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and
 preselected option for the time unit variable.}
 
-\item{fixed_symbol_size}{(\code{logical})\cr
-When (\code{TRUE}), the same symbol size is used for plotting each estimate.
+\item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the

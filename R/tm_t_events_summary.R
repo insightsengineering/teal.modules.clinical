@@ -484,6 +484,7 @@ template_events_summary <- function(anl_name,
 #' Teal Module: Adverse Events Summary
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_arguments
 #' @inheritParams template_events_summary
 #' @param dthfl_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in

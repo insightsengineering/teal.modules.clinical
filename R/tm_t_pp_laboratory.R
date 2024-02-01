@@ -133,6 +133,7 @@ template_laboratory <- function(dataname = "ANL",
 #' This teal module produces a patient profile laboratory table using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_laboratory
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' `PARAMCD` column of the `ADLB` dataset.
