@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_medical_history.R
 \name{tm_t_pp_medical_history}
 \alias{tm_t_pp_medical_history}
-\title{teal Module: Patient Medical History}
+\title{teal Module: Patient Profile Medical History}
 \usage{
 tm_t_pp_medical_history(
   label,
@@ -44,7 +44,7 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 a \code{teal_module} object.
 }
 \description{
-This module produces a patient medical history report using ADaM datasets.
+This module produces a patient profile medical history report using ADaM datasets.
 }
 \examples{
 ADSL <- tmc_ex_adsl

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_medical_history.R
 \name{template_medical_history}
 \alias{template_medical_history}
-\title{Template: Patient Medical History}
+\title{Template: Patient Profile Medical History}
 \usage{
 template_medical_history(
   dataname = "ANL",
@@ -27,7 +27,7 @@ template_medical_history(
 a \code{list} of expressions to generate a table or plot object.
 }
 \description{
-Creates a valid expression to generate a patient medical history report using ADaM datasets.
+Creates a valid expression to generate a patient profile medical history report using ADaM datasets.
 }
 \seealso{
 \code{\link[=tm_t_pp_medical_history]{tm_t_pp_medical_history()}}

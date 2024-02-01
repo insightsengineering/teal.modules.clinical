@@ -1,6 +1,6 @@
-#' Template: Patient Medical History
+#' Template: Patient Profile Medical History
 #'
-#' Creates a valid expression to generate a patient medical history report using ADaM datasets.
+#' Creates a valid expression to generate a patient profile medical history report using ADaM datasets.
 #'
 #' @inheritParams template_arguments
 #' @param mhterm (`character`)\cr name of the reported term for the medical history variable.
@@ -76,9 +76,9 @@ template_medical_history <- function(dataname = "ANL",
   y
 }
 
-#' teal Module: Patient Medical History
+#' teal Module: Patient Profile Medical History
 #'
-#' This module produces a patient medical history report using ADaM datasets.
+#' This module produces a patient profile medical history report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_medical_history
