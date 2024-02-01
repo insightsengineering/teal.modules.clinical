@@ -128,9 +128,10 @@ NULL
 #'   population from the column total is used as the denominator. With option
 #'   `n`, the number of non-missing records in this row and column intersection
 #'   is used as the denominator. If `omit` is chosen, then the percentage is omitted.
-#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
-#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
-#'   `arm_var` levels are set to those used in the `parantname` dataset.
+#' @param drop_arm_levels (`logical`)\cr whether to drop unused levels of `arm_var`. If `TRUE`, `arm_var` levels are
+#'   set to those used in the `dataname` dataset. If `FALSE`, `arm_var` levels are set to those used in the
+#'   `parentname` dataset. If `dataname` and `parentname` are the same, then `drop_arm_levels` is set to `TRUE` and
+#'   user input for this parameter is ignored.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
