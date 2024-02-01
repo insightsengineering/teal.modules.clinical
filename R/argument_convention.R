@@ -45,10 +45,6 @@
 #' @param hlt (`character`)\cr name of the variable with high level term for events.
 #' @param id_var (`character`)\cr the variable name for subject id.
 #' @param include_interact (`logical`)\cr whether an interaction term should be included in the model.
-#' @param interact_var (`character`)\cr name of the variable that should have interactions with arm. If the
-#'   interaction is not needed, the default option is `NULL`.
-#' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select the
-#'   specific `ANCOVA` results. If the interaction is not needed, the default option is `FALSE`.
 #' @param llt (`character`)\cr name of the variable with low level term for events.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values
 #'   in character or factor variables in the data. Defaults to `"<Missing>"`. To set a

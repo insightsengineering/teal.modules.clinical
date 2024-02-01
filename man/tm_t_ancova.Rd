@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_ancova.R
 \name{tm_t_ancova}
 \alias{tm_t_ancova}
-\title{Teal Module: \code{ANCOVA} Teal Module}
+\title{teal Module: \code{ANCOVA} teal Module}
 \usage{
 tm_t_ancova(
   label,
@@ -79,7 +79,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Teal Module: \code{ANCOVA} Teal Module
+teal Module: \code{ANCOVA} teal Module
 }
 \details{
 This module produces an analysis of variance summary table that is
