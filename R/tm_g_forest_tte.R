@@ -5,8 +5,6 @@
 #' @inheritParams template_arguments
 #' @inheritParams template_forest_rsp
 #'
-#' @inherit template_arguments return
-#'
 #' @seealso [tm_g_forest_tte()]
 #' @keywords internal
 #'
