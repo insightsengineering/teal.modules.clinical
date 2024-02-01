@@ -54,7 +54,7 @@ ADSL <- tmc_ex_adsl
 ADAE <- tmc_ex_adae
 
 app <- init(
-  data = teal.data::cdisc_data(
+  data = cdisc_data(
     ADSL = ADSL,
     ADAE = ADAE,
     code = "
@@ -65,10 +65,10 @@ app <- init(
   modules = list(
     tm_g_barchart_simple(
       label = "ADAE Analysis",
-      x = teal.transform::data_extract_spec(
+      x = data_extract_spec(
         dataname = "ADAE",
-        select = teal.transform::select_spec(
-          choices = teal.transform::variable_choices(ADAE),
+        select = select_spec(
+          choices = variable_choices(ADAE),
           multiple = FALSE
         )
       )
@@ -110,7 +110,7 @@ argument indicates the modules included in the application. Here, we include onl
 
 ```r
 app <- init(
-  data = teal.data::cdisc_data(
+  data = cdisc_data(
     ADSL = ADSL,
     ADAE = ADAE,
     code = "
@@ -121,9 +121,9 @@ app <- init(
   modules = list(
     tm_g_barchart_simple(
       label = "ADAE Analysis",
-      x = teal.transform::data_extract_spec(
+      x = data_extract_spec(
         dataname = "ADAE",
-        select = teal.transform::select_spec(choices = teal.transform::variable_choices(ADAE), multiple = FALSE)
+        select = select_spec(choices = variable_choices(ADAE), multiple = FALSE)
       )
     )
   )
@@ -137,19 +137,19 @@ if (interactive()) shinyApp(app$ui, app$server)
 ```
 
 Some `teal.modules.clinical` modules allow for the specification of arguments using
-`teal.transform::choices_selected()`, such as the `tm_t_summary()` module in the following example.
+`choices_selected()`, such as the `tm_t_summary()` module in the following example.
 
 ```r
 ADSL <- tmc_ex_adsl
 
 app <- init(
-  data = teal.data::cdisc_data(ADSL = ADSL, code = "ADSL <- tmc_ex_adsl"),
+  data = cdisc_data(ADSL = ADSL, code = "ADSL <- tmc_ex_adsl"),
   modules = list(
     tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",
-      arm_var = teal.transform::choices_selected(choices = c("ARM", "ARMCD"), selected = "ARM"),
-      summarize_vars = teal.transform::choices_selected(
+      arm_var = choices_selected(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      summarize_vars = choices_selected(
         choices = c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
         selected = c("SEX", "RACE")
       )
