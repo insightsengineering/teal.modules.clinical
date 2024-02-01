@@ -12,6 +12,8 @@
 #' @param paramcd `r lifecycle::badge("deprecated")` The `paramcd` argument is not used in this function.
 #' @param label_paramcd (`character`)\cr Label of response parameter value to print in the table title.
 #'
+#' @inherit template_arguments return
+#'
 #' @seealso [tm_t_logistic()]
 #'
 #' @keywords internal
@@ -211,7 +213,7 @@ template_logistic <- function(dataname,
   y
 }
 
-#' Teal Module: Logistic Regression
+#' teal Module: Logistic Regression
 #'
 #' This module produces a multi-variable logistic regression table consistent with the TLG Catalog template
 #' `LGRT02` available [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/lgrt02.html).
@@ -227,6 +229,9 @@ template_logistic <- function(dataname,
 #'   available choices and preselected option for the analysis variable (categorical).
 #'
 #' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl

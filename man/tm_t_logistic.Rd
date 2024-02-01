@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_logistic.R
 \name{tm_t_logistic}
 \alias{tm_t_logistic}
-\title{Teal Module: Logistic Regression}
+\title{teal Module: Logistic Regression}
 \usage{
 tm_t_logistic(
   label,
@@ -65,7 +65,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 This module produces a multi-variable logistic regression table consistent with the TLG Catalog template
@@ -121,4 +121,8 @@ if (interactive()) {
   shinyApp(ui = app$ui, server = app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
