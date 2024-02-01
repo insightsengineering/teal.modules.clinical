@@ -353,7 +353,7 @@ template_coxreg_m <- function(dataname,
 #'   test will be substituted in these cases.
 #' * Multi-variable is the default choice for backward compatibility.
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ## First example
