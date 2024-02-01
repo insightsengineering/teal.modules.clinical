@@ -12,7 +12,7 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9042</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9043</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,7 +136,7 @@ ADaM structure."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 
 
 <dt>paramcd</dt>
-<dd><p>(<code>character</code> or <code>NA</code>)<br><code>paramcd</code> variable name.</p></dd>
+<dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br> variable value designating the studied parameter.</p></dd>
 
 
 <dt>param</dt>
@@ -145,7 +145,8 @@ parameter chosen to filter the data by.</p></dd>
 
 
 <dt>conf_level</dt>
-<dd><p>(<code>numeric</code>)<br> value for the confidence level within the range of (0, 1).</p></dd>
+<dd><p>(<code>choices_selected</code>)<br> object with all available choices and preselected option for the
+confidence level, each within range of (0, 1).</p></dd>
 
 
 <dt>interval</dt>
@@ -252,7 +253,7 @@ with default module arguments (hard coded in the module body)</p>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2024-02-01 09:02:45.8428 pid:1576 token:[] teal.modules.clinical Initializing tm_g_lineplot</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [INFO] 2024-02-01 09:18:18.0093 pid:1577 token:[] teal.modules.clinical Initializing tm_g_lineplot</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'package:nestcolor' may not be available when loading</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu">shinyApp</span><span class="op">(</span>ui <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">ui</span>, server <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span></span>

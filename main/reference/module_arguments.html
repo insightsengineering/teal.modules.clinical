@@ -12,7 +12,7 @@ that are used repeatedly to express an analysis."><!-- mathjax --><script src="h
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9042</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9043</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,11 +72,7 @@ that are used repeatedly to express an analysis.</p>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>add_total</dt>
-<dd><p>(<code>logical</code>)<br> whether to include column with total number of patients.</p></dd>
-
-
-<dt>arm_ref_comp</dt>
+    <dl><dt>arm_ref_comp</dt>
 <dd><p>optional, (<code>list</code>)<br> If specified it must be a named list with each element corresponding to
 an arm variable in <code>ADSL</code> and the element must be another list (possibly
 with delayed <code><a href="https://insightsengineering.github.io/teal.transform/reference/variable_choices.html" class="external-link">teal.transform::variable_choices()</a></code> or delayed <code><a href="https://insightsengineering.github.io/teal.transform/reference/value_choices.html" class="external-link">teal.transform::value_choices()</a></code>
@@ -92,14 +88,6 @@ If there are two elements selected for <code>arm_var</code>,
 second variable will be nested under the first variable.</p></dd>
 
 
-<dt>aval</dt>
-<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Please use the <code>aval_var</code> argument instead.</p></dd>
-
-
-<dt>avalu</dt>
-<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Please use the <code>avalu_var</code> argument instead.</p></dd>
-
-
 <dt>aval_var</dt>
 <dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br> object with all available choices and preselected
 option for the analysis variable.</p></dd>
@@ -112,17 +100,6 @@ option for the analysis variable.</p></dd>
 <dt>baseline_var</dt>
 <dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
 all available choices and preselected option for variable values that can be used as <code>baseline_var</code>.</p></dd>
-
-
-<dt>base_var</dt>
-<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Please use the <code>baseline_var</code> argument instead.</p></dd>
-
-
-<dt>basic_table_args</dt>
-<dd><p>optional, (<code>basic_table_args</code>)<br> object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/basic_table_args.html" class="external-link">teal.widgets::basic_table_args()</a></code>
-with settings for the module table. The argument is merged with option <code>teal.basic_table_args</code> and with default
-module arguments (hard coded in the module body).</p>
-<p>For more details, see the vignette: <code>vignette("custom-basic-table-arguments", package = "teal.widgets")</code>.</p></dd>
 
 
 <dt>by_vars</dt>
@@ -145,28 +122,18 @@ confidence level, each within range of (0, 1).</p></dd>
 option for the covariates variables.</p></dd>
 
 
-<dt>dataname</dt>
-<dd><p>(<code>character</code>)<br> analysis data used in teal module.</p></dd>
+<dt>default_responses</dt>
+<dd><p>(<code>list</code> or <code>character</code>)<br> defines
+the default codes for the response variable in the module per value of <code>paramcd</code>.
+A passed vector is transmitted for all <code>paramcd</code> values. A passed <code>list</code> must be named
+and contain arrays, each name corresponding to a single value of <code>paramcd</code>. Each array
+may contain default response values or named arrays <code>rsp</code> of default selected response
+values and <code>levels</code> of default level choices.</p></dd>
 
 
-<dt>denominator</dt>
-<dd><p>(<code>character</code>)<br> chooses how percentages are calculated. With option <code>N</code>, the reference
-population from the column total is used as the denominator. With option
-<code>n</code>, the number of non-missing records in this row and column intersection
-is used as the denominator. If <code>omit</code> is chosen, then the percentage is omitted.</p></dd>
-
-
-<dt>drop_arm_levels</dt>
-<dd><p>(<code>logical</code>)<br> drop the unused <code>arm_var</code> levels.
-When <code>TRUE</code>, <code>arm_var</code> levels are set to those used in the <code>dataname</code> dataset. When <code>FALSE</code>,
-<code>arm_var</code> levels are set to those used in the <code>parantname</code> dataset.</p></dd>
-
-
-<dt>ggplot2_args</dt>
-<dd><p>optional, (<code>ggplot2_args</code>)<br> object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings
-for the module plot. The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
-(hard coded in the module body).</p>
-<p>For more details, see the help vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.widgets")</code>.</p></dd>
+<dt>fixed_symbol_size</dt>
+<dd><p>(<code>logical</code>)<br> When (<code>TRUE</code>), the same symbol size is used for plotting each estimate.
+Otherwise, the symbol size will be proportional to the sample size in each each subgroup.</p></dd>
 
 
 <dt>hlt</dt>
@@ -175,10 +142,6 @@ for the module plot. The argument is merged with option <code>teal.ggplot2_args<
 
 <dt>id_var</dt>
 <dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br> object specifying the variable name for subject id.</p></dd>
-
-
-<dt>include_interact</dt>
-<dd><p>(<code>logical</code>)<br> whether an interaction term should be included in the model.</p></dd>
 
 
 <dt>interact_var</dt>
@@ -198,12 +161,6 @@ needed, the default option is <code>FALSE</code>.</p></dd>
 
 <dt>llt</dt>
 <dd><p>(<code>choices_selected</code> or <code>data_extract_spec</code>)<br> name of the variable with low level term for events.</p></dd>
-
-
-<dt>na_level</dt>
-<dd><p>(<code>string</code>)<br> used to replace all <code>NA</code> or empty values
-in character or factor variables in the data. Defaults to <code>"&lt;Missing&gt;"</code>. To set a
-default <code>na_level</code> to apply in all modules, run <code>set_default_na_str("new_default")</code>.</p></dd>
 
 
 <dt>paramcd</dt>
@@ -258,12 +215,6 @@ points that can be used in <code><a href="https://rdrr.io/pkg/tern/man/survival_
 preselected option for the time unit variable.</p></dd>
 
 
-<dt>total_label</dt>
-<dd><p>(<code>string</code>)<br> string to display as total column/row label if column/row is
-enabled (see <code>add_total</code>). Defaults to <code>"All Patients"</code>. To set a new default <code>total_label</code> to
-apply in all modules, run <code>set_default_total_label("new_default")</code>.</p></dd>
-
-
 <dt>treatment_flag</dt>
 <dd><p>(<code>choices_selected</code>] or <code>data_extract_spec</code>)<br> value indicating on treatment
 records in <code>treatment_flag_var</code>.</p></dd>
@@ -296,16 +247,20 @@ with all available choices and preselected option for variable names that can be
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p><code>module</code> object generated by the <code><a href="https://insightsengineering.github.io/teal/reference/module.html" class="external-link">teal::module()</a></code> function.</p>
+<p>a <code><a href="https://insightsengineering.github.io/teal/reference/module.html" class="external-link">teal::module()</a></code> object which can be added to a <code>teal</code> app via <code><a href="https://insightsengineering.github.io/teal/reference/init.html" class="external-link">teal::init()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Although this function just returns <code>NULL</code> it has two uses, for
+    
+<ul><li><p>Although this function just returns <code>NULL</code> it has two uses, for
 the teal module users it provides a documentation of arguments that are
 commonly and consistently used in the framework. For the developer it adds a
 single reference point to import the <code>roxygen</code> argument description with:
-<code>@inheritParams module_arguments</code></p>
-    </div>
+<code>@inheritParams module_arguments</code></p></li>
+<li><p>Parameters with identical descriptions &amp; input types to those in the Standard Template Arguments section are
+excluded to reduce duplication as each module function inherits parameters from its corresponding template
+function.</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
