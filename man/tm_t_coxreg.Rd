@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_coxreg.R
 \name{tm_t_coxreg}
 \alias{tm_t_coxreg}
-\title{Teal Module: Cox Regression Model}
+\title{teal Module: Cox Regression Model}
 \usage{
 tm_t_coxreg(
   label,
@@ -85,7 +85,7 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 a \code{teal_module} object.
 }
 \description{
-Teal module to fit Cox univariable or multi-variable models, consistent with the TLG Catalog
+This module fits Cox univariable or multi-variable models, consistent with the TLG Catalog
 templates for Cox regression tables \code{COXT01} and \code{COXT02}, respectively. See the TLG Catalog entries
 for \code{COXT01} \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt01.html}{here}
 and \code{COXT02} \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt02.html}{here}.
@@ -235,4 +235,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

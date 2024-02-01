@@ -325,9 +325,9 @@ template_coxreg_m <- function(dataname,
   y
 }
 
-#' Teal Module: Cox Regression Model
+#' teal Module: Cox Regression Model
 #'
-#' Teal module to fit Cox univariable or multi-variable models, consistent with the TLG Catalog
+#' This module fits Cox univariable or multi-variable models, consistent with the TLG Catalog
 #' templates for Cox regression tables `COXT01` and `COXT02`, respectively. See the TLG Catalog entries
 #' for `COXT01` [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt01.html)
 #' and `COXT02` [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt02.html).
@@ -360,6 +360,9 @@ template_coxreg_m <- function(dataname,
 #' * Multi-variable is the default choice for backward compatibility.
 #'
 #' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' ## First example
