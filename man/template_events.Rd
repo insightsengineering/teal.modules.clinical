@@ -80,7 +80,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Template: Events by Term
+Creates a valid expression to generate a table of events by term.
 }
 \seealso{
 \code{\link[=tm_t_events]{tm_t_events()}}

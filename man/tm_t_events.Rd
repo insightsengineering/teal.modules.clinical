@@ -91,7 +91,7 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 a \code{teal_module} object which can be added to a teal app via \code{\link[teal:init]{teal::init()}}.
 }
 \description{
-Template for generating a table of events by term. Please, check out the
+Teal module for generating a table of events by term. Please, check out the
 \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG-catalog} for
 additional examples and information.
 }
