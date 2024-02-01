@@ -1,5 +1,7 @@
 #' Template: Events by Term
 #'
+#' Creates a valid expression to generate a table of events by term.
+#'
 #' @inheritParams template_arguments
 #' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
 #'   module.
@@ -461,7 +463,7 @@ template_events <- function(dataname,
 
 #' Teal Module: Events by Term
 #'
-#' @description Template for generating a table of events by term. Please, check out the
+#' @description Teal module for generating a table of events by term. Please, check out the
 #'  [TLG-catalog](https://insightsengineering.github.io/tlg-catalog/stable/) for
 #'  additional examples and information.
 #'
