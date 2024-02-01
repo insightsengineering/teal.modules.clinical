@@ -101,8 +101,8 @@ This modules expects that the analysis data has the following variables:
 \itemize{
 \item \code{AVAL}: time to event
 \item \code{CNSR}: 1 if record in \code{AVAL} is censored, 0 otherwise
-\item \code{PARAMCD}: variable used to filter for endpoint (e.g. OS), after
-filtering for \code{PARAMCD}. One observation per patient is expected
+\item \code{PARAMCD}: variable used to filter for endpoint (e.g. OS). After
+filtering for \code{PARAMCD} one observation per patient is expected
 }
 
 The arm variables and stratification/covariate variables are taken from the ADSL data.

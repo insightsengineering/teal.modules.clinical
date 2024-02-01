@@ -349,8 +349,8 @@ template_coxreg_m <- function(dataname,
 #'
 #' * `AVAL`: time to event
 #' * `CNSR`: 1 if record in `AVAL` is censored, 0 otherwise
-#' * `PARAMCD`: variable used to filter for endpoint (e.g. OS), after
-#'   filtering for `PARAMCD`. One observation per patient is expected
+#' * `PARAMCD`: variable used to filter for endpoint (e.g. OS). After
+#'   filtering for `PARAMCD` one observation per patient is expected
 #'
 #' The arm variables and stratification/covariate variables are taken from the ADSL data.
 #'
