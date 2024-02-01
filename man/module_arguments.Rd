@@ -131,6 +131,12 @@ records in \code{treatment_flag_var}.}
 
 \item{visit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+
+\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+value indicating worst grade.}
+
+\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+with all available choices and preselected option for variable names that can be used as worst flag variable.}
 }
 \value{
 a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
