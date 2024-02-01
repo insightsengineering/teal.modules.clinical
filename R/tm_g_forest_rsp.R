@@ -3,7 +3,7 @@
 #' Creates a valid expression for response forest plot.
 #'
 #' @inheritParams template_arguments
-#' @param obj_var_name (`character`)\cr additional text string append to output title.
+#' @param obj_var_name (`character`)\cr additional text to append to the table title.
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
 #' @param col_symbol_size (`integer`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
