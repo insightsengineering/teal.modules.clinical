@@ -48,7 +48,7 @@ template_binary_outcome(
 \item{show_rsp_cat}{(\code{logical})\cr display the multinomial response estimations.}
 
 \item{responder_val}{(\code{character})\cr the short label for observations to
-translate \code{AVALC} into responder / non-responder.}
+translate \code{AVALC} into responder/non-responder.}
 
 \item{responder_val_levels}{(\code{character})\cr the levels of responses that will be shown in the multinomial
 response estimations.}
@@ -56,6 +56,10 @@ response estimations.}
 \item{control}{(\code{list})\cr list of settings for the analysis.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
@@ -67,33 +71,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression for binary outcome analysis.
-}
-\examples{
-if (interactive()) {
-  # Preparation of the test case.
-  adsl <- tmc_ex_adsl
-  adrs <- tmc_ex_adrs
-
-  # Generate an expression for the analysis of responders.
-  a <- template_binary_outcome(
-    dataname = "adrs",
-    parentname = "adsl",
-    arm_var = "ARMCD",
-    paramcd = "BESRSPI",
-    ref_arm = "ARM A",
-    comp_arm = c("ARM B"),
-    compare_arm = TRUE,
-    show_rsp_cat = TRUE
-  )
-
-  b <- mapply(expr = a, FUN = eval)
-  b$data
-  b$layout
-  b$table
-}
-
+Creates a valid expression to generate a binary outcome analysis.
 }
 \seealso{
 \code{\link[=tm_t_binary_outcome]{tm_t_binary_outcome()}}

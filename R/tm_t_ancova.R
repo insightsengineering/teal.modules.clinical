@@ -412,6 +412,7 @@ template_ancova <- function(dataname = "ANL",
 #' Teal Module: `ANCOVA` Teal Module
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_ancova
 #'
 #' @details This module produces an analysis of variance summary table that is
 #' similar to `AOVT01` when multiple endpoints are selected.

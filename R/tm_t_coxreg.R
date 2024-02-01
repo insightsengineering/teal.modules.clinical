@@ -329,6 +329,8 @@ template_coxreg_m <- function(dataname,
 #' and `COXT02` [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt02.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_coxreg_u
+#' @inheritParams template_coxreg_m
 #' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used instead of the
 #'   multi-variable model.
 #'

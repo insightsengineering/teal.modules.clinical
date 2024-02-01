@@ -100,6 +100,10 @@ rates between any two columns.}
 
 \item{title}{(\code{character})\cr title of the output.}
 
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
+
 \item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
 records in \code{treatment_flag_var}.}
 
@@ -115,6 +119,9 @@ records in \code{treatment_flag_var}.}
 \item{worst_flag_indicator}{(\code{character})\cr value indicating worst grade.}
 
 \item{worst_flag_var}{(\code{character})\cr name of the worst flag variable.}
+}
+\value{
+a \code{list} of expressions to generate a table or plot object.
 }
 \description{
 The documentation to this function lists all the arguments in teal module
