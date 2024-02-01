@@ -50,7 +50,7 @@ enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new 
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
-by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
+on column \code{sort_freq_col} by decreasing number of patients with event. Alternative option \code{alpha} sorts events
 alphabetically.}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.

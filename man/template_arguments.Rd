@@ -50,6 +50,9 @@ percentage is omitted.}
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
+\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment).
+Default is "event".}
+
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
@@ -66,6 +69,12 @@ interaction is not needed, the default option is \code{NULL}.}
 
 \item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select the
 specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
+
+\item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
+\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
+module.}
 
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
@@ -85,6 +94,10 @@ rates between any two columns.}
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
+
+\item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
+on column \code{sort_freq_col} by decreasing number of patients with event. Alternative option \code{alpha} sorts events
+alphabetically.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 

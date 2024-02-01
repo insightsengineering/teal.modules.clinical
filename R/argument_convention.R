@@ -36,6 +36,8 @@
 #' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
 #'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
 #'   `arm_var` levels are set to those used in the `parantname` dataset.
+#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
+#'   Default is "event".
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
@@ -47,6 +49,10 @@
 #'   interaction is not needed, the default option is `NULL`.
 #' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select the
 #'   specific `ANCOVA` results. If the interaction is not needed, the default option is `FALSE`.
+#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
+#'   module.
+#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
+#'   module.
 #' @param llt (`character`)\cr name of the variable with low level term for events.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values
 #'   in character or factor variables in the data. Defaults to `"<Missing>"`. To set a
@@ -58,6 +64,9 @@
 #'   rates between any two columns.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param ref_arm (`character`)\cr the level of reference arm in case of arm comparison.
+#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
+#'   on column `sort_freq_col` by decreasing number of patients with event. Alternative option `alpha` sorts events
+#'   alphabetically.
 #' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
 #' @param sum_vars (`character`)\cr names of the variables that should be summarized.
@@ -125,8 +134,6 @@ NULL
 #'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
 #'   may contain default response values or named arrays `rsp` of default selected response
 #'   values and `levels` of default level choices.
-#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
-#'   Default is "event".
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each estimate.
 #'   Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param hlt (`choices_selected` or `data_extract_spec`)\cr name of the variable with high level term for events.
@@ -137,10 +144,6 @@ NULL
 #'   to select the specific `ANCOVA` results when interact_var is discrete. If the interaction is not
 #'   needed, the default option is `FALSE`.
 #' @param label (`character`)\cr menu item label of the module in the teal app.
-#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#'   module.
-#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#'   module.
 #' @param llt (`choices_selected` or `data_extract_spec`)\cr name of the variable with low level term for events.
 #' @param paramcd (`choices_selected` or `data_extract_spec`)\cr variable value designating the studied parameter.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
@@ -152,9 +155,6 @@ NULL
 #'   For example the [shiny::helpText()] elements are useful.
 #' @param pre_output optional, (`shiny.tag`)\cr with text placed before the output to put the output into context.
 #'   For example a title.
-#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
-#'   on column `sort_freq_col` by decreasing number of patients with event. Alternative option `alpha` sorts events
-#'   alphabetically.
 #' @param strata_var (`choices_selected` or `data_extract_spec`)\cr names of the variables for stratified analysis.
 #' @param summarize_vars (`choices_selected` or `data_extract_spec`)\cr names of the variables that should be
 #'   summarized.
