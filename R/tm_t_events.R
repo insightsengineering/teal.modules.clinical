@@ -3,15 +3,6 @@
 #' Creates a valid expression to generate a table of events by term.
 #'
 #' @inheritParams template_arguments
-#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#'   module.
-#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#'   module.
-#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
-#'   Default is "event".
-#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
-#'   on column `sort_freq_col` by decreasing number of patients with event. Alternative option `alpha` sorts events
-#'   alphabetically.
 #' @param sort_freq_col (`character`)\cr column to sort by frequency on if `sort_criteria` is set to `freq_desc`.
 #' @param incl_overall_sum (`flag`)\cr  whether two rows which summarize the overall number of adverse events
 #'   should be included at the top of the table.
@@ -468,7 +459,7 @@ template_events <- function(dataname,
 #'  additional examples and information.
 #'
 #' @inheritParams module_arguments
-# @inheritParams template_events
+#' @inheritParams template_events
 #'
 #' @inherit module_arguments return
 #'

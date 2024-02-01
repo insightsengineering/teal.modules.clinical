@@ -1,9 +1,6 @@
 #' Adverse Events Table by Standardized `MedDRA` Query
 #'
 #' @inheritParams template_arguments
-#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
-#'  by decreasing total number of patients with event. Alternative option `alpha` sorts events
-#'  alphabetically.
 #' @param smq_varlabel (`character`)\cr label of the new column `SMQ`
 #' created by [tern::h_stack_by_baskets()].
 #' @param baskets (`character`)\cr

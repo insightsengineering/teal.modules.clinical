@@ -1,8 +1,6 @@
 #' Template: Events by Term
 #'
 #' @inheritParams template_arguments
-#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
-#'   Default is "event".
 #' @param seq_var (`numeric`)\cr Analysis Sequence Number. Used for counting the unique number of events.
 #'
 #' @seealso [tm_t_mult_events()]

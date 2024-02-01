@@ -1,10 +1,6 @@
 #' Template: Events by Grade
 #'
 #' @inheritParams template_arguments
-#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#' module.
 #' @param id (`character`)\cr unique identifier of patients in datasets, default to `"USUBJID"`.
 #' @param grade (`character`)\cr name of the severity level variable.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the

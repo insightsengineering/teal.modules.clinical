@@ -125,6 +125,8 @@ NULL
 #'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
 #'   may contain default response values or named arrays `rsp` of default selected response
 #'   values and `levels` of default level choices.
+#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
+#'   Default is "event".
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each estimate.
 #'   Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param hlt (`choices_selected` or `data_extract_spec`)\cr name of the variable with high level term for events.
@@ -135,6 +137,10 @@ NULL
 #'   to select the specific `ANCOVA` results when interact_var is discrete. If the interaction is not
 #'   needed, the default option is `FALSE`.
 #' @param label (`character`)\cr menu item label of the module in the teal app.
+#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
+#'   module.
+#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
+#'   module.
 #' @param llt (`choices_selected` or `data_extract_spec`)\cr name of the variable with low level term for events.
 #' @param paramcd (`choices_selected` or `data_extract_spec`)\cr variable value designating the studied parameter.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
@@ -146,6 +152,9 @@ NULL
 #'   For example the [shiny::helpText()] elements are useful.
 #' @param pre_output optional, (`shiny.tag`)\cr with text placed before the output to put the output into context.
 #'   For example a title.
+#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
+#'   on column `sort_freq_col` by decreasing number of patients with event. Alternative option `alpha` sorts events
+#'   alphabetically.
 #' @param strata_var (`choices_selected` or `data_extract_spec`)\cr names of the variables for stratified analysis.
 #' @param summarize_vars (`choices_selected` or `data_extract_spec`)\cr names of the variables that should be
 #'   summarized.
