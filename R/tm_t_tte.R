@@ -379,6 +379,7 @@ template_tte <- function(dataname = "ANL",
 #' Teal Module: Time To Event Table Teal Module
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_tte
 #' @param conf_level_coxph ([choices_selected()])\cr object with all available choices and pre-selected option
 #'   for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([choices_selected()])\cr object with all available choices and pre-selected option

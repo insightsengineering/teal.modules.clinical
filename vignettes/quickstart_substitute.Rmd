@@ -204,7 +204,7 @@ provided and not the expression generating the dataframe:
 the pipeline is working but not humanly readable.
 
 ```{r}
-library(magrittr)
+library(dplyr)
 
 short_iris <- head(iris)
 plot_expr <- substitute(
@@ -265,7 +265,6 @@ The data can be prepared as follows:
 
 ```{r, message=FALSE}
 library(rtables)
-library(dplyr)
 library(tern)
 
 adlb <- teal.modules.clinical::tmc_ex_adlb
@@ -312,6 +311,7 @@ rtables_expr
 
 ```{r, message = FALSE}
 library(teal)
+library(styler)
 
 #' Stylish code
 #'
@@ -320,7 +320,7 @@ library(teal)
 #' @param expr (`call`)\cr or possibly understood as so.
 #'
 styled_expr <- function(expr) {
-  styler:::print.vertical(
+  print(
     styler::style_text(text = deparse(expr)),
     colored = FALSE
   )

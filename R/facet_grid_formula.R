@@ -18,8 +18,8 @@
 #' @examples
 #' teal.modules.clinical:::facet_grid_formula("x", "y")
 facet_grid_formula <- function(x_facet, y_facet) {
-  if (rlang::is_empty(x_facet)) x_facet <- "."
-  if (rlang::is_empty(y_facet)) y_facet <- "."
+  if (length(x_facet) == 0) x_facet <- "."
+  if (length(y_facet) == 0) y_facet <- "."
   checkmate::assert_string(x_facet)
   checkmate::assert_string(y_facet)
   stopifnot(x_facet != y_facet)

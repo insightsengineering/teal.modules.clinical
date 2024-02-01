@@ -146,6 +146,7 @@ template_events_patyear <- function(dataname,
 #' Teal module: Event rates adjusted for patient-years
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_events_patyear
 #' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for the analysis unit variable.
 #' @param events_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr

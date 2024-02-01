@@ -168,6 +168,7 @@ template_adverse_events <- function(dataname = "ANL",
 #' This teal module produces a patient profile adverse events table and plot using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_adverse_events
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param aeterm
 #' ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr

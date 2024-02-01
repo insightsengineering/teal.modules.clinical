@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.16.9042
+# teal.modules.clinical 0.8.16.9046
 
 ### Breaking Changes
 + Adapted all modules to use `teal_data` objects.
@@ -20,6 +20,7 @@
 * Deprecated the `base_var` argument in `tm_g_ipp`, `tm_t_shift_by_arm`, and `template_shift_by_arm_by_worst` and replaced it with the `baseline_var` argument.
 * Specified minimal version of package dependencies.
 * Replaced usage of deprecated `summarize_vars` function with `analyze_vars`.
+* Reduced package dependencies (removed `tidyr`, `rlang`, `magrittr` and `styler`).
 
 # teal.modules.clinical 0.8.16.9010
 

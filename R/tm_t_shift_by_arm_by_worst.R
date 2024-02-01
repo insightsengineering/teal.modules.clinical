@@ -8,6 +8,8 @@
 #' @param baseline_var (`character`)\cr name of the baseline reference range indicator variable.
 #' @param worst_flag (`character`)\cr value indicating worst analysis indicator level.
 #'
+#' @inherit template_arguments return
+#'
 #' @seealso [tm_t_shift_by_arm()]
 #'
 #' @keywords internal
@@ -184,7 +186,7 @@ template_shift_by_arm_by_worst <- function(dataname,
   y
 }
 
-#' Teal Module: Shift by Arm by Worst Analysis Indicator Level
+#' teal Module: Shift by Arm by Worst Analysis Indicator Level
 #'
 #' This module produces a summary table of worst analysis indicator variable level per subject by arm.
 #'
@@ -192,7 +194,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #' @inheritParams template_shift_by_arm_by_worst
 #' @param add_total (`logical`)\cr whether to include row with total number of patients.
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl

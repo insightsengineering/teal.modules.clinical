@@ -70,8 +70,15 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::select(-c(aval_var, anrind))
 
         labor_table_raw <- labor_table_base %>%
-          tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind) %>%
-          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
+          reshape(
+            direction = "wide",
+            idvar = c(paramcd_char, param_char, avalu_char),
+            v.names = "aval_anrind",
+            timevar = "INDEX"
+          )
+        colnames(labor_table_raw)[-c(1:3)] <- unique(labor_table_base$INDEX)
+
+        labor_table_raw[[param_char]] <- clean_description(labor_table_raw[[param_char]])
 
         labor_table_raw <- rlistings::as_listing(
           labor_table_raw,
@@ -83,8 +90,14 @@ template_laboratory <- function(dataname = "ANL",
         labor_table_html <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
           dplyr::select(-aval_anrind) %>%
-          tidyr::pivot_wider(names_from = INDEX, values_from = aval_anrind_col) %>%
-          dplyr::mutate(param_char := clean_description(.data[[param_char]]))
+          reshape(
+            direction = "wide",
+            idvar = c(paramcd_char, param_char, avalu_char),
+            v.names = "aval_anrind_col",
+            timevar = "INDEX"
+          )
+        colnames(labor_table_html)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        labor_table_html[[param_char]] <- clean_description(labor_table_html[[param_char]])
 
         labor_table_html_dt <- DT::datatable(labor_table_html, escape = FALSE)
         labor_table_html_dt$dependencies <- c(
@@ -98,9 +111,11 @@ template_laboratory <- function(dataname = "ANL",
         param = as.name(param),
         param_char = param,
         paramcd = as.name(paramcd),
+        paramcd_char = paramcd,
         aval_var = as.name(aval_var),
         aval_char = aval_var,
         avalu_var = as.name(avalu_var),
+        avalu_char = avalu_var,
         timepoints = as.name(timepoints),
         anrind = as.name(anrind),
         patient_id = patient_id,
@@ -118,6 +133,7 @@ template_laboratory <- function(dataname = "ANL",
 #' This teal module produces a patient profile laboratory table using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_laboratory
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' `PARAMCD` column of the `ADLB` dataset.

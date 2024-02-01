@@ -238,6 +238,7 @@ template_g_km <- function(dataname = "ANL",
 #' `ADaM` structure.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_g_km
 #' @param facet_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option
 #'   for variable names that can be used for facet plotting.
