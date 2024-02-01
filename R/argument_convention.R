@@ -73,6 +73,8 @@
 #' @param var_labels optional, (named `character`)\cr variable labels for relabeling the analysis variables.
 #' @param visit_var (`character`)\cr variable names that can be used as `visit` variable. Must be a factor in
 #'   `dataname`.
+#' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
+#' @param worst_flag_var (`character`)\cr name of the worst flag variable.
 #'
 #' @name template_arguments
 #' @keywords internal
@@ -175,6 +177,10 @@ NULL
 #' @param useNA (`character`)\cr whether missing data (`NA`) should be displayed as a level.
 #' @param visit_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for variable names that can be used as `visit` variable. Must be a factor in `dataname`.
+#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#'   value indicating worst grade.
+#' @param worst_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#'   with all available choices and preselected option for variable names that can be used as worst flag variable.
 #'
 #' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
 #'
