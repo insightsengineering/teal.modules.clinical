@@ -199,8 +199,14 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' This module produces a [ggplot2::ggplot()] type line plot, with optional summary table, for standard ADaM data.
 #'
-#' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
+#' @inheritParams template_g_lineplot
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr
+#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
+#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
+#' `title`, `subtitle`, `caption`, `y`, `lty`.
+#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
+#' with default module arguments (hard coded in the module body)
 #'
 #' @inherit module_arguments return
 #'

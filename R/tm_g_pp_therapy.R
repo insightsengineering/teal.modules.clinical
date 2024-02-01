@@ -235,6 +235,7 @@ template_therapy <- function(dataname = "ANL",
 #' This teal module produces a patient profile therapy plot using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_therapy
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' `ATIREL` column of the `ADCM` dataset.

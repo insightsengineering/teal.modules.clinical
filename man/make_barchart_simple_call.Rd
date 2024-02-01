@@ -59,7 +59,7 @@ passed to \code{scales} argument of \code{ggplot2::facet_grid}}
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 
 \item{yname}{(\code{NULL}, \code{character(1)})\cr
 name of the \code{yaxis} variable.}

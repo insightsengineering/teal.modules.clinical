@@ -66,6 +66,9 @@
 #' @param time_points (`character`)\cr time points that can be used in [tern::surv_timepoint()].
 #' @param time_unit_var (`character`)\cr name of the variable representing time units.
 #' @param title (`character`)\cr title of the output.
+#' @param total_label (`string`)\cr string to display as total column/row label if column/row is
+#'   enabled (see `add_total`). Defaults to `"All Patients"`. To set a new default `total_label` to
+#'   apply in all modules, run `set_default_total_label("new_default")`.
 #' @param treatment_flag (`character`)\cr name of the value indicating on treatment
 #'   records in `treatment_flag_var`.
 #' @param treatment_flag_var (`character`)\cr name of the on treatment flag variable.
@@ -76,6 +79,8 @@
 #' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #' @param worst_flag_var (`character`)\cr name of the worst flag variable.
 #'
+#' @return a `list` of expressions to generate a table or plot object.
+#'
 #' @name template_arguments
 #' @keywords internal
 NULL
@@ -85,13 +90,16 @@ NULL
 #' The documentation to this function lists all the arguments in teal modules
 #' that are used repeatedly to express an analysis.
 #'
-#' @details Although this function just returns `NULL` it has two uses, for
-#' the teal module users it provides a documentation of arguments that are
-#' commonly and consistently used in the framework. For the developer it adds a
-#' single reference point to import the `roxygen` argument description with:
-#' `@inheritParams module_arguments`
+#' @details
+#' * Although this function just returns `NULL` it has two uses, for
+#'   the teal module users it provides a documentation of arguments that are
+#'   commonly and consistently used in the framework. For the developer it adds a
+#'   single reference point to import the `roxygen` argument description with:
+#'   `@inheritParams module_arguments`
+#' * Parameters with identical descriptions & input types to those in the Standard Template Arguments section are
+#'   excluded to reduce duplication as each module function inherits parameters from its corresponding template
+#'   function.
 #'
-#' @param add_total (`logical`)\cr whether to include column with total number of patients.
 #' @param arm_ref_comp optional, (`list`)\cr If specified it must be a named list with each element corresponding to
 #'   an arm variable in `ADSL` and the element must be another list (possibly
 #'   with delayed [teal.transform::variable_choices()] or delayed [teal.transform::value_choices()]
@@ -102,19 +110,11 @@ NULL
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param aval `r lifecycle::badge("deprecated")` Please use the `aval_var` argument instead.
-#' @param avalu `r lifecycle::badge("deprecated")` Please use the `avalu_var` argument instead.
 #' @param aval_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the analysis variable.
 #' @param avisit (`choices_selected` or `data_extract_spec`)\cr value of analysis visit `AVISIT` of interest.
 #' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as `baseline_var`.
-#' @param base_var `r lifecycle::badge("deprecated")` Please use the `baseline_var` argument instead.
-#' @param basic_table_args optional, (`basic_table_args`)\cr object created by [teal.widgets::basic_table_args()]
-#'   with settings for the module table. The argument is merged with option `teal.basic_table_args` and with default
-#'   module arguments (hard coded in the module body).
-#'
-#'   For more details, see the vignette: `vignette("custom-basic-table-arguments", package = "teal.widgets")`.
 #' @param by_vars (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for variable names used to split the summary by rows.
 #' @param cnsr_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
@@ -123,22 +123,16 @@ NULL
 #'   confidence level, each within range of (0, 1).
 #' @param cov_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the covariates variables.
-#' @param dataname (`character`)\cr analysis data used in teal module.
-#' @param denominator (`character`)\cr chooses how percentages are calculated. With option `N`, the reference
-#'   population from the column total is used as the denominator. With option
-#'   `n`, the number of non-missing records in this row and column intersection
-#'   is used as the denominator. If `omit` is chosen, then the percentage is omitted.
-#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
-#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
-#'   `arm_var` levels are set to those used in the `parantname` dataset.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
-#'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
-#'   (hard coded in the module body).
-#'
-#'   For more details, see the help vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#' @param default_responses (`list` or `character`)\cr defines
+#'   the default codes for the response variable in the module per value of `paramcd`.
+#'   A passed vector is transmitted for all `paramcd` values. A passed `list` must be named
+#'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
+#'   may contain default response values or named arrays `rsp` of default selected response
+#'   values and `levels` of default level choices.
+#' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each estimate.
+#'   Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param hlt (`choices_selected` or `data_extract_spec`)\cr name of the variable with high level term for events.
 #' @param id_var (`choices_selected` or `data_extract_spec`)\cr object specifying the variable name for subject id.
-#' @param include_interact (`logical`)\cr whether an interaction term should be included in the model.
 #' @param interact_var (`character`)\cr name of the variable that should have interactions
 #'   with arm. If the interaction is not needed, the default option is `NULL`.
 #' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used
@@ -146,9 +140,6 @@ NULL
 #'   needed, the default option is `FALSE`.
 #' @param label (`character`)\cr menu item label of the module in the teal app.
 #' @param llt (`choices_selected` or `data_extract_spec`)\cr name of the variable with low level term for events.
-#' @param na_level (`string`)\cr used to replace all `NA` or empty values
-#'   in character or factor variables in the data. Defaults to `"<Missing>"`. To set a
-#'   default `na_level` to apply in all modules, run `set_default_na_str("new_default")`.
 #' @param paramcd (`choices_selected` or `data_extract_spec`)\cr variable value designating the studied parameter.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param plot_height optional, (`numeric`)\cr a vector of length three with `c(value, min, max)`. Specifies the
@@ -168,9 +159,6 @@ NULL
 #'   points that can be used in [tern::surv_timepoint()].
 #' @param time_unit_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and
 #'   preselected option for the time unit variable.
-#' @param total_label (`string`)\cr string to display as total column/row label if column/row is
-#'   enabled (see `add_total`). Defaults to `"All Patients"`. To set a new default `total_label` to
-#'   apply in all modules, run `set_default_total_label("new_default")`.
 #' @param treatment_flag (`choices_selected`] or `data_extract_spec`)\cr value indicating on treatment
 #'   records in `treatment_flag_var`.
 #' @param treatment_flag_var (`choices_selected` or `data_extract_spec`)\cr on treatment flag variable.
@@ -182,7 +170,7 @@ NULL
 #' @param worst_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as worst flag variable.
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @return a `teal_module` object.
 #'
 #' @name module_arguments
 #' @keywords internal

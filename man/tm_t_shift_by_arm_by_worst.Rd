@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_shift_by_arm_by_worst.R
 \name{tm_t_shift_by_arm_by_worst}
 \alias{tm_t_shift_by_arm_by_worst}
-\title{Teal Module: Shift by Arm by Worst Analysis Indicator Level}
+\title{teal Module: Shift by Arm by Worst Analysis Indicator Level}
 \usage{
 tm_t_shift_by_arm_by_worst(
   label,
@@ -86,7 +86,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 This module produces a summary table of worst analysis indicator variable level per subject by arm.
