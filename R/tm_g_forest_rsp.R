@@ -10,14 +10,12 @@
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
 #' @param strata_var (`character`)\cr
 #'   names of the variables for stratified analysis.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `caption`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
+#'   for the module plot. For this module, this argument will only accept `ggplot2_args` object with `labs` list of
+#'   following child elements: `title`, `caption`. No other elements would be taken into account. The argument is
+#'   merged with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
 #' @seealso [tm_g_forest_rsp()]
 #' @keywords internal
