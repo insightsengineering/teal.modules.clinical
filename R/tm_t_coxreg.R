@@ -352,7 +352,7 @@ template_coxreg_m <- function(dataname,
 #' * `PARAMCD`: variable used to filter for endpoint (e.g. OS). After
 #'   filtering for `PARAMCD` one observation per patient is expected
 #'
-#' The arm variables and stratification/covariate variables are taken from the ADSL data.
+#' The arm variables and stratification/covariate variables are taken from the `ADSL` data.
 #'
 #' @note
 #' * The likelihood ratio test is not supported for models that include strata - the Wald

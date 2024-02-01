@@ -105,7 +105,7 @@ This modules expects that the analysis data has the following variables:
 filtering for \code{PARAMCD} one observation per patient is expected
 }
 
-The arm variables and stratification/covariate variables are taken from the ADSL data.
+The arm variables and stratification/covariate variables are taken from the \code{ADSL} data.
 }
 \note{
 \itemize{
