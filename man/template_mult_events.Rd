@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_mult_events.R
 \name{template_mult_events}
 \alias{template_mult_events}
-\title{Template: Events by Term}
+\title{Template: Multiple Events by Term}
 \usage{
 template_mult_events(
   dataname,
@@ -26,7 +26,8 @@ template_mult_events(
 
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{seq_var}{(\code{numeric})\cr Analysis Sequence Number. Used for counting the unique number of events.}
+\item{seq_var}{(\code{character})\cr name of analysis sequence number variable. Used for counting the unique number
+of events.}
 
 \item{hlt}{(\code{character})\cr name of the variable with high level term for events.}
 
@@ -42,8 +43,8 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment).
-Default is "event".}
+\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
+is \code{"event"}.}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
@@ -55,8 +56,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Events by Term
+Creates a valid expression to generate a table of multiple events by term.
 }
 \seealso{
 \code{\link[=tm_t_mult_events]{tm_t_mult_events()}}

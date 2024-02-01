@@ -51,6 +51,9 @@ percentage is omitted.}
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
+\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
+is \code{"event"}.}
+
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).

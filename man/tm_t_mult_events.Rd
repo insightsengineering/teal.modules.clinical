@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_mult_events.R
 \name{tm_t_mult_events}
 \alias{tm_t_mult_events}
-\title{Teal Module: Multiple Events by Term}
+\title{teal Module: Multiple Events by Term}
 \usage{
 tm_t_mult_events(
   label,
@@ -36,8 +36,9 @@ It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{seq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-Analysis Sequence Number. Used for counting the unique number of events.}
+\item{seq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for variable names that can be used as analysis sequence number
+variable. Used for counting the unique number of events.}
 
 \item{hlt}{(\code{choices_selected} or \code{data_extract_spec})\cr name of the variable with high level term for events.}
 
@@ -53,8 +54,8 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment).
-Default is "event".}
+\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
+is \code{"event"}.}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
@@ -72,8 +73,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Multiple Events by Term
+This module produces a table of multiple events by term.
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -115,4 +119,9 @@ app <- teal::init(
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
+
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

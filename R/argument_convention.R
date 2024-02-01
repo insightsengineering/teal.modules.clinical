@@ -37,6 +37,8 @@
 #' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
 #'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
 #'   `arm_var` levels are set to those used in the `parantname` dataset.
+#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment). Default
+#'   is `"event"`.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
