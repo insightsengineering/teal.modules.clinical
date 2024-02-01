@@ -274,7 +274,7 @@ tm_g_ci <- function(label,
                     pre_output = NULL,
                     post_output = NULL,
                     ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_ci")
+  message("Initializing tm_g_ci")
   checkmate::assert_string(label)
   stat <- match.arg(stat)
   checkmate::assert_class(y_var, classes = "data_extract_spec")

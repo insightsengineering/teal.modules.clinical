@@ -31,7 +31,6 @@ repos:
           - ggrepel
           - grid
           - lifecycle
-          - logger
           - magrittr
           - methods
           - rlang

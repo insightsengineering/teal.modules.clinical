@@ -294,7 +294,7 @@ tm_g_lineplot <- function(label,
                           pre_output = NULL,
                           post_output = NULL,
                           ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_lineplot")
+  message("Initializing tm_g_lineplot")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

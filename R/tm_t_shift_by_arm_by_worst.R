@@ -281,7 +281,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
     base_var <- baseline_var # resolves missing argument error
   }
 
-  logger::log_info("Initializing tm_t_shift_by_arm_by_worst")
+  message("Initializing tm_t_shift_by_arm_by_worst")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

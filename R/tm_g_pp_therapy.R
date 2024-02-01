@@ -359,7 +359,7 @@ tm_g_pp_therapy <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_pp_therapy")
+  message("Initializing tm_g_pp_therapy")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

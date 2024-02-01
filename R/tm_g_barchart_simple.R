@@ -139,7 +139,7 @@ tm_g_barchart_simple <- function(x = NULL,
                                  pre_output = NULL,
                                  post_output = NULL,
                                  ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_barchart_simple")
+  message("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
   if (length(c(x, fill, x_facet, y_facet)) == 0) {

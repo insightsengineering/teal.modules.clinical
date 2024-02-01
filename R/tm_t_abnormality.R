@@ -319,7 +319,7 @@ tm_t_abnormality <- function(label,
                              post_output = NULL,
                              na_level = default_na_str(),
                              basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_abnormality")
+  message("Initializing tm_t_abnormality")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

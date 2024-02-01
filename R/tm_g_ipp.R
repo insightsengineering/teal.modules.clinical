@@ -312,7 +312,7 @@ tm_g_ipp <- function(label,
     base_var <- baseline_var # resolves missing argument error
   }
 
-  logger::log_info("Initializing tm_g_ipp")
+  message("Initializing tm_g_ipp")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
