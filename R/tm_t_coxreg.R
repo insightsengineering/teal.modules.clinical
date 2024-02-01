@@ -331,6 +331,8 @@ template_coxreg_m <- function(dataname,
 #' `COXT01` and `COXT02` standard outputs, respectively.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_coxreg_u
+#' @inheritParams template_coxreg_m
 #' @param multivariate (`logical`)\cr
 #'   If `FALSE`, the univariable approach is used
 #'   (equivalent to `COXT01` standard) instead of the multi-variable model

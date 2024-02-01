@@ -194,6 +194,8 @@ template_summary <- function(dataname,
 
 #' Teal Module: Summary of Variables
 #'
+#' @inheritParams module_arguments
+#' @inheritParams template_summary
 #' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
@@ -207,7 +209,6 @@ template_summary <- function(dataname,
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
 #'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are
 #'   selected.
-#' @inheritParams module_arguments
 #'
 #' @export
 #' @examples

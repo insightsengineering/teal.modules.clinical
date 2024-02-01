@@ -43,8 +43,8 @@ template_summary_by(
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
-\item{parallel_vars}{(\code{logical})\cr whether summarized variables should be arranged in columns. Can only be set to
-\code{TRUE} if all chosen analysis variables are numeric.}
+\item{parallel_vars}{(\code{logical})\cr used to display \code{summarize_vars} as parallel columns
+(\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
 \item{row_groups}{(\code{logical})\cr whether summarized variables should be arranged in row groups.}
 

@@ -31,6 +31,10 @@ template_smq(
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
+
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
 by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
 alphabetically.}

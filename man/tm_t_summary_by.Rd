@@ -75,9 +75,9 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
 \item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
-population from the column total is used as the denominator. With option
-\code{n}, the number of non-missing records in this row and column intersection
-is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
+population from the column total is used as the denominator. With option \code{n}, the number of non-missing
+records in this row and column intersection is used as the denominator. If \code{omit} is chosen, then the
+percentage is omitted.}
 
 \item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
 set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the

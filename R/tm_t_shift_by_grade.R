@@ -7,6 +7,8 @@
 #' @param base_toxgrade_var (`character`)\cr name of the variable indicating the baseline toxicity grade.
 #' @param code_missing_baseline (`logical`)\cr whether missing baseline grades should be counted as grade 0.
 #'
+#' @inherit template_arguments return
+#'
 #' @seealso [tm_t_shift_by_grade()]
 #'
 #' @keywords internal
@@ -460,7 +462,7 @@ template_shift_by_grade <- function(parentname,
   y
 }
 
-#' Teal Module: Grade Summary Table
+#' teal Module: Grade Summary Table
 #'
 #' This module produces a summary table of worst grades per subject by visit and parameter.
 #'
@@ -471,7 +473,10 @@ template_shift_by_grade <- function(parentname,
 #' @param base_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   variable for baseline toxicity grade.
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl

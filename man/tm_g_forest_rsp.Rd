@@ -57,8 +57,7 @@ preselected option for variable names that can be used as the default subgroups.
 
 \item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr names of the variables for stratified analysis.}
 
-\item{fixed_symbol_size}{(\code{logical})\cr
-When (\code{TRUE}), the same symbol size is used for plotting each estimate.
+\item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
 \item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
