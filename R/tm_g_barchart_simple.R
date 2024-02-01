@@ -5,6 +5,7 @@
 #' it is ignored.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_arguments
 #' @param x (`data_extract_spec`)\cr variable on the x-axis.
 #' @param fill (`data_extract_spec`)\cr grouping variable assigned to the bar colors.
 #' @param x_facet (`data_extract_spec`)\cr faceting groups on the row dimension.

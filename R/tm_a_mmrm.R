@@ -433,6 +433,8 @@ template_mmrm_plots <- function(fit_name,
 #' Teal Module: Teal module for Mixed Model Repeated Measurements (`MMRM`) analysis
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_mmrm_tables
+#' @inheritParams template_mmrm_plots
 #' @param method (`choices_selected`)\cr
 #'   object with all available choices and preselected option for the adjustment method.
 #' @param ggplot2_args optional, (`ggplot2_args`) \cr
