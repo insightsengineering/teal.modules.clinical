@@ -2,19 +2,19 @@
 #'
 #' @description `r lifecycle::badge("stable")`
 #' @param adsl data.frame with subject-level data
-#' @param adslvars required variables from \code{ADSL}
+#' @param adslvars required variables from `ADSL`
 #' @param anl data.frame with analysis data
-#' @param anlvars required variables from \code{ANL}
-#' @param need_arm flag indicating whether grouping variable \code{arm_var}
-#' is required or can be optionally \code{NULL}.
+#' @param anlvars required variables from `ANL`
+#' @param need_arm flag indicating whether grouping variable `arm_var`
+#' is required or can be optionally `NULL`.
 #' @param arm_var character with name of grouping variable, typically arm
-#' @param ref_arm character with name of reference level in \code{arm_var}
-#' @param comp_arm character with name for comparison level in \code{arm_var}
-#' @param min_n_levels_armvar minimum number of levels in grouping variable \code{arm_var}.
-#'   Defaults to 1, \code{NULL} for no minimum.
-#' @param max_n_levels_armvar maximum number of levels in grouping variable \code{arm_var}.
-#'   Use \code{NULL} for no maximum.
-#' @param min_nrow minimum number of observations in \code{ADSL} and \code{ANL}
+#' @param ref_arm character with name of reference level in `arm_var`
+#' @param comp_arm character with name for comparison level in `arm_var`
+#' @param min_n_levels_armvar minimum number of levels in grouping variable `arm_var`.
+#'   Defaults to 1, `NULL` for no minimum.
+#' @param max_n_levels_armvar maximum number of levels in grouping variable `arm_var`.
+#'   Use `NULL` for no maximum.
+#' @param min_nrow minimum number of observations in `ADSL` and `ANL`
 #'
 #' @keywords internal
 #'

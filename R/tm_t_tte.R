@@ -63,6 +63,7 @@ template_tte <- function(dataname = "ANL",
                          control = control_tte(),
                          add_total = FALSE,
                          total_label = default_total_label(),
+                         na_level = default_na_str(),
                          basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
     assertthat::is.string(dataname),
@@ -74,7 +75,8 @@ template_tte <- function(dataname = "ANL",
     assertthat::is.string(event_desc_var),
     assertthat::is.flag(compare_arm),
     assertthat::is.flag(combine_comp_arms),
-    assertthat::is.string(total_label)
+    assertthat::is.string(total_label),
+    assertthat::is.string(na_level)
   )
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -115,12 +117,18 @@ template_tte <- function(dataname = "ANL",
     )
   )
 
-  data_list <- add_expr(data_list, quote(df_explicit_na()))
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = df_explicit_na(na_level = na_str),
+      env = list(na_str = na_level)
+    )
+  )
 
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na()
+      parentname <- arm_preparation %>% df_explicit_na(na_level = na_str)
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -132,7 +140,8 @@ template_tte <- function(dataname = "ANL",
         comp_arm = comp_arm,
         compare_arm = compare_arm,
         ref_arm_val = ref_arm_val
-      )
+      ),
+      na_str = na_level
     )
   )
 
@@ -201,10 +210,11 @@ template_tte <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = rtables::add_colcounts() %>%
-        summarize_vars(
+        analyze_vars(
           "is_event",
           .stats = "count_fraction",
-          .labels = c(count_fraction = "Patients with event (%)")
+          .labels = c(count_fraction = "Patients with event (%)"),
+          na_str = na_str
         ) %>%
         rtables::split_rows_by(
           "EVNT1",
@@ -215,16 +225,18 @@ template_tte <- function(dataname = "ANL",
           indent_mod = 1L,
         ) %>%
         rtables::split_rows_by(event_desc_var, split_fun = drop_split_levels) %>%
-        rtables::summarize_row_groups(format = "xx") %>%
-        summarize_vars(
+        rtables::summarize_row_groups(format = "xx", na_str = na_str) %>%
+        analyze_vars(
           "is_not_event",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Patients without event (%)"),
           nested = FALSE,
-          show_labels = "hidden"
+          show_labels = "hidden",
+          na_str = na_str
         ),
       env = list(
-        event_desc_var = event_desc_var
+        event_desc_var = event_desc_var,
+        na_str = na_level
       )
     )
   )
@@ -241,12 +253,14 @@ template_tte <- function(dataname = "ANL",
           conf_type = conf_type,
           quantiles = quantiles
         ),
+        na_str = na_str,
         table_names = "time_to_event"
       ),
       env = c(
         aval_var = aval_var,
         control$surv_time,
-        time_unit_var = as.name(time_unit_var)
+        time_unit_var = as.name(time_unit_var),
+        na_str = na_level
       )
     )
   )
@@ -264,11 +278,13 @@ template_tte <- function(dataname = "ANL",
             ties = ties,
             conf_level = conf_level
           ),
+          na_str = na_str,
           table_names = "unstratified"
         ),
         env = c(
           aval_var = aval_var,
-          control$coxph
+          control$coxph,
+          na_str = na_level
         )
       )
     )
@@ -288,6 +304,7 @@ template_tte <- function(dataname = "ANL",
             ties = ties,
             conf_level = conf_level
           ),
+          na_str = na_str,
           table_names = "stratified"
         ),
         env = list(
@@ -295,7 +312,8 @@ template_tte <- function(dataname = "ANL",
           strata_var = strata_var,
           pval_method = control$coxph$pval_method,
           ties = control$coxph$ties,
-          conf_level = control$coxph$conf_level
+          conf_level = control$coxph$conf_level,
+          na_str = na_level
         )
       )
     )
@@ -324,7 +342,8 @@ template_tte <- function(dataname = "ANL",
             conf_level = conf_level,
             conf_type = conf_type
           ),
-          .indent_mods = indents
+          .indent_mods = indents,
+          na_str = na_str
         ),
         env = list(
           aval_var = aval_var,
@@ -333,7 +352,8 @@ template_tte <- function(dataname = "ANL",
           indents = indents,
           time_unit_var = as.name(time_unit_var),
           conf_level = control$surv_timepoint$conf_level,
-          conf_type = control$surv_timepoint$conf_type
+          conf_type = control$surv_timepoint$conf_type,
+          na_str = na_level
         )
       )
     )
@@ -359,6 +379,7 @@ template_tte <- function(dataname = "ANL",
 #' Teal Module: Time To Event Table Teal Module
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_tte
 #' @param conf_level_coxph ([choices_selected()])\cr object with all available choices and pre-selected option
 #'   for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([choices_selected()])\cr object with all available choices and pre-selected option
@@ -464,6 +485,7 @@ tm_t_tte <- function(label,
                      event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
                      total_label = default_total_label(),
+                     na_level = default_na_str(),
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args()) {
@@ -476,6 +498,7 @@ tm_t_tte <- function(label,
   checkmate::assert_class(conf_level_survfit, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -505,6 +528,7 @@ tm_t_tte <- function(label,
         arm_ref_comp = arm_ref_comp,
         label = label,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -718,6 +742,7 @@ srv_t_tte <- function(id,
                       add_total,
                       total_label,
                       label,
+                      na_level,
                       basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -904,6 +929,7 @@ srv_t_tte <- function(id,
         ),
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
 

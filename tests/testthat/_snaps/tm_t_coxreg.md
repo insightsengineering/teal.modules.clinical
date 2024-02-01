@@ -9,7 +9,7 @@
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
               dplyr::mutate(event = 1 - CNSR) %>% dplyr::mutate(across(where(is.factor) & 
-              NULL, droplevels)) %>% df_explicit_na(na_level = "")
+              NULL, droplevels)) %>% df_explicit_na(na_level = "<Missing>")
           control <- list(pval_method = "wald", ties = "efron", conf_level = 0.95, 
               interaction = FALSE)
       }
@@ -22,7 +22,7 @@
               arm = "ARMCD", strata = "STRATA1"), control = list(pval_method = "wald", 
               ties = "efron", conf_level = 0.95, interaction = FALSE), 
               at = list(AGE = c(35, 45)), multivar = FALSE, .stats = c("n", 
-                  "hr", "ci", "pval"))
+                  "hr", "ci", "pval"), na_str = "<Missing>")
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl)
@@ -39,7 +39,7 @@
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
               dplyr::mutate(event = 1 - CNSR) %>% dplyr::mutate(across(where(is.factor) & 
-              NULL, droplevels)) %>% df_explicit_na(na_level = "")
+              NULL, droplevels)) %>% df_explicit_na(na_level = "<Missing>")
           control <- list(pval_method = "wald", ties = "efron", conf_level = 0.95, 
               interaction = TRUE)
       }
@@ -52,7 +52,7 @@
               arm = "ARMCD", strata = "STRATA1"), control = list(pval_method = "wald", 
               ties = "efron", conf_level = 0.95, interaction = TRUE), 
               at = list(AGE = c(35, 45)), multivar = FALSE, .stats = c("n", 
-                  "hr", "ci", "pval", "pval_inter"))
+                  "hr", "ci", "pval", "pval_inter"), na_str = "<Missing>")
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl)
@@ -71,7 +71,7 @@
               dplyr::mutate(ARM = combine_levels(x = ARM, levels = c("B: Placebo", 
                   "C: Combination"))) %>% dplyr::mutate(event = 1 - 
               CNSR) %>% dplyr::mutate(across(where(is.factor) & c("AGE", 
-              "SEX"), droplevels)) %>% df_explicit_na(na_level = "")
+              "SEX"), droplevels)) %>% df_explicit_na(na_level = "<Missing>")
       }
       
       $layout
@@ -81,7 +81,7 @@
           summarize_coxreg(variables = list(time = "AVAL", event = "event", 
               arm = "ARM", covariates = c("AGE", "SEX")), control = list(pval_method = "wald", 
               ties = "exact", conf_level = 0.95, interaction = FALSE), 
-              multivar = TRUE, .stats = c("hr", "ci", "pval"))
+              multivar = TRUE, .stats = c("hr", "ci", "pval"), na_str = "<Missing>")
       
       $table
       {

@@ -19,7 +19,7 @@ template_summary <- function(dataname,
                              total_label = default_total_label(),
                              var_labels = character(),
                              na.rm = FALSE, # nolint
-                             na_level = "<Missing>",
+                             na_level = default_na_str(),
                              numeric_stats = c(
                                "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                              ),
@@ -55,11 +55,11 @@ template_summary <- function(dataname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_level),
+        df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_str),
       env = list(
         df = as.name(dataname),
         sum_vars = sum_vars,
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -77,8 +77,11 @@ template_summary <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(
+        parentname = as.name(parentname),
+        na_str = na_level
+      )
     )
   )
 
@@ -147,7 +150,7 @@ template_summary <- function(dataname,
     layout_list,
     if (length(var_labels) > 0) {
       substitute(
-        expr = summarize_vars(
+        expr = analyze_vars(
           vars = sum_vars,
           var_labels = sum_var_labels,
           show_labels = show_labels,
@@ -160,7 +163,7 @@ template_summary <- function(dataname,
       )
     } else {
       substitute(
-        expr = summarize_vars(
+        expr = analyze_vars(
           vars = sum_vars,
           show_labels = show_labels,
           na.rm = na.rm,
@@ -191,6 +194,8 @@ template_summary <- function(dataname,
 
 #' Teal Module: Summary of Variables
 #'
+#' @inheritParams module_arguments
+#' @inheritParams template_summary
 #' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
@@ -204,7 +209,6 @@ template_summary <- function(dataname,
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
 #'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are
 #'   selected.
-#' @inheritParams module_arguments
 #'
 #' @export
 #' @examples
@@ -260,7 +264,7 @@ tm_t_summary <- function(label,
                          add_total = TRUE,
                          total_label = default_total_label(),
                          useNA = c("ifany", "no"), # nolint
-                         na_level = "<Missing>",
+                         na_level = default_na_str(),
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                          ),

@@ -322,29 +322,30 @@ template_patient_timeline <- function(dataname = "ANL",
 #' This teal module produces a patient profile timeline plot using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_patient_timeline
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param aeterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AETERM} column of the `ADAE` dataset.
+#' `AETERM` column of the `ADAE` dataset.
 #' @param dataname_adcm (`character`)\cr name of `ADCM` dataset or equivalent.
 #' @param dataname_adae (`character`)\cr name of `ADAE` dataset or equivalent.
 #' @param aerelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ASTDY} column of the `ADAE` dataset.
-#' @param aerelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{AENDY}
+#' `ASTDY` column of the `ADAE` dataset.
+#' @param aerelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr `AENDY`
 #' column of the `ADAE` dataset.
-#' @param dsrelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{ASTDY}
+#' @param dsrelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr `ASTDY`
 #' column of the `ADCM` dataset.
-#' @param dsrelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{AENDY}
+#' @param dsrelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr `AENDY`
 #' column of the `ADCM` dataset.
 #' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{cmdecod} column of the `ADCM` dataset.
+#' `CMDECOD` column of the `ADCM` dataset.
 #' @param aetime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ASTDTM} column of the `AE` start of the `ADAE` dataset.
+#' `ASTDTM` column of the `AE` start of the `ADAE` dataset.
 #' @param aetime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AENDTM} column of the `AE` end of the `ADAE` dataset.
+#' `AENDTM` column of the `AE` end of the `ADAE` dataset.
 #' @param dstime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMASTDTM} column of treatment start of the `ADCM` dataset.
+#' `CMASTDTM` column of treatment start of the `ADCM` dataset.
 #' @param dstime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMAENDTM} column of treatment end of the `ADCM` dataset.
+#' `CMAENDTM` column of treatment end of the `ADCM` dataset.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
 #'
 #' @export

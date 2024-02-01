@@ -20,7 +20,7 @@ template_smq <- function(dataname,
                          total_label = default_total_label(),
                          sort_criteria = c("freq_desc", "alpha"),
                          drop_arm_levels = TRUE,
-                         na_level = "<Missing>",
+                         na_level = default_na_str(),
                          smq_varlabel = "Standardized MedDRA Query",
                          baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
                          id_var = "USUBJID",
@@ -111,11 +111,11 @@ template_smq <- function(dataname,
     substitute(
       anl <- df_explicit_na(
         dataname,
-        na_level = na_level
+        na_level = na_str
       ),
       env = list(
         dataname = as.name("anl"),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -125,11 +125,11 @@ template_smq <- function(dataname,
     substitute(
       parentname <- df_explicit_na(
         parentname,
-        na_level = na_level
+        na_level = na_str
       ),
       env = list(
         parentname = as.name(parentname),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -383,7 +383,7 @@ tm_t_smq <- function(label,
                      total_label = default_total_label(),
                      sort_criteria = c("freq_desc", "alpha"),
                      drop_arm_levels = TRUE,
-                     na_level = "<Missing>",
+                     na_level = default_na_str(),
                      smq_varlabel = "Standardized MedDRA Query",
                      baskets,
                      scopes,

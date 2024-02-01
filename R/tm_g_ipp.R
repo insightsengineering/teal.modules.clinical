@@ -1,7 +1,8 @@
 #' Template: Individual Patient Plots
 #'
 #' @inheritParams template_arguments
-#' @param base_var (`string`)\cr variable name designating the baseline values of analysis variable.
+#' @param avalu_var (`string`)\cr variable name designating the unit of the analysis variable.
+#' @param baseline_var (`string`)\cr variable name designating the baseline values of analysis variable.
 #' @param visit_var (`string`)\cr variable name designating the visit timepoint variable.
 #' @param add_baseline_hline (`flag`)\cr adds horizontal line at baseline y-value on plot
 #' @param separate_by_obs (`flag`)\cr creates multi panel plots when TRUE
@@ -30,12 +31,22 @@ template_g_ipp <- function(dataname = "ANL",
                            avalu_var = "AVALU",
                            id_var = "USUBJID",
                            visit_var = "AVISIT",
-                           base_var = "BASE",
+                           base_var = lifecycle::deprecated(),
+                           baseline_var = "BASE",
                            add_baseline_hline = FALSE,
                            separate_by_obs = FALSE,
                            ggplot2_args = teal.widgets::ggplot2_args(),
                            suppress_legend = FALSE,
                            add_avalu = TRUE) {
+  if (lifecycle::is_present(base_var)) {
+    baseline_var <- base_var
+    warning(
+      "The `base_var` argument of `template_g_ipp()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "Please use the `baseline_var` argument instead.",
+      call. = FALSE
+    )
+  }
+
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(paramcd),
@@ -44,7 +55,7 @@ template_g_ipp <- function(dataname = "ANL",
     assertthat::is.string(avalu_var),
     assertthat::is.string(id_var),
     assertthat::is.string(visit_var),
-    assertthat::is.string(base_var),
+    assertthat::is.string(baseline_var),
     assertthat::is.flag(add_baseline_hline),
     assertthat::is.flag(separate_by_obs),
     assertthat::is.flag(suppress_legend),
@@ -112,7 +123,8 @@ template_g_ipp <- function(dataname = "ANL",
         aval = aval_var,
         id = id_var,
         add_baseline_hline = add_baseline_hline,
-        base = base_var,
+        base = baseline_var,
+        avalu = avalu_var,
         arm = arm_var
       )
     )
@@ -161,17 +173,14 @@ template_g_ipp <- function(dataname = "ANL",
 #' trends in parameter values over time for each patient using data with
 #' `ADaM` structure.
 #'
-#' @inheritParams template_g_ipp
 #' @inheritParams module_arguments
+#' @inheritParams template_g_ipp
 #' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `arm_var`.
 #' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `avalu_var`.
-#' @param base_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices
-#'   and preselected option for variable values that can be used as `base_var`.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
@@ -234,7 +243,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'         variable_choices(ADLB, c("AVISIT")),
 #'         "AVISIT"
 #'       ),
-#'       base_var = choices_selected(
+#'       baseline_var = choices_selected(
 #'         variable_choices(ADLB, c("BASE")),
 #'         "BASE",
 #'         fixed = TRUE
@@ -277,7 +286,8 @@ tm_g_ipp <- function(label,
                        "AVALU",
                        fixed = TRUE
                      ),
-                     base_var = teal.transform::choices_selected(
+                     base_var = lifecycle::deprecated(),
+                     baseline_var = teal.transform::choices_selected(
                        teal.transform::variable_choices(dataname, "BASE"),
                        "BASE",
                        fixed = TRUE
@@ -291,6 +301,17 @@ tm_g_ipp <- function(label,
                      pre_output = NULL,
                      post_output = NULL,
                      ggplot2_args = teal.widgets::ggplot2_args()) {
+  if (lifecycle::is_present(base_var)) {
+    baseline_var <- base_var
+    warning(
+      "The `base_var` argument of `tm_g_ipp()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "Please use the `baseline_var` argument instead.",
+      call. = FALSE
+    )
+  } else {
+    base_var <- baseline_var # resolves missing argument error
+  }
+
   logger::log_info("Initializing tm_g_ipp")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -316,7 +337,7 @@ tm_g_ipp <- function(label,
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname),
     id_var = cs_to_des_select(id_var, dataname = dataname),
     visit_var = cs_to_des_select(visit_var, dataname = dataname),
-    base_var = cs_to_des_select(base_var, dataname = dataname),
+    baseline_var = cs_to_des_select(baseline_var, dataname = dataname),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname)
   )
 
@@ -350,7 +371,7 @@ ui_g_ipp <- function(id, ...) {
     a$id_var,
     a$visit_var,
     a$paramcd,
-    a$base_var
+    a$baseline_var
   )
 
   ns <- shiny::NS(id)
@@ -363,7 +384,7 @@ ui_g_ipp <- function(id, ...) {
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
-        a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "base_var")]
+        a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "baseline_var")]
       ),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -402,9 +423,9 @@ ui_g_ipp <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
-        id = ns("base_var"),
+        id = ns("baseline_var"),
         label = "Baseline Parameter Values",
-        data_extract_spec = a$base_var,
+        data_extract_spec = a$baseline_var,
         is_single_dataset = is_single_dataset_value
       ),
       teal.widgets::panel_group(
@@ -454,7 +475,7 @@ srv_g_ipp <- function(id,
                       avalu_var,
                       id_var,
                       visit_var,
-                      base_var,
+                      baseline_var,
                       plot_height,
                       plot_width,
                       label,
@@ -474,14 +495,14 @@ srv_g_ipp <- function(id,
         id_var = id_var,
         paramcd = paramcd,
         visit_var = visit_var,
-        base_var = base_var
+        baseline_var = baseline_var
       ),
       select_validation_rule = list(
         aval_var = shinyvalidate::sv_required("A Parameter values over Time must be selected"),
         avalu_var = shinyvalidate::sv_required("An Analysis Variable Unit must be selected"),
         visit_var = shinyvalidate::sv_required("A Timepoint Variable must be selected"),
         id_var = shinyvalidate::sv_required("A Patient ID must be selected"),
-        base_var = shinyvalidate::sv_required("Baseline Parameter Values must be selected")
+        baseline_var = shinyvalidate::sv_required("Baseline Parameter Values must be selected")
       ),
       filter_validation_rule = list(
         paramcd = shinyvalidate::sv_required(message = "Please select Parameter filter."),
@@ -526,7 +547,7 @@ srv_g_ipp <- function(id,
       input_avalu_var <- as.vector(anl_m$columns_source$avalu_var)
       input_id_var <- as.vector(anl_m$columns_source$id_var)
       input_visit_var <- as.vector(anl_m$columns_source$visit_var)
-      input_base_var <- as.vector(anl_m$columns_source$base_var)
+      input_baseline_var <- as.vector(anl_m$columns_source$baseline_var)
       input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
       # validate inputs
@@ -542,7 +563,7 @@ srv_g_ipp <- function(id,
           input_avalu_var,
           input_paramcd,
           input_visit_var,
-          input_base_var
+          input_baseline_var
         ),
         arm_var = input_arm_var
       )
@@ -574,7 +595,7 @@ srv_g_ipp <- function(id,
         avalu_first = avalu_first,
         id_var = as.vector(anl_m$columns_source$id_var),
         visit_var = as.vector(anl_m$columns_source$visit_var),
-        base_var = as.vector(anl_m$columns_source$base_var),
+        baseline_var = as.vector(anl_m$columns_source$baseline_var),
         add_baseline_hline = input$add_baseline_hline,
         separate_by_obs = input$separate_by_obs,
         suppress_legend = input$suppress_legend,

@@ -7,11 +7,11 @@
 column_annotation_label(dataset, column, omit_raw_name = FALSE)
 }
 \arguments{
-\item{dataset}{\code{data.frame} dataset}
+\item{dataset}{(\code{data.frame})\cr dataset}
 
-\item{column}{\code{character} column to get label from}
+\item{column}{(\code{character})\cr column to get label from}
 
-\item{omit_raw_name}{\code{logical} omits the raw name in square brackets if label is found}
+\item{omit_raw_name}{(\code{logical})\cr omits the raw name in square brackets if label is found}
 }
 \value{
 "Label \verb{[Column name]}" if label exists, otherwise "Column name"

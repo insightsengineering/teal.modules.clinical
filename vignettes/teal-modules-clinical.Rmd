@@ -1,51 +1,49 @@
 ---
-title: "Getting started with teal.modules.clinical"
+title: "Getting Started with {teal.modules.clinical}"
 author: "NEST CoreDev Team"
-date: "01.04.2022"
-output:
-  rmarkdown::html_document:
-    theme: "spacelab"
-    highlight: "kate"
-    toc: true
-    toc_float: true
+date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteIndexEntry{Getting started}
+  %\VignetteIndexEntry{Getting Started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 ### Introduction
+
 `teal.modules.clinical` is a package implementing a number of `teal` modules helpful for exploring clinical
-trials data, specifically targeted towards data following the [`ADaM`](https://www.cdisc.org/standards/foundational/adam)
-standards. `teal.modules.clinical` modules can be used with data other than `ADaM` standard clinical data, but some
-features of the package will make little sense then.
+trials data, specifically targeted towards data following the [ADaM](https://www.cdisc.org/standards/foundational/adam)
+standards. `teal.modules.clinical` modules can be used with data other than ADaM standard clinical data, but some
+features of the package are tailored towards data of this type.
 
 The concepts presented here require knowledge about the core features of `teal`, specifically on how to launch a `teal`
-application and how to pass data into it. Therefore, it is highly recommended to refer to the [`README`](https://insightsengineering.github.io/teal/index.html) file and
-the introductory [`vignette`](https://insightsengineering.github.io/teal/articles/teal.html) of the `teal` package.
+application and how to pass data into it. Therefore, it is highly recommended to refer to the [home page](https://insightsengineering.github.io/teal/index.html) and
+[introductory vignette](https://insightsengineering.github.io/teal/articles/teal.html) of the `teal` package.
 
-### Main features
+### Main Features
+
 The package provides ready-to-use `teal` modules you can embed in your `teal` application. The modules
-generate highly customizable tables, plots and outputs often used in exploratory data analysis, e.g.:
+generate highly customizable tables, plots, and outputs often used in exploratory data analysis, including:
 
-- `ANCOVA` - `tm_t_ancova()`
-- cox regression - `tm_t_coxreg()`
+- ANCOVA - `tm_t_ancova()`
+- Cox regression - `tm_t_coxreg()`
 - Kaplan-Meier plot - `tm_g_km()`
-- logistic regression - `tm_t_logistic()`
-- bar chart - `tm_g_barchart_simple()`
-- confidence interval plot - `tm_g_ci()`
-- binary outcome response table - `tm_t_binary_outcome()`
-- summary of adverse events table - `tm_t_events_summary()`
-- `SMQ` table - `tm_t_smq()`
-- `time to event` table - `tm_t_tte()`
+- Logistic regression - `tm_t_logistic()`
+- Bar chart - `tm_g_barchart_simple()`
+- Confidence interval plot - `tm_g_ci()`
+- Binary outcome response table - `tm_t_binary_outcome()`
+- Summary of adverse events table - `tm_t_events_summary()`
+- SMQ table - `tm_t_smq()`
+- Time-to-event table - `tm_t_tte()`
 
 The library also offers a group of patient profile modules targeted for clinical statisticians and physicians
 who want to review data on a per patient basis. The modules present data about patient's adverse events,
 their severity, the current therapy, their laboratory results and more.
 
-See [`package functions / modules`](https://insightsengineering.github.io/teal.modules.clinical/reference/index.html).
+See the full index of package functions & modules [here](https://insightsengineering.github.io/teal.modules.clinical/reference/index.html).
 
-### A simple application
-A `teal.modules.clinical` module needs to be embedded inside a `shiny` / `teal` application to interact with it.
+### A Simple Application
+
+A `teal.modules.clinical` module needs to be embedded inside a `shiny`/`teal` application to interact with it.
 A simple application including a bar chart module could look like this:
 
 ```r
@@ -82,28 +80,34 @@ if (interactive()) shinyApp(app$ui, app$server)
 ```
 
 `teal.modules.clinical` exports modules and needs support from other libraries to run a `teal` app and flesh out its
-functionality. In the example above, `tm_g_barchart_simple` is the only function from `teal.modules.clinical` where as
-`init` is a `teal` function, `data_extract_spec`, `select_spec` and `variable_choices` are `teal.transform` functions
-and `cdisc_data` are `teal.data` functions.
+functionality. In the example above, `tm_g_barchart_simple()` is the only function from `teal.modules.clinical` whereas
+`init()` is a `teal` function, `data_extract_spec()`, `select_spec()`, and `variable_choices()` are `teal.transform`
+functions, and `cdisc_data()` is a `teal.data` function.
 
+Let's break the above app down into pieces:
 
-Let's break the above app into pieces:
 ```r
 library(teal.modules.clinical)
 library(nestcolor)
 ```
-The above lines load the libraries used in this example. We will use the example data provided in the `teal.modules.clinical` package:
+
+The above lines load the libraries used in this example. We will use the example data provided in the
+`teal.modules.clinical` package:
+
 ```r
 ADSL <- tmc_ex_adsl
 ADAE <- tmc_ex_adae
 ```
-`nestcolor` is an optional package that can be loaded in to apply the standardized NEST color palette to all module plots.
+
+`nestcolor` is an optional package that can be loaded in to apply the standardized NEST color palette to all module
+plots.
 
 There is no need to load `teal` as `teal.modules.clinical` already depends on it.
 
-In the next step, we use `teal` to create `shiny` `ui` and `server` functions so we can launch using `shiny`. The `data`
-argument tells `teal` about the input data - the two `ADaM` datasets `adsl` and `adae` - and the `modules`
-argument indicates the modules included in the application. Here, we include only one - `tm_g_barchart_simple`.
+In the next step, we use `teal` to create `shiny` UI and server functions that we can launch using `shiny`. The `data`
+argument tells `teal` about the input data - the ADaM datasets ADSL and ADAE - and the `modules`
+argument indicates the modules included in the application. Here, we include only one module: `tm_g_barchart_simple()`.
+
 ```r
 app <- init(
   data = teal.data::cdisc_data(
@@ -126,15 +130,18 @@ app <- init(
 )
 ```
 
-Ultimately, the example uses `shiny` to launch the application:
+Finally, we use `shiny` to launch the application:
+
 ```r
 if (interactive()) shinyApp(app$ui, app$server)
 ```
 
-Some of `teal.modules.clinical` modules allow specifying arguments using `teal.transform::choices_selected` such as
-`tm_t_summary` module in this example:
+Some `teal.modules.clinical` modules allow for the specification of arguments using
+`teal.transform::choices_selected()`, such as the `tm_t_summary()` module in the following example.
+
 ```r
 ADSL <- tmc_ex_adsl
+
 app <- init(
   data = teal.data::cdisc_data(ADSL = ADSL, code = "ADSL <- tmc_ex_adsl"),
   modules = list(
@@ -149,8 +156,9 @@ app <- init(
     )
   )
 )
-if (interactive()) shinyApp(app$ui, app$server)
+
+if (interactive()) shiny::shinyApp(app$ui, app$server)
 ```
 
-Refer to the [API reference](https://insightsengineering.github.io/teal.modules.clinical/reference/index.html) of the
-specific modules for more examples and information on the level of customization available.
+Please refer to the [API reference](https://insightsengineering.github.io/teal.modules.clinical/reference/index.html)
+of specific modules for more examples and information on the customization options available.

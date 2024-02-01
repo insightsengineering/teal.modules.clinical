@@ -96,8 +96,8 @@ template_fit_mmrm <- function(parentname,
       )
     )
   }
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
-  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = "")))
+  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = default_na_str())))
+  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = default_na_str())))
 
   y$data <- substitute(
     expr = {
@@ -263,7 +263,7 @@ template_mmrm_tables <- function(parentname,
         expr = {
           lsmeans_table <- rtables::build_table(
             lyt = lyt,
-            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = ""),
+            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
             alt_counts_df = parentname
           )
           lsmeans_table
@@ -433,6 +433,8 @@ template_mmrm_plots <- function(fit_name,
 #' Teal Module: Teal module for Mixed Model Repeated Measurements (`MMRM`) analysis
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_mmrm_tables
+#' @inheritParams template_mmrm_plots
 #' @param method (`choices_selected`)\cr
 #'   object with all available choices and preselected option for the adjustment method.
 #' @param ggplot2_args optional, (`ggplot2_args`) \cr

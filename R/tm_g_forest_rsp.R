@@ -197,10 +197,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #' This teal module produces a grid style Forest plot for response data with `ADaM` structure.
 #'
 #' @inheritParams module_arguments
-#' @inheritParams tm_t_binary_outcome
-#' @param fixed_symbol_size (`logical`)\cr
-#' When (`TRUE`), the same symbol size is used for plotting each estimate.
-#' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
+#' @inheritParams template_forest_rsp
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:

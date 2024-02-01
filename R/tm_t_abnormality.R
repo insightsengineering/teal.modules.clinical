@@ -27,7 +27,7 @@ template_abnormality <- function(parentname,
                                  total_label = default_total_label(),
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE,
-                                 na_level = "<Missing>",
+                                 na_level = default_na_str(),
                                  basic_table_args = teal.widgets::basic_table_args(),
                                  tbl_title) {
   assertthat::assert_that(
@@ -317,7 +317,7 @@ tm_t_abnormality <- function(label,
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL,
-                             na_level = "<Missing>",
+                             na_level = default_na_str(),
                              basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality")
   checkmate::assert_string(label)

@@ -5,6 +5,7 @@
 #' it is ignored.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_arguments
 #' @param x (`data_extract_spec`)\cr variable on the x-axis.
 #' @param fill (`data_extract_spec`)\cr grouping variable assigned to the bar colors.
 #' @param x_facet (`data_extract_spec`)\cr faceting groups on the row dimension.
@@ -603,7 +604,7 @@ srv_g_barchart_simple <- function(id,
 #'  whether to rotate y-axis label by 45 degrees.
 #' @param expand_y_range (`NULL`, `numeric(1)`)\cr
 #'  fraction of y-axis range to expand further up.
-#' @param facet_scales (`fixed`, `free_x`, `free_y` or `free`) value
+#' @param facet_scales (`fixed`, `free_x`, `free_y` or `free`)\cr value
 #'  passed to `scales` argument of `ggplot2::facet_grid`
 #' @inheritParams tm_g_barchart_simple
 #' @examples

@@ -1,6 +1,6 @@
 #' Substitute in Quoted Expressions
 #'
-#' This version of substitute is needed because \code{substitute} does not
+#' This version of substitute is needed because [substitute()] does not
 #' evaluate it's first argument, and it's often useful to be able to modify
 #' a quoted expression.
 #'

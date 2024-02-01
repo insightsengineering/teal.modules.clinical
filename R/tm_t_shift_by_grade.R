@@ -1,16 +1,15 @@
 #' Template: Grade Summary Table
 #'
+#' Creates a valid expression to generate a grade summary table.
+#'
 #' @inheritParams template_arguments
-#' @param worst_flag_var (`character`)\cr name of the worst flag variable.
-#' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #' @param anl_toxgrade_var (`character`)\cr name of the variable indicating the analysis toxicity grade.
-#' @param base_toxgrade_var (`character`)\cr name of the variable indicating the base toxicity grade.
-#' @param code_missing_baseline (`character`)\cr whether missing baseline should be considered
-#' as grade 0.
+#' @param base_toxgrade_var (`character`)\cr name of the variable indicating the baseline toxicity grade.
+#' @param code_missing_baseline (`logical`)\cr whether missing baseline grades should be counted as grade 0.
 #'
 #' @seealso [tm_t_shift_by_grade()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_shift_by_grade <- function(parentname,
                                     dataname,
                                     arm_var = "ARM",
@@ -24,7 +23,7 @@ template_shift_by_grade <- function(parentname,
                                     drop_arm_levels = TRUE,
                                     add_total = FALSE,
                                     total_label = default_total_label(),
-                                    na_level = "<Missing>",
+                                    na_level = default_na_str(),
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
@@ -75,10 +74,10 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = na_level),
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
       env = list(
         dataname = as.name("anl"),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -86,10 +85,10 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = na_level),
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
       env = list(
         parentname = as.name(parentname),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -463,20 +462,17 @@ template_shift_by_grade <- function(parentname,
 
 #' Teal Module: Grade Summary Table
 #'
+#' This module produces a summary table of worst grades per subject by visit and parameter.
+#'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_grade
-#' @param visit_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' object with all available choices and preselected option for variable names that can be used as visit.
-#' @param worst_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' object with all available choices and preselected option for variable names that can be used as worst flag variable.
-#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' value indicating worst grade.
 #' @param anl_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' variable for analysis toxicity grade.
+#'   variable for analysis toxicity grade.
 #' @param base_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' variable for baseline toxicity grade.
+#'   variable for baseline toxicity grade.
 #'
-#' @export
+#' @inherit module_arguments return
+#'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADLB <- tmc_ex_adlb
@@ -529,6 +525,7 @@ template_shift_by_grade <- function(parentname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_shift_by_grade <- function(label,
                                 dataname,
                                 parentname = ifelse(
@@ -569,7 +566,7 @@ tm_t_shift_by_grade <- function(label,
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
-                                na_level = "<Missing>",
+                                na_level = default_na_str(),
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_shift_by_grade")
@@ -624,7 +621,7 @@ tm_t_shift_by_grade <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_shift_by_grade <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -731,7 +728,7 @@ ui_t_shift_by_grade <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_shift_by_grade <- function(id,
                                  data,
                                  reporter,

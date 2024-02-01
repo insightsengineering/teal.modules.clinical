@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.16.9034
+# teal.modules.clinical 0.8.16.9045
 
 ### Breaking Changes
 + Adapted all modules to use `teal_data` objects.
@@ -9,6 +9,7 @@
 * Added parameter `incl_overall_sum` to `tm_t_events` to allow the user to choose whether overall summary rows are included at the top of the table.
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
 * Added `default_total_label` and `set_default_total_label` functions to get and set default total column label (`total_label`) for modules.
+* Implemented `tern::default_na_str` and `tern::set_default_na_str` functions to get and set default missing value replacement string (`na_level`) for modules.
 
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
@@ -16,7 +17,10 @@
 ### Miscellaneous
 * Deprecated the `aval` argument in `tm_t_pp_laboratory` and `tm_g_pp_vitals` and replaced it with the `aval_var` argument.
 * Deprecated the `avalu` argument in `tm_t_pp_laboratory` and replaced it with the `avalu_var` argument.
+* Deprecated the `base_var` argument in `tm_g_ipp`, `tm_t_shift_by_arm`, and `template_shift_by_arm_by_worst` and replaced it with the `baseline_var` argument.
 * Specified minimal version of package dependencies.
+* Replaced usage of deprecated `summarize_vars` function with `analyze_vars`.
+* Reduced package dependencies (removed `tidyr`, `rlang`, `magrittr` and `styler`).
 
 # teal.modules.clinical 0.8.16.9010
 

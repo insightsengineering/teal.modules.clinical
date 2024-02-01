@@ -109,8 +109,8 @@ template_ancova <- function(dataname = "ANL",
     )
   }
 
-  anl_list <- add_expr(anl_list, quote(df_explicit_na(na_level = "")))
-  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = "")))
+  anl_list <- add_expr(anl_list, quote(df_explicit_na(na_level = default_na_str())))
+  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = default_na_str())))
 
   data_list <- add_expr(
     data_list,
@@ -412,6 +412,7 @@ template_ancova <- function(dataname = "ANL",
 #' Teal Module: `ANCOVA` Teal Module
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_ancova
 #'
 #' @details This module produces an analysis of variance summary table that is
 #' similar to `AOVT01` when multiple endpoints are selected.

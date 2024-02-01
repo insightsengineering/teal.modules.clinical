@@ -1,14 +1,14 @@
 #' Template: Summarize Variables by Row Groups Module
 #'
 #' @inheritParams template_arguments
-#' @param parallel_vars (`logical`) used to display `summarize_vars` as parallel columns
+#' @param parallel_vars (`logical`)\cr used to display `summarize_vars` as parallel columns
 #'  (`FALSE` on default). Can be used only if all chosen analysis variables are numeric.
-#' @param row_groups (`logical`) used to display `summarize_vars` as row groups
+#' @param row_groups (`logical`)\cr used to display `summarize_vars` as row groups
 #'  (`FALSE` on default).
 #' @param numeric_stats (`character`)\cr
 #'  selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
 #'  `median`, `median_ci`, `quantiles`, `range`. All are selected by default.
-#' @param drop_zero_levels (`logical`) used to remove rows with zero counts from the result table.
+#' @param drop_zero_levels (`logical`)\cr used to remove rows with zero counts from the result table.
 #'
 #' @seealso [tm_t_summary_by()]
 #' @keywords internal
@@ -25,7 +25,7 @@ template_summary_by <- function(parentname,
                                 parallel_vars = FALSE,
                                 row_groups = FALSE,
                                 na.rm = FALSE, # nolint
-                                na_level = "<Missing>",
+                                na_level = default_na_str(),
                                 numeric_stats = c(
                                   "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"
                                 ),
@@ -62,12 +62,12 @@ template_summary_by <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_level),
+        df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_str),
       env = list(
         df = as.name(dataname),
         by_vars = by_vars,
         sum_vars = sum_vars,
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -85,8 +85,8 @@ template_summary_by <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = na_level),
-      env = list(parentname = as.name(parentname), na_level = na_level)
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
@@ -193,9 +193,10 @@ template_summary_by <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = rtables::summarize_row_groups(var = id_var, cfun = cfun_unique),
+          expr = rtables::summarize_row_groups(var = id_var, cfun = cfun_unique, na_str = na_str),
           env = list(
-            id_var = id_var
+            id_var = id_var,
+            na_str = na_level
           )
         )
       )
@@ -230,7 +231,8 @@ template_summary_by <- function(parentname,
             expr = summarize_colvars(
               na.rm = na.rm,
               denom = denom,
-              .stats = stats
+              .stats = stats,
+              na_str = na_level
             ),
             env = env_vars
           )
@@ -240,7 +242,8 @@ template_summary_by <- function(parentname,
               vars = sum_vars,
               na.rm = na.rm,
               denom = denom,
-              .stats = stats
+              .stats = stats,
+              na_str = na_level
             ),
             env = env_vars
           )
@@ -248,7 +251,7 @@ template_summary_by <- function(parentname,
       } else {
         if (length(var_labels > 0)) {
           substitute(
-            expr = summarize_vars(
+            expr = analyze_vars(
               vars = sum_vars,
               var_labels = sum_var_labels,
               na.rm = na.rm,
@@ -260,7 +263,7 @@ template_summary_by <- function(parentname,
           )
         } else {
           substitute(
-            expr = summarize_vars(
+            expr = analyze_vars(
               vars = sum_vars,
               na.rm = na.rm,
               na_level = na_level,
@@ -321,7 +324,7 @@ template_summary_by <- function(parentname,
 #' @param numeric_stats (`character`)\cr
 #'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
 #'   `median`, `median_ci`, `range`, `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
-#' @param drop_zero_levels (`logical`) used to remove rows with zero counts from the result table.
+#' @param drop_zero_levels (`logical`)\cr used to remove rows with zero counts from the result table.
 #' @inheritParams module_arguments
 #' @inheritParams template_summary_by
 #'
@@ -387,7 +390,7 @@ tm_t_summary_by <- function(label,
                             parallel_vars = FALSE,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint
-                            na_level = "<Missing>",
+                            na_level = default_na_str(),
                             numeric_stats = c("n", "mean_sd", "median", "range"),
                             denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             drop_arm_levels = TRUE,

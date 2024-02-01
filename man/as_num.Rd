@@ -22,7 +22,7 @@ as_num(str)
 \method{as_num}{logical}(str)
 }
 \arguments{
-\item{str}{\code{vector} to extract numeric from.}
+\item{str}{(\code{vector})\cr to extract numeric from.}
 }
 \value{
 As vector of numeric if directly parsed from \code{numeric} or boolean.

@@ -13,8 +13,7 @@ template_prior_medication(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{atirel}{(\code{character})\cr name of time relation of medication variable.}
 

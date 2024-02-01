@@ -7,10 +7,10 @@
       {
           adqs <- adqs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
       }
       
       $layout_prep
@@ -43,10 +43,10 @@
       {
           adqs <- adqs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
       }
       
       $layout_prep
@@ -82,11 +82,11 @@
           adqs <- adqs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% droplevels() %>% dplyr::mutate(ARMCD = combine_levels(ARMCD, 
-              levels = c("ARM B", "ARM C"))) %>% df_explicit_na(na_level = "")
+              levels = c("ARM B", "ARM C"))) %>% df_explicit_na(na_level = default_na_str())
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% droplevels() %>% dplyr::mutate(ARMCD = combine_levels(ARMCD, 
-              levels = c("ARM B", "ARM C"))) %>% df_explicit_na(na_level = "")
+              levels = c("ARM B", "ARM C"))) %>% df_explicit_na(na_level = default_na_str())
       }
       
       $layout_prep
@@ -121,12 +121,12 @@
               "ARM A")) %>% dplyr::mutate(ARMCD = combine_levels(ARMCD, 
               levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C")) %>% 
               dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM B/ARM C")) %>% 
-              droplevels() %>% df_explicit_na(na_level = "")
+              droplevels() %>% df_explicit_na(na_level = default_na_str())
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM B", "ARM C", 
               "ARM A")) %>% dplyr::mutate(ARMCD = combine_levels(ARMCD, 
               levels = c("ARM B", "ARM C"), new_level = "ARM B/ARM C")) %>% 
               dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM B/ARM C")) %>% 
-              droplevels() %>% df_explicit_na(na_level = "")
+              droplevels() %>% df_explicit_na(na_level = default_na_str())
       }
       
       $layout_prep
@@ -159,10 +159,10 @@
       {
           adqs <- adqs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
       }
       
       $layout_prep
@@ -199,10 +199,10 @@
       {
           adqs <- adqs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
       }
       
       $layout_prep
@@ -237,10 +237,10 @@
       {
           adqs <- adqs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
-              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = "")
+              ref = "ARM A")) %>% droplevels() %>% df_explicit_na(na_level = default_na_str())
       }
       
       $layout_prep

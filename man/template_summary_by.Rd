@@ -17,7 +17,7 @@ template_summary_by(
   parallel_vars = FALSE,
   row_groups = FALSE,
   na.rm = FALSE,
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range"),
   denominator = c("N", "n", "omit"),
@@ -27,63 +27,56 @@ template_summary_by(
 )
 }
 \arguments{
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{id_var}{(\code{character})\cr
-the variable name for subject id.}
+\item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{sum_vars}{(\code{character})\cr
-names of the variables that should be summarized.}
+\item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
 
-\item{by_vars}{(\code{character})\cr
-variable names used to split the summary by rows.}
+\item{by_vars}{(\code{character})\cr variable names used to split the summary by rows.}
 
-\item{var_labels}{optional, (named \code{character})\cr
-variable labels for relabeling the analysis variables.}
+\item{var_labels}{optional, (named \code{character})\cr variable labels for relabeling the analysis variables.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
-\item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
+
+\item{parallel_vars}{(\code{logical})\cr used to display \code{summarize_vars} as parallel columns
 (\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
 
-\item{row_groups}{(\code{logical}) used to display \code{summarize_vars} as row groups
+\item{row_groups}{(\code{logical})\cr used to display \code{summarize_vars} as row groups
 (\code{FALSE} on default).}
 
-\item{na.rm}{(\code{logical})\cr
-whether \code{NA} values should be removed prior to analysis.}
+\item{na.rm}{(\code{logical})\cr whether \code{NA} values should be removed prior to analysis.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
 \item{numeric_stats}{(\code{character})\cr
 selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
 \code{median}, \code{median_ci}, \code{quantiles}, \code{range}. All are selected by default.}
 
-\item{denominator}{(\code{character})\cr
-chooses how percentages are calculated. With option \code{N}, the reference
-population from the column total is used as the denominator. With option
-\code{n}, the number of non-missing records in this row and column intersection
-is used as the denominator. If \code{omit} is chosen, then the percentage is
-omitted.}
+\item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
+population from the column total is used as the denominator. With option \code{n}, the number of non-missing
+records in this row and column intersection is used as the denominator. If \code{omit} is chosen, then the
+percentage is omitted.}
 
 \item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
-\item{drop_zero_levels}{(\code{logical}) used to remove rows with zero counts from the result table.}
+\item{drop_zero_levels}{(\code{logical})\cr used to remove rows with zero counts from the result table.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }

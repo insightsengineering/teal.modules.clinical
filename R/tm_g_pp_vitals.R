@@ -206,11 +206,12 @@ template_vitals <- function(dataname = "ANL",
 #' This teal module produces a patient profile vitals plot using `ADaM` datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_vitals
 #' @param patient_col (`character`)\cr patient ID column to be used.
 #' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{PARAMCD} column of the `ADVS` dataset.
+#' `PARAMCD` column of the `ADVS` dataset.
 #' @param aval_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AVAL} column of the `ADVS` dataset.
+#' `AVAL` column of the `ADVS` dataset.
 #' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' time variable to be represented in the vitals plot x-axis.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
