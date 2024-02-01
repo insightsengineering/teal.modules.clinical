@@ -1,24 +1,20 @@
 #' Template: Logistic Regression
 #'
-#' Creates an expression for logistic regressions.
+#' Creates a valid expression to generate a logistic regression table.
 #'
 #' @inheritParams template_arguments
-#' @param arm_var (`character`)\cr
-#'   variable names that can be used as `arm_var`. No arm or treatment variable is included in the logistic model is
-#'   being `NULL`.
-#' @param topleft (`character`)\cr
-#'  the top-left annotation in the table.
-#' @param at optional, (`NULL` or `numeric`)\cr
+#' @inheritParams tern::tidy.glm
+#' @param arm_var (`character`)\cr variable names that can be used as `arm_var`. To fit a logistic model with no
+#'   arm/treatment variable, set to `NULL`.
+#' @param topleft (`character`)\cr text to use as top-left annotation in the table.
+#' @param interaction_var (`character`)\cr names of the variables that can be used for interaction variable selection.
+#' @param responder_val (`character`)\cr values of the responder variable corresponding with a successful response.
 #' @param paramcd `r lifecycle::badge("deprecated")` The `paramcd` argument is not used in this function.
-#' @param interaction_var (`character`)\cr
-#'  names of the variables that can be used for interaction variable selection.
-#' @param responder_val (`character`)\cr
-#'  values of the responder variable corresponding with a successful response.
-#' @param label_paramcd (`character`)\cr Label of response parameter value to use in the table title.
+#' @param label_paramcd (`character`)\cr Label of response parameter value to print in the table title.
 #'
 #' @seealso [tm_t_logistic()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
@@ -187,8 +183,6 @@ template_logistic <- function(dataname,
     paste("Summary of Logistic Regression Analysis for", label_paramcd, "for", responder_val, "Responders")
   }
 
-
-
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
@@ -217,22 +211,23 @@ template_logistic <- function(dataname,
   y
 }
 
-
 #' Teal Module: Logistic Regression
 #'
-#' @description This module produces a multi-variable logistic regression table that matches `LGRT02`.
+#' This module produces a multi-variable logistic regression table consistent with the TLG Catalog template
+#' `LGRT02` available [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/lgrt02.html).
 #'
 #' @inheritParams module_arguments
-#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()]) or `NULL`\cr
-#'   object with all available choices
-#'   and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
-#'   second variable will be nested under the first variable.
-#'   arm_var is optional, when being NULL, no arm or treatment variable is included in the logistic model.
-#' @param avalc_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'  object with all available choices and preselected option for the analysis variable (categorical).
+#' @inheritParams template_logistic
+#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()] or `NULL`)\cr object
+#'   with all available choices and preselected option for variable names that can be used as `arm_var`. This defines
+#'   the grouping variable(s) in the results table. If there are two elements selected for `arm_var`, the second
+#'   variable will be nested under the first variable. If `NULL`, no arm/treatment variable is included in the
+#'   logistic model.
+#' @param avalc_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the analysis variable (categorical).
 #'
-#' @export
+#' @inherit module_arguments return
+#'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADRS <- tmc_ex_adrs %>%
@@ -283,6 +278,7 @@ template_logistic <- function(dataname,
 #'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
+#' @export
 tm_t_logistic <- function(label,
                           dataname,
                           parentname = ifelse(
@@ -344,9 +340,7 @@ tm_t_logistic <- function(label,
   )
 }
 
-#' User Interface for `tm_t_logistic`
-#' @noRd
-#'
+#' @keywords internal
 ui_t_logistic <- function(id, ...) {
   a <- list(...)
   if (!is.null(a$arm_var)) {
@@ -363,7 +357,6 @@ ui_t_logistic <- function(id, ...) {
       a$cov_var
     )
   }
-
 
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
@@ -442,9 +435,7 @@ ui_t_logistic <- function(id, ...) {
   )
 }
 
-#' Server Function for `tm_t_logistic`
-#' @noRd
-#'
+#' @keywords internal
 srv_t_logistic <- function(id,
                            data,
                            reporter,
