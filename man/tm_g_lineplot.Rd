@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_lineplot.R
 \name{tm_g_lineplot}
 \alias{tm_g_lineplot}
-\title{Teal Module: Line Plot}
+\title{teal Module: Line Plot}
 \usage{
 tm_g_lineplot(
   label,
@@ -104,7 +104,7 @@ the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type line plot, with optional summary table, for standard ADaM data.
@@ -147,4 +147,8 @@ if (interactive()) {
   shinyApp(ui = app$ui, server = app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

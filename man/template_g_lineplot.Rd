@@ -81,6 +81,9 @@ the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
 Creates a valid expression to generate a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} line plot.
 }
