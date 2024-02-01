@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_summary_by.R
 \name{tm_t_summary_by}
 \alias{tm_t_summary_by}
-\title{Teal Module: Summarize Variables by Row Groups Module}
+\title{Teal Module: Summarize Variables by Row Groups}
 \usage{
 tm_t_summary_by(
   label,
@@ -60,11 +60,10 @@ summarized.}
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{parallel_vars}{(\code{logical})\cr used to display \code{summarize_vars} as parallel columns
-(\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
+\item{parallel_vars}{(\code{logical})\cr whether summarized variables should be arranged in columns. Can only be set to
+\code{TRUE} if all chosen analysis variables are numeric.}
 
-\item{row_groups}{(\code{logical})\cr used to display \code{summarize_vars} as row groups
-(\code{FALSE} on default).}
+\item{row_groups}{(\code{logical})\cr whether summarized variables should be arranged in row groups.}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
@@ -72,22 +71,20 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{numeric_stats}{(\code{character})\cr
-selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
-\code{median}, \code{median_ci}, \code{range}, \code{geom_mean}. By default,  \code{n}, \code{mean_sd}, \code{median}, \code{range} are selected.}
+\item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
+statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
 \item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option
 \code{n}, the number of non-missing records in this row and column intersection
 is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parentname} dataset.
-If \code{dataname} dataset and \code{parentname} dataset are the same (i.e. \code{ADSL}), then \code{drop_arm_levels} will always be
-TRUE regardless of the user choice when \code{tm_t_summary_by} is called.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
-\item{drop_zero_levels}{(\code{logical})\cr used to remove rows with zero counts from the result table.}
+\item{drop_zero_levels}{(\code{logical})\cr whether rows with zero counts in all columns should be removed from the table.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -101,8 +98,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+}
 \description{
-Teal Module: Summarize Variables by Row Groups Module
+This module produces a table to summarize variables by row groups.
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -145,4 +145,5 @@ app <- init(
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
+
 }
