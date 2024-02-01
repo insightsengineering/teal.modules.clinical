@@ -9,12 +9,11 @@
 #' @param topleft (`character`)\cr
 #'  the top-left annotation in the table.
 #' @param at optional, (`NULL` or `numeric`)\cr
-#'  values for the interaction variable. Otherwise the median is used.
+#' @param paramcd `r lifecycle::badge("deprecated")` The `paramcd` argument is not used in this function.
 #' @param interaction_var (`character`)\cr
 #'  names of the variables that can be used for interaction variable selection.
 #' @param responder_val (`character`)\cr
 #'  values of the responder variable corresponding with a successful response.
-#' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #' @param label_paramcd (`character`)\cr Label of response parameter value to use in the table title.
 #'
 #' @seealso [tm_t_logistic()]
@@ -23,7 +22,7 @@
 template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
-                              paramcd,
+                              paramcd = lifecycle::deprecated(),
                               label_paramcd,
                               cov_var,
                               interaction_var,
@@ -35,11 +34,18 @@ template_logistic <- function(dataname,
                               responder_val = c("CR", "PR"),
                               at = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
+  if (lifecycle::is_present(paramcd)) {
+    warning(
+      "The `paramcd` argument of `template_logistic()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "The argument is not used in this function.",
+      call. = FALSE
+    )
+  }
+
   # Common assertion no matter if arm_var is NULL or not.
   assertthat::assert_that(
     assertthat::is.string(dataname),
     assertthat::is.string(aval_var),
-    assertthat::is.string(paramcd),
     assertthat::is.string(label_paramcd) || is.null(label_paramcd),
     assertthat::is.string(topleft) || is.null(topleft),
     is.character(cov_var) || is.null(cov_var),
@@ -683,7 +689,6 @@ srv_t_logistic <- function(id,
         dataname = "ANL",
         arm_var = names(merged$anl_input_r()$columns_source$arm_var),
         aval_var = names(merged$anl_input_r()$columns_source$avalc_var),
-        paramcd = paramcd,
         label_paramcd = label_paramcd,
         cov_var = if (length(cov_var) > 0) cov_var else NULL,
         interaction_var = if (interaction_flag) interaction_var else NULL,
