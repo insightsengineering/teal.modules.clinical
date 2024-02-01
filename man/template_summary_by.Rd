@@ -43,8 +43,12 @@ template_summary_by(
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
-\item{parallel_vars}{(\code{logical})\cr used to display \code{summarize_vars} as parallel columns
-(\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
+
+\item{parallel_vars}{(\code{logical})\cr whether summarized variables should be arranged in columns. Can only be set to
+\code{TRUE} if all chosen analysis variables are numeric.}
 
 \item{row_groups}{(\code{logical})\cr whether summarized variables should be arranged in row groups.}
 
@@ -74,6 +78,9 @@ with settings for the module table. The argument is merged with option \code{tea
 module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+}
+\value{
+a \code{list} of expressions to generate a table or plot object.
 }
 \description{
 Creates a valid expression to generate a table to summarize variables by row groups.

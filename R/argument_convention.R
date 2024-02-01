@@ -133,17 +133,8 @@ NULL
 #'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
 #'   may contain default response values or named arrays `rsp` of default selected response
 #'   values and `levels` of default level choices.
-#' @param denominator (`character`)\cr chooses how percentages are calculated. With option `N`, the reference
-#'   population from the column total is used as the denominator. With option
-#'   `n`, the number of non-missing records in this row and column intersection
-#'   is used as the denominator. If `omit` is chosen, then the percentage is omitted.
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each estimate.
 #'   Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
-#'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
-#'   (hard coded in the module body).
-#'
-#'   For more details, see the help vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #' @param hlt (`choices_selected` or `data_extract_spec`)\cr name of the variable with high level term for events.
 #' @param id_var (`choices_selected` or `data_extract_spec`)\cr object specifying the variable name for subject id.
 #' @param interact_var (`character`)\cr name of the variable that should have interactions
