@@ -108,7 +108,7 @@ value indicating worst grade.}
 with all available choices and preselected option for variable names that can be used as worst flag variable.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 The documentation to this function lists all the arguments in teal modules

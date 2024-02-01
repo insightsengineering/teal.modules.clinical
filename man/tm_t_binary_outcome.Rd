@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_binary_outcome.R
 \name{tm_t_binary_outcome}
 \alias{tm_t_binary_outcome}
-\title{Teal Module: Binary Outcome Table}
+\title{teal Module: Binary Outcome Table}
 \usage{
 tm_t_binary_outcome(
   label,
@@ -58,11 +58,12 @@ option for the analysis variable.}
 \item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
 confidence level, each within range of (0, 1).}
 
-\item{default_responses}{(\code{list} or \code{character})\cr defines the default codes for the response variable in the
-module per value of \code{paramcd}. If a \code{vector} is passed, values are transmitted for all \code{paramcd} values. If a
-\code{list} is passed, it must be named and contain arrays, with each name corresponding to a single value of
-\code{paramcd}. Each array may contain either default response values or two named arrays: \code{rsp} of default selected
-response values, and \code{levels} of default level choices.}
+\item{default_responses}{(\code{list} or \code{character})\cr defines
+the default codes for the response variable in the module per value of \code{paramcd}.
+A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named
+and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
+may contain default response values or named arrays \code{rsp} of default selected response
+values and \code{levels} of default level choices.}
 
 \item{rsp_table}{(\code{logical})\cr whether the initial set-up of the module should match \code{RSPT01}. Defaults to \code{FALSE}.}
 
@@ -89,7 +90,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 This module produces a binary outcome response summary table, with the option to match the template for

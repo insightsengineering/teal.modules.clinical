@@ -71,33 +71,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
 Creates a valid expression to generate a binary outcome analysis.
-}
-\examples{
-if (interactive()) {
-  # Preparation of the test case.
-  adsl <- tmc_ex_adsl
-  adrs <- tmc_ex_adrs
-
-  # Generate an expression for the analysis of responders.
-  a <- template_binary_outcome(
-    dataname = "adrs",
-    parentname = "adsl",
-    arm_var = "ARMCD",
-    paramcd = "BESRSPI",
-    ref_arm = "ARM A",
-    comp_arm = c("ARM B"),
-    compare_arm = TRUE,
-    show_rsp_cat = TRUE
-  )
-
-  b <- mapply(expr = a, FUN = eval)
-  b$data
-  b$layout
-  b$table
-}
-
 }
 \seealso{
 \code{\link[=tm_t_binary_outcome]{tm_t_binary_outcome()}}

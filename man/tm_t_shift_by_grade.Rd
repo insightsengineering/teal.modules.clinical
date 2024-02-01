@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_shift_by_grade.R
 \name{tm_t_shift_by_grade}
 \alias{tm_t_shift_by_grade}
-\title{Teal Module: Grade Summary Table}
+\title{teal Module: Grade Summary Table}
 \usage{
 tm_t_shift_by_grade(
   label,
@@ -98,7 +98,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 This module produces a summary table of worst grades per subject by visit and parameter.

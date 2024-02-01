@@ -63,11 +63,12 @@ Otherwise, the symbol size will be proportional to the sample size in each each 
 \item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
 confidence level, each within range of (0, 1).}
 
-\item{default_responses}{(\code{list} or \code{character})\cr defines the default codes for the response variable in the
-module per value of \code{paramcd}. If a \code{vector} is passed, values are transmitted for all \code{paramcd} values. If a
-\code{list} is passed, it must be named and contain arrays, with each name corresponding to a single value of
-\code{paramcd}. Each array may contain either default response values or two named arrays: \code{rsp} of default selected
-response values, and \code{levels} of default level choices.}
+\item{default_responses}{(\code{list} or \code{character})\cr defines
+the default codes for the response variable in the module per value of \code{paramcd}.
+A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named
+and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
+may contain default response values or named arrays \code{rsp} of default selected response
+values and \code{levels} of default level choices.}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}

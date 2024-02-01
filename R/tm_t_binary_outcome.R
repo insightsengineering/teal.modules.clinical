@@ -11,31 +11,9 @@
 #' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
 #' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
+#' @inherit template_arguments return
+#'
 #' @seealso [tm_t_binary_outcome()]
-#'
-#' @examples
-#' if (interactive()) {
-#'   # Preparation of the test case.
-#'   adsl <- tmc_ex_adsl
-#'   adrs <- tmc_ex_adrs
-#'
-#'   # Generate an expression for the analysis of responders.
-#'   a <- template_binary_outcome(
-#'     dataname = "adrs",
-#'     parentname = "adsl",
-#'     arm_var = "ARMCD",
-#'     paramcd = "BESRSPI",
-#'     ref_arm = "ARM A",
-#'     comp_arm = c("ARM B"),
-#'     compare_arm = TRUE,
-#'     show_rsp_cat = TRUE
-#'   )
-#'
-#'   b <- mapply(expr = a, FUN = eval)
-#'   b$data
-#'   b$layout
-#'   b$table
-#' }
 #'
 #' @keywords internal
 template_binary_outcome <- function(dataname,
@@ -347,7 +325,7 @@ template_binary_outcome <- function(dataname,
   y
 }
 
-#' Teal Module: Binary Outcome Table
+#' teal Module: Binary Outcome Table
 #'
 #' This module produces a binary outcome response summary table, with the option to match the template for
 #' response table `RSPT01` available in the TLG Catalog [here](
