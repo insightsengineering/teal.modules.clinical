@@ -20,7 +20,6 @@
 #' @param basic_table_args optional, (`basic_table_args`)\cr object created by [teal.widgets::basic_table_args()]
 #'   with settings for the module table. The argument is merged with option `teal.basic_table_args` and with default
 #'   module arguments (hard coded in the module body).
-#'
 #'   For more details, see the vignette: `vignette("custom-basic-table-arguments", package = "teal.widgets")`.
 #' @param by_vars (`character`)\cr variable names used to split the summary by rows.
 #' @param cnsr_var (`character`)\cr name of the censoring variable.
@@ -40,7 +39,6 @@
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
-#'
 #'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #' @param hlt (`character`)\cr name of the variable with high level term for events.
 #' @param id_var (`character`)\cr the variable name for subject id.

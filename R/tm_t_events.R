@@ -461,16 +461,16 @@ template_events <- function(dataname,
   y
 }
 
-#' Teal Module: Events by Term
+#' teal Module: Events by Term
 #'
-#' @description Teal module for generating a table of events by term. Please, check out the
+#' @description teal module for generating a table of events by term. Please, check out the
 #'  [TLG-catalog](https://insightsengineering.github.io/tlg-catalog/stable/) for
 #'  additional examples and information.
 #'
 #' @inheritParams module_arguments
-#' @inheritParams template_events
+# @inheritParams template_events
 #'
-#' @return a `teal_module` object which can be added to a teal app via [teal::init()].
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
