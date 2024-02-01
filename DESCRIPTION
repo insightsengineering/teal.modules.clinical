@@ -55,7 +55,7 @@ Imports:
     stats,
     styler (>= 1.2.0),
     teal.code (>= 0.4.1.9009),
-    teal.data (>= 0.3.0.9018),
+    teal.data (>= 0.4.0),
     teal.logger (>= 0.1.1),
     teal.reporter (>= 0.2.1),
     teal.widgets (>= 0.4.0),
