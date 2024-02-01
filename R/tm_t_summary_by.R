@@ -6,8 +6,6 @@
 #' @param parallel_vars (`logical`)\cr whether summarized variables should be arranged in columns. Can only be set to
 #' `TRUE` if all chosen analysis variables are numeric.
 #' @param row_groups (`logical`)\cr whether summarized variables should be arranged in row groups.
-#' @param numeric_stats (`character`)\cr names of statistics to display for numeric summary variables. Available
-#'   statistics are `n`, `mean_sd`, `mean_ci`, `median`, `median_ci`, `quantiles`, `range`, and `geom_mean`.
 #' @param drop_zero_levels (`logical`)\cr whether rows with zero counts in all columns should be removed from the table.
 #'
 #' @seealso [tm_t_summary_by()]
