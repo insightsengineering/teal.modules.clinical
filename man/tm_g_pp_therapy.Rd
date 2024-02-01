@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_therapy.R
 \name{tm_g_pp_therapy}
 \alias{tm_g_pp_therapy}
-\title{teal Module: Patient Profile Therapy Plot}
+\title{teal Module: Patient Profile Therapy Table and Plot}
 \usage{
 tm_g_pp_therapy(
   label,
@@ -90,7 +90,7 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 a \code{teal_module} object.
 }
 \description{
-This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type patient profile therapy plot using ADaM datasets.
+This module produces a patient profile therapy table and \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type plot using ADaM datasets.
 }
 \examples{
 library(nestcolor)

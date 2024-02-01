@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_therapy.R
 \name{template_therapy}
 \alias{template_therapy}
-\title{Template: Patient Profile Therapy Plot}
+\title{Template: Patient Profile Therapy Table and Plot}
 \usage{
 template_therapy(
   dataname = "ANL",
@@ -58,7 +58,8 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 a \code{list} of expressions to generate a table or plot object.
 }
 \description{
-Creates a valid expression to generate a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} patient profile therapy plot using ADaM datasets.
+Creates a valid expression to generate a patient profile therapy table and \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plot using ADaM
+datasets.
 }
 \seealso{
 \code{\link[=tm_g_pp_therapy]{tm_g_pp_therapy()}}

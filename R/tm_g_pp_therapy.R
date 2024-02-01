@@ -1,6 +1,7 @@
-#' Template: Patient Profile Therapy Plot
+#' Template: Patient Profile Therapy Table and Plot
 #'
-#' Creates a valid expression to generate a [ggplot2::ggplot()] patient profile therapy plot using ADaM datasets.
+#' Creates a valid expression to generate a patient profile therapy table and [ggplot2::ggplot()] plot using ADaM
+#' datasets.
 #'
 #' @inheritParams template_arguments
 #' @param cmdose (`character`)\cr name of dose per administration variable.
@@ -228,9 +229,9 @@ template_therapy <- function(dataname = "ANL",
   y
 }
 
-#' teal Module: Patient Profile Therapy Plot
+#' teal Module: Patient Profile Therapy Table and Plot
 #'
-#' This module produces a [ggplot2::ggplot()] type patient profile therapy plot using ADaM datasets.
+#' This module produces a patient profile therapy table and [ggplot2::ggplot()] type plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_therapy
