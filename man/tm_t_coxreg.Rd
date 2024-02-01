@@ -82,7 +82,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 Teal module to fit Cox univariable or multi-variable models, consistent with the TLG Catalog

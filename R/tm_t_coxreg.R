@@ -8,6 +8,8 @@
 #'   to specify the value of the covariate at which the effect should be estimated.
 #' @param append (`logical`)\cr whether the result should be appended to the previous one.
 #'
+#' @inherit template_arguments return
+#'
 #' @seealso [template_coxreg_m()], [tm_t_coxreg()]
 #'
 #' @keywords internal
@@ -173,6 +175,8 @@ template_coxreg_u <- function(dataname,
 #'
 #' @inheritParams template_arguments
 #' @inheritParams template_coxreg_u
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [template_coxreg_u()], [tm_t_coxreg()]
 #'
