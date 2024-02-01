@@ -211,7 +211,7 @@ template_forest_tte <- function(dataname = "ANL",
 #' with `ADaM` structure
 #'
 #' @inheritParams module_arguments
-#' @inheritParams tm_g_forest_rsp
+#' @inheritParams template_forest_tte
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:

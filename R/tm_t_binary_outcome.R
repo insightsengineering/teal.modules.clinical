@@ -354,11 +354,7 @@ template_binary_outcome <- function(dataname,
 #' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html).
 #'
 #' @inheritParams module_arguments
-#' @param default_responses (`list` or `character`)\cr defines the default codes for the response variable in the
-#'   module per value of `paramcd`. If a `vector` is passed, values are transmitted for all `paramcd` values. If a
-#'   `list` is passed, it must be named and contain arrays, with each name corresponding to a single value of
-#'   `paramcd`. Each array may contain either default response values or two named arrays: `rsp` of default selected
-#'   response values, and `levels` of default level choices.
+#' @inheritParams template_binary_outcome
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
 #'
 #' @details

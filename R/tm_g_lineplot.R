@@ -202,8 +202,8 @@ template_g_lineplot <- function(dataname = "ANL",
 #' This teal module produces a grid style Line Plot for data with
 #' `ADaM` structure.
 #'
-#' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
+#' @inheritParams template_g_lineplot
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
