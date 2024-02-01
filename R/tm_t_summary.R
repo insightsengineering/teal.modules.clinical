@@ -198,7 +198,7 @@ template_summary <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_summary
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @inherit module_arguments return
 #'
 #' @examples
 #' # Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.
