@@ -364,13 +364,7 @@ template_binary_outcome <- function(dataname,
 #'   table, with the option to match the STREAM template `RSPT01`.
 #'
 #' @inheritParams module_arguments
-#' @param default_responses (`list` or `character`)\cr defines
-#'   the default codes for the response variable in the module per value of `paramcd`.
-#'   A passed vector is transmitted for all `paramcd` values. A passed `list` must be named
-#'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
-#'   may contain default response values or named arrays `rsp` of default selected response
-#'   values and `levels` of default level choices.
-#'
+#' @inheritParams template_binary_outcome
 #' @param rsp_table (`logical`)\cr should the initial set-up of the module match `RSPT01`. (default FALSE)
 #'
 #' @details Additional standard UI inputs include `responders`,

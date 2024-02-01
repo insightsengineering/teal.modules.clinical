@@ -36,6 +36,10 @@ defines whether the labels for \code{sum_vars} should display. For details see \
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
+
 \item{var_labels}{optional, (named \code{character})\cr variable labels for relabeling the analysis variables.}
 
 \item{na.rm}{(\code{logical})\cr whether \code{NA} values should be removed prior to analysis.}

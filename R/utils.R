@@ -124,34 +124,6 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
   str2lang(exprs)
 }
 
-
-#' Styled Code Printing
-#'
-#' Deparse an expression and display the code following NEST conventions.
-#'
-#' @param expr (`call`)\cr or possibly understood as so.
-#'
-#' @note The package `prettycode` must be installed to turn on colored output,
-#'   hence the warning.
-#'
-#' @export
-#'
-#' @examples
-#' expr <- quote(
-#'   rtables::basic_table() %>%
-#'     rtables::split_cols_by(var = "ARMCD") %>%
-#'     test_proportion_diff(
-#'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
-#'     ) %>%
-#'     rtables::build_table(df = dta)
-#' )
-#'
-#' teal.modules.clinical:::styled_expr(expr)
-styled_expr <- function(expr) { # nolint
-  styler::style_text(text = deparse(expr))
-}
-
-
 #' Expression List
 #'
 #' Add a new expression to a list (of expressions).
