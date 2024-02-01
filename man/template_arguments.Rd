@@ -10,6 +10,8 @@
 
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
+\item{atirel}{(\code{character})\cr name of time relation of medication variable.}
+
 \item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
 \item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
@@ -27,6 +29,12 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
 \item{by_vars}{(\code{character})\cr variable names used to split the summary by rows.}
+
+\item{cmdecod}{(\code{character})\cr name of standardized medication name variable.}
+
+\item{cmindc}{(\code{character})\cr name of indication variable.}
+
+\item{cmstdy}{(\code{character})\cr name of study relative day of start of medication variable.}
 
 \item{cnsr_var}{(\code{character})\cr name of the censoring variable.}
 
@@ -51,6 +59,8 @@ percentage is omitted.}
 When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
 \code{arm_var} levels are set to those used in the \code{parantname} dataset.}
 
+\item{font_size}{(\code{numeric})\cr font size value.}
+
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
@@ -70,6 +80,8 @@ interaction is not needed, the default option is \code{NULL}.}
 specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
+
+\item{patient_id}{(\code{character})\cr patient ID.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a

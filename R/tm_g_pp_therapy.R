@@ -1,22 +1,20 @@
-#' Template: Therapy
+#' Template: Patient Profile Therapy Plot
 #'
-#' Creates a therapy template call.
+#' Creates a valid expression to generate a [ggplot2::ggplot()] patient profile therapy plot using ADaM datasets.
 #'
 #' @inheritParams template_arguments
-#' @param atirel (`character`)\cr name of time relation of medication variable.
-#' @param cmdecod (`character`)\cr name of standardized medication name variable.
-#' @param cmindc (`character`)\cr name of indication variable.
 #' @param cmdose (`character`)\cr name of dose per administration variable.
 #' @param cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
 #' @param cmdosu (`character`)\cr name of dose units variable.
 #' @param cmroute (`character`)\cr name of route of administration variable.
 #' @param cmdosfrq (`character`)\cr name of dosing frequency per interval variable.
-#' @param cmstdy (`character`)\cr name of study day of start of medication variable.
 #' @param cmendy (`character`)\cr name of study day of end of medication variable.
-#' @param patient_id (`character`)\cr patient ID.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
-#' @keywords internal
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_g_pp_therapy()]
+#'
+#' @keywords internal
 template_therapy <- function(dataname = "ANL",
                              atirel = "ATIREL",
                              cmdecod = "CMDECOD",
@@ -230,36 +228,26 @@ template_therapy <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Patient Profile Therapy Teal Module
+#' teal Module: Patient Profile Therapy Plot
 #'
-#' This teal module produces a patient profile therapy plot using `ADaM` datasets.
+#' This module produces a [ggplot2::ggplot()] type patient profile therapy plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_therapy
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `ATIREL` column of the `ADCM` dataset.
-#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMDECOD` column of the `ADCM` dataset.
-#' @param cmdose ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMDOSE` column of the `ADCM` dataset.
-#' @param cmtrt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMTRT` column of the `ADCM` dataset.
-#' @param cmdosu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMDOSU` column of the `ADCM` dataset.
-#' @param cmroute ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMROUTE` column of the `ADCM` dataset.
-#' @param cmdosfrq ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMDOSFRQ` column of the `ADCM` dataset.
-#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMSTDY` column of the `ADCM` dataset.
-#' @param cmendy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMENDY` column of the `ADCM` dataset.
-#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMINDC` column of the `ADCM` dataset.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @param cmdose ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMDOSE` variable from `dataname`.
+#' @param cmtrt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMTRT` variable from `dataname`.
+#' @param cmdosu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMDOSU` variable from `dataname`.
+#' @param cmroute ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMROUTE` variable from `dataname`.
+#' @param cmdosfrq ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMDOSFRQ` variable from `dataname`.
+#' @param cmendy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMENDY` variable from `dataname`.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' library(nestcolor)
@@ -339,6 +327,7 @@ template_therapy <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_pp_therapy <- function(label,
                             dataname = "ADCM",
                             parentname = "ADSL",
@@ -412,6 +401,7 @@ tm_g_pp_therapy <- function(label,
   )
 }
 
+#' @keywords internal
 ui_g_therapy <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -531,7 +521,7 @@ ui_g_therapy <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_g_therapy <- function(id,
                           data,
                           reporter,
