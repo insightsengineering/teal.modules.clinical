@@ -120,6 +120,9 @@ records in \code{treatment_flag_var}.}
 
 \item{worst_flag_var}{(\code{character})\cr name of the worst flag variable.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
 The documentation to this function lists all the arguments in teal module
 templates that are used repeatedly to express an analysis.

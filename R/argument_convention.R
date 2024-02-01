@@ -79,6 +79,8 @@
 #' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #' @param worst_flag_var (`character`)\cr name of the worst flag variable.
 #'
+#' @return a `list` of expressions to generate a table or plot object.
+#'
 #' @name template_arguments
 #' @keywords internal
 NULL
@@ -168,7 +170,7 @@ NULL
 #' @param worst_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as worst flag variable.
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @return a `teal_module` object.
 #'
 #' @name module_arguments
 #' @keywords internal
