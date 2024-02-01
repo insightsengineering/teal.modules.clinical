@@ -1,5 +1,7 @@
 #' Template: Summary of Variables
 #'
+#' Creates a valid expression to generate a table to summarize variables.
+#'
 #' @inheritParams template_arguments
 #' @param show_labels (`character`)\cr defines whether variable labels should be displayed. Options are
 #'   `"default"`, `"visible"`, and `"hidden"`.
@@ -195,6 +197,8 @@ template_summary <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_summary
+#'
+#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
 #'
 #' @examples
 #' # Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.

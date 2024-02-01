@@ -64,7 +64,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Template: Summary of Variables
+Creates a valid expression to generate a table to summarize variables.
 }
 \seealso{
 \code{\link[=tm_t_summary]{tm_t_summary()}}
