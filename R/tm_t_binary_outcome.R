@@ -369,7 +369,7 @@ template_binary_outcome <- function(dataname,
 #'
 #' * Reference arms are automatically combined if multiple arms selected as reference group.
 #'
-#' @return a [teal::module()] object which can be added to a `teal` app via [teal::init()].
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
