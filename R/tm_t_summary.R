@@ -6,6 +6,8 @@
 #' @param show_labels (`character`)\cr defines whether variable labels should be displayed. Options are
 #'   `"default"`, `"visible"`, and `"hidden"`.
 #'
+#' @inherit template_arguments return
+#'
 #' @seealso [tm_t_summary()]
 #'
 #' @keywords internal
@@ -191,7 +193,7 @@ template_summary <- function(dataname,
   y
 }
 
-#' Teal Module: Summary of Variables
+#' teal Module: Summary of Variables
 #'
 #' This module produces a table to summarize variables.
 #'
@@ -199,6 +201,9 @@ template_summary <- function(dataname,
 #' @inheritParams template_summary
 #'
 #' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' # Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.

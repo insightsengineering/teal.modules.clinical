@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_summary.R
 \name{tm_t_summary}
 \alias{tm_t_summary}
-\title{Teal Module: Summary of Variables}
+\title{teal Module: Summary of Variables}
 \usage{
 tm_t_summary(
   label,
@@ -78,7 +78,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 This module produces a table to summarize variables.
@@ -114,4 +114,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

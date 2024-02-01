@@ -133,10 +133,6 @@ NULL
 #'   and contain arrays, each name corresponding to a single value of `paramcd`. Each array
 #'   may contain default response values or named arrays `rsp` of default selected response
 #'   values and `levels` of default level choices.
-#' @param denominator (`character`)\cr chooses how percentages are calculated. With option `N`, the reference
-#'   population from the column total is used as the denominator. With option
-#'   `n`, the number of non-missing records in this row and column intersection
-#'   is used as the denominator. If `omit` is chosen, then the percentage is omitted.
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each estimate.
 #'   Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param hlt (`choices_selected` or `data_extract_spec`)\cr name of the variable with high level term for events.
