@@ -81,6 +81,8 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
+\item{patient_id}{(\code{character})\cr patient ID.}
+
 \item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
 rates between any two columns.}
 

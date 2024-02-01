@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_basic_info.R
 \name{tm_t_pp_basic_info}
 \alias{tm_t_pp_basic_info}
-\title{Teal Module: Patient Profile Basic Info Teal Module}
+\title{teal Module: Patient Profile Basic Info}
 \usage{
 tm_t_pp_basic_info(
   label,
@@ -18,10 +18,10 @@ tm_t_pp_basic_info(
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{patient_col}{(\code{character})\cr patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ADSL} columns to be shown in Basic Info tab.}
+\item{vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr  object with all
+available choices and preselected option for variables from \code{dataname} to show in the "Basic Info" tab.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -29,8 +29,11 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a patient profile basic info report using \code{ADaM} datasets.
+This module produces a patient profile basic info report using ADaM datasets.
 }
 \examples{
 ADSL <- tmc_ex_adsl

@@ -2,18 +2,24 @@
 % Please edit documentation in R/tm_t_pp_basic_info.R
 \name{template_basic_info}
 \alias{template_basic_info}
-\title{Template: Basic Info}
+\title{Template: Patient Profile Basic Info}
 \usage{
 template_basic_info(dataname = "ANL", vars, patient_id = NULL)
 }
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{vars}{(\code{character})\cr variable names to be shown in Basic Info tab.}
+\item{vars}{(\code{character})\cr names of the variables to be shown in the "Basic Info" tab.}
 
 \item{patient_id}{(\code{character})\cr patient ID.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a basic info template.
+Creates a valid expression to generate a patient profile basic info report using ADaM datasets.
+}
+\seealso{
+\code{\link[=tm_t_pp_basic_info]{tm_t_pp_basic_info()}}
 }
 \keyword{internal}
