@@ -1,17 +1,16 @@
-#' Adverse Events Table by Standardized `MedDRA` Query
+#' Template: Adverse Events Table by Standardized MedDRA Query
+#'
+#' Creates a valid expression to generate an adverse events table by Standardized MedDRA Query.
 #'
 #' @inheritParams template_arguments
-#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
-#'  by decreasing total number of patients with event. Alternative option `alpha` sorts events
-#'  alphabetically.
-#' @param smq_varlabel (`character`)\cr label of the new column `SMQ`
-#' created by [tern::h_stack_by_baskets()].
-#' @param baskets (`character`)\cr
-#' variable names of the selected Standardized/Customized queries
+#' @param smq_varlabel (`character`)\cr label to use for new column `SMQ` created by [tern::h_stack_by_baskets()].
+#' @param baskets (`character`)\cr names of the selected standardized/customized queries variables.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_smq()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_smq <- function(dataname,
                          parentname,
                          arm_var,
@@ -305,17 +304,21 @@ template_smq <- function(dataname,
   y
 }
 
-#' Teal Module: `SMQ` Table
+#' teal Module: Adverse Events Table by Standardized MedDRA Query
 #'
-#' @description Adverse Events Table by Standardized `MedDRA` Query.
+#' This module produces an adverse events table by Standardized MedDRA Query.
+#'
 #' @inheritParams module_arguments
 #' @inheritParams template_smq
-#' @param baskets ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' object with all available choices and preselected options for Standardized/Customized queries
-#' @param scopes ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' object with all available choices for the scopes of Standardized queries.
+#' @param baskets ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected options for standardized/customized queries.
+#' @param scopes ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices for the scopes of standardized queries.
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' data <- teal_data()
@@ -366,6 +369,7 @@ template_smq <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_smq <- function(label,
                      dataname,
                      parentname = ifelse(
@@ -435,7 +439,7 @@ tm_t_smq <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_smq <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -522,6 +526,7 @@ ui_t_smq <- function(id, ...) {
   )
 }
 
+#' @keywords internal
 srv_t_smq <- function(id,
                       data,
                       reporter,
