@@ -1,6 +1,6 @@
 #' Template: Survival Forest Plot
 #'
-#' Creates a valid expression for survival forest plot.
+#' Creates a valid expression to generate a survival forest plot.
 #'
 #' @inheritParams template_arguments
 #' @inheritParams template_forest_rsp
@@ -8,8 +8,8 @@
 #' @inherit template_arguments return
 #'
 #' @seealso [tm_g_forest_tte()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_forest_tte <- function(dataname = "ANL",
                                 parentname = "ANL_ADSL",
                                 arm_var,
@@ -199,23 +199,17 @@ template_forest_tte <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Forest Survival Plot teal Module
+#' teal Module: Forest Survival Plot
 #'
-#' This teal module produces a grid style Forest plot for time-to-event data
-#' with `ADaM` structure
+#' This module produces a grid-style forest plot for time-to-event data with ADaM structure.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_forest_tte
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `caption`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#' @inherit module_arguments return
 #'
-#' @export
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' library(nestcolor)
@@ -274,6 +268,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_forest_tte <- function(label,
                             dataname,
                             parentname = ifelse(
@@ -354,7 +349,7 @@ tm_g_forest_tte <- function(label,
   )
 }
 
-
+#' @keywords internal
 ui_g_forest_tte <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -450,6 +445,7 @@ ui_g_forest_tte <- function(id, ...) {
   )
 }
 
+#' @keywords internal
 srv_g_forest_tte <- function(id,
                              data,
                              reporter,
