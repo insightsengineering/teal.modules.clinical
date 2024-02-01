@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_prior_medication.R
 \name{tm_t_pp_prior_medication}
 \alias{tm_t_pp_prior_medication}
-\title{teal Module: Patient Prior Medication}
+\title{teal Module: Patient Profile Prior Medication}
 \usage{
 tm_t_pp_prior_medication(
   label,
@@ -48,7 +48,7 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 a \code{teal_module} object.
 }
 \description{
-This module produces a patient prior medication report using ADaM datasets.
+This module produces a patient profile prior medication report using ADaM datasets.
 }
 \examples{
 ADCM <- tmc_ex_adcm

@@ -1,6 +1,6 @@
-#' Template: Patient Prior Medication
+#' Template: Patient Profile Prior Medication
 #'
-#' Creates a valid expression to generate a patient prior medication report using ADaM datasets.
+#' Creates a valid expression to generate a patient profile prior medication report using ADaM datasets.
 #'
 #' @inheritParams template_arguments
 #'
@@ -54,9 +54,9 @@ template_prior_medication <- function(dataname = "ANL",
   y
 }
 
-#' teal Module: Patient Prior Medication
+#' teal Module: Patient Profile Prior Medication
 #'
-#' This module produces a patient prior medication report using ADaM datasets.
+#' This module produces a patient profile prior medication report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_prior_medication
