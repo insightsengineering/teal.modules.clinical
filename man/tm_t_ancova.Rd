@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_ancova.R
 \name{tm_t_ancova}
 \alias{tm_t_ancova}
-\title{teal Module: ANCOVA}
+\title{teal Module: ANCOVA Summary}
 \usage{
 tm_t_ancova(
   label,
