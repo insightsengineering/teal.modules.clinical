@@ -32,7 +32,7 @@ arm/treatment variable, set to \code{NULL}.}
 
 \item{paramcd}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The \code{paramcd} argument is not used in this function.}
 
-\item{label_paramcd}{(\code{character})\cr Label of response parameter value to print in the table title.}
+\item{label_paramcd}{(\code{character})\cr label of response parameter value to print in the table title.}
 
 \item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
