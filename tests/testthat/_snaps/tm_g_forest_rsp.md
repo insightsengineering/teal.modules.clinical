@@ -32,7 +32,7 @@
       $plot
       {
           p <- decorate_grob(g_forest(tbl = result, col_symbol_size = NULL), 
-              titles = "Forest plot of best overall response for ", 
+              titles = "Forest Plot of Best Overall Response for ", 
               footnotes = "", gp_footnotes = grid::gpar(fontsize = 12))
           grid::grid.newpage()
           grid::grid.draw(p)

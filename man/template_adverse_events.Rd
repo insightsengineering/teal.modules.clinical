@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_adverse_events.R
 \name{template_adverse_events}
 \alias{template_adverse_events}
-\title{Template: Adverse Events Tab}
+\title{Template: Patient Profile Adverse Events Table and Plot}
 \usage{
 template_adverse_events(
   dataname = "ANL",
@@ -37,7 +37,7 @@ template_adverse_events(
 
 \item{patient_id}{(\code{character})\cr patient ID.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+\item{font_size}{(\code{numeric})\cr font size value.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
@@ -45,7 +45,13 @@ for the module plot. The argument is merged with option \code{teal.ggplot2_args}
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates an adverse events template call.
+Creates a valid expression to generate an adverse events table and \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plot using ADaM datasets.
+}
+\seealso{
+\code{\link[=tm_g_pp_adverse_events]{tm_g_pp_adverse_events()}}
 }
 \keyword{internal}
