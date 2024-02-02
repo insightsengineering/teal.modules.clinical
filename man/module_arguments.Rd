@@ -67,6 +67,8 @@ needed, the default option is \code{FALSE}.}
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
+
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
