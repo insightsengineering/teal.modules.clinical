@@ -178,8 +178,6 @@ template_g_ipp <- function(dataname = "ANL",
 #' @inheritParams template_g_ipp
 #' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as arm variable.
-#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
-#'   available choices and preselected option for variable values that can be used as analysis value unit variable.
 #'
 #' @inherit module_arguments return
 #'

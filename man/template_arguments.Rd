@@ -48,6 +48,8 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
+\item{control}{(\code{list})\cr list of settings for the analysis.}
+
 \item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
