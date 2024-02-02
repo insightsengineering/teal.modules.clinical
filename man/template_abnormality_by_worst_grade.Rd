@@ -31,16 +31,16 @@ template_abnormality_by_worst_grade(
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{atoxgr_var}{(\code{character})\cr the variable name indicating
+\item{atoxgr_var}{(\code{character})\cr name of the variable indicating
 Analysis Toxicity Grade.}
 
-\item{worst_high_flag_var}{(\code{character})\cr the variable name indicating
+\item{worst_high_flag_var}{(\code{character})\cr name of the variable indicating
 Worst High Grade flag}
 
-\item{worst_low_flag_var}{(\code{character})\cr the variable name indicating
+\item{worst_low_flag_var}{(\code{character})\cr name of the variable indicating
 Worst Low Grade flag}
 
-\item{worst_flag_indicator}{(\code{character})\cr value indicating worst grade.}
+\item{worst_flag_indicator}{(\code{character})\cr flag value indicating the worst grade.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -59,8 +59,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Laboratory test results with highest grade post-baseline
+Creates a valid expression to generate a table to summarize abnormality by grade.
 }
 \seealso{
 \code{\link[=tm_t_abnormality_by_worst_grade]{tm_t_abnormality_by_worst_grade()}}

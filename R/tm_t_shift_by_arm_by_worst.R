@@ -1,11 +1,9 @@
-#' Template: Shift by Arm
+#' Template: Shift by Arm by Worst Analysis Indicator Level
 #'
-#' Creates a valid expression to generate a summary table of analysis indicator levels by arm.
+#' Creates a valid expression to generate a summary table of worst analysis indicator variable level per subject by arm.
 #'
+#' @inheritParams template_shift_by_arm
 #' @inheritParams template_arguments
-#' @param add_total (`logical`)\cr whether to include row with total number of patients.
-#' @param aval_var (`character`)\cr name of the analysis reference range indicator variable.
-#' @param baseline_var (`character`)\cr name of the baseline reference range indicator variable.
 #' @param worst_flag (`character`)\cr value indicating worst analysis indicator level.
 #'
 #' @inherit template_arguments return
@@ -192,7 +190,6 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_arm_by_worst
-#' @param add_total (`logical`)\cr whether to include row with total number of patients.
 #'
 #' @inherit module_arguments return
 #'
