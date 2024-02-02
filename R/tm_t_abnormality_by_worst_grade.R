@@ -1,12 +1,17 @@
 #' Template: Laboratory test results with highest grade post-baseline
+#'
+#' Creates a valid expression to generate a table to summarize abnormality by grade.
+#'
 #' @inheritParams template_arguments
-#' @param atoxgr_var (`character`)\cr the variable name indicating
+#' @param atoxgr_var (`character`)\cr name of the variable indicating
 #' Analysis Toxicity Grade.
-#' @param worst_high_flag_var (`character`)\cr the variable name indicating
+#' @param worst_high_flag_var (`character`)\cr name of the variable indicating
 #' Worst High Grade flag
-#' @param worst_low_flag_var (`character`)\cr the variable name indicating
+#' @param worst_low_flag_var (`character`)\cr name of the variable indicating
 #' Worst Low Grade flag
-#' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
+#' @param worst_flag_indicator (`character`)\cr flag value indicating the worst grade.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_abnormality_by_worst_grade()]
 #' @keywords internal
@@ -226,8 +231,10 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   y
 }
 
-#' Teal Module: Laboratory test results with highest grade post-baseline
+#' teal Module: Laboratory test results with highest grade post-baseline
 #'
+#' This module produces a table to summarize laboratory test results with highest grade post-baseline
+
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality_by_worst_grade
 #' @param atoxgr_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
@@ -240,9 +247,15 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #' object with all available choices and preselected option for variable names that can be used as Worst Low Grade flag.
 #' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' value indicating worst grade.
+#'
+#' @inherit module_arguments return
+#'
 #' @seealso [template_abnormality_by_worst_grade()]
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @export
+#'
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -374,7 +387,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 
   ns <- shiny::NS(id)
@@ -471,7 +484,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_abnormality_by_worst_grade <- function(id, # nolint
                                              data,
                                              reporter,
