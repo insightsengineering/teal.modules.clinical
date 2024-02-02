@@ -3,7 +3,7 @@
 #' Creates a valid expression to generate a patient profile basic info report using ADaM datasets.
 #'
 #' @inheritParams template_arguments
-#' @param vars (`character`)\cr names of the variables to be shown in the "Basic Info" tab.
+#' @param vars (`character`)\cr names of the variables to be shown in the table.
 #'
 #' @inherit template_arguments return
 #'
@@ -62,7 +62,7 @@ template_basic_info <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams template_basic_info
 #' @param vars ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr  object with all
-#'   available choices and preselected option for variables from `dataname` to show in the "Basic Info" tab.
+#'   available choices and preselected option for variables from `dataname` to show in the table.
 #'
 #' @inherit module_arguments return
 #'

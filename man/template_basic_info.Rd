@@ -9,7 +9,7 @@ template_basic_info(dataname = "ANL", vars, patient_id = NULL)
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{vars}{(\code{character})\cr names of the variables to be shown in the "Basic Info" tab.}
+\item{vars}{(\code{character})\cr names of the variables to be shown in the table.}
 
 \item{patient_id}{(\code{character})\cr patient ID.}
 }
