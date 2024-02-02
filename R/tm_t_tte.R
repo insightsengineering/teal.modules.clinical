@@ -1,15 +1,15 @@
-#' Control Function for Time-to-Event Teal Module
+#' Control Function for Time-To-Event teal Module
 #'
-#' Controls the arguments for Cox regressions and Survival analysis results.
+#' Controls the arguments for Cox regression and survival analysis results.
 #'
-#' @param coxph (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_coxph()].
-#' @param surv_time (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_surv_time()].
-#' @param surv_timepoint (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_surv_timepoint()].
+#' @param coxph (`list`)\cr control parameters for Cox-PH model. See [tern::control_coxph()] for details.
+#' @param surv_time (`list`)\cr control parameters for `survfit` model. See [tern::control_surv_time()] for details.
+#' @param surv_timepoint (`list`)\cr control parameters for `survfit` model at time point. See
+#'   [tern::control_surv_timepoint()] for details.
+#'
+#' @seealso [template_tte()], [tm_t_tte()]
+#'
 #' @keywords internal
-#'
 control_tte <- function(
     surv_time = list(
       conf_level = 0.95,
@@ -32,20 +32,20 @@ control_tte <- function(
   )
 }
 
-
-#' Template: Time-to-Event
+#' Template: Time-To-Event
 #'
-#' Creates a valid expression for time-to-event analysis.
+#' Creates a valid expression to generate a time-to-event analysis.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis,
-#'   see [control_tte()].
+#' @param control (`list`)\cr list of settings for the analysis. See [control_tte()] for details.
 #' @param event_desc_var (`character`)\cr name of the variable with events description.
 #' @param paramcd (`character`)\cr endpoint parameter value to use in the table title.
 #'
-#' @seealso [tm_t_tte()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [control_tte()], [tm_t_tte()]
+#'
+#' @keywords internal
 template_tte <- function(dataname = "ANL",
                          parentname = "ADSL",
                          arm_var = "ARM",
@@ -375,8 +375,11 @@ template_tte <- function(dataname = "ANL",
   y
 }
 
-
-#' Teal Module: Time To Event Table Teal Module
+#' teal Module: Time-To-Event Table
+#'
+#' This module produces a time-to-event analysis summary table, consistent with the TLG Catalog
+#' template for `TTET01` available [here](
+#' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/ttet01.html).
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_tte
@@ -387,20 +390,21 @@ template_tte <- function(dataname = "ANL",
 #' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
 #'   information, optional.
 #'
-#' @details This module produces a response summary table that is similar to `TTET01`. The core functionality is based
-#'   on [coxph_pairwise()], [surv_timepoint()] and [surv_time()] from package `tern`.\cr
-#'   The following variables are used in the module:
+#' @details
+#' * The core functionality of this module is based on [coxph_pairwise()], [surv_timepoint()], and [surv_time()] from
+#' the `tern` package.
+#' * The arm and stratification variables are taken from the `parentname` data.
+#' * The following variables are used in the module:
 #'
-#' \tabular{ll}{
-#'  `AVAL` \tab time to event\cr
-#'  `CNSR` \tab boolean or 0,1 is element in `AVAL` censored\cr
-#'  `PARAMCD` \tab variable used to filter for endpoint (e.g. OS), after
-#'  filtering for `paramcd` one observation per patient is expected
-#' }
+#'   * `AVAL`: time to event
+#'   * `CNSR`: 1 if record in `AVAL` is censored, 0 otherwise
+#'   * `PARAMCD`: variable used to filter for endpoint (e.g. OS). After
+#'     filtering for `PARAMCD` one observation per patient is expected
 #'
-#' The arm and stratification variables and taken from the `parentname` data.
+#' @inherit module_arguments return
 #'
-#' @export
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -456,6 +460,7 @@ template_tte <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_tte <- function(label,
                      dataname,
                      parentname = ifelse(
@@ -536,7 +541,7 @@ tm_t_tte <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_tte <- function(id, ...) {
   a <- list(...) # module args
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -724,7 +729,7 @@ ui_t_tte <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_tte <- function(id,
                       data,
                       filter_panel_api,
