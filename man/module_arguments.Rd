@@ -36,6 +36,8 @@ confidence level, each within range of (0, 1).}
 \item{cov_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the covariates variables.}
 
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
+
 \item{default_responses}{(\code{list} or \code{character})\cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.
 A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named

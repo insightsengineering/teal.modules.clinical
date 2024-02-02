@@ -34,9 +34,10 @@
 #'   population from the column total is used as the denominator. With option `n`, the number of non-missing
 #'   records in this row and column intersection is used as the denominator. If `omit` is chosen, then the
 #'   percentage is omitted.
-#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
-#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
-#'   `arm_var` levels are set to those used in the `parantname` dataset.
+#' @param drop_arm_levels (`logical`)\cr whether to drop unused levels of `arm_var`. If `TRUE`, `arm_var` levels are
+#'   set to those used in the `dataname` dataset. If `FALSE`, `arm_var` levels are set to those used in the
+#'   `parentname` dataset. If `dataname` and `parentname` are the same, then `drop_arm_levels` is set to `TRUE` and
+#'   user input for this parameter is ignored.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
@@ -54,6 +55,8 @@
 #'   in character or factor variables in the data. Defaults to `"<Missing>"`. To set a
 #'   default `na_level` to apply in all modules, run `set_default_na_str("new_default")`.
 #' @param na.rm (`logical`)\cr whether `NA` values should be removed prior to analysis.
+#' @param numeric_stats (`character`)\cr names of statistics to display for numeric summary variables. Available
+#'   statistics are `n`, `mean_sd`, `mean_ci`, `median`, `median_ci`, `quantiles`, `range`, and `geom_mean`.
 #' @param paramcd (`character`)\cr variable value designating the studied parameter.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
@@ -123,6 +126,7 @@ NULL
 #'   confidence level, each within range of (0, 1).
 #' @param cov_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the covariates variables.
+#' @param dataname (`character`)\cr analysis data used in teal module.
 #' @param default_responses (`list` or `character`)\cr defines
 #'   the default codes for the response variable in the module per value of `paramcd`.
 #'   A passed vector is transmitted for all `paramcd` values. A passed `list` must be named
