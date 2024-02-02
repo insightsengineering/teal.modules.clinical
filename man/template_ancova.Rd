@@ -51,7 +51,7 @@ label of value variable used for title rendering.}
 \item{interact_var}{(\code{character})\cr name of the variable that should have interactions with arm. If the
 interaction is not needed, the default option is \code{NULL}.}
 
-\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select the
+\item{interact_y}{(\code{character})\cr a selected item from the \code{interact_var} column which will be used to select the
 specific ANCOVA results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{paramcd_levels}{(\code{character})\cr
