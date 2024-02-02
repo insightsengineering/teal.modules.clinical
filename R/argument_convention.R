@@ -56,6 +56,7 @@
 #' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select the
 #'   specific `ANCOVA` results. If the interaction is not needed, the default option is `FALSE`.
 #' @param llt (`character`)\cr name of the variable with low level term for events.
+#' @param patient_id (`character`)\cr patient ID.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values
 #'   in character or factor variables in the data. Defaults to `"<Missing>"`. To set a
 #'   default `na_level` to apply in all modules, run `set_default_na_str("new_default")`.
