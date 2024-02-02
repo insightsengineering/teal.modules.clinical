@@ -55,9 +55,8 @@ option for variable names that can be used as \code{visit} variable. Must be a f
 \item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the analysis variable.}
 
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices
-and preselected option for variable values that can be used as \code{avalu_var}.}
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for the analysis unit variable.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
