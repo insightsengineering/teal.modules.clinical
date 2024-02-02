@@ -1,4 +1,4 @@
-#' Template: ANCOVA summary
+#' Template: ANCOVA Summary
 #'
 #' Creates a valid expression to generate an analysis of variance summary table.
 
@@ -23,7 +23,6 @@
 #' @seealso [tm_t_ancova()]
 #'
 #' @keywords internal
-#'
 template_ancova <- function(dataname = "ANL",
                             parentname = "ADSL",
                             arm_var,
@@ -417,7 +416,7 @@ template_ancova <- function(dataname = "ANL",
   y
 }
 
-#' teal Module: ANCOVA
+#' teal Module: ANCOVA Summary
 #'
 #' This module produces a table to summarize analysis of variance.
 #'
