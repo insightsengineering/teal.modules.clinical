@@ -17,6 +17,7 @@
 #' @param avalu `r lifecycle::badge("deprecated")` Please use the `avalu_var` argument instead.
 #' @param avalu_var (`character`)\cr name of the analysis value unit variable.
 #' @param aval_var (`character`)\cr name of the analysis value variable.
+#' @param baseline_var (`character`)\cr name of the variable for baseline values of the analysis variable.
 #' @param base_var `r lifecycle::badge("deprecated")` Please use the `baseline_var` argument instead.
 #' @param basic_table_args optional, (`basic_table_args`)\cr object created by [teal.widgets::basic_table_args()]
 #'   with settings for the module table. The argument is merged with option `teal.basic_table_args` and with default
