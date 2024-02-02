@@ -31,8 +31,8 @@ template_summary(
 
 \item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
 
-\item{show_labels}{(\code{character})\cr
-defines whether the labels for \code{sum_vars} should display. For details see \code{\link[rtables:analyze]{rtables::analyze()}}.}
+\item{show_labels}{(\code{character})\cr defines whether variable labels should be displayed. Options are
+\code{"default"}, \code{"visible"}, and \code{"hidden"}.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -48,9 +48,8 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{numeric_stats}{(\code{character})\cr
-selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
-\code{median}, \code{median_ci}, \code{quantiles}, \code{range} and \code{geom_mean}. All are selected by default.}
+\item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
+statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
 \item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option \code{n}, the number of non-missing
@@ -68,8 +67,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Summary of Variables
+Creates a valid expression to generate a table to summarize variables.
 }
 \seealso{
 \code{\link[=tm_t_summary]{tm_t_summary()}}
