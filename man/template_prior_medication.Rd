@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_prior_medication.R
 \name{template_prior_medication}
 \alias{template_prior_medication}
-\title{Template: Prior Medication}
+\title{Template: Patient Profile Prior Medication}
 \usage{
 template_prior_medication(
   dataname = "ANL",
@@ -21,9 +21,15 @@ template_prior_medication(
 
 \item{cmindc}{(\code{character})\cr name of indication variable.}
 
-\item{cmstdy}{(\code{character})\cr name of study day of start of medication variable.}
+\item{cmstdy}{(\code{character})\cr name of study relative day of start of medication variable.}
+}
+\value{
+a \code{list} of expressions to generate a table or plot object.
 }
 \description{
-Creates a prior medication template.
+Creates a valid expression to generate a patient profile prior medication report using ADaM datasets.
+}
+\seealso{
+\code{\link[=tm_t_pp_prior_medication]{tm_t_pp_prior_medication()}}
 }
 \keyword{internal}
