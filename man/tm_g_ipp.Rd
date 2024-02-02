@@ -45,7 +45,8 @@ tm_g_ipp(
 object with all available choices
 and preselected option for variable values that can be used as \code{arm_var}.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object specifying the variable name for subject id.}
 

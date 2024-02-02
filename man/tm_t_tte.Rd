@@ -53,7 +53,8 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr names of the variables for stratified analysis.}
 

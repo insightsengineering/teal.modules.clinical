@@ -163,7 +163,8 @@ NULL
 #'   needed, the default option is `FALSE`.
 #' @param label (`character`)\cr menu item label of the module in the teal app.
 #' @param llt (`choices_selected` or `data_extract_spec`)\cr name of the variable with low level term for events.
-#' @param paramcd (`choices_selected` or `data_extract_spec`)\cr variable value designating the studied parameter.
+#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the parameter code variable from `dataname`.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_col (`character`)\cr name of patient ID variable.
 #' @param plot_height optional, (`numeric`)\cr a vector of length three with `c(value, min, max)`. Specifies the
