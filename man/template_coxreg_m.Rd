@@ -36,7 +36,7 @@ template_coxreg_m(
 
 \item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{at}{(\code{list} of \code{numeric})\cr when the candidate covariate is a
 \code{numeric}, use \code{at} to specify the value of the covariate at which the

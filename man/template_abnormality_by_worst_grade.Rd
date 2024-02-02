@@ -29,7 +29,7 @@ template_abnormality_by_worst_grade(
 
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{atoxgr_var}{(\code{character})\cr name of the variable indicating
 Analysis Toxicity Grade.}

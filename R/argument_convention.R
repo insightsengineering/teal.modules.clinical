@@ -62,7 +62,7 @@
 #' @param na.rm (`logical`)\cr whether `NA` values should be removed prior to analysis.
 #' @param numeric_stats (`character`)\cr names of statistics to display for numeric summary variables. Available
 #'   statistics are `n`, `mean_sd`, `mean_ci`, `median`, `median_ci`, `quantiles`, `range`, and `geom_mean`.
-#' @param paramcd (`character`)\cr variable value designating the studied parameter.
+#' @param paramcd (`character`)\cr name of the parameter code variable.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_id (`character`)\cr patient ID.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
