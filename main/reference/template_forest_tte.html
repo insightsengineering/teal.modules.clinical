@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9050</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9052</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,16 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -119,7 +109,7 @@
 
 
 <dt>obj_var_name</dt>
-<dd><p>(<code>character</code>)<br> additional text string append to output title.</p></dd>
+<dd><p>(<code>character</code>)<br> additional text to append to the table title.</p></dd>
 
 
 <dt>aval_var</dt>
@@ -143,7 +133,7 @@
 
 
 <dt>col_symbol_size</dt>
-<dd><p>(<code>integer</code>)<br> column index to be used to determine relative size for
+<dd><p>(<code>integer</code> or <code>NULL</code>)<br> column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 to calculate the estimator. If <code>NULL</code>, the same symbol size is used for all subgroups.</p></dd>
 
@@ -153,12 +143,9 @@ to calculate the estimator. If <code>NULL</code>, the same symbol size is used f
 
 
 <dt>ggplot2_args</dt>
-<dd><p>optional, (<code>ggplot2_args</code>)<br>
-object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings for the module plot.
-For this module, this argument will only accept <code>ggplot2_args</code> object with <code>labs</code> list of following child elements:
-<code>title</code>, <code>caption</code>.
-No other elements would be taken into account. The argument is merged with option <code>teal.ggplot2_args</code> and
-with default module arguments (hard coded in the module body).</p>
+<dd><p>optional, (<code>ggplot2_args</code>)<br> object created by <code><a href="https://rdrr.io/pkg/teal.widgets/man/ggplot2_args.html" class="external-link">teal.widgets::ggplot2_args()</a></code> with settings
+for the module plot. The argument is merged with option <code>teal.ggplot2_args</code> and with default module arguments
+(hard coded in the module body).</p>
 <p>For more details, see the vignette: <code>vignette("custom-ggplot2-arguments", package = "teal.widgets")</code>.</p></dd>
 
 </dl></div>
