@@ -12,6 +12,7 @@
 #' @param add_total (`logical`)\cr whether to include column with total number of patients.
 #' @param anl_name (`character`)\cr analysis data used in teal module.
 #' @param arm_var (`character`)\cr variable names that can be used as `arm_var`.
+#' @param atirel (`character`)\cr name of time relation of medication variable.
 #' @param aval `r lifecycle::badge("deprecated")` Please use the `aval_var` argument instead.
 #' @param avalu `r lifecycle::badge("deprecated")` Please use the `avalu_var` argument instead.
 #' @param avalu_var (`character`)\cr name of the analysis value unit variable.
@@ -23,6 +24,9 @@
 #'
 #'   For more details, see the vignette: `vignette("custom-basic-table-arguments", package = "teal.widgets")`.
 #' @param by_vars (`character`)\cr variable names used to split the summary by rows.
+#' @param cmdecod (`character`)\cr name of standardized medication name variable.
+#' @param cmindc (`character`)\cr name of indication variable.
+#' @param cmstdy (`character`)\cr name of study relative day of start of medication variable.
 #' @param cnsr_var (`character`)\cr name of the censoring variable.
 #' @param combine_comp_arms (`logical`)\cr triggers the combination of comparison arms.
 #' @param compare_arm (`logical`)\cr triggers the comparison between study arms.
@@ -52,7 +56,6 @@
 #' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select the
 #'   specific `ANCOVA` results. If the interaction is not needed, the default option is `FALSE`.
 #' @param llt (`character`)\cr name of the variable with low level term for events.
-#' @param patient_id (`character`)\cr patient ID.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values
 #'   in character or factor variables in the data. Defaults to `"<Missing>"`. To set a
 #'   default `na_level` to apply in all modules, run `set_default_na_str("new_default")`.
@@ -116,6 +119,8 @@ NULL
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
+#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `ATIREL` variable from `dataname`.
 #' @param aval_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the analysis variable.
 #' @param avisit (`choices_selected` or `data_extract_spec`)\cr value of analysis visit `AVISIT` of interest.
@@ -123,6 +128,12 @@ NULL
 #'   all available choices and preselected option for variable values that can be used as `baseline_var`.
 #' @param by_vars (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for variable names used to split the summary by rows.
+#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMDECOD` variable from `dataname`.
+#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMINDC` variable from `dataname`.
+#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMSTDY` variable from `dataname`.
 #' @param cnsr_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the censoring variable.
 #' @param conf_level (`choices_selected`)\cr object with all available choices and preselected option for the

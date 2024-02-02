@@ -16,6 +16,9 @@ It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
+\item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{ATIREL} variable from \code{dataname}.}
+
 \item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the analysis variable.}
 
@@ -26,6 +29,15 @@ all available choices and preselected option for variable values that can be use
 
 \item{by_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for variable names used to split the summary by rows.}
+
+\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{CMDECOD} variable from \code{dataname}.}
+
+\item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{CMINDC} variable from \code{dataname}.}
+
+\item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{CMSTDY} variable from \code{dataname}.}
 
 \item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the censoring variable.}
