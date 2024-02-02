@@ -1,6 +1,7 @@
-#' Template: `ANCOVA` summary
+#' Template: ANCOVA Summary
 #'
-#' Creates a valid expression for analysis of variance summary table.
+#' Creates a valid expression to generate an analysis of variance summary table.
+
 #' @inheritParams template_arguments
 #' @param paramcd_levels (`character`)\cr
 #'   variable levels for the studied parameter.
@@ -12,10 +13,16 @@
 #'   label of value variable used for title rendering.
 #' @param label_paramcd (`character`)\cr
 #'   variable label used for title rendering.
+#' @param interact_var (`character`)\cr name of the variable that should have interactions with arm. If the
+#'   interaction is not needed, the default option is `NULL`.
+#' @param interact_y (`character`)\cr a selected item from the `interact_var` column which will be used to select the
+#'   specific ANCOVA results. If the interaction is not needed, the default option is `FALSE`.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_ancova()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_ancova <- function(dataname = "ANL",
                             parentname = "ADSL",
                             arm_var,
@@ -409,10 +416,14 @@ template_ancova <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: `ANCOVA` Teal Module
+#' teal Module: ANCOVA Summary
+#'
+#' This module produces a table to summarize analysis of variance.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_ancova
+#'
+#' @inherit module_arguments return
 #'
 #' @details This module produces an analysis of variance summary table that is
 #' similar to `AOVT01` when multiple endpoints are selected.
@@ -428,6 +439,9 @@ template_ancova <- function(dataname = "ANL",
 #' }
 #'
 #' @export
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -556,7 +570,7 @@ tm_t_ancova <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_ancova <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -661,7 +675,7 @@ ui_ancova <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_ancova <- function(id,
                        data,
                        reporter,

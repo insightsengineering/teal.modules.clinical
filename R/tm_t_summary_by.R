@@ -1,18 +1,18 @@
 #' Template: Summarize Variables by Row Groups Module
 #'
+#' Creates a valid expression to generate a table to summarize variables by row groups.
+#'
 #' @inheritParams template_arguments
-#' @param parallel_vars (`logical`)\cr used to display `summarize_vars` as parallel columns
-#'  (`FALSE` on default). Can be used only if all chosen analysis variables are numeric.
-#' @param row_groups (`logical`)\cr used to display `summarize_vars` as row groups
-#'  (`FALSE` on default).
-#' @param numeric_stats (`character`)\cr
-#'  selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'  `median`, `median_ci`, `quantiles`, `range`. All are selected by default.
-#' @param drop_zero_levels (`logical`)\cr used to remove rows with zero counts from the result table.
+#' @param parallel_vars (`logical`)\cr whether summarized variables should be arranged in columns. Can only be set to
+#' `TRUE` if all chosen analysis variables are numeric.
+#' @param row_groups (`logical`)\cr whether summarized variables should be arranged in row groups.
+#' @param drop_zero_levels (`logical`)\cr whether rows with zero counts in all columns should be removed from the table.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_summary_by()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_summary_by <- function(parentname,
                                 dataname,
                                 arm_var,
@@ -105,7 +105,6 @@ template_summary_by <- function(parentname,
       }
     )
   }
-
 
   table_title <- paste("Summary Table for", paste(sum_vars, collapse = ", "), "by", paste(by_vars, collapse = ", "))
 
@@ -314,21 +313,18 @@ template_summary_by <- function(parentname,
   y
 }
 
-#' Teal Module: Summarize Variables by Row Groups Module
+#' teal Module: Summarize Variables by Row Groups
 #'
-#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
-#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
-#'   `arm_var` levels are set to those used in the `parentname` dataset.
-#'   If `dataname` dataset and `parentname` dataset are the same (i.e. `ADSL`), then `drop_arm_levels` will always be
-#'   TRUE regardless of the user choice when `tm_t_summary_by` is called.
-#' @param numeric_stats (`character`)\cr
-#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `range`, `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are selected.
-#' @param drop_zero_levels (`logical`)\cr used to remove rows with zero counts from the result table.
+#' This module produces a table to summarize variables by row groups.
+#'
 #' @inheritParams module_arguments
 #' @inheritParams template_summary_by
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
+#'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADLB <- tmc_ex_adlb
@@ -370,6 +366,8 @@ template_summary_by <- function(parentname,
 #' if (interactive()) {
 #'   shinyApp(app$ui, app$server)
 #' }
+#'
+#' @export
 tm_t_summary_by <- function(label,
                             dataname,
                             parentname = ifelse(
@@ -455,7 +453,7 @@ tm_t_summary_by <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_summary_by <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -576,8 +574,7 @@ ui_summary_by <- function(id, ...) {
   )
 }
 
-
-#' @noRd
+#' @keywords internal
 srv_summary_by <- function(id,
                            data,
                            reporter,

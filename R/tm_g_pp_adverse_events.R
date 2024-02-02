@@ -1,6 +1,6 @@
-#' Template: Adverse Events Tab
+#' Template: Patient Profile Adverse Events Table and Plot
 #'
-#' Creates an adverse events template call.
+#' Creates a valid expression to generate an adverse events table and [ggplot2::ggplot()] plot using ADaM datasets.
 #'
 #' @inheritParams template_arguments
 #' @param aeterm (`character`)\cr name of the reported term for the adverse event variable.
@@ -10,10 +10,12 @@
 #' @param action (`character`)\cr name of action taken with study treatment variable.
 #' @param time (`character`)\cr name of study day of start of adverse event variable.
 #' @param decod (`character`)\cr name of dictionary derived term variable.
-#' @param patient_id (`character`)\cr patient ID.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
-#' @keywords internal
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_g_pp_adverse_events()]
+#'
+#' @keywords internal
 template_adverse_events <- function(dataname = "ANL",
                                     aeterm = "AETERM",
                                     tox_grade = "AETOXGR",
@@ -163,31 +165,28 @@ template_adverse_events <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Patient Profile Adverse Events Teal Module
+#' teal Module: Patient Profile Adverse Events Table and Plot
 #'
-#' This teal module produces a patient profile adverse events table and plot using `ADaM` datasets.
+#' This module produces an adverse events table and [ggplot2::ggplot()] type plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_adverse_events
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param aeterm
-#' ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AETERM` column of the `ADAE` dataset.
-#' @param tox_grade ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AETOXGR` column of the `ADAE` dataset.
-#' @param causality ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AEREL` column of the `ADAE` dataset.
-#' @param outcome ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AEOUT` column of the `ADAE` dataset.
-#' @param action ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AEACN` column of the `ADAE` dataset.
-#' @param time ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `ASTDY` column of the `ADAE` dataset.
-#' @param decod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AEDECOD` column of the `ADAE` dataset.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @param aeterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `AETERM` variable from `dataname`.
+#' @param tox_grade ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `AETOXGR` variable from `dataname`.
+#' @param causality ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `AEREL` variable from `dataname`.
+#' @param outcome ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `AEOUT` variable from `dataname`.
+#' @param action ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `AEACN` variable from `dataname`.
+#' @param time ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `ASTDY` variable from `dataname`.
+#' @param decod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `AEDECOD` variable from `dataname`.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' library(nestcolor)
@@ -243,6 +242,7 @@ template_adverse_events <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_pp_adverse_events <- function(label,
                                    dataname = "ADAE",
                                    parentname = "ADSL",
@@ -310,6 +310,7 @@ tm_g_pp_adverse_events <- function(label,
   )
 }
 
+#' @keywords internal
 ui_g_adverse_events <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -411,7 +412,7 @@ ui_g_adverse_events <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_g_adverse_events <- function(id,
                                  data,
                                  filter_panel_api,
