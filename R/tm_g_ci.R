@@ -1,21 +1,21 @@
 #' Template: Confidence Interval Plot
 #'
-#' Writes the expressions to filter data and draw confidence interval
-#' estimation.
+#' Creates a valid expression to generate a [ggplot2::ggplot()] confidence interval plot.
 #'
 #' @inheritParams template_arguments
-#' @param x_var (`character`)\cr treatment variable corresponding to the x axis.
-#' @param y_var (`character`)\cr response variable corresponding to the y axis.
-#' @param grp_var (`character`)\cr group variable corresponding to the colors
-#'  point shape and line type.
-#' @param stat (`character`)\cr either `mean` or `median`.
-#' @param unit_var (`character`)\cr variable name in `dataname` where the unit is
-#'  read.
+#' @param x_var (`character`)\cr name of the treatment variable to put on the x-axis.
+#' @param y_var (`character`)\cr name of the response variable to put on the y-axis.
+#' @param grp_var (`character`)\cr name of the group variable used to determine the plot colors, point shapes,
+#'   and line types.
+#' @param stat (`character`)\cr statistic to plot. Options are `"mean"` and `"median"`.
+#' @param unit_var (`character`)\cr name of the unit variable.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_g_ci()]
-#' @keywords internal
 #'
-template_g_ci <- function(dataname, # nolint
+#' @keywords internal
+template_g_ci <- function(dataname,
                           x_var,
                           y_var,
                           grp_var = NULL,
@@ -178,16 +178,19 @@ template_g_ci <- function(dataname, # nolint
   )
 }
 
-#' Teal Module: Confidence Interval Plot (`CIG01`)
+#' teal Module: Confidence Interval Plot
 #'
-#' The module generates the R code and returns the corresponding output.
+#' This module produces a [ggplot2::ggplot()] type confidence interval plot consistent with the TLG Catalog template
+#' `CIG01` available [here](https://insightsengineering.github.io/tlg-catalog/stable/graphs/other/cig01.html).
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_ci
-#' @param color (`data_extract_spec`)\cr the group variable (color, line type
-#'   and point shape).
+#' @param color (`data_extract_spec`)\cr the group variable used to determine the plot colors, shapes, and line types.
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' library(nestcolor)
@@ -263,6 +266,7 @@ template_g_ci <- function(dataname, # nolint
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_ci <- function(label,
                     x_var,
                     y_var,
@@ -312,7 +316,8 @@ tm_g_ci <- function(label,
   )
 }
 
-ui_g_ci <- function(id, ...) { # nolint
+#' @keywords internal
+ui_g_ci <- function(id, ...) {
   ns <- shiny::NS(id)
   args <- list(...)
 
@@ -363,7 +368,8 @@ ui_g_ci <- function(id, ...) { # nolint
   )
 }
 
-srv_g_ci <- function(id, # nolint
+#' @keywords internal
+srv_g_ci <- function(id,
                      data,
                      reporter,
                      filter_panel_api,
