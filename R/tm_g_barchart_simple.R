@@ -587,12 +587,12 @@ srv_g_barchart_simple <- function(id,
 #'
 #' @inheritParams tm_g_barchart_simple
 #' @param yname (`character` or `NULL`)\cr name of the y-axis variable.
-#' @param xname (`character` or `NULL`)\cr name of the x-axis variable. Defaults to `NULL` because it is dependant
+#' @param xname (`character` or `NULL`)\cr name of the x-axis variable. Defaults to `NULL` because it is dependent
 #'   on extract input which can be empty.
 #' @param fill_name (`character` or `NULL`)\cr name of the variable to determine the bar fill color.
 #' @param x_facet_name (`character` or `NULL`)\cr name of the variable to use for horizontal plot faceting.
 #' @param y_facet_name (`character` or `NULL`)\cr name of the variable to use for vertical plot faceting.
-#' @param label_bars (`logical` or `NULL`)\cr whether bars should be labelled. If `TRUE`, label bar numbers would
+#' @param label_bars (`logical` or `NULL`)\cr whether bars should be labeled. If `TRUE`, label bar numbers would
 #'   also be drawn as text.
 #' @param barlayout (`character` or `NULL`)\cr type of the bar layout. Options are `"stacked"` (default) or
 #'   `"side_by_side"`.
