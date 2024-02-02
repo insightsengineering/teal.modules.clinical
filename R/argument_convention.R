@@ -42,6 +42,8 @@
 #'   set to those used in the `dataname` dataset. If `FALSE`, `arm_var` levels are set to those used in the
 #'   `parentname` dataset. If `dataname` and `parentname` are the same, then `drop_arm_levels` is set to `TRUE` and
 #'   user input for this parameter is ignored.
+#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment). Default
+#'   is `"event"`.
 #' @param font_size (`numeric`)\cr font size value.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
