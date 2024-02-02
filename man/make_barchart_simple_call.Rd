@@ -28,7 +28,7 @@ make_barchart_simple_call(
 
 \item{y_facet_name}{(\code{character} or \code{NULL})\cr name of the variable to use for vertical plot faceting.}
 
-\item{label_bars}{(\code{logical} or \code{NULL})\cr whether bars should be labelled. If \code{TRUE}, label bar numbers would
+\item{label_bars}{(\code{logical} or \code{NULL})\cr whether bars should be labeled. If \code{TRUE}, label bar numbers would
 also be drawn as text.}
 
 \item{barlayout}{(\code{character} or \code{NULL})\cr type of the bar layout. Options are \code{"stacked"} (default) or
@@ -55,7 +55,7 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 
 \item{yname}{(\code{character} or \code{NULL})\cr name of the y-axis variable.}
 
-\item{xname}{(\code{character} or \code{NULL})\cr name of the x-axis variable. Defaults to \code{NULL} because it is dependant
+\item{xname}{(\code{character} or \code{NULL})\cr name of the x-axis variable. Defaults to \code{NULL} because it is dependent
 on extract input which can be empty.}
 }
 \value{
