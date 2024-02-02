@@ -59,6 +59,7 @@
 #'   statistics are `n`, `mean_sd`, `mean_ci`, `median`, `median_ci`, `quantiles`, `range`, and `geom_mean`.
 #' @param paramcd (`character`)\cr variable value designating the studied parameter.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
+#' @param patient_id (`character`)\cr patient ID.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
 #'   rates between any two columns.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
@@ -146,6 +147,7 @@ NULL
 #' @param llt (`choices_selected` or `data_extract_spec`)\cr name of the variable with low level term for events.
 #' @param paramcd (`choices_selected` or `data_extract_spec`)\cr variable value designating the studied parameter.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
+#' @param patient_col (`character`)\cr name of patient ID variable.
 #' @param plot_height optional, (`numeric`)\cr a vector of length three with `c(value, min, max)`. Specifies the
 #'   height of the main plot and renders a slider on the plot to interactively adjust the plot height.
 #' @param plot_width optional, (`numeric`)\cr a vector of length three with `c(value, min, max)`. Specifies the width

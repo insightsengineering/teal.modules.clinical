@@ -85,6 +85,8 @@ statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{me
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
+\item{patient_id}{(\code{character})\cr patient ID.}
+
 \item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
 rates between any two columns.}
 
