@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_smq.R
 \name{template_smq}
 \alias{template_smq}
-\title{Adverse Events Table by Standardized \code{MedDRA} Query}
+\title{Template: Adverse Events Table by Standardized MedDRA Query}
 \usage{
 template_smq(
   dataname,
@@ -35,9 +35,8 @@ template_smq(
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
-by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
-alphabetically.}
+\item{sort_criteria}{(\code{character})\cr criteria to use to sort the table. Default option \code{freq_desc} sorts by
+decreasing total number of patients with event. Alternative option \code{alpha} sorts events alphabetically.}
 
 \item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
 set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
@@ -48,11 +47,9 @@ user input for this parameter is ignored.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ}
-created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
+\item{smq_varlabel}{(\code{character})\cr label to use for new column \code{SMQ} created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 
-\item{baskets}{(\code{character})\cr
-variable names of the selected Standardized/Customized queries}
+\item{baskets}{(\code{character})\cr names of the selected standardized/customized queries variables.}
 
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
@@ -62,8 +59,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Adverse Events Table by Standardized \code{MedDRA} Query
+Creates a valid expression to generate an adverse events table by Standardized MedDRA Query.
 }
 \seealso{
 \code{\link[=tm_t_smq]{tm_t_smq()}}
