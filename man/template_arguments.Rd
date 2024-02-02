@@ -46,6 +46,8 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
+\item{control}{(\code{list})\cr list of settings for the analysis.}
+
 \item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
@@ -60,6 +62,9 @@ set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var
 \code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
 user input for this parameter is ignored.}
 
+\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
+is \code{"event"}.}
+
 \item{font_size}{(\code{numeric})\cr font size value.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
@@ -73,12 +78,6 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
-
-\item{interact_var}{(\code{character})\cr name of the variable that should have interactions with arm. If the
-interaction is not needed, the default option is \code{NULL}.}
-
-\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select the
-specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
@@ -103,6 +102,9 @@ rates between any two columns.}
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
+
+\item{sort_criteria}{(\code{character})\cr criteria to use to sort the table. Default option \code{freq_desc} sorts by
+decreasing total number of patients with event. Alternative option \code{alpha} sorts events alphabetically.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 

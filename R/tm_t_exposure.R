@@ -219,8 +219,6 @@ template_exposure <- function(parentname,
 #' @param parcat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for
 #'   parameter category values.
-#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with the analysis unit variable.
 #' @param paramcd_label (`character`)\cr
 #'   the column from the dataset where the value will be used to label the argument `paramcd`.
 #'

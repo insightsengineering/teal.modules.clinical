@@ -178,9 +178,6 @@ template_g_ipp <- function(dataname = "ANL",
 #' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices
 #'   and preselected option for variable values that can be used as `arm_var`.
-#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices
-#'   and preselected option for variable values that can be used as `avalu_var`.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
 #' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
 #' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:

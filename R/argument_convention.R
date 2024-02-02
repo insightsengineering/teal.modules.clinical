@@ -32,6 +32,7 @@
 #' @param compare_arm (`logical`)\cr triggers the comparison between study arms.
 #' @param comp_arm (`character`)\cr the level of comparison arm in case of arm comparison.
 #' @param conf_level (`numeric`)\cr value for the confidence level within the range of (0, 1).
+#' @param control (`list`)\cr list of settings for the analysis.
 #' @param cov_var (`character`)\cr names of the covariates variables.
 #' @param dataname (`character`)\cr analysis data used in teal module.
 #' @param denominator (`character`)\cr chooses how percentages are calculated. With option `N`, the reference
@@ -42,6 +43,8 @@
 #'   set to those used in the `dataname` dataset. If `FALSE`, `arm_var` levels are set to those used in the
 #'   `parentname` dataset. If `dataname` and `parentname` are the same, then `drop_arm_levels` is set to `TRUE` and
 #'   user input for this parameter is ignored.
+#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment). Default
+#'   is `"event"`.
 #' @param font_size (`numeric`)\cr font size value.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
@@ -51,11 +54,8 @@
 #' @param hlt (`character`)\cr name of the variable with high level term for events.
 #' @param id_var (`character`)\cr the variable name for subject id.
 #' @param include_interact (`logical`)\cr whether an interaction term should be included in the model.
-#' @param interact_var (`character`)\cr name of the variable that should have interactions with arm. If the
-#'   interaction is not needed, the default option is `NULL`.
-#' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select the
-#'   specific `ANCOVA` results. If the interaction is not needed, the default option is `FALSE`.
 #' @param llt (`character`)\cr name of the variable with low level term for events.
+#' @param patient_id (`character`)\cr patient ID.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values
 #'   in character or factor variables in the data. Defaults to `"<Missing>"`. To set a
 #'   default `na_level` to apply in all modules, run `set_default_na_str("new_default")`.
@@ -69,6 +69,8 @@
 #'   rates between any two columns.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param ref_arm (`character`)\cr the level of reference arm in case of arm comparison.
+#' @param sort_criteria (`character`)\cr criteria to use to sort the table. Default option `freq_desc` sorts by
+#'   decreasing total number of patients with event. Alternative option `alpha` sorts events alphabetically.
 #' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
 #' @param sum_vars (`character`)\cr names of the variables that should be summarized.
@@ -123,6 +125,8 @@ NULL
 #'   available choices and preselected option for the `ATIREL` variable from `dataname`.
 #' @param aval_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the analysis variable.
+#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#'   all available choices and preselected option for the analysis unit variable.
 #' @param avisit (`choices_selected` or `data_extract_spec`)\cr value of analysis visit `AVISIT` of interest.
 #' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as `baseline_var`.

@@ -1,14 +1,18 @@
 #' Template: Abnormality Summary Table
 #'
+#' Creates a valid expression to generate a table to summarize abnormality.
+#'
 #' @inheritParams template_arguments
 #' @param exclude_base_abn (`logical`)\cr whether to exclude patients who had abnormal values at baseline.
-#' @param grade (`character`)\cr name of the variable that can be used to
+#' @param grade (`character`)\cr name of the variable used to
 #'   specify the abnormality grade. Variable must be factor.
 #' @param abnormal (`named list`)\cr indicating abnormality direction and grades.
 #' @param baseline_var (`character`)\cr
-#'   name of the variable for baseline abnormality grade.
-#' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
+#'   name of the variable specifying baseline abnormality grade.
+#' @param na_level (`character`)\cr the NA level in the input dataset, defaults to `"<Missing>"`.
 #' @param tbl_title (`character`)\cr Title with label of variables from by bars
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_abnormality()]
 #' @keywords internal
@@ -221,7 +225,9 @@ template_abnormality <- function(parentname,
 }
 
 
-#' Teal Module: Abnormality Summary Table
+#' teal Module: Abnormality Summary Table
+#'
+#' This module produces a table to summarize abnormality.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality
@@ -237,6 +243,10 @@ template_abnormality <- function(parentname,
 #'   excluded in accordance with `GDSR` specifications by using `exclude_base_abn`.
 #'
 #' @export
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
+#'
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
@@ -373,7 +383,7 @@ tm_t_abnormality <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_abnormality <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -471,7 +481,7 @@ ui_t_abnormality <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_abnormality <- function(id,
                               data,
                               reporter,
