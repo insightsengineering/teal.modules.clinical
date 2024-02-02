@@ -61,7 +61,7 @@ an optimal tick position on the x axis.}
 object with all available choices and preselected option
 for variable names that can be used for facet plotting.}
 
-\item{font_size}{(\code{number})\cr font size to be used.}
+\item{font_size}{(\code{numeric})\cr font size value.}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
