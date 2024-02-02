@@ -29,26 +29,22 @@ template_events_summary(
 
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{dthfl_var}{(\code{character})\cr
-variable for subject death flag from \code{parentname}. Records with `"Y"`` are summarized in
-the table row for "Total number of deaths".}
+\item{dthfl_var}{(\code{character})\cr name of variable for subject death flag from \code{parentname}.
+Records with \code{"Y"} are summarized in the table row for "Total number of deaths".}
 
-\item{dcsreas_var}{(\code{character})\cr
-variable for study discontinuation reason from \code{parentname}. Records with \code{"ADVERSE EVENTS"}
-are summarized in the table row for \code{"Total number of patients withdrawn from study due to an AE"}.}
+\item{dcsreas_var}{(\code{character})\cr name of variable for study discontinuation reason from \code{parentname}.
+Records with \code{"ADVERSE EVENTS"} are summarized in the table row for
+"Total number of patients withdrawn from study due to an AE".}
 
-\item{flag_var_anl}{(\code{character})\cr
-flag variable from \code{dataset} used to count adverse event sub-groups (e.g. Serious
-events, Related events, etc.). Variable labels are used as table row names if they exist.}
+\item{flag_var_anl}{(\code{character})\cr name of flag variable from \code{dataset} used to count adverse event sub-groups
+(e.g. Serious events, Related events, etc.). Variable labels are used as table row names if they exist.}
 
-\item{flag_var_aesi}{(\code{character})\cr
-flag variable from \code{dataset} used to count adverse event special interest groups.
-All flag variables must be of type \code{logical}. Variable labels are used as table
-row names if they exist.}
+\item{flag_var_aesi}{(\code{character})\cr name of flag variable from \code{dataset} used to count adverse event special
+interest groups. All flag variables must be of type \code{logical}. Variable labels are used as table row names if
+they exist.}
 
-\item{aeseq_var}{(\code{character})\cr
-variable for adverse events sequence number from \code{dataset}. Used for counting total
-number of events.}
+\item{aeseq_var}{(\code{character})\cr name of variable for adverse events sequence number from \code{dataset}. Used for
+counting total number of events.}
 
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
@@ -62,20 +58,20 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{count_subj}{(\code{logical})\cr w
-whether to show count of unique subjects based on \code{USUBJID}. Only applies if event flag
-variables are provided.}
+\item{count_subj}{(\code{logical})\cr whether to show count of unique subjects (based on \code{USUBJID}). Only applies if
+event flag variables are provided.}
 
-\item{count_pt}{(\code{logical})\cr
-whether to show count of unique preferred terms based on \code{llt}. Only applies if event
+\item{count_pt}{(\code{logical})\cr whether to show count of unique preferred terms (based on \code{llt}). Only applies if
+event flag variables are provided.}
+
+\item{count_events}{(\code{logical})\cr whether to show count of events (based on \code{aeseq_var}). Only applies if event
 flag variables are provided.}
-
-\item{count_events}{(\code{logical})\cr
-whether to show count of events based on \code{aeseq_var}. Only applies if event flag variables
-are provided.}
+}
+\value{
+a \code{list} of expressions to generate a table or plot object.
 }
 \description{
-Template: Adverse Events Summary
+Creates a valid expression to generate an adverse events summary table.
 }
 \seealso{
 \code{\link[=tm_t_events_summary]{tm_t_events_summary()}}
