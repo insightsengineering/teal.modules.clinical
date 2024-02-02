@@ -12,6 +12,7 @@
 #' @param add_total (`logical`)\cr whether to include column with total number of patients.
 #' @param anl_name (`character`)\cr analysis data used in teal module.
 #' @param arm_var (`character`)\cr variable names that can be used as `arm_var`.
+#' @param atirel (`character`)\cr name of time relation of medication variable.
 #' @param aval `r lifecycle::badge("deprecated")` Please use the `aval_var` argument instead.
 #' @param avalu `r lifecycle::badge("deprecated")` Please use the `avalu_var` argument instead.
 #' @param avalu_var (`character`)\cr name of the analysis value unit variable.
@@ -23,6 +24,9 @@
 #'
 #'   For more details, see the vignette: `vignette("custom-basic-table-arguments", package = "teal.widgets")`.
 #' @param by_vars (`character`)\cr variable names used to split the summary by rows.
+#' @param cmdecod (`character`)\cr name of standardized medication name variable.
+#' @param cmindc (`character`)\cr name of indication variable.
+#' @param cmstdy (`character`)\cr name of study relative day of start of medication variable.
 #' @param cnsr_var (`character`)\cr name of the censoring variable.
 #' @param combine_comp_arms (`logical`)\cr triggers the combination of comparison arms.
 #' @param compare_arm (`logical`)\cr triggers the comparison between study arms.
@@ -38,6 +42,7 @@
 #'   set to those used in the `dataname` dataset. If `FALSE`, `arm_var` levels are set to those used in the
 #'   `parentname` dataset. If `dataname` and `parentname` are the same, then `drop_arm_levels` is set to `TRUE` and
 #'   user input for this parameter is ignored.
+#' @param font_size (`numeric`)\cr font size value.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
@@ -110,6 +115,8 @@ NULL
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
+#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `ATIREL` variable from `dataname`.
 #' @param aval_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the analysis variable.
 #' @param avisit (`choices_selected` or `data_extract_spec`)\cr value of analysis visit `AVISIT` of interest.
@@ -117,6 +124,12 @@ NULL
 #'   all available choices and preselected option for variable values that can be used as `baseline_var`.
 #' @param by_vars (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for variable names used to split the summary by rows.
+#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMDECOD` variable from `dataname`.
+#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMINDC` variable from `dataname`.
+#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMSTDY` variable from `dataname`.
 #' @param cnsr_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the censoring variable.
 #' @param conf_level (`choices_selected`)\cr object with all available choices and preselected option for the
@@ -132,6 +145,7 @@ NULL
 #'   values and `levels` of default level choices.
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each estimate.
 #'   Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
+#' @param font_size (`numeric`)\cr numeric vector of length 3 of current, minimum and maximum font size values.
 #' @param hlt (`choices_selected` or `data_extract_spec`)\cr name of the variable with high level term for events.
 #' @param id_var (`choices_selected` or `data_extract_spec`)\cr object specifying the variable name for subject id.
 #' @param interact_var (`character`)\cr name of the variable that should have interactions
