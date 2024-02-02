@@ -1,18 +1,22 @@
-#' Simple bar chart plot that shows counts per category.
+#' teal Module: Simple Bar Chart and Table of Counts per Category
 #'
-#' Categories can be defined up to four levels deep and are defined through
-#' `x`, `fill`, `x_facet` and `y_facet`. If any of them is `NULL`,
-#' it is ignored.
+#' This module produces a [ggplot2::ggplot()] type bar chart and summary table of counts per category.
+#'
+#' Categories can be defined up to four levels deep and are defined through the `x`, `fill`,
+#' `x_facet`, and `y_facet` parameters. Any parameters set to `NULL` (default) are ignored.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_arguments
 #' @param x (`data_extract_spec`)\cr variable on the x-axis.
-#' @param fill (`data_extract_spec`)\cr grouping variable assigned to the bar colors.
-#' @param x_facet (`data_extract_spec`)\cr faceting groups on the row dimension.
-#' @param y_facet (`data_extract_spec`)\cr faceting groups on the col dimension.
+#' @param fill (`data_extract_spec`)\cr grouping variable to determine bar colors.
+#' @param x_facet (`data_extract_spec`)\cr row-wise faceting groups.
+#' @param y_facet (`data_extract_spec`)\cr column-wise faceting groups.
 #' @param plot_options (`list`)\cr list of plot options.
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' library(nestcolor)
@@ -128,6 +132,8 @@
 #' if (interactive()) {
 #'   shinyApp(app$ui, app$server)
 #' }
+#'
+#' @export
 tm_g_barchart_simple <- function(x = NULL,
                                  fill = NULL,
                                  x_facet = NULL,
@@ -188,6 +194,7 @@ tm_g_barchart_simple <- function(x = NULL,
   )
 }
 
+#' @keywords internal
 ui_g_barchart_simple <- function(id, ...) {
   ns <- shiny::NS(id)
   args <- list(...)
@@ -317,6 +324,7 @@ ui_g_barchart_simple <- function(id, ...) {
   )
 }
 
+#' @keywords internal
 srv_g_barchart_simple <- function(id,
                                   data,
                                   reporter,
@@ -573,50 +581,38 @@ srv_g_barchart_simple <- function(id,
   })
 }
 
-
-
 # Helper functions for qenv ----
 
 #' `ggplot2` call to generate simple bar chart
 #'
-#' `ggplot2` call to generate simple bar chart
-#' @param yname (`NULL`, `character(1)`)\cr
-#'  name of the `yaxis` variable.
-#' @param xname (`NULL`, `character(1)`)\cr
-#'  name of the `xaxis` variable.
-#' @param fill_name (`NULL`, `character(1)`)\cr
-#'  name of the variable distinguishing the color of the fill.
-#' @param x_facet_name (`NULL`, `character(1)`)\cr
-#'  name of the variable to facet the plot horizontally.
-#' @param y_facet_name (`NULL`, `character(1)`)\cr
-#'  name of the variable to facet the plot vertically.
-#' @param label_bars (`NULL`, `logical(1)`)\cr
-#'  whether to label bars.
-#' @param barlayout (`NULL`, `character(1)`)\cr
-#'  `type of the layout - "side_by_side"` or `"stacked"` (default).
-#' @param flip_axis (`NULL`, `character(1)`)\cr
-#'  whether to flip axis.
-#' @param rotate_bar_labels (`NULL`, `logical(1)`)\cr
-#'  whether to rotate bar label by 45 degrees.
-#' @param rotate_x_label (`NULL`, `logical(1)`)\cr
-#'  whether to rotate x-axis label by 45 degrees.
-#' @param rotate_y_label (`NULL`, `logical(1)`)\cr
-#'  whether to rotate y-axis label by 45 degrees.
-#' @param expand_y_range (`NULL`, `numeric(1)`)\cr
-#'  fraction of y-axis range to expand further up.
-#' @param facet_scales (`fixed`, `free_x`, `free_y` or `free`)\cr value
-#'  passed to `scales` argument of `ggplot2::facet_grid`
 #' @inheritParams tm_g_barchart_simple
-#' @examples
-#' teal.modules.clinical:::make_barchart_simple_call(y_name = "y", x_name = "x")
-#' @return `call`
+#' @param yname (`character` or `NULL`)\cr name of the y-axis variable.
+#' @param xname (`character` or `NULL`)\cr name of the x-axis variable. Defaults to `NULL` because it is dependant
+#'   on extract input which can be empty.
+#' @param fill_name (`character` or `NULL`)\cr name of the variable to determine the bar fill color.
+#' @param x_facet_name (`character` or `NULL`)\cr name of the variable to use for horizontal plot faceting.
+#' @param y_facet_name (`character` or `NULL`)\cr name of the variable to use for vertical plot faceting.
+#' @param label_bars (`logical` or `NULL`)\cr whether bars should be labelled. If `TRUE`, label bar numbers would
+#'   also be drawn as text.
+#' @param barlayout (`character` or `NULL`)\cr type of the bar layout. Options are `"stacked"` (default) or
+#'   `"side_by_side"`.
+#' @param flip_axis (`character` or `NULL`)\cr whether to flip the plot axis.
+#' @param rotate_bar_labels (`logical` or `NULL`)\cr whether bar labels should be rotated by 45 degrees.
+#' @param rotate_x_label (`logical` or `NULL`)\cr whether x-axis labels should be rotated by 45 degrees.
+#' @param rotate_y_label (`logical` or `NULL`)\cr whether y-axis labels should be rotated by 45 degrees.
+#' @param expand_y_range (`numeric` or `NULL`)\cr fraction of y-axis range to further expand by.
+#' @param facet_scales (`character`)\cr value passed to `scales` argument of [ggplot2::facet_grid()]. Options are
+#'   `fixed`, `free_x`, `free_y`, and `free`.
+#'
+#' @return `call` to produce a `ggplot` object.
+#'
 #' @keywords internal
 make_barchart_simple_call <- function(y_name,
-                                      x_name = NULL, # NULL because it depends on extract input which might be empty
+                                      x_name = NULL,
                                       fill_name = NULL,
                                       x_facet_name = NULL,
                                       y_facet_name = NULL,
-                                      label_bars = TRUE, # whether to also draw numbers as text, i.e. label bars
+                                      label_bars = TRUE,
                                       barlayout = c("side_by_side", "stacked"),
                                       flip_axis = FALSE,
                                       rotate_bar_labels = FALSE,
@@ -768,7 +764,6 @@ count_by_group_expr <- function(groupby_vars, data_name = "counts") {
     keep.source = FALSE
   )
 }
-
 
 get_facet_scale <- function(x, y) {
   facet_scale_x <- if (isTRUE(x)) {
