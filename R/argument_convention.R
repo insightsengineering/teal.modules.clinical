@@ -69,6 +69,8 @@
 #'   rates between any two columns.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param ref_arm (`character`)\cr the level of reference arm in case of arm comparison.
+#' @param sort_criteria (`character`)\cr criteria to use to sort the table. Default option `freq_desc` sorts by
+#'   decreasing total number of patients with event. Alternative option `alpha` sorts events alphabetically.
 #' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
 #' @param sum_vars (`character`)\cr names of the variables that should be summarized.

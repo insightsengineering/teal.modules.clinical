@@ -103,6 +103,9 @@ rates between any two columns.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
+\item{sort_criteria}{(\code{character})\cr criteria to use to sort the table. Default option \code{freq_desc} sorts by
+decreasing total number of patients with event. Alternative option \code{alpha} sorts events alphabetically.}
+
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
 \item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
