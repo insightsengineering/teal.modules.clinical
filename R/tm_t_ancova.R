@@ -15,7 +15,7 @@
 #'   variable label used for title rendering.
 #' @param interact_var (`character`)\cr name of the variable that should have interactions with arm. If the
 #'   interaction is not needed, the default option is `NULL`.
-#' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select the
+#' @param interact_y (`character`)\cr a selected item from the `interact_var` column which will be used to select the
 #'   specific ANCOVA results. If the interaction is not needed, the default option is `FALSE`.
 #'
 #' @inherit template_arguments return
