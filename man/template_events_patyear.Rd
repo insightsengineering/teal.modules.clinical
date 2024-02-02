@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_events_patyear.R
 \name{template_events_patyear}
 \alias{template_events_patyear}
-\title{Template: Event rates adjusted for patient-years}
+\title{Template: Event Rates Adjusted for Patient-Years}
 \usage{
 template_events_patyear(
   dataname,
@@ -26,9 +26,9 @@ template_events_patyear(
 
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{events_var}{(\code{integer})\cr number of observed events.}
+\item{events_var}{(\code{character})\cr name of the variable for number of observed events.}
 
-\item{label_paramcd}{(\code{string})\cr title of table based on \code{paramcd}}
+\item{label_paramcd}{(\code{character})\cr \code{paramcd} variable text to use in the table title.}
 
 \item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
@@ -55,8 +55,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Event rates adjusted for patient-years
+Creates a valid expression to generate a table of event rates adjusted for patient-years.
 }
 \seealso{
 \code{\link[=tm_t_events_patyear]{tm_t_events_patyear()}}

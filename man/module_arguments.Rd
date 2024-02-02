@@ -22,6 +22,9 @@ available choices and preselected option for the \code{ATIREL} variable from \co
 \item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the analysis variable.}
 
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for the analysis unit variable.}
+
 \item{avisit}{(\code{choices_selected} or \code{data_extract_spec})\cr value of analysis visit \code{AVISIT} of interest.}
 
 \item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
