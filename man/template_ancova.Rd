@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_ancova.R
 \name{template_ancova}
 \alias{template_ancova}
-\title{Template: \code{ANCOVA} summary}
+\title{Template: ANCOVA summary}
 \usage{
 template_ancova(
   dataname = "ANL",
@@ -52,7 +52,7 @@ label of value variable used for title rendering.}
 interaction is not needed, the default option is \code{NULL}.}
 
 \item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select the
-specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
+specific ANCOVA results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{paramcd_levels}{(\code{character})\cr
 variable levels for the studied parameter.}
@@ -77,8 +77,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression for analysis of variance summary table.
+Creates a valid expression to generate an analysis of variance summary table.
 }
 \seealso{
 \code{\link[=tm_t_ancova]{tm_t_ancova()}}

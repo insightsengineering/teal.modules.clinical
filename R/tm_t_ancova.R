@@ -1,6 +1,7 @@
-#' Template: `ANCOVA` summary
+#' Template: ANCOVA summary
 #'
-#' Creates a valid expression for analysis of variance summary table.
+#' Creates a valid expression to generate an analysis of variance summary table.
+
 #' @inheritParams template_arguments
 #' @param paramcd_levels (`character`)\cr
 #'   variable levels for the studied parameter.
@@ -15,9 +16,12 @@
 #' @param interact_var (`character`)\cr name of the variable that should have interactions with arm. If the
 #'   interaction is not needed, the default option is `NULL`.
 #' @param interact_y (`character`)\cr a selected item from the interact_var column which will be used to select the
-#'   specific `ANCOVA` results. If the interaction is not needed, the default option is `FALSE`.
+#'   specific ANCOVA results. If the interaction is not needed, the default option is `FALSE`.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_ancova()]
+#'
 #' @keywords internal
 #'
 template_ancova <- function(dataname = "ANL",
@@ -39,17 +43,17 @@ template_ancova <- function(dataname = "ANL",
                             visit_var = "AVISIT",
                             conf_level = 0.95,
                             basic_table_args = teal.widgets::basic_table_args()) {
-  checkmate::assert(
-    checkmate::assert_string(dataname),
-    checkmate::assert_string(parentname),
-    checkmate::assert_string(arm_var),
-    checkmate::assert_string(label_aval) || is.null(label_aval),
-    checkmate::assert_flag(combine_comp_arms),
-    checkmate::assert_string(aval_var),
+  assertthat::assert_that(
+    assertthat::is.string(dataname),
+    assertthat::is.string(parentname),
+    assertthat::is.string(arm_var),
+    assertthat::is.string(label_aval) || is.null(label_aval),
+    assertthat::is.flag(combine_comp_arms),
+    assertthat::is.string(aval_var),
     is.character(cov_var),
-    checkmate::assert_flag(include_interact),
-    all(sapply(interact_y, checkmate::assert_string)) || isFALSE(interact_y),
-    checkmate::assert_string(interact_var) || is.null(interact_var)
+    assertthat::is.flag(include_interact),
+    all(sapply(interact_y, assertthat::is.string)) || isFALSE(interact_y),
+    assertthat::is.string(interact_var) || is.null(interact_var)
   )
 
   y <- list()
@@ -413,10 +417,14 @@ template_ancova <- function(dataname = "ANL",
   y
 }
 
-#' teal Module: `ANCOVA` teal Module
+#' teal Module: ANCOVA
+#'
+#' This module produces a table to summarize analysis of variance.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_ancova
+#'
+#' @inherit module_arguments return
 #'
 #' @details This module produces an analysis of variance summary table that is
 #' similar to `AOVT01` when multiple endpoints are selected.
@@ -432,6 +440,9 @@ template_ancova <- function(dataname = "ANL",
 #' }
 #'
 #' @export
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -560,7 +571,7 @@ tm_t_ancova <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_ancova <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -665,7 +676,7 @@ ui_ancova <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_ancova <- function(id,
                        data,
                        reporter,
