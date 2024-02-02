@@ -48,6 +48,8 @@ confidence level, each within range of (0, 1).}
 \item{cov_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the covariates variables.}
 
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
+
 \item{default_responses}{(\code{list} or \code{character})\cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.
 A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named
@@ -57,6 +59,8 @@ values and \code{levels} of default level choices.}
 
 \item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
+
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
 \item{hlt}{(\code{choices_selected} or \code{data_extract_spec})\cr name of the variable with high level term for events.}
 
