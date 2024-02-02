@@ -44,7 +44,7 @@ template_forest_tte(
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{col_symbol_size}{(\code{integer})\cr column index to be used to determine relative size for
+\item{col_symbol_size}{(\code{integer} or \code{NULL})\cr column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 to calculate the estimator. If \code{NULL}, the same symbol size is used for all subgroups.}
 

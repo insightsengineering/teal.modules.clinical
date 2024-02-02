@@ -39,12 +39,11 @@ template_forest_rsp(
 
 \item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
 
-\item{strata_var}{(\code{character})\cr
-names of the variables for stratified analysis.}
+\item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{col_symbol_size}{(\code{integer})\cr column index to be used to determine relative size for
+\item{col_symbol_size}{(\code{integer} or \code{NULL})\cr column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 to calculate the estimator. If \code{NULL}, the same symbol size is used for all subgroups.}
 
@@ -55,8 +54,11 @@ merged with option \code{teal.ggplot2_args} and with default module arguments (h
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression for response forest plot.
+Creates a valid expression to generate a response forest plot.
 }
 \seealso{
 \code{\link[=tm_g_forest_rsp]{tm_g_forest_rsp()}}

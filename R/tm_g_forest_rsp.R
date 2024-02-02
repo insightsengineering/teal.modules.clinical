@@ -1,15 +1,14 @@
 #' Template: Response Forest Plot
 #'
-#' Creates a valid expression for response forest plot.
+#' Creates a valid expression to generate a response forest plot.
 #'
 #' @inheritParams template_arguments
 #' @param obj_var_name (`character`)\cr additional text to append to the table title.
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
-#' @param col_symbol_size (`integer`)\cr column index to be used to determine relative size for
+#' @param col_symbol_size (`integer` or `NULL`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
-#' @param strata_var (`character`)\cr
-#'   names of the variables for stratified analysis.
+#' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. For this module, this argument will only accept `ggplot2_args` object with `labs` list of
 #'   following child elements: `title`, `caption`. No other elements would be taken into account. The argument is
@@ -17,9 +16,11 @@
 #'
 #'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
-#' @seealso [tm_g_forest_rsp()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [tm_g_forest_rsp()]
+#'
+#' @keywords internal
 template_forest_rsp <- function(dataname = "ANL",
                                 parentname = "ADSL",
                                 arm_var,
@@ -158,7 +159,7 @@ template_forest_rsp <- function(dataname = "ANL",
   all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
     user_plot = ggplot2_args,
     module_plot = teal.widgets::ggplot2_args(
-      labs = list(title = paste0("Forest plot of best overall response for ", obj_var_name), caption = "")
+      labs = list(title = paste0("Forest Plot of Best Overall Response for ", obj_var_name), caption = "")
     )
   )
 
@@ -190,24 +191,17 @@ template_forest_rsp <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Forest Response Plot teal module
+#' teal Module: Forest Response Plot
 #'
-#' This teal module produces a grid style Forest plot for response data with `ADaM` structure.
+#' This module produces a grid-style forest plot for response data with ADaM structure.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_forest_rsp
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `caption`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#' @inherit module_arguments return
 #'
-#' @export
-#'
-#' @template author_song24
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' library(nestcolor)
@@ -290,6 +284,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_forest_rsp <- function(label,
                             dataname,
                             parentname = ifelse(
@@ -367,7 +362,7 @@ tm_g_forest_rsp <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_g_forest_rsp <- function(id, ...) {
   a <- list(...) # module args
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
@@ -450,6 +445,7 @@ ui_g_forest_rsp <- function(id, ...) {
   )
 }
 
+#' @keywords internal
 srv_g_forest_rsp <- function(id,
                              data,
                              reporter,
