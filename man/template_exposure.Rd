@@ -33,13 +33,13 @@ template_exposure(
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
 \item{paramcd_label}{(\code{character})\cr
-the column from the dataset where the value will be used to label the argument \code{paramcd}.}
+the column from the \code{dataname} dataset where the value will be used to label the argument \code{paramcd}.}
 
 \item{row_by_var}{(\code{character})\cr
-variable name used to split the rows.}
+variable name used to split the values by rows.}
 
 \item{col_by_var}{(\code{character})\cr
-variable name used to split the columns.}
+variable name used to split the values by columns.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -47,10 +47,12 @@ variable name used to split the columns.}
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{add_total_row}{(\code{flag})\cr whether a "total" level should be added after the others which includes all the
+\item{add_total_row}{(\code{flag})\cr
+whether a "total" level should be added after the others which includes all the
 levels that constitute the split. A custom label can be set for this level via the \code{total_row_label} argument.}
 
-\item{total_row_label}{(\code{character})\cr string to display as total row label if row is enabled (see \code{add_total_row}).}
+\item{total_row_label}{(\code{character})\cr
+string to display as total row label if row is enabled (see \code{add_total_row}).}
 
 \item{drop_levels}{(\code{flag})\cr
 whether empty rows should be removed from the table.}
@@ -69,8 +71,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Exposure Table for Risk management plan
+Creates a valid expression to generate exposure table for risk management plan.
 }
 \seealso{
 \code{\link[=tm_t_exposure]{tm_t_exposure()}}

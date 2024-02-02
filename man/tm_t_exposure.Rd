@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_exposure.R
 \name{tm_t_exposure}
 \alias{tm_t_exposure}
-\title{Teal module: Exposure Table for Risk management plan}
+\title{teal Module: Exposure Table for Risk management plan}
 \usage{
 tm_t_exposure(
   label,
@@ -69,10 +69,12 @@ object with the analysis unit variable.}
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{add_total_row}{(\code{flag})\cr whether a "total" level should be added after the others which includes all the
+\item{add_total_row}{(\code{flag})\cr
+whether a "total" level should be added after the others which includes all the
 levels that constitute the split. A custom label can be set for this level via the \code{total_row_label} argument.}
 
-\item{total_row_label}{(\code{character})\cr string to display as total row label if row is enabled (see \code{add_total_row}).}
+\item{total_row_label}{(\code{character})\cr
+string to display as total row label if row is enabled (see \code{add_total_row}).}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
@@ -90,8 +92,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal module: Exposure Table for Risk management plan
+The module produces an exposure table for risk management plan.
 }
 \examples{
 data <- teal_data()
@@ -148,4 +153,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
