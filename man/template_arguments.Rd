@@ -77,12 +77,6 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
 
-\item{interact_var}{(\code{character})\cr name of the variable that should have interactions with arm. If the
-interaction is not needed, the default option is \code{NULL}.}
-
-\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select the
-specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
-
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
