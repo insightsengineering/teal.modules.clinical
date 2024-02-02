@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_summary.R
 \name{tm_t_summary}
 \alias{tm_t_summary}
-\title{Teal Module: Summary of Variables}
+\title{teal Module: Summary of Variables}
 \usage{
 tm_t_summary(
   label,
@@ -31,9 +31,10 @@ tm_t_summary(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
+\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices
+and preselected option for variable names that can be used as \code{arm_var}.
+It defines the grouping variable(s) in the results table.
+If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
 \item{summarize_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr names of the variables that should be
@@ -51,21 +52,18 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{numeric_stats}{(\code{character})\cr
-selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
-\code{median}, \code{median_ci}, \code{quantiles}, \code{range} and \code{geom_mean}. By default,  \code{n}, \code{mean_sd}, \code{median}, \code{range} are
-selected.}
+\item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
+statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
 \item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option \code{n}, the number of non-missing
 records in this row and column intersection is used as the denominator. If \code{omit} is chosen, then the
 percentage is omitted.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parentname} dataset.
-If \code{dataname} dataset and \code{parentname} dataset are the same (i.e. \code{ADSL}), then \code{drop_arm_levels} will always be
-TRUE regardless of the user choice when \code{tm_t_summary} is called.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -79,19 +77,16 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Summary of Variables
+This module produces a table to summarize variables.
 }
 \examples{
-# Preparation of the test case
+# Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.
 ADSL <- tmc_ex_adsl
 ADSL$EOSDY[1] <- NA_integer_
-
-# Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
-stopifnot(
-  any(is.na(ADSL$EOSDY)),
-  any(is.na(ADSL$DCSREAS))
-)
 
 app <- init(
   data = cdisc_data(
@@ -99,10 +94,6 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADSL$EOSDY[1] <- NA_integer_
-      stopifnot(
-        any(is.na(ADSL$EOSDY)),
-        any(is.na(ADSL$DCSREAS))
-      )
     "
   ),
   modules = modules(
@@ -123,4 +114,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
