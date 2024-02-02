@@ -33,11 +33,7 @@ template_logistic <- function(dataname,
                               at = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
   if (lifecycle::is_present(paramcd)) {
-    warning(
-      "The `paramcd` argument of `template_logistic()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "The argument is not used in this function.",
-      call. = FALSE
-    )
+    lifecycle::deprecate_warn("0.8.16", "template_logistic(paramcd)")
   }
 
   # Common assertion no matter if arm_var is NULL or not.
