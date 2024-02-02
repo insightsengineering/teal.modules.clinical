@@ -60,6 +60,9 @@ set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var
 \code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
 user input for this parameter is ignored.}
 
+\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
+is \code{"event"}.}
+
 \item{font_size}{(\code{numeric})\cr font size value.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
@@ -73,12 +76,6 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
-
-\item{interact_var}{(\code{character})\cr name of the variable that should have interactions with arm. If the
-interaction is not needed, the default option is \code{NULL}.}
-
-\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select the
-specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
 
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 

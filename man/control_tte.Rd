@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_tte.R
 \name{control_tte}
 \alias{control_tte}
-\title{Control Function for Time-to-Event Teal Module}
+\title{Control Function for Time-To-Event teal Module}
 \usage{
 control_tte(
   surv_time = list(conf_level = 0.95, conf_type = "plain", quantiles = c(0.25, 0.75)),
@@ -12,16 +12,17 @@ control_tte(
 )
 }
 \arguments{
-\item{surv_time}{(\code{list})\cr
-parameters for comparison, specified using \code{\link[tern:control_surv_time]{tern::control_surv_time()}}.}
+\item{surv_time}{(\code{list})\cr control parameters for \code{survfit} model. See \code{\link[tern:control_surv_time]{tern::control_surv_time()}} for details.}
 
-\item{coxph}{(\code{list})\cr
-parameters for comparison, specified using \code{\link[tern:control_coxph]{tern::control_coxph()}}.}
+\item{coxph}{(\code{list})\cr control parameters for Cox-PH model. See \code{\link[tern:control_coxph]{tern::control_coxph()}} for details.}
 
-\item{surv_timepoint}{(\code{list})\cr
-parameters for comparison, specified using \code{\link[tern:control_surv_timepoint]{tern::control_surv_timepoint()}}.}
+\item{surv_timepoint}{(\code{list})\cr control parameters for \code{survfit} model at time point. See
+\code{\link[tern:control_surv_timepoint]{tern::control_surv_timepoint()}} for details.}
 }
 \description{
-Controls the arguments for Cox regressions and Survival analysis results.
+Controls the arguments for Cox regression and survival analysis results.
+}
+\seealso{
+\code{\link[=template_tte]{template_tte()}}, \code{\link[=tm_t_tte]{tm_t_tte()}}
 }
 \keyword{internal}
