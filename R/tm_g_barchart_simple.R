@@ -641,9 +641,9 @@ make_barchart_simple_call <- function(y_name,
   plot_args <- c(
     plot_args,
     if (is.null(fill_name)) {
-      bquote(ggplot2::aes_string(x = .(x_val_var)))
+      bquote(ggplot2::aes(x = .data[[.(x_val_var)]]))
     } else {
-      bquote(ggplot2::aes_string(x = .(x_val_var), fill = .(fill_name)))
+      bquote(ggplot2::aes(x = .data[[.(x_val_var)]], fill = .data[[.(fill_name)]]))
     }
   )
 
@@ -669,8 +669,8 @@ make_barchart_simple_call <- function(y_name,
     # setting color via aesthetics does not work for some reason (but x = 0 above works)
     plot_args <- c(plot_args, bquote(
       ggplot2::geom_col(
-        ggplot2::aes_string(
-          y = .(y_name)
+        ggplot2::aes(
+          y = .data[[.(y_name)]]
         ),
         position = .(position),
         fill = .(ifelse(
@@ -682,7 +682,7 @@ make_barchart_simple_call <- function(y_name,
     ))
   } else {
     plot_args <- c(plot_args, bquote(
-      ggplot2::geom_col(ggplot2::aes_string(y = .(y_name)), position = .(position))
+      ggplot2::geom_col(ggplot2::aes(y = .data[[.(y_name)]]), position = .(position))
     ))
   }
 
@@ -699,7 +699,7 @@ make_barchart_simple_call <- function(y_name,
     }
 
     plot_args <- c(plot_args, bquote(
-      ggplot2::geom_text(ggplot2::aes_string(y = .(y_name), label = .(y_name)),
+      ggplot2::geom_text(ggplot2::aes(y = .data[[.(y_name)]], label = .data[[.(y_name)]]),
         stat = "identity",
         angle = .(if (rotate_bar_labels) 45 else 0),
         position = .(position),
