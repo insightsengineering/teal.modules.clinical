@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_a_gee.R
 \name{tm_a_gee}
 \alias{tm_a_gee}
-\title{Teal Module: Teal module for Generalized Estimating Equations (GEE) analysis}
+\title{teal Module: Generalized Estimating Equations (GEE) analysis}
 \usage{
 tm_a_gee(
   label,
@@ -70,8 +70,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Teal module for Generalized Estimating Equations (GEE) analysis
+teal Module: Generalized Estimating Equations (GEE) analysis
 }
 \examples{
 data <- teal_data()
@@ -115,4 +118,8 @@ if (interactive()) {
   shiny::shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
