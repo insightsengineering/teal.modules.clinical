@@ -9,9 +9,10 @@
 #' module.
 #'
 #' @inherit template_arguments return
-#' @seealso [tm_t_events_by_grade()]
-#' @keywords internal
 #'
+#' @seealso [tm_t_events_by_grade()]
+#'
+#' @keywords internal
 template_events_by_grade <- function(dataname,
                                      parentname,
                                      arm_var,
@@ -370,16 +371,15 @@ template_events_by_grade <- function(dataname,
   y
 }
 
-#' Template: Adverse Events grouped by Grade with threshold
+#' Template: Adverse Events Grouped by Grade with Threshold
 #'
-#' Creates a valid expression to generate a table to summarize adverse events grouped by Grade.
+#' Creates a valid expression to generate a table to summarize adverse events grouped by grade.
 #'
 #' @inheritParams template_arguments
-#' @param id (`character`) \cr unique identifier of patients in datasets, default to `"USUBJID"`.
-#' @param grade (`character`) \cr grade term which grading_groups is based on, default to `"AETOXGR"`.
-#' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param grading_groups (`character`)\cr list of grading groups.
+#' @param id (`character`)\cr name of variable to uniquely identify patients in datasets.
+#' @param grade (`character`)\cr name of grade variable to base `grading_groups` on.
+#' @param label_grade (`character`)\cr label of the `grade` variable from `dataname`.
+#' @param grading_groups (`list`)\cr named list of grading groups.
 #'
 #' @inherit template_arguments return
 #'
@@ -788,13 +788,13 @@ template_events_col_by_grade <- function(dataname,
 
 #' teal Module: Events by Grade
 #'
-#' This module produces a table to summarize events by Grade
+#' This module produces a table to summarize events by grade.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
-#' @param col_by_grade (`flag`)\cr whether to display the grading groups in nested columns.
-#' @param grading_groups (`character`)\cr list of grading groups used when col_by_grade = TRUE.
+#' @param col_by_grade (`logical`)\cr whether to display the grading groups in nested columns.
+#' @param grading_groups (`list`)\cr named list of grading groups used when `col_by_grade = TRUE`.
 #'
 #' @inherit module_arguments return
 #'
