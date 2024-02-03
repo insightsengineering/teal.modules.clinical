@@ -173,8 +173,8 @@ template_coxreg_u <- function(dataname,
 #'
 #' Creates a valid expression to generate a multi-variable Cox regression analysis.
 #'
-#' @inheritParams template_arguments
 #' @inheritParams template_coxreg_u
+#' @inheritParams template_arguments
 #'
 #' @inherit template_arguments return
 #'
