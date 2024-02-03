@@ -74,8 +74,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Events by Grade
+Creates a valid expression to generate a table to summarize events by grade.
 }
 \seealso{
 \code{\link[=tm_t_events_by_grade]{tm_t_events_by_grade()}}

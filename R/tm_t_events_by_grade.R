@@ -1,15 +1,14 @@
 #' Template: Events by Grade
 #'
+#' Creates a valid expression to generate a table to summarize events by grade.
+#'
 #' @inheritParams template_arguments
-#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#' module.
 #' @param id (`character`)\cr unique identifier of patients in datasets, default to `"USUBJID"`.
 #' @param grade (`character`)\cr name of the severity level variable.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
 #' module.
 #'
+#' @inherit template_arguments return
 #' @seealso [tm_t_events_by_grade()]
 #' @keywords internal
 #'
@@ -373,16 +372,16 @@ template_events_by_grade <- function(dataname,
 
 #' Template: Adverse Events grouped by Grade with threshold
 #'
+#' Creates a valid expression to generate a table to summarize adverse events grouped by Grade.
+#'
 #' @inheritParams template_arguments
 #' @param id (`character`) \cr unique identifier of patients in datasets, default to `"USUBJID"`.
-#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#' module.
 #' @param grade (`character`) \cr grade term which grading_groups is based on, default to `"AETOXGR"`.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
 #' module.
 #' @param grading_groups (`character`)\cr list of grading groups.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_events_by_grade()]
 #' @keywords internal
@@ -787,13 +786,20 @@ template_events_col_by_grade <- function(dataname,
   y
 }
 
-#' Teal Module: Events by Grade
+#' teal Module: Events by Grade
+#'
+#' This module produces a table to summarize events by Grade
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
 #' @param col_by_grade (`flag`)\cr whether to display the grading groups in nested columns.
 #' @param grading_groups (`character`)\cr list of grading groups used when col_by_grade = TRUE.
+#'
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @export
 #' @examples
@@ -908,7 +914,7 @@ tm_t_events_by_grade <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_events_by_grade <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -995,7 +1001,7 @@ ui_t_events_by_grade <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_events_by_grade <- function(id,
                                   data,
                                   reporter,

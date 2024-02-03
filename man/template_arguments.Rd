@@ -77,6 +77,12 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
 
+\item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
+\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values

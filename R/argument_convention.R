@@ -53,6 +53,10 @@
 #' @param hlt (`character`)\cr name of the variable with high level term for events.
 #' @param id_var (`character`)\cr the variable name for subject id.
 #' @param include_interact (`logical`)\cr whether an interaction term should be included in the model.
+#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
+#' module.
+#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
+#' module.
 #' @param llt (`character`)\cr name of the variable with low level term for events.
 #' @param patient_id (`character`)\cr patient ID.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values

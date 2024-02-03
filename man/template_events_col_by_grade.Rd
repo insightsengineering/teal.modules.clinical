@@ -78,8 +78,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Adverse Events grouped by Grade with threshold
+Creates a valid expression to generate a table to summarize adverse events grouped by Grade.
 }
 \seealso{
 \code{\link[=tm_t_events_by_grade]{tm_t_events_by_grade()}}
