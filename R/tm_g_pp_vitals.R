@@ -208,7 +208,7 @@ template_vitals <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_vitals
-#' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\crobject with all
+#' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
 #'
 #' @inherit module_arguments return
