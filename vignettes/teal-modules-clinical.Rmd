@@ -105,7 +105,7 @@ plots.
 There is no need to load `teal` as `teal.modules.clinical` already depends on it.
 
 In the next step, we use `teal` to create `shiny` UI and server functions that we can launch using `shiny`. The `data`
-argument tells `teal` about the input data - the ADaM datasets ADSL and ADAE - and the `modules`
+argument tells `teal` about the input data - the ADaM datasets `ADSL` and `ADAE` - and the `modules`
 argument indicates the modules included in the application. Here, we include only one module: `tm_g_barchart_simple()`.
 
 ```r
