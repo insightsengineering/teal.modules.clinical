@@ -169,8 +169,8 @@
           adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
           adsl <- df_explicit_na(adsl, na_level = "<Missing>")
-          anl <- anl %>% dplyr::mutate(`:=`(AEBODSYS, as.character(AEBODSYS)))
-          anl <- anl %>% dplyr::mutate(`:=`(AEDECOD, as.character(AEDECOD)))
+          anl[["AEBODSYS"]] <- as.character(anl[["AEBODSYS"]])
+          anl[["AEDECOD"]] <- as.character(anl[["AEDECOD"]])
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("AEBODSYS", "AEDECOD")))
       }

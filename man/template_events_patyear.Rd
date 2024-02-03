@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_events_patyear.R
 \name{template_events_patyear}
 \alias{template_events_patyear}
-\title{Template: Event rates adjusted for patient-years}
+\title{Template: Event Rates Adjusted for Patient-Years}
 \usage{
 template_events_patyear(
   dataname,
@@ -26,9 +26,9 @@ template_events_patyear(
 
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{events_var}{(\code{integer})\cr number of observed events.}
+\item{events_var}{(\code{character})\cr name of the variable for number of observed events.}
 
-\item{label_paramcd}{(\code{string})\cr title of table based on \code{paramcd}}
+\item{label_paramcd}{(\code{character})\cr \code{paramcd} variable text to use in the table title.}
 
 \item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
@@ -44,9 +44,10 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 
 \item{control}{(\code{list})\cr list of settings for the analysis.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
@@ -54,8 +55,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Event rates adjusted for patient-years
+Creates a valid expression to generate a table of event rates adjusted for patient-years.
 }
 \seealso{
 \code{\link[=tm_t_events_patyear]{tm_t_events_patyear()}}

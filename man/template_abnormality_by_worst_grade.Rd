@@ -31,16 +31,16 @@ template_abnormality_by_worst_grade(
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{atoxgr_var}{(\code{character})\cr the variable name indicating
+\item{atoxgr_var}{(\code{character})\cr name of the variable indicating
 Analysis Toxicity Grade.}
 
-\item{worst_high_flag_var}{(\code{character})\cr the variable name indicating
+\item{worst_high_flag_var}{(\code{character})\cr name of the variable indicating
 Worst High Grade flag}
 
-\item{worst_low_flag_var}{(\code{character})\cr the variable name indicating
+\item{worst_low_flag_var}{(\code{character})\cr name of the variable indicating
 Worst Low Grade flag}
 
-\item{worst_flag_indicator}{(\code{character})\cr value indicating worst grade.}
+\item{worst_flag_indicator}{(\code{character})\cr flag value indicating the worst grade.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -48,9 +48,10 @@ Worst Low Grade flag}
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
@@ -58,8 +59,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Laboratory test results with highest grade post-baseline
+Creates a valid expression to generate a table to summarize abnormality by grade.
 }
 \seealso{
 \code{\link[=tm_t_abnormality_by_worst_grade]{tm_t_abnormality_by_worst_grade()}}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_smq.R
 \name{tm_t_smq}
 \alias{tm_t_smq}
-\title{Teal Module: \code{SMQ} Table}
+\title{teal Module: Adverse Events Table by Standardized MedDRA Query}
 \usage{
 tm_t_smq(
   label,
@@ -49,26 +49,25 @@ second variable will be nested under the first variable.}
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
-by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
-alphabetically.}
+\item{sort_criteria}{(\code{character})\cr criteria to use to sort the table. Default option \code{freq_desc} sorts by
+decreasing total number of patients with event. Alternative option \code{alpha} sorts events alphabetically.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ}
-created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
+\item{smq_varlabel}{(\code{character})\cr label to use for new column \code{SMQ} created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 
-\item{baskets}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices and preselected options for Standardized/Customized queries}
+\item{baskets}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected options for standardized/customized queries.}
 
-\item{scopes}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices for the scopes of Standardized queries.}
+\item{scopes}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices for the scopes of standardized queries.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -82,8 +81,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Adverse Events Table by Standardized \code{MedDRA} Query.
+This module produces an adverse events table by Standardized MedDRA Query.
 }
 \examples{
 data <- teal_data()
@@ -134,4 +136,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

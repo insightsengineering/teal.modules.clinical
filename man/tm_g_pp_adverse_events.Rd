@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_adverse_events.R
 \name{tm_g_pp_adverse_events}
 \alias{tm_g_pp_adverse_events}
-\title{Teal Module: Patient Profile Adverse Events Teal Module}
+\title{teal Module: Patient Profile Adverse Events Table and Plot}
 \usage{
 tm_g_pp_adverse_events(
   label,
@@ -31,30 +31,30 @@ tm_g_pp_adverse_events(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character})\cr patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AETERM} column of the \code{ADAE} dataset.}
+\item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{AETERM} variable from \code{dataname}.}
 
-\item{tox_grade}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AETOXGR} column of the \code{ADAE} dataset.}
+\item{tox_grade}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{AETOXGR} variable from \code{dataname}.}
 
-\item{causality}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AEREL} column of the \code{ADAE} dataset.}
+\item{causality}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{AEREL} variable from \code{dataname}.}
 
-\item{outcome}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AEOUT} column of the \code{ADAE} dataset.}
+\item{outcome}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{AEOUT} variable from \code{dataname}.}
 
-\item{action}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AEACN} column of the \code{ADAE} dataset.}
+\item{action}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{AEACN} variable from \code{dataname}.}
 
-\item{time}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ASTDY} column of the \code{ADAE} dataset.}
+\item{time}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{ASTDY} variable from \code{dataname}.}
 
-\item{decod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AEDECOD} column of the \code{ADAE} dataset.}
+\item{decod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{AEDECOD} variable from \code{dataname}.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -74,8 +74,11 @@ for the module plot. The argument is merged with option \code{teal.ggplot2_args}
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a patient profile adverse events table and plot using \code{ADaM} datasets.
+This module produces an adverse events table and \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type plot using ADaM datasets.
 }
 \examples{
 library(nestcolor)

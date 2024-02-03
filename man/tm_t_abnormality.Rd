@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_abnormality.R
 \name{tm_t_abnormality}
 \alias{tm_t_abnormality}
-\title{Teal Module: Abnormality Summary Table}
+\title{teal Module: Abnormality Summary Table}
 \usage{
 tm_t_abnormality(
   label,
@@ -72,9 +72,10 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{exclude_base_abn}{(\code{logical})\cr whether to exclude patients who had abnormal values at baseline.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -91,7 +92,7 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \description{
-Teal Module: Abnormality Summary Table
+This module produces a table to summarize abnormality.
 }
 \note{
 Patients with the same abnormality at baseline as on the treatment visit can be
@@ -147,4 +148,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

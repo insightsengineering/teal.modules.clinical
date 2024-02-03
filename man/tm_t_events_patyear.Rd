@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_events_patyear.R
 \name{tm_t_events_patyear}
 \alias{tm_t_events_patyear}
-\title{Teal module: Event rates adjusted for patient-years}
+\title{teal Module: Event Rates Adjusted for Patient-Years}
 \usage{
 tm_t_events_patyear(
   label,
@@ -40,16 +40,16 @@ It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{events_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all event counts.}
+\item{events_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for the variable with all event counts.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
 
 \item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the analysis variable.}
 
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices and preselected option for the analysis unit variable.}
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for the analysis unit variable.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -64,9 +64,10 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
 confidence level, each within range of (0, 1).}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -80,8 +81,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal module: Event rates adjusted for patient-years
+This module produces a table of event rates adjusted for patient-years.
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -127,4 +131,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
