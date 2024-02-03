@@ -46,9 +46,9 @@ second variable will be nested under the first variable.}
 
 \item{grade}{(\code{character})\cr name of the severity level variable.}
 
-\item{grading_groups}{(\code{character})\cr list of grading groups used when col_by_grade = TRUE.}
+\item{grading_groups}{(\code{list})\cr named list of grading groups used when \code{col_by_grade = TRUE}.}
 
-\item{col_by_grade}{(\code{flag})\cr whether to display the grading groups in nested columns.}
+\item{col_by_grade}{(\code{logical})\cr whether to display the grading groups in nested columns.}
 
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
@@ -86,7 +86,7 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 a \code{teal_module} object.
 }
 \description{
-This module produces a table to summarize events by Grade
+This module produces a table to summarize events by grade.
 }
 \examples{
 data <- teal_data()
