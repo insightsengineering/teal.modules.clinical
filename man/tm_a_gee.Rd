@@ -74,7 +74,7 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 a \code{teal_module} object.
 }
 \description{
-teal Module: Generalized Estimating Equations (GEE) analysis
+This module produces an analysis table using Generalized Estimating Equations (GEE)
 }
 \examples{
 data <- teal_data()
