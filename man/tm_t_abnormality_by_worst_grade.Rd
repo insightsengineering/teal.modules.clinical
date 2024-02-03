@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_abnormality_by_worst_grade.R
 \name{tm_t_abnormality_by_worst_grade}
 \alias{tm_t_abnormality_by_worst_grade}
-\title{Teal Module: Laboratory test results with highest grade post-baseline}
+\title{teal Module: Laboratory test results with highest grade post-baseline}
 \usage{
 tm_t_abnormality_by_worst_grade(
   label,
@@ -85,8 +85,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Laboratory test results with highest grade post-baseline
+This module produces a table to summarize laboratory test results with highest grade post-baseline
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -130,4 +133,7 @@ if (interactive()) {
 }
 \seealso{
 \code{\link[=template_abnormality_by_worst_grade]{template_abnormality_by_worst_grade()}}
+
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
