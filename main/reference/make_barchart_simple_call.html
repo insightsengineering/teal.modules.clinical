@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9066</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9067</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,16 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -99,57 +89,50 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>fill_name</dt>
-<dd><p>(<code>NULL</code>, <code>character(1)</code>)<br>
-name of the variable distinguishing the color of the fill.</p></dd>
+<dd><p>(<code>character</code> or <code>NULL</code>)<br> name of the variable to determine the bar fill color.</p></dd>
 
 
 <dt>x_facet_name</dt>
-<dd><p>(<code>NULL</code>, <code>character(1)</code>)<br>
-name of the variable to facet the plot horizontally.</p></dd>
+<dd><p>(<code>character</code> or <code>NULL</code>)<br> name of the variable to use for horizontal plot faceting.</p></dd>
 
 
 <dt>y_facet_name</dt>
-<dd><p>(<code>NULL</code>, <code>character(1)</code>)<br>
-name of the variable to facet the plot vertically.</p></dd>
+<dd><p>(<code>character</code> or <code>NULL</code>)<br> name of the variable to use for vertical plot faceting.</p></dd>
 
 
 <dt>label_bars</dt>
-<dd><p>(<code>NULL</code>, <code>logical(1)</code>)<br>
-whether to label bars.</p></dd>
+<dd><p>(<code>logical</code> or <code>NULL</code>)<br> whether bars should be labeled. If <code>TRUE</code>, label bar numbers would
+also be drawn as text.</p></dd>
 
 
 <dt>barlayout</dt>
-<dd><p>(<code>NULL</code>, <code>character(1)</code>)<br><code>type of the layout - "side_by_side"</code> or <code>"stacked"</code> (default).</p></dd>
+<dd><p>(<code>character</code> or <code>NULL</code>)<br> type of the bar layout. Options are <code>"stacked"</code> (default) or
+<code>"side_by_side"</code>.</p></dd>
 
 
 <dt>flip_axis</dt>
-<dd><p>(<code>NULL</code>, <code>character(1)</code>)<br>
-whether to flip axis.</p></dd>
+<dd><p>(<code>character</code> or <code>NULL</code>)<br> whether to flip the plot axis.</p></dd>
 
 
 <dt>rotate_bar_labels</dt>
-<dd><p>(<code>NULL</code>, <code>logical(1)</code>)<br>
-whether to rotate bar label by 45 degrees.</p></dd>
+<dd><p>(<code>logical</code> or <code>NULL</code>)<br> whether bar labels should be rotated by 45 degrees.</p></dd>
 
 
 <dt>rotate_x_label</dt>
-<dd><p>(<code>NULL</code>, <code>logical(1)</code>)<br>
-whether to rotate x-axis label by 45 degrees.</p></dd>
+<dd><p>(<code>logical</code> or <code>NULL</code>)<br> whether x-axis labels should be rotated by 45 degrees.</p></dd>
 
 
 <dt>rotate_y_label</dt>
-<dd><p>(<code>NULL</code>, <code>logical(1)</code>)<br>
-whether to rotate y-axis label by 45 degrees.</p></dd>
+<dd><p>(<code>logical</code> or <code>NULL</code>)<br> whether y-axis labels should be rotated by 45 degrees.</p></dd>
 
 
 <dt>expand_y_range</dt>
-<dd><p>(<code>NULL</code>, <code>numeric(1)</code>)<br>
-fraction of y-axis range to expand further up.</p></dd>
+<dd><p>(<code>numeric</code> or <code>NULL</code>)<br> fraction of y-axis range to further expand by.</p></dd>
 
 
 <dt>facet_scales</dt>
-<dd><p>(<code>fixed</code>, <code>free_x</code>, <code>free_y</code> or <code>free</code>)<br> value
-passed to <code>scales</code> argument of <code><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">ggplot2::facet_grid</a></code></p></dd>
+<dd><p>(<code>character</code>)<br> value passed to <code>scales</code> argument of <code><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">ggplot2::facet_grid()</a></code>. Options are
+<code>fixed</code>, <code>free_x</code>, <code>free_y</code>, and <code>free</code>.</p></dd>
 
 
 <dt>ggplot2_args</dt>
@@ -160,35 +143,21 @@ for the module plot. The argument is merged with option <code>teal.ggplot2_args<
 
 
 <dt>yname</dt>
-<dd><p>(<code>NULL</code>, <code>character(1)</code>)<br>
-name of the <code>yaxis</code> variable.</p></dd>
+<dd><p>(<code>character</code> or <code>NULL</code>)<br> name of the y-axis variable.</p></dd>
 
 
 <dt>xname</dt>
-<dd><p>(<code>NULL</code>, <code>character(1)</code>)<br>
-name of the <code>xaxis</code> variable.</p></dd>
+<dd><p>(<code>character</code> or <code>NULL</code>)<br> name of the x-axis variable. Defaults to <code>NULL</code> because it is dependent
+on extract input which can be empty.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p><code>call</code></p>
-
-
+<p><code>call</code> to produce a <code>ggplot</code> object.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">teal.modules.clinical</span><span class="fu">:::</span><span class="fu">make_barchart_simple_call</span><span class="op">(</span>y_name <span class="op">=</span> <span class="st">"y"</span>, x_name <span class="op">=</span> <span class="st">"x"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> plot &lt;- ggplot2::ggplot(counts) + ggplot2::aes_string(x = "x") + </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ggplot2::geom_col(ggplot2::aes_string(y = "y"), position = ggplot2::position_dodge(0.9), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         fill = "#b6cae9") + ggplot2::geom_text(ggplot2::aes_string(y = "y", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     label = "y"), stat = "identity", angle = 0, position = ggplot2::position_dodge(0.9), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     hjust = 0.5, vjust = -1) + ggplot2::labs(x = column_annotation_label(counts, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     "x"))</span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
