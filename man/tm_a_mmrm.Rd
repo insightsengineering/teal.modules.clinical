@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_a_mmrm.R
 \name{tm_a_mmrm}
 \alias{tm_a_mmrm}
-\title{Teal Module: Teal module for Mixed Model Repeated Measurements (\code{MMRM}) analysis}
+\title{teal Module: Teal module for Mixed Model Repeated Measurements (\code{MMRM}) analysis}
 \usage{
 tm_a_mmrm(
   label,
@@ -97,7 +97,7 @@ The argument is merged with option \code{teal.ggplot2_args} and with default mod
 \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \description{
-Teal Module: Teal module for Mixed Model Repeated Measurements (\code{MMRM}) analysis
+This module produces a table with Mixed Model Repeated Measurements Analysis.
 }
 \note{
 The ordering of the input data sets can lead to slightly different numerical results or
@@ -154,4 +154,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

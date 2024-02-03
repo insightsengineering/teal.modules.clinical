@@ -110,8 +110,11 @@ for the module plot. The argument is merged with option \code{teal.ggplot2_args}
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Mixed Model Repeated Measurements (\code{MMRM}) analysis
+Creates a valid expression to generate an analysis table using Mixed Model Repeated Measurements.
 }
 \section{Functions}{
 \itemize{

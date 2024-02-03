@@ -1,5 +1,7 @@
 #' Template: Mixed Model Repeated Measurements (`MMRM`) analysis
 #'
+#' Creates a valid expression to generate an analysis table using Mixed Model Repeated Measurements.
+#'
 #' @inheritParams template_arguments
 #' @param method a string specifying the adjustment method.
 #' @param cor_struct a string specifying the correlation structure, defaults to
@@ -7,6 +9,8 @@
 #' @param weights_emmeans argument from [emmeans::emmeans()], "proportional" by default.
 #' @param parallel flag that controls whether optimizer search can use available free cores on the
 #'   machine (not default).
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_a_mmrm()]
 #' @keywords internal
@@ -158,6 +162,8 @@ template_fit_mmrm <- function(parentname,
 #'   (`treatment - control`) be shown for the relative change from baseline
 #' @param table_type (`character`)\cr
 #'   type of table to output.
+#'
+#' @inherit template_arguments return
 template_mmrm_tables <- function(parentname,
                                  dataname,
                                  fit_name,
@@ -323,6 +329,7 @@ template_mmrm_tables <- function(parentname,
 #' @param lsmeans_plot a `list` of controls for LS means plot. See more [tern.mmrm::g_mmrm_lsmeans()]
 #' @param diagnostic_plot a `list` of controls for diagnostic_plot. See more [tern.mmrm::g_mmrm_diagnostic()]
 #'
+#' @inherit template_arguments return
 template_mmrm_plots <- function(fit_name,
                                 lsmeans_plot = list(
                                   select = c("estimates", "contrasts"),
@@ -430,7 +437,9 @@ template_mmrm_plots <- function(fit_name,
   y
 }
 
-#' Teal Module: Teal module for Mixed Model Repeated Measurements (`MMRM`) analysis
+#' teal Module: Teal module for Mixed Model Repeated Measurements (`MMRM`) analysis
+#'
+#' This module produces a table with Mixed Model Repeated Measurements Analysis.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_mmrm_tables
@@ -452,6 +461,9 @@ template_mmrm_plots <- function(fit_name,
 #' different convergence behavior. This is a known observation with the used package
 #' `lme4`. However, once convergence is achieved, the results are reliable up to
 #' numerical precision.
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' arm_ref_comp <- list(
@@ -586,7 +598,7 @@ tm_a_mmrm <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_mmrm <- function(id, ...) {
   a <- list(...) # module args
   ns <- shiny::NS(id)
@@ -803,7 +815,7 @@ ui_mmrm <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_mmrm <- function(id,
                      data,
                      reporter,
@@ -901,7 +913,7 @@ srv_mmrm <- function(id,
     )
 
     # selector_list includes cov_var as it is needed for validation rules
-    # but it is not needed for the merge so it is removed here
+    # but not needed to merge so it is removed here
     selector_list_without_cov <- shiny::reactive({
       selector_list()[names(selector_list()) != "cov_var"]
     })
@@ -945,7 +957,7 @@ srv_mmrm <- function(id,
     show_plot_rv <- shiny::reactiveVal(FALSE)
 
     # this will store the current/last state of inputs and data that generated a model-fit
-    # its purpose is so that any input change can be checked whether it resulted in an out of sync state
+    # its purpose is to allow any input change to be checked whether it resulted in an out of sync state
     state <- shiny::reactiveValues(input = NULL, button_start = 0)
 
     # Note:
