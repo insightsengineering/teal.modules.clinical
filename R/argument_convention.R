@@ -32,6 +32,7 @@
 #' @param compare_arm (`logical`)\cr triggers the comparison between study arms.
 #' @param comp_arm (`character`)\cr the level of comparison arm in case of arm comparison.
 #' @param conf_level (`numeric`)\cr value for the confidence level within the range of (0, 1).
+#' @param control (`list`)\cr list of settings for the analysis.
 #' @param cov_var (`character`)\cr names of the covariates variables.
 #' @param dataname (`character`)\cr analysis data used in teal module.
 #' @param denominator (`character`)\cr chooses how percentages are calculated. With option `N`, the reference
@@ -128,6 +129,8 @@ NULL
 #'   available choices and preselected option for the `ATIREL` variable from `dataname`.
 #' @param aval_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the analysis variable.
+#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#'   all available choices and preselected option for the analysis unit variable.
 #' @param avisit (`choices_selected` or `data_extract_spec`)\cr value of analysis visit `AVISIT` of interest.
 #' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as `baseline_var`.

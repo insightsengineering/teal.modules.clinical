@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_forest_tte.R
 \name{tm_g_forest_tte}
 \alias{tm_g_forest_tte}
-\title{Teal Module: Forest Survival Plot teal Module}
+\title{teal Module: Forest Survival Plot}
 \usage{
 tm_g_forest_tte(
   label,
@@ -84,18 +84,17 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
-\code{title}, \code{caption}.
-No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
-with default module arguments (hard coded in the module body).
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a grid style Forest plot for time-to-event data
-with \code{ADaM} structure
+This module produces a grid-style forest plot for time-to-event data with ADaM structure.
 }
 \examples{
 library(nestcolor)
@@ -154,4 +153,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

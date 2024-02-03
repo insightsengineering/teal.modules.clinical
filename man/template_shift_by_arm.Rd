@@ -39,11 +39,11 @@ template_shift_by_arm(
 \item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
 records in \code{treatment_flag_var}.}
 
-\item{aval_var}{(\code{character})\cr the variable name for the analysis reference range indicator.}
+\item{aval_var}{(\code{character})\cr name of the analysis reference range indicator variable.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{character})\cr the variable name for the baseline reference range indicator.}
+\item{baseline_var}{(\code{character})\cr name of the baseline reference range indicator variable.}
 
 \item{na.rm}{(\code{logical})\cr whether \code{NA} values should be removed prior to analysis.}
 
@@ -51,8 +51,7 @@ records in \code{treatment_flag_var}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include row with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include row with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
@@ -64,8 +63,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Shift by Arm
+Creates a valid expression to generate a summary table of analysis indicator levels by arm.
 }
 \seealso{
 \code{\link[=tm_t_shift_by_arm]{tm_t_shift_by_arm()}}

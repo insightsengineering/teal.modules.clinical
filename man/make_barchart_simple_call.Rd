@@ -22,38 +22,30 @@ make_barchart_simple_call(
 )
 }
 \arguments{
-\item{fill_name}{(\code{NULL}, \code{character(1)})\cr
-name of the variable distinguishing the color of the fill.}
+\item{fill_name}{(\code{character} or \code{NULL})\cr name of the variable to determine the bar fill color.}
 
-\item{x_facet_name}{(\code{NULL}, \code{character(1)})\cr
-name of the variable to facet the plot horizontally.}
+\item{x_facet_name}{(\code{character} or \code{NULL})\cr name of the variable to use for horizontal plot faceting.}
 
-\item{y_facet_name}{(\code{NULL}, \code{character(1)})\cr
-name of the variable to facet the plot vertically.}
+\item{y_facet_name}{(\code{character} or \code{NULL})\cr name of the variable to use for vertical plot faceting.}
 
-\item{label_bars}{(\code{NULL}, \code{logical(1)})\cr
-whether to label bars.}
+\item{label_bars}{(\code{logical} or \code{NULL})\cr whether bars should be labeled. If \code{TRUE}, label bar numbers would
+also be drawn as text.}
 
-\item{barlayout}{(\code{NULL}, \code{character(1)})\cr
-\verb{type of the layout - "side_by_side"} or \code{"stacked"} (default).}
+\item{barlayout}{(\code{character} or \code{NULL})\cr type of the bar layout. Options are \code{"stacked"} (default) or
+\code{"side_by_side"}.}
 
-\item{flip_axis}{(\code{NULL}, \code{character(1)})\cr
-whether to flip axis.}
+\item{flip_axis}{(\code{character} or \code{NULL})\cr whether to flip the plot axis.}
 
-\item{rotate_bar_labels}{(\code{NULL}, \code{logical(1)})\cr
-whether to rotate bar label by 45 degrees.}
+\item{rotate_bar_labels}{(\code{logical} or \code{NULL})\cr whether bar labels should be rotated by 45 degrees.}
 
-\item{rotate_x_label}{(\code{NULL}, \code{logical(1)})\cr
-whether to rotate x-axis label by 45 degrees.}
+\item{rotate_x_label}{(\code{logical} or \code{NULL})\cr whether x-axis labels should be rotated by 45 degrees.}
 
-\item{rotate_y_label}{(\code{NULL}, \code{logical(1)})\cr
-whether to rotate y-axis label by 45 degrees.}
+\item{rotate_y_label}{(\code{logical} or \code{NULL})\cr whether y-axis labels should be rotated by 45 degrees.}
 
-\item{expand_y_range}{(\code{NULL}, \code{numeric(1)})\cr
-fraction of y-axis range to expand further up.}
+\item{expand_y_range}{(\code{numeric} or \code{NULL})\cr fraction of y-axis range to further expand by.}
 
-\item{facet_scales}{(\code{fixed}, \code{free_x}, \code{free_y} or \code{free})\cr value
-passed to \code{scales} argument of \code{ggplot2::facet_grid}}
+\item{facet_scales}{(\code{character})\cr value passed to \code{scales} argument of \code{\link[ggplot2:facet_grid]{ggplot2::facet_grid()}}. Options are
+\code{fixed}, \code{free_x}, \code{free_y}, and \code{free}.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
@@ -61,19 +53,15 @@ for the module plot. The argument is merged with option \code{teal.ggplot2_args}
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 
-\item{yname}{(\code{NULL}, \code{character(1)})\cr
-name of the \code{yaxis} variable.}
+\item{yname}{(\code{character} or \code{NULL})\cr name of the y-axis variable.}
 
-\item{xname}{(\code{NULL}, \code{character(1)})\cr
-name of the \code{xaxis} variable.}
+\item{xname}{(\code{character} or \code{NULL})\cr name of the x-axis variable. Defaults to \code{NULL} because it is dependent
+on extract input which can be empty.}
 }
 \value{
-\code{call}
+\code{call} to produce a \code{ggplot} object.
 }
 \description{
 \code{ggplot2} call to generate simple bar chart
-}
-\examples{
-teal.modules.clinical:::make_barchart_simple_call(y_name = "y", x_name = "x")
 }
 \keyword{internal}

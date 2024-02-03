@@ -1,15 +1,17 @@
-#' Template: `Kaplan-Meier`
+#' Template: Kaplan-Meier Plot
+#'
+#' Creates a valid expression to generate a Kaplan-Meier plot.
 #'
 #' @inheritParams template_arguments
 #' @inheritParams tern::g_km
 #' @inheritParams tern::control_coxreg
-#' @param facet_var (`character`)\cr
-#'   object with all available choices and preselected option
-#'   for variable names that can be used for facet plotting.
+#' @param facet_var (`character`)\cr name of the variable to use to facet the plot.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_g_km()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_g_km <- function(dataname = "ANL",
                           arm_var = "ARM",
                           ref_arm = NULL,
@@ -231,19 +233,19 @@ template_g_km <- function(dataname = "ANL",
   y
 }
 
-
-#' Teal Module: `Kaplan-Meier`
+#' teal Module: Kaplan-Meier Plot
 #'
-#' This teal module produces a grid style `Kaplan-Meier` plot for data with
-#' `ADaM` structure.
+#' This module produces a grid-style Kaplan-Meier plot for data with ADaM structure.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_km
-#' @param facet_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices and preselected option
-#'   for variable names that can be used for facet plotting.
+#' @param facet_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#'   all available choices and preselected option for names of variable that can be used for plot faceting.
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' library(nestcolor)
@@ -299,6 +301,7 @@ template_g_km <- function(dataname = "ANL",
 #'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #'
+#' @export
 tm_g_km <- function(label,
                     dataname,
                     parentname = ifelse(
@@ -375,9 +378,7 @@ tm_g_km <- function(label,
   )
 }
 
-
-#' User Interface for KM Module
-#' @noRd
+#' @keywords internal
 ui_g_km <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -562,10 +563,7 @@ ui_g_km <- function(id, ...) {
   )
 }
 
-
-#' Server for KM Module
-#' @noRd
-#'
+#' @keywords internal
 srv_g_km <- function(id,
                      data,
                      reporter,

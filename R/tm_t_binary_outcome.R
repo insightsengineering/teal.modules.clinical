@@ -3,7 +3,6 @@
 #' Creates a valid expression to generate a binary outcome analysis.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis.
 #' @param responder_val (`character`)\cr the short label for observations to
 #'   translate `AVALC` into responder/non-responder.
 #' @param responder_val_levels (`character`)\cr the levels of responses that will be shown in the multinomial

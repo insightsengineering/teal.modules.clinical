@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_shift_by_arm.R
 \name{tm_t_shift_by_arm}
 \alias{tm_t_shift_by_arm}
-\title{Teal Module: Shift by Arm}
+\title{teal Module: Shift by Arm}
 \usage{
 tm_t_shift_by_arm(
   label,
@@ -65,8 +65,7 @@ records in \code{treatment_flag_var}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include row with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include row with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
@@ -84,8 +83,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Shift by Arm
+This module produces a summary table of analysis indicator levels by arm.
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -132,4 +134,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
