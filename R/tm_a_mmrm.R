@@ -1,11 +1,11 @@
-#' Template: Mixed Model Repeated Measurements (`MMRM`) analysis
+#' Template: Mixed Model Repeated Measurements (MMRM) Analysis
 #'
-#' Creates a valid expression to generate an analysis table using Mixed Model Repeated Measurements.
+#' Creates a valid expression to generate analysis tables and plots for Mixed Model Repeated Measurements.
 #'
 #' @inheritParams template_arguments
 #' @param method (`string`)\cr a string specifying the adjustment method.
 #' @param cor_struct (`string`)\cr a string specifying the correlation structure, defaults to
-#'   `"unstructured"`. See the details.
+#'   `"unstructured"`. See [tern.mmrm::build_formula()] for more options.
 #' @param weights_emmeans argument from [emmeans::emmeans()], "proportional" by default.
 #' @param parallel (`flag`)\cr flag that controls whether optimizer search can use available free cores on the
 #'   machine (not default).
@@ -154,7 +154,8 @@ template_fit_mmrm <- function(parentname,
   y
 }
 
-#' @describeIn template_fit_mmrm
+#' @describeIn template_fit_mmrm Creates valid expressions to generate MMRM LS means, covariance matrix,
+#'   fixed effects, and diagnostic tables.
 #'
 #' @inheritParams template_arguments
 #' @param fit_name (`string`)\cr name of fitted MMRM object.
@@ -322,7 +323,8 @@ template_mmrm_tables <- function(parentname,
   y
 }
 
-#' @describeIn template_fit_mmrm
+#' @describeIn template_fit_mmrm Creates valid expressions to generate MMRM LS means and
+#'   diagnostic plots.
 #'
 #' @inheritParams template_arguments
 #' @param lsmeans_plot (named `list`)\cr a `list` of controls for LS means plot.
@@ -343,8 +345,6 @@ template_mmrm_plots <- function(fit_name,
                                 ),
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   y <- list()
-
-
 
   if (!is.null(lsmeans_plot)) {
     parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
@@ -438,21 +438,20 @@ template_mmrm_plots <- function(fit_name,
   y
 }
 
-#' teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
+#' teal Module: Mixed Model Repeated Measurements (MMRM) Analysis
 #'
-#' This module produces a table with Mixed Model Repeated Measurements Analysis.
+#' This module produces analysis tables and plots for Mixed Model Repeated Measurements.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_mmrm_tables
 #' @inheritParams template_mmrm_plots
-#' @param method ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\\cr object with
+#' @param method ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
 #'   all available choices and pre-selected option for the adjustment method.
 #' @param ggplot2_args (`ggplot2_args`) \cr optional, object created by [`teal.widgets::ggplot2_args()`]
 #'   with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
-#'   List names should match the following:\cr `c("default", "lsmeans", "diagnostic")`. The argument is merged
-#'   with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).\cr
-#'   For more details, see the help vignette:\cr
-#'   `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#'   List names should match the following: `c("default", "lsmeans", "diagnostic")`. The argument is merged
+#'   with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).
+#'   For more details, see the help vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
 #' @note
 #' The ordering of the input data sets can lead to slightly different numerical results or
@@ -460,10 +459,7 @@ template_mmrm_plots <- function(fit_name,
 #' `lme4`. However, once convergence is achieved, the results are reliable up to
 #' numerical precision.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' arm_ref_comp <- list(

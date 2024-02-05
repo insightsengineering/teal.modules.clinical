@@ -4,7 +4,7 @@
 \alias{template_fit_mmrm}
 \alias{template_mmrm_tables}
 \alias{template_mmrm_plots}
-\title{Template: Mixed Model Repeated Measurements (\code{MMRM}) analysis}
+\title{Template: Mixed Model Repeated Measurements (MMRM) Analysis}
 \usage{
 template_fit_mmrm(
   parentname,
@@ -73,7 +73,7 @@ template_mmrm_plots(
 \item{method}{(\code{string})\cr a string specifying the adjustment method.}
 
 \item{cor_struct}{(\code{string})\cr a string specifying the correlation structure, defaults to
-\code{"unstructured"}. See the details.}
+\code{"unstructured"}. See \code{\link[tern.mmrm:build_formula]{tern.mmrm::build_formula()}} for more options.}
 
 \item{weights_emmeans}{argument from \code{\link[emmeans:emmeans]{emmeans::emmeans()}}, "proportional" by default.}
 
@@ -113,13 +113,15 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 a \code{list} of expressions to generate a table or plot object.
 }
 \description{
-Creates a valid expression to generate an analysis table using Mixed Model Repeated Measurements.
+Creates a valid expression to generate analysis tables and plots for Mixed Model Repeated Measurements.
 }
 \section{Functions}{
 \itemize{
-\item \code{template_mmrm_tables()}: 
+\item \code{template_mmrm_tables()}: Creates valid expressions to generate MMRM LS means, covariance matrix,
+fixed effects, and diagnostic tables.
 
-\item \code{template_mmrm_plots()}: 
+\item \code{template_mmrm_plots()}: Creates valid expressions to generate MMRM LS means and
+diagnostic plots.
 
 }}
 \seealso{

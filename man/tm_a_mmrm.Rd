@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_a_mmrm.R
 \name{tm_a_mmrm}
 \alias{tm_a_mmrm}
-\title{teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis}
+\title{teal Module: Mixed Model Repeated Measurements (MMRM) Analysis}
 \usage{
 tm_a_mmrm(
   label,
@@ -64,7 +64,7 @@ reference and comparison arms when the arm variable is changed.}
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{method}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\\cr object with
+\item{method}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
 all available choices and pre-selected option for the adjustment method.}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
@@ -93,16 +93,15 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 
 \item{ggplot2_args}{(\code{ggplot2_args}) \cr optional, object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}}
 with settings for all the plots or named list of \code{ggplot2_args} objects for plot-specific settings.
-List names should match the following:\cr \code{c("default", "lsmeans", "diagnostic")}. The argument is merged
-with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).\cr
-For more details, see the help vignette:\cr
-\code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+List names should match the following: \code{c("default", "lsmeans", "diagnostic")}. The argument is merged
+with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \value{
 a \code{teal_module} object.
 }
 \description{
-This module produces a table with Mixed Model Repeated Measurements Analysis.
+This module produces analysis tables and plots for Mixed Model Repeated Measurements.
 }
 \note{
 The ordering of the input data sets can lead to slightly different numerical results or
