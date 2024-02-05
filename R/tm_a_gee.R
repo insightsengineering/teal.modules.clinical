@@ -127,7 +127,7 @@ template_a_gee <- function(output_table,
 
 #' teal Module: Generalized Estimating Equations (GEE) analysis
 #'
-#' This module produces an analysis table using Generalized Estimating Equations (GEE)
+#' This module produces an analysis table using Generalized Estimating Equations (GEE).
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_arguments
