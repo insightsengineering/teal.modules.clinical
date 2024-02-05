@@ -93,7 +93,7 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 a \code{teal_module} object.
 }
 \description{
-teal Module: Events by Term
+This module produces a table of events by term.
 }
 \examples{
 ADSL <- tmc_ex_adsl
