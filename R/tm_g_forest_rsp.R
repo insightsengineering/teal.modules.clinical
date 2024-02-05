@@ -8,6 +8,7 @@
 #' @param col_symbol_size (`integer` or `NULL`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
+#' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. For this module, this argument will only accept `ggplot2_args` object with `labs` list of
 #'   following child elements: `title`, `caption`. No other elements would be taken into account. The argument is

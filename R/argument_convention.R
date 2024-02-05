@@ -32,6 +32,7 @@
 #' @param compare_arm (`logical`)\cr triggers the comparison between study arms.
 #' @param comp_arm (`character`)\cr the level of comparison arm in case of arm comparison.
 #' @param conf_level (`numeric`)\cr value for the confidence level within the range of (0, 1).
+#' @param control (`list`)\cr list of settings for the analysis.
 #' @param cov_var (`character`)\cr names of the covariates variables.
 #' @param dataname (`character`)\cr analysis data used in teal module.
 #' @param denominator (`character`)\cr chooses how percentages are calculated. With option `N`, the reference
@@ -53,6 +54,10 @@
 #' @param hlt (`character`)\cr name of the variable with high level term for events.
 #' @param id_var (`character`)\cr the variable name for subject id.
 #' @param include_interact (`logical`)\cr whether an interaction term should be included in the model.
+#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
+#' module.
+#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
+#' module.
 #' @param llt (`character`)\cr name of the variable with low level term for events.
 #' @param patient_id (`character`)\cr patient ID.
 #' @param na_level (`string`)\cr used to replace all `NA` or empty values
@@ -68,6 +73,8 @@
 #'   rates between any two columns.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param ref_arm (`character`)\cr the level of reference arm in case of arm comparison.
+#' @param sort_criteria (`character`)\cr criteria to use to sort the table. Default option `freq_desc` sorts by
+#'   decreasing total number of patients with event. Alternative option `alpha` sorts events alphabetically.
 #' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
 #' @param sum_vars (`character`)\cr names of the variables that should be summarized.
@@ -122,6 +129,8 @@ NULL
 #'   available choices and preselected option for the `ATIREL` variable from `dataname`.
 #' @param aval_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices and preselected
 #'   option for the analysis variable.
+#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#'   all available choices and preselected option for the analysis unit variable.
 #' @param avisit (`choices_selected` or `data_extract_spec`)\cr value of analysis visit `AVISIT` of interest.
 #' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as `baseline_var`.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_barchart_simple.R
 \name{tm_g_barchart_simple}
 \alias{tm_g_barchart_simple}
-\title{Simple bar chart plot that shows counts per category.}
+\title{teal Module: Simple Bar Chart and Table of Counts per Category}
 \usage{
 tm_g_barchart_simple(
   x = NULL,
@@ -21,11 +21,11 @@ tm_g_barchart_simple(
 \arguments{
 \item{x}{(\code{data_extract_spec})\cr variable on the x-axis.}
 
-\item{fill}{(\code{data_extract_spec})\cr grouping variable assigned to the bar colors.}
+\item{fill}{(\code{data_extract_spec})\cr grouping variable to determine bar colors.}
 
-\item{x_facet}{(\code{data_extract_spec})\cr faceting groups on the row dimension.}
+\item{x_facet}{(\code{data_extract_spec})\cr row-wise faceting groups.}
 
-\item{y_facet}{(\code{data_extract_spec})\cr faceting groups on the col dimension.}
+\item{y_facet}{(\code{data_extract_spec})\cr column-wise faceting groups.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
@@ -49,10 +49,15 @@ for the module plot. The argument is merged with option \code{teal.ggplot2_args}
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Categories can be defined up to four levels deep and are defined through
-\code{x}, \code{fill}, \code{x_facet} and \code{y_facet}. If any of them is \code{NULL},
-it is ignored.
+This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type bar chart and summary table of counts per category.
+}
+\details{
+Categories can be defined up to four levels deep and are defined through the \code{x}, \code{fill},
+\code{x_facet}, and \code{y_facet} parameters. Any parameters set to \code{NULL} (default) are ignored.
 }
 \examples{
 library(nestcolor)
@@ -168,4 +173,9 @@ app <- init(
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
+
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

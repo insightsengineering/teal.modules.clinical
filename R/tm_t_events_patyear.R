@@ -1,13 +1,16 @@
-#' Template: Event rates adjusted for patient-years
+#' Template: Event Rates Adjusted for Patient-Years
+#'
+#' Creates a valid expression to generate a table of event rates adjusted for patient-years.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis.
-#' @param events_var (`integer`)\cr number of observed events.
-#' @param label_paramcd (`string`)\cr title of table based on `paramcd`
+#' @param events_var (`character`)\cr name of the variable for number of observed events.
+#' @param label_paramcd (`character`)\cr `paramcd` variable text to use in the table title.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_events_patyear()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_events_patyear <- function(dataname,
                                     parentname,
                                     arm_var,
@@ -143,16 +146,20 @@ template_events_patyear <- function(dataname,
   y
 }
 
-#' Teal module: Event rates adjusted for patient-years
+#' teal Module: Event Rates Adjusted for Patient-Years
+#'
+#' This module produces a table of event rates adjusted for patient-years.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_patyear
-#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices and preselected option for the analysis unit variable.
-#' @param events_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all event counts.
+#' @param events_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#'   all available choices and preselected option for the variable with all event counts.
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
+#'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADAETTE <- tmc_ex_adaette %>%
@@ -197,6 +204,7 @@ template_events_patyear <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_events_patyear <- function(label,
                                 dataname,
                                 parentname = ifelse(
@@ -274,7 +282,7 @@ tm_t_events_patyear <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_events_patyear <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -372,7 +380,7 @@ ui_events_patyear <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_events_patyear <- function(id,
                                data,
                                reporter,

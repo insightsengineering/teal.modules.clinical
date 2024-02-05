@@ -46,6 +46,8 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
+\item{control}{(\code{list})\cr list of settings for the analysis.}
+
 \item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
@@ -77,6 +79,12 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
 
+\item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
+\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
@@ -100,6 +108,9 @@ rates between any two columns.}
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
+
+\item{sort_criteria}{(\code{character})\cr criteria to use to sort the table. Default option \code{freq_desc} sorts by
+decreasing total number of patients with event. Alternative option \code{alpha} sorts events alphabetically.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
