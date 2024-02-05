@@ -53,13 +53,8 @@ the variables that should be summarized.}
 \item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object specifying
 the variable name for subject id.}
 
-<<<<<<< HEAD
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
-=======
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable value
-designating the studied parameter.}
->>>>>>> main
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
