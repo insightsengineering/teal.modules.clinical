@@ -32,14 +32,12 @@ template_exposure(
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{paramcd_label}{(\code{character})\cr
-the column from the \code{dataname} dataset where the value will be used to label the argument \code{paramcd}.}
+\item{paramcd_label}{(\code{character})\cr the column from the \code{dataname} dataset where the
+value will be used to label the argument \code{paramcd}.}
 
-\item{row_by_var}{(\code{character})\cr
-variable name used to split the values by rows.}
+\item{row_by_var}{(\code{character})\cr variable name used to split the values by rows.}
 
-\item{col_by_var}{(\code{character})\cr
-variable name used to split the values by columns.}
+\item{col_by_var}{(\code{character})\cr variable name used to split the values by columns.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -47,15 +45,13 @@ variable name used to split the values by columns.}
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{add_total_row}{(\code{flag})\cr
-whether a "total" level should be added after the others which includes all the
+\item{add_total_row}{(\code{flag})\cr whether a "total" level should be added after the others which includes all the
 levels that constitute the split. A custom label can be set for this level via the \code{total_row_label} argument.}
 
-\item{total_row_label}{(\code{character})\cr
-string to display as total row label if row is enabled (see \code{add_total_row}).}
+\item{total_row_label}{(\code{character})\cr string to display as total row label if row is
+enabled (see \code{add_total_row}).}
 
-\item{drop_levels}{(\code{flag})\cr
-whether empty rows should be removed from the table.}
+\item{drop_levels}{(\code{flag})\cr whether empty rows should be removed from the table.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a

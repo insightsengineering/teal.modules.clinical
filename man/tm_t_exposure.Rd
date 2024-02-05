@@ -49,8 +49,8 @@ variable names that can be used to split columns.}
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable value
 designating the studied parameter.}
 
-\item{paramcd_label}{(\code{character})\cr
-the column from the dataset where the value will be used to label the argument \code{paramcd}.}
+\item{paramcd_label}{(\code{character})\cr the column from the dataset where the value will be used to
+label the argument \code{paramcd}.}
 
 \item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object specifying
 the variable name for subject id.}
@@ -71,12 +71,11 @@ all available choices and preselected option for the analysis unit variable.}
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{add_total_row}{(\code{flag})\cr
-whether a "total" level should be added after the others which includes all the
+\item{add_total_row}{(\code{flag})\cr whether a "total" level should be added after the others which includes all the
 levels that constitute the split. A custom label can be set for this level via the \code{total_row_label} argument.}
 
-\item{total_row_label}{(\code{character})\cr
-string to display as total row label if row is enabled (see \code{add_total_row}).}
+\item{total_row_label}{(\code{character})\cr string to display as total row label if row is
+enabled (see \code{add_total_row}).}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
