@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_events_by_grade.R
 \name{tm_t_events_by_grade}
 \alias{tm_t_events_by_grade}
-\title{Teal Module: Events by Grade}
+\title{teal Module: Events by Grade}
 \usage{
 tm_t_events_by_grade(
   label,
@@ -40,15 +40,17 @@ It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{hlt}{(\code{choices_selected} or \code{data_extract_spec})\cr name of the variable with high level term for events.}
+\item{hlt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr name of the variable
+with high level term for events.}
 
-\item{llt}{(\code{choices_selected} or \code{data_extract_spec})\cr name of the variable with low level term for events.}
+\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr name of the variable
+with low level term for events.}
 
 \item{grade}{(\code{character})\cr name of the severity level variable.}
 
-\item{grading_groups}{(\code{character})\cr list of grading groups used when col_by_grade = TRUE.}
+\item{grading_groups}{(\code{list})\cr named list of grading groups used when \code{col_by_grade = TRUE}.}
 
-\item{col_by_grade}{(\code{flag})\cr whether to display the grading groups in nested columns.}
+\item{col_by_grade}{(\code{logical})\cr whether to display the grading groups in nested columns.}
 
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
@@ -82,8 +84,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Events by Grade
+This module produces a table to summarize events by grade.
 }
 \examples{
 data <- teal_data()
@@ -125,4 +130,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
