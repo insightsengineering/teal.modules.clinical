@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_vitals.R
 \name{tm_g_pp_vitals}
 \alias{tm_g_pp_vitals}
-\title{Teal Module: Patient Profile Vitals Teal Module}
+\title{teal Module: Patient Profile Vitals Plot}
 \usage{
 tm_g_pp_vitals(
   label,
@@ -28,20 +28,20 @@ tm_g_pp_vitals(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character})\cr patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{PARAMCD} column of the \code{ADVS} dataset.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AVAL} column of the \code{ADVS} dataset.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{xaxis}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-time variable to be represented in the vitals plot x-axis.}
+\item{xaxis}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the time variable from \code{dataname} to be put on the plot x-axis.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -60,8 +60,15 @@ for the module plot. The argument is merged with option \code{teal.ggplot2_args}
 (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a patient profile vitals plot using \code{ADaM} datasets.
+This module produces a patient profile vitals \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type plot using ADaM datasets.
+}
+\details{
+This plot supports horizontal lines for the following 6 \code{PARAMCD} levels when they are present in \code{dataname}:
+\code{"SYSBP"}, \code{"DIABP"}, \code{"TEMP"}, \code{"RESP"}, \code{"OXYSAT"}.
 }
 \examples{
 library(nestcolor)

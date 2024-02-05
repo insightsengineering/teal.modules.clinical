@@ -1,18 +1,16 @@
-#' Template: Vitals
+#' Template: Patient Profile Vitals Plot
 #'
-#' Creates a vitals template.
+#' Creates a valid expression to generate a patient profile vitals [ggplot2::ggplot()] plot using ADaM datasets.
+#'
 #' @inheritParams template_arguments
-#' @param paramcd (`character`)\cr name of the parameter code variable.
-#' @param paramcd_levels (`character`)\cr (`paramcd`)\cr vector with (`#'paramcd`)\cr levels.
-#' @param xaxis (`character`)\cr name of time variable used for the x-axis.
-#' @param patient_id (`character`)\cr patient ID.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @param paramcd_levels (`character`)\cr vector of all levels of `paramcd`.
+#' @param xaxis (`character`)\cr name of the time variable to put on the x-axis.
 #'
-#' @note
-#' The vitals plot supports horizontal lines for 6 `PARAMCD` levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
-#' and PULSE`)\cr when these levels are present in the analyzed dataset and the spelling matches.
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_g_pp_vitals()]
+#'
 #' @keywords internal
-#'
 template_vitals <- function(dataname = "ANL",
                             paramcd = "PARAMCD",
                             paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
@@ -201,22 +199,19 @@ template_vitals <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Patient Profile Vitals Teal Module
+#' teal Module: Patient Profile Vitals Plot
 #'
-#' This teal module produces a patient profile vitals plot using `ADaM` datasets.
+#' This module produces a patient profile vitals [ggplot2::ggplot()] type plot using ADaM datasets.
+#'
+#' This plot supports horizontal lines for the following 6 `PARAMCD` levels when they are present in `dataname`:
+#' `"SYSBP"`, `"DIABP"`, `"TEMP"`, `"RESP"`, `"OXYSAT"`.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_vitals
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `PARAMCD` column of the `ADVS` dataset.
-#' @param aval_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AVAL` column of the `ADVS` dataset.
-#' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' time variable to be represented in the vitals plot x-axis.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' library(nestcolor)
@@ -259,6 +254,7 @@ template_vitals <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_pp_vitals <- function(label,
                            dataname = "ADVS",
                            parentname = "ADSL",
@@ -333,6 +329,7 @@ tm_g_pp_vitals <- function(label,
   )
 }
 
+#' @keywords internal
 ui_g_vitals <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -393,7 +390,7 @@ ui_g_vitals <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_g_vitals <- function(id,
                          data,
                          reporter,

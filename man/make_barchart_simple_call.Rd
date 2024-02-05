@@ -22,6 +22,11 @@ make_barchart_simple_call(
 )
 }
 \arguments{
+\item{y_name}{(\code{character} or \code{NULL})\cr name of the y-axis variable.}
+
+\item{x_name}{(\code{character} or \code{NULL})\cr name of the x-axis variable. Defaults to \code{NULL} because it is dependent
+on extract input which can be empty.}
+
 \item{fill_name}{(\code{character} or \code{NULL})\cr name of the variable to determine the bar fill color.}
 
 \item{x_facet_name}{(\code{character} or \code{NULL})\cr name of the variable to use for horizontal plot faceting.}
@@ -51,11 +56,6 @@ also be drawn as text.}
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
-
-\item{yname}{(\code{character} or \code{NULL})\cr name of the y-axis variable.}
-
-\item{xname}{(\code{character} or \code{NULL})\cr name of the x-axis variable. Defaults to \code{NULL} because it is dependent
-on extract input which can be empty.}
 }
 \value{
 \code{call} to produce a \code{ggplot} object.

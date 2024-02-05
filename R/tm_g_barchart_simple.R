@@ -583,8 +583,8 @@ srv_g_barchart_simple <- function(id,
 #' `ggplot2` call to generate simple bar chart
 #'
 #' @inheritParams tm_g_barchart_simple
-#' @param yname (`character` or `NULL`)\cr name of the y-axis variable.
-#' @param xname (`character` or `NULL`)\cr name of the x-axis variable. Defaults to `NULL` because it is dependent
+#' @param y_name (`character` or `NULL`)\cr name of the y-axis variable.
+#' @param x_name (`character` or `NULL`)\cr name of the x-axis variable. Defaults to `NULL` because it is dependent
 #'   on extract input which can be empty.
 #' @param fill_name (`character` or `NULL`)\cr name of the variable to determine the bar fill color.
 #' @param x_facet_name (`character` or `NULL`)\cr name of the variable to use for horizontal plot faceting.
