@@ -1,20 +1,23 @@
 #' Template: Exposure Table for Risk management plan
 #'
+#' Creates a valid expression to generate exposure table for risk management plan.
+#'
 #' @inheritParams template_arguments
-#' @param row_by_var (`character`)\cr
-#'   variable name used to split the rows.
-#' @param col_by_var (`character`)\cr
-#'   variable name used to split the columns.
-#' @param drop_levels (`flag`)\cr
-#'   whether empty rows should be removed from the table.
-#' @param paramcd_label (`character`)\cr
-#'   the column from the dataset where the value will be used to label the argument `paramcd`.
+#' @param row_by_var (`character`)\cr variable name used to split the values by rows.
+#' @param col_by_var (`character`)\cr variable name used to split the values by columns.
+#' @param drop_levels (`flag`)\cr whether empty rows should be removed from the table.
+#' @param paramcd_label (`character`)\cr the column from the `dataname` dataset where the
+#'   value will be used to label the argument `paramcd`.
 #' @param add_total_row (`flag`)\cr whether a "total" level should be added after the others which includes all the
 #'   levels that constitute the split. A custom label can be set for this level via the `total_row_label` argument.
-#' @param total_row_label (`character`)\cr string to display as total row label if row is enabled (see `add_total_row`).
-#' @seealso [tm_t_exposure()]
-#' @keywords internal
+#' @param total_row_label (`character`)\cr string to display as total row label if row is
+#'   enabled (see `add_total_row`).
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_t_exposure()]
+#'
+#' @keywords internal
 template_exposure <- function(parentname,
                               dataname,
                               id_var,
@@ -206,7 +209,9 @@ template_exposure <- function(parentname,
   y
 }
 
-#' Teal module: Exposure Table for Risk management plan
+#' teal Module: Exposure Table for Risk management plan
+#'
+#' The module produces an exposure table for risk management plan.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_exposure
@@ -219,10 +224,13 @@ template_exposure <- function(parentname,
 #' @param parcat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #'   object with all available choices and preselected option for
 #'   parameter category values.
-#' @param paramcd_label (`character`)\cr
-#'   the column from the dataset where the value will be used to label the argument `paramcd`.
+#' @param paramcd_label (`character`)\cr the column from the dataset where the value will be used to
+#'   label the argument `paramcd`.
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' data <- teal_data()
@@ -279,6 +287,7 @@ template_exposure <- function(parentname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_exposure <- function(label,
                           dataname,
                           parentname = ifelse(
@@ -371,7 +380,7 @@ tm_t_exposure <- function(label,
 }
 
 
-#' @noRd
+#' @keywords internal
 ui_t_exposure <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -455,7 +464,7 @@ ui_t_exposure <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_exposure <- function(id,
                            data,
                            reporter,
