@@ -7,6 +7,8 @@
 #' @param incl_overall_sum (`flag`)\cr  whether two rows which summarize the overall number of adverse events
 #'   should be included at the top of the table.
 #'
+#' @inherit template_arguments return
+#'
 #' @seealso [tm_t_events()]
 #'
 #' @keywords internal
@@ -454,9 +456,8 @@ template_events <- function(dataname,
 
 #' teal Module: Events by Term
 #'
-#' @description teal module for generating a table of events by term. Please, check out the
-#'  [TLG-catalog](https://insightsengineering.github.io/tlg-catalog/stable/) for
-#'  additional examples and information.
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events
