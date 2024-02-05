@@ -162,8 +162,6 @@ template_fit_mmrm <- function(parentname,
 #'   (`treatment - control`) be shown for the relative change from baseline.
 #' @param table_type (`string`)\cr type of table to output.
 #'
-#' @inherit template_arguments return
-#'
 #' @keywords internal
 template_mmrm_tables <- function(parentname,
                                  dataname,
@@ -332,8 +330,6 @@ template_mmrm_tables <- function(parentname,
 #' @param diagnostic_plot (named `list`)\cr a `list` of controls for diagnostic_plot.
 #'   See more [tern.mmrm::g_mmrm_diagnostic()].
 #'
-#' @inherit template_arguments return
-#'
 #' @keywords internal
 template_mmrm_plots <- function(fit_name,
                                 lsmeans_plot = list(
@@ -449,8 +445,8 @@ template_mmrm_plots <- function(fit_name,
 #' @inheritParams module_arguments
 #' @inheritParams template_mmrm_tables
 #' @inheritParams template_mmrm_plots
-#' @param method (`choices_selected`)\cr object with all available choices and pre-selected
-#'   option for the adjustment method.
+#' @param method ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\\cr object with
+#'   all available choices and pre-selected option for the adjustment method.
 #' @param ggplot2_args (`ggplot2_args`) \cr optional, object created by [`teal.widgets::ggplot2_args()`]
 #'   with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
 #'   List names should match the following:\cr `c("default", "lsmeans", "diagnostic")`. The argument is merged
