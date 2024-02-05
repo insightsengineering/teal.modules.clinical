@@ -157,7 +157,7 @@ template_fit_mmrm <- function(parentname,
 #' @describeIn template_fit_mmrm
 #'
 #' @inheritParams template_arguments
-#' @param fit_name (`string`)\cr name of fitted `MMRM` object.
+#' @param fit_name (`string`)\cr name of fitted MMRM object.
 #' @param show_relative (`string`)\cr should the "reduction" (`control - treatment`, default) or the "increase"
 #'   (`treatment - control`) be shown for the relative change from baseline.
 #' @param table_type (`string`)\cr type of table to output.
@@ -438,7 +438,7 @@ template_mmrm_plots <- function(fit_name,
   y
 }
 
-#' teal Module: Teal module for Mixed Model Repeated Measurements (`MMRM`) analysis
+#' teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis
 #'
 #' This module produces a table with Mixed Model Repeated Measurements Analysis.
 #'

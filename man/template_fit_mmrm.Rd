@@ -80,7 +80,7 @@ template_mmrm_plots(
 \item{parallel}{(\code{flag})\cr flag that controls whether optimizer search can use available free cores on the
 machine (not default).}
 
-\item{fit_name}{(\code{string})\cr name of fitted \code{MMRM} object.}
+\item{fit_name}{(\code{string})\cr name of fitted MMRM object.}
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 

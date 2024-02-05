@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_a_mmrm.R
 \name{tm_a_mmrm}
 \alias{tm_a_mmrm}
-\title{teal Module: Teal module for Mixed Model Repeated Measurements (\code{MMRM}) analysis}
+\title{teal Module: Teal module for Mixed Model Repeated Measurements (MMRM) analysis}
 \usage{
 tm_a_mmrm(
   label,
