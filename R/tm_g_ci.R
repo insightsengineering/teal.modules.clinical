@@ -187,10 +187,7 @@ template_g_ci <- function(dataname,
 #' @inheritParams template_g_ci
 #' @param color (`data_extract_spec`)\cr the group variable used to determine the plot colors, shapes, and line types.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' library(nestcolor)
