@@ -19,7 +19,7 @@ template_vitals(
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{paramcd_levels}{(\code{character})\cr vector of all levels of \code{paramcd}.}
 
