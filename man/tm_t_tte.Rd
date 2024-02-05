@@ -53,16 +53,22 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
+<<<<<<< HEAD
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
+=======
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable value
+designating the studied parameter.}
+>>>>>>> main
 
-\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr names of the variables for stratified analysis.}
+\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr names of
+the variables for stratified analysis.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the censoring variable.}
+\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the censoring variable.}
 
 \item{conf_level_coxph}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
 for confidence level, each within range of (0, 1).}
@@ -73,8 +79,8 @@ for confidence level, each within range of (0, 1).}
 \item{time_points}{(\code{choices_selected})\cr object with all available choices and preselected option for time
 points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and
-preselected option for the time unit variable.}
+\item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+with all available choices and pre-selected option for the time unit variable.}
 
 \item{event_desc_var}{(\code{character} or \code{\link[=data_extract_spec]{data_extract_spec()}})\cr variable name with the event description
 information, optional.}

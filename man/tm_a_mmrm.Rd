@@ -36,10 +36,11 @@ tm_a_mmrm(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object specifying the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object specifying
+the variable name for subject id.}
 
 \item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices
 and preselected option for variable names that can be used as \code{arm_var}.
@@ -47,11 +48,12 @@ It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{visit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for variable names that can be used as \code{visit} variable.
+Must be a factor in \code{dataname}.}
 
-\item{cov_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the covariates variables.}
+\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the covariates variables.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -59,14 +61,19 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
+<<<<<<< HEAD
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
+=======
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable value
+designating the studied parameter.}
+>>>>>>> main
 
 \item{method}{(\code{choices_selected})\cr
 object with all available choices and preselected option for the adjustment method.}
 
-\item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
-confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}

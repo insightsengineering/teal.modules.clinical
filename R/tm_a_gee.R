@@ -1,15 +1,20 @@
 #' Template for Generalized Estimating Equations (GEE) analysis module
 #'
+#' Creates a valid expression to generate an analysis table using Generalized Estimating Equations (GEE).
+#'
 #' @inheritParams template_arguments
-#' @param output_table (`character`)\cr type of output table (`"t_gee_cov", "t_gee_coef", "t_gee_lsmeans"`)
-#' @param data_model_fit (`character`)\cr dataset used to fit the model by `tern.gee::fit_gee()`
-#' @param dataname_lsmeans (`character`)\cr dataset used for `alt_counts_df` argument of `rtables::build_table()`
-#' @param split_covariates (`character`)\cr vector of names of variables to use as covariates in `tern.gee::vars_gee()`
+#' @param output_table (`character`)\cr type of output table (`"t_gee_cov", "t_gee_coef", "t_gee_lsmeans"`).
+#' @param data_model_fit (`character`)\cr dataset used to fit the model by `tern.gee::fit_gee()`.
+#' @param dataname_lsmeans (`character`)\cr dataset used for `alt_counts_df` argument of `rtables::build_table()`.
+#' @param split_covariates (`character`)\cr vector of names of variables to use as covariates in
+#'   `tern.gee::vars_gee()`.
 #' @param cor_struct (`character`)\cr assumed correlation structure in `tern.gee::fit_gee`.
 #'
-#' @seealso [tm_a_gee()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [tm_a_gee()]
+#'
+#' @keywords internal
 template_a_gee <- function(output_table,
                            data_model_fit = "ANL",
                            dataname_lsmeans = "ANL_ADSL",
@@ -121,13 +126,18 @@ template_a_gee <- function(output_table,
   y
 }
 
-#' Teal Module: Teal module for Generalized Estimating Equations (GEE) analysis
+#' teal Module: Generalized Estimating Equations (GEE) analysis
+#'
+#' This module produces an analysis table using Generalized Estimating Equations (GEE).
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_arguments
 #' @inheritParams template_a_gee
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' data <- teal_data()
@@ -171,6 +181,7 @@ template_a_gee <- function(output_table,
 #'   shiny::shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_a_gee <- function(label,
                      dataname,
                      parentname = ifelse(

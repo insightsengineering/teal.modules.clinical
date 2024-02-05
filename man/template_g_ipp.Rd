@@ -31,42 +31,48 @@ template_g_ipp(
 
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{arm_levels}{(\code{character})\cr vector of all arm variable levels.}
+\item{arm_levels}{(\code{character})\cr vector of all levels of \code{arm_var}.}
 
-\item{avalu_first}{(\code{string})\cr \code{avalu} value.}
+\item{avalu_first}{(\code{character})\cr \code{avalu_var} text to append to the plot title and y-axis label if \code{add_avalu} is
+\code{TRUE}.}
 
-\item{paramcd_first}{(\code{string})\cr \code{paramcd} value.}
+\item{paramcd_first}{(\code{character})\cr \code{paramcd} text to append to the plot title and y-axis label.}
 
 \item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
-\item{avalu_var}{(\code{string})\cr variable name designating the unit of the analysis variable.}
+\item{avalu_var}{(\code{character})\cr name of the analysis value unit variable.}
 
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{visit_var}{(\code{string})\cr variable name designating the visit timepoint variable.}
+\item{visit_var}{(\code{character})\cr name of the variable for visit timepoints.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{string})\cr variable name designating the baseline values of analysis variable.}
+\item{baseline_var}{(\code{character})\cr name of the variable for baseline values of the analysis variable.}
 
-\item{add_baseline_hline}{(\code{flag})\cr adds horizontal line at baseline y-value on plot}
+\item{add_baseline_hline}{(\code{logical})\cr whether a horizontal line should be added to the plot at baseline y-value.}
 
-\item{separate_by_obs}{(\code{flag})\cr creates multi panel plots when TRUE}
+\item{separate_by_obs}{(\code{logical})\cr whether to create multi-panel plots.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
-\code{title}, \code{subtitle}, \code{x}, \code{y}.
-No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
-with default module arguments (hard coded in the module body).
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of
+the following child elements: \code{title}, \code{subtitle}, \code{x}, \code{y}. No other elements are taken into account. The
+argument is merged with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module
+body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 
-\item{suppress_legend}{(\code{flag})\cr allow user to suppress legend}
+\item{suppress_legend}{(\code{logical})\cr whether to suppress the plot legend.}
 
-\item{add_avalu}{(\code{flag})\cr allow user to not display value unit in the plot.}
+\item{add_avalu}{(\code{logical})\cr whether \code{avalu_first} text should be appended to the plot title and y-axis label.}
+}
+\value{
+a \code{list} of expressions to generate a table or plot object.
 }
 \description{
-Template: Individual Patient Plots
+Creates a valid expression to generate \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plots of individual patients.
+}
+\seealso{
+\code{\link[=tm_g_ipp]{tm_g_ipp()}}
 }
 \keyword{internal}
