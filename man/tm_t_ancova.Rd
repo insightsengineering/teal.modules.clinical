@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_ancova.R
 \name{tm_t_ancova}
 \alias{tm_t_ancova}
-\title{Teal Module: \code{ANCOVA} Teal Module}
+\title{teal Module: ANCOVA Summary}
 \usage{
 tm_t_ancova(
   label,
@@ -77,8 +77,11 @@ with settings for the module table. The argument is merged with option \code{tea
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: \code{ANCOVA} Teal Module
+This module produces a table to summarize analysis of variance.
 }
 \details{
 This module produces an analysis of variance summary table that is
@@ -154,4 +157,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

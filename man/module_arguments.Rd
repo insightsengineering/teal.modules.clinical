@@ -16,8 +16,14 @@ It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
+\item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{ATIREL} variable from \code{dataname}.}
+
 \item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the analysis variable.}
+
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for the analysis unit variable.}
 
 \item{avisit}{(\code{choices_selected} or \code{data_extract_spec})\cr value of analysis visit \code{AVISIT} of interest.}
 
@@ -26,6 +32,15 @@ all available choices and preselected option for variable values that can be use
 
 \item{by_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for variable names used to split the summary by rows.}
+
+\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{CMDECOD} variable from \code{dataname}.}
+
+\item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{CMINDC} variable from \code{dataname}.}
+
+\item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{CMSTDY} variable from \code{dataname}.}
 
 \item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the censoring variable.}
@@ -36,6 +51,8 @@ confidence level, each within range of (0, 1).}
 \item{cov_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the covariates variables.}
 
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
+
 \item{default_responses}{(\code{list} or \code{character})\cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.
 A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named
@@ -45,6 +62,8 @@ values and \code{levels} of default level choices.}
 
 \item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
+
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
 \item{hlt}{(\code{choices_selected} or \code{data_extract_spec})\cr name of the variable with high level term for events.}
 
@@ -64,6 +83,8 @@ needed, the default option is \code{FALSE}.}
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -108,7 +129,7 @@ value indicating worst grade.}
 with all available choices and preselected option for variable names that can be used as worst flag variable.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 The documentation to this function lists all the arguments in teal modules

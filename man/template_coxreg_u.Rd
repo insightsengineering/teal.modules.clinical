@@ -39,30 +39,33 @@ template_coxreg_u(
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{at}{(\code{list} of \code{numeric})\cr when the candidate covariate is a \code{numeric}, use \code{at}
+\item{at}{(\code{list} of \code{numeric})\cr when the candidate covariate is a \code{numeric} type variable, use \code{at}
 to specify the value of the covariate at which the effect should be estimated.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
 \item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
-\item{control}{(\code{list})\cr list of settings for the analysis, see \code{\link[=control_coxreg]{control_coxreg()}}.}
+\item{control}{(\code{list})\cr list of settings for the analysis (see \code{\link[=control_coxreg]{control_coxreg()}}).}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{append}{(\code{logical})\cr if the result should be appended to the previous one.}
+\item{append}{(\code{logical})\cr whether the result should be appended to the previous one.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression for Cox regression analysis.
+Creates a valid expression to generate a univariable Cox regression analysis.
 }
 \seealso{
-\code{\link[=tm_t_coxreg]{tm_t_coxreg()}}
+\code{\link[=template_coxreg_m]{template_coxreg_m()}}, \code{\link[=tm_t_coxreg]{tm_t_coxreg()}}
 }
 \keyword{internal}

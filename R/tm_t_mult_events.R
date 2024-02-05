@@ -1,11 +1,16 @@
-#' Template: Events by Term
+#' Template: Multiple Events by Term
+#'
+#' Creates a valid expression to generate a table of multiple events by term.
 #'
 #' @inheritParams template_arguments
-#' @param seq_var (`numeric`)\cr Analysis Sequence Number. Used for counting the unique number of events.
+#' @param seq_var (`character`)\cr name of analysis sequence number variable. Used for counting the unique number
+#'   of events.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_mult_events()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_mult_events <- function(dataname,
                                  parentname,
                                  arm_var,
@@ -269,15 +274,20 @@ template_mult_events <- function(dataname,
   y
 }
 
-#' Teal Module: Multiple Events by Term
+#' teal Module: Multiple Events by Term
+#'
+#' This module produces a table of multiple events by term.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_mult_events
+#' @param seq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#'   all available choices and preselected option for variable names that can be used as analysis sequence number
+#'   variable. Used for counting the unique number of events.
 #'
-#' @param seq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' Analysis Sequence Number. Used for counting the unique number of events.
+#' @inherit module_arguments return
 #'
-#' @export
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -319,7 +329,9 @@ template_mult_events <- function(dataname,
 #' if (interactive()) {
 #'   shinyApp(app$ui, app$server)
 #' }
-tm_t_mult_events <- function(label, # nolint
+#'
+#' @export
+tm_t_mult_events <- function(label,
                              dataname,
                              parentname = ifelse(
                                inherits(arm_var, "data_extract_spec"),
@@ -381,7 +393,7 @@ tm_t_mult_events <- function(label, # nolint
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_mult_events_byterm <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -447,7 +459,7 @@ ui_t_mult_events_byterm <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_mult_events_byterm <- function(id,
                                      data,
                                      reporter,

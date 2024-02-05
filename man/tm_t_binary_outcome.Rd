@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_binary_outcome.R
 \name{tm_t_binary_outcome}
 \alias{tm_t_binary_outcome}
-\title{Teal Module: Binary Outcome Table}
+\title{teal Module: Binary Outcome Table}
 \usage{
 tm_t_binary_outcome(
   label,
@@ -65,7 +65,7 @@ and contain arrays, each name corresponding to a single value of \code{paramcd}.
 may contain default response values or named arrays \code{rsp} of default selected response
 values and \code{levels} of default level choices.}
 
-\item{rsp_table}{(\code{logical})\cr should the initial set-up of the module match \code{RSPT01}. (default FALSE)}
+\item{rsp_table}{(\code{logical})\cr whether the initial set-up of the module should match \code{RSPT01}. Defaults to \code{FALSE}.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -89,30 +89,20 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-an \code{\link[teal:module]{teal::module()}} object
+a \code{teal_module} object.
 }
 \description{
-This module produces a binary outcome response summary
-table, with the option to match the STREAM template \code{RSPT01}.
+This module produces a binary outcome response summary table, with the option to match the template for
+response table \code{RSPT01} available in the TLG Catalog \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html}{here}.
 }
 \details{
-Additional standard UI inputs include \code{responders},
-\code{ref_arm}, \code{comp_arm} and \code{combine_comp_arms} (default FALSE)
-
-Default values of the inputs \code{var_arm}, \code{ref_arm} and
-\code{comp_arm} are set to NULL, and updated accordingly based on selection
-of \code{paramcd} and \code{var_arm}
-
-This display order of response categories in partitioned statistics section
-inherits the factor level order of the source data. Use
-\code{\link[base:factor]{base::factor()}} and its \code{levels} argument to manipulate
-the source data in order to include/exclude or re-categorize response
-categories and arrange the display order. If response categories are
-"Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\\%
-confidence interval will not be calculated.
-
-Reference arms automatically combined if multiple arms selected as
-reference group.
+\itemize{
+\item The display order of response categories inherits the factor level order of the source data. Use
+\code{\link[base:factor]{base::factor()}} and its \code{levels} argument to manipulate the source data in order to include/exclude
+or re-categorize response categories and arrange the display order. If response categories are \code{"Missing"},
+\code{"Not Evaluable (NE)"}, or \code{"Missing or unevaluable"}, 95\% confidence interval will not be calculated.
+\item Reference arms are automatically combined if multiple arms selected as reference group.
+}
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -185,4 +175,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

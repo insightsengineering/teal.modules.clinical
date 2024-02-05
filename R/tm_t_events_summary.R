@@ -1,35 +1,32 @@
 #' Template: Adverse Events Summary
 #'
+#' Creates a valid expression to generate an adverse events summary table.
+#'
 #' @inheritParams template_arguments
-#' @param dthfl_var (`character`)\cr
-#'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in
-#'  the table row for "Total number of deaths".
-#' @param dcsreas_var (`character`)\cr
-#'   variable for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"`
-#'   are summarized in the table row for `"Total number of patients withdrawn from study due to an AE"`.
-#' @param flag_var_anl (`character`)\cr
-#'   flag variable from `dataset` used to count adverse event sub-groups (e.g. Serious
-#'   events, Related events, etc.). Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi (`character`)\cr
-#'   flag variable from `dataset` used to count adverse event special interest groups.
-#'   All flag variables must be of type `logical`. Variable labels are used as table
-#'   row names if they exist.
-#' @param aeseq_var (`character`)\cr
-#'   variable for adverse events sequence number from `dataset`. Used for counting total
-#'   number of events.
-#' @param count_subj (`logical`)\cr w
-#'   whether to show count of unique subjects based on `USUBJID`. Only applies if event flag
-#'   variables are provided.
-#' @param count_pt (`logical`)\cr
-#'   whether to show count of unique preferred terms based on `llt`. Only applies if event
+#' @param dthfl_var (`character`)\cr name of variable for subject death flag from `parentname`.
+#'   Records with `"Y"` are summarized in the table row for "Total number of deaths".
+#' @param dcsreas_var (`character`)\cr name of variable for study discontinuation reason from `parentname`.
+#'   Records with `"ADVERSE EVENTS"` are summarized in the table row for
+#'   "Total number of patients withdrawn from study due to an AE".
+#' @param flag_var_anl (`character`)\cr name of flag variable from `dataset` used to count adverse event sub-groups
+#'   (e.g. Serious events, Related events, etc.). Variable labels are used as table row names if they exist.
+#' @param flag_var_aesi (`character`)\cr name of flag variable from `dataset` used to count adverse event special
+#'   interest groups. All flag variables must be of type `logical`. Variable labels are used as table row names if
+#'   they exist.
+#' @param aeseq_var (`character`)\cr name of variable for adverse events sequence number from `dataset`. Used for
+#'   counting total number of events.
+#' @param count_subj (`logical`)\cr whether to show count of unique subjects (based on `USUBJID`). Only applies if
+#'   event flag variables are provided.
+#' @param count_pt (`logical`)\cr whether to show count of unique preferred terms (based on `llt`). Only applies if
+#'   event flag variables are provided.
+#' @param count_events (`logical`)\cr whether to show count of events (based on `aeseq_var`). Only applies if event
 #'   flag variables are provided.
-#' @param count_events (`logical`)\cr
-#'   whether to show count of events based on `aeseq_var`. Only applies if event flag variables
-#'   are provided.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_events_summary()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_events_summary <- function(anl_name,
                                     parentname,
                                     arm_var,
@@ -102,7 +99,6 @@ template_events_summary <- function(anl_name,
     data_list,
     quote(study_id <- unique(anl[["STUDYID"]]))
   )
-
 
   # Create dummy variable for counting patients with an AE
   data_list <- add_expr(
@@ -204,6 +200,7 @@ template_events_summary <- function(anl_name,
       )
     )
   }
+
   layout_parent_list <- add_expr(
     layout_parent_list,
     substitute(
@@ -481,29 +478,34 @@ template_events_summary <- function(anl_name,
   y
 }
 
-#' Teal Module: Adverse Events Summary
+#' teal Module: Adverse Events Summary
+#'
+#' This module produces an adverse events summary table.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
-#' @param dthfl_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in
-#'  the table row for "Total number of deaths".
-#' @param dcsreas_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable
-#'   for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"` are
-#'   summarized in the table row for `"Total number of patients withdrawn from study due to an AE"`.
-#' @param flag_var_anl ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   vector with names of flag variables from `dataset` used to count adverse event
-#'   sub-groups (e.g. Serious events, Related events, etc.). Variable labels are used
-#'   as table row names if they exist.
-#' @param flag_var_aesi ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   vector with names of flag variables from `dataset` used to count adverse event
-#'   special interest groups. All flag variables must be of type `logical`. Variable
-#'   labels are used as table row names if they exist.
-#' @param aeseq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable
-#' for adverse events sequence number from `dataset`. Used for counting total number of events.
+#' @param dthfl_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#'   with all available choices and preselected option for variable names that can be used as death flag variable.
+#'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
+#' @param dcsreas_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#'   with all available choices and preselected option for variable names that can be used as study discontinuation
+#'   reason variable. Records with `"ADVERSE EVENTS"` are summarized in the table row for
+#'   "Total number of patients withdrawn from study due to an AE".
+#' @param flag_var_anl ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()] or `NULL`)\cr
+#'   vector with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious events,
+#'   Related events, etc.). Variable labels are used as table row names if they exist.
+#' @param flag_var_aesi ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()] or `NULL`)\cr
+#'   vector with names of flag variables from `dataset` used to count adverse event special interest groups. All flag
+#'   variables must be of type `logical`. Variable labels are used as table row names if they exist.
+#' @param aeseq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable for
+#'   adverse events sequence number from `dataset`. Used for counting total number of events.
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
+#'
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
@@ -579,6 +581,7 @@ template_events_summary <- function(anl_name,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_events_summary <- function(label,
                                 dataname,
                                 parentname = ifelse(
@@ -668,9 +671,7 @@ tm_t_events_summary <- function(label,
   )
 }
 
-
-
-#' @noRd
+#' @keywords internal
 ui_t_events_summary <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -781,7 +782,7 @@ ui_t_events_summary <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_events_summary <- function(id,
                                  data,
                                  reporter,

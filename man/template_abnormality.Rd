@@ -37,11 +37,11 @@ template_abnormality(
 
 \item{abnormal}{(\verb{named list})\cr indicating abnormality direction and grades.}
 
-\item{grade}{(\code{character})\cr name of the variable that can be used to
+\item{grade}{(\code{character})\cr name of the variable used to
 specify the abnormality grade. Variable must be factor.}
 
 \item{baseline_var}{(\code{character})\cr
-name of the variable for baseline abnormality grade.}
+name of the variable specifying baseline abnormality grade.}
 
 \item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
 
@@ -56,11 +56,12 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{exclude_base_abn}{(\code{logical})\cr whether to exclude patients who had abnormal values at baseline.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
-\item{na_level}{(\code{character})\cr the NA level in the input dataset, default to \code{"<Missing>"}.}
+\item{na_level}{(\code{character})\cr the NA level in the input dataset, defaults to \code{"<Missing>"}.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
@@ -69,8 +70,11 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 
 \item{tbl_title}{(\code{character})\cr Title with label of variables from by bars}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Abnormality Summary Table
+Creates a valid expression to generate a table to summarize abnormality.
 }
 \seealso{
 \code{\link[=tm_t_abnormality]{tm_t_abnormality()}}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_tte.R
 \name{tm_t_tte}
 \alias{tm_t_tte}
-\title{Teal Module: Time To Event Table Teal Module}
+\title{teal Module: Time-To-Event Table}
 \usage{
 tm_t_tte(
   label,
@@ -99,22 +99,26 @@ with settings for the module table. The argument is merged with option \code{tea
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Time To Event Table Teal Module
+This module produces a time-to-event analysis summary table, consistent with the TLG Catalog
+template for \code{TTET01} available \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/ttet01.html}{here}.
 }
 \details{
-This module produces a response summary table that is similar to \code{TTET01}. The core functionality is based
-on \code{\link[=coxph_pairwise]{coxph_pairwise()}}, \code{\link[=surv_timepoint]{surv_timepoint()}} and \code{\link[=surv_time]{surv_time()}} from package \code{tern}.\cr
-The following variables are used in the module:
-
-\tabular{ll}{
-\code{AVAL} \tab time to event\cr
-\code{CNSR} \tab boolean or 0,1 is element in \code{AVAL} censored\cr
-\code{PARAMCD} \tab variable used to filter for endpoint (e.g. OS), after
-filtering for \code{paramcd} one observation per patient is expected
+\itemize{
+\item The core functionality of this module is based on \code{\link[=coxph_pairwise]{coxph_pairwise()}}, \code{\link[=surv_timepoint]{surv_timepoint()}}, and \code{\link[=surv_time]{surv_time()}} from
+the \code{tern} package.
+\item The arm and stratification variables are taken from the \code{parentname} data.
+\item The following variables are used in the module:
+\itemize{
+\item \code{AVAL}: time to event
+\item \code{CNSR}: 1 if record in \code{AVAL} is censored, 0 otherwise
+\item \code{PARAMCD}: variable used to filter for endpoint (e.g. OS). After
+filtering for \code{PARAMCD} one observation per patient is expected
 }
-
-The arm and stratification variables and taken from the \code{parentname} data.
+}
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -170,4 +174,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

@@ -1,42 +1,20 @@
 #' Template: Binary Outcome
 #'
-#' Creates a valid expression for binary outcome analysis.
+#' Creates a valid expression to generate a binary outcome analysis.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis.
 #' @param responder_val (`character`)\cr the short label for observations to
-#'   translate `AVALC` into responder / non-responder.
+#'   translate `AVALC` into responder/non-responder.
 #' @param responder_val_levels (`character`)\cr the levels of responses that will be shown in the multinomial
-#' response estimations.
+#'   response estimations.
 #' @param show_rsp_cat (`logical`)\cr display the multinomial response estimations.
 #' @param paramcd (`character`)\cr response parameter value to use in the table title.
 #'
+#' @inherit template_arguments return
+#'
 #' @seealso [tm_t_binary_outcome()]
+#'
 #' @keywords internal
-#' @examples
-#' if (interactive()) {
-#'   # Preparation of the test case.
-#'   adsl <- tmc_ex_adsl
-#'   adrs <- tmc_ex_adrs
-#'
-#'   # Generate an expression for the analysis of responders.
-#'   a <- template_binary_outcome(
-#'     dataname = "adrs",
-#'     parentname = "adsl",
-#'     arm_var = "ARMCD",
-#'     paramcd = "BESRSPI",
-#'     ref_arm = "ARM A",
-#'     comp_arm = c("ARM B"),
-#'     compare_arm = TRUE,
-#'     show_rsp_cat = TRUE
-#'   )
-#'
-#'   b <- mapply(expr = a, FUN = eval)
-#'   b$data
-#'   b$layout
-#'   b$table
-#' }
-#'
 template_binary_outcome <- function(dataname,
                                     parentname,
                                     arm_var,
@@ -50,20 +28,9 @@ template_binary_outcome <- function(dataname,
                                     responder_val = c("Complete Response (CR)", "Partial Response (PR)"),
                                     responder_val_levels = responder_val,
                                     control = list(
-                                      global = list(
-                                        method = "waldcc",
-                                        conf_level = 0.95
-                                      ),
-                                      unstrat = list(
-                                        method_ci = "waldcc",
-                                        method_test = "schouten",
-                                        odds = TRUE
-                                      ),
-                                      strat = list(
-                                        method_ci = "cmh",
-                                        method_test = "cmh",
-                                        strat = NULL
-                                      )
+                                      global = list(method = "waldcc", conf_level = 0.95),
+                                      unstrat = list(method_ci = "waldcc", method_test = "schouten", odds = TRUE),
+                                      strat = list(method_ci = "cmh", method_test = "cmh", strat = NULL)
                                     ),
                                     add_total = FALSE,
                                     total_label = default_total_label(),
@@ -357,37 +324,28 @@ template_binary_outcome <- function(dataname,
   y
 }
 
-#' Teal Module: Binary Outcome Table
+#' teal Module: Binary Outcome Table
 #'
-#' @description
-#'   This module produces a binary outcome response summary
-#'   table, with the option to match the STREAM template `RSPT01`.
+#' This module produces a binary outcome response summary table, with the option to match the template for
+#' response table `RSPT01` available in the TLG Catalog [here](
+#' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html).
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_binary_outcome
-#' @param rsp_table (`logical`)\cr should the initial set-up of the module match `RSPT01`. (default FALSE)
+#' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
 #'
-#' @details Additional standard UI inputs include `responders`,
-#'   `ref_arm`, `comp_arm` and `combine_comp_arms` (default FALSE)
+#' @details
+#' * The display order of response categories inherits the factor level order of the source data. Use
+#'   [base::factor()] and its `levels` argument to manipulate the source data in order to include/exclude
+#'   or re-categorize response categories and arrange the display order. If response categories are `"Missing"`,
+#'   `"Not Evaluable (NE)"`, or `"Missing or unevaluable"`, 95% confidence interval will not be calculated.
 #'
-#'   Default values of the inputs `var_arm`, `ref_arm` and
-#'   `comp_arm` are set to NULL, and updated accordingly based on selection
-#'   of `paramcd` and `var_arm`
+#' * Reference arms are automatically combined if multiple arms selected as reference group.
 #'
-#'   This display order of response categories in partitioned statistics section
-#'   inherits the factor level order of the source data. Use
-#'   [base::factor()] and its `levels` argument to manipulate
-#'   the source data in order to include/exclude or re-categorize response
-#'   categories and arrange the display order. If response categories are
-#'   "Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\%
-#'   confidence interval will not be calculated.
+#' @inherit module_arguments return
 #'
-#'   Reference arms automatically combined if multiple arms selected as
-#'   reference group.
-#'
-#' @return an [teal::module()] object
-#'
-#' @export
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -460,6 +418,7 @@ template_binary_outcome <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_binary_outcome <- function(label,
                                 dataname,
                                 parentname = ifelse(
@@ -538,6 +497,7 @@ tm_t_binary_outcome <- function(label,
   )
 }
 
+#' @keywords internal
 ui_t_binary_outcome <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -726,7 +686,7 @@ ui_t_binary_outcome <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_binary_outcome <- function(id,
                                  data,
                                  reporter,

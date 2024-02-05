@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_shift_by_arm_by_worst.R
 \name{template_shift_by_arm_by_worst}
 \alias{template_shift_by_arm_by_worst}
-\title{Template: Shift by Arm}
+\title{Template: Shift by Arm by Worst Analysis Indicator Level}
 \usage{
 template_shift_by_arm_by_worst(
   dataname,
@@ -64,8 +64,11 @@ with settings for the module table. The argument is merged with option \code{tea
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression to generate a summary table of analysis indicator levels by arm.
+Creates a valid expression to generate a summary table of worst analysis indicator variable level per subject by arm.
 }
 \seealso{
 \code{\link[=tm_t_shift_by_arm]{tm_t_shift_by_arm()}}
