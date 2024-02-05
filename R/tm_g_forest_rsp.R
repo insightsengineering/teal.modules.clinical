@@ -198,10 +198,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams template_forest_rsp
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' library(nestcolor)

@@ -359,10 +359,7 @@ template_coxreg_m <- function(dataname,
 #'   test will be substituted in these cases.
 #' * Multi-variable is the default choice for backward compatibility.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ## First example

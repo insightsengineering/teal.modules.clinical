@@ -8,7 +8,7 @@ template_logistic(
   dataname,
   arm_var,
   aval_var,
-  paramcd,
+  paramcd = lifecycle::deprecated(),
   label_paramcd,
   cov_var,
   interaction_var,
@@ -25,46 +25,43 @@ template_logistic(
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}. No arm or treatment variable is included in the logistic model is
-being \code{NULL}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}. To fit a logistic model with no
+arm/treatment variable, set to \code{NULL}.}
 
 \item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
-\item{paramcd}{(\code{character})\cr response parameter value to use in the table title.}
+\item{paramcd}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The \code{paramcd} argument is not used in this function.}
 
-\item{label_paramcd}{(\code{character})\cr Label of response parameter value to use in the table title.}
+\item{label_paramcd}{(\code{character})\cr label of response parameter value to print in the table title.}
 
 \item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
-\item{interaction_var}{(\code{character})\cr
-names of the variables that can be used for interaction variable selection.}
+\item{interaction_var}{(\code{character})\cr names of the variables that can be used for interaction variable selection.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
 \item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{topleft}{(\code{character})\cr
-the top-left annotation in the table.}
+\item{topleft}{(\code{character})\cr text to use as top-left annotation in the table.}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
 \item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
-\item{responder_val}{(\code{character})\cr
-values of the responder variable corresponding with a successful response.}
+\item{responder_val}{(\code{character})\cr values of the responder variable corresponding with a successful response.}
 
-\item{at}{optional, (\code{NULL} or \code{numeric})\cr
-values for the interaction variable. Otherwise the median is used.}
+\item{at}{(\code{NULL} or \code{numeric})\cr optional values for the interaction variable. Otherwise the median is used.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates an expression for logistic regressions.
+Creates a valid expression to generate a logistic regression table.
 }
 \seealso{
 \code{\link[=tm_t_logistic]{tm_t_logistic()}}

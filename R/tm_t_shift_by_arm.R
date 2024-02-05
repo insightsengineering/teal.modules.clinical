@@ -185,10 +185,7 @@ template_shift_by_arm <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_arm
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
