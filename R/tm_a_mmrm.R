@@ -3,18 +3,18 @@
 #' Creates a valid expression to generate an analysis table using Mixed Model Repeated Measurements.
 #'
 #' @inheritParams template_arguments
-#' @param method a string specifying the adjustment method.
-#' @param cor_struct a string specifying the correlation structure, defaults to
+#' @param method (`string`)\cr a string specifying the adjustment method.
+#' @param cor_struct (`string`)\cr a string specifying the correlation structure, defaults to
 #'   `"unstructured"`. See the details.
 #' @param weights_emmeans argument from [emmeans::emmeans()], "proportional" by default.
-#' @param parallel flag that controls whether optimizer search can use available free cores on the
+#' @param parallel (`flag`)\cr flag that controls whether optimizer search can use available free cores on the
 #'   machine (not default).
 #'
 #' @inherit template_arguments return
 #'
 #' @seealso [tm_a_mmrm()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_fit_mmrm <- function(parentname,
                               dataname,
                               aval_var,
@@ -157,13 +157,14 @@ template_fit_mmrm <- function(parentname,
 #' @describeIn template_fit_mmrm
 #'
 #' @inheritParams template_arguments
-#' @param fit_name name of fitted `MMRM` object
-#' @param show_relative should the "reduction" (`control - treatment`, default) or the "increase"
-#'   (`treatment - control`) be shown for the relative change from baseline
-#' @param table_type (`character`)\cr
-#'   type of table to output.
+#' @param fit_name (`string`)\cr name of fitted `MMRM` object.
+#' @param show_relative (`string`)\cr should the "reduction" (`control - treatment`, default) or the "increase"
+#'   (`treatment - control`) be shown for the relative change from baseline.
+#' @param table_type (`string`)\cr type of table to output.
 #'
 #' @inherit template_arguments return
+#'
+#' @keywords internal
 template_mmrm_tables <- function(parentname,
                                  dataname,
                                  fit_name,
@@ -326,10 +327,14 @@ template_mmrm_tables <- function(parentname,
 #' @describeIn template_fit_mmrm
 #'
 #' @inheritParams template_arguments
-#' @param lsmeans_plot a `list` of controls for LS means plot. See more [tern.mmrm::g_mmrm_lsmeans()]
-#' @param diagnostic_plot a `list` of controls for diagnostic_plot. See more [tern.mmrm::g_mmrm_diagnostic()]
+#' @param lsmeans_plot (named `list`)\cr a `list` of controls for LS means plot.
+#'   See more [tern.mmrm::g_mmrm_lsmeans()].
+#' @param diagnostic_plot (named `list`)\cr a `list` of controls for diagnostic_plot.
+#'   See more [tern.mmrm::g_mmrm_diagnostic()].
 #'
 #' @inherit template_arguments return
+#'
+#' @keywords internal
 template_mmrm_plots <- function(fit_name,
                                 lsmeans_plot = list(
                                   select = c("estimates", "contrasts"),
@@ -444,23 +449,22 @@ template_mmrm_plots <- function(fit_name,
 #' @inheritParams module_arguments
 #' @inheritParams template_mmrm_tables
 #' @inheritParams template_mmrm_plots
-#' @param method (`choices_selected`)\cr
-#'   object with all available choices and preselected option for the adjustment method.
-#' @param ggplot2_args optional, (`ggplot2_args`) \cr
-#' object created by [`teal.widgets::ggplot2_args()`] with settings for all the plots or named list of `ggplot2_args`
-#' objects for plot-specific settings. List names should match the following:\cr `
-#' c("default", "lsmeans", "diagnostic")`.
-#' The argument is merged with option `teal.ggplot2_args` and with default module arguments
-#' (hard coded in the module body).\cr For more details, see the help vignette:\cr
-#' `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
-#'
-#' @export
+#' @param method (`choices_selected`)\cr object with all available choices and pre-selected
+#'   option for the adjustment method.
+#' @param ggplot2_args (`ggplot2_args`) \cr optional, object created by [`teal.widgets::ggplot2_args()`]
+#'   with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
+#'   List names should match the following:\cr `c("default", "lsmeans", "diagnostic")`. The argument is merged
+#'   with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).\cr
+#'   For more details, see the help vignette:\cr
+#'   `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
 #' @note
 #' The ordering of the input data sets can lead to slightly different numerical results or
 #' different convergence behavior. This is a known observation with the used package
 #' `lme4`. However, once convergence is achieved, the results are reliable up to
 #' numerical precision.
+#'
+#' @inherit module_arguments return
 #'
 #' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
 #'   apps implementing this module can be found.
@@ -514,6 +518,7 @@ template_mmrm_plots <- function(fit_name,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_a_mmrm <- function(label,
                       dataname,
                       parentname = ifelse(

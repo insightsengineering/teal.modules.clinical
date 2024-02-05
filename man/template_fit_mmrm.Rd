@@ -70,25 +70,24 @@ template_mmrm_plots(
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{method}{a string specifying the adjustment method.}
+\item{method}{(\code{string})\cr a string specifying the adjustment method.}
 
-\item{cor_struct}{a string specifying the correlation structure, defaults to
+\item{cor_struct}{(\code{string})\cr a string specifying the correlation structure, defaults to
 \code{"unstructured"}. See the details.}
 
 \item{weights_emmeans}{argument from \code{\link[emmeans:emmeans]{emmeans::emmeans()}}, "proportional" by default.}
 
-\item{parallel}{flag that controls whether optimizer search can use available free cores on the
+\item{parallel}{(\code{flag})\cr flag that controls whether optimizer search can use available free cores on the
 machine (not default).}
 
-\item{fit_name}{name of fitted \code{MMRM} object}
+\item{fit_name}{(\code{string})\cr name of fitted \code{MMRM} object.}
 
 \item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
 
-\item{show_relative}{should the "reduction" (\code{control - treatment}, default) or the "increase"
-(\code{treatment - control}) be shown for the relative change from baseline}
+\item{show_relative}{(\code{string})\cr should the "reduction" (\code{control - treatment}, default) or the "increase"
+(\code{treatment - control}) be shown for the relative change from baseline.}
 
-\item{table_type}{(\code{character})\cr
-type of table to output.}
+\item{table_type}{(\code{string})\cr type of table to output.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
@@ -100,9 +99,11 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
-\item{lsmeans_plot}{a \code{list} of controls for LS means plot. See more \code{\link[tern.mmrm:g_mmrm_lsmeans]{tern.mmrm::g_mmrm_lsmeans()}}}
+\item{lsmeans_plot}{(named \code{list})\cr a \code{list} of controls for LS means plot.
+See more \code{\link[tern.mmrm:g_mmrm_lsmeans]{tern.mmrm::g_mmrm_lsmeans()}}.}
 
-\item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \code{\link[tern.mmrm:g_mmrm_diagnostic]{tern.mmrm::g_mmrm_diagnostic()}}}
+\item{diagnostic_plot}{(named \code{list})\cr a \code{list} of controls for diagnostic_plot.
+See more \code{\link[tern.mmrm:g_mmrm_diagnostic]{tern.mmrm::g_mmrm_diagnostic()}}.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments

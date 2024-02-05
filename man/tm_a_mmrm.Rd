@@ -61,8 +61,8 @@ reference and comparison arms when the arm variable is changed.}
 
 \item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
 
-\item{method}{(\code{choices_selected})\cr
-object with all available choices and preselected option for the adjustment method.}
+\item{method}{(\code{choices_selected})\cr object with all available choices and pre-selected
+option for the adjustment method.}
 
 \item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
 confidence level, each within range of (0, 1).}
@@ -89,12 +89,15 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args}) \cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for all the plots or named list of \code{ggplot2_args}
-objects for plot-specific settings. List names should match the following:\cr \code{ c("default", "lsmeans", "diagnostic")}.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
+\item{ggplot2_args}{(\code{ggplot2_args}) \cr optional, object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}}
+with settings for all the plots or named list of \code{ggplot2_args} objects for plot-specific settings.
+List names should match the following:\cr \code{c("default", "lsmeans", "diagnostic")}. The argument is merged
+with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).\cr
+For more details, see the help vignette:\cr
 \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+}
+\value{
+a \code{teal_module} object.
 }
 \description{
 This module produces a table with Mixed Model Repeated Measurements Analysis.
