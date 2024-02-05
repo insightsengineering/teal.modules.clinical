@@ -315,10 +315,7 @@ template_smq <- function(dataname,
 #' @param scopes ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
 #'   available choices for the scopes of standardized queries.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' data <- teal_data()

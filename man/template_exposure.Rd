@@ -30,16 +30,14 @@ template_exposure(
 
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
-\item{paramcd_label}{(\code{character})\cr
-the column from the dataset where the value will be used to label the argument \code{paramcd}.}
+\item{paramcd_label}{(\code{character})\cr the column from the \code{dataname} dataset where the
+value will be used to label the argument \code{paramcd}.}
 
-\item{row_by_var}{(\code{character})\cr
-variable name used to split the rows.}
+\item{row_by_var}{(\code{character})\cr variable name used to split the values by rows.}
 
-\item{col_by_var}{(\code{character})\cr
-variable name used to split the columns.}
+\item{col_by_var}{(\code{character})\cr variable name used to split the values by columns.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -50,10 +48,10 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 \item{add_total_row}{(\code{flag})\cr whether a "total" level should be added after the others which includes all the
 levels that constitute the split. A custom label can be set for this level via the \code{total_row_label} argument.}
 
-\item{total_row_label}{(\code{character})\cr string to display as total row label if row is enabled (see \code{add_total_row}).}
+\item{total_row_label}{(\code{character})\cr string to display as total row label if row is
+enabled (see \code{add_total_row}).}
 
-\item{drop_levels}{(\code{flag})\cr
-whether empty rows should be removed from the table.}
+\item{drop_levels}{(\code{flag})\cr whether empty rows should be removed from the table.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
@@ -66,11 +64,13 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Exposure Table for Risk management plan
+Creates a valid expression to generate exposure table for risk management plan.
 }
 \seealso{
 \code{\link[=tm_t_exposure]{tm_t_exposure()}}

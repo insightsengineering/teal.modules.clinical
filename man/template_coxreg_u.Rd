@@ -37,7 +37,7 @@ template_coxreg_u(
 
 \item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{at}{(\code{list} of \code{numeric})\cr when the candidate covariate is a \code{numeric} type variable, use \code{at}
 to specify the value of the covariate at which the effect should be estimated.}
@@ -57,7 +57,6 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{

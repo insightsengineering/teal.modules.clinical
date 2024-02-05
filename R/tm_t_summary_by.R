@@ -320,10 +320,7 @@ template_summary_by <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams template_summary_by
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl

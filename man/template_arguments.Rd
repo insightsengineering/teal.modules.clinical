@@ -20,12 +20,13 @@
 
 \item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
+\item{baseline_var}{(\code{character})\cr name of the variable for baseline values of the analysis variable.}
+
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
 \item{by_vars}{(\code{character})\cr variable names used to split the summary by rows.}
@@ -70,7 +71,6 @@ is \code{"event"}.}
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 
 \item{hlt}{(\code{character})\cr name of the variable with high level term for events.}
@@ -96,7 +96,7 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
 statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
@@ -109,8 +109,9 @@ rates between any two columns.}
 
 \item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
-\item{sort_criteria}{(\code{character})\cr criteria to use to sort the table. Default option \code{freq_desc} sorts by
-decreasing total number of patients with event. Alternative option \code{alpha} sorts events alphabetically.}
+\item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
+on column \code{sort_freq_col} by decreasing number of patients with event. Alternative option \code{alpha} sorts events
+alphabetically.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
