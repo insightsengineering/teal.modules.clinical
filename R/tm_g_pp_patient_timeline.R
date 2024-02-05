@@ -1,23 +1,24 @@
-#' Template: Patient Timeline Tab
+#' Template: Patient Profile Timeline Plot
 #'
-#' Creates a patient timeline template call.
+#' Creates a valid expression to generate a patient profile timeline [ggplot2::ggplot()] plot using ADaM datasets.
 #'
+#' @inheritParams template_adverse_events
 #' @inheritParams template_arguments
-#' @param aeterm (`character`)\cr name of the reported term for the adverse event variable.
-#' @param aetime_start (`character`)\cr name of `datetime` start of adverse event variable.
-#' @param aetime_end (`character`)\cr name of `datetime` end of adverse event variable.
-#' @param dstime_start (`character`)\cr name of `datetime` first exposure to treatment variable.
-#' @param dstime_end (`character`)\cr name of `datetime` last exposure to treatment variable.
-#' @param cmdecod (`character`)\cr name of reported standardized name of drug, med, or therapy variable.
-#' @param aerelday_start (`character`)\cr name of start study day variable.
-#' @param aerelday_end (`character`)\cr name of end study day variable.
-#' @param dsrelday_start (`character`)\cr name of start study day variable.
-#' @param dsrelday_end (`character`)\cr name of end study day variable.
-#' @param relative_day (`logical`)\cr whether to use relative days or absolute dates
-#' @param patient_id (`character`)\cr patient ID.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
-#' @keywords internal
+#' @param aetime_start (`character`)\cr name of start date/time of adverse event variable.
+#' @param aetime_end (`character`)\cr name of end date/time of adverse event variable.
+#' @param dstime_start (`character`)\cr name of date/time of first exposure to treatment variable.
+#' @param dstime_end (`character`)\cr name of date/time of last exposure to treatment variable.
+#' @param aerelday_start (`character`)\cr name of adverse event study start day variable.
+#' @param aerelday_end (`character`)\cr name of adverse event study end day variable.
+#' @param dsrelday_start (`character`)\cr name of concomitant medications study start day variable.
+#' @param dsrelday_end (`character`)\cr name of concomitant medications study day start variable.
+#' @param relative_day (`logical`)\cr whether to use relative days (`TRUE`) or absolute dates (`FALSE`).
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_g_pp_patient_timeline()]
+#'
+#' @keywords internal
 template_patient_timeline <- function(dataname = "ANL",
                                       aeterm = "AETERM",
                                       aetime_start = "ASTDTM",
@@ -317,43 +318,38 @@ template_patient_timeline <- function(dataname = "ANL",
   chart_list
 }
 
-#' Teal Module: Patient Profile Timeline Teal Module
+#' teal Module: Patient Profile Timeline Plot
 #'
-#' This teal module produces a patient profile timeline plot using `ADaM` datasets.
+#' This module produces a patient profile timeline [ggplot2::ggplot()] type plot using ADaM datasets.
 #'
+#' @inheritParams tm_g_pp_adverse_events
 #' @inheritParams module_arguments
 #' @inheritParams template_patient_timeline
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param aeterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AETERM` column of the `ADAE` dataset.
 #' @param dataname_adcm (`character`)\cr name of `ADCM` dataset or equivalent.
 #' @param dataname_adae (`character`)\cr name of `ADAE` dataset or equivalent.
-#' @param aerelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `ASTDY` column of the `ADAE` dataset.
-#' @param aerelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr `AENDY`
-#' column of the `ADAE` dataset.
-#' @param dsrelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr `ASTDY`
-#' column of the `ADCM` dataset.
-#' @param dsrelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr `AENDY`
-#' column of the `ADCM` dataset.
-#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMDECOD` column of the `ADCM` dataset.
-#' @param aetime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `ASTDTM` column of the `AE` start of the `ADAE` dataset.
-#' @param aetime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AENDTM` column of the `AE` end of the `ADAE` dataset.
-#' @param dstime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMASTDTM` column of treatment start of the `ADCM` dataset.
-#' @param dstime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMAENDTM` column of treatment end of the `ADCM` dataset.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @param aerelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adae`.
+#' @param aerelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#'   with all available choices and preselected option for the `AENDY` variable from `dataname_adae`.
+#' @param dsrelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adcm`.
+#' @param dsrelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#'   with all available choices and preselected option for the `AENDY` variable from `dataname_adcm`.
+#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMDECOD` variable from `dataname_adcm`.
+#' @param aetime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#'   all available choices and preselected option for the `ASTDTM` variable from `dataname_adae`.
+#' @param aetime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `AENDTM` variable from `dataname_adae`.
+#' @param dstime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#'   all available choices and preselected option for the `CMASTDTM` variable from `dataname_adcm`.
+#' @param dstime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the `CMAENDTM` variable from `dataname_adcm`.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' library(nestcolor)
-#'
-#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #'
 #' data <- teal_data()
 #' data <- within(data, {
@@ -375,6 +371,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'   )
 #' })
 #'
+#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #' datanames(data) <- c("ADSL", "ADAE", "ADCM")
 #' join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADAE", "ADCM")]
 #' join_keys(data)["ADCM", "ADCM"] <- adcm_keys
@@ -437,6 +434,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_pp_patient_timeline <- function(label,
                                      dataname_adcm = "ADCM",
                                      dataname_adae = "ADAE",
@@ -521,6 +519,7 @@ tm_g_pp_patient_timeline <- function(label,
   )
 }
 
+#' @keywords internal
 ui_g_patient_timeline <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -661,7 +660,7 @@ ui_g_patient_timeline <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_g_patient_timeline <- function(id,
                                    data,
                                    reporter,
@@ -716,7 +715,6 @@ srv_g_patient_timeline <- function(id,
       },
       ignoreInit = TRUE
     )
-
 
     # Patient timeline tab ----
     check_box <- shiny::reactive(input$relday_x_axis)
