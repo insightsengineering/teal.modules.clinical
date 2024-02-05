@@ -134,10 +134,7 @@ template_a_gee <- function(output_table,
 #' @inheritParams template_arguments
 #' @inheritParams template_a_gee
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' data <- teal_data()

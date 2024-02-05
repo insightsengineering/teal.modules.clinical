@@ -134,8 +134,6 @@ if (interactive()) {
 
 }
 \seealso{
-\code{\link[=template_abnormality_by_worst_grade]{template_abnormality_by_worst_grade()}}
-
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }

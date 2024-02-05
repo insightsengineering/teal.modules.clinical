@@ -209,6 +209,9 @@ NULL
 #'
 #' @return a `teal_module` object.
 #'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
+#'
 #' @name module_arguments
 #' @keywords internal
 NULL

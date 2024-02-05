@@ -224,10 +224,7 @@ template_logistic <- function(dataname,
 #' @param avalc_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
 #'   available choices and preselected option for the analysis variable (categorical).
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
