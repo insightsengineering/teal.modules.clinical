@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_coxreg.R
 \name{tm_t_coxreg}
 \alias{tm_t_coxreg}
-\title{Teal Module: Cox Regression Model}
+\title{teal Module: Cox Regression Model}
 \usage{
 tm_t_coxreg(
   label,
@@ -60,10 +60,8 @@ option for the analysis variable.}
 \item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
 option for the censoring variable.}
 
-\item{multivariate}{(\code{logical})\cr
-If \code{FALSE}, the univariable approach is used
-(equivalent to \code{COXT01} standard) instead of the multi-variable model
-(equivalent to \code{COXT02} standard).}
+\item{multivariate}{(\code{logical})\cr if \code{FALSE}, the univariable approach is used instead of the
+multi-variable model.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
@@ -84,41 +82,39 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal module to fit Cox univariable or multi-variable models consistent with
-\code{COXT01} and \code{COXT02} standard outputs, respectively.
+This module fits Cox univariable or multi-variable models, consistent with the TLG Catalog
+templates for Cox regression tables \code{COXT01} and \code{COXT02}, respectively. See the TLG Catalog entries
+for \code{COXT01} \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt01.html}{here}
+and \code{COXT02} \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt02.html}{here}.
 }
 \details{
 The Cox Proportional Hazards (PH) model is the most commonly used method to
-estimate the magnitude of
-the effect in survival analysis. It assumes proportional hazards: the ratio
-of the hazards between groups (e.g., two arms) is constant over time.
+estimate the magnitude of the effect in survival analysis. It assumes proportional
+hazards: the ratio of the hazards between groups (e.g., two arms) is constant over time.
 This ratio is referred to as the "hazard ratio" (HR) and is one of the most
 commonly reported metrics to describe the effect size in survival analysis.
-For further information about the Cox Proportional Hazards Model, check
-"Statistical Analysis of Clinical Trials Data with R", NEST team.
 
 This modules expects that the analysis data has the following variables:
-
-\tabular{ll}{
-\code{AVAL} \tab time to event\cr
-\code{CNSR} \tab boolean or 0,1 is element in \code{AVAL} censored\cr
-\code{PARAMCD} \tab variable used to filter for endpoint (e.g. OS), after
-filtering for \code{paramcd} one observation per patient is expected
-}
-
-The arm variables, stratification and covariate variables are taken from the
-\code{ADSL} data.
-}
-\section{Note}{
-
 \itemize{
-\item The likelihood ratio test is not supported for model including strata,
-Wald test will be substituted.
-\item Multi-Variable is the default choice for backward compatibility.
-}
+\item \code{AVAL}: time to event
+\item \code{CNSR}: 1 if record in \code{AVAL} is censored, 0 otherwise
+\item \code{PARAMCD}: variable used to filter for endpoint (e.g. OS). After
+filtering for \code{PARAMCD} one observation per patient is expected
 }
 
+The arm variables and stratification/covariate variables are taken from the \code{ADSL} data.
+}
+\note{
+\itemize{
+\item The likelihood ratio test is not supported for models that include strata - the Wald
+test will be substituted in these cases.
+\item Multi-variable is the default choice for backward compatibility.
+}
+}
 \examples{
 ## First example
 ## =============
@@ -170,10 +166,9 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
-
 ## Second example
 ## ==============
-## This time, a synthetic pair of ADTTE/ADSL is fabricated for a Cox regression
+## This time, a synthetic pair of ADTTE/ADSL data is fabricated for Cox regression
 ## where ties and pval_method matter.
 
 ## Dataset fabrication
@@ -214,9 +209,9 @@ datanames(data) <- datanames
 join_keys(data) <- default_cdisc_join_keys[datanames]
 
 ## Teal application
-## ================
+## ----------------
 ## Note that the R code exported by `Show R Code` does not include the data
-## preprocessing. You will need to create the dataset as above before
+## pre-processing. You will need to create the dataset as above before
 ## running the exported R code.
 
 arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
@@ -241,4 +236,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
