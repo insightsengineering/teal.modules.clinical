@@ -284,10 +284,7 @@ template_mult_events <- function(dataname,
 #'   all available choices and preselected option for variable names that can be used as analysis sequence number
 #'   variable. Used for counting the unique number of events.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl

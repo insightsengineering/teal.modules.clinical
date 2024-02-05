@@ -22,7 +22,6 @@
 #' @param basic_table_args optional, (`basic_table_args`)\cr object created by [teal.widgets::basic_table_args()]
 #'   with settings for the module table. The argument is merged with option `teal.basic_table_args` and with default
 #'   module arguments (hard coded in the module body).
-#'
 #'   For more details, see the vignette: `vignette("custom-basic-table-arguments", package = "teal.widgets")`.
 #' @param by_vars (`character`)\cr variable names used to split the summary by rows.
 #' @param cmdecod (`character`)\cr name of standardized medication name variable.
@@ -50,7 +49,6 @@
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
-#'
 #'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #' @param hlt (`character`)\cr name of the variable with high level term for events.
 #' @param id_var (`character`)\cr the variable name for subject id.
@@ -67,15 +65,16 @@
 #' @param na.rm (`logical`)\cr whether `NA` values should be removed prior to analysis.
 #' @param numeric_stats (`character`)\cr names of statistics to display for numeric summary variables. Available
 #'   statistics are `n`, `mean_sd`, `mean_ci`, `median`, `median_ci`, `quantiles`, `range`, and `geom_mean`.
-#' @param paramcd (`character`)\cr variable value designating the studied parameter.
+#' @param paramcd (`character`)\cr name of the parameter code variable.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_id (`character`)\cr patient ID.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
 #'   rates between any two columns.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param ref_arm (`character`)\cr the level of reference arm in case of arm comparison.
-#' @param sort_criteria (`character`)\cr criteria to use to sort the table. Default option `freq_desc` sorts by
-#'   decreasing total number of patients with event. Alternative option `alpha` sorts events alphabetically.
+#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
+#'   on column `sort_freq_col` by decreasing number of patients with event. Alternative option `alpha` sorts events
+#'   alphabetically.
 #' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
 #' @param sum_vars (`character`)\cr names of the variables that should be summarized.
@@ -172,8 +171,8 @@ NULL
 #' @param label (`character`)\cr menu item label of the module in the teal app.
 #' @param llt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr name of the variable
 #'   with low level term for events.
-#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable value
-#'   designating the studied parameter.
+#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the parameter code variable from `dataname`.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_col (`character`)\cr name of patient ID variable.
 #' @param plot_height optional, (`numeric`)\cr a vector of length three with `c(value, min, max)`. Specifies the
@@ -208,6 +207,9 @@ NULL
 #'   with all available choices and preselected option for variable names that can be used as worst flag variable.
 #'
 #' @return a `teal_module` object.
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @name module_arguments
 #' @keywords internal

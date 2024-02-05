@@ -43,7 +43,7 @@ template_shift_by_grade(
 
 \item{base_toxgrade_var}{(\code{character})\cr name of the variable indicating the baseline toxicity grade.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
 set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
@@ -65,7 +65,6 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{

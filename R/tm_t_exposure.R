@@ -227,10 +227,7 @@ template_exposure <- function(parentname,
 #' @param paramcd_label (`character`)\cr the column from the dataset where the value will be used to
 #'   label the argument `paramcd`.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' data <- teal_data()

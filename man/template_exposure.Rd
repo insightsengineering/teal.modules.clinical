@@ -30,7 +30,7 @@ template_exposure(
 
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{paramcd_label}{(\code{character})\cr the column from the \code{dataname} dataset where the
 value will be used to label the argument \code{paramcd}.}
@@ -64,7 +64,6 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{

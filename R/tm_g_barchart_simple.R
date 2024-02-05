@@ -13,10 +13,7 @@
 #' @param y_facet (`data_extract_spec`)\cr column-wise faceting groups.
 #' @param plot_options (`list`)\cr list of plot options.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' library(nestcolor)
