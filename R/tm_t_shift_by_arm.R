@@ -1,14 +1,17 @@
 #' Template: Shift by Arm
 #'
+#' Creates a valid expression to generate a summary table of analysis indicator levels by arm.
+#'
 #' @inheritParams template_arguments
-#' @param aval_var (`character`)\cr the variable name for the analysis reference range indicator.
-#' @param baseline_var (`character`)\cr the variable name for the baseline reference range indicator.
-#' @param add_total (`logical`)\cr
-#'   whether to include row with total number of patients.
+#' @param aval_var (`character`)\cr name of the analysis reference range indicator variable.
+#' @param baseline_var (`character`)\cr name of the baseline reference range indicator variable.
+#' @param add_total (`logical`)\cr whether to include row with total number of patients.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_shift_by_arm()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_shift_by_arm <- function(dataname,
                                   parentname,
                                   arm_var = "ARM",
@@ -175,14 +178,18 @@ template_shift_by_arm <- function(dataname,
   y
 }
 
-#' Teal Module: Shift by Arm
+#' teal Module: Shift by Arm
+#'
+#' This module produces a summary table of analysis indicator levels by arm.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_arm
-#' @param add_total (`logical`)\cr
-#'   whether to include row with total number of patients.
 #'
-#' @export
+#' @inherit module_arguments return
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
+#'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADEG <- tmc_ex_adeg
@@ -228,6 +235,7 @@ template_shift_by_arm <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_shift_by_arm <- function(label,
                               dataname,
                               parentname = ifelse(
@@ -309,7 +317,7 @@ tm_t_shift_by_arm <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_shift_by_arm <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -399,7 +407,7 @@ ui_shift_by_arm <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_shift_by_arm <- function(id,
                              data,
                              reporter,

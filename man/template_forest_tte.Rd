@@ -56,8 +56,11 @@ for the module plot. The argument is merged with option \code{teal.ggplot2_args}
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression for survival forest plot.
+Creates a valid expression to generate a survival forest plot.
 }
 \seealso{
 \code{\link[=tm_g_forest_tte]{tm_g_forest_tte()}}

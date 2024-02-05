@@ -46,6 +46,8 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
+\item{control}{(\code{list})\cr list of settings for the analysis.}
+
 \item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
@@ -76,6 +78,12 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
+
+\item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
+module.}
+
+\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
+module.}
 
 \item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 

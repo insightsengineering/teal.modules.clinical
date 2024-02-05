@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_km.R
 \name{tm_g_km}
 \alias{tm_g_km}
-\title{Teal Module: \code{Kaplan-Meier}}
+\title{teal Module: Kaplan-Meier Plot}
 \usage{
 tm_g_km(
   label,
@@ -52,9 +52,8 @@ reference and comparison arms when the arm variable is changed.}
 
 \item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr names of the variables for stratified analysis.}
 
-\item{facet_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices and preselected option
-for variable names that can be used for facet plotting.}
+\item{facet_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for names of variable that can be used for plot faceting.}
 
 \item{time_unit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and
 preselected option for the time unit variable.}
@@ -80,9 +79,11 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a grid style \code{Kaplan-Meier} plot for data with
-\code{ADaM} structure.
+This module produces a grid-style Kaplan-Meier plot for data with ADaM structure.
 }
 \examples{
 library(nestcolor)
@@ -138,4 +139,8 @@ if (interactive()) {
   shinyApp(ui = app$ui, server = app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
