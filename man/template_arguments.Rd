@@ -66,9 +66,6 @@ is \code{"event"}.}
 
 \item{font_size}{(\code{numeric})\cr font size value.}
 
-\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment).
-Default is "event".}
-
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
@@ -79,12 +76,6 @@ For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", p
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
-
-\item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
-module.}
-
-\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
-module.}
 
 \item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
 module.}
@@ -119,7 +110,7 @@ rates between any two columns.}
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
 on column \code{sort_freq_col} by decreasing number of patients with event. Alternative option \code{alpha} sorts events
 alphabetically.}
-                                    
+
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
 \item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}

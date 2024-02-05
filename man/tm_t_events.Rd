@@ -54,8 +54,8 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment).
-Default is "event".}
+\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
+is \code{"event"}.}
 
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
 on column \code{sort_freq_col} by decreasing number of patients with event. Alternative option \code{alpha} sorts events
@@ -88,12 +88,10 @@ module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
-teal module for generating a table of events by term. Please, check out the
-\href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG-catalog} for
-additional examples and information.
+teal Module: Events by Term
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -130,4 +128,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
