@@ -21,11 +21,11 @@ template_a_gee(
 )
 }
 \arguments{
-\item{output_table}{(\code{character})\cr type of output table (\verb{"t_gee_cov", "t_gee_coef", "t_gee_lsmeans"})}
+\item{output_table}{(\code{character})\cr type of output table (\verb{"t_gee_cov", "t_gee_coef", "t_gee_lsmeans"}).}
 
-\item{data_model_fit}{(\code{character})\cr dataset used to fit the model by \code{tern.gee::fit_gee()}}
+\item{data_model_fit}{(\code{character})\cr dataset used to fit the model by \code{tern.gee::fit_gee()}.}
 
-\item{dataname_lsmeans}{(\code{character})\cr dataset used for \code{alt_counts_df} argument of \code{rtables::build_table()}}
+\item{dataname_lsmeans}{(\code{character})\cr dataset used for \code{alt_counts_df} argument of \code{rtables::build_table()}.}
 
 \item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
@@ -36,7 +36,8 @@ template_a_gee(
 \item{visit_var}{(\code{character})\cr variable names that can be used as \code{visit} variable. Must be a factor in
 \code{dataname}.}
 
-\item{split_covariates}{(\code{character})\cr vector of names of variables to use as covariates in \code{tern.gee::vars_gee()}}
+\item{split_covariates}{(\code{character})\cr vector of names of variables to use as covariates in
+\code{tern.gee::vars_gee()}.}
 
 \item{cor_struct}{(\code{character})\cr assumed correlation structure in \code{tern.gee::fit_gee}.}
 
@@ -52,7 +53,7 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 a \code{list} of expressions to generate a table or plot object.
 }
 \description{
-Creates a valid expression to generate an analysis table using Generalized Estimating Equations (GEE)
+Creates a valid expression to generate an analysis table using Generalized Estimating Equations (GEE).
 }
 \seealso{
 \code{\link[=tm_a_gee]{tm_a_gee()}}
