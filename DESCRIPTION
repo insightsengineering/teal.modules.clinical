@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9074
+Version: 0.8.16.9075
 Date: 2024-02-05
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
