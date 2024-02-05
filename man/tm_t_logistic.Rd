@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_logistic.R
 \name{tm_t_logistic}
 \alias{tm_t_logistic}
-\title{Teal Module: Logistic Regression}
+\title{teal Module: Logistic Regression}
 \usage{
 tm_t_logistic(
   label,
@@ -29,12 +29,11 @@ tm_t_logistic(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}}) or \code{NULL}\cr
-object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.
-arm_var is optional, when being NULL, no arm or treatment variable is included in the logistic model.}
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}} or \code{NULL})\cr object
+with all available choices and preselected option for variable names that can be used as \code{arm_var}. This defines
+the grouping variable(s) in the results table. If there are two elements selected for \code{arm_var}, the second
+variable will be nested under the first variable. If \code{NULL}, no arm/treatment variable is included in the
+logistic model.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -42,16 +41,17 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable value
+designating the studied parameter.}
 
-\item{cov_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the covariates variables.}
+\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the covariates variables.}
 
-\item{avalc_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices and preselected option for the analysis variable (categorical).}
+\item{avalc_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the analysis variable (categorical).}
 
-\item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
-confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -65,8 +65,12 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This module produces a multi-variable logistic regression table that matches \code{LGRT02}.
+This module produces a multi-variable logistic regression table consistent with the TLG Catalog template
+\code{LGRT02} available \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/lgrt02.html}{here}.
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -118,4 +122,8 @@ if (interactive()) {
   shinyApp(ui = app$ui, server = app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }
