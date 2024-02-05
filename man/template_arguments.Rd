@@ -20,6 +20,8 @@
 
 \item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
+\item{baseline_var}{(\code{character})\cr name of the variable for baseline values of the analysis variable.}
+
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
