@@ -456,11 +456,13 @@ template_events <- function(dataname,
 
 #' teal Module: Events by Term
 #'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' This module produces a table of events by term.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @inherit module_arguments return
 #'
