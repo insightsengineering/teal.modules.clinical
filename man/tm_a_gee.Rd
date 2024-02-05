@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_a_gee.R
 \name{tm_a_gee}
 \alias{tm_a_gee}
-\title{Teal Module: Teal module for Generalized Estimating Equations (GEE) analysis}
+\title{teal Module: Generalized Estimating Equations (GEE) analysis}
 \usage{
 tm_a_gee(
   label,
@@ -55,8 +55,8 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable value
-designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
 all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
@@ -70,11 +70,13 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Teal module for Generalized Estimating Equations (GEE) analysis
+This module produces an analysis table using Generalized Estimating Equations (GEE).
 }
 \examples{
 data <- teal_data()
@@ -118,4 +120,8 @@ if (interactive()) {
   shiny::shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

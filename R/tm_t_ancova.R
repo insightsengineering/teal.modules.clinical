@@ -1,7 +1,7 @@
 #' Template: ANCOVA Summary
 #'
 #' Creates a valid expression to generate an analysis of variance summary table.
-
+#'
 #' @inheritParams template_arguments
 #' @param paramcd_levels (`character`)\cr
 #'   variable levels for the studied parameter.
@@ -418,30 +418,25 @@ template_ancova <- function(dataname = "ANL",
 
 #' teal Module: ANCOVA Summary
 #'
-#' This module produces a table to summarize analysis of variance.
+#' This module produces a table to summarize analysis of variance, consistent with the TLG Catalog
+#' template for `AOVT01` available [here](
+#' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/aovt01.html) when multiple
+#' endpoints are selected.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_ancova
 #'
 #' @inherit module_arguments return
 #'
-#' @details This module produces an analysis of variance summary table that is
-#' similar to `AOVT01` when multiple endpoints are selected.
-#' When a single endpoint is selected, both unadjusted and adjusted comparison
-#' would be provided. This modules expects that the analysis data has the
-#' following variables:
+#' @details
+#' When a single endpoint is selected, both unadjusted and adjusted comparison are provided. This modules
+#' expects that the analysis data has the following variables:
 #'
-#' \tabular{ll}{
-#'  `AVISIT` \tab variable used to filter for analysis visits.\cr
-#'  `PARAMCD` \tab variable used to filter for endpoints, after filtering for
-#'  `paramcd` and `avisit`, one observation per patient is expected for the analysis
-#'  to be meaningful.
-#' }
+#' * `AVISIT`: variable used to filter for analysis visits.
+#' * `PARAMCD`: variable used to filter for endpoints, after filtering for `paramcd` and `avisit`, one
+#'   observation per patient is expected for the analysis to be meaningful.
 #'
-#' @export
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -503,6 +498,7 @@ template_ancova <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_ancova <- function(label,
                         dataname,
                         parentname = ifelse(

@@ -796,10 +796,7 @@ template_events_col_by_grade <- function(dataname,
 #' @param col_by_grade (`logical`)\cr whether to display the grading groups in nested columns.
 #' @param grading_groups (`list`)\cr named list of grading groups used when `col_by_grade = TRUE`.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @export
 #' @examples

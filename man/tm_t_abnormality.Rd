@@ -90,15 +90,17 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+}
+\value{
+a \code{teal_module} object.
 }
 \description{
 This module produces a table to summarize abnormality.
 }
 \note{
 Patients with the same abnormality at baseline as on the treatment visit can be
-excluded in accordance with \code{GDSR} specifications by using \code{exclude_base_abn}.
+excluded in accordance with GDSR specifications by using \code{exclude_base_abn}.
 }
 \examples{
 data <- teal_data()

@@ -82,7 +82,7 @@ machine (not default).}
 
 \item{fit_name}{(\code{string})\cr name of fitted MMRM object.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{show_relative}{(\code{string})\cr should the "reduction" (\code{control - treatment}, default) or the "increase"
 (\code{treatment - control}) be shown for the relative change from baseline.}
@@ -96,7 +96,6 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
 \item{lsmeans_plot}{(named \code{list})\cr a \code{list} of controls for LS means plot.
@@ -108,7 +107,6 @@ See more \code{\link[tern.mmrm:g_mmrm_diagnostic]{tern.mmrm::g_mmrm_diagnostic()
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
 \value{
