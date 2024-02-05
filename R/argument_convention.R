@@ -22,7 +22,6 @@
 #' @param basic_table_args optional, (`basic_table_args`)\cr object created by [teal.widgets::basic_table_args()]
 #'   with settings for the module table. The argument is merged with option `teal.basic_table_args` and with default
 #'   module arguments (hard coded in the module body).
-#'
 #'   For more details, see the vignette: `vignette("custom-basic-table-arguments", package = "teal.widgets")`.
 #' @param by_vars (`character`)\cr variable names used to split the summary by rows.
 #' @param cmdecod (`character`)\cr name of standardized medication name variable.
@@ -50,7 +49,6 @@
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
-#'
 #'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #' @param hlt (`character`)\cr name of the variable with high level term for events.
 #' @param id_var (`character`)\cr the variable name for subject id.
@@ -74,8 +72,9 @@
 #'   rates between any two columns.
 #' @param prune_freq (`number`)\cr threshold to use for trimming table using event incidence rate in any column.
 #' @param ref_arm (`character`)\cr the level of reference arm in case of arm comparison.
-#' @param sort_criteria (`character`)\cr criteria to use to sort the table. Default option `freq_desc` sorts by
-#'   decreasing total number of patients with event. Alternative option `alpha` sorts events alphabetically.
+#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
+#'   on column `sort_freq_col` by decreasing number of patients with event. Alternative option `alpha` sorts events
+#'   alphabetically.
 #' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param subgroup_var (`character`)\cr with variable names that can be used as subgroups.
 #' @param sum_vars (`character`)\cr names of the variables that should be summarized.
