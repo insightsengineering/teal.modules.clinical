@@ -224,7 +224,6 @@ template_abnormality <- function(parentname,
   y
 }
 
-
 #' teal Module: Abnormality Summary Table
 #'
 #' This module produces a table to summarize abnormality.
@@ -239,13 +238,10 @@ template_abnormality <- function(parentname,
 #'   variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
+#' @inherit module_arguments return seealso
+#'
 #' @note Patients with the same abnormality at baseline as on the treatment visit can be
-#'   excluded in accordance with `GDSR` specifications by using `exclude_base_abn`.
-#'
-#' @export
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#'   excluded in accordance with GDSR specifications by using `exclude_base_abn`.
 #'
 #' @examples
 #' data <- teal_data()
@@ -297,6 +293,7 @@ template_abnormality <- function(parentname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_abnormality <- function(label,
                              dataname,
                              parentname = ifelse(

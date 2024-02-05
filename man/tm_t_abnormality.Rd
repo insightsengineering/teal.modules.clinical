@@ -93,12 +93,15 @@ module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
 This module produces a table to summarize abnormality.
 }
 \note{
 Patients with the same abnormality at baseline as on the treatment visit can be
-excluded in accordance with \code{GDSR} specifications by using \code{exclude_base_abn}.
+excluded in accordance with GDSR specifications by using \code{exclude_base_abn}.
 }
 \examples{
 data <- teal_data()
