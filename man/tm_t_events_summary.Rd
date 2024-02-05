@@ -63,7 +63,8 @@ with all available choices and preselected option for variable names that can be
 reason variable. Records with \code{"ADVERSE EVENTS"} are summarized in the table row for
 "Total number of patients withdrawn from study due to an AE".}
 
-\item{llt}{(\code{choices_selected} or \code{data_extract_spec})\cr name of the variable with low level term for events.}
+\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr name of the variable
+with low level term for events.}
 
 \item{aeseq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable for
 adverse events sequence number from \code{dataset}. Used for counting total number of events.}

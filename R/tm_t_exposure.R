@@ -3,14 +3,11 @@
 #' Creates a valid expression to generate exposure table for risk management plan.
 #'
 #' @inheritParams template_arguments
-#' @param row_by_var (`character`)\cr
-#'   variable name used to split the values by rows.
-#' @param col_by_var (`character`)\cr
-#'   variable name used to split the values by columns.
-#' @param drop_levels (`flag`)\cr
-#'   whether empty rows should be removed from the table.
-#' @param paramcd_label (`character`)\cr
-#'   the column from the `dataname` dataset where the value will be used to label the argument `paramcd`.
+#' @param row_by_var (`character`)\cr variable name used to split the values by rows.
+#' @param col_by_var (`character`)\cr variable name used to split the values by columns.
+#' @param drop_levels (`flag`)\cr whether empty rows should be removed from the table.
+#' @param paramcd_label (`character`)\cr the column from the `dataname` dataset where the
+#'   value will be used to label the argument `paramcd`.
 #' @param add_total_row (`flag`)\cr
 #'   whether a "total" level should be added after the others which includes all the
 #'   levels that constitute the split. A custom label can be set for this level via the `total_row_label` argument.
