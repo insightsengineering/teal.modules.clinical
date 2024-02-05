@@ -204,10 +204,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams template_g_lineplot
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' library(nestcolor)

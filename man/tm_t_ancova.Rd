@@ -62,8 +62,8 @@ needed, the default option is \code{FALSE}.}
 \item{avisit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr value of analysis
 visit \code{AVISIT} of interest.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable value
-designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
 all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
@@ -83,20 +83,17 @@ For more details, see the vignette: \code{vignette("custom-basic-table-arguments
 a \code{teal_module} object.
 }
 \description{
-This module produces a table to summarize analysis of variance.
+This module produces a table to summarize analysis of variance, consistent with the TLG Catalog
+template for \code{AOVT01} available \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/aovt01.html}{here} when multiple
+endpoints are selected.
 }
 \details{
-This module produces an analysis of variance summary table that is
-similar to \code{AOVT01} when multiple endpoints are selected.
-When a single endpoint is selected, both unadjusted and adjusted comparison
-would be provided. This modules expects that the analysis data has the
-following variables:
-
-\tabular{ll}{
-\code{AVISIT} \tab variable used to filter for analysis visits.\cr
-\code{PARAMCD} \tab variable used to filter for endpoints, after filtering for
-\code{paramcd} and \code{avisit}, one observation per patient is expected for the analysis
-to be meaningful.
+When a single endpoint is selected, both unadjusted and adjusted comparison are provided. This modules
+expects that the analysis data has the following variables:
+\itemize{
+\item \code{AVISIT}: variable used to filter for analysis visits.
+\item \code{PARAMCD}: variable used to filter for endpoints, after filtering for \code{paramcd} and \code{avisit}, one
+observation per patient is expected for the analysis to be meaningful.
 }
 }
 \examples{

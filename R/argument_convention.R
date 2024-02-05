@@ -65,7 +65,7 @@
 #' @param na.rm (`logical`)\cr whether `NA` values should be removed prior to analysis.
 #' @param numeric_stats (`character`)\cr names of statistics to display for numeric summary variables. Available
 #'   statistics are `n`, `mean_sd`, `mean_ci`, `median`, `median_ci`, `quantiles`, `range`, and `geom_mean`.
-#' @param paramcd (`character`)\cr variable value designating the studied parameter.
+#' @param paramcd (`character`)\cr name of the parameter code variable.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_id (`character`)\cr patient ID.
 #' @param prune_diff (`number`)\cr threshold to use for trimming table using as criteria difference in
@@ -171,8 +171,8 @@ NULL
 #' @param label (`character`)\cr menu item label of the module in the teal app.
 #' @param llt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr name of the variable
 #'   with low level term for events.
-#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable value
-#'   designating the studied parameter.
+#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected option for the parameter code variable from `dataname`.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_col (`character`)\cr name of patient ID variable.
 #' @param plot_height optional, (`numeric`)\cr a vector of length three with `c(value, min, max)`. Specifies the
@@ -207,6 +207,9 @@ NULL
 #'   with all available choices and preselected option for variable names that can be used as worst flag variable.
 #'
 #' @return a `teal_module` object.
+#'
+#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
+#'   apps implementing this module can be found.
 #'
 #' @name module_arguments
 #' @keywords internal

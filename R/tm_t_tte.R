@@ -401,10 +401,7 @@ template_tte <- function(dataname = "ANL",
 #'   * `PARAMCD`: variable used to filter for endpoint (e.g. OS). After
 #'     filtering for `PARAMCD` one observation per patient is expected
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl

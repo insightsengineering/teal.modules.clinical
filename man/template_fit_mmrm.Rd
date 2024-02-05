@@ -82,7 +82,7 @@ machine (not default).}
 
 \item{fit_name}{name of fitted \code{MMRM} object}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{show_relative}{should the "reduction" (\code{control - treatment}, default) or the "increase"
 (\code{treatment - control}) be shown for the relative change from baseline}

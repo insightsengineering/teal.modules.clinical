@@ -342,10 +342,7 @@ template_binary_outcome <- function(dataname,
 #'
 #' * Reference arms are automatically combined if multiple arms selected as reference group.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl

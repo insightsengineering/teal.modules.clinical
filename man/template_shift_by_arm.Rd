@@ -29,7 +29,7 @@ template_shift_by_arm(
 
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{visit_var}{(\code{character})\cr variable names that can be used as \code{visit} variable. Must be a factor in
 \code{dataname}.}

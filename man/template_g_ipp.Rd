@@ -27,7 +27,7 @@ template_g_ipp(
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 

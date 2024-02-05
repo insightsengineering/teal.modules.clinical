@@ -30,7 +30,7 @@ template_exposure(
 
 \item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{paramcd}{(\code{character})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{paramcd_label}{(\code{character})\cr the column from the \code{dataname} dataset where the
 value will be used to label the argument \code{paramcd}.}

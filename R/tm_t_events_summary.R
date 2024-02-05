@@ -501,10 +501,7 @@ template_events_summary <- function(anl_name,
 #' @param aeseq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable for
 #'   adverse events sequence number from `dataset`. Used for counting total number of events.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' data <- teal_data()

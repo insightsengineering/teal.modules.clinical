@@ -248,11 +248,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
 #' value indicating worst grade.
 #'
-#' @inherit module_arguments return
-#'
-#' @seealso [template_abnormality_by_worst_grade()]
-#' @seealso The [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example
-#'   apps implementing this module can be found.
+#' @inherit module_arguments return seealso
 #'
 #' @export
 #'
