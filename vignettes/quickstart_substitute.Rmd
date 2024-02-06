@@ -31,8 +31,8 @@ Instead of focusing on the value, it is also possible to work with the **code**
 which generated the **value**. This is where non standard evaluation, or NSE,
 starts.
 The function `substitute` is an important element of non-standard evaluation.
-For instance, if we consider `a` defined such as `a <- 5`,
-then the expression `a` returns `r a <- 5; a`, the `substitute(a)` returns
+For instance, if we consider `a` defined as `a <- 5`,
+then the expression `a` returns `r a <- 5; a`, and the `substitute(a)` returns
 the code to obtain the value: `a`.
 
 This is the principle `teal` relies on to:
@@ -42,7 +42,7 @@ ii. return the result of the expression in the result panel of the app.
 iii. return the corresponding code (or expression) with `Show R Code`.
 
 The expression returning the displayed value must be reactive.
-The information in the encoding in one hand and the filtering panel on the
+The information in the encoding on one hand and the filtering panel on the
 other hand modify the expression and the displayed value. As such, `teal` needs to
 work both on expressions and values and relies heavily on NSE.
 

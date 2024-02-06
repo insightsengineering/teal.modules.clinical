@@ -17,9 +17,10 @@ Authors@R: c(
     person("Imanol", "Zubizarreta", role = "ctb"),
     person("F. Hoffmann-La Roche AG", role = c("cph", "fnd"))
   )
-Description: Provides teal modules for the standard clinical trials
-    outputs.  The teal modules add an encoding panel to interactively
-    change the encodings within teal.
+Description: Provides user-friendly tools for creating and customizing clinical
+   trial reports. Leveraging the `teal` framework, it features an interactive panel 
+   that allows easy adjustments to how data is presented, streamlining the creation 
+   of detailed and accurate reports.
 License: Apache License 2.0 | file LICENSE
 URL: https://github.com/insightsengineering/teal.modules.clinical
 BugReports:
