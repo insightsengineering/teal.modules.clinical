@@ -42,7 +42,7 @@ ii. return the result of the expression in the result panel of the app.
 iii. return the corresponding code (or expression) with `Show R Code`.
 
 The expression returning the displayed value must be reactive.
-The information in the encoding on one hand and the filtering panel on the
+The information in the encoding on one hand, and the filtering panel on the
 other hand modify the expression and the displayed value. As such, `teal` needs to
 work both on expressions and values and relies heavily on NSE.
 
