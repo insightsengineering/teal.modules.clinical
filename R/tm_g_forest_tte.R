@@ -28,7 +28,7 @@ template_forest_tte <- function(dataname = "ANL",
   checkmate::assert_string(dataname)
   checkmate::assert_string(arm_var)
   checkmate::assert_string(obj_var_name)
-  checkmate::assert_character(subgroup_va, null.ok = TRUE)
+  checkmate::assert_character(subgroup_var, null.ok = TRUE)
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
