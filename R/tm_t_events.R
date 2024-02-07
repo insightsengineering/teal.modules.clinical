@@ -30,21 +30,20 @@ template_events <- function(dataname,
                             drop_arm_levels = TRUE,
                             incl_overall_sum = TRUE,
                             basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    assertthat::is.string(hlt) || is.null(hlt),
-    assertthat::is.string(llt) || is.null(llt),
-    assertthat::is.string(label_hlt) || is.null(label_hlt),
-    assertthat::is.string(label_llt) || is.null(label_llt),
-    is.character(c(llt, hlt)),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(na_level),
-    assertthat::is.string(event_type),
-    assertthat::is.flag(drop_arm_levels)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+  checkmate::assert_string(hlt, null.ok = TRUE)
+  checkmate::assert_string(llt, null.ok = TRUE)
+  checkmate::assert_string(label_hlt, null.ok = TRUE)
+  checkmate::assert_string(label_llt, null.ok = TRUE)
+  checkmate::assert_character(c(llt, hlt))
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(event_type)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
 

@@ -34,22 +34,21 @@ template_exposure <- function(parentname,
                               aval_var,
                               avalu_var,
                               basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(row_by_var),
-    assertthat::is.string(col_by_var) || length(col_by_var) == 0,
-    assertthat::is.string(paramcd),
-    assertthat::is.string(id_var),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.flag(add_total_row),
-    assertthat::is.string(total_row_label),
-    assertthat::is.string(na_level),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(avalu_var) || length(avalu_var) == 0,
-    assertthat::is.flag(drop_levels)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(row_by_var)
+  checkmate::assert_string(col_by_var, null.ok = TRUE)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(id_var)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_flag(add_total_row)
+  checkmate::assert_string(total_row_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(avalu_var, null.ok = TRUE)
+  checkmate::assert_flag(drop_levels)
 
   y <- list()
   data_list <- list()
