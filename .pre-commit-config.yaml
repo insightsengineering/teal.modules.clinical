@@ -21,7 +21,6 @@ repos:
           - insightsengineering/teal
           - insightsengineering/teal.transform
           - tern
-          - assertthat
           - broom
           - checkmate
           - dplyr

@@ -2,7 +2,6 @@
 % Please edit documentation in R/teal.modules.clinical.R
 \docType{package}
 \name{teal.modules.clinical}
-\alias{teal.modules.clinical-package}
 \alias{teal.modules.clinical}
 \title{Teal Modules for Standard Clinical Outputs}
 \description{

@@ -51,10 +51,8 @@ template_logistic <- function(dataname,
 
   # Conditional assertion depends on if arm_var isn't NULL.
   if (!is.null(arm_var)) {
-    assertthat::assert_that(
-      checkmate::assert_string(arm_var),
-      assertthat::is.flag(combine_comp_arms)
-    )
+    checkmate::assert_string(arm_var)
+    checkmate::assert_flag(combine_comp_arms)
 
     ref_arm_val <- paste(ref_arm, collapse = "/")
 

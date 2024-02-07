@@ -311,10 +311,7 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_flag(fixed_symbol_size)
   checkmate::assert_class(conf_level, "choices_selected")
-  assertthat::assert_that(
-    inherits(default_responses, c("list", "character", "numeric", "NULL")),
-    msg = "`default_responses` must be a named list or an array."
-  )
+  checkmate::assert_multi_class(default_responses, c("list", "character", "numeric"), null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)

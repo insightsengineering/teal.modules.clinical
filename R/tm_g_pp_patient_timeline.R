@@ -470,11 +470,11 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-  assertthat::assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
-  assertthat::assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
-  assertthat::assert_that(!xor(is.null(aerelday_start), is.null(aerelday_end)))
-  assertthat::assert_that(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
-  assertthat::assert_that(
+  stopifnot(!xor(is.null(aetime_start), is.null(aetime_end)))
+  stopifnot(!xor(is.null(dstime_start), is.null(dstime_end)))
+  stopifnot(!xor(is.null(aerelday_start), is.null(aerelday_end)))
+  stopifnot(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
+  stopifnot(
     (!is.null(aeterm) && (!is.null(aetime_start) || !is.null(aerelday_start))) ||
       (!is.null(cmdecod) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
   )
