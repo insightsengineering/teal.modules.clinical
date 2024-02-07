@@ -33,24 +33,24 @@ template_summary_by <- function(parentname,
                                 drop_arm_levels = TRUE,
                                 drop_zero_levels = TRUE,
                                 basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(parentname),
-    assertthat::is.string(dataname),
-    assertthat::is.string(id_var),
-    is.character(sum_vars),
-    is.character(by_vars),
-    is.character(var_labels),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.flag(parallel_vars),
-    assertthat::is.flag(row_groups),
-    assertthat::is.flag(na.rm),
-    assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels),
-    is.character(numeric_stats),
-    assertthat::is.flag(drop_zero_levels)
-  )
+
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(id_var)
+  checkmate::assert_character(sum_vars)
+  checkmate::assert_character(by_vars)
+  checkmate::assert_character(var_labels)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_flag(parallel_vars)
+  checkmate::assert_flag(row_groups)
+  checkmate::assert_flag(na.rm)
+  checkmate::assert_string(na_level)
+  checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_character(numeric_stats)
+  checkmate::assert_flag(drop_zero_levels)
   checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+
   denominator <- match.arg(denominator)
 
   y <- list()

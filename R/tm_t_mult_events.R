@@ -23,20 +23,18 @@ template_mult_events <- function(dataname,
                                  event_type = "event",
                                  drop_arm_levels = TRUE,
                                  basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(seq_var),
-    !is.null(llt),
-    is.null(hlt) || is.character(hlt),
-    assertthat::is.string(llt),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(na_level),
-    assertthat::is.string(event_type),
-    assertthat::is.flag(drop_arm_levels)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(seq_var)
+  checkmate::assert_character(hlt, null.ok = TRUE)
+  checkmate::assert_string(llt, null.ok = FALSE)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(event_type)
+  checkmate::assert_flag(drop_arm_levels)
 
   y <- list()
 
