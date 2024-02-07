@@ -51,7 +51,7 @@ template_ancova <- function(dataname = "ANL",
   checkmate::assert_string(aval_var)
   checkmate::assert_character(cov_var)
   checkmate::assert_flag(include_interact)
-  if (isTRUE(interact_y)) { all(sapply(interact_y, checkmate::assert_string)) }
+  if (isTRUE(interact_y)) all(sapply(interact_y, checkmate::assert_string))
   checkmate::assert_string(interact_var, null.ok = TRUE)
 
   y <- list()
