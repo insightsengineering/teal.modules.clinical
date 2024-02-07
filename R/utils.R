@@ -138,7 +138,6 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'   list. The list of expressions can be later used to generate a pipeline,
 #'   for instance with `pipe_expr`.
 #'
-#' @import assertthat
 #' @export
 #'
 #' @examples
@@ -159,9 +158,9 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #' lyt <- teal.modules.clinical:::add_expr(lyt, quote(rtables::build_table(df = dta)))
 #' teal.modules.clinical:::pipe_expr(lyt)
 add_expr <- function(expr_ls, new_expr) {
-  assertthat::assert_that(
-    is.list(expr_ls),
-    is.call(new_expr) || is.name(new_expr)
+  stopifnot(
+    is.list(expr_ls) &&
+    (is.call(new_expr) || is.name(new_expr))
   )
 
   # support nested expressions such as expr({a <- 1; b <- 2})
@@ -528,15 +527,14 @@ prepare_arm <- function(dataname,
                         compare_arm = !is.null(ref_arm),
                         ref_arm_val = paste(ref_arm, collapse = "/"),
                         drop = TRUE) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(arm_var),
-    is.null(ref_arm) || is.character(ref_arm),
-    is.character(comp_arm) || is.null(comp_arm),
-    assertthat::is.flag(compare_arm),
-    assertthat::is.string(ref_arm_val),
-    assertthat::is.flag(drop)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_character(ref_arm, null.ok = TRUE)
+  checkmate::assert_character(comp_arm, null.ok = TRUE)
+  checkmate::assert_flag(compare_arm)
+  checkmate::assert_string(ref_arm_val)
+  checkmate::assert_flag(drop)
 
   data_list <- list()
 
@@ -629,12 +627,11 @@ prepare_arm_levels <- function(dataname,
                                parentname,
                                arm_var,
                                drop_arm_levels = TRUE) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.flag(drop_arm_levels)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_flag(drop_arm_levels)
 
   data_list <- list()
 

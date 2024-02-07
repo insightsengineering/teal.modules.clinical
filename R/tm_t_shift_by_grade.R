@@ -28,22 +28,21 @@ template_shift_by_grade <- function(parentname,
                                     na_level = default_na_str(),
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(id_var),
-    assertthat::is.string(visit_var),
-    assertthat::is.string(worst_flag_indicator),
-    is.character(worst_flag_var),
-    assertthat::is.string(anl_toxgrade_var),
-    assertthat::is.string(base_toxgrade_var),
-    assertthat::is.string(paramcd),
-    assertthat::is.flag(drop_arm_levels),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(na_level)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(visit_var)
+  checkmate::assert_string(worst_flag_indicator)
+  checkmate::assert_character(worst_flag_var)
+  checkmate::assert_string(anl_toxgrade_var)
+  checkmate::assert_string(base_toxgrade_var)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
 
   worst_flag_var <- match.arg(worst_flag_var)
 

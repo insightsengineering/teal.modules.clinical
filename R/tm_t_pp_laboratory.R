@@ -43,16 +43,14 @@ template_laboratory <- function(dataname = "ANL",
     )
   }
 
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(param),
-    assertthat::is.string(anrind),
-    assertthat::is.string(timepoints),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(avalu_var),
-    is.integer(round_value) && round_value >= 0
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(param)
+  checkmate::assert_string(anrind)
+  checkmate::assert_string(timepoints)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(avalu_var)
+  checkmate::assert_integer(round_value, lower = 0)
 
   y <- list()
   y$table <- list()
