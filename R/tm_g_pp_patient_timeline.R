@@ -470,10 +470,15 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-  stopifnot(!xor(is.null(aetime_start), is.null(aetime_end)))
-  stopifnot(!xor(is.null(dstime_start), is.null(dstime_end)))
-  stopifnot(!xor(is.null(aerelday_start), is.null(aerelday_end)))
-  stopifnot(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
+  if (is.null(aetime_start) + is.null(aetime_end) == 1)
+    stop("Both 'aetime_start' and 'aetime_end' need to be provided or both need to be empty.")
+  if (is.null(dstime_start) + is.null(dstime_end) == 1)
+    stop("Both 'dstime_start' and 'dstime_end' need to be provided or both need to be empty.")
+  if (is.null(aerelday_start) + is.null(aerelday_end) == 1)
+    stop("Both 'aerelday_start' and 'aerelday_end' need to be provided or both need to be empty.")
+  if (is.null(dsrelday_start) + is.null(dsrelday_end) == 1)
+    stop("Both 'dsrelday_start' and 'dsrelday_end' need to be provided or both need to be empty.")
+
   stopifnot(
     (!is.null(aeterm) && (!is.null(aetime_start) || !is.null(aerelday_start))) ||
       (!is.null(cmdecod) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
