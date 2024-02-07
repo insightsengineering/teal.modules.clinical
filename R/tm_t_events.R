@@ -30,7 +30,6 @@ template_events <- function(dataname,
                             drop_arm_levels = TRUE,
                             incl_overall_sum = TRUE,
                             basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_character(arm_var, min.len = 1, max.len = 2)

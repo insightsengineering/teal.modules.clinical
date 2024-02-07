@@ -34,7 +34,6 @@ template_forest_rsp <- function(dataname = "ANL",
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)

@@ -65,7 +65,6 @@ template_tte <- function(dataname = "ANL",
                          total_label = default_total_label(),
                          na_level = default_na_str(),
                          basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)

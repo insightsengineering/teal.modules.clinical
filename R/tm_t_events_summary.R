@@ -42,7 +42,6 @@ template_events_summary <- function(anl_name,
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
-
   checkmate::assert_string(anl_name)
   checkmate::assert_string(parentname)
   checkmate::assert_character(arm_var, min.len = 1, max.len = 2)

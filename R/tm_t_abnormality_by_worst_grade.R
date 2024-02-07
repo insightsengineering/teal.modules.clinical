@@ -28,7 +28,6 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
                                                 total_label = default_total_label(),
                                                 drop_arm_levels = TRUE,
                                                 basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)

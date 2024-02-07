@@ -34,7 +34,6 @@ template_exposure <- function(parentname,
                               aval_var,
                               avalu_var,
                               basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(row_by_var)

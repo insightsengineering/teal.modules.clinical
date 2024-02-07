@@ -34,7 +34,6 @@ template_abnormality <- function(parentname,
                                  na_level = default_na_str(),
                                  basic_table_args = teal.widgets::basic_table_args(),
                                  tbl_title) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(id_var)
   checkmate::assert_string(parentname)

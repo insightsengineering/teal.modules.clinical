@@ -160,7 +160,7 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 add_expr <- function(expr_ls, new_expr) {
   stopifnot(
     is.list(expr_ls) &&
-    (is.call(new_expr) || is.name(new_expr))
+      (is.call(new_expr) || is.name(new_expr))
   )
 
   # support nested expressions such as expr({a <- 1; b <- 2})
@@ -527,7 +527,6 @@ prepare_arm <- function(dataname,
                         compare_arm = !is.null(ref_arm),
                         ref_arm_val = paste(ref_arm, collapse = "/"),
                         drop = TRUE) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(arm_var)
   checkmate::assert_character(ref_arm, null.ok = TRUE)
@@ -627,7 +626,6 @@ prepare_arm_levels <- function(dataname,
                                parentname,
                                arm_var,
                                drop_arm_levels = TRUE) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)

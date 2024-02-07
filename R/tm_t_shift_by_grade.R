@@ -28,7 +28,6 @@ template_shift_by_grade <- function(parentname,
                                     na_level = default_na_str(),
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)

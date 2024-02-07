@@ -24,7 +24,6 @@ template_smq <- function(dataname,
                          baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
                          id_var = "USUBJID",
                          basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(parentname)
   checkmate::assert_string(dataname)
   checkmate::assert_character(arm_var, min.len = 1, max.len = 2)

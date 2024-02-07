@@ -37,7 +37,6 @@ template_g_km <- function(dataname = "ANL",
                           width_annots = list(surv_med = grid::unit(0.45, "npc"), coxph = grid::unit(0.6, "npc")),
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(arm_var)
   checkmate::assert_string(aval_var)

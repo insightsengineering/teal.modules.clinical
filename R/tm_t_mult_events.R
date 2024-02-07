@@ -23,7 +23,6 @@ template_mult_events <- function(dataname,
                                  event_type = "event",
                                  drop_arm_levels = TRUE,
                                  basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)

@@ -42,7 +42,6 @@ template_ancova <- function(dataname = "ANL",
                             visit_var = "AVISIT",
                             conf_level = 0.95,
                             basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)

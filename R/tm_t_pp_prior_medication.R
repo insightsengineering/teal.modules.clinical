@@ -14,7 +14,6 @@ template_prior_medication <- function(dataname = "ANL",
                                       cmdecod = "CMDECOD",
                                       cmindc = "CMINDC",
                                       cmstdy = "CMSTDY") {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(atirel)
   checkmate::assert_string(cmdecod)

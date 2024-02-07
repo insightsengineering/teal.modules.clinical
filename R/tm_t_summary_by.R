@@ -33,7 +33,6 @@ template_summary_by <- function(parentname,
                                 drop_arm_levels = TRUE,
                                 drop_zero_levels = TRUE,
                                 basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(parentname)
   checkmate::assert_string(dataname)
   checkmate::assert_string(id_var)

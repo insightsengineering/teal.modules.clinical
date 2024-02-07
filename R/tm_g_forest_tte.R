@@ -24,7 +24,6 @@ template_forest_tte <- function(dataname = "ANL",
                                 col_symbol_size = NULL,
                                 time_unit_var = "AVALU",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(arm_var)
   checkmate::assert_string(obj_var_name)

@@ -30,7 +30,6 @@ template_therapy <- function(dataname = "ANL",
                              patient_id,
                              font_size = 12L,
                              ggplot2_args = teal.widgets::ggplot2_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(atirel)
   checkmate::assert_string(cmdecod)

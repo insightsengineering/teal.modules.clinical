@@ -30,7 +30,6 @@ template_events_by_grade <- function(dataname,
                                      na_level = default_na_str(),
                                      drop_arm_levels = TRUE,
                                      basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)
@@ -408,7 +407,6 @@ template_events_col_by_grade <- function(dataname,
                                          na_level = default_na_str(),
                                          drop_arm_levels = TRUE,
                                          basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)
