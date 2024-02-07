@@ -30,22 +30,21 @@ template_events_by_grade <- function(dataname,
                                      na_level = default_na_str(),
                                      drop_arm_levels = TRUE,
                                      basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(hlt) || is.null(hlt),
-    assertthat::is.string(llt) || is.null(llt),
-    !is.null(hlt) || !is.null(llt),
-    assertthat::is.string(label_hlt) || is.null(label_hlt),
-    assertthat::is.string(label_llt) || is.null(label_llt),
-    assertthat::is.string(grade),
-    assertthat::is.string(label_grade) || is.null(label_grade),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(hlt, null.ok = TRUE)
+  checkmate::assert_string(llt, null.ok = TRUE)
+  stopifnot(!is.null(hlt) || !is.null(llt))
+  checkmate::assert_string(label_hlt, null.ok = TRUE)
+  checkmate::assert_string(label_llt, null.ok = TRUE)
+  checkmate::assert_string(grade)
+  checkmate::assert_string(label_grade, null.ok = TRUE)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
 
@@ -410,21 +409,21 @@ template_events_col_by_grade <- function(dataname,
                                          drop_arm_levels = TRUE,
                                          basic_table_args = teal.widgets::basic_table_args()) {
   assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
+    checkmate::assert_string(dataname),
+    checkmate::assert_string(parentname),
+    checkmate::assert_string(arm_var),
     is.list(grading_groups),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(id),
-    assertthat::is.string(hlt) || is.null(hlt),
-    assertthat::is.string(llt),
-    assertthat::is.string(grade),
-    assertthat::is.string(label_hlt) || is.null(label_hlt),
-    assertthat::is.string(label_llt) || is.null(label_llt),
-    assertthat::is.string(label_grade) || is.null(label_grade),
-    assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels)
+    checkmate::assert_flag(add_total),
+    checkmate::assert_string(total_label),
+    checkmate::assert_string(id),
+    checkmate::assert_string(hlt) || is.null(hlt),
+    checkmate::assert_string(llt),
+    checkmate::assert_string(grade),
+    checkmate::assert_string(label_hlt) || is.null(label_hlt),
+    checkmate::assert_string(label_llt) || is.null(label_llt),
+    checkmate::assert_string(label_grade) || is.null(label_grade),
+    checkmate::assert_string(na_level),
+    checkmate::assert_flag(drop_arm_levels)
   )
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)

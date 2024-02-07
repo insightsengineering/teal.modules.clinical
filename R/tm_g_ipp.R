@@ -51,20 +51,18 @@ template_g_ipp <- function(dataname = "ANL",
     )
   }
 
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(avalu_var),
-    assertthat::is.string(id_var),
-    assertthat::is.string(visit_var),
-    assertthat::is.string(baseline_var),
-    assertthat::is.flag(add_baseline_hline),
-    assertthat::is.flag(separate_by_obs),
-    assertthat::is.flag(suppress_legend),
-    assertthat::is.flag(add_avalu)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(avalu_var)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(visit_var)
+  checkmate::assert_string(baseline_var)
+  checkmate::assert_flag(add_baseline_hline)
+  checkmate::assert_flag(separate_by_obs)
+  checkmate::assert_flag(suppress_legend)
+  checkmate::assert_flag(add_avalu)
 
   y <- list()
   # Data preprocessing
