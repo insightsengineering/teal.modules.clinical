@@ -42,6 +42,7 @@ template_ancova <- function(dataname = "ANL",
                             visit_var = "AVISIT",
                             conf_level = 0.95,
                             basic_table_args = teal.widgets::basic_table_args()) {
+
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)
@@ -50,7 +51,7 @@ template_ancova <- function(dataname = "ANL",
   checkmate::assert_string(aval_var)
   checkmate::assert_character(cov_var)
   checkmate::assert_flag(include_interact)
-  stopifnot(all(sapply(interact_y, checkmate::assert_string)) || isFALSE(interact_y))
+  if (isTRUE(interact_y)) { all(sapply(interact_y, checkmate::assert_string)) }
   checkmate::assert_string(interact_var, null.ok = TRUE)
 
   y <- list()
