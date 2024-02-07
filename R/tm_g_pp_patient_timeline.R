@@ -36,20 +36,19 @@ template_patient_timeline <- function(dataname = "ANL",
                                       ggplot2_args = teal.widgets::ggplot2_args()) {
   # Note: The variables used for aetime_start, aetime_end, dstime_start and dstime_end are to be
   # updated after random.cdisc.data updates.
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(aeterm) || is.null(aeterm),
-    assertthat::is.string(aetime_start) || is.null(aetime_start),
-    assertthat::is.string(aetime_end) || is.null(aetime_end),
-    assertthat::is.string(dstime_start) || is.null(dstime_start),
-    assertthat::is.string(dstime_end) || is.null(dstime_end),
-    assertthat::is.string(cmdecod) || is.null(cmdecod),
-    assertthat::is.string(aerelday_start) || is.null(aerelday_start),
-    assertthat::is.string(dsrelday_start) || is.null(dsrelday_start),
-    is.numeric(font_size),
-    is.logical(relative_day),
-    assertthat::is.string(patient_id)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(aeterm, null.ok = TRUE)
+  checkmate::assert_string(aetime_start, null.ok = TRUE)
+  checkmate::assert_string(aetime_end, null.ok = TRUE)
+  checkmate::assert_string(dstime_start, null.ok = TRUE)
+  checkmate::assert_string(dstime_end, null.ok = TRUE)
+  checkmate::assert_string(cmdecod, null.ok = TRUE)
+  checkmate::assert_string(aerelday_start, null.ok = TRUE)
+  checkmate::assert_string(dsrelday_start, null.ok = TRUE)
+  checkmate::assert_numeric(font_size)
+  checkmate::assert_logical(relative_day)
+  checkmate::assert_string(patient_id)
 
   chart_list <- list()
   if (!relative_day) {

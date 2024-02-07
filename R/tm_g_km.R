@@ -37,17 +37,16 @@ template_g_km <- function(dataname = "ANL",
                           width_annots = list(surv_med = grid::unit(0.45, "npc"), coxph = grid::unit(0.6, "npc")),
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(cnsr_var),
-    assertthat::is.string(time_unit_var),
-    assertthat::is.flag(compare_arm),
-    assertthat::is.flag(combine_comp_arms),
-    is.null(xticks) | is.numeric(xticks),
-    assertthat::is.string(title)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(cnsr_var)
+  checkmate::assert_string(time_unit_var)
+  checkmate::assert_flag(compare_arm)
+  checkmate::assert_flag(combine_comp_arms)
+  checkmate::assert_numeric(xticks, null.ok = TRUE)
+  checkmate::assert_string(title)
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()

@@ -34,14 +34,13 @@ template_forest_rsp <- function(dataname = "ANL",
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(obj_var_name),
-    is.null(subgroup_var) || is.character(subgroup_var)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(obj_var_name)
+  checkmate::assert_character(subgroup_var, null.ok = TRUE)
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
