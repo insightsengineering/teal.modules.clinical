@@ -35,7 +35,7 @@ template_events_by_grade <- function(dataname,
   checkmate::assert_string(arm_var)
   checkmate::assert_string(hlt, null.ok = TRUE)
   checkmate::assert_string(llt, null.ok = TRUE)
-  stopifnot(!is.null(hlt) || !is.null(llt))
+  if (is.null(hlt) && is.null(llt)) stop("At least one of 'hlt' or 'llt' can not be empty.")
   checkmate::assert_string(label_hlt, null.ok = TRUE)
   checkmate::assert_string(label_llt, null.ok = TRUE)
   checkmate::assert_string(grade)
