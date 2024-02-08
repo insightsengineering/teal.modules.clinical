@@ -79,12 +79,13 @@ a \code{teal_module} object.
 This module produces an analysis table using Generalized Estimating Equations (GEE).
 }
 \examples{
+library(dplyr)
 data <- teal_data()
 data <- within(data, {
   ADSL <- tmc_ex_adsl
   ADQS <- tmc_ex_adqs \%>\%
-    dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
-    dplyr::mutate(
+    filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
+    mutate(
       AVISIT = as.factor(AVISIT),
       AVISITN = rank(AVISITN) \%>\%
         as.factor() \%>\%
@@ -117,7 +118,7 @@ app <- init(
   )
 )
 if (interactive()) {
-  shiny::shinyApp(app$ui, app$server)
+  shinyApp(app$ui, app$server)
 }
 
 }

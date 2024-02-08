@@ -24,13 +24,16 @@ list. The list of expressions can be later used to generate a pipeline,
 for instance with \code{pipe_expr}.
 }
 \examples{
+library(rtables)
+add_expr <- getFromNamespace("add_expr", "teal.modules.clinical")
+pipe_expr <- getFromNamespace("pipe_expr", "teal.modules.clinical")
 
 lyt <- list()
-lyt <- teal.modules.clinical:::add_expr(lyt, substitute(rtables::basic_table()))
-lyt <- teal.modules.clinical:::add_expr(
-  lyt, substitute(rtables::split_cols_by(var = arm), env = list(armcd = "ARMCD"))
+lyt <- add_expr(lyt, substitute(basic_table()))
+lyt <- add_expr(
+  lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
 )
-lyt <- teal.modules.clinical:::add_expr(
+lyt <- add_expr(
   lyt,
   substitute(
     test_proportion_diff(
@@ -38,6 +41,6 @@ lyt <- teal.modules.clinical:::add_expr(
     )
   )
 )
-lyt <- teal.modules.clinical:::add_expr(lyt, quote(rtables::build_table(df = dta)))
-teal.modules.clinical:::pipe_expr(lyt)
+lyt <- add_expr(lyt, quote(build_table(df = dta)))
+pipe_expr(lyt)
 }

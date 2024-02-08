@@ -33,9 +33,9 @@ Verifies assertions for dynamic outputs.
 
 library(assertthat)
 library(testthat)
-expect_error(assertthat::assert_that(teal_enough_rows(data = iris, min_nrow = 1500)))
-
+expect_error(assert_that(teal_enough_rows(data = iris, min_nrow = 1500)))
+library(assertthat)
 armcd <- NULL
-expect_error(assertthat::assert_that(teal_has_element(str = armcd, "ARMCD")))
+expect_error(assert_that(teal_has_element(str = armcd, "ARMCD")))
 }
 \keyword{internal}

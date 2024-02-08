@@ -17,7 +17,7 @@ NULL
 #'
 #' library(assertthat)
 #' library(testthat)
-#' expect_error(assertthat::assert_that(teal_enough_rows(data = iris, min_nrow = 1500)))
+#' expect_error(assert_that(teal_enough_rows(data = iris, min_nrow = 1500)))
 teal_enough_rows <- function(data, min_nrow) nrow(data) >= min_nrow
 assertthat::on_failure(teal_enough_rows) <- function(call, env) {
   call[[1]] <- validate_enough_rows
@@ -43,9 +43,9 @@ validate_enough_rows <- function(data, min_nrow) {
 #' @export
 #'
 #' @examples
-#'
+#' library(assertthat)
 #' armcd <- NULL
-#' expect_error(assertthat::assert_that(teal_has_element(str = armcd, "ARMCD")))
+#' expect_error(assert_that(teal_has_element(str = armcd, "ARMCD")))
 teal_has_element <- function(str, ...) length(str) > 0
 assertthat::on_failure(teal_has_element) <- function(call, env) {
   call[[1]] <- validate_has_elements

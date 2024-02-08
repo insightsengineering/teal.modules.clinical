@@ -107,13 +107,16 @@ or re-categorize response categories and arrange the display order. If response 
 }
 }
 \examples{
+library(dplyr)
+library(formatters)
+
 ADSL <- tmc_ex_adsl
 ADRS <- tmc_ex_adrs \%>\%
-  dplyr::mutate(
-    AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
-      formatters::with_label("Character Result/Finding")
+  mutate(
+    AVALC = d_onco_rsp_label(AVALC) \%>\%
+      with_label("Character Result/Finding")
   ) \%>\%
-  dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
 arm_ref_comp <- list(
   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
@@ -126,11 +129,11 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADRS <- tmc_ex_adrs \%>\%
-        dplyr::mutate(
-          AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
-            formatters::with_label(\"Character Result/Finding\")
+        mutate(
+          AVALC = d_onco_rsp_label(AVALC) \%>\%
+            with_label(\"Character Result/Finding\")
         ) \%>\%
-        dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
+        filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
     "
   ),
   modules = modules(

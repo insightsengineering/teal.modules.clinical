@@ -137,12 +137,13 @@ template_a_gee <- function(output_table,
 #' @inherit module_arguments return seealso
 #'
 #' @examples
+#' library(dplyr)
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
 #'   ADQS <- tmc_ex_adqs %>%
-#'     dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
-#'     dplyr::mutate(
+#'     filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
+#'     mutate(
 #'       AVISIT = as.factor(AVISIT),
 #'       AVISITN = rank(AVISITN) %>%
 #'         as.factor() %>%
@@ -175,7 +176,7 @@ template_a_gee <- function(output_table,
 #'   )
 #' )
 #' if (interactive()) {
-#'   shiny::shinyApp(app$ui, app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 #' @export

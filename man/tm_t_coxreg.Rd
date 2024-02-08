@@ -176,6 +176,7 @@ if (interactive()) {
 
 data <- teal_data()
 data <- within(data, {
+  library(dplyr)
   ADTTE <- data.frame(
     STUDYID = "LUNG",
     AVAL = c(4, 3, 1, 1, 2, 2, 3, 1, 2),
@@ -191,8 +192,8 @@ data <- within(data, {
     INST = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
     stringsAsFactors = FALSE
   )
-  ADTTE <- base::rbind(ADTTE, ADTTE, ADTTE, ADTTE)
-  ADTTE <- dplyr::as_tibble(ADTTE)
+  ADTTE <- rbind(ADTTE, ADTTE, ADTTE, ADTTE)
+  ADTTE <- as_tibble(ADTTE)
   set.seed(1)
   ADTTE$INST <- sample(ADTTE$INST)
   ADTTE$AGE <- sample(seq(5, 75, 5), size = nrow(ADTTE), replace = TRUE)

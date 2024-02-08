@@ -99,12 +99,14 @@ This module produces a grid-style forest plot for response data with ADaM struct
 }
 \examples{
 library(nestcolor)
+library(dplyr)
+library(formatters)
 
 ADSL <- tmc_ex_adsl
 ADRS <- tmc_ex_adrs \%>\%
-  dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
+  mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
     formatters::with_label("Character Result/Finding")) \%>\%
-  dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -124,9 +126,9 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADRS <- tmc_ex_adrs \%>\%
-        dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
+        mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
           formatters::with_label(\"Character Result/Finding\")) \%>\%
-        dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
+        filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
     "
   ),
   modules = modules(

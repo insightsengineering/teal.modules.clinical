@@ -227,9 +227,11 @@ template_logistic <- function(dataname,
 #' @inherit module_arguments return seealso
 #'
 #' @examples
+#' library(dplyr)
+#'
 #' ADSL <- tmc_ex_adsl
 #' ADRS <- tmc_ex_adrs %>%
-#'   dplyr::filter(PARAMCD %in% c("BESRSPI", "INVET"))
+#'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -249,7 +251,7 @@ template_logistic <- function(dataname,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADRS <- tmc_ex_adrs %>%
-#'         dplyr::filter(PARAMCD %in% c(\"BESRSPI\", \"INVET\"))
+#'         filter(PARAMCD %in% c(\"BESRSPI\", \"INVET\"))
 #'     "
 #'   ),
 #'   modules = modules(
@@ -273,7 +275,7 @@ template_logistic <- function(dataname,
 #'   )
 #' )
 #' if (interactive()) {
-#'   shinyApp(ui = app$ui, server = app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 #' @export

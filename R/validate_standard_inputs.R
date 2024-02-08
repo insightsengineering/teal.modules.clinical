@@ -20,15 +20,15 @@
 #'
 #' @examples
 #' # Internal function - validate_standard_inputs
-#'
+#' validate_standard_inputs <- getFromNamespace("validate_standard_inputs", "teal.modules.clinical")
 #' adsl <- tmc_ex_adsl
 #' adae <- tmc_ex_adae
 #'
 #' ui <- fluidPage(
-#'   shiny::sliderInput("obs", "Max Age",
+#'   sliderInput("obs", "Max Age",
 #'     min = 0, max = 100, value = 100
 #'   ),
-#'   shiny::sliderInput("maxgr", "Max Grade",
+#'   sliderInput("maxgr", "Max Grade",
 #'     min = 0, max = 5, value = 5
 #'   ),
 #'   plotOutput("plot")
@@ -42,7 +42,7 @@
 #'     adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
 #'     adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
 #'
-#'     teal.modules.clinical:::validate_standard_inputs(
+#'     validate_standard_inputs(
 #'       adsl = adsl_f,
 #'       adslvars = keep_adsl,
 #'       anl = adae_f,
@@ -68,7 +68,7 @@
 #'     adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
 #'     adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
 #'
-#'     teal.modules.clinical:::validate_standard_inputs(
+#'     validate_standard_inputs(
 #'       adsl = adsl_f,
 #'       adslvars = keep_adsl,
 #'       anl = adae_f,
@@ -94,7 +94,7 @@
 #'     adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
 #'     adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
 #'
-#'     teal.modules.clinical:::validate_standard_inputs(
+#'     validate_standard_inputs(
 #'       adsl = adsl_f,
 #'       adslvars = keep_adsl,
 #'       anl = adae_f,
