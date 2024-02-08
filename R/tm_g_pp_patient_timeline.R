@@ -46,7 +46,7 @@ template_patient_timeline <- function(dataname = "ANL",
   checkmate::assert_string(cmdecod, null.ok = TRUE)
   checkmate::assert_string(aerelday_start, null.ok = TRUE)
   checkmate::assert_string(dsrelday_start, null.ok = TRUE)
-  checkmate::assert_numeric(font_size)
+  checkmate::assert_number(font_size)
   checkmate::assert_logical(relative_day)
   checkmate::assert_string(patient_id)
 
