@@ -34,7 +34,7 @@ template_vitals <- function(dataname = "ANL",
   checkmate::assert_string(xaxis)
   checkmate::assert_string(aval_var)
   checkmate::assert_string(patient_id)
-  checkmate::assert_numeric(font_size)
+  checkmate::assert_number(font_size)
 
   # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
   y <- list()
