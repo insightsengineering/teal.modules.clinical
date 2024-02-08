@@ -42,7 +42,7 @@ template_therapy <- function(dataname = "ANL",
   checkmate::assert_string(cmstdy)
   checkmate::assert_string(cmendy)
   checkmate::assert_string(patient_id)
-  checkmate::assert_numeric(font_size)
+  checkmate::assert_number(font_size)
 
   y <- list()
   y$table_list <- list()

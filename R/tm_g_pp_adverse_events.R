@@ -36,7 +36,7 @@ template_adverse_events <- function(dataname = "ANL",
   checkmate::assert_string(time, null.ok = TRUE)
   checkmate::assert_string(decod, null.ok = TRUE)
   checkmate::assert_string(patient_id)
-  checkmate::assert_numeric(font_size)
+  checkmate::assert_number(font_size)
 
   y <- list()
 
