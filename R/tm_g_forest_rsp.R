@@ -208,8 +208,8 @@ template_forest_rsp <- function(dataname = "ANL",
 #' ADSL <- tmc_ex_adsl
 #' ADRS <- tmc_ex_adrs %>%
 #'   mutate(AVALC = d_onco_rsp_label(AVALC) %>%
-#'     formatters::with_label("Character Result/Finding")) %>%
-#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#'     with_label("Character Result/Finding")) %>%
+#'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -230,7 +230,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'       ADSL <- tmc_ex_adsl
 #'       ADRS <- tmc_ex_adrs %>%
 #'         mutate(AVALC = d_onco_rsp_label(AVALC) %>%
-#'           formatters::with_label(\"Character Result/Finding\")) %>%
+#'         with_label(\"Character Result/Finding\")) %>%
 #'         filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
 #'     "
 #'   ),
