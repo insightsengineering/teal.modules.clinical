@@ -483,12 +483,15 @@ tm_g_pp_patient_timeline <- function(label,
   if (xor(is.null(aerelday_start), is.null(aerelday_end))) stop(xor_error_string("aerelday_start", "aerelday_end"))
   if (xor(is.null(dsrelday_start), is.null(dsrelday_end))) stop(xor_error_string("dsrelday_start", "dsrelday_end"))
 
-  if (!(is.null(aeterm) || is.null(cmdecod)))
+  if (!(is.null(aeterm) || is.null(cmdecod))) {
     stop("At least one of 'aeterm' or 'cmdecod' needs to be provided.")
-  if (!is.null(aeterm) && (is.null(aetime_start) || is.null(aerelday_start)))
+  }
+  if (!is.null(aeterm) && (is.null(aetime_start) || is.null(aerelday_start))) {
     stop("If 'aeterm' is provided, then one of 'aetime_start' and 'aerelday_start' must not be empty.")
-  if (!is.null(cmdecod) && (is.null(dstime_start) || is.null(dsrelday_start)))
+  }
+  if (!is.null(cmdecod) && (is.null(dstime_start) || is.null(dsrelday_start))) {
     stop("If 'cmdecod' is provided, then one of 'dstime_start' and 'dsrelday_start' must not be empty.")
+  }
 
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
