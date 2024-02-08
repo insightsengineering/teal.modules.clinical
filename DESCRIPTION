@@ -21,9 +21,9 @@ Description: Provides teal modules for the standard clinical trials
     outputs.  The teal modules add an encoding panel to interactively
     change the encodings within teal.
 License: Apache License 2.0 | file LICENSE
-URL: https://github.com/insightsengineering/teal.modules.clinical
-BugReports:
-    https://github.com/insightsengineering/teal.modules.clinical/issues
+URL: https://insightsengineering.github.io/modules.clinical/,
+    https://github.com/insightsengineering/modules.clinical/
+BugReports: https://github.com/insightsengineering/modules.clinical/issues
 Depends:
     R (>= 4.0),
     teal (>= 0.14.0.9027),
