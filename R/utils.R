@@ -159,7 +159,7 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #' teal.modules.clinical:::pipe_expr(lyt)
 add_expr <- function(expr_ls, new_expr) {
   checkmate::assert_list(expr_ls)
-  checkmate::assert_multi_class(new_expr, c('call', 'name'))
+  checkmate::assert(is.call(new_expr) || is.name(new_expr))
 
   # support nested expressions such as expr({a <- 1; b <- 2})
   if (inherits(new_expr, "{")) {
