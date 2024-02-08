@@ -470,14 +470,18 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-  if (is.null(aetime_start) + is.null(aetime_end) == 1)
-    stop("Both 'aetime_start' and 'aetime_end' need to be provided or both need to be empty.")
-  if (is.null(dstime_start) + is.null(dstime_end) == 1)
-    stop("Both 'dstime_start' and 'dstime_end' need to be provided or both need to be empty.")
-  if (is.null(aerelday_start) + is.null(aerelday_end) == 1)
-    stop("Both 'aerelday_start' and 'aerelday_end' need to be provided or both need to be empty.")
-  if (is.null(dsrelday_start) + is.null(dsrelday_end) == 1)
-    stop("Both 'dsrelday_start' and 'dsrelday_end' need to be provided or both need to be empty.")
+
+  xor_error_string <- function(x, y) {
+    paste(
+      "Assertion on `", x, "` and `", y, "` failed:",
+      "Both `", x, "` and `", y, "` needs to be provided or both need to be `NULL`."
+    )
+  }
+
+  if (xor(is.null(aetime_start), is.null(aetime_end))) stop(xor_error_string("aetime_start", "aetime_end"))
+  if (xor(is.null(dstime_start), is.null(dstime_end))) stop(xor_error_string("dstime_start", "dstime_end"))
+  if (xor(is.null(aerelday_start), is.null(aerelday_end))) stop(xor_error_string("aerelday_start", "aerelday_end"))
+  if (xor(is.null(dsrelday_start), is.null(dsrelday_end))) stop(xor_error_string("dsrelday_start", "dsrelday_end"))
 
   if (!(is.null(aeterm) || is.null(cmdecod)))
     stop("At least one of 'aeterm' or 'cmdecod' needs to be provided.")
