@@ -86,7 +86,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  iv_arm_ref <- teal.modules.clinical:::arm_ref_comp_observer(
+  iv_arm_ref <- arm_ref_comp_observer(
     session,
     input,
     output,

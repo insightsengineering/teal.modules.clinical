@@ -16,6 +16,7 @@ a \code{string}.
 Deparse an expression into a \code{string}.
 }
 \examples{
+h_concat_expr <- getFromNamespace("h_concat_expr", "teal.modules.clinical")
 expr <- quote(
   library(rtables)
   basic_table() \%>\%
@@ -26,5 +27,5 @@ expr <- quote(
     build_table(df = dta)
 )
 
-teal.modules.clinical:::h_concat_expr(expr)
+h_concat_expr(expr)
 }
