@@ -479,10 +479,13 @@ tm_g_pp_patient_timeline <- function(label,
   if (is.null(dsrelday_start) + is.null(dsrelday_end) == 1)
     stop("Both 'dsrelday_start' and 'dsrelday_end' need to be provided or both need to be empty.")
 
-  stopifnot(
-    (!is.null(aeterm) && (!is.null(aetime_start) || !is.null(aerelday_start))) ||
-      (!is.null(cmdecod) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
-  )
+  if (!(is.null(aeterm) || is.null(cmdecod)))
+    stop("At least one of 'aeterm' or 'cmdecod' needs to be provided.")
+  if (!is.null(aeterm) && (is.null(aetime_start) & is.null(aerelday_start)))
+    stop("If 'aeterm' is provided, then one of 'aetime_start' and 'aerelday_start' must not be empty.")
+  if (!is.null(cmdecod) && (is.null(dstime_start) & is.null(dsrelday_start)))
+    stop("If 'cmdecod' is provided, then one of 'dstime_start' and 'dsrelday_start' must not be empty.")
+
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
