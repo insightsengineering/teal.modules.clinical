@@ -483,7 +483,7 @@ tm_g_pp_patient_timeline <- function(label,
   if (xor(is.null(aerelday_start), is.null(aerelday_end))) stop(xor_error_string("aerelday_start", "aerelday_end"))
   if (xor(is.null(dsrelday_start), is.null(dsrelday_end))) stop(xor_error_string("dsrelday_start", "dsrelday_end"))
 
-  if (!(is.null(aeterm) || is.null(cmdecod))) {
+  if (!is.null(aeterm) || !is.null(cmdecod)) {
     stop("At least one of 'aeterm' or 'cmdecod' needs to be provided.")
   }
   if (!is.null(aeterm) && (is.null(aetime_start) || is.null(aerelday_start))) {
