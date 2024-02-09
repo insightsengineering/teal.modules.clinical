@@ -1091,7 +1091,10 @@ srv_t_events_by_grade <- function(id,
       anl_filtered <- merged$anl_q()[[dataname]]
       adsl_keys <- merged$adsl_input_r()$keys
 
-      stopifnot("USUBJID" %in% adsl_keys)
+      checkmate::assert(
+        .var.name = "adsl_keys",
+        if ("USUBJID" %in% adsl_keys) TRUE else "Must contain \"USUBJID\""
+      )
 
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_level_term <- c(
