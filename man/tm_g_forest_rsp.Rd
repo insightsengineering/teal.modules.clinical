@@ -106,7 +106,7 @@ ADSL <- tmc_ex_adsl
 ADRS <- tmc_ex_adrs \%>\%
   mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
     with_label("Character Result/Finding")) \%>\%
-    filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
 arm_ref_comp <- list(
   ARM = list(
