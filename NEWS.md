@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.8.16.9081
+# teal.modules.clinical 0.8.16.9082
 
 ### Breaking Changes
 + Adapted all modules to use `teal_data` objects.
