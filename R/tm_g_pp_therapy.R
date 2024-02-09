@@ -252,9 +252,10 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
 #'
 #' ADCM <- tmc_ex_adcm
-#' ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#' ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
@@ -268,7 +269,7 @@ template_therapy <- function(dataname = "ANL",
 #'     ADCM = ADCM,
 #'     code = "
 #'       ADCM <- tmc_ex_adcm
-#'       ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#'       ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
 #'     ",

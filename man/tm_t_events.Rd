@@ -99,7 +99,7 @@ This module produces a table of events by term.
 ADSL <- tmc_ex_adsl
 ADAE <- tmc_ex_adae
 
-app <- teal::init(
+app <- init(
   data = cdisc_data(
     ADSL = ADSL,
     ADAE = ADAE,

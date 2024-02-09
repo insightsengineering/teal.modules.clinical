@@ -13,9 +13,10 @@
 #' @seealso [substitute_names()]
 #'
 #' @examples
+#' substitute_q <- getFromNamespace("substitute_q", "teal.modules.clinical")
 #' x <- quote(a + b)
 #' substitute(x, list(a = 1, b = 2))
-#' teal.modules.clinical:::substitute_q(x, list(a = 1, b = 2))
+#' substitute_q(x, list(a = 1, b = 2))
 #' @keywords internal
 substitute_q <- function(qexpr, env) {
   stopifnot(is.language(qexpr))
@@ -39,15 +40,16 @@ substitute_q <- function(qexpr, env) {
 #' @seealso [substitute_q()]
 #'
 #' @examples
-#' teal.modules.clinical:::substitute_names(
+#' substitute_names <- getFromNamespace("substitute_names", "teal.modules.clinical")
+#' substitute_names(
 #'   mutate(a = a + b, b = c + d),
 #'   names = list(a = as.name("d"), b = as.name("e"))
 #' )
-#' teal.modules.clinical:::substitute_names(
+#' substitute_names(
 #'   c(a = fun(a), b = 3),
 #'   names = list(a = as.name("b"), b = as.name("c"))
 #' )
-#' teal.modules.clinical:::substitute_names(
+#' substitute_names(
 #'   c(a = fun(a), b = bla),
 #'   names = list(a = as.name("b"), b = as.name("c")),
 #'   others = list(bla = "foo")

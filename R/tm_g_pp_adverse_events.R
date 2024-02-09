@@ -190,9 +190,10 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
 #'
 #' ADAE <- tmc_ex_adae
-#' ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADAE$USUBJID)
+#' ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADAE$USUBJID)
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -200,7 +201,7 @@ template_adverse_events <- function(dataname = "ANL",
 #'     ADAE = ADAE,
 #'     code = "
 #'       ADAE <- tmc_ex_adae
-#'       ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADAE$USUBJID)
+#'       ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADAE$USUBJID)
 #'     "
 #'   ),
 #'   modules = modules(

@@ -72,9 +72,11 @@ This module produces a multi-variable logistic regression table consistent with 
 \code{LGRT02} available \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/lgrt02.html}{here}.
 }
 \examples{
+library(dplyr)
+
 ADSL <- tmc_ex_adsl
 ADRS <- tmc_ex_adrs \%>\%
-  dplyr::filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
+  filter(PARAMCD \%in\% c("BESRSPI", "INVET"))
 
 arm_ref_comp <- list(
   ACTARMCD = list(
@@ -94,7 +96,7 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADRS <- tmc_ex_adrs \%>\%
-        dplyr::filter(PARAMCD \%in\% c(\"BESRSPI\", \"INVET\"))
+        filter(PARAMCD \%in\% c(\"BESRSPI\", \"INVET\"))
     "
   ),
   modules = modules(
@@ -118,7 +120,7 @@ app <- init(
   )
 )
 if (interactive()) {
-  shinyApp(ui = app$ui, server = app$server)
+  shinyApp(app$ui, app$server)
 }
 
 }

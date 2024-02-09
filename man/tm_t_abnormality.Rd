@@ -103,15 +103,19 @@ Patients with the same abnormality at baseline as on the treatment visit can be
 excluded in accordance with GDSR specifications by using \code{exclude_base_abn}.
 }
 \examples{
+
 data <- teal_data()
 data <- within(data, {
+  library(dplyr)
+  library(formatters)
+
   ADSL <- tmc_ex_adsl
   ADLB <- tmc_ex_adlb \%>\%
-    dplyr::mutate(
-      ONTRTFL = dplyr::case_when(
+    mutate(
+      ONTRTFL = case_when(
         AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
         TRUE ~ "Y"
-      ) \%>\% formatters::with_label("On Treatment Record Flag")
+      ) \%>\% with_label("On Treatment Record Flag")
     )
 })
 datanames <- c("ADSL", "ADLB")
