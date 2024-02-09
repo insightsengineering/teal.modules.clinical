@@ -462,6 +462,7 @@ template_mmrm_plots <- function(fit_name,
 #' @inherit module_arguments return seealso
 #'
 #' @examples
+#' library(dplyr)
 #' arm_ref_comp <- list(
 #'   ARMCD = list(
 #'     ref = "ARM B",
@@ -473,9 +474,9 @@ template_mmrm_plots <- function(fit_name,
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
 #'   ADQS <- tmc_ex_adqs %>%
-#'     dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
-#'     dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
-#'     dplyr::mutate(
+#'     filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
+#'     filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
+#'     mutate(
 #'       AVISIT = as.factor(AVISIT),
 #'       AVISITN = rank(AVISITN) %>%
 #'         as.factor() %>%

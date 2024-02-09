@@ -293,7 +293,7 @@ template_g_km <- function(dataname = "ANL",
 #'   )
 #' )
 #' if (interactive()) {
-#'   shinyApp(ui = app$ui, server = app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 #' @export

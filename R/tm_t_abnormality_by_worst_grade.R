@@ -250,11 +250,13 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'
 #' @export
 #'
-#'
 #' @examples
+#' library(dplyr)
+#' library(formatters)
+#'
 #' ADSL <- tmc_ex_adsl
 #' ADLB <- tmc_ex_adlb %>%
-#'   dplyr::filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+#'   filter(!AVISIT %in% c("SCREENING", "BASELINE"))
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -263,7 +265,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADLB <- tmc_ex_adlb %>%
-#'         dplyr::filter(!AVISIT %in% c(\"SCREENING\", \"BASELINE\"))
+#'         filter(!AVISIT %in% c(\"SCREENING\", \"BASELINE\"))
 #'     "
 #'   ),
 #'   modules = modules(

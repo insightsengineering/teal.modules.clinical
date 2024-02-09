@@ -112,9 +112,11 @@ This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type line
 }
 \examples{
 library(nestcolor)
+library(dplyr)
+library(forcats)
 
 ADSL <- tmc_ex_adsl
-ADLB <- tmc_ex_adlb \%>\% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+ADLB <- tmc_ex_adlb \%>\% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
 
 app <- init(
   data = cdisc_data(
@@ -122,7 +124,7 @@ app <- init(
     ADLB = ADLB,
     code = "
       ADSL <- tmc_ex_adsl
-      ADLB <- tmc_ex_adlb \%>\% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+      ADLB <- tmc_ex_adlb \%>\% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
     "
   ),
   modules = modules(
@@ -145,7 +147,7 @@ app <- init(
   )
 )
 if (interactive()) {
-  shinyApp(ui = app$ui, server = app$server)
+  shinyApp(app$ui, app$server)
 }
 
 }

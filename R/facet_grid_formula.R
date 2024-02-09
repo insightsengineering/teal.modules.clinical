@@ -16,7 +16,8 @@
 #' @keywords internal
 #'
 #' @examples
-#' teal.modules.clinical:::facet_grid_formula("x", "y")
+#' facet_grid_formula <- getFromNamespace("facet_grid_formula", "teal.modules.clinical")
+#' facet_grid_formula("x", "y")
 facet_grid_formula <- function(x_facet, y_facet) {
   if (length(x_facet) == 0) x_facet <- "."
   if (length(y_facet) == 0) y_facet <- "."

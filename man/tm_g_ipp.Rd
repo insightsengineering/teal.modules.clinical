@@ -102,23 +102,24 @@ values over time for each patient, using data with ADaM structure.
 }
 \examples{
 library(nestcolor)
+library(dplyr)
 
 ADSL <- tmc_ex_adsl \%>\%
-  dplyr::slice(1:20) \%>\%
+  slice(1:20) \%>\%
   df_explicit_na()
 ADLB <- tmc_ex_adlb \%>\%
-  dplyr::filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
+  filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
   df_explicit_na() \%>\%
-  dplyr::filter(AVISIT != "SCREENING")
+  filter(AVISIT != "SCREENING")
 
 app <- init(
   data = cdisc_data(
     ADSL = ADSL,
     ADLB = ADLB,
     code = "
-      ADSL <- tmc_ex_adsl \%>\% dplyr::slice(1:20) \%>\% df_explicit_na()
-      ADLB <- tmc_ex_adlb \%>\% dplyr::filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
-        df_explicit_na() \%>\% dplyr::filter(AVISIT != \"SCREENING\")
+      ADSL <- tmc_ex_adsl \%>\% slice(1:20) \%>\% df_explicit_na()
+      ADLB <- tmc_ex_adlb \%>\% filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
+        df_explicit_na() \%>\% filter(AVISIT != \"SCREENING\")
     "
   ),
   modules = modules(
@@ -162,7 +163,7 @@ app <- init(
   )
 )
 if (interactive()) {
-  shinyApp(ui = app$ui, server = app$server)
+  shinyApp(app$ui, app$server)
 }
 
 }

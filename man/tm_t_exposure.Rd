@@ -99,23 +99,26 @@ a \code{teal_module} object.
 The module produces an exposure table for risk management plan.
 }
 \examples{
+library(dplyr)
+library(formatters)
+
 data <- teal_data()
 data <- within(data, {
   ADSL <- tmc_ex_adsl
   ADEX <- tmc_ex_adex
 
   set.seed(1, kind = "Mersenne-Twister")
-  labels <- formatters::var_labels(ADEX, fill = FALSE)
+  labels <- var_labels(ADEX, fill = FALSE)
   ADEX <- ADEX \%>\%
-    dplyr::distinct(USUBJID, .keep_all = TRUE) \%>\%
-    dplyr::mutate(
+    distinct(USUBJID, .keep_all = TRUE) \%>\%
+    mutate(
       PARAMCD = "TDURD",
       PARAM = "Overall duration (days)",
-      AVAL = sample(x = seq(1, 200), size = dplyr::n(), replace = TRUE),
+      AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
       AVALU = "Days"
     ) \%>\%
-    dplyr::bind_rows(ADEX)
-  formatters::var_labels(ADEX) <- labels
+    bind_rows(ADEX)
+  var_labels(ADEX) <- labels
 })
 
 datanames <- c("ADSL", "ADEX")

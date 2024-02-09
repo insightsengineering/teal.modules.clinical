@@ -242,15 +242,19 @@ template_abnormality <- function(parentname,
 #'   excluded in accordance with GDSR specifications by using `exclude_base_abn`.
 #'
 #' @examples
+#'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(dplyr)
+#'   library(formatters)
+#'
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb %>%
-#'     dplyr::mutate(
-#'       ONTRTFL = dplyr::case_when(
+#'     mutate(
+#'       ONTRTFL = case_when(
 #'         AVISIT %in% c("SCREENING", "BASELINE") ~ "",
 #'         TRUE ~ "Y"
-#'       ) %>% formatters::with_label("On Treatment Record Flag")
+#'       ) %>% with_label("On Treatment Record Flag")
 #'     )
 #' })
 #' datanames <- c("ADSL", "ADLB")

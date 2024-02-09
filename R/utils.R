@@ -8,7 +8,8 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' library(ggplot2)
+#'
 #' # What we want to achieve
 #' call("+", quote(f), quote(g))
 #' call("+", quote(f), call("+", quote(g), quote(h))) # parentheses not wanted
@@ -20,15 +21,15 @@
 #' call_concatenate(list(quote(f)))
 #' call_concatenate(list())
 #' call_concatenate(
-#'   list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+#'   list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))
 #' )
 #'
 #' eval(
 #'   call_concatenate(
-#'     list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+#'     list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))
 #'   )
 #' )
-#' }
+#'
 call_concatenate <- function(args, bin_op = "+") {
   checkmate::assert_string(bin_op)
   checkmate::assert_list(args, types = c("symbol", "name", "call", "expression"))
@@ -82,16 +83,17 @@ get_var_labels <- function(datasets, dataname, vars) {
 #'
 #' @export
 #' @examples
-#' expr <- quote(
-#'   rtables::basic_table() %>%
-#'     rtables::split_cols_by(var = "ARMCD") %>%
+#' expr <- quote({
+#'   library(rtables)
+#'   basic_table() %>%
+#'     split_cols_by(var = "ARMCD") %>%
 #'     test_proportion_diff(
 #'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
 #'     ) %>%
-#'     rtables::build_table(df = dta)
-#' )
+#'     build_table(df = dta)
+#' })
 #'
-#' teal.modules.clinical:::h_concat_expr(expr)
+#' h_concat_expr(expr)
 h_concat_expr <- function(expr) {
   expr <- deparse(expr)
   paste(expr, collapse = " ")
@@ -109,14 +111,13 @@ h_concat_expr <- function(expr) {
 #' @export
 #'
 #' @examples
-#'
-#' result <- teal.modules.clinical:::pipe_expr(
+#' pipe_expr(
 #'   list(
 #'     expr1 = substitute(df),
 #'     expr2 = substitute(head)
 #'   )
 #' )
-#' result
+#'
 pipe_expr <- function(exprs, pipe_str = "%>%") {
   exprs <- lapply(exprs, h_concat_expr)
   exprs <- unlist(exprs)
@@ -141,13 +142,14 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #' @export
 #'
 #' @examples
+#' library(rtables)
 #'
 #' lyt <- list()
-#' lyt <- teal.modules.clinical:::add_expr(lyt, substitute(rtables::basic_table()))
-#' lyt <- teal.modules.clinical:::add_expr(
-#'   lyt, substitute(rtables::split_cols_by(var = arm), env = list(armcd = "ARMCD"))
+#' lyt <- add_expr(lyt, substitute(basic_table()))
+#' lyt <- add_expr(
+#'   lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
 #' )
-#' lyt <- teal.modules.clinical:::add_expr(
+#' lyt <- add_expr(
 #'   lyt,
 #'   substitute(
 #'     test_proportion_diff(
@@ -155,8 +157,8 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'     )
 #'   )
 #' )
-#' lyt <- teal.modules.clinical:::add_expr(lyt, quote(rtables::build_table(df = dta)))
-#' teal.modules.clinical:::pipe_expr(lyt)
+#' lyt <- add_expr(lyt, quote(build_table(df = dta)))
+#' pipe_expr(lyt)
 add_expr <- function(expr_ls, new_expr) {
   checkmate::assert_list(expr_ls)
   checkmate::assert(is.call(new_expr) || is.name(new_expr))
@@ -194,7 +196,7 @@ add_expr <- function(expr_ls, new_expr) {
 #'   expr = anl <- subset(df, PARAMCD == param),
 #'   env = list(df = as.name("adrs"), param = "INVET")
 #' )
-#' expr2 <- substitute(expr = anl$rsp_lab <- tern::d_onco_rsp_label(anl$AVALC))
+#' expr2 <- substitute(expr = anl$rsp_lab <- d_onco_rsp_label(anl$AVALC))
 #' expr3 <- substitute(
 #'   expr = {
 #'     anl$is_rsp <- anl$rsp_lab %in%
@@ -502,21 +504,19 @@ split_interactions <- function(x, by = "\\*|:") {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' teal.modules.clinical::prepare_arm(
+#' prepare_arm(
 #'   dataname = "adrs",
 #'   arm_var = "ARMCD",
 #'   ref_arm = "ARM A",
 #'   comp_arm = c("ARM B", "ARM C")
 #' )
 #'
-#' teal.modules.clinical::prepare_arm(
+#' prepare_arm(
 #'   dataname = "adsl",
 #'   arm_var = "ARMCD",
 #'   ref_arm = c("ARM B", "ARM C"),
 #'   comp_arm = "ARM A"
 #' )
-#' }
 #'
 prepare_arm <- function(dataname,
                         arm_var,
@@ -604,21 +604,19 @@ prepare_arm <- function(dataname,
 #'
 #' @export
 #' @examples
-#' \dontrun{
-#' teal.modules.clinical::prepare_arm_levels(
+#' prepare_arm_levels(
 #'   dataname = "adae",
 #'   parentname = "adsl",
 #'   arm_var = "ARMCD",
 #'   drop_arm_levels = TRUE
 #' )
 #'
-#' teal.modules.clinical::prepare_arm_levels(
+#' prepare_arm_levels(
 #'   dataname = "adae",
 #'   parentname = "adsl",
 #'   arm_var = "ARMCD",
 #'   drop_arm_levels = FALSE
 #' )
-#' }
 #'
 prepare_arm_levels <- function(dataname,
                                parentname,
