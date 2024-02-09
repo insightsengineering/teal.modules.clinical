@@ -51,8 +51,10 @@ a \code{teal_module} object.
 This module produces a patient profile prior medication report using ADaM datasets.
 }
 \examples{
+library(dplyr)
+
 ADCM <- tmc_ex_adcm
-ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADCM$USUBJID)
+ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADCM$USUBJID)
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
@@ -66,7 +68,7 @@ app <- init(
     ADCM = ADCM,
     code = "
       ADCM <- tmc_ex_adcm
-      ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADCM$USUBJID)
+      ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADCM$USUBJID)
       ADCM$CMASTDTM <- ADCM$ASTDTM
       ADCM$CMAENDTM <- ADCM$AENDTM
     ",

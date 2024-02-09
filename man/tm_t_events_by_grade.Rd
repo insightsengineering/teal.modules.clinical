@@ -92,11 +92,14 @@ This module produces a table to summarize events by grade.
 \examples{
 data <- teal_data()
 data <- within(data, {
+  library(formatters)
+  library(dplyr)
+
   ADSL <- tmc_ex_adsl
-  lbls_adae <- formatters::var_labels(tmc_ex_adae)
+  lbls_adae <- var_labels(tmc_ex_adae)
   ADAE <- tmc_ex_adae \%>\%
-    dplyr::mutate_if(is.character, as.factor) #' be certain of having factors
-  formatters::var_labels(ADAE) <- lbls_adae
+    mutate_if(is.character, as.factor) #' be certain of having factors
+  var_labels(ADAE) <- lbls_adae
 })
 
 datanames <- c("ADSL", "ADAE")

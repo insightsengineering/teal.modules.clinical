@@ -21,6 +21,7 @@ facet grid formula \code{formula(x_facet ~ y_facet)}
 Replaces \code{x_facet} or \code{y_facet} by . when empty character
 }
 \examples{
-teal.modules.clinical:::facet_grid_formula("x", "y")
+facet_grid_formula <- getFromNamespace("facet_grid_formula", "teal.modules.clinical")
+facet_grid_formula("x", "y")
 }
 \keyword{internal}

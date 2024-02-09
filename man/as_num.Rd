@@ -38,12 +38,13 @@ The function is intended to extract any numeric from a character
 string, factor levels, boolean and return a vector of numeric.
 }
 \examples{
+as_num <- getFromNamespace("as_num", "teal.modules.clinical")
 dta <- list(
   character = c("text10,20.5letter30.!", "!-.40$$-50e5[", NA),
   factor    = factor(c("]+60e-6, 7.7\%\%8L", "\%90sep.100\"1L", NA_character_)),
   numeric   = c(1, -5e+2, NA),
   logical   = c(TRUE, FALSE, NA)
 )
-lapply(dta, teal.modules.clinical:::as_num)
+lapply(dta, as_num)
 }
 \keyword{internal}
