@@ -27,18 +27,16 @@ template_adverse_events <- function(dataname = "ANL",
                                     patient_id,
                                     font_size = 12L,
                                     ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(aeterm),
-    assertthat::is.string(tox_grade),
-    assertthat::is.string(causality),
-    assertthat::is.string(outcome),
-    assertthat::is.string(action),
-    assertthat::is.string(time) || is.null(time),
-    assertthat::is.string(decod) || is.null(decod),
-    assertthat::is.string(patient_id),
-    is.numeric(font_size)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(aeterm)
+  checkmate::assert_string(tox_grade)
+  checkmate::assert_string(causality)
+  checkmate::assert_string(outcome)
+  checkmate::assert_string(action)
+  checkmate::assert_string(time, null.ok = TRUE)
+  checkmate::assert_string(decod, null.ok = TRUE)
+  checkmate::assert_string(patient_id)
+  checkmate::assert_number(font_size)
 
   y <- list()
 

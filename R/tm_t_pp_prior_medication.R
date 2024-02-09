@@ -14,13 +14,11 @@ template_prior_medication <- function(dataname = "ANL",
                                       cmdecod = "CMDECOD",
                                       cmindc = "CMINDC",
                                       cmstdy = "CMSTDY") {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(atirel),
-    assertthat::is.string(cmdecod),
-    assertthat::is.string(cmindc),
-    assertthat::is.string(cmstdy)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(atirel)
+  checkmate::assert_string(cmdecod)
+  checkmate::assert_string(cmindc)
+  checkmate::assert_string(cmstdy)
 
   y <- list()
   y$table <- list()

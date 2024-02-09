@@ -42,23 +42,21 @@ template_events_summary <- function(anl_name,
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
-  assertthat::assert_that(
-    assertthat::is.string(anl_name),
-    assertthat::is.string(parentname),
-    is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    assertthat::is.string(dthfl_var),
-    assertthat::is.string(dcsreas_var),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(na_level),
-    is.character(flag_var_anl) || is.null(NULL),
-    is.character(flag_var_aesi) || is.null(NULL),
-    assertthat::is.string(aeseq_var),
-    assertthat::is.string(llt),
-    assertthat::is.flag(count_subj),
-    assertthat::is.flag(count_pt),
-    assertthat::is.flag(count_events)
-  )
+  checkmate::assert_string(anl_name)
+  checkmate::assert_string(parentname)
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+  checkmate::assert_string(dthfl_var)
+  checkmate::assert_string(dcsreas_var)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_character(flag_var_anl, null.ok = TRUE)
+  checkmate::assert_character(flag_var_aesi, null.ok = TRUE)
+  checkmate::assert_string(aeseq_var)
+  checkmate::assert_string(llt)
+  checkmate::assert_flag(count_subj)
+  checkmate::assert_flag(count_pt)
+  checkmate::assert_flag(count_events)
 
   y <- list()
 

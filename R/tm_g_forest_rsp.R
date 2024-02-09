@@ -34,14 +34,12 @@ template_forest_rsp <- function(dataname = "ANL",
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(obj_var_name),
-    is.null(subgroup_var) || is.character(subgroup_var)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(obj_var_name)
+  checkmate::assert_character(subgroup_var, null.ok = TRUE)
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -314,10 +312,7 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_flag(fixed_symbol_size)
   checkmate::assert_class(conf_level, "choices_selected")
-  assertthat::assert_that(
-    inherits(default_responses, c("list", "character", "numeric", "NULL")),
-    msg = "`default_responses` must be a named list or an array."
-  )
+  checkmate::assert_multi_class(default_responses, c("list", "character", "numeric"), null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)

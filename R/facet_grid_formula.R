@@ -23,6 +23,6 @@ facet_grid_formula <- function(x_facet, y_facet) {
   if (length(y_facet) == 0) y_facet <- "."
   checkmate::assert_string(x_facet)
   checkmate::assert_string(y_facet)
-  stopifnot(x_facet != y_facet)
+  if (x_facet == y_facet) stop("'x_facet' and 'y_facet' must not be equal.")
   stats::as.formula(paste0(y_facet, " ~ ", x_facet)) # must invert it
 }
