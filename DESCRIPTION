@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9080
+Version: 0.8.16.9081
 Date: 2024-02-09
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
@@ -70,10 +70,10 @@ VignetteBuilder:
     knitr
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.transform, insightsengineering/tern,
-    tidymodels/broom, mllg/checkmate, tidyverse/dplyr,
-    rstudio/DT, insightsengineering/formatters, tidyverse/ggplot2,
-    slowkow/ggrepel, r-lib/lifecycle, daroczig/logger, tidyverse/magrittr,
-    r-lib/rlang, insightsengineering/rlistings, rstudio/rmarkdown,
+    tidymodels/broom, mllg/checkmate, tidyverse/dplyr, rstudio/DT,
+    insightsengineering/formatters, tidyverse/ggplot2, slowkow/ggrepel,
+    r-lib/lifecycle, daroczig/logger, tidyverse/magrittr, r-lib/rlang,
+    insightsengineering/rlistings, rstudio/rmarkdown,
     insightsengineering/rtables, r-lib/scales, rstudio/shiny,
     daattali/shinyjs, rstudio/shinyvalidate, dreamRs/shinyWidgets,
     r-lib/styler, insightsengineering/teal.code,
