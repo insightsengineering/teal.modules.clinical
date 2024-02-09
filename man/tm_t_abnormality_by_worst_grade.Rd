@@ -93,9 +93,12 @@ a \code{teal_module} object.
 This module produces a table to summarize laboratory test results with highest grade post-baseline
 }
 \examples{
+library(dplyr)
+library(formatters)
+
 ADSL <- tmc_ex_adsl
 ADLB <- tmc_ex_adlb \%>\%
-  dplyr::filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))
+  filter(!AVISIT \%in\% c("SCREENING", "BASELINE"))
 
 app <- init(
   data = cdisc_data(
@@ -104,7 +107,7 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADLB <- tmc_ex_adlb \%>\%
-        dplyr::filter(!AVISIT \%in\% c(\"SCREENING\", \"BASELINE\"))
+        filter(!AVISIT \%in\% c(\"SCREENING\", \"BASELINE\"))
     "
   ),
   modules = modules(

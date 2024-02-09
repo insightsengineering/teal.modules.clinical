@@ -24,12 +24,10 @@ template_forest_tte <- function(dataname = "ANL",
                                 col_symbol_size = NULL,
                                 time_unit_var = "AVALU",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(obj_var_name),
-    is.character(subgroup_var) || is.null(subgroup_var)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(obj_var_name)
+  checkmate::assert_character(subgroup_var, null.ok = TRUE)
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -210,10 +208,11 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
+#' library(formatters)
 #'
 #' ADSL <- tmc_ex_adsl
 #' ADTTE <- tmc_ex_adtte
-#' ADSL$RACE <- droplevels(ADSL$RACE) %>% formatters::with_label("Race")
+#' ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -233,7 +232,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADTTE <- tmc_ex_adtte
-#'       ADSL$RACE <- droplevels(ADSL$RACE) %>% formatters::with_label(\"Race\")
+#'       ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label(\"Race\")
 #'     "
 #'   ),
 #'   modules = modules(

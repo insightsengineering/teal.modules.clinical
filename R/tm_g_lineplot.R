@@ -39,16 +39,15 @@ template_g_lineplot <- function(dataname = "ANL",
                                 title = "Line Plot",
                                 y_lab = "",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(strata),
-    assertthat::is.string(x),
-    assertthat::is.string(y),
-    assertthat::is.string(y_unit),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(title),
-    assertthat::is.string(y_lab)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(strata)
+  checkmate::assert_string(x)
+  checkmate::assert_string(y)
+  checkmate::assert_string(y_unit)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(title)
+  checkmate::assert_string(y_lab)
+
   z <- list()
 
   data_list <- list()
@@ -208,9 +207,11 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
+#' library(forcats)
 #'
 #' ADSL <- tmc_ex_adsl
-#' ADLB <- tmc_ex_adlb %>% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+#' ADLB <- tmc_ex_adlb %>% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -218,7 +219,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     ADLB = ADLB,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
-#'       ADLB <- tmc_ex_adlb %>% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+#'       ADLB <- tmc_ex_adlb %>% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
 #'     "
 #'   ),
 #'   modules = modules(
@@ -241,7 +242,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'   )
 #' )
 #' if (interactive()) {
-#'   shinyApp(ui = app$ui, server = app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 #' @export

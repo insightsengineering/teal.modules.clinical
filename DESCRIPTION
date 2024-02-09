@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9079
-Date: 2024-02-05
+Version: 0.8.16.9081
+Date: 2024-02-09
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -30,7 +30,6 @@ Depends:
     teal.transform (>= 0.4.0.9011),
     tern (>= 0.9.3)
 Imports:
-    assertthat,
     broom (>= 0.7.10),
     checkmate (>= 2.1.0),
     dplyr (>= 1.0.5),
@@ -71,10 +70,10 @@ VignetteBuilder:
     knitr
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.transform, insightsengineering/tern,
-    cran/assertthat, tidymodels/broom, mllg/checkmate, tidyverse/dplyr,
-    rstudio/DT, insightsengineering/formatters, tidyverse/ggplot2,
-    slowkow/ggrepel, r-lib/lifecycle, daroczig/logger, tidyverse/magrittr,
-    r-lib/rlang, insightsengineering/rlistings, rstudio/rmarkdown,
+    tidymodels/broom, mllg/checkmate, tidyverse/dplyr, rstudio/DT,
+    insightsengineering/formatters, tidyverse/ggplot2, slowkow/ggrepel,
+    r-lib/lifecycle, daroczig/logger, tidyverse/magrittr, r-lib/rlang,
+    insightsengineering/rlistings, rstudio/rmarkdown,
     insightsengineering/rtables, r-lib/scales, rstudio/shiny,
     daattali/shinyjs, rstudio/shinyvalidate, dreamRs/shinyWidgets,
     r-lib/styler, insightsengineering/teal.code,

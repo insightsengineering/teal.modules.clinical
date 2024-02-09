@@ -88,11 +88,12 @@ a \code{teal_module} object.
 This module produces a table of event rates adjusted for patient-years.
 }
 \examples{
+library(dplyr)
 ADSL <- tmc_ex_adsl
 ADAETTE <- tmc_ex_adaette \%>\%
-  dplyr::filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
-  dplyr::mutate(is_event = CNSR == 0) \%>\%
-  dplyr::mutate(n_events = as.integer(is_event))
+  filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
+  mutate(is_event = CNSR == 0) \%>\%
+  mutate(n_events = as.integer(is_event))
 
 app <- init(
   data = cdisc_data(
@@ -101,9 +102,9 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADAETTE <- tmc_ex_adaette \%>\%
-        dplyr::filter(PARAMCD \%in\% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) \%>\%
-        dplyr::mutate(is_event = CNSR == 0) \%>\%
-        dplyr::mutate(n_events = as.integer(is_event))
+        filter(PARAMCD \%in\% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) \%>\%
+        mutate(is_event = CNSR == 0) \%>\%
+        mutate(n_events = as.integer(is_event))
     "
   ),
   modules = modules(

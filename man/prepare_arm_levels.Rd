@@ -23,20 +23,18 @@ This function generates the standard expression for pre-processing of dataset
 arm levels in and is used to apply the same steps in safety teal modules.
 }
 \examples{
-\dontrun{
-teal.modules.clinical::prepare_arm_levels(
+prepare_arm_levels(
   dataname = "adae",
   parentname = "adsl",
   arm_var = "ARMCD",
   drop_arm_levels = TRUE
 )
 
-teal.modules.clinical::prepare_arm_levels(
+prepare_arm_levels(
   dataname = "adae",
   parentname = "adsl",
   arm_var = "ARMCD",
   drop_arm_levels = FALSE
 )
-}
 
 }

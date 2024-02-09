@@ -14,13 +14,11 @@ template_prior_medication <- function(dataname = "ANL",
                                       cmdecod = "CMDECOD",
                                       cmindc = "CMINDC",
                                       cmstdy = "CMSTDY") {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(atirel),
-    assertthat::is.string(cmdecod),
-    assertthat::is.string(cmindc),
-    assertthat::is.string(cmstdy)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(atirel)
+  checkmate::assert_string(cmdecod)
+  checkmate::assert_string(cmindc)
+  checkmate::assert_string(cmstdy)
 
   y <- list()
   y$table <- list()
@@ -64,8 +62,10 @@ template_prior_medication <- function(dataname = "ANL",
 #' @inherit module_arguments return
 #'
 #' @examples
+#' library(dplyr)
+#'
 #' ADCM <- tmc_ex_adcm
-#' ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#' ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
@@ -79,7 +79,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'     ADCM = ADCM,
 #'     code = "
 #'       ADCM <- tmc_ex_adcm
-#'       ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#'       ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
 #'     ",
