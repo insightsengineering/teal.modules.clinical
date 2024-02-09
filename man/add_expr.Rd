@@ -25,8 +25,6 @@ for instance with \code{pipe_expr}.
 }
 \examples{
 library(rtables)
-add_expr <- getFromNamespace("add_expr", "teal.modules.clinical")
-pipe_expr <- getFromNamespace("pipe_expr", "teal.modules.clinical")
 
 lyt <- list()
 lyt <- add_expr(lyt, substitute(basic_table()))

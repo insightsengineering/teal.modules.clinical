@@ -15,7 +15,6 @@ call_concatenate(args, bin_op = "+")
 e.g. combine with \code{+} for \code{ggplot} without introducing parentheses due to associativity
 }
 \examples{
-\dontrun{
 library(ggplot2)
 
 # What we want to achieve
@@ -37,5 +36,5 @@ eval(
     list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))
   )
 )
-}
+
 }

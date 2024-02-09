@@ -8,7 +8,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' library(ggplot2)
 #'
 #' # What we want to achieve
@@ -30,7 +29,7 @@
 #'     list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))
 #'   )
 #' )
-#' }
+#'
 call_concatenate <- function(args, bin_op = "+") {
   checkmate::assert_string(bin_op)
   checkmate::assert_list(args, types = c("symbol", "name", "call", "expression"))
@@ -84,7 +83,6 @@ get_var_labels <- function(datasets, dataname, vars) {
 #'
 #' @export
 #' @examples
-#' h_concat_expr <- getFromNamespace("h_concat_expr", "teal.modules.clinical")
 #' expr <- quote({
 #'   library(rtables)
 #'   basic_table() %>%
@@ -113,14 +111,13 @@ h_concat_expr <- function(expr) {
 #' @export
 #'
 #' @examples
-#' pipe_expr <- getFromNamespace("pipe_expr", "teal.modules.clinical")
-#' result <- pipe_expr(
+#' pipe_expr(
 #'   list(
 #'     expr1 = substitute(df),
 #'     expr2 = substitute(head)
 #'   )
 #' )
-#' result
+#'
 pipe_expr <- function(exprs, pipe_str = "%>%") {
   exprs <- lapply(exprs, h_concat_expr)
   exprs <- unlist(exprs)
@@ -147,8 +144,6 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'
 #' @examples
 #' library(rtables)
-#' add_expr <- getFromNamespace("add_expr", "teal.modules.clinical")
-#' pipe_expr <- getFromNamespace("pipe_expr", "teal.modules.clinical")
 #'
 #' lyt <- list()
 #' lyt <- add_expr(lyt, substitute(basic_table()))

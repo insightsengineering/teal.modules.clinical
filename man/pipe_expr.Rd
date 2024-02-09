@@ -16,12 +16,11 @@ pipeline (\verb{\%>\%}).}
 Concatenate expressions in a single pipeline-flavor expression.
 }
 \examples{
-pipe_expr <- getFromNamespace("pipe_expr", "teal.modules.clinical")
-result <- pipe_expr(
+pipe_expr(
   list(
     expr1 = substitute(df),
     expr2 = substitute(head)
   )
 )
-result
+
 }
