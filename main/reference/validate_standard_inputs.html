@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9078</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9079</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,16 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -146,15 +136,15 @@ Use <code>NULL</code> for no maximum.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Internal function - validate_standard_inputs</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">validate_standard_inputs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/getFromNamespace.html" class="external-link">getFromNamespace</a></span><span class="op">(</span><span class="st">"validate_standard_inputs"</span>, <span class="st">"teal.modules.clinical"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">adsl</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
 <span class="r-in"><span><span class="va">adae</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adae</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">fluidPage</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"obs"</span>, <span class="st">"Max Age"</span>,</span></span>
+<span class="r-in"><span>  <span class="fu">sliderInput</span><span class="op">(</span><span class="st">"obs"</span>, <span class="st">"Max Age"</span>,</span></span>
 <span class="r-in"><span>    min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">100</span>, value <span class="op">=</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"maxgr"</span>, <span class="st">"Max Grade"</span>,</span></span>
+<span class="r-in"><span>  <span class="fu">sliderInput</span><span class="op">(</span><span class="st">"maxgr"</span>, <span class="st">"Max Grade"</span>,</span></span>
 <span class="r-in"><span>    min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">5</span>, value <span class="op">=</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu">plotOutput</span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span></span>
@@ -168,7 +158,7 @@ Use <code>NULL</code> for no maximum.</p></dd>
 <span class="r-in"><span>    <span class="va">adsl_f</span> <span class="op">&lt;-</span> <span class="va">adsl</span><span class="op">[</span><span class="va">adsl</span><span class="op">$</span><span class="va">AGE</span> <span class="op">&lt;=</span> <span class="va">input</span><span class="op">$</span><span class="va">obs</span>, <span class="va">keep_adsl</span><span class="op">]</span></span></span>
 <span class="r-in"><span>    <span class="va">adae_f</span> <span class="op">&lt;-</span> <span class="va">adae</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">adae</span><span class="op">$</span><span class="va">AETOXGR</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">input</span><span class="op">$</span><span class="va">maxgr</span>, <span class="va">keep_adae</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>    <span class="fu">teal.modules.clinical</span><span class="fu">:::</span><span class="fu">validate_standard_inputs</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu">validate_standard_inputs</span><span class="op">(</span></span></span>
 <span class="r-in"><span>      adsl <span class="op">=</span> <span class="va">adsl_f</span>,</span></span>
 <span class="r-in"><span>      adslvars <span class="op">=</span> <span class="va">keep_adsl</span>,</span></span>
 <span class="r-in"><span>      anl <span class="op">=</span> <span class="va">adae_f</span>,</span></span>
@@ -194,7 +184,7 @@ Use <code>NULL</code> for no maximum.</p></dd>
 <span class="r-in"><span>    <span class="va">adsl_f</span> <span class="op">&lt;-</span> <span class="va">adsl</span><span class="op">[</span><span class="va">adsl</span><span class="op">$</span><span class="va">AGE</span> <span class="op">&lt;=</span> <span class="va">input</span><span class="op">$</span><span class="va">obs</span>, <span class="va">keep_adsl</span><span class="op">]</span></span></span>
 <span class="r-in"><span>    <span class="va">adae_f</span> <span class="op">&lt;-</span> <span class="va">adae</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">adae</span><span class="op">$</span><span class="va">AETOXGR</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">input</span><span class="op">$</span><span class="va">maxgr</span>, <span class="va">keep_adae</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>    <span class="fu">teal.modules.clinical</span><span class="fu">:::</span><span class="fu">validate_standard_inputs</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu">validate_standard_inputs</span><span class="op">(</span></span></span>
 <span class="r-in"><span>      adsl <span class="op">=</span> <span class="va">adsl_f</span>,</span></span>
 <span class="r-in"><span>      adslvars <span class="op">=</span> <span class="va">keep_adsl</span>,</span></span>
 <span class="r-in"><span>      anl <span class="op">=</span> <span class="va">adae_f</span>,</span></span>
@@ -220,7 +210,7 @@ Use <code>NULL</code> for no maximum.</p></dd>
 <span class="r-in"><span>    <span class="va">adsl_f</span> <span class="op">&lt;-</span> <span class="va">adsl</span><span class="op">[</span><span class="va">adsl</span><span class="op">$</span><span class="va">AGE</span> <span class="op">&lt;=</span> <span class="va">input</span><span class="op">$</span><span class="va">obs</span>, <span class="va">keep_adsl</span><span class="op">]</span></span></span>
 <span class="r-in"><span>    <span class="va">adae_f</span> <span class="op">&lt;-</span> <span class="va">adae</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">adae</span><span class="op">$</span><span class="va">AETOXGR</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="va">input</span><span class="op">$</span><span class="va">maxgr</span>, <span class="va">keep_adae</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>    <span class="fu">teal.modules.clinical</span><span class="fu">:::</span><span class="fu">validate_standard_inputs</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu">validate_standard_inputs</span><span class="op">(</span></span></span>
 <span class="r-in"><span>      adsl <span class="op">=</span> <span class="va">adsl_f</span>,</span></span>
 <span class="r-in"><span>      adslvars <span class="op">=</span> <span class="va">keep_adsl</span>,</span></span>
 <span class="r-in"><span>      anl <span class="op">=</span> <span class="va">adae_f</span>,</span></span>
