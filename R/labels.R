@@ -12,9 +12,7 @@
 #' attr(data[["cyl"]], "label") <- "Cylinder"
 #' column_annotation_label(data, "cyl")
 #' column_annotation_label(data, "cyl", omit_raw_name = TRUE)
-#' \dontrun{
 #' column_annotation_label(tmc_ex_adsl, "ACTARM")
-#' }
 #' @export
 column_annotation_label <- function(dataset, column, omit_raw_name = FALSE) {
   checkmate::assert_data_frame(dataset)

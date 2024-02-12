@@ -37,14 +37,12 @@ template_logistic <- function(dataname,
   }
 
   # Common assertion no matter if arm_var is NULL or not.
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(label_paramcd) || is.null(label_paramcd),
-    assertthat::is.string(topleft) || is.null(topleft),
-    is.character(cov_var) || is.null(cov_var),
-    assertthat::is.string(interaction_var) || is.null(interaction_var)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(label_paramcd, null.ok = TRUE)
+  checkmate::assert_string(topleft, null.ok = TRUE)
+  checkmate::assert_character(cov_var, null.ok = TRUE)
+  checkmate::assert_string(interaction_var, null.ok = TRUE)
 
   y <- list()
 
@@ -53,10 +51,8 @@ template_logistic <- function(dataname,
 
   # Conditional assertion depends on if arm_var isn't NULL.
   if (!is.null(arm_var)) {
-    assertthat::assert_that(
-      assertthat::is.string(arm_var),
-      assertthat::is.flag(combine_comp_arms)
-    )
+    checkmate::assert_string(arm_var)
+    checkmate::assert_flag(combine_comp_arms)
 
     ref_arm_val <- paste(ref_arm, collapse = "/")
 
@@ -227,9 +223,11 @@ template_logistic <- function(dataname,
 #' @inherit module_arguments return seealso
 #'
 #' @examples
+#' library(dplyr)
+#'
 #' ADSL <- tmc_ex_adsl
 #' ADRS <- tmc_ex_adrs %>%
-#'   dplyr::filter(PARAMCD %in% c("BESRSPI", "INVET"))
+#'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -249,7 +247,7 @@ template_logistic <- function(dataname,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADRS <- tmc_ex_adrs %>%
-#'         dplyr::filter(PARAMCD %in% c(\"BESRSPI\", \"INVET\"))
+#'         filter(PARAMCD %in% c(\"BESRSPI\", \"INVET\"))
 #'     "
 #'   ),
 #'   modules = modules(
@@ -273,7 +271,7 @@ template_logistic <- function(dataname,
 #'   )
 #' )
 #' if (interactive()) {
-#'   shinyApp(ui = app$ui, server = app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
 #' @export

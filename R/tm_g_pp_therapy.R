@@ -30,21 +30,19 @@ template_therapy <- function(dataname = "ANL",
                              patient_id,
                              font_size = 12L,
                              ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(atirel),
-    assertthat::is.string(cmdecod),
-    assertthat::is.string(cmindc),
-    assertthat::is.string(cmdose),
-    assertthat::is.string(cmtrt),
-    assertthat::is.string(cmdosu),
-    assertthat::is.string(cmroute),
-    assertthat::is.string(cmdosfrq),
-    assertthat::is.string(cmstdy),
-    assertthat::is.string(cmendy),
-    assertthat::is.string(patient_id),
-    is.numeric(font_size)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(atirel)
+  checkmate::assert_string(cmdecod)
+  checkmate::assert_string(cmindc)
+  checkmate::assert_string(cmdose)
+  checkmate::assert_string(cmtrt)
+  checkmate::assert_string(cmdosu)
+  checkmate::assert_string(cmroute)
+  checkmate::assert_string(cmdosfrq)
+  checkmate::assert_string(cmstdy)
+  checkmate::assert_string(cmendy)
+  checkmate::assert_string(patient_id)
+  checkmate::assert_number(font_size)
 
   y <- list()
   y$table_list <- list()
@@ -252,9 +250,10 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
 #'
 #' ADCM <- tmc_ex_adcm
-#' ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#' ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
@@ -268,7 +267,7 @@ template_therapy <- function(dataname = "ANL",
 #'     ADCM = ADCM,
 #'     code = "
 #'       ADCM <- tmc_ex_adcm
-#'       ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#'       ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
 #'     ",

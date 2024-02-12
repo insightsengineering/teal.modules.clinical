@@ -36,18 +36,16 @@ template_binary_outcome <- function(dataname,
                                     total_label = default_total_label(),
                                     na_level = default_na_str(),
                                     basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.flag(compare_arm),
-    assertthat::is.flag(combine_comp_arms),
-    assertthat::is.flag(show_rsp_cat),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(na_level),
-    assertthat::is.string(total_label)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_flag(compare_arm)
+  checkmate::assert_flag(combine_comp_arms)
+  checkmate::assert_flag(show_rsp_cat)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(total_label)
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
@@ -345,13 +343,16 @@ template_binary_outcome <- function(dataname,
 #' @inherit module_arguments return seealso
 #'
 #' @examples
+#' library(dplyr)
+#' library(formatters)
+#'
 #' ADSL <- tmc_ex_adsl
 #' ADRS <- tmc_ex_adrs %>%
-#'   dplyr::mutate(
-#'     AVALC = tern::d_onco_rsp_label(AVALC) %>%
-#'       formatters::with_label("Character Result/Finding")
+#'   mutate(
+#'     AVALC = d_onco_rsp_label(AVALC) %>%
+#'       with_label("Character Result/Finding")
 #'   ) %>%
-#'   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
@@ -364,11 +365,11 @@ template_binary_outcome <- function(dataname,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADRS <- tmc_ex_adrs %>%
-#'         dplyr::mutate(
-#'           AVALC = tern::d_onco_rsp_label(AVALC) %>%
-#'             formatters::with_label(\"Character Result/Finding\")
+#'         mutate(
+#'           AVALC = d_onco_rsp_label(AVALC) %>%
+#'             with_label(\"Character Result/Finding\")
 #'         ) %>%
-#'         dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
+#'         filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
 #'     "
 #'   ),
 #'   modules = modules(

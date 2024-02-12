@@ -28,20 +28,18 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
                                                 total_label = default_total_label(),
                                                 drop_arm_levels = TRUE,
                                                 basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(id_var),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(atoxgr_var),
-    assertthat::is.string(worst_high_flag_var),
-    assertthat::is.string(worst_low_flag_var),
-    assertthat::is.string(worst_flag_indicator),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(atoxgr_var)
+  checkmate::assert_string(worst_high_flag_var)
+  checkmate::assert_string(worst_low_flag_var)
+  checkmate::assert_string(worst_flag_indicator)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_flag(drop_arm_levels)
 
   y <- list()
 
@@ -252,11 +250,13 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'
 #' @export
 #'
-#'
 #' @examples
+#' library(dplyr)
+#' library(formatters)
+#'
 #' ADSL <- tmc_ex_adsl
 #' ADLB <- tmc_ex_adlb %>%
-#'   dplyr::filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+#'   filter(!AVISIT %in% c("SCREENING", "BASELINE"))
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -265,7 +265,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADLB <- tmc_ex_adlb %>%
-#'         dplyr::filter(!AVISIT %in% c(\"SCREENING\", \"BASELINE\"))
+#'         filter(!AVISIT %in% c(\"SCREENING\", \"BASELINE\"))
 #'     "
 #'   ),
 #'   modules = modules(

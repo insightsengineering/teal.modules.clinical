@@ -17,12 +17,10 @@ template_medical_history <- function(dataname = "ANL",
                                      mhbodsys = "MHBODSYS",
                                      mhdistat = "MHDISTAT",
                                      patient_id = NULL) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(mhterm),
-    assertthat::is.string(mhbodsys),
-    assertthat::is.string(mhdistat)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(mhterm)
+  checkmate::assert_string(mhbodsys)
+  checkmate::assert_string(mhdistat)
 
   y <- list()
   y$table <- list()

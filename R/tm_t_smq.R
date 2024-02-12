@@ -24,19 +24,17 @@ template_smq <- function(dataname,
                          baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
                          id_var = "USUBJID",
                          basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(parentname),
-    assertthat::is.string(dataname),
-    is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    assertthat::is.string(id_var),
-    assertthat::is.string(llt),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.flag(drop_arm_levels),
-    assertthat::is.string(na_level),
-    assertthat::is.string(smq_varlabel),
-    is.character(baskets)
-  )
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(dataname)
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(llt)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(smq_varlabel)
+  checkmate::assert_character(baskets)
 
   sort_criteria <- match.arg(sort_criteria)
 

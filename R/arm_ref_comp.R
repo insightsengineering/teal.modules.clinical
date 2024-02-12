@@ -25,6 +25,10 @@
 #' @keywords internal
 #'
 #' @examples
+#' library(teal.widgets)
+#' library(shinyvalidate)
+#'
+#' arm_ref_comp_observer <- getFromNamespace("arm_ref_comp_observer", "teal.modules.clinical")
 #'
 #' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
 #' arm_var <- choices_selected(c("ARM", "ARMCD"), "ARMCD")
@@ -34,22 +38,22 @@
 #' ui <- fluidPage(
 #'   sidebarLayout(
 #'     sidebarPanel(
-#'       teal.widgets::optionalSelectInput(
+#'       optionalSelectInput(
 #'         "arm",
 #'         "Treatment Variable",
 #'         choices = arm_var$choices,
 #'         selected = arm_var$selected
 #'       ),
-#'       shiny::uiOutput("arms_buckets")
+#'       uiOutput("arms_buckets")
 #'     ),
 #'     mainPanel(
-#'       shiny::textOutput("result")
+#'       textOutput("result")
 #'     )
 #'   )
 #' )
 #'
 #' server <- function(input, output, session) {
-#'   iv_arm_ref <- teal.modules.clinical:::arm_ref_comp_observer(
+#'   iv_arm_ref <- arm_ref_comp_observer(
 #'     session,
 #'     input,
 #'     output,
@@ -59,16 +63,16 @@
 #'     module = "example"
 #'   )
 #'
-#'   output$result <- shiny::renderText({
-#'     iv <- shinyvalidate::InputValidator$new()
+#'   output$result <- renderText({
+#'     iv <- InputValidator$new()
 #'     iv$add_validator(iv_arm_ref)
 #'     iv$enable()
-#'     teal::validate_inputs(iv)
+#'     validate_inputs(iv)
 #'     "Valid selection has been made!"
 #'   })
 #' }
 #' if (interactive()) {
-#'   shiny::shinyApp(ui, server)
+#'   shinyApp(ui, server)
 #' }
 arm_ref_comp_observer <- function(session,
                                   input,
