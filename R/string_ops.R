@@ -13,6 +13,14 @@
 #'   A list of numeric if parsed from a character string, each character string
 #'   associated with an list item.
 #'
+#' @examples
+#' dta <- list(
+#'   character = c("text10,20.5letter30.!", "!-.40$$-50e5[", NA),
+#'   factor    = factor(c("]+60e-6, 7.7%%8L", "%90sep.100\"1L", NA_character_)),
+#'   numeric   = c(1, -5e+2, NA),
+#'   logical   = c(TRUE, FALSE, NA)
+#' )
+#' lapply(dta, as_num)
 #' @keywords internal
 as_num <- function(str) { # nolint # nousage
   UseMethod("as_num")
