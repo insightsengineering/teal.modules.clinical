@@ -41,8 +41,8 @@ tm_t_tte(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
@@ -65,14 +65,14 @@ all available choices and pre-selected option for the analysis variable.}
 \item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
 available choices and preselected option for the censoring variable.}
 
-\item{conf_level_coxph}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level_coxph}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
+pre-selected option for confidence level, each within range of (0, 1).}
 
-\item{conf_level_survfit}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level_survfit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
+pre-selected option for confidence level, each within range of (0, 1).}
 
-\item{time_points}{(\code{choices_selected})\cr object with all available choices and preselected option for time
-points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
+\item{time_points}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and preselected option
+for time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
 \item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
 with all available choices and pre-selected option for the time unit variable.}
