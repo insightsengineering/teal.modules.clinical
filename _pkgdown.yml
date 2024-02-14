@@ -39,6 +39,7 @@ reference:
   - title: Helper functions
     contents:
       - add_expr
+      - as_num
       - bracket_expr
       - call_concatenate
       - clean_description
