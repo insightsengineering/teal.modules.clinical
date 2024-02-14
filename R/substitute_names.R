@@ -12,12 +12,8 @@
 #' @note This is simplified from the package `pryr` to avoid another dependency.
 #' @seealso [substitute_names()]
 #'
-#' @examples
-#' substitute_q <- getFromNamespace("substitute_q", "teal.modules.clinical")
-#' x <- quote(a + b)
-#' substitute(x, list(a = 1, b = 2))
-#' substitute_q(x, list(a = 1, b = 2))
 #' @keywords internal
+#'
 substitute_q <- function(qexpr, env) {
   stopifnot(is.language(qexpr))
   call <- substitute(substitute(qexpr, env), list(qexpr = qexpr))
@@ -39,22 +35,8 @@ substitute_q <- function(qexpr, env) {
 #' @return The modified expression.
 #' @seealso [substitute_q()]
 #'
-#' @examples
-#' substitute_names <- getFromNamespace("substitute_names", "teal.modules.clinical")
-#' substitute_names(
-#'   mutate(a = a + b, b = c + d),
-#'   names = list(a = as.name("d"), b = as.name("e"))
-#' )
-#' substitute_names(
-#'   c(a = fun(a), b = 3),
-#'   names = list(a = as.name("b"), b = as.name("c"))
-#' )
-#' substitute_names(
-#'   c(a = fun(a), b = bla),
-#'   names = list(a = as.name("b"), b = as.name("c")),
-#'   others = list(bla = "foo")
-#' )
 #' @keywords internal
+#'
 substitute_names <- function(expr, names, others = list()) {
   checkmate::assert_list(names, min.len = 1, names = "unique", types = "name")
   checkmate::assert_list(others, min.len = 0, names = "unique")

@@ -381,10 +381,10 @@ template_tte <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_tte
-#' @param conf_level_coxph ([choices_selected()])\cr object with all available choices and pre-selected option
-#'   for confidence level, each within range of (0, 1).
-#' @param conf_level_survfit ([choices_selected()])\cr object with all available choices and pre-selected option
-#'   for confidence level, each within range of (0, 1).
+#' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
+#'   pre-selected option for confidence level, each within range of (0, 1).
+#' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
+#'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
 #'   information, optional.
 #'

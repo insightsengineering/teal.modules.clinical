@@ -22,12 +22,6 @@ a quoted expression.
 \note{
 This is simplified from the package \code{pryr} to avoid another dependency.
 }
-\examples{
-substitute_q <- getFromNamespace("substitute_q", "teal.modules.clinical")
-x <- quote(a + b)
-substitute(x, list(a = 1, b = 2))
-substitute_q(x, list(a = 1, b = 2))
-}
 \seealso{
 \code{\link[=substitute_names]{substitute_names()}}
 }
