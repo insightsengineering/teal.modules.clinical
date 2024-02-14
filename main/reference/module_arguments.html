@@ -12,7 +12,7 @@ that are used repeatedly to express an analysis."><!-- mathjax --><script src="h
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9083</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9085</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,16 +36,6 @@ that are used repeatedly to express an analysis."><!-- mathjax --><script src="h
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -85,7 +75,7 @@ that are used repeatedly to express an analysis.</p>
     <dl><dt>arm_ref_comp</dt>
 <dd><p>optional, (<code>list</code>)<br> If specified it must be a named list with each element corresponding to
 an arm variable in <code>ADSL</code> and the element must be another list (possibly
-with delayed <code><a href="https://insightsengineering.github.io/teal.transform/reference/variable_choices.html" class="external-link">teal.transform::variable_choices()</a></code> or delayed <code><a href="https://insightsengineering.github.io/teal.transform/reference/value_choices.html" class="external-link">teal.transform::value_choices()</a></code>
+with delayed <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html" class="external-link">teal.transform::variable_choices()</a></code> or delayed <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html" class="external-link">teal.transform::value_choices()</a></code>
 with the elements named <code>ref</code> and <code>comp</code> that the defined the default
 reference and comparison arms when the arm variable is changed.</p></dd>
 
@@ -99,62 +89,62 @@ second variable will be nested under the first variable.</p></dd>
 
 
 <dt>atirel</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
 available choices and preselected option for the <code>ATIREL</code> variable from <code>dataname</code>.</p></dd>
 
 
 <dt>aval_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
 all available choices and pre-selected option for the analysis variable.</p></dd>
 
 
 <dt>avalu_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
 all available choices and preselected option for the analysis unit variable.</p></dd>
 
 
 <dt>avisit</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> value of analysis
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> value of analysis
 visit <code>AVISIT</code> of interest.</p></dd>
 
 
 <dt>baseline_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
 all available choices and preselected option for variable values that can be used as <code>baseline_var</code>.</p></dd>
 
 
 <dt>by_vars</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
 available choices and preselected option for variable names used to split the summary by rows.</p></dd>
 
 
 <dt>cmdecod</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
 available choices and preselected option for the <code>CMDECOD</code> variable from <code>dataname</code>.</p></dd>
 
 
 <dt>cmindc</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
 available choices and preselected option for the <code>CMINDC</code> variable from <code>dataname</code>.</p></dd>
 
 
 <dt>cmstdy</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
 available choices and preselected option for the <code>CMSTDY</code> variable from <code>dataname</code>.</p></dd>
 
 
 <dt>cnsr_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
 available choices and preselected option for the censoring variable.</p></dd>
 
 
 <dt>conf_level</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
 all available choices and pre-selected option for the confidence level, each within range of (0, 1).</p></dd>
 
 
 <dt>cov_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
 available choices and preselected option for the covariates variables.</p></dd>
 
 
@@ -181,12 +171,12 @@ Otherwise, the symbol size will be proportional to the sample size in each each 
 
 
 <dt>hlt</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> name of the variable
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> name of the variable
 with high level term for events.</p></dd>
 
 
 <dt>id_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object specifying
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object specifying
 the variable name for subject id.</p></dd>
 
 
@@ -206,12 +196,12 @@ needed, the default option is <code>FALSE</code>.</p></dd>
 
 
 <dt>llt</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> name of the variable
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> name of the variable
 with low level term for events.</p></dd>
 
 
 <dt>paramcd</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with all
 available choices and preselected option for the parameter code variable from <code>dataname</code>.</p></dd>
 
 
@@ -244,17 +234,17 @@ For example a title.</p></dd>
 
 
 <dt>strata_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> names of
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> names of
 the variables for stratified analysis.</p></dd>
 
 
 <dt>summarize_vars</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> names of
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> names of
 the variables that should be summarized.</p></dd>
 
 
 <dt>subgroup_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
 all available choices and preselected option for variable names that can be used as the default subgroups.</p></dd>
 
 
@@ -264,17 +254,17 @@ points that can be used in <code><a href="https://rdrr.io/pkg/tern/man/survival_
 
 
 <dt>time_unit_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object
 with all available choices and pre-selected option for the time unit variable.</p></dd>
 
 
 <dt>treatment_flag</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> value
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> value
 indicating on treatment records in <code>treatment_flag_var</code>.</p></dd>
 
 
 <dt>treatment_flag_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> on
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> on
 treatment flag variable.</p></dd>
 
 
@@ -283,18 +273,18 @@ treatment flag variable.</p></dd>
 
 
 <dt>visit_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object with
 all available choices and preselected option for variable names that can be used as <code>visit</code> variable.
 Must be a factor in <code>dataname</code>.</p></dd>
 
 
 <dt>worst_flag_indicator</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br>
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br>
 value indicating worst grade.</p></dd>
 
 
 <dt>worst_flag_var</dt>
-<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object
+<dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> object
 with all available choices and preselected option for variable names that can be used as worst flag variable.</p></dd>
 
 </dl></div>
