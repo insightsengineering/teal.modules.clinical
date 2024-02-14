@@ -120,8 +120,8 @@ NULL
 #'   with delayed [teal.transform::variable_choices()] or delayed [teal.transform::value_choices()]
 #'   with the elements named `ref` and `comp` that the defined the default
 #'   reference and comparison arms when the arm variable is changed.
-#' @param arm_var (`choices_selected` or `data_extract_spec`)\cr object with all available choices
-#'   and preselected option for variable names that can be used as `arm_var`.
+#' @param arm_var ([`teal.transform::choices_selected()`] or [`teal.transform::data_extract_spec()`])\cr object with all
+#'   available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
@@ -189,8 +189,8 @@ NULL
 #'   the variables that should be summarized.
 #' @param subgroup_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as the default subgroups.
-#' @param time_points (`choices_selected`)\cr object with all available choices and preselected option for time
-#'   points that can be used in [tern::surv_timepoint()].
+#' @param time_points ([teal.transform::choices_selected()])\cr object with all available choices and preselected option
+#'   for time points that can be used in [tern::surv_timepoint()].
 #' @param time_unit_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
 #'   with all available choices and pre-selected option for the time unit variable.
 #' @param treatment_flag ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr value
