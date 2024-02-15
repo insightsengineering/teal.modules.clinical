@@ -71,7 +71,8 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::select(-c(aval_var, anrind))
 
         labor_table_raw <- labor_table_base %>%
-          reshape(
+          as.data.frame() %>%
+          stats::reshape(
             direction = "wide",
             idvar = c(paramcd_char, param_char, avalu_char),
             v.names = "aval_anrind",
@@ -91,7 +92,8 @@ template_laboratory <- function(dataname = "ANL",
         labor_table_html <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
           dplyr::select(-aval_anrind) %>%
-          reshape(
+          as.data.frame() %>%
+          stats::reshape(
             direction = "wide",
             idvar = c(paramcd_char, param_char, avalu_char),
             v.names = "aval_anrind_col",
