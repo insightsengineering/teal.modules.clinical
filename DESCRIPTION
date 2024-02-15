@@ -23,9 +23,9 @@ Description: Provides user-friendly tools for creating and customizing
     that allows for seamless adjustments to data presentation, thereby
     streamlining the creation of detailed and accurate reports.
 License: Apache License 2.0 | file LICENSE
-URL: https://insightsengineering.github.io/modules.clinical/,
-    https://github.com/insightsengineering/modules.clinical/
-BugReports: https://github.com/insightsengineering/modules.clinical/issues
+URL: https://insightsengineering.github.io/teal.modules.clinical/,
+    https://github.com/insightsengineering/teal.modules.clinical/
+BugReports: https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.0),
     teal (>= 0.15.0),
