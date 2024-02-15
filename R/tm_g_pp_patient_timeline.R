@@ -36,20 +36,19 @@ template_patient_timeline <- function(dataname = "ANL",
                                       ggplot2_args = teal.widgets::ggplot2_args()) {
   # Note: The variables used for aetime_start, aetime_end, dstime_start and dstime_end are to be
   # updated after random.cdisc.data updates.
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(aeterm) || is.null(aeterm),
-    assertthat::is.string(aetime_start) || is.null(aetime_start),
-    assertthat::is.string(aetime_end) || is.null(aetime_end),
-    assertthat::is.string(dstime_start) || is.null(dstime_start),
-    assertthat::is.string(dstime_end) || is.null(dstime_end),
-    assertthat::is.string(cmdecod) || is.null(cmdecod),
-    assertthat::is.string(aerelday_start) || is.null(aerelday_start),
-    assertthat::is.string(dsrelday_start) || is.null(dsrelday_start),
-    is.numeric(font_size),
-    is.logical(relative_day),
-    assertthat::is.string(patient_id)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(aeterm, null.ok = TRUE)
+  checkmate::assert_string(aetime_start, null.ok = TRUE)
+  checkmate::assert_string(aetime_end, null.ok = TRUE)
+  checkmate::assert_string(dstime_start, null.ok = TRUE)
+  checkmate::assert_string(dstime_end, null.ok = TRUE)
+  checkmate::assert_string(cmdecod, null.ok = TRUE)
+  checkmate::assert_string(aerelday_start, null.ok = TRUE)
+  checkmate::assert_string(dsrelday_start, null.ok = TRUE)
+  checkmate::assert_number(font_size)
+  checkmate::assert_flag(relative_day)
+  checkmate::assert_string(patient_id)
 
   chart_list <- list()
   if (!relative_day) {
@@ -473,14 +472,29 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-  assertthat::assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
-  assertthat::assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
-  assertthat::assert_that(!xor(is.null(aerelday_start), is.null(aerelday_end)))
-  assertthat::assert_that(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
-  assertthat::assert_that(
-    (!is.null(aeterm) && (!is.null(aetime_start) || !is.null(aerelday_start))) ||
-      (!is.null(cmdecod) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
-  )
+
+  xor_error_string <- function(x, y) {
+    paste(
+      "Assertion on `", x, "` and `", y, "` failed:",
+      "Both `", x, "` and `", y, "` needs to be provided or both need to be `NULL`."
+    )
+  }
+
+  if (xor(is.null(aetime_start), is.null(aetime_end))) stop(xor_error_string("aetime_start", "aetime_end"))
+  if (xor(is.null(dstime_start), is.null(dstime_end))) stop(xor_error_string("dstime_start", "dstime_end"))
+  if (xor(is.null(aerelday_start), is.null(aerelday_end))) stop(xor_error_string("aerelday_start", "aerelday_end"))
+  if (xor(is.null(dsrelday_start), is.null(dsrelday_end))) stop(xor_error_string("dsrelday_start", "dsrelday_end"))
+
+  if (is.null(aeterm) && is.null(cmdecod)) {
+    stop("At least one of 'aeterm' or 'cmdecod' needs to be provided.")
+  }
+  if (!is.null(aeterm) && (is.null(aetime_start) || is.null(aerelday_start))) {
+    stop("If 'aeterm' is provided, then one of 'aetime_start' and 'aerelday_start' must not be empty.")
+  }
+  if (!is.null(cmdecod) && (is.null(dstime_start) || is.null(dsrelday_start))) {
+    stop("If 'cmdecod' is provided, then one of 'dstime_start' and 'dsrelday_start' must not be empty.")
+  }
+
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")

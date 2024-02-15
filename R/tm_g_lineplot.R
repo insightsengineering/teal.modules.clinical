@@ -39,16 +39,15 @@ template_g_lineplot <- function(dataname = "ANL",
                                 title = "Line Plot",
                                 y_lab = "",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(strata),
-    assertthat::is.string(x),
-    assertthat::is.string(y),
-    assertthat::is.string(y_unit),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(title),
-    assertthat::is.string(y_lab)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(strata)
+  checkmate::assert_string(x)
+  checkmate::assert_string(y)
+  checkmate::assert_string(y_unit)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(title)
+  checkmate::assert_string(y_lab)
+
   z <- list()
 
   data_list <- list()

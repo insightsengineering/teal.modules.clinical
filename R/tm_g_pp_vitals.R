@@ -29,14 +29,12 @@ template_vitals <- function(dataname = "ANL",
     )
   }
 
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(xaxis),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(patient_id),
-    is.numeric(font_size)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(xaxis)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(patient_id)
+  checkmate::assert_number(font_size)
 
   # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
   y <- list()

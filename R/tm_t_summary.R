@@ -27,23 +27,22 @@ template_summary <- function(dataname,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    is.character(sum_vars),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    is.character(var_labels),
-    assertthat::is.flag(na.rm),
-    assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_character(sum_vars)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_character(var_labels)
+  checkmate::assert_flag(na.rm)
+  checkmate::assert_string(na_level)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
     numeric_stats,
     c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
   )
+
   denominator <- match.arg(denominator)
   show_labels <- match.arg(show_labels)
 

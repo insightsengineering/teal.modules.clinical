@@ -65,10 +65,17 @@ app <- teal::init(
   modules = list(
     tm_g_barchart_simple(
       label = "ADAE Analysis", 
-      x = teal.transform::data_extract_spec(
+      x = data_extract_spec(
         dataname = "ADAE",
-        select = teal.transform::select_spec(
-          choices = teal.transform::variable_choices(ADAE),
+        select = select_spec(
+          choices = variable_choices(
+            ADAE,
+            c(
+              "ARM", "ACTARM", "SEX",
+              "RACE", "SAFFL", "STRATA2"
+            )
+          ),
+          selected = "ACTARM",
           multiple = FALSE
         )
       )
@@ -78,6 +85,7 @@ app <- teal::init(
 
 if (interactive()) shiny::shinyApp(app$ui, app$server)
 ```
+Consider consulting the documentation and examples of each module (e.g. `?tm_g_barchart_simple`). In many, you can also find useful links to the  [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example apps can be found. 
 
 `teal.modules.clinical` exports modules and needs support from other libraries to run a `teal` app and flesh out its 
 functionality. In the example above, `tm_g_barchart_simple()` is the only function from `teal.modules.clinical` whereas 
@@ -121,9 +129,19 @@ app <- teal::init(
   modules = list(
     tm_g_barchart_simple(
       label = "ADAE Analysis", 
-      x = teal.transform::data_extract_spec(
+      x = data_extract_spec(
         dataname = "ADAE",
-        select = teal.transform::select_spec(choices = teal.transform::variable_choices(ADAE), multiple = FALSE)
+        select = select_spec(
+          choices = variable_choices(
+            ADAE,
+            c(
+              "ARM", "ACTARM", "SEX",
+              "RACE", "SAFFL", "STRATA2"
+            )
+          ),
+          selected = "ACTARM",
+          multiple = FALSE
+        )
       )
     )
   )
@@ -142,14 +160,14 @@ Some `teal.modules.clinical` modules allow for the specification of arguments us
 ```r
 ADSL <- tmc_ex_adsl
 
-app <- teal::init(
-  data = teal.data::cdisc_data(ADSL = ADSL, code = "ADSL <- tmc_ex_adsl"),
+app <- init(
+  data = cdisc_data(ADSL = ADSL, code = "ADSL <- tmc_ex_adsl"),
   modules = list(
     tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",
-      arm_var = teal.transform::choices_selected(choices = c("ARM", "ARMCD"), selected = "ARM"),
-      summarize_vars = teal.transform::choices_selected(
+      arm_var = choices_selected(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      summarize_vars = choices_selected(
         choices = c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
         selected = c("SEX", "RACE")
       )

@@ -34,23 +34,21 @@ template_abnormality <- function(parentname,
                                  na_level = default_na_str(),
                                  basic_table_args = teal.widgets::basic_table_args(),
                                  tbl_title) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(id_var),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    is.character(by_vars),
-    is.list(abnormal),
-    assertthat::is.string(grade),
-    assertthat::is.string(baseline_var),
-    assertthat::is.string(treatment_flag_var),
-    assertthat::is.string(treatment_flag),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.flag(exclude_base_abn),
-    assertthat::is.flag(drop_arm_levels),
-    assertthat::is.string(tbl_title)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::check_character(by_vars)
+  checkmate::check_list(abnormal)
+  checkmate::assert_string(grade)
+  checkmate::assert_string(baseline_var)
+  checkmate::assert_string(treatment_flag_var)
+  checkmate::assert_string(treatment_flag)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_flag(exclude_base_abn)
+  checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_string(tbl_title)
 
   y <- list()
 

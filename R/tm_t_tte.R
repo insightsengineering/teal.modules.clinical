@@ -65,19 +65,17 @@ template_tte <- function(dataname = "ANL",
                          total_label = default_total_label(),
                          na_level = default_na_str(),
                          basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(cnsr_var),
-    assertthat::is.string(time_unit_var),
-    assertthat::is.string(event_desc_var),
-    assertthat::is.flag(compare_arm),
-    assertthat::is.flag(combine_comp_arms),
-    assertthat::is.string(total_label),
-    assertthat::is.string(na_level)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(cnsr_var)
+  checkmate::assert_string(time_unit_var)
+  checkmate::assert_string(event_desc_var)
+  checkmate::assert_flag(compare_arm)
+  checkmate::assert_flag(combine_comp_arms)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
@@ -383,10 +381,10 @@ template_tte <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_tte
-#' @param conf_level_coxph ([choices_selected()])\cr object with all available choices and pre-selected option
-#'   for confidence level, each within range of (0, 1).
-#' @param conf_level_survfit ([choices_selected()])\cr object with all available choices and pre-selected option
-#'   for confidence level, each within range of (0, 1).
+#' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
+#'   pre-selected option for confidence level, each within range of (0, 1).
+#' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
+#'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
 #'   information, optional.
 #'

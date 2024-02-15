@@ -36,21 +36,19 @@ template_shift_by_arm <- function(dataname,
     )
   }
 
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(visit_var),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(baseline_var),
-    assertthat::is.flag(na.rm),
-    assertthat::is.string(na_level),
-    assertthat::is.string(treatment_flag_var),
-    assertthat::is.string(treatment_flag),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(visit_var)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(baseline_var)
+  checkmate::assert_flag(na.rm)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(treatment_flag_var)
+  checkmate::assert_string(treatment_flag)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
 
   y <- list()
 
