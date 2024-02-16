@@ -12,9 +12,9 @@ The teal modules add an encoding panel to interactively change the encodings wit
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://insightsengineering.github.io/modules.clinical/}
-  \item \url{https://github.com/insightsengineering/modules.clinical/}
-  \item Report bugs at \url{https://github.com/insightsengineering/modules.clinical/issues}
+  \item \url{https://insightsengineering.github.io/teal.modules.clinical/}
+  \item \url{https://github.com/insightsengineering/teal.modules.clinical/}
+  \item Report bugs at \url{https://github.com/insightsengineering/teal.modules.clinical/issues}
 }
 
 }
