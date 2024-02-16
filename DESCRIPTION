@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: Teal Modules for Standard Clinical Outputs
-Version: 0.8.16.9091
+Version: 0.8.16.9092
 Date: 2024-02-16
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
@@ -25,7 +25,8 @@ Description: Provides user-friendly tools for creating and customizing
 License: Apache License 2.0 | file LICENSE
 URL: https://insightsengineering.github.io/teal.modules.clinical/,
     https://github.com/insightsengineering/teal.modules.clinical/
-BugReports: https://github.com/insightsengineering/teal.modules.clinical/issues
+BugReports: 
+    https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.0),
     teal (>= 0.15.0),
