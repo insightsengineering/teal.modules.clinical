@@ -40,7 +40,7 @@ template_shift_by_arm <- function(dataname,
   checkmate::assert_string(parentname)
   checkmate::assert_string(arm_var)
   checkmate::assert_string(visit_var)
-  checkmate::assert_string(paramcd)
+  checkmate::assert_string(paramcd, na.ok = TRUE)
   checkmate::assert_string(aval_var)
   checkmate::assert_string(baseline_var)
   checkmate::assert_flag(na.rm)
