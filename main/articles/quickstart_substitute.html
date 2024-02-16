@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9087</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9091</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,16 +52,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -99,7 +89,7 @@ Collin</h4>
             
             <h4 data-toc-skip class="date">29.10.2020</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/modules.clinical/blob/HEAD/vignettes/quickstart_substitute.Rmd" class="external-link"><code>vignettes/quickstart_substitute.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/vignettes/quickstart_substitute.Rmd" class="external-link"><code>vignettes/quickstart_substitute.Rmd</code></a></small>
       <div class="d-none name"><code>quickstart_substitute.Rmd</code></div>
     </div>
 
@@ -515,8 +505,8 @@ function, this way the <code>rtables</code> pipelines are
 <li>The same results as before are obtained …</li>
 <li>while, fine tuning is easier.</li>
 <li>For instance, the variable designating the study arm and the visit
-can be changed, which is an expected feature in teal module encoding
-panel.</li>
+can be changed, which is an expected feature in <code>teal</code> module
+encoding panel.</li>
 </ul>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">rtables_expr</span><span class="op">(</span>df <span class="op">=</span> <span class="va">adlb_f</span>, arm <span class="op">=</span> <span class="st">"ARMCD"</span>, visit <span class="op">=</span> <span class="st">"AVISITN"</span><span class="op">)</span></span>
@@ -581,8 +571,8 @@ have <strong>conditional</strong> editing of expressions.</li>
 <code>analyze</code> call handle <code>.stats</code> option. The lean
 expression should include the <code>.stats</code> option, <strong>only
 when the default value is changed</strong>.</li>
-<li>This is again an expected feature in teal module when rendering the
-code with <code>Show R Code</code>:</li>
+<li>This is again an expected feature in <code>teal</code> module when
+rendering the code with <code>Show R Code</code>:</li>
 </ul>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rtables_expr</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>,</span>

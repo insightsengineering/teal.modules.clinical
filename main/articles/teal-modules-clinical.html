@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9087</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9091</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,16 +52,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -97,9 +87,9 @@
                         <h4 data-toc-skip class="author">NEST CoreDev
 Team</h4>
             
-            <h4 data-toc-skip class="date">2024-02-15</h4>
+            <h4 data-toc-skip class="date">2024-02-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/modules.clinical/blob/HEAD/vignettes/teal-modules-clinical.Rmd" class="external-link"><code>vignettes/teal-modules-clinical.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/vignettes/teal-modules-clinical.Rmd" class="external-link"><code>vignettes/teal-modules-clinical.Rmd</code></a></small>
       <div class="d-none name"><code>teal-modules-clinical.Rmd</code></div>
     </div>
 
@@ -117,8 +107,8 @@ package are tailored towards data of this type.</p>
 <p>The concepts presented here require knowledge about the core features
 of <code>teal</code>, specifically on how to launch a <code>teal</code>
 application and how to pass data into it. Therefore, it is highly
-recommended to refer to the <a href="https://insightsengineering.github.io/teal/index.html" class="external-link">home
-page</a> and <a href="https://insightsengineering.github.io/teal/articles/teal.html" class="external-link">introductory
+recommended to refer to the <a href="https://insightsengineering.github.io/teal/latest-tag/" class="external-link">home
+page</a> and <a href="https://insightsengineering.github.io/teal/latest-tag/articles/getting-started-with-teal.html" class="external-link">introductory
 vignette</a> of the <code>teal</code> package.</p>
 </div>
 <div class="section level3">
@@ -157,7 +147,7 @@ for clinical statisticians and physicians who want to review data on a
 per patient basis. The modules present data about patient’s adverse
 events, their severity, the current therapy, their laboratory results
 and more.</p>
-<p>See the full index of package functions &amp; modules <a href="https://insightsengineering.github.io/teal.modules.clinical/reference/index.html">here</a>.</p>
+<p>See the full index of package functions &amp; modules <a href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag/reference/index.html">here</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="a-simple-application">A Simple Application<a class="anchor" aria-label="anchor" href="#a-simple-application"></a>
@@ -167,7 +157,7 @@ inside a <code>shiny</code>/<code>teal</code> application to interact
 with it. A simple application including a bar chart module could look
 like this:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/modules.clinical/" class="external-link">teal.modules.clinical</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/teal.modules.clinical/">teal.modules.clinical</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/nestcolor/" class="external-link">nestcolor</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span>
@@ -184,7 +174,7 @@ like this:</p>
 <span>  <span class="op">)</span>,</span>
 <span>  modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="../reference/tm_g_barchart_simple.html">tm_g_barchart_simple</a></span><span class="op">(</span></span>
-<span>      label <span class="op">=</span> <span class="st">"ADAE Analysis"</span>, </span>
+<span>      label <span class="op">=</span> <span class="st">"ADAE Analysis"</span>,</span>
 <span>      x <span class="op">=</span> <span class="fu">data_extract_spec</span><span class="op">(</span></span>
 <span>        dataname <span class="op">=</span> <span class="st">"ADAE"</span>,</span>
 <span>        select <span class="op">=</span> <span class="fu">select_spec</span><span class="op">(</span></span>
@@ -219,7 +209,7 @@ functions, and <code><a href="https://insightsengineering.github.io/teal.data/la
 function.</p>
 <p>Let’s break the above app down into pieces:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/modules.clinical/" class="external-link">teal.modules.clinical</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/teal.modules.clinical/">teal.modules.clinical</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/nestcolor/" class="external-link">nestcolor</a></span><span class="op">)</span></span></code></pre></div>
 <p>The above lines load the libraries used in this example. We will use
 the example data provided in the <code>teal.modules.clinical</code>
@@ -250,7 +240,7 @@ include only one module: <code><a href="../reference/tm_g_barchart_simple.html">
 <span>  <span class="op">)</span>,</span>
 <span>  modules <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="../reference/tm_g_barchart_simple.html">tm_g_barchart_simple</a></span><span class="op">(</span></span>
-<span>      label <span class="op">=</span> <span class="st">"ADAE Analysis"</span>, </span>
+<span>      label <span class="op">=</span> <span class="st">"ADAE Analysis"</span>,</span>
 <span>      x <span class="op">=</span> <span class="fu">data_extract_spec</span><span class="op">(</span></span>
 <span>        dataname <span class="op">=</span> <span class="st">"ADAE"</span>,</span>
 <span>        select <span class="op">=</span> <span class="fu">select_spec</span><span class="op">(</span></span>
@@ -294,7 +284,7 @@ specification of arguments using
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">app</span><span class="op">$</span><span class="va">ui</span>, <span class="va">app</span><span class="op">$</span><span class="va">server</span><span class="op">)</span></span></code></pre></div>
-<p>Please refer to the <a href="https://insightsengineering.github.io/teal.modules.clinical/reference/index.html">API
+<p>Please refer to the <a href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag/reference/">API
 reference</a> of specific modules for more examples and information on
 the customization options available.</p>
 </div>
