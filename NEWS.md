@@ -1,7 +1,7 @@
-# teal.modules.clinical 0.8.16.9092
+# teal.modules.clinical 0.9.0
 
 ### Breaking Changes
-+ Adapted all modules to use `teal_data` objects.
+* Adapted all modules to use `teal_data` objects.
 
 ### Enhancements
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
@@ -22,7 +22,7 @@
 * Replaced usage of deprecated `summarize_vars` function with `analyze_vars`.
 * Reduced package dependencies (removed `tidyr`, `rlang`, `magrittr` and `styler`).
 
-# teal.modules.clinical 0.8.16.9010
+# teal.modules.clinical 0.8.16
 
 ### Enhancements
 * Added more informative error message when grade mapping error occurs in `tm_t_abnormality_by_worst_grade`.
