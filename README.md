@@ -56,14 +56,23 @@ Please see the [Teal Gallery](https://insightsengineering.github.io/teal.gallery
 
 ## Installation
 
-As of July 2023, all `insightsengineering` packages are available on [r-universe](https://r-universe.dev/).
-
 ```r
 # stable versions
-install.packages('teal.modules.clinical', repos = c('https://insightsengineering.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('teal.modules.clinical')
 
+# install.packages("pak")
+pak::pak("insightsengineering/teal.modules.clinical@*release")
+```
+
+Alternatively, you might want to use the development version available on [r-universe](https://r-universe.dev/).
+
+```r
 # beta versions
-install.packages('teal.modules.clinical', repos = c('https://pharmaverse.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('teal.modules.clinical', repos = c('https://pharmaverse.r-universe.dev', getOption('repos')))
+
+# install.packages("pak")
+pak::pak("insightsengineering/teal.modules.clinical")
+```
 ```
 
 See package vignettes (`browseVignettes(package = "teal.modules.clinical")`) for usage of this package.
