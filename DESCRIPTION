@@ -1,5 +1,5 @@
 Package: teal.modules.clinical
-Title: Teal Modules for Standard Clinical Outputs
+Title: 'teal' Modules for Standard Clinical Outputs
 Version: 0.8.16.9093
 Date: 2024-02-18
 Authors@R: c(
@@ -18,7 +18,7 @@ Authors@R: c(
     person("F. Hoffmann-La Roche AG", role = c("cph", "fnd"))
   )
 Description: Provides user-friendly tools for creating and customizing
-    clinical trial reports. By leveraging the `teal` framework, this
+    clinical trial reports. By leveraging the 'teal' framework, this
     package provides teal modules to easily create an interactive panel
     that allows for seamless adjustments to data presentation, thereby
     streamlining the creation of detailed and accurate reports.
