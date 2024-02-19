@@ -1,6 +1,11 @@
 # teal.modules.clinical
 
 <!-- start badges -->
+[![CRAN Version](https://www.r-pkg.org/badges/version/teal.modules.clinical?color=green)](https://cran.r-project.org/package=teal.modules.clinical)
+[![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/teal.modules.clinical?color=green)](https://cran.r-project.org/package=teal.modules.clinical)
+[![Last Month Downloads](http://cranlogs.r-pkg.org/badges/last-month/teal.modules.clinical?color=green)](https://cran.r-project.org/package=teal.modules.clinical)
+[![Last Week Downloads](http://cranlogs.r-pkg.org/badges/last-week/teal.modules.clinical?color=green)](https://cran.r-project.org/package=teal.modules.clinical)
+
 [![Check 🛠](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/check.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/main/unit-test-report/) [![Docs 📚](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/)
 
 ![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.clinical?style=social)
