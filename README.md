@@ -68,6 +68,10 @@ install.packages('teal.modules.clinical', repos = c('https://pharmaverse.r-unive
 
 See package vignettes (`browseVignettes(package = "teal.modules.clinical")`) for usage of this package.
 
+## Getting help
+
+If you encounter a bug or have a feature request, please file an issue. For questions, discussions, and staying up to date, please use the `teal` channel in the [`pharmaverse` slack workspace](https://pharmaverse.slack.com).
+
 ## Acknowledgment
 
 This package is the result of the joint efforts of many developers and stakeholders. We would like to thank everyone who has contributed so far!
