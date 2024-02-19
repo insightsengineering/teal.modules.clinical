@@ -365,7 +365,7 @@ eval(result)
 * The same results as before are obtained ...
 * while, fine tuning is easier.
 * For instance, the variable designating the study arm and the visit can be
-  changed, which is an expected feature in teal module encoding panel.
+  changed, which is an expected feature in `teal` module encoding panel.
 
 ```{r}
 result <- rtables_expr(df = adlb_f, arm = "ARMCD", visit = "AVISITN")
@@ -412,7 +412,7 @@ result
 * In the context of `rtables`, layers enclosing `analyze` call handle `.stats`
   option. The lean expression should include the `.stats` option,
   **only when the default value is changed**.
-* This is again an expected feature in teal module when rendering the code with
+* This is again an expected feature in `teal` module when rendering the code with
   `Show R Code`:
 
 ```{r}
