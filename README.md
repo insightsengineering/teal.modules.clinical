@@ -73,9 +73,10 @@ install.packages('teal.modules.clinical', repos = c('https://pharmaverse.r-unive
 # install.packages("pak")
 pak::pak("insightsengineering/teal.modules.clinical")
 ```
-```
 
-See package vignettes (`browseVignettes(package = "teal.modules.clinical")`) for usage of this package.
+## Usage
+
+To understand how to use this package, please refer to the [Package Website](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/).
 
 ## Getting help
 
