@@ -455,7 +455,7 @@ template_coxreg_m <- function(dataname,
 #' datanames(data) <- datanames
 #' join_keys(data) <- default_cdisc_join_keys[datanames]
 #'
-#' ## Teal application
+#' ## `teal` application
 #' ## ----------------
 #' ## Note that the R code exported by `Show R Code` does not include the data
 #' ## pre-processing. You will need to create the dataset as above before

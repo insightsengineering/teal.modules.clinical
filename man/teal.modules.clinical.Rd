@@ -4,7 +4,7 @@
 \name{teal.modules.clinical}
 \alias{teal.modules.clinical-package}
 \alias{teal.modules.clinical}
-\title{Teal Modules for Standard Clinical Outputs}
+\title{\code{teal} Modules for Standard Clinical Outputs}
 \description{
 Provides teal modules for the standard clinical trials outputs.
 The teal modules add an encoding panel to interactively change the encodings within teal.
