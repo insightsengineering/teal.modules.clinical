@@ -1,0 +1,21 @@
+{
+  "name": "cypress-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run-app": "APP_NAME=$npm_config_app_name PKG_NAME=$npm_config_pkg_name Rscript -e \"interactive <- function() TRUE; options(shiny.port=3333);print(Sys.getenv('APP_NAME')); example(Sys.getenv('APP_NAME'), Sys.getenv('PKG_NAME'), character.only = TRUE)\"",
+    "run-cypress": "cypress run --project .",
+    "open-cypress": "cypress open --project .",
+    "test-e2e": "start-server-and-test run-app http://localhost:3333 run-cypress",
+    "test-e2e-interactive": "start-server-and-test run-app http://localhost:3333 open-cypress"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.6.1",
+    "cypress-visual-regression": "^3.0.0",
+    "start-server-and-test": "^2.0.3"
+  }
+}
