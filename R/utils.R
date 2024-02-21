@@ -5,7 +5,7 @@
 #' @param args arguments to concatenate with operator
 #' @param bin_op binary operator to concatenate it with
 #'
-#' @return a call
+#' @return a `call`
 #'
 #' @examples
 #' library(ggplot2)
@@ -109,7 +109,7 @@ h_concat_expr <- function(expr) {
 #'   pipeline (`%>%`).
 #' @param pipe_str (`character`)\cr the character which separates the expressions.
 #'
-#' @return a call
+#' @return a `call`
 #'
 #' @examples
 #' pipe_expr(
@@ -384,7 +384,7 @@ is.cs_or_des <- function(x) { # nolint
 #' @param ref (`character`)\cr the reference level (not used for `combine = TRUE`).
 #' @param arm_var (`character`)\cr the arm or grouping variable name.
 #'
-#' @return a call
+#' @return a `call`
 #'
 #' @examples
 #' split_col_expr(
@@ -535,7 +535,7 @@ split_interactions <- function(x, by = "\\*|:") {
 #' @param ref_arm_val (`character`)\cr replacement name for the reference level.
 #' @param drop (`logical`)\cr drop the unused variable levels.
 #'
-#' @return a call
+#' @return a `call`
 #'
 #' @examples
 #' prepare_arm(

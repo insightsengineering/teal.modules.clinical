@@ -16,7 +16,7 @@ split_col_expr(compare, combine, ref, arm_var)
 \item{arm_var}{(\code{character})\cr the arm or grouping variable name.}
 }
 \value{
-a call
+a \code{call}
 }
 \description{
 Renders the expression for column split in \code{rtables} depending on:

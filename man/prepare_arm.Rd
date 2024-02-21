@@ -30,7 +30,7 @@ prepare_arm(
 \item{drop}{(\code{logical})\cr drop the unused variable levels.}
 }
 \value{
-a call
+a \code{call}
 }
 \description{
 The function generate the standard expression for pre-processing of dataset
