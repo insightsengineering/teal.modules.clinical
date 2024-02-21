@@ -15,10 +15,22 @@ split_col_expr(compare, combine, ref, arm_var)
 
 \item{arm_var}{(\code{character})\cr the arm or grouping variable name.}
 }
+\value{
+a call
+}
 \description{
 Renders the expression for column split in \code{rtables} depending on:
 \itemize{
 \item the expected or not arm comparison
 \item the expected or not arm combination
 }
+}
+\examples{
+split_col_expr(
+  compare = TRUE,
+  combine = FALSE,
+  ref = "ARM A",
+  arm_var = "ARMCD"
+)
+
 }

@@ -12,6 +12,9 @@ pipeline (\verb{\%>\%}).}
 
 \item{pipe_str}{(\code{character})\cr the character which separates the expressions.}
 }
+\value{
+a call
+}
 \description{
 Concatenate expressions in a single pipeline-flavor expression.
 }

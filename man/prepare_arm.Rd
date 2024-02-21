@@ -29,6 +29,9 @@ prepare_arm(
 
 \item{drop}{(\code{logical})\cr drop the unused variable levels.}
 }
+\value{
+a call
+}
 \description{
 The function generate the standard expression for pre-processing of dataset
 in teal module applications. This is especially of interest when the same
