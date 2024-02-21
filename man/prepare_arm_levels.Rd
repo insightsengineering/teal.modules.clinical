@@ -18,6 +18,9 @@ set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var
 \code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
 user input for this parameter is ignored.}
 }
+\value{
+a \verb{\{} object. See \code{\link[base:Paren]{base::Paren()}} for details.
+}
 \description{
 This function generates the standard expression for pre-processing of dataset
 arm levels in and is used to apply the same steps in safety teal modules.
