@@ -574,13 +574,13 @@ ui_g_patient_timeline <- function(id, ...) {
       ),
       teal.transform::data_extract_ui(
         id = ns("cmdecod"),
-        label = "Select CMDECOD variable:",
+        label = "Select Medication standardized term variable:",
         data_extract_spec = ui_args$cmdecod,
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
         id = ns("aeterm"),
-        label = "Select AETERM variable:",
+        label = "Select AE reported term variable:",
         data_extract_spec = ui_args$aeterm,
         is_single_dataset = is_single_dataset_value
       ),
@@ -746,7 +746,7 @@ srv_g_patient_timeline <- function(id,
     rule_one_parameter <- function(other) {
       function(value) {
         if (length(value) == 0L && length(selector_list()[[other]]()$select) == 0L) {
-          "At least one parameter must be selected."
+          "At least one term variable must be selected."
         }
       }
     }
