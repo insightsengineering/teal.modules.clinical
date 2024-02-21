@@ -5,7 +5,7 @@
 #' @param args arguments to concatenate with operator
 #' @param bin_op binary operator to concatenate it with
 #'
-#' @export
+#' @return a call
 #'
 #' @examples
 #' library(ggplot2)
@@ -30,6 +30,7 @@
 #'   )
 #' )
 #'
+#' @export
 call_concatenate <- function(args, bin_op = "+") {
   checkmate::assert_string(bin_op)
   checkmate::assert_list(args, types = c("symbol", "name", "call", "expression"))
@@ -57,7 +58,7 @@ count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars 
 #' @param dataname (`character`)\cr name of the dataset
 #' @param vars (`character`)\cr Column names in the data
 #'
-#' @return  `character` variable labels.
+#' @return `character` variable labels.
 #'
 #' @export
 get_var_labels <- function(datasets, dataname, vars) {
@@ -108,7 +109,7 @@ h_concat_expr <- function(expr) {
 #'   pipeline (`%>%`).
 #' @param pipe_str (`character`)\cr the character which separates the expressions.
 #'
-#' @export
+#' @return a call
 #'
 #' @examples
 #' pipe_expr(
@@ -118,6 +119,7 @@ h_concat_expr <- function(expr) {
 #'   )
 #' )
 #'
+#' @export
 pipe_expr <- function(exprs, pipe_str = "%>%") {
   exprs <- lapply(exprs, h_concat_expr)
   exprs <- unlist(exprs)
@@ -186,7 +188,7 @@ add_expr <- function(expr_ls, new_expr) {
 #' @param exprs (`list` of `call`)\cr expressions to concatenate into
 #'   a single _bracketed_ expression.
 #'
-#' @export
+#' @return a `{` object. See [base::Paren()] for details.
 #'
 #' @examples
 #' adsl <- tmc_ex_adsl
@@ -207,6 +209,8 @@ add_expr <- function(expr_ls, new_expr) {
 #' res <- bracket_expr(list(expr1, expr2, expr3))
 #' eval(res)
 #' table(anl$rsp_lab, anl$is_rsp)
+#'
+#' @export
 bracket_expr <- function(exprs) {
   expr <- lapply(exprs, deparse)
 
@@ -380,6 +384,16 @@ is.cs_or_des <- function(x) { # nolint
 #' @param ref (`character`)\cr the reference level (not used for `combine = TRUE`).
 #' @param arm_var (`character`)\cr the arm or grouping variable name.
 #'
+#' @return a call
+#'
+#' @examples
+#' split_col_expr(
+#'   compare = TRUE,
+#'   combine = FALSE,
+#'   ref = "ARM A",
+#'   arm_var = "ARMCD"
+#' )
+#'
 #' @export
 split_col_expr <- function(compare, combine, ref, arm_var) {
   if (compare && combine) {
@@ -418,8 +432,14 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #' @param x (`choices_selected`)\cr
 #'   object with interaction terms
 #'
-#' @export
 #' @note uses the regex `\\*|:` to perform the split.
+#'
+#' @return  a [choices_selected()] object.
+#'
+#' @examples
+#' split_choices(choices_selected(choices = c("x:y", "a*b"), selected = all_choices()))
+#'
+#' @export
 split_choices <- function(x) {
   checkmate::assert_class(x, "choices_selected")
   checkmate::assert_character(x$choices, min.len = 1)
@@ -434,8 +454,10 @@ split_choices <- function(x) {
 }
 
 #' Extracts html id for `data_extract_ui`
-#' @description The `data_extract_ui` is located under extended html id.
-#'   We could not use `ns("original id")` for reference, as it is extended with specific suffixes.
+#'
+#' The `data_extract_ui` is located under extended html id. We could not use `ns("original id")`
+#' for reference, as it is extended with specific suffixes.
+#'
 #' @param varname (`character`)\cr
 #'   the original html id.  This should be retrieved with `ns("original id")` in the UI function
 #'   or `session$ns("original id")`/"original id" in the server function.
@@ -444,6 +466,11 @@ split_choices <- function(x) {
 #'   This might be retrieved like `data_extract_spec(...)[[1]]$dataname`.
 #' @param filter optional, (`logical`)\cr
 #'   if the connected `extract_data_spec` has objects passed to its `filter` argument
+#'
+#' @return a string
+#'
+#' @examples
+#' extract_input("ARM", "ADSL")
 #'
 #' @export
 extract_input <- function(varname, dataname, filter = FALSE) {
@@ -462,6 +489,13 @@ extract_input <- function(varname, dataname, filter = FALSE) {
 #' @param by (`character`)\cr
 #'  regex with which to split the interaction
 #'  term by.
+#'
+#' @return a vector of strings where each element is a component
+#'   variable extracted from interaction term `x`.
+#'
+#' @examples
+#' split_interactions("x:y")
+#' split_interactions("x*y")
 #'
 #' @export
 split_interactions <- function(x, by = "\\*|:") {
@@ -501,7 +535,7 @@ split_interactions <- function(x, by = "\\*|:") {
 #' @param ref_arm_val (`character`)\cr replacement name for the reference level.
 #' @param drop (`logical`)\cr drop the unused variable levels.
 #'
-#' @export
+#' @return a call
 #'
 #' @examples
 #' prepare_arm(
@@ -518,6 +552,7 @@ split_interactions <- function(x, by = "\\*|:") {
 #'   comp_arm = "ARM A"
 #' )
 #'
+#' @export
 prepare_arm <- function(dataname,
                         arm_var,
                         ref_arm,
@@ -602,7 +637,8 @@ prepare_arm <- function(dataname,
 #'
 #' @inheritParams template_arguments
 #'
-#' @export
+#' @return a `{` object. See [base::Paren()] for details.
+#'
 #' @examples
 #' prepare_arm_levels(
 #'   dataname = "adae",
@@ -618,6 +654,7 @@ prepare_arm <- function(dataname,
 #'   drop_arm_levels = FALSE
 #' )
 #'
+#' @export
 prepare_arm_levels <- function(dataname,
                                parentname,
                                arm_var,
@@ -733,8 +770,13 @@ prepare_arm_levels <- function(dataname,
 #' @param default_color (`character`)\cr default color.
 #' @param icons (`list`)\cr certain icons per level.
 #'
-#' @export
+#' @return a character vector where each element is a formatted HTML tag corresponding to
+#'   a value in `x`.
 #'
+#' @examples
+#' color_lab_values(c("LOW", "LOW", "HIGH", "NORMAL", "HIGH"))
+#'
+#' @export
 color_lab_values <- function(x,
                              classes = c("HIGH", "NORMAL", "LOW"),
                              colors = list(HIGH = "red", NORMAL = "grey", LOW = "blue"),
@@ -771,8 +813,13 @@ color_lab_values <- function(x,
 #'
 #' @param x (`character`)\cr vector with categories descriptions.
 #'
-#' @export
+#' @return a string
 #'
+#' @examples
+#' clean_description("Level A (other text)")
+#' clean_description("A long string that should be shortened")
+#'
+#' @export
 clean_description <- function(x) {
   x <- gsub("\\(.*?\\)", "", x)
   x <- trimws(x)
