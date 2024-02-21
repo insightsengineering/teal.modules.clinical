@@ -22,7 +22,7 @@ as_num(str)
 \method{as_num}{logical}(str)
 }
 \arguments{
-\item{str}{\code{vector} to extract numeric from.}
+\item{str}{(\code{vector})\cr to extract numeric from.}
 }
 \value{
 As vector of numeric if directly parsed from \code{numeric} or boolean.
@@ -44,6 +44,5 @@ dta <- list(
   numeric   = c(1, -5e+2, NA),
   logical   = c(TRUE, FALSE, NA)
 )
-lapply(dta, teal.modules.clinical:::as_num)
+lapply(dta, as_num)
 }
-\keyword{internal}

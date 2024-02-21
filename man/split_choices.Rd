@@ -11,10 +11,17 @@ split_choices(x)
 \item{x}{(\code{choices_selected})\cr
 object with interaction terms}
 }
+\value{
+a \code{\link[=choices_selected]{choices_selected()}} object.
+}
 \description{
 Split \code{choices_selected} objects with interactions into
 their component variables
 }
 \note{
 uses the regex \verb{\\\\*|:} to perform the split.
+}
+\examples{
+split_choices(choices_selected(choices = c("x:y", "a*b"), selected = all_choices()))
+
 }

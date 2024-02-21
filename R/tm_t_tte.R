@@ -1,15 +1,15 @@
-#' Control Function for Time-to-Event Teal Module
+#' Control Function for Time-To-Event teal Module
 #'
-#' Controls the arguments for Cox regressions and Survival analysis results.
+#' Controls the arguments for Cox regression and survival analysis results.
 #'
-#' @param coxph (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_coxph()].
-#' @param surv_time (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_surv_time()].
-#' @param surv_timepoint (`list`)\cr
-#'   parameters for comparison, specified using [tern::control_surv_timepoint()].
+#' @param coxph (`list`)\cr control parameters for Cox-PH model. See [tern::control_coxph()] for details.
+#' @param surv_time (`list`)\cr control parameters for `survfit` model. See [tern::control_surv_time()] for details.
+#' @param surv_timepoint (`list`)\cr control parameters for `survfit` model at time point. See
+#'   [tern::control_surv_timepoint()] for details.
+#'
+#' @seealso [template_tte()], [tm_t_tte()]
+#'
 #' @keywords internal
-#'
 control_tte <- function(
     surv_time = list(
       conf_level = 0.95,
@@ -32,20 +32,20 @@ control_tte <- function(
   )
 }
 
-
-#' Template: Time-to-Event
+#' Template: Time-To-Event
 #'
-#' Creates a valid expression for time-to-event analysis.
+#' Creates a valid expression to generate a time-to-event analysis.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis,
-#'   see [control_tte()].
+#' @param control (`list`)\cr list of settings for the analysis. See [control_tte()] for details.
 #' @param event_desc_var (`character`)\cr name of the variable with events description.
 #' @param paramcd (`character`)\cr endpoint parameter value to use in the table title.
 #'
-#' @seealso [tm_t_tte()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [control_tte()], [tm_t_tte()]
+#'
+#' @keywords internal
 template_tte <- function(dataname = "ANL",
                          parentname = "ADSL",
                          arm_var = "ARM",
@@ -62,20 +62,20 @@ template_tte <- function(dataname = "ANL",
                          event_desc_var = "EVNTDESC",
                          control = control_tte(),
                          add_total = FALSE,
-                         total_label = "All Patients",
+                         total_label = default_total_label(),
+                         na_level = default_na_str(),
                          basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(cnsr_var),
-    assertthat::is.string(time_unit_var),
-    assertthat::is.string(event_desc_var),
-    assertthat::is.flag(compare_arm),
-    assertthat::is.flag(combine_comp_arms),
-    assertthat::is.string(total_label)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(cnsr_var)
+  checkmate::assert_string(time_unit_var)
+  checkmate::assert_string(event_desc_var)
+  checkmate::assert_flag(compare_arm)
+  checkmate::assert_flag(combine_comp_arms)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
@@ -115,12 +115,18 @@ template_tte <- function(dataname = "ANL",
     )
   )
 
-  data_list <- add_expr(data_list, quote(df_explicit_na()))
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = df_explicit_na(na_level = na_str),
+      env = list(na_str = na_level)
+    )
+  )
 
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na()
+      parentname <- arm_preparation %>% df_explicit_na(na_level = na_str)
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -132,7 +138,8 @@ template_tte <- function(dataname = "ANL",
         comp_arm = comp_arm,
         compare_arm = compare_arm,
         ref_arm_val = ref_arm_val
-      )
+      ),
+      na_str = na_level
     )
   )
 
@@ -201,10 +208,11 @@ template_tte <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = rtables::add_colcounts() %>%
-        summarize_vars(
+        analyze_vars(
           "is_event",
           .stats = "count_fraction",
-          .labels = c(count_fraction = "Patients with event (%)")
+          .labels = c(count_fraction = "Patients with event (%)"),
+          na_str = na_str
         ) %>%
         rtables::split_rows_by(
           "EVNT1",
@@ -215,16 +223,18 @@ template_tte <- function(dataname = "ANL",
           indent_mod = 1L,
         ) %>%
         rtables::split_rows_by(event_desc_var, split_fun = drop_split_levels) %>%
-        rtables::summarize_row_groups(format = "xx") %>%
-        summarize_vars(
+        rtables::summarize_row_groups(format = "xx", na_str = na_str) %>%
+        analyze_vars(
           "is_not_event",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Patients without event (%)"),
           nested = FALSE,
-          show_labels = "hidden"
+          show_labels = "hidden",
+          na_str = na_str
         ),
       env = list(
-        event_desc_var = event_desc_var
+        event_desc_var = event_desc_var,
+        na_str = na_level
       )
     )
   )
@@ -241,12 +251,14 @@ template_tte <- function(dataname = "ANL",
           conf_type = conf_type,
           quantiles = quantiles
         ),
+        na_str = na_str,
         table_names = "time_to_event"
       ),
       env = c(
         aval_var = aval_var,
         control$surv_time,
-        time_unit_var = as.name(time_unit_var)
+        time_unit_var = as.name(time_unit_var),
+        na_str = na_level
       )
     )
   )
@@ -264,11 +276,13 @@ template_tte <- function(dataname = "ANL",
             ties = ties,
             conf_level = conf_level
           ),
+          na_str = na_str,
           table_names = "unstratified"
         ),
         env = c(
           aval_var = aval_var,
-          control$coxph
+          control$coxph,
+          na_str = na_level
         )
       )
     )
@@ -288,6 +302,7 @@ template_tte <- function(dataname = "ANL",
             ties = ties,
             conf_level = conf_level
           ),
+          na_str = na_str,
           table_names = "stratified"
         ),
         env = list(
@@ -295,7 +310,8 @@ template_tte <- function(dataname = "ANL",
           strata_var = strata_var,
           pval_method = control$coxph$pval_method,
           ties = control$coxph$ties,
-          conf_level = control$coxph$conf_level
+          conf_level = control$coxph$conf_level,
+          na_str = na_level
         )
       )
     )
@@ -324,7 +340,8 @@ template_tte <- function(dataname = "ANL",
             conf_level = conf_level,
             conf_type = conf_type
           ),
-          .indent_mods = indents
+          .indent_mods = indents,
+          na_str = na_str
         ),
         env = list(
           aval_var = aval_var,
@@ -333,7 +350,8 @@ template_tte <- function(dataname = "ANL",
           indents = indents,
           time_unit_var = as.name(time_unit_var),
           conf_level = control$surv_timepoint$conf_level,
-          conf_type = control$surv_timepoint$conf_type
+          conf_type = control$surv_timepoint$conf_type,
+          na_str = na_level
         )
       )
     )
@@ -355,31 +373,33 @@ template_tte <- function(dataname = "ANL",
   y
 }
 
-
-#' Teal Module: Time To Event Table Teal Module
+#' teal Module: Time-To-Event Table
+#'
+#' This module produces a time-to-event analysis summary table, consistent with the TLG Catalog
+#' template for `TTET01` available [here](
+#' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/ttet01.html).
 #'
 #' @inheritParams module_arguments
-#' @param conf_level_coxph ([choices_selected()])\cr object with all available choices and pre-selected option
-#'   for confidence level, each within range of (0, 1).
-#' @param conf_level_survfit ([choices_selected()])\cr object with all available choices and pre-selected option
-#'   for confidence level, each within range of (0, 1).
+#' @inheritParams template_tte
+#' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
+#'   pre-selected option for confidence level, each within range of (0, 1).
+#' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
+#'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
 #'   information, optional.
 #'
-#' @details This module produces a response summary table that is similar to `TTET01`. The core functionality is based
-#'   on [coxph_pairwise()], [surv_timepoint()] and [surv_time()] from package `tern`.\cr
-#'   The following variables are used in the module:
+#' @details
+#' * The core functionality of this module is based on [coxph_pairwise()], [surv_timepoint()], and [surv_time()] from
+#' the `tern` package.
+#' * The arm and stratification variables are taken from the `parentname` data.
+#' * The following variables are used in the module:
 #'
-#' \tabular{ll}{
-#'  `AVAL` \tab time to event\cr
-#'  `CNSR` \tab boolean or 0,1 is element in `AVAL` censored\cr
-#'  `PARAMCD` \tab variable used to filter for endpoint (e.g. OS), after
-#'  filtering for `paramcd` one observation per patient is expected
-#' }
+#'   * `AVAL`: time to event
+#'   * `CNSR`: 1 if record in `AVAL` is censored, 0 otherwise
+#'   * `PARAMCD`: variable used to filter for endpoint (e.g. OS). After
+#'     filtering for `PARAMCD` one observation per patient is expected
 #'
-#' The arm and stratification variables and taken from the `parentname` data.
-#'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -435,6 +455,7 @@ template_tte <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_tte <- function(label,
                      dataname,
                      parentname = ifelse(
@@ -463,7 +484,8 @@ tm_t_tte <- function(label,
                      ),
                      event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
-                     total_label = "All Patients",
+                     total_label = default_total_label(),
+                     na_level = default_na_str(),
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args()) {
@@ -476,6 +498,7 @@ tm_t_tte <- function(label,
   checkmate::assert_class(conf_level_survfit, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -505,6 +528,7 @@ tm_t_tte <- function(label,
         arm_ref_comp = arm_ref_comp,
         label = label,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -512,7 +536,7 @@ tm_t_tte <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_tte <- function(id, ...) {
   a <- list(...) # module args
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -700,7 +724,7 @@ ui_t_tte <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_tte <- function(id,
                       data,
                       filter_panel_api,
@@ -718,6 +742,7 @@ srv_t_tte <- function(id,
                       add_total,
                       total_label,
                       label,
+                      na_level,
                       basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -904,6 +929,7 @@ srv_t_tte <- function(id,
         ),
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
 

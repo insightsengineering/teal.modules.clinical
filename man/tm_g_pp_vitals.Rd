@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_vitals.R
 \name{tm_g_pp_vitals}
 \alias{tm_g_pp_vitals}
-\title{Teal Module: Patient Profile Vitals Teal Module}
+\title{teal Module: Patient Profile Vitals Plot}
 \usage{
 tm_g_pp_vitals(
   label,
@@ -10,7 +10,8 @@ tm_g_pp_vitals(
   parentname = "ADSL",
   patient_col = "USUBJID",
   paramcd = NULL,
-  aval = NULL,
+  aval = lifecycle::deprecated(),
+  aval_var = NULL,
   xaxis = NULL,
   font_size = c(12L, 12L, 25L),
   plot_height = c(700L, 200L, 2000L),
@@ -21,55 +22,53 @@ tm_g_pp_vitals(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character})\cr patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{PARAMCD} column of the \code{ADVS} dataset.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AVAL} column of the \code{ADVS} dataset.}
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
-\item{xaxis}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-time variable to be represented in the vitals plot x-axis.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+\item{xaxis}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the time variable from \code{dataname} to be put on the plot x-axis.}
 
-\item{plot_height}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the height of
-the main plot and renders a slider on the plot to interactively adjust the plot
-height.}
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
-\item{plot_width}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the width of
-the main plot and renders a slider on the plot to interactively adjust the plot
-width.}
+\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+of the main plot and renders a slider on the plot to interactively adjust the plot width.}
+
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+}
+\value{
+a \code{teal_module} object.
 }
 \description{
-This teal module produces a patient profile vitals plot using \code{ADaM} datasets.
+This module produces a patient profile vitals \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type plot using ADaM datasets.
+}
+\details{
+This plot supports horizontal lines for the following 6 \code{PARAMCD} levels when they are present in \code{dataname}:
+\code{"SYSBP"}, \code{"DIABP"}, \code{"TEMP"}, \code{"RESP"}, \code{"OXYSAT"}.
 }
 \examples{
 library(nestcolor)
@@ -101,7 +100,7 @@ app <- init(
         choices = variable_choices(ADVS, "ADY"),
         selected = "ADY"
       ),
-      aval = choices_selected(
+      aval_var = choices_selected(
         choices = variable_choices(ADVS, "AVAL"),
         selected = "AVAL"
       )

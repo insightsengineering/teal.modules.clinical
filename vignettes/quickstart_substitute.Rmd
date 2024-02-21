@@ -31,8 +31,8 @@ Instead of focusing on the value, it is also possible to work with the **code**
 which generated the **value**. This is where non standard evaluation, or NSE,
 starts.
 The function `substitute` is an important element of non-standard evaluation.
-For instance, if we consider `a` defined such as `a <- 5`,
-then the expression `a` returns `r a <- 5; a`, the `substitute(a)` returns
+For instance, if we consider `a` defined as `a <- 5`,
+then the expression `a` returns `r a <- 5; a`, and the `substitute(a)` returns
 the code to obtain the value: `a`.
 
 This is the principle `teal` relies on to:
@@ -42,7 +42,7 @@ ii. return the result of the expression in the result panel of the app.
 iii. return the corresponding code (or expression) with `Show R Code`.
 
 The expression returning the displayed value must be reactive.
-The information in the encoding in one hand and the filtering panel on the
+The information in the encoding on one hand, and the filtering panel on the
 other hand modify the expression and the displayed value. As such, `teal` needs to
 work both on expressions and values and relies heavily on NSE.
 
@@ -204,7 +204,7 @@ provided and not the expression generating the dataframe:
 the pipeline is working but not humanly readable.
 
 ```{r}
-library(magrittr)
+library(dplyr)
 
 short_iris <- head(iris)
 plot_expr <- substitute(
@@ -265,7 +265,6 @@ The data can be prepared as follows:
 
 ```{r, message=FALSE}
 library(rtables)
-library(dplyr)
 library(tern)
 
 adlb <- teal.modules.clinical::tmc_ex_adlb
@@ -312,6 +311,7 @@ rtables_expr
 
 ```{r, message = FALSE}
 library(teal)
+library(styler)
 
 #' Stylish code
 #'
@@ -320,7 +320,7 @@ library(teal)
 #' @param expr (`call`)\cr or possibly understood as so.
 #'
 styled_expr <- function(expr) {
-  styler:::print.vertical(
+  print(
     styler::style_text(text = deparse(expr)),
     colored = FALSE
   )
@@ -365,7 +365,7 @@ eval(result)
 * The same results as before are obtained ...
 * while, fine tuning is easier.
 * For instance, the variable designating the study arm and the visit can be
-  changed, which is an expected feature in teal module encoding panel.
+  changed, which is an expected feature in `teal` module encoding panel.
 
 ```{r}
 result <- rtables_expr(df = adlb_f, arm = "ARMCD", visit = "AVISITN")
@@ -412,7 +412,7 @@ result
 * In the context of `rtables`, layers enclosing `analyze` call handle `.stats`
   option. The lean expression should include the `.stats` option,
   **only when the default value is changed**.
-* This is again an expected feature in teal module when rendering the code with
+* This is again an expected feature in `teal` module when rendering the code with
   `Show R Code`:
 
 ```{r}

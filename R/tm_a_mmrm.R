@@ -1,16 +1,20 @@
-#' Template: Mixed Model Repeated Measurements (`MMRM`) analysis
+#' Template: Mixed Model Repeated Measurements (MMRM) Analysis
+#'
+#' Creates a valid expression to generate analysis tables and plots for Mixed Model Repeated Measurements.
 #'
 #' @inheritParams template_arguments
-#' @param method a string specifying the adjustment method.
-#' @param cor_struct a string specifying the correlation structure, defaults to
-#'   `"unstructured"`. See the details.
+#' @param method (`string`)\cr a string specifying the adjustment method.
+#' @param cor_struct (`string`)\cr a string specifying the correlation structure, defaults to
+#'   `"unstructured"`. See [tern.mmrm::build_formula()] for more options.
 #' @param weights_emmeans argument from [emmeans::emmeans()], "proportional" by default.
-#' @param parallel flag that controls whether optimizer search can use available free cores on the
+#' @param parallel (`flag`)\cr flag that controls whether optimizer search can use available free cores on the
 #'   machine (not default).
 #'
-#' @seealso [tm_a_mmrm()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [tm_a_mmrm()]
+#'
+#' @keywords internal
 template_fit_mmrm <- function(parentname,
                               dataname,
                               aval_var,
@@ -96,8 +100,8 @@ template_fit_mmrm <- function(parentname,
       )
     )
   }
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = "")))
-  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = "")))
+  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = default_na_str())))
+  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = default_na_str())))
 
   y$data <- substitute(
     expr = {
@@ -150,14 +154,16 @@ template_fit_mmrm <- function(parentname,
   y
 }
 
-#' @describeIn template_fit_mmrm
+#' @describeIn template_fit_mmrm Creates valid expressions to generate MMRM LS means, covariance matrix,
+#'   fixed effects, and diagnostic tables.
 #'
 #' @inheritParams template_arguments
-#' @param fit_name name of fitted `MMRM` object
-#' @param show_relative should the "reduction" (`control - treatment`, default) or the "increase"
-#'   (`treatment - control`) be shown for the relative change from baseline
-#' @param table_type (`character`)\cr
-#'   type of table to output.
+#' @param fit_name (`string`)\cr name of fitted MMRM object.
+#' @param show_relative (`string`)\cr should the "reduction" (`control - treatment`, default) or the "increase"
+#'   (`treatment - control`) be shown for the relative change from baseline.
+#' @param table_type (`string`)\cr type of table to output.
+#'
+#' @keywords internal
 template_mmrm_tables <- function(parentname,
                                  dataname,
                                  fit_name,
@@ -167,7 +173,7 @@ template_mmrm_tables <- function(parentname,
                                  paramcd,
                                  show_relative = c("increase", "reduction", "none"),
                                  table_type = "t_mmrm_cov",
-                                 total_label = "All Patients",
+                                 total_label = default_total_label(),
                                  basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -263,7 +269,7 @@ template_mmrm_tables <- function(parentname,
         expr = {
           lsmeans_table <- rtables::build_table(
             lyt = lyt,
-            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = ""),
+            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
             alt_counts_df = parentname
           )
           lsmeans_table
@@ -317,12 +323,16 @@ template_mmrm_tables <- function(parentname,
   y
 }
 
-#' @describeIn template_fit_mmrm
+#' @describeIn template_fit_mmrm Creates valid expressions to generate MMRM LS means and
+#'   diagnostic plots.
 #'
 #' @inheritParams template_arguments
-#' @param lsmeans_plot a `list` of controls for LS means plot. See more [tern.mmrm::g_mmrm_lsmeans()]
-#' @param diagnostic_plot a `list` of controls for diagnostic_plot. See more [tern.mmrm::g_mmrm_diagnostic()]
+#' @param lsmeans_plot (named `list`)\cr a `list` of controls for LS means plot.
+#'   See more [tern.mmrm::g_mmrm_lsmeans()].
+#' @param diagnostic_plot (named `list`)\cr a `list` of controls for diagnostic_plot.
+#'   See more [tern.mmrm::g_mmrm_diagnostic()].
 #'
+#' @keywords internal
 template_mmrm_plots <- function(fit_name,
                                 lsmeans_plot = list(
                                   select = c("estimates", "contrasts"),
@@ -335,8 +345,6 @@ template_mmrm_plots <- function(fit_name,
                                 ),
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   y <- list()
-
-
 
   if (!is.null(lsmeans_plot)) {
     parsed_ggplot2_args <- teal.widgets::parse_ggplot2_args(
@@ -430,20 +438,20 @@ template_mmrm_plots <- function(fit_name,
   y
 }
 
-#' Teal Module: Teal module for Mixed Model Repeated Measurements (`MMRM`) analysis
+#' teal Module: Mixed Model Repeated Measurements (MMRM) Analysis
+#'
+#' This module produces analysis tables and plots for Mixed Model Repeated Measurements.
 #'
 #' @inheritParams module_arguments
-#' @param method (`choices_selected`)\cr
-#'   object with all available choices and preselected option for the adjustment method.
-#' @param ggplot2_args optional, (`ggplot2_args`) \cr
-#' object created by [`teal.widgets::ggplot2_args()`] with settings for all the plots or named list of `ggplot2_args`
-#' objects for plot-specific settings. List names should match the following:\cr `
-#' c("default", "lsmeans", "diagnostic")`.
-#' The argument is merged with option `teal.ggplot2_args` and with default module arguments
-#' (hard coded in the module body).\cr For more details, see the help vignette:\cr
-#' `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
-#'
-#' @export
+#' @inheritParams template_mmrm_tables
+#' @inheritParams template_mmrm_plots
+#' @param method ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#'   all available choices and pre-selected option for the adjustment method.
+#' @param ggplot2_args (`ggplot2_args`) \cr optional, object created by [`teal.widgets::ggplot2_args()`]
+#'   with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
+#'   List names should match the following: `c("default", "lsmeans", "diagnostic")`. The argument is merged
+#'   with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).
+#'   For more details, see the help vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
 #' @note
 #' The ordering of the input data sets can lead to slightly different numerical results or
@@ -451,7 +459,10 @@ template_mmrm_plots <- function(fit_name,
 #' `lme4`. However, once convergence is achieved, the results are reliable up to
 #' numerical precision.
 #'
+#' @inherit module_arguments return seealso
+#'
 #' @examples
+#' library(dplyr)
 #' arm_ref_comp <- list(
 #'   ARMCD = list(
 #'     ref = "ARM B",
@@ -463,9 +474,9 @@ template_mmrm_plots <- function(fit_name,
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
 #'   ADQS <- tmc_ex_adqs %>%
-#'     dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
-#'     dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
-#'     dplyr::mutate(
+#'     filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
+#'     filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
+#'     mutate(
 #'       AVISIT = as.factor(AVISIT),
 #'       AVISITN = rank(AVISITN) %>%
 #'         as.factor() %>%
@@ -500,6 +511,7 @@ template_mmrm_plots <- function(fit_name,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_a_mmrm <- function(label,
                       dataname,
                       parentname = ifelse(
@@ -522,7 +534,7 @@ tm_a_mmrm <- function(label,
                       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
-                      total_label = "All Patients",
+                      total_label = default_total_label(),
                       pre_output = NULL,
                       post_output = NULL,
                       basic_table_args = teal.widgets::basic_table_args(),
@@ -584,7 +596,7 @@ tm_a_mmrm <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_mmrm <- function(id, ...) {
   a <- list(...) # module args
   ns <- shiny::NS(id)
@@ -801,7 +813,7 @@ ui_mmrm <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_mmrm <- function(id,
                      data,
                      reporter,
@@ -899,7 +911,7 @@ srv_mmrm <- function(id,
     )
 
     # selector_list includes cov_var as it is needed for validation rules
-    # but it is not needed for the merge so it is removed here
+    # but not needed to merge so it is removed here
     selector_list_without_cov <- shiny::reactive({
       selector_list()[names(selector_list()) != "cov_var"]
     })
@@ -943,7 +955,7 @@ srv_mmrm <- function(id,
     show_plot_rv <- shiny::reactiveVal(FALSE)
 
     # this will store the current/last state of inputs and data that generated a model-fit
-    # its purpose is so that any input change can be checked whether it resulted in an out of sync state
+    # its purpose is to allow any input change to be checked whether it resulted in an out of sync state
     state <- shiny::reactiveValues(input = NULL, button_start = 0)
 
     # Note:

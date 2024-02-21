@@ -20,7 +20,7 @@ testthat::test_that("template_g_ipp works as expected with non-default arguments
     arm_var = "ARMCD",
     id_var = "SUBJID",
     visit_var = "AVISIT",
-    base_var = "BASE",
+    baseline_var = "BASE",
     add_baseline_hline = TRUE,
     separate_by_obs = TRUE,
     add_avalu = TRUE

@@ -1,48 +1,48 @@
 #' Template: Summary of Variables
 #'
-#' @param show_labels (`character`)\cr
-#'   defines whether the labels for `sum_vars` should display. For details see [rtables::analyze()].
-#' @param numeric_stats (`character`)\cr
-#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. All are selected by default.
+#' Creates a valid expression to generate a table to summarize variables.
+#'
 #' @inheritParams template_arguments
+#' @param show_labels (`character`)\cr defines whether variable labels should be displayed. Options are
+#'   `"default"`, `"visible"`, and `"hidden"`.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_summary()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_summary <- function(dataname,
                              parentname,
                              arm_var,
                              sum_vars,
                              show_labels = c("default", "visible", "hidden"),
                              add_total = TRUE,
-                             total_label = "All Patients",
+                             total_label = default_total_label(),
                              var_labels = character(),
                              na.rm = FALSE, # nolint
-                             na_level = "<Missing>",
+                             na_level = default_na_str(),
                              numeric_stats = c(
                                "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                              ),
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    is.character(sum_vars),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    is.character(var_labels),
-    assertthat::is.flag(na.rm),
-    assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_character(sum_vars)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_character(var_labels)
+  checkmate::assert_flag(na.rm)
+  checkmate::assert_string(na_level)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
     numeric_stats,
     c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
   )
+
   denominator <- match.arg(denominator)
   show_labels <- match.arg(show_labels)
 
@@ -55,11 +55,11 @@ template_summary <- function(dataname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_level),
+        df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_str),
       env = list(
         df = as.name(dataname),
         sum_vars = sum_vars,
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -77,8 +77,11 @@ template_summary <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(
+        parentname = as.name(parentname),
+        na_str = na_level
+      )
     )
   )
 
@@ -147,7 +150,7 @@ template_summary <- function(dataname,
     layout_list,
     if (length(var_labels) > 0) {
       substitute(
-        expr = summarize_vars(
+        expr = analyze_vars(
           vars = sum_vars,
           var_labels = sum_var_labels,
           show_labels = show_labels,
@@ -160,7 +163,7 @@ template_summary <- function(dataname,
       )
     } else {
       substitute(
-        expr = summarize_vars(
+        expr = analyze_vars(
           vars = sum_vars,
           show_labels = show_labels,
           na.rm = na.rm,
@@ -189,34 +192,19 @@ template_summary <- function(dataname,
   y
 }
 
-#' Teal Module: Summary of Variables
+#' teal Module: Summary of Variables
 #'
-#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
-#'   second variable will be nested under the first variable.
-#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
-#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
-#'   `arm_var` levels are set to those used in the `parentname` dataset.
-#'   If `dataname` dataset and `parentname` dataset are the same (i.e. `ADSL`), then `drop_arm_levels` will always be
-#'   TRUE regardless of the user choice when `tm_t_summary` is called.
-#' @param numeric_stats (`character`)\cr
-#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are
-#'   selected.
+#' This module produces a table to summarize variables.
+#'
 #' @inheritParams module_arguments
+#' @inheritParams template_summary
 #'
-#' @export
+#' @inherit module_arguments return seealso
+#'
 #' @examples
-#' # Preparation of the test case
+#' # Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.
 #' ADSL <- tmc_ex_adsl
 #' ADSL$EOSDY[1] <- NA_integer_
-#'
-#' # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
-#' stopifnot(
-#'   any(is.na(ADSL$EOSDY)),
-#'   any(is.na(ADSL$DCSREAS))
-#' )
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -224,10 +212,6 @@ template_summary <- function(dataname,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADSL$EOSDY[1] <- NA_integer_
-#'       stopifnot(
-#'         any(is.na(ADSL$EOSDY)),
-#'         any(is.na(ADSL$DCSREAS))
-#'       )
 #'     "
 #'   ),
 #'   modules = modules(
@@ -248,6 +232,7 @@ template_summary <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_summary <- function(label,
                          dataname,
                          parentname = ifelse(
@@ -258,9 +243,9 @@ tm_t_summary <- function(label,
                          arm_var,
                          summarize_vars,
                          add_total = TRUE,
-                         total_label = "All Patients",
+                         total_label = default_total_label(),
                          useNA = c("ifany", "no"), # nolint
-                         na_level = "<Missing>",
+                         na_level = default_na_str(),
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                          ),
@@ -313,7 +298,7 @@ tm_t_summary <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_summary <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -398,7 +383,7 @@ ui_summary <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_summary <- function(id,
                         data,
                         reporter,

@@ -1,43 +1,40 @@
-#' Adverse Events Table by Standardized `MedDRA` Query
+#' Template: Adverse Events Table by Standardized MedDRA Query
+#'
+#' Creates a valid expression to generate an adverse events table by Standardized MedDRA Query.
 #'
 #' @inheritParams template_arguments
-#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
-#'  by decreasing total number of patients with event. Alternative option `alpha` sorts events
-#'  alphabetically.
-#' @param smq_varlabel (`character`)\cr label of the new column `SMQ`
-#' created by [tern::h_stack_by_baskets()].
-#' @param baskets (`character`)\cr
-#' variable names of the selected Standardized/Customized queries
+#' @param smq_varlabel (`character`)\cr label to use for new column `SMQ` created by [tern::h_stack_by_baskets()].
+#' @param baskets (`character`)\cr names of the selected standardized/customized queries variables.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_smq()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_smq <- function(dataname,
                          parentname,
                          arm_var,
                          llt = "AEDECOD",
                          add_total = TRUE,
-                         total_label = "All Patients",
+                         total_label = default_total_label(),
                          sort_criteria = c("freq_desc", "alpha"),
                          drop_arm_levels = TRUE,
-                         na_level = "<Missing>",
+                         na_level = default_na_str(),
                          smq_varlabel = "Standardized MedDRA Query",
                          baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
                          id_var = "USUBJID",
                          basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(parentname),
-    assertthat::is.string(dataname),
-    is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    assertthat::is.string(id_var),
-    assertthat::is.string(llt),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.flag(drop_arm_levels),
-    assertthat::is.string(na_level),
-    assertthat::is.string(smq_varlabel),
-    is.character(baskets)
-  )
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(dataname)
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(llt)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(smq_varlabel)
+  checkmate::assert_character(baskets)
 
   sort_criteria <- match.arg(sort_criteria)
 
@@ -111,11 +108,11 @@ template_smq <- function(dataname,
     substitute(
       anl <- df_explicit_na(
         dataname,
-        na_level = na_level
+        na_level = na_str
       ),
       env = list(
         dataname = as.name("anl"),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -125,11 +122,11 @@ template_smq <- function(dataname,
     substitute(
       parentname <- df_explicit_na(
         parentname,
-        na_level = na_level
+        na_level = na_str
       ),
       env = list(
         parentname = as.name(parentname),
-        na_level = na_level
+        na_str = na_level
       )
     )
   )
@@ -305,17 +302,18 @@ template_smq <- function(dataname,
   y
 }
 
-#' Teal Module: `SMQ` Table
+#' teal Module: Adverse Events Table by Standardized MedDRA Query
 #'
-#' @description Adverse Events Table by Standardized `MedDRA` Query.
+#' This module produces an adverse events table by Standardized MedDRA Query.
+#'
 #' @inheritParams module_arguments
 #' @inheritParams template_smq
-#' @param baskets ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' object with all available choices and preselected options for Standardized/Customized queries
-#' @param scopes ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' object with all available choices for the scopes of Standardized queries.
+#' @param baskets ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices and preselected options for standardized/customized queries.
+#' @param scopes ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#'   available choices for the scopes of standardized queries.
 #'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' data <- teal_data()
@@ -366,6 +364,7 @@ template_smq <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_smq <- function(label,
                      dataname,
                      parentname = ifelse(
@@ -380,10 +379,10 @@ tm_t_smq <- function(label,
                      ),
                      llt,
                      add_total = TRUE,
-                     total_label = "All Patients",
+                     total_label = default_total_label(),
                      sort_criteria = c("freq_desc", "alpha"),
                      drop_arm_levels = TRUE,
-                     na_level = "<Missing>",
+                     na_level = default_na_str(),
                      smq_varlabel = "Standardized MedDRA Query",
                      baskets,
                      scopes,
@@ -435,7 +434,7 @@ tm_t_smq <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_smq <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -522,6 +521,7 @@ ui_t_smq <- function(id, ...) {
   )
 }
 
+#' @keywords internal
 srv_t_smq <- function(id,
                       data,
                       reporter,

@@ -16,34 +16,31 @@ template_g_ci(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{x_var}{(\code{character})\cr treatment variable corresponding to the x axis.}
+\item{x_var}{(\code{character})\cr name of the treatment variable to put on the x-axis.}
 
-\item{y_var}{(\code{character})\cr response variable corresponding to the y axis.}
+\item{y_var}{(\code{character})\cr name of the response variable to put on the y-axis.}
 
-\item{grp_var}{(\code{character})\cr group variable corresponding to the colors
-point shape and line type.}
+\item{grp_var}{(\code{character})\cr name of the group variable used to determine the plot colors, point shapes,
+and line types.}
 
-\item{stat}{(\code{character})\cr either \code{mean} or \code{median}.}
+\item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{unit_var}{(\code{character})\cr variable name in \code{dataname} where the unit is
-read.}
+\item{unit_var}{(\code{character})\cr name of the unit variable.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Writes the expressions to filter data and draw confidence interval
-estimation.
+Creates a valid expression to generate a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} confidence interval plot.
 }
 \seealso{
 \code{\link[=tm_g_ci]{tm_g_ci()}}

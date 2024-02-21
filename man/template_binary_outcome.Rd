@@ -21,84 +21,60 @@ template_binary_outcome(
     list(method_ci = "waldcc", method_test = "schouten", odds = TRUE), strat =
     list(method_ci = "cmh", method_test = "cmh", strat = NULL)),
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
+  na_level = default_na_str(),
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{paramcd}{(\code{character})\cr response parameter value to use in the table title.}
 
-\item{ref_arm}{(\code{character})\cr
-the level of reference arm in case of arm comparison.}
+\item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr
-the level of comparison arm in case of arm comparison.}
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{compare_arm}{(\code{logical})\cr
-triggers the comparison between study arms.}
+\item{compare_arm}{(\code{logical})\cr triggers the comparison between study arms.}
 
-\item{combine_comp_arms}{(\code{logical})\cr
-triggers the combination of comparison arms.}
+\item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
 \item{show_rsp_cat}{(\code{logical})\cr display the multinomial response estimations.}
 
 \item{responder_val}{(\code{character})\cr the short label for observations to
-translate \code{AVALC} into responder / non-responder.}
+translate \code{AVALC} into responder/non-responder.}
 
 \item{responder_val_levels}{(\code{character})\cr the levels of responses that will be shown in the multinomial
 response estimations.}
 
 \item{control}{(\code{list})\cr list of settings for the analysis.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
+
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression for binary outcome analysis.
-}
-\examples{
-if (interactive()) {
-  # Preparation of the test case.
-  adsl <- tmc_ex_adsl
-  adrs <- tmc_ex_adrs
-
-  # Generate an expression for the analysis of responders.
-  a <- template_binary_outcome(
-    dataname = "adrs",
-    parentname = "adsl",
-    arm_var = "ARMCD",
-    paramcd = "BESRSPI",
-    ref_arm = "ARM A",
-    comp_arm = c("ARM B"),
-    compare_arm = TRUE,
-    show_rsp_cat = TRUE
-  )
-
-  b <- mapply(expr = a, FUN = eval)
-  b$data
-  b$layout
-  b$table
-}
-
+Creates a valid expression to generate a binary outcome analysis.
 }
 \seealso{
 \code{\link[=tm_t_binary_outcome]{tm_t_binary_outcome()}}

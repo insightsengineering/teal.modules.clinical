@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_medical_history.R
 \name{tm_t_pp_medical_history}
 \alias{tm_t_pp_medical_history}
-\title{Teal Module: Patient Medical History Teal Module}
+\title{teal Module: Patient Profile Medical History}
 \usage{
 tm_t_pp_medical_history(
   label,
@@ -17,36 +17,34 @@ tm_t_pp_medical_history(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character})\cr patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{mhterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{MHTERM} column of the \code{ADMH} dataset.}
+\item{mhterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{MHTERM} variable from \code{dataname}.}
 
-\item{mhbodsys}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{MHBODSYS} column of the \code{ADMH} dataset.}
+\item{mhbodsys}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{MHBODSYS} variable from \code{dataname}.}
 
-\item{mhdistat}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{MHDISTAT} column of the \code{ADMH} dataset.}
+\item{mhdistat}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the \code{MHDISTAT} variable from \code{dataname}.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+}
+\value{
+a \code{teal_module} object.
 }
 \description{
-This teal module produces a patient medical history report using \code{ADaM} datasets.
+This module produces a patient profile medical history report using ADaM datasets.
 }
 \examples{
 ADSL <- tmc_ex_adsl

@@ -42,6 +42,7 @@ SECURITY.md
 ^\.gitlab-ci\.yml$
 ^\.pre-commit-config\.yaml$
 ^LICENSE\.md$
+LICENSE
 coverage.*
 ^pkgdown$
 ^tests/node_modules$

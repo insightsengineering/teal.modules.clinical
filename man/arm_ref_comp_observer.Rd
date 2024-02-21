@@ -20,34 +20,34 @@ arm_ref_comp_observer(
 )
 }
 \arguments{
-\item{session}{(\code{environment}) shiny session}
+\item{session}{(\code{environment})\cr shiny session}
 
-\item{input}{(\code{character}) shiny input}
+\item{input}{(\code{character})\cr shiny input}
 
-\item{output}{(\code{character}) shiny input}
+\item{output}{(\code{character})\cr shiny input}
 
-\item{id_ref}{(\code{character}) id of reference Treatment input UI element}
+\item{id_ref}{(\code{character})\cr id of reference Treatment input UI element}
 
-\item{id_comp}{(\code{character}) id of comparison group input UI element}
+\item{id_comp}{(\code{character})\cr id of comparison group input UI element}
 
-\item{id_arm_var}{(\code{character}) id of Treatment variable input UI element}
+\item{id_arm_var}{(\code{character})\cr id of Treatment variable input UI element}
 
-\item{data}{(\code{reactive} or \code{data.frame}) dataset used to validate Treatment reference inputs and
+\item{data}{(\code{reactive} or \code{data.frame})\cr dataset used to validate Treatment reference inputs and
 set \code{id_ref} input.}
 
-\item{arm_ref_comp}{(\code{unknown}) Treatment reference and compare variables provided as a
+\item{arm_ref_comp}{(\code{unknown})\cr Treatment reference and compare variables provided as a
 nested list where each Treatment variable corresponds a list specifying the default levels for the
 reference and comparison treatments.}
 
-\item{module}{(\code{character}) name of the module where this is called (this is only used
+\item{module}{(\code{character})\cr name of the module where this is called (this is only used
 to produce more informative error messages)}
 
-\item{on_off}{(\code{logical}) A reactive that can be used to
-stop the whole observer if FALSE.}
+\item{on_off}{(\code{logical})\cr A reactive that can be used to
+stop the whole observer if \code{FALSE}.}
 
-\item{input_id}{(\code{character}) unique id that the buckets will be referenced with.}
+\item{input_id}{(\code{character})\cr unique id that the buckets will be referenced with.}
 
-\item{output_id}{(\code{character}) name of the UI id that the output will be written to.}
+\item{output_id}{(\code{character})\cr name of the UI id that the output will be written to.}
 }
 \value{
 Returns a \code{shinyvalidate::InputValidator} which checks that there is at least one reference
@@ -56,52 +56,5 @@ and comparison arm
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 Updates the reference and comparison Treatments when the selected Treatment variable changes
-}
-\examples{
-
-arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
-arm_var <- choices_selected(c("ARM", "ARMCD"), "ARMCD")
-
-adsl <- data.frame(ARM = c("ARM 1", "ARM 2"), ARMCD = c("ARM A", "ARM B"))
-
-ui <- fluidPage(
-  sidebarLayout(
-    sidebarPanel(
-      teal.widgets::optionalSelectInput(
-        "arm",
-        "Treatment Variable",
-        choices = arm_var$choices,
-        selected = arm_var$selected
-      ),
-      shiny::uiOutput("arms_buckets")
-    ),
-    mainPanel(
-      shiny::textOutput("result")
-    )
-  )
-)
-
-server <- function(input, output, session) {
-  iv_arm_ref <- teal.modules.clinical:::arm_ref_comp_observer(
-    session,
-    input,
-    output,
-    id_arm_var = "arm",
-    data = adsl,
-    arm_ref_comp = arm_ref_comp,
-    module = "example"
-  )
-
-  output$result <- shiny::renderText({
-    iv <- shinyvalidate::InputValidator$new()
-    iv$add_validator(iv_arm_ref)
-    iv$enable()
-    teal::validate_inputs(iv)
-    "Valid selection has been made!"
-  })
-}
-if (interactive()) {
-  shiny::shinyApp(ui, server)
-}
 }
 \keyword{internal}

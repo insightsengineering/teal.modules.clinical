@@ -4,134 +4,149 @@
 \alias{template_arguments}
 \title{Standard Template Arguments}
 \arguments{
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
-\item{id_var}{(\code{character})\cr
-the variable name for subject id.}
+\item{anl_name}{(\code{character})\cr analysis data used in teal module.}
 
-\item{sum_vars}{(\code{character})\cr
-names of the variables that should be summarized.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{compare_arm}{(\code{logical})\cr
-triggers the comparison between study arms.}
+\item{atirel}{(\code{character})\cr name of time relation of medication variable.}
 
-\item{combine_comp_arms}{(\code{logical})\cr
-triggers the combination of comparison arms.}
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{avalu_var}{(\code{character})\cr name of the analysis value unit variable.}
 
-\item{anl_name}{(\code{character})\cr
-analysis data used in teal module.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
-\item{paramcd}{(\code{character})\cr
-variable value designating the studied parameter.}
+\item{baseline_var}{(\code{character})\cr name of the variable for baseline values of the analysis variable.}
 
-\item{ref_arm}{(\code{character})\cr
-the level of reference arm in case of arm comparison.}
+\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{comp_arm}{(\code{character})\cr
-the level of comparison arm in case of arm comparison.}
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
+For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
-\item{na.rm}{(\code{logical})\cr
-whether \code{NA} values should be removed prior to analysis.}
+\item{by_vars}{(\code{character})\cr variable names used to split the summary by rows.}
 
-\item{useNA}{(\code{character})\cr
-whether missing data (\code{NA}) should be displayed as a level.}
+\item{cmdecod}{(\code{character})\cr name of standardized medication name variable.}
 
-\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+\item{cmindc}{(\code{character})\cr name of indication variable.}
 
-\item{denominator}{(\code{character})\cr
-chooses how percentages are calculated. With option \code{N}, the reference
-population from the column total is used as the denominator. With option
-\code{n}, the number of non-missing records in this row and column intersection
-is used as the denominator. If \code{omit} is chosen, then the percentage is
-omitted.}
+\item{cmstdy}{(\code{character})\cr name of study relative day of start of medication variable.}
 
-\item{var_labels}{optional, (named \code{character})\cr
-variable labels for relabeling the analysis variables.}
+\item{cnsr_var}{(\code{character})\cr name of the censoring variable.}
 
-\item{cov_var}{(\code{character})\cr
-names of the covariates variables.}
+\item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+\item{compare_arm}{(\code{logical})\cr triggers the comparison between study arms.}
 
-\item{cnsr_var}{(\code{character})\cr
-name of the censoring variable.}
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{control}{(\code{list})\cr list of settings for the analysis.}
 
-\item{hlt}{(\code{character})\cr
-name of the variable with high level term for events.}
+\item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
-\item{llt}{(\code{character})\cr
-name of the variable with low level term for events.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{visit_var}{(\code{character})\cr
-variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+\item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
+population from the column total is used as the denominator. With option \code{n}, the number of non-missing
+records in this row and column intersection is used as the denominator. If \code{omit} is chosen, then the
+percentage is omitted.}
+
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
+
+\item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
+is \code{"event"}.}
+
+\item{font_size}{(\code{numeric})\cr font size value.}
+
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+
+\item{hlt}{(\code{character})\cr name of the variable with high level term for events.}
+
+\item{id_var}{(\code{character})\cr the variable name for subject id.}
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
 
-\item{interact_var}{(\code{character})\cr name of the variable that should have interactions
-with arm. If the interaction is not needed, the default option is \code{NULL}.}
+\item{label_hlt}{(\code{string})\cr label of the \code{hlt} variable from \code{dataname}. The label will be extracted from the
+module.}
 
-\item{interact_y}{(\code{character})\cr a selected item from the interact_var column which will be used to select
-the specific \code{ANCOVA} results. If the interaction is not needed, the default option is \code{FALSE}.}
+\item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
+module.}
 
-\item{by_vars}{(\code{character})\cr
-variable names used to split the summary by rows.}
+\item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
-\item{time_points}{(\code{character})\cr
-time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{time_unit_var}{(\code{character})\cr
-name of the variable representing time units.}
+\item{na.rm}{(\code{logical})\cr whether \code{NA} values should be removed prior to analysis.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
+statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
-\item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
-\item{strata_var}{(\code{character})\cr
-names of the variables for stratified analysis.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{title}{(\code{character})\cr
-title of the output.}
-
-\item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
+\item{patient_id}{(\code{character})\cr patient ID.}
 
 \item{prune_diff}{(\code{number})\cr threshold to use for trimming table using as criteria difference in
 rates between any two columns.}
 
-\item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
+\item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
+
+\item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
+
+\item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
+on column \code{sort_freq_col} by decreasing number of patients with event. Alternative option \code{alpha} sorts events
+alphabetically.}
+
+\item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
+
+\item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
+
+\item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
+
+\item{time_points}{(\code{character})\cr time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
+
+\item{time_unit_var}{(\code{character})\cr name of the variable representing time units.}
+
+\item{title}{(\code{character})\cr title of the output.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
 records in \code{treatment_flag_var}.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
 
-For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+\item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
-(hard coded in the module body).
+\item{var_labels}{optional, (named \code{character})\cr variable labels for relabeling the analysis variables.}
 
-For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+\item{visit_var}{(\code{character})\cr variable names that can be used as \code{visit} variable. Must be a factor in
+\code{dataname}.}
+
+\item{worst_flag_indicator}{(\code{character})\cr value indicating worst grade.}
+
+\item{worst_flag_var}{(\code{character})\cr name of the worst flag variable.}
+}
+\value{
+a \code{list} of expressions to generate a table or plot object.
 }
 \description{
 The documentation to this function lists all the arguments in teal module

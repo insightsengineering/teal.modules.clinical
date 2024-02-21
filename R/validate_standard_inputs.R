@@ -2,115 +2,21 @@
 #'
 #' @description `r lifecycle::badge("stable")`
 #' @param adsl data.frame with subject-level data
-#' @param adslvars required variables from \code{ADSL}
+#' @param adslvars required variables from `ADSL`
 #' @param anl data.frame with analysis data
-#' @param anlvars required variables from \code{ANL}
-#' @param need_arm flag indicating whether grouping variable \code{arm_var}
-#' is required or can be optionally \code{NULL}.
+#' @param anlvars required variables from `ANL`
+#' @param need_arm flag indicating whether grouping variable `arm_var`
+#' is required or can be optionally `NULL`.
 #' @param arm_var character with name of grouping variable, typically arm
-#' @param ref_arm character with name of reference level in \code{arm_var}
-#' @param comp_arm character with name for comparison level in \code{arm_var}
-#' @param min_n_levels_armvar minimum number of levels in grouping variable \code{arm_var}.
-#'   Defaults to 1, \code{NULL} for no minimum.
-#' @param max_n_levels_armvar maximum number of levels in grouping variable \code{arm_var}.
-#'   Use \code{NULL} for no maximum.
-#' @param min_nrow minimum number of observations in \code{ADSL} and \code{ANL}
+#' @param ref_arm character with name of reference level in `arm_var`
+#' @param comp_arm character with name for comparison level in `arm_var`
+#' @param min_n_levels_armvar minimum number of levels in grouping variable `arm_var`.
+#'   Defaults to 1, `NULL` for no minimum.
+#' @param max_n_levels_armvar maximum number of levels in grouping variable `arm_var`.
+#'   Use `NULL` for no maximum.
+#' @param min_nrow minimum number of observations in `ADSL` and `ANL`
 #'
 #' @keywords internal
-#'
-#' @examples
-#' # Internal function - validate_standard_inputs
-#'
-#' adsl <- tmc_ex_adsl
-#' adae <- tmc_ex_adae
-#'
-#' ui <- fluidPage(
-#'   shiny::sliderInput("obs", "Max Age",
-#'     min = 0, max = 100, value = 100
-#'   ),
-#'   shiny::sliderInput("maxgr", "Max Grade",
-#'     min = 0, max = 5, value = 5
-#'   ),
-#'   plotOutput("plot")
-#' )
-#'
-#' server <- function(input, output) {
-#'   output$plot <- renderPlot({
-#'     keep_adsl <- c("USUBJID", "STUDYID", "ARMCD", "AGE", "ARM")
-#'     keep_adae <- c("USUBJID", "STUDYID", "AETOXGR")
-#'
-#'     adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
-#'     adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
-#'
-#'     teal.modules.clinical:::validate_standard_inputs(
-#'       adsl = adsl_f,
-#'       adslvars = keep_adsl,
-#'       anl = adae_f,
-#'       anlvars = keep_adae,
-#'       arm_var = "ARM",
-#'       need_arm = TRUE
-#'     )
-#'
-#'     ANL <- merge(adsl_f, adae_f, by = c("USUBJID", "STUDYID"))
-#'
-#'     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
-#'   })
-#' }
-#' if (interactive()) {
-#'   shinyApp(ui, server)
-#' }
-#'
-#' server2 <- function(input, output) {
-#'   output$plot <- renderPlot({
-#'     keep_adsl <- c("USUBJID", "STUDYID", "ARMCD", "AGE", "ARM")
-#'     keep_adae <- c("USUBJID", "STUDYID", "AETOXGR")
-#'
-#'     adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
-#'     adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
-#'
-#'     teal.modules.clinical:::validate_standard_inputs(
-#'       adsl = adsl_f,
-#'       adslvars = keep_adsl,
-#'       anl = adae_f,
-#'       anlvars = keep_adae,
-#'       arm_var = NULL,
-#'       need_arm = FALSE
-#'     )
-#'
-#'     ANL <- merge(adsl_f, adae_f, by = c("USUBJID", "STUDYID"))
-#'
-#'     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
-#'   })
-#' }
-#' if (interactive()) {
-#'   shinyApp(ui, server2)
-#' }
-#'
-#' server3 <- function(input, output) {
-#'   output$plot <- renderPlot({
-#'     keep_adsl <- c("USUBJID", "STUDYID", "ARMCD", "AGE", "ARM")
-#'     keep_adae <- c("USUBJID", "STUDYID", "AETOXGR")
-#'
-#'     adsl_f <- adsl[adsl$AGE <= input$obs, keep_adsl]
-#'     adae_f <- adae[as.numeric(adae$AETOXGR) <= input$maxgr, keep_adae]
-#'
-#'     teal.modules.clinical:::validate_standard_inputs(
-#'       adsl = adsl_f,
-#'       adslvars = keep_adsl,
-#'       anl = adae_f,
-#'       anlvars = keep_adae,
-#'       arm_var = "HELLO",
-#'       need_arm = FALSE
-#'     )
-#'
-#'     ANL <- merge(adsl_f, adae_f, by = c("USUBJID", "STUDYID"))
-#'
-#'     plot(ANL$AGE, jitter(as.numeric(ANL$AETOXGR)), xlab = "AGE", ylab = "AETOXGR")
-#'   })
-#' }
-#' if (interactive()) {
-#'   shinyApp(ui, server3)
-#' }
 #'
 validate_standard_inputs <- function(adsl,
                                      adslvars = character(0),

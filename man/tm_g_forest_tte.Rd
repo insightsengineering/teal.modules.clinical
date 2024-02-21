@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_forest_tte.R
 \name{tm_g_forest_tte}
 \alias{tm_g_forest_tte}
-\title{Teal Module: Forest Survival Plot teal Module}
+\title{teal Module: Forest Survival Plot}
 \usage{
 tm_g_forest_tte(
   label,
@@ -32,96 +32,78 @@ tm_g_forest_tte(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr
-If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{subgroup_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for variable names that can be used
-as the default subgroups.}
+\item{subgroup_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and preselected option for variable names that can be used as the default subgroups.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-names of the variables for stratified analysis.}
+\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr names of
+the variables for stratified analysis.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis
-variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the censoring
-variable.}
+\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+available choices and preselected option for the censoring variable.}
 
-\item{conf_level}{(\code{choices_selected})\cr
-object with all available choices and preselected option for the confidence
-level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
-\item{time_unit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the time unit
-variable.}
+\item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+with all available choices and pre-selected option for the time unit variable.}
 
-\item{fixed_symbol_size}{(\code{logical})\cr
-When (\code{TRUE}), the same symbol size is used for plotting each estimate.
+\item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
-\item{plot_height}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the height of
-the main plot and renders a slider on the plot to interactively adjust the plot
-height.}
+\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{plot_width}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the width of
-the main plot and renders a slider on the plot to interactively adjust the plot
-width.}
+\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
-\code{title}, \code{caption}.
-No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
-with default module arguments (hard coded in the module body).
-
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a grid style Forest plot for time-to-event data
-with \code{ADaM} structure
+This module produces a grid-style forest plot for time-to-event data with ADaM structure.
 }
 \examples{
 library(nestcolor)
+library(formatters)
 
 ADSL <- tmc_ex_adsl
 ADTTE <- tmc_ex_adtte
-ADSL$RACE <- droplevels(ADSL$RACE) \%>\% formatters::with_label("Race")
+ADSL$RACE <- droplevels(ADSL$RACE) \%>\% with_label("Race")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -141,7 +123,7 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADTTE <- tmc_ex_adtte
-      ADSL$RACE <- droplevels(ADSL$RACE) \%>\% formatters::with_label(\"Race\")
+      ADSL$RACE <- droplevels(ADSL$RACE) \%>\% with_label(\"Race\")
     "
   ),
   modules = modules(
@@ -173,4 +155,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

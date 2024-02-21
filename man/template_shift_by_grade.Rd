@@ -17,27 +17,23 @@ template_shift_by_grade(
   paramcd = "PARAMCD",
   drop_arm_levels = TRUE,
   add_total = FALSE,
-  total_label = "All Patients",
-  na_level = "<Missing>",
+  total_label = default_total_label(),
+  na_level = default_na_str(),
   code_missing_baseline = FALSE,
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{id_var}{(\code{character})\cr
-the variable name for subject id.}
+\item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{visit_var}{(\code{character})\cr
-variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+\item{visit_var}{(\code{character})\cr variable names that can be used as \code{visit} variable. Must be a factor in
+\code{dataname}.}
 
 \item{worst_flag_var}{(\code{character})\cr name of the worst flag variable.}
 
@@ -45,33 +41,37 @@ variable names that can be used as \code{visit} variable. Must be a factor in \c
 
 \item{anl_toxgrade_var}{(\code{character})\cr name of the variable indicating the analysis toxicity grade.}
 
-\item{base_toxgrade_var}{(\code{character})\cr name of the variable indicating the base toxicity grade.}
+\item{base_toxgrade_var}{(\code{character})\cr name of the variable indicating the baseline toxicity grade.}
 
-\item{paramcd}{(\code{character})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{code_missing_baseline}{(\code{character})\cr whether missing baseline should be considered
-as grade 0.}
+\item{code_missing_baseline}{(\code{logical})\cr whether missing baseline grades should be counted as grade 0.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
-
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Grade Summary Table
+Creates a valid expression to generate a grade summary table.
 }
 \seealso{
 \code{\link[=tm_t_shift_by_grade]{tm_t_shift_by_grade()}}

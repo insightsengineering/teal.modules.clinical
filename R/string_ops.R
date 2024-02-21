@@ -3,7 +3,7 @@
 #' Generic to parse text into numeric vectors. This was initially designed
 #' for a robust interpretation of text input in teal modules.
 #'
-#' @param str `vector` to extract numeric from.
+#' @param str (`vector`)\cr to extract numeric from.
 #' @details The function is intended to extract any numeric from a character
 #'   string, factor levels, boolean and return a vector of numeric.
 #'
@@ -20,8 +20,8 @@
 #'   numeric   = c(1, -5e+2, NA),
 #'   logical   = c(TRUE, FALSE, NA)
 #' )
-#' lapply(dta, teal.modules.clinical:::as_num)
-#' @keywords internal
+#' lapply(dta, as_num)
+#' @export
 as_num <- function(str) { # nolint # nousage
   UseMethod("as_num")
 }

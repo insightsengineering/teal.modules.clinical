@@ -11,10 +11,11 @@
           anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
           study_id <- unique(anl[["STUDYID"]])
           anl$tmp_aefl <- "Y"
-          anl <- anl %>% dplyr::mutate(`:=`(AEDECOD, as.character(AEDECOD)), 
-              USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@"))
-          anl <- df_explicit_na(anl, na_level = "")
-          adsl <- df_explicit_na(adsl, na_level = "")
+          anl[["AEDECOD"]] <- as.character(anl[["AEDECOD"]])
+          anl <- anl %>% dplyr::mutate(USUBJID_AESEQ = paste(USUBJID, 
+              AESEQ, sep = "@@"))
+          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_parent
@@ -62,14 +63,15 @@
           anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
           study_id <- unique(anl[["STUDYID"]])
           anl$tmp_aefl <- "Y"
-          anl <- anl %>% dplyr::mutate(`:=`(AEDECOD, as.character(AEDECOD)), 
-              USUBJID_AESEQ = paste(USUBJID, AESEQ, sep = "@@"))
+          anl[["AEDECOD"]] <- as.character(anl[["AEDECOD"]])
+          anl <- anl %>% dplyr::mutate(USUBJID_AESEQ = paste(USUBJID, 
+              AESEQ, sep = "@@"))
           flag_var_anl_label <- formatters::var_labels(anl[, c("A", 
               "B", "C")], fill = FALSE)
           flag_var_aesi_label <- formatters::var_labels(anl[, c("X", 
               "Y")], fill = FALSE)
-          anl <- df_explicit_na(anl, na_level = "")
-          adsl <- df_explicit_na(adsl, na_level = "")
+          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_parent
