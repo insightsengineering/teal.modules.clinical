@@ -46,27 +46,27 @@ It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{flag_var_anl}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}} or \code{NULL})\cr
+\item{flag_var_anl}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr
 vector with names of flag variables from \code{dataset} used to count adverse event sub-groups (e.g. Serious events,
 Related events, etc.). Variable labels are used as table row names if they exist.}
 
-\item{flag_var_aesi}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}} or \code{NULL})\cr
+\item{flag_var_aesi}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr
 vector with names of flag variables from \code{dataset} used to count adverse event special interest groups. All flag
 variables must be of type \code{logical}. Variable labels are used as table row names if they exist.}
 
-\item{dthfl_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+\item{dthfl_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and preselected option for variable names that can be used as death flag variable.
 Records with `"Y"`` are summarized in the table row for "Total number of deaths".}
 
-\item{dcsreas_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+\item{dcsreas_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and preselected option for variable names that can be used as study discontinuation
 reason variable. Records with \code{"ADVERSE EVENTS"} are summarized in the table row for
 "Total number of patients withdrawn from study due to an AE".}
 
-\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr name of the variable
+\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
 with low level term for events.}
 
-\item{aeseq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable for
+\item{aeseq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr variable for
 adverse events sequence number from \code{dataset}. Used for counting total number of events.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}

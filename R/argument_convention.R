@@ -125,29 +125,29 @@ NULL
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param atirel ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `ATIREL` variable from `dataname`.
-#' @param aval_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param aval_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and pre-selected option for the analysis variable.
-#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param avalu_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the analysis unit variable.
-#' @param avisit ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr value of analysis
+#' @param avisit ([teal.transform::choices_selected()])\cr value of analysis
 #'   visit `AVISIT` of interest.
-#' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param baseline_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as `baseline_var`.
-#' @param by_vars ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param by_vars ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for variable names used to split the summary by rows.
-#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmdecod ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDECOD` variable from `dataname`.
-#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmindc ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMINDC` variable from `dataname`.
-#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmstdy ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMSTDY` variable from `dataname`.
-#' @param cnsr_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cnsr_var ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the censoring variable.
-#' @param conf_level ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param conf_level ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and pre-selected option for the confidence level, each within range of (0, 1).
-#' @param cov_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cov_var ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the covariates variables.
 #' @param dataname (`character`)\cr analysis data used in teal module.
 #' @param default_responses (`list` or `character`)\cr defines
@@ -159,9 +159,9 @@ NULL
 #' @param fixed_symbol_size (`logical`)\cr When (`TRUE`), the same symbol size is used for plotting each estimate.
 #'   Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
 #' @param font_size (`numeric`)\cr numeric vector of length 3 of current, minimum and maximum font size values.
-#' @param hlt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr name of the variable
+#' @param hlt ([teal.transform::choices_selected()])\cr name of the variable
 #'   with high level term for events.
-#' @param id_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object specifying
+#' @param id_var ([teal.transform::choices_selected()])\cr object specifying
 #'   the variable name for subject id.
 #' @param interact_var (`character`)\cr name of the variable that should have interactions
 #'   with arm. If the interaction is not needed, the default option is `NULL`.
@@ -169,9 +169,9 @@ NULL
 #'   to select the specific `ANCOVA` results when interact_var is discrete. If the interaction is not
 #'   needed, the default option is `FALSE`.
 #' @param label (`character`)\cr menu item label of the module in the teal app.
-#' @param llt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr name of the variable
+#' @param llt ([teal.transform::choices_selected()])\cr name of the variable
 #'   with low level term for events.
-#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param paramcd ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the parameter code variable from `dataname`.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_col (`character`)\cr name of patient ID variable.
@@ -183,27 +183,27 @@ NULL
 #'   For example the [shiny::helpText()] elements are useful.
 #' @param pre_output optional, (`shiny.tag`)\cr with text placed before the output to put the output into context.
 #'   For example a title.
-#' @param strata_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr names of
+#' @param strata_var ([teal.transform::choices_selected()])\cr names of
 #'   the variables for stratified analysis.
-#' @param summarize_vars ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr names of
+#' @param summarize_vars ([teal.transform::choices_selected()])\cr names of
 #'   the variables that should be summarized.
-#' @param subgroup_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param subgroup_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as the default subgroups.
 #' @param time_points ([teal.transform::choices_selected()])\cr object with all available choices and preselected option
 #'   for time points that can be used in [tern::surv_timepoint()].
-#' @param time_unit_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param time_unit_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and pre-selected option for the time unit variable.
-#' @param treatment_flag ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr value
+#' @param treatment_flag ([teal.transform::choices_selected()])\cr value
 #'   indicating on treatment records in `treatment_flag_var`.
-#' @param treatment_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr on
+#' @param treatment_flag_var ([teal.transform::choices_selected()])\cr on
 #'   treatment flag variable.
 #' @param useNA (`character`)\cr whether missing data (`NA`) should be displayed as a level.
-#' @param visit_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param visit_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as `visit` variable.
 #'   Must be a factor in `dataname`.
-#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_flag_indicator ([teal.transform::choices_selected()])\cr
 #'   value indicating worst grade.
-#' @param worst_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param worst_flag_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as worst flag variable.
 #'
 #' @return a `teal_module` object.

@@ -237,7 +237,7 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_km
-#' @param facet_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param facet_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for names of variable that can be used for plot faceting.
 #'
 #' @inherit module_arguments return seealso
@@ -331,6 +331,13 @@ tm_g_km <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(strata_var, "choices_selected")
+  checkmate::assert_class(facet_var, "choices_selected")
+  checkmate::assert_class(time_unit_var, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(cnsr_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")

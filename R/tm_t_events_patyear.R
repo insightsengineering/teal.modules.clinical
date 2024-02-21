@@ -152,7 +152,7 @@ template_events_patyear <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_patyear
-#' @param events_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param events_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the variable with all event counts.
 #'
 #' @inherit module_arguments return seealso
