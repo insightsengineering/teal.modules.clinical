@@ -294,6 +294,7 @@ tm_g_lineplot <- function(label,
   checkmate::assert_string(mid)
   checkmate::assert_string(interval, null.ok = TRUE)
   whiskers <- match.arg(whiskers)
+  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")

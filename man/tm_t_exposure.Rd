@@ -38,31 +38,31 @@ tm_t_exposure(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{row_by_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\item{row_by_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
 object with all available choices and preselected option for
 variable names that can be used to split rows.}
 
-\item{col_by_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\item{col_by_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
 object with all available choices and preselected option for
 variable names that can be used to split columns.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{paramcd_label}{(\code{character})\cr the column from the dataset where the value will be used to
 label the argument \code{paramcd}.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object specifying
+\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
 the variable name for subject id.}
 
-\item{parcat}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\item{parcat}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
 object with all available choices and preselected option for
 parameter category values.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
 
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for the analysis unit variable.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}

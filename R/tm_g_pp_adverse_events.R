@@ -169,19 +169,19 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_adverse_events
-#' @param aeterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param aeterm ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETERM` variable from `dataname`.
-#' @param tox_grade ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param tox_grade ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETOXGR` variable from `dataname`.
-#' @param causality ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param causality ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEREL` variable from `dataname`.
-#' @param outcome ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param outcome ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEOUT` variable from `dataname`.
-#' @param action ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param action ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEACN` variable from `dataname`.
-#' @param time ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param time ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `ASTDY` variable from `dataname`.
-#' @param decod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param decod ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEDECOD` variable from `dataname`.
 #'
 #' @inherit module_arguments return
@@ -264,6 +264,13 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(aeterm, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(tox_grade, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(causality, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(outcome, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(action, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(time, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(decod, "choices_selected", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)

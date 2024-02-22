@@ -258,6 +258,8 @@ tm_t_summary <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(summarize_vars, "choices_selected")
   checkmate::assert_string(na_level)
   checkmate::assert_character(numeric_stats, min.len = 1)
   useNA <- match.arg(useNA) # nolint

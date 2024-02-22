@@ -228,11 +228,11 @@ template_abnormality <- function(parentname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality
-#' @param grade ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param grade ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for variable names that can be used to
 #'   specify the abnormality grade. Variable must be factor.
 #' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
-#' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param baseline_var ([teal.transform::choices_selected()])\cr
 #'   variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
@@ -339,8 +339,8 @@ tm_t_abnormality <- function(label,
   checkmate::assert_class(grade, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(baseline_var, "choices_selected")
-  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(treatment_flag_var, "choices_selected")
+  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)

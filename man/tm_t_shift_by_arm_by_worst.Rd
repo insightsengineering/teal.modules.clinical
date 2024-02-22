@@ -35,32 +35,32 @@ tm_t_shift_by_arm_by_worst(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
 
-\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and preselected option for variable names that can be used as worst flag variable.}
 
 \item{worst_flag}{(\code{character})\cr value indicating worst analysis indicator level.}
 
-\item{treatment_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr on
+\item{treatment_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr on
 treatment flag variable.}
 
-\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr value
+\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value
 indicating on treatment records in \code{treatment_flag_var}.}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}

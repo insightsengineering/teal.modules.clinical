@@ -233,17 +233,17 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_therapy
-#' @param cmdose ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmdose ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDOSE` variable from `dataname`.
-#' @param cmtrt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmtrt ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMTRT` variable from `dataname`.
-#' @param cmdosu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmdosu ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDOSU` variable from `dataname`.
-#' @param cmroute ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmroute ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMROUTE` variable from `dataname`.
-#' @param cmdosfrq ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmdosfrq ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDOSFRQ` variable from `dataname`.
-#' @param cmendy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmendy ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMENDY` variable from `dataname`.
 #'
 #' @inherit module_arguments return
@@ -349,6 +349,16 @@ tm_g_pp_therapy <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_therapy")
+  checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmindc, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdose, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmtrt, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdosu, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmroute, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdosfrq, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmstdy, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmendy, "choices_selected", null.ok = TRUE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

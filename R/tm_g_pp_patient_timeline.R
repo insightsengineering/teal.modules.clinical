@@ -326,23 +326,23 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @inheritParams template_patient_timeline
 #' @param dataname_adcm (`character`)\cr name of `ADCM` dataset or equivalent.
 #' @param dataname_adae (`character`)\cr name of `ADAE` dataset or equivalent.
-#' @param aerelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param aerelday_start ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adae`.
-#' @param aerelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param aerelday_end ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for the `AENDY` variable from `dataname_adae`.
-#' @param dsrelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param dsrelday_start ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adcm`.
-#' @param dsrelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param dsrelday_end ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for the `AENDY` variable from `dataname_adcm`.
-#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmdecod ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDECOD` variable from `dataname_adcm`.
-#' @param aetime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param aetime_start ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the `ASTDTM` variable from `dataname_adae`.
-#' @param aetime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param aetime_end ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AENDTM` variable from `dataname_adae`.
-#' @param dstime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param dstime_start ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the `CMASTDTM` variable from `dataname_adcm`.
-#' @param dstime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param dstime_end ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMAENDTM` variable from `dataname_adcm`.
 #'
 #' @inherit module_arguments return
@@ -463,6 +463,16 @@ tm_g_pp_patient_timeline <- function(label,
   checkmate::assert_string(dataname_adae)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(aeterm, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aetime_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aetime_end, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dstime_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dstime_end, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aerelday_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aerelday_end, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dsrelday_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dsrelday_end, "choices_selected", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
