@@ -21,7 +21,7 @@
                   " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
                   sprintf("(%s)", "Days")))), custom_label = "Total number of patients and patient time*") %>% 
           analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE, 
-              na_str = "<Missing>") %>% append_topleft(c(formatters::var_labels(adex["RACE"], 
+              na_str = "<Missing>") %>% append_topleft(c(teal.data::col_labels(adex["RACE"], 
           fill = TRUE)))
       
       $table
@@ -54,7 +54,7 @@
                   " ", paste("Sum of", "myTDURD"), paste("Sum of", 
                   "myTDURD", sprintf("(%s)", "Days")))), custom_label = "Total number of patients and patient time*") %>% 
           analyze_patients_exposure_in_cols(var = "myRACE", col_split = FALSE, 
-              na_str = "<myMissing>") %>% append_topleft(c(formatters::var_labels(myadex["myRACE"], 
+              na_str = "<myMissing>") %>% append_topleft(c(teal.data::col_labels(myadex["myRACE"], 
           fill = TRUE)))
       
       $table
@@ -87,7 +87,7 @@
                   " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
                   sprintf("(%s)", "Days")))), custom_label = "Total number of patients and patient time*") %>% 
           analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE, 
-              na_str = "<Missing>") %>% append_topleft(c(formatters::var_labels(adex["RACE"], 
+              na_str = "<Missing>") %>% append_topleft(c(teal.data::col_labels(adex["RACE"], 
           fill = TRUE)))
       
       $table
