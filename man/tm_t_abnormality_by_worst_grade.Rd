@@ -94,7 +94,6 @@ This module produces a table to summarize laboratory test results with highest g
 }
 \examples{
 library(dplyr)
-library(formatters)
 
 ADSL <- tmc_ex_adsl
 ADLB <- tmc_ex_adlb \%>\%

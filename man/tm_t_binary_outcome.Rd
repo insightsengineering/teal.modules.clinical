@@ -108,7 +108,6 @@ or re-categorize response categories and arrange the display order. If response 
 }
 \examples{
 library(dplyr)
-library(formatters)
 
 ADSL <- tmc_ex_adsl
 ADRS <- tmc_ex_adrs \%>\%

@@ -97,7 +97,6 @@ This module produces a patient profile timeline \code{\link[ggplot2:ggplot]{ggpl
 \examples{
 library(nestcolor)
 library(dplyr)
-library(formatters)
 
 data <- teal_data()
 data <- within(data, {

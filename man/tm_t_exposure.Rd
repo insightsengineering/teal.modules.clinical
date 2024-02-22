@@ -100,7 +100,6 @@ The module produces an exposure table for risk management plan.
 }
 \examples{
 library(dplyr)
-library(formatters)
 
 data <- teal_data()
 data <- within(data, {
@@ -108,7 +107,7 @@ data <- within(data, {
   ADEX <- tmc_ex_adex
 
   set.seed(1, kind = "Mersenne-Twister")
-  labels <- var_labels(ADEX, fill = FALSE)
+  labels <- col_labels(ADEX, fill = FALSE)
   ADEX <- ADEX \%>\%
     distinct(USUBJID, .keep_all = TRUE) \%>\%
     mutate(
@@ -118,7 +117,7 @@ data <- within(data, {
       AVALU = "Days"
     ) \%>\%
     bind_rows(ADEX)
-  var_labels(ADEX) <- labels
+  col_labels(ADEX) <- labels
 })
 
 datanames <- c("ADSL", "ADEX")
