@@ -174,7 +174,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_ipp
-#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param arm_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as arm variable.
 #'
 #' @inherit module_arguments return seealso
@@ -302,6 +302,13 @@ tm_g_ipp <- function(label,
   }
 
   logger::log_info("Initializing tm_g_ipp")
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(visit_var, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(avalu_var, "choices_selected")
+  checkmate::assert_class(baseline_var, "choices_selected")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

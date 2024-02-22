@@ -363,7 +363,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
   }
 }
 
-#' Whether object is of class [teal.transform::choices_selected()] or [teal.transform::data_extract_spec()]
+#' Whether object is of class [teal.transform::choices_selected()]
 #'
 #' @param x object to be checked
 #'

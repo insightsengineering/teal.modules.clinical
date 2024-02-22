@@ -137,11 +137,11 @@ template_laboratory <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_laboratory
-#' @param param ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param param ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `PARAM` variable from `dataname`.
-#' @param timepoints ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param timepoints ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname`.
-#' @param anrind ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param anrind ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `ANRIND` variable from `dataname`. Variable should have the
 #'   following 3 levels: `"HIGH"`, `"LOW"`, and `"NORMAL"`.
 #'
@@ -238,6 +238,12 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(timepoints, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aval_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(avalu_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(param, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(paramcd, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(anrind, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 

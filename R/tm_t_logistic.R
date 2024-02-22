@@ -212,12 +212,12 @@ template_logistic <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_logistic
-#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()] or `NULL`)\cr object
+#' @param arm_var ([teal.transform::choices_selected()] or `NULL`)\cr object
 #'   with all available choices and preselected option for variable names that can be used as `arm_var`. This defines
 #'   the grouping variable(s) in the results table. If there are two elements selected for `arm_var`, the second
 #'   variable will be nested under the first variable. If `NULL`, no arm/treatment variable is included in the
 #'   logistic model.
-#' @param avalc_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param avalc_var ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the analysis variable (categorical).
 #'
 #' @inherit module_arguments return seealso
@@ -298,12 +298,12 @@ tm_t_logistic <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_multi_class(arm_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
+  checkmate::assert_class(arm_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(cov_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(avalc_var, "choices_selected")
+  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
-  checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"))
-  checkmate::assert_multi_class(cov_var, c("choices_selected", "data_extract_spec"))
-  checkmate::assert_multi_class(avalc_var, c("choices_selected", "data_extract_spec"))
-  checkmate::assert_class(conf_level, classes = "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")

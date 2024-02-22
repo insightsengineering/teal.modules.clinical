@@ -80,11 +80,11 @@ template_medical_history <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_medical_history
-#' @param mhterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param mhterm ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHTERM` variable from `dataname`.
-#' @param mhbodsys ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param mhbodsys ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHBODSYS` variable from `dataname`.
-#' @param mhdistat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param mhdistat ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHDISTAT` variable from `dataname`.
 #'
 #' @inherit module_arguments return
@@ -142,6 +142,9 @@ tm_t_pp_medical_history <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(mhterm, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(mhbodsys, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(mhdistat, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 

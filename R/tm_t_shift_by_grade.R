@@ -466,9 +466,9 @@ template_shift_by_grade <- function(parentname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_grade
-#' @param anl_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param anl_toxgrade_var ([teal.transform::choices_selected()])\cr
 #'   variable for analysis toxicity grade.
-#' @param base_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param base_toxgrade_var ([teal.transform::choices_selected()])\cr
 #'   variable for baseline toxicity grade.
 #'
 #' @inherit module_arguments return seealso
@@ -575,6 +575,7 @@ tm_t_shift_by_grade <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(visit_var, "choices_selected")
   checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(worst_flag_var, "choices_selected")
   checkmate::assert_class(worst_flag_indicator, "choices_selected")
