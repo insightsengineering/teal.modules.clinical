@@ -22,7 +22,7 @@ Authors@R: c(
   )
 Description: Provides user-friendly tools for creating and customizing
     clinical trial reports. By leveraging the 'teal' framework, this
-    package provides teal modules to easily create an interactive panel
+    package provides 'teal' modules to easily create an interactive panel
     that allows for seamless adjustments to data presentation, thereby
     streamlining the creation of detailed and accurate reports.
 License: Apache License 2.0
