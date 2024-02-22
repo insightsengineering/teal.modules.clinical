@@ -158,7 +158,7 @@ template_exposure <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = formatters::var_labels(dataname[row_by_var], fill = TRUE),
+    expr = teal.data::col_labels(dataname[row_by_var], fill = TRUE),
     env = list(
       dataname = as.name(dataname),
       row_by_var = row_by_var

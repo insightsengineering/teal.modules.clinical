@@ -511,7 +511,7 @@ srv_summary <- function(id,
       validate_checks()
 
       summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
-      var_labels <- formatters::var_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
+      var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",

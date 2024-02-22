@@ -57,7 +57,7 @@ template_logistic <- function(dataname,
     ref_arm_val <- paste(ref_arm, collapse = "/")
 
     y$arm_lab <- substitute(
-      expr = arm_var_lab <- formatters::var_labels(anl[arm_var], fill = FALSE),
+      expr = arm_var_lab <- teal.data::col_labels(anl[arm_var], fill = FALSE),
       env = list(anl = as.name(dataname), arm_var = arm_var)
     )
 
@@ -107,7 +107,7 @@ template_logistic <- function(dataname,
 
   if (!is.null(arm_var)) {
     y$relabel <- substitute(
-      expr = formatters::var_labels(ANL[arm_var]) <- arm_var_lab, # nolint
+      expr = teal.data::col_labels(ANL[arm_var]) <- arm_var_lab, # nolint
       env = list(arm_var = arm_var)
     )
   }

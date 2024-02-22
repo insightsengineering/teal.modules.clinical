@@ -164,7 +164,7 @@ template_summary_by <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = formatters::var_labels(dataname, fill = FALSE)[[by_var]],
+      expr = teal.data::col_labels(dataname, fill = FALSE)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -680,7 +680,7 @@ srv_summary_by <- function(id,
     all_q <- shiny::reactive({
       validate_checks()
       summarize_vars <- as.vector(merged$anl_input_r()$columns_source$summarize_vars)
-      var_labels <- formatters::var_labels(merged$anl_q()[[dataname]][, summarize_vars, drop = FALSE])
+      var_labels <- teal.data::col_labels(merged$anl_q()[[dataname]][, summarize_vars, drop = FALSE])
 
       my_calls <- template_summary_by(
         parentname = "ANL_ADSL",

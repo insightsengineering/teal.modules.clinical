@@ -188,7 +188,7 @@ template_mult_events <- function(dataname,
               indent_mod = indent_mod,
               split_fun = split_fun,
               label_pos = "topleft",
-              split_label = formatters::var_labels(dataname[hlt_new])
+              split_label = teal.data::col_labels(dataname[hlt_new])
             ),
           env = list(
             hlt = hlt_new,

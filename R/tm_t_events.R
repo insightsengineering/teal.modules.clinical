@@ -239,7 +239,7 @@ template_events <- function(dataname,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(dataname[hlt])
+          split_label = teal.data::col_labels(dataname[hlt])
         ) %>%
           summarize_num_patients(
             var = "USUBJID",
