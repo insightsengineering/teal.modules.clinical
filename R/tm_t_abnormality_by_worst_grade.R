@@ -252,7 +252,6 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'
 #' @examples
 #' library(dplyr)
-#' library(formatters)
 #'
 #' ADSL <- tmc_ex_adsl
 #' ADLB <- tmc_ex_adlb %>%

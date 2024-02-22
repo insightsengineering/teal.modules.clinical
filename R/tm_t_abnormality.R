@@ -246,7 +246,6 @@ template_abnormality <- function(parentname,
 #' data <- teal_data()
 #' data <- within(data, {
 #'   library(dplyr)
-#'   library(formatters)
 #'
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb %>%

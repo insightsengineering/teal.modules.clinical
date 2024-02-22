@@ -503,7 +503,6 @@ template_events_summary <- function(anl_name,
 #'
 #' @examples
 #' library(dplyr)
-#' library(formatters)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
@@ -534,7 +533,7 @@ template_events_summary <- function(anl_name,
 #'       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
 #'       TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'     )
-#'     var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'     col_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'     dat
 #'   }
 #'
