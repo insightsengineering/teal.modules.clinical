@@ -65,7 +65,7 @@ get_var_labels <- function(datasets, dataname, vars) {
   lifecycle::deprecate_warn(
     when = "0.8.14",
     what = "get_var_labels()",
-    with = "formatters::var_labels()",
+    with = "teal.data::col_labels()",
     details = "teal.modules.clinical won't export any utility functions except those which
       are necessary to prepare shiny app."
   )
