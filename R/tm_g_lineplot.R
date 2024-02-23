@@ -1,24 +1,25 @@
 #' Template: Line Plot
 #'
+#' Creates a valid expression to generate a [ggplot2::ggplot()] line plot.
+#'
 #' @inheritParams tern::g_lineplot
 #' @inheritParams tern::control_lineplot_vars
 #' @inheritParams template_arguments
-#' @param param (`character`)\cr
-#'   parameter chosen to filter the data by.
-#' @param incl_screen (`logical`)\cr
-#'   should the screening visit be included.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `subtitle`, `caption`, `y`, `lty`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).
+#' @param param (`character`)\cr parameter to filter the data by.
+#' @param incl_screen (`logical`)\cr whether the screening visit should be included.
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
+#' for the module plot. For this module, this argument will only accept `ggplot2_args` object with `labs` list of
+#' following child elements: `title`, `subtitle`, `caption`, `y`, `lty`. No other elements would be taken into
+#' account. The argument is merged with option `teal.ggplot2_args` and with default module arguments (hard coded in
+#' the module body).
 #'
 #' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
 #'
-#' @seealso [tm_g_lineplot()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [tm_g_lineplot()]
+#'
+#' @keywords internal
 template_g_lineplot <- function(dataname = "ANL",
                                 strata = "ARM",
                                 x = "AVISIT",
@@ -38,16 +39,15 @@ template_g_lineplot <- function(dataname = "ANL",
                                 title = "Line Plot",
                                 y_lab = "",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(strata),
-    assertthat::is.string(x),
-    assertthat::is.string(y),
-    assertthat::is.string(y_unit),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(title),
-    assertthat::is.string(y_lab)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(strata)
+  checkmate::assert_string(x)
+  checkmate::assert_string(y)
+  checkmate::assert_string(y_unit)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(title)
+  checkmate::assert_string(y_lab)
+
   z <- list()
 
   data_list <- list()
@@ -196,30 +196,22 @@ template_g_lineplot <- function(dataname = "ANL",
   z
 }
 
-
-#' Teal Module: Line Plot
+#' teal Module: Line Plot
 #'
-#' This teal module produces a grid style Line Plot for data with
-#' `ADaM` structure.
+#' This module produces a [ggplot2::ggplot()] type line plot, with optional summary table, for standard ADaM data.
 #'
-#' @inheritParams template_g_lineplot
 #' @inheritParams module_arguments
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `subtitle`, `caption`, `y`, `lty`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body)
+#' @inheritParams template_g_lineplot
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
-#'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
+#' library(forcats)
 #'
 #' ADSL <- tmc_ex_adsl
-#' ADLB <- tmc_ex_adlb %>% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+#' ADLB <- tmc_ex_adlb %>% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -227,7 +219,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     ADLB = ADLB,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
-#'       ADLB <- tmc_ex_adlb %>% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+#'       ADLB <- tmc_ex_adlb %>% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
 #'     "
 #'   ),
 #'   modules = modules(
@@ -250,9 +242,10 @@ template_g_lineplot <- function(dataname = "ANL",
 #'   )
 #' )
 #' if (interactive()) {
-#'   shinyApp(ui = app$ui, server = app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_lineplot <- function(label,
                           dataname,
                           parentname = ifelse(
@@ -301,6 +294,7 @@ tm_g_lineplot <- function(label,
   checkmate::assert_string(mid)
   checkmate::assert_string(interval, null.ok = TRUE)
   whiskers <- match.arg(whiskers)
+  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -343,9 +337,7 @@ tm_g_lineplot <- function(label,
   )
 }
 
-
-#' User Interface for Line Plot Module
-#' @noRd
+#' @keywords internal
 ui_g_lineplot <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -502,10 +494,7 @@ ui_g_lineplot <- function(id, ...) {
   )
 }
 
-
-#' Server for Line Plot Module
-#' @noRd
-#'
+#' @keywords internal
 srv_g_lineplot <- function(id,
                            data,
                            reporter,

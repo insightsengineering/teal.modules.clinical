@@ -1,35 +1,32 @@
 #' Template: Adverse Events Summary
 #'
+#' Creates a valid expression to generate an adverse events summary table.
+#'
 #' @inheritParams template_arguments
-#' @param dthfl_var (`character`)\cr
-#'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in
-#'  the table row for "Total number of deaths".
-#' @param dcsreas_var (`character`)\cr
-#'   variable for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"`
-#'   are summarized in the table row for `"Total number of patients withdrawn from study due to an AE"`.
-#' @param flag_var_anl (`character`)\cr
-#'   flag variable from `dataset` used to count adverse event sub-groups (e.g. Serious
-#'   events, Related events, etc.). Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi (`character`)\cr
-#'   flag variable from `dataset` used to count adverse event special interest groups.
-#'   All flag variables must be of type `logical`. Variable labels are used as table
-#'   row names if they exist.
-#' @param aeseq_var (`character`)\cr
-#'   variable for adverse events sequence number from `dataset`. Used for counting total
-#'   number of events.
-#' @param count_subj (`logical`)\cr w
-#'   whether to show count of unique subjects based on `USUBJID`. Only applies if event flag
-#'   variables are provided.
-#' @param count_pt (`logical`)\cr
-#'   whether to show count of unique preferred terms based on `llt`. Only applies if event
+#' @param dthfl_var (`character`)\cr name of variable for subject death flag from `parentname`.
+#'   Records with `"Y"` are summarized in the table row for "Total number of deaths".
+#' @param dcsreas_var (`character`)\cr name of variable for study discontinuation reason from `parentname`.
+#'   Records with `"ADVERSE EVENTS"` are summarized in the table row for
+#'   "Total number of patients withdrawn from study due to an AE".
+#' @param flag_var_anl (`character`)\cr name of flag variable from `dataset` used to count adverse event sub-groups
+#'   (e.g. Serious events, Related events, etc.). Variable labels are used as table row names if they exist.
+#' @param flag_var_aesi (`character`)\cr name of flag variable from `dataset` used to count adverse event special
+#'   interest groups. All flag variables must be of type `logical`. Variable labels are used as table row names if
+#'   they exist.
+#' @param aeseq_var (`character`)\cr name of variable for adverse events sequence number from `dataset`. Used for
+#'   counting total number of events.
+#' @param count_subj (`logical`)\cr whether to show count of unique subjects (based on `USUBJID`). Only applies if
+#'   event flag variables are provided.
+#' @param count_pt (`logical`)\cr whether to show count of unique preferred terms (based on `llt`). Only applies if
+#'   event flag variables are provided.
+#' @param count_events (`logical`)\cr whether to show count of events (based on `aeseq_var`). Only applies if event
 #'   flag variables are provided.
-#' @param count_events (`logical`)\cr
-#'   whether to show count of events based on `aeseq_var`. Only applies if event flag variables
-#'   are provided.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_events_summary()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_events_summary <- function(anl_name,
                                     parentname,
                                     arm_var,
@@ -40,26 +37,26 @@ template_events_summary <- function(anl_name,
                                     aeseq_var = "AESEQ",
                                     llt = "AEDECOD",
                                     add_total = TRUE,
-                                    total_label = "All Patients",
+                                    total_label = default_total_label(),
+                                    na_level = default_na_str(),
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
-  assertthat::assert_that(
-    assertthat::is.string(anl_name),
-    assertthat::is.string(parentname),
-    is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    assertthat::is.string(dthfl_var),
-    assertthat::is.string(dcsreas_var),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    is.character(flag_var_anl) || is.null(NULL),
-    is.character(flag_var_aesi) || is.null(NULL),
-    assertthat::is.string(aeseq_var),
-    assertthat::is.string(llt),
-    assertthat::is.flag(count_subj),
-    assertthat::is.flag(count_pt),
-    assertthat::is.flag(count_events)
-  )
+  checkmate::assert_string(anl_name)
+  checkmate::assert_string(parentname)
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+  checkmate::assert_string(dthfl_var)
+  checkmate::assert_string(dcsreas_var)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_character(flag_var_anl, null.ok = TRUE)
+  checkmate::assert_character(flag_var_aesi, null.ok = TRUE)
+  checkmate::assert_string(aeseq_var)
+  checkmate::assert_string(llt)
+  checkmate::assert_flag(count_subj)
+  checkmate::assert_flag(count_pt)
+  checkmate::assert_flag(count_events)
 
   y <- list()
 
@@ -101,7 +98,6 @@ template_events_summary <- function(anl_name,
     quote(study_id <- unique(anl[["STUDYID"]]))
   )
 
-
   # Create dummy variable for counting patients with an AE
   data_list <- add_expr(
     data_list,
@@ -111,12 +107,15 @@ template_events_summary <- function(anl_name,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl <- anl %>% dplyr::mutate(
-        `:=`(a, as.character(a)),
-        USUBJID_AESEQ = paste(usubjid, aeseq_var, sep = "@@")
-      ),
+      expr = {
+        anl[[a]] <- as.character(anl[[a]])
+        anl <- anl %>%
+          dplyr::mutate(
+            USUBJID_AESEQ = paste(usubjid, aeseq_var, sep = "@@")
+          )
+      },
       env = list(
-        a = as.name(llt),
+        a = llt,
         usubjid = as.name("USUBJID"),
         aeseq_var = as.name(aeseq_var)
       )
@@ -146,15 +145,15 @@ template_events_summary <- function(anl_name,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl"))
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      env = list(dataname = as.name("anl"), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
@@ -199,6 +198,7 @@ template_events_summary <- function(anl_name,
       )
     )
   }
+
   layout_parent_list <- add_expr(
     layout_parent_list,
     substitute(
@@ -268,7 +268,10 @@ template_events_summary <- function(anl_name,
   if (add_total) {
     layout_anl_list <- add_expr(
       layout_anl_list,
-      quote(rtables::add_overall_col(label = "All Patients"))
+      substitute(
+        expr = rtables::add_overall_col(label = tot_label),
+        env = list(tot_label = total_label)
+      )
     )
   }
 
@@ -473,43 +476,49 @@ template_events_summary <- function(anl_name,
   y
 }
 
-#' Teal Module: Adverse Events Summary
+#' teal Module: Adverse Events Summary
+#'
+#' This module produces an adverse events summary table.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams template_arguments
 #' @inheritParams template_events_summary
-#' @param dthfl_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'  variable for subject death flag from `parentname`. Records with `"Y"`` are summarized in
-#'  the table row for "Total number of deaths".
-#' @param dcsreas_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable
-#'   for study discontinuation reason from `parentname`. Records with `"ADVERSE EVENTS"` are
-#'   summarized in the table row for `"Total number of patients withdrawn from study due to an AE"`.
-#' @param flag_var_anl ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   vector with names of flag variables from `dataset` used to count adverse event
-#'   sub-groups (e.g. Serious events, Related events, etc.). Variable labels are used
-#'   as table row names if they exist.
-#' @param flag_var_aesi ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   vector with names of flag variables from `dataset` used to count adverse event
-#'   special interest groups. All flag variables must be of type `logical`. Variable
-#'   labels are used as table row names if they exist.
-#' @param aeseq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable
-#' for adverse events sequence number from `dataset`. Used for counting total number of events.
+#' @param dthfl_var ([teal.transform::choices_selected()])\cr object
+#'   with all available choices and preselected option for variable names that can be used as death flag variable.
+#'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
+#' @param dcsreas_var ([teal.transform::choices_selected()])\cr object
+#'   with all available choices and preselected option for variable names that can be used as study discontinuation
+#'   reason variable. Records with `"ADVERSE EVENTS"` are summarized in the table row for
+#'   "Total number of patients withdrawn from study due to an AE".
+#' @param flag_var_anl ([teal.transform::choices_selected()] or `NULL`)\cr
+#'   vector with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious events,
+#'   Related events, etc.). Variable labels are used as table row names if they exist.
+#' @param flag_var_aesi ([teal.transform::choices_selected()] or `NULL`)\cr
+#'   vector with names of flag variables from `dataset` used to count adverse event special interest groups. All flag
+#'   variables must be of type `logical`. Variable labels are used as table row names if they exist.
+#' @param aeseq_var ([teal.transform::choices_selected()])\cr variable for
+#'   adverse events sequence number from `dataset`. Used for counting total number of events.
 #'
-#' @export
+#' @inherit module_arguments return seealso
+#'
 #' @examples
+#' library(dplyr)
+#' library(formatters)
+#'
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl %>%
-#'     dplyr::mutate(
-#'       DTHFL = dplyr::case_when( #' nolint
+#'     mutate(
+#'       DTHFL = case_when( #' nolint
 #'         !is.na(DTHDT) ~ "Y",
 #'         TRUE ~ ""
-#'       ) %>% formatters::with_label("Subject Death Flag")
+#'       ) %>% with_label("Subject Death Flag")
 #'     )
 #'   ADAE <- tmc_ex_adae
 #'
 #'   add_event_flags <- function(dat) {
 #'     dat <- dat %>%
-#'       dplyr::mutate(
+#'       mutate(
 #'         TMPFL_SER = AESER == "Y",
 #'         TMPFL_REL = AEREL == "Y",
 #'         TMPFL_GR5 = AETOXGR == "5",
@@ -525,7 +534,7 @@ template_events_summary <- function(anl_name,
 #'       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
 #'       TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'     )
-#'     formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'     var_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'     dat
 #'   }
 #'
@@ -570,6 +579,7 @@ template_events_summary <- function(anl_name,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_events_summary <- function(label,
                                 dataname,
                                 parentname = ifelse(
@@ -597,7 +607,8 @@ tm_t_events_summary <- function(label,
                                   fixed = TRUE
                                 ),
                                 add_total = TRUE,
-                                total_label = "All Patients",
+                                total_label = default_total_label(),
+                                na_level = default_na_str(),
                                 count_subj = TRUE,
                                 count_pt = TRUE,
                                 count_events = TRUE,
@@ -608,8 +619,16 @@ tm_t_events_summary <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(flag_var_anl, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(flag_var_aesi, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dthfl_var, "choices_selected")
+  checkmate::assert_class(dcsreas_var, "choices_selected")
+  checkmate::assert_class(llt, "choices_selected")
+  checkmate::assert_class(aeseq_var, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_flag(count_subj)
   checkmate::assert_flag(count_pt)
   checkmate::assert_flag(count_events)
@@ -649,6 +668,7 @@ tm_t_events_summary <- function(label,
         parentname = parentname,
         label = label,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -656,9 +676,7 @@ tm_t_events_summary <- function(label,
   )
 }
 
-
-
-#' @noRd
+#' @keywords internal
 ui_t_events_summary <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -769,7 +787,7 @@ ui_t_events_summary <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_events_summary <- function(id,
                                  data,
                                  reporter,
@@ -785,6 +803,7 @@ srv_t_events_summary <- function(id,
                                  llt,
                                  label,
                                  total_label,
+                                 na_level,
                                  basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -917,6 +936,7 @@ srv_t_events_summary <- function(id,
         llt = as.vector(merged$anl_input_r()$columns_source$llt),
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         count_subj = input$count_subj,
         count_pt = input$count_pt,
         count_events = input$count_events

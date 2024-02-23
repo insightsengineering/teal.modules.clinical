@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_laboratory.R
 \name{tm_t_pp_laboratory}
 \alias{tm_t_pp_laboratory}
-\title{Teal Module: Patient Profile Laboratory Teal Module}
+\title{teal Module: Patient Profile Laboratory Table}
 \usage{
 tm_t_pp_laboratory(
   label,
@@ -10,8 +10,10 @@ tm_t_pp_laboratory(
   parentname = "ADSL",
   patient_col = "USUBJID",
   timepoints = NULL,
-  aval = NULL,
-  avalu = NULL,
+  aval = lifecycle::deprecated(),
+  aval_var = NULL,
+  avalu = lifecycle::deprecated(),
+  avalu_var = NULL,
   param = NULL,
   paramcd = NULL,
   anrind = NULL,
@@ -20,45 +22,48 @@ tm_t_pp_laboratory(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character})\cr patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{timepoints}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-Time variable to be represented in the laboratory table.}
+\item{timepoints}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the time variable from \code{dataname}.}
 
-\item{aval}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AVAL} column of the \code{ADLB} dataset.}
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
-\item{avalu}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AVALU} column of the \code{ADLB} dataset.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{PARAM} column of the \code{ADLB} dataset.}
+\item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{PARAMCD} column of the \code{ADLB} dataset.}
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for the analysis unit variable.}
 
-\item{anrind}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ANRIND} column of the \code{ADLB} dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".}
+\item{param}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{PARAM} variable from \code{dataname}.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
+
+\item{anrind}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{ANRIND} variable from \code{dataname}. Variable should have the
+following 3 levels: \code{"HIGH"}, \code{"LOW"}, and \code{"NORMAL"}.}
+
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+}
+\value{
+a \code{teal_module} object.
 }
 \description{
-This teal module produces a patient profile laboratory table using \code{ADaM} datasets.
+This module produces a patient profile laboratory table using ADaM datasets.
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -94,11 +99,11 @@ app <- init(
         choices = variable_choices(ADLB, "ANRIND"),
         selected = "ANRIND"
       ),
-      aval = choices_selected(
+      aval_var = choices_selected(
         choices = variable_choices(ADLB, "AVAL"),
         selected = "AVAL"
       ),
-      avalu = choices_selected(
+      avalu_var = choices_selected(
         choices = variable_choices(ADLB, "AVALU"),
         selected = "AVALU"
       )

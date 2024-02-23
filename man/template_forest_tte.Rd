@@ -24,41 +24,33 @@ template_forest_tte(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{character})\cr
-the level of reference arm in case of arm comparison.}
+\item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr
-the level of comparison arm in case of arm comparison.}
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{obj_var_name}{(\code{character})\cr additional text string append to output title.}
+\item{obj_var_name}{(\code{character})\cr additional text to append to the table title.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
-\item{cnsr_var}{(\code{character})\cr
-name of the censoring variable.}
+\item{cnsr_var}{(\code{character})\cr name of the censoring variable.}
 
 \item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
 
-\item{strata_var}{(\code{character})\cr
-names of the variables for stratified analysis.}
+\item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{col_symbol_size}{(\code{integer})\cr column index to be used to determine relative size for
+\item{col_symbol_size}{(\code{integer} or \code{NULL})\cr column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 to calculate the estimator. If \code{NULL}, the same symbol size is used for all subgroups.}
 
+<<<<<<< HEAD
 \item{time_unit_var}{(\code{character})\cr
 name of the variable representing time units.}
 
@@ -73,11 +65,20 @@ For this module, this argument will only accept \code{ggplot2_args} object with 
 \code{title}, \code{caption}.
 No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
 with default module arguments (hard coded in the module body).
+=======
+\item{time_unit_var}{(\code{character})\cr name of the variable representing time units.}
+>>>>>>> main
 
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+(hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression for survival forest plot.
+Creates a valid expression to generate a survival forest plot.
 }
 \seealso{
 \code{\link[=tm_g_forest_tte]{tm_g_forest_tte()}}

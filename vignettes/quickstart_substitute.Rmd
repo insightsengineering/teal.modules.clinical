@@ -31,36 +31,36 @@ Instead of focusing on the value, it is also possible to work with the **code**
 which generated the **value**. This is where non standard evaluation, or NSE,
 starts.
 The function `substitute` is an important element of non-standard evaluation.
-For instance, if we consider `a` defined such as `a <- 5`,
-then the expression `a` returns `r a <- 5; a`, the `substitute(a)` returns
+For instance, if we consider `a` defined as `a <- 5`,
+then the expression `a` returns `r a <- 5; a`, and the `substitute(a)` returns
 the code to obtain the value: `a`.
 
-The principle on which relies `teal` is to:
+This is the principle `teal` relies on to:
 
 i. generate expressions.
 ii. return the result of the expression in the result panel of the app.
 iii. return the corresponding code (or expression) with `Show R Code`.
 
 The expression returning the displayed value must be reactive.
-The information in the encoding in one hand and the filtering panel on the
-other hand modify the expression and the displayed value. As so, teal needs to
+The information in the encoding on one hand, and the filtering panel on the
+other hand modify the expression and the displayed value. As such, `teal` needs to
 work both on expressions and values and relies heavily on NSE.
 
 The NSE is an advanced notion and mixing it with Shiny app development is a
-source of difficulties:
+source of difficulties such as:
 
-- hindered efficient coding as the Shiny app must be run to check the good
+- hindered coding efficiency as the Shiny app must be run in order to check the correct
   execution of the code.
 - limited possibilities for testing.
 
 As an alternative, it is possible to focus first on the NSE aspects in plain R,
-and secondly, only once ready, integrate it in the Shiny App. Hereafter, are
+and only once ready, integrate it in the Shiny App. The following are a
 few practical examples demonstrating how NSE works.
 The choice was made to focus on `substitute`.
 
-# Basic
+# The Basics
 
-## Principle
+## NSE Principle
 
 ```{r, error = TRUE}
 non_evaluated_expression <- substitute(expr = a + b)
@@ -71,10 +71,10 @@ eval(non_evaluated_expression)
 What happened?
 
 - `substitute` returns the code and not the value,
-- it even does not try the code, therefore it is possible to return an
+- it does not attempt to run the code, therefore it is possible to return an
   expression which does not make sense (yet), for instance involving two non
   defined objects.
-- If the values of `a` and `b` exist, the expression can run without error (below).
+- If the values of `a` and `b` exist, the expression can run without error:
 
 ```{r}
 a <- 1
@@ -127,7 +127,7 @@ from was directly declared within the `substitute` expression (argument `expr`)
 and the values were substituted (argument `env`).
 - `substitute` returned a non-evaluated expression, use `eval()` to evaluate it.
 
-With a slightly more elaborated expression:
+With a slightly more elaborate expression:
 
 ```{r}
 non_evaluated_expression <- substitute(
@@ -146,7 +146,7 @@ Note that:
 ## Replace an object name
 
 In formulas, character strings are not accepted,
-how to operate the substitution?
+how do we execute the substitution?
 
 ```{r, error = TRUE}
 # Error expected:
@@ -175,8 +175,8 @@ plot_expr
 eval(plot_expr)
 ```
 
-The object names have a special `name` _class_; `as.names` coerces a character
-string to an object name (alternatively, `as.symbol` provides identical result):
+The object names have a specific _class_ (`name`); `as.names` coerces a character
+string to an object name (alternatively, `as.symbol` provides an identical result):
 
 ```{r}
 plot_expr <- substitute(
@@ -192,7 +192,7 @@ eval(plot_expr)
 ```
 
 
-## What with dataframe name?
+## What about dataframe names?
 
 Lets imagine a pipe-flavored expression, with `df` being the term
 corresponding to the dataframe which should be substituted:
@@ -204,7 +204,7 @@ provided and not the expression generating the dataframe:
 the pipeline is working but not humanly readable.
 
 ```{r}
-library(magrittr)
+library(dplyr)
 
 short_iris <- head(iris)
 plot_expr <- substitute(
@@ -254,18 +254,17 @@ eval(plot_expr)
 
 ## Direct use of `substitute`
 
-The `substitute` approach can be used with the new `rtables` pipelines.
+The `substitute` approach can be used with the `rtables` pipelines.
 
-Lets prepare an example for reporting data from LB domain. The example is based
+Lets prepare an example for reporting data from the LB domain. The example is based
 on the template `LBT01`; the target is to report in columns the lab test result
 per study arm, as values (`AVAL`) and changes from baseline (`CHG`),
 per analysis visit in rows.
 
 The data can be prepared as follows:
 
-```{r}
+```{r, message=FALSE}
 library(rtables)
-library(dplyr)
 library(tern)
 
 adlb <- teal.modules.clinical::tmc_ex_adlb
@@ -312,6 +311,7 @@ rtables_expr
 
 ```{r, message = FALSE}
 library(teal)
+library(styler)
 
 #' Stylish code
 #'
@@ -320,7 +320,7 @@ library(teal)
 #' @param expr (`call`)\cr or possibly understood as so.
 #'
 styled_expr <- function(expr) {
-  styler:::print.vertical(
+  print(
     styler::style_text(text = deparse(expr)),
     colored = FALSE
   )
@@ -365,7 +365,7 @@ eval(result)
 * The same results as before are obtained ...
 * while, fine tuning is easier.
 * For instance, the variable designating the study arm and the visit can be
-  changed, which is an expected feature in teal module encoding panel.
+  changed, which is an expected feature in `teal` module encoding panel.
 
 ```{r}
 result <- rtables_expr(df = adlb_f, arm = "ARMCD", visit = "AVISITN")
@@ -412,7 +412,7 @@ result
 * In the context of `rtables`, layers enclosing `analyze` call handle `.stats`
   option. The lean expression should include the `.stats` option,
   **only when the default value is changed**.
-* This is again an expected feature in teal module when rendering the code with
+* This is again an expected feature in `teal` module when rendering the code with
   `Show R Code`:
 
 ```{r}

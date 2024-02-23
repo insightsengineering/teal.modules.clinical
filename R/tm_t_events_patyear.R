@@ -1,13 +1,16 @@
-#' Template: Event rates adjusted for patient-years
+#' Template: Event Rates Adjusted for Patient-Years
+#'
+#' Creates a valid expression to generate a table of event rates adjusted for patient-years.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis.
-#' @param events_var (`integer`)\cr number of observed events.
-#' @param label_paramcd (`string`)\cr title of table based on `paramcd`
+#' @param events_var (`character`)\cr name of the variable for number of observed events.
+#' @param label_paramcd (`character`)\cr `paramcd` variable text to use in the table title.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_events_patyear()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_events_patyear <- function(dataname,
                                     parentname,
                                     arm_var,
@@ -15,7 +18,8 @@ template_events_patyear <- function(dataname,
                                     label_paramcd,
                                     aval_var = "AVAL",
                                     add_total = TRUE,
-                                    total_label = "All Patients",
+                                    total_label = default_total_label(),
+                                    na_level = default_na_str(),
                                     control = control_incidence_rate(),
                                     drop_arm_levels = TRUE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
@@ -43,15 +47,15 @@ template_events_patyear <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = ""),
-      env = list(dataname = as.name("anl"))
+      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      env = list(dataname = as.name("anl"), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
@@ -142,21 +146,24 @@ template_events_patyear <- function(dataname,
   y
 }
 
-#' Teal module: Event rates adjusted for patient-years
+#' teal Module: Event Rates Adjusted for Patient-Years
+#'
+#' This module produces a table of event rates adjusted for patient-years.
 #'
 #' @inheritParams module_arguments
-#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices and preselected option for the analysis unit variable.
-#' @param events_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all event counts.
+#' @inheritParams template_events_patyear
+#' @param events_var ([teal.transform::choices_selected()])\cr object with
+#'   all available choices and preselected option for the variable with all event counts.
 #'
-#' @export
+#' @inherit module_arguments return seealso
+#'
 #' @examples
+#' library(dplyr)
 #' ADSL <- tmc_ex_adsl
 #' ADAETTE <- tmc_ex_adaette %>%
-#'   dplyr::filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
-#'   dplyr::mutate(is_event = CNSR == 0) %>%
-#'   dplyr::mutate(n_events = as.integer(is_event))
+#'   filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
+#'   mutate(is_event = CNSR == 0) %>%
+#'   mutate(n_events = as.integer(is_event))
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -165,9 +172,9 @@ template_events_patyear <- function(dataname,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADAETTE <- tmc_ex_adaette %>%
-#'         dplyr::filter(PARAMCD %in% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) %>%
-#'         dplyr::mutate(is_event = CNSR == 0) %>%
-#'         dplyr::mutate(n_events = as.integer(is_event))
+#'         filter(PARAMCD %in% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) %>%
+#'         mutate(is_event = CNSR == 0) %>%
+#'         mutate(n_events = as.integer(is_event))
 #'     "
 #'   ),
 #'   modules = modules(
@@ -195,6 +202,7 @@ template_events_patyear <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_events_patyear <- function(label,
                                 dataname,
                                 parentname = ifelse(
@@ -214,7 +222,8 @@ tm_t_events_patyear <- function(label,
                                   fixed = TRUE
                                 ),
                                 add_total = TRUE,
-                                total_label = "All Patients",
+                                total_label = default_total_label(),
+                                na_level = default_na_str(),
                                 conf_level = teal.transform::choices_selected(
                                   c(0.95, 0.9, 0.8), 0.95,
                                   keep_order = TRUE
@@ -235,6 +244,7 @@ tm_t_events_patyear <- function(label,
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -262,6 +272,7 @@ tm_t_events_patyear <- function(label,
         parentname = parentname,
         label = label,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -269,7 +280,7 @@ tm_t_events_patyear <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_events_patyear <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -367,7 +378,7 @@ ui_events_patyear <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_events_patyear <- function(id,
                                data,
                                reporter,
@@ -381,6 +392,7 @@ srv_events_patyear <- function(id,
                                events_var,
                                add_total,
                                total_label,
+                               na_level,
                                drop_arm_levels,
                                label,
                                basic_table_args) {
@@ -511,6 +523,7 @@ srv_events_patyear <- function(id,
         label_paramcd = label_paramcd,
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         control = control_incidence_rate(
           conf_level = as.numeric(input$conf_level), # nolint
           conf_type = if (input$conf_method == "Normal (rate)") {

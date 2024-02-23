@@ -1,12 +1,15 @@
-#' Template: Basic Info
+#' Template: Patient Profile Basic Info
 #'
-#' Creates a basic info template.
+#' Creates a valid expression to generate a patient profile basic info report using ADaM datasets.
 #'
 #' @inheritParams template_arguments
-#' @param vars (`character`)\cr variable names to be shown in Basic Info tab.
-#' @param patient_id (`character`)\cr patient ID.
-#' @keywords internal
+#' @param vars (`character`)\cr names of the variables to be shown in the table.
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_t_pp_basic_info()]
+#'
+#' @keywords internal
 template_basic_info <- function(dataname = "ANL",
                                 vars,
                                 patient_id = NULL) {
@@ -52,17 +55,16 @@ template_basic_info <- function(dataname = "ANL",
   y
 }
 
-
-#' Teal Module: Patient Profile Basic Info Teal Module
+#' teal Module: Patient Profile Basic Info
 #'
-#' This teal module produces a patient profile basic info report using `ADaM` datasets.
+#' This module produces a patient profile basic info report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param vars ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `ADSL` columns to be shown in Basic Info tab.
+#' @inheritParams template_basic_info
+#' @param vars ([teal.transform::choices_selected()])\cr  object with all
+#'   available choices and preselected option for variables from `dataname` to show in the table.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -88,6 +90,7 @@ template_basic_info <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_pp_basic_info <- function(label,
                                dataname = "ADSL",
                                patient_col = "USUBJID",
@@ -98,6 +101,7 @@ tm_t_pp_basic_info <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(vars, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
@@ -123,6 +127,7 @@ tm_t_pp_basic_info <- function(label,
   )
 }
 
+#' @keywords internal
 ui_t_basic_info <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(ui_args$vars)
@@ -161,7 +166,7 @@ ui_t_basic_info <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_t_basic_info <- function(id,
                              data,
                              reporter,

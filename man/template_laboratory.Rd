@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_laboratory.R
 \name{template_laboratory}
 \alias{template_laboratory}
-\title{Template: Laboratory}
+\title{Template: Patient Profile Laboratory Table}
 \usage{
 template_laboratory(
   dataname = "ANL",
@@ -10,15 +10,16 @@ template_laboratory(
   param = "PARAM",
   anrind = "ANRIND",
   timepoints = "ADY",
-  aval = "AVAL",
-  avalu = "AVALU",
+  aval = lifecycle::deprecated(),
+  aval_var = "AVAL",
+  avalu = lifecycle::deprecated(),
+  avalu_var = "AVALU",
   patient_id = NULL,
   round_value = 0L
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
@@ -26,18 +27,27 @@ analysis data used in teal module.}
 
 \item{anrind}{(\code{character})\cr name of the analysis reference range indicator variable.}
 
-\item{timepoints}{(\code{character})\cr name of time variable used for
-the laboratory table.}
+\item{timepoints}{(\code{character})\cr name of time variable.}
 
-\item{aval}{(\code{character})\cr name of the analysis value variable.}
+\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
-\item{avalu}{(\code{character})\cr name of the analysis value unit variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
+
+\item{avalu}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{avalu_var} argument instead.}
+
+\item{avalu_var}{(\code{character})\cr name of the analysis value unit variable.}
 
 \item{patient_id}{(\code{character})\cr patient ID.}
 
-\item{round_value}{(\code{numeric})\cr number of decimal places to be used when rounding.}
+\item{round_value}{(\code{numeric})\cr number of decimal places to round to.}
+}
+\value{
+a \code{list} of expressions to generate a table or plot object.
 }
 \description{
-Creates a laboratory template.
+Creates a valid expression to generate a patient profile laboratory table using ADaM datasets.
+}
+\seealso{
+\code{\link[=tm_t_pp_laboratory]{tm_t_pp_laboratory()}}
 }
 \keyword{internal}

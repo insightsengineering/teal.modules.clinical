@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_ancova.R
 \name{tm_t_ancova}
 \alias{tm_t_ancova}
-\title{Teal Module: \code{ANCOVA} Teal Module}
+\title{teal Module: ANCOVA Summary}
 \usage{
 tm_t_ancova(
   label,
@@ -26,36 +26,29 @@ tm_t_ancova(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr
-If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis
-variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{cov_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the covariates
-variables.}
+\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the covariates variables.}
 
 \item{include_interact}{(\code{logical})\cr whether an interaction term should be included in the model.}
 
@@ -66,46 +59,41 @@ with arm. If the interaction is not needed, the default option is \code{NULL}.}
 to select the specific \code{ANCOVA} results when interact_var is discrete. If the interaction is not
 needed, the default option is \code{FALSE}.}
 
-\item{avisit}{(\code{choices_selected} or \code{data_extract_spec})\cr
-value of analysis visit \code{AVISIT} of interest.}
+\item{avisit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value of analysis
+visit \code{AVISIT} of interest.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{conf_level}{(\code{choices_selected})\cr
-object with all available choices and preselected option for the confidence
-level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
-
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: \code{ANCOVA} Teal Module
+This module produces a table to summarize analysis of variance, consistent with the TLG Catalog
+template for \code{AOVT01} available \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/aovt01.html}{here} when multiple
+endpoints are selected.
 }
 \details{
-This module produces an analysis of variance summary table that is
-similar to \code{AOVT01} when multiple endpoints are selected.
-When a single endpoint is selected, both unadjusted and adjusted comparison
-would be provided. This modules expects that the analysis data has the
-following variables:
-
-\tabular{ll}{
-\code{AVISIT} \tab variable used to filter for analysis visits.\cr
-\code{PARAMCD} \tab variable used to filter for endpoints, after filtering for
-\code{paramcd} and \code{avisit}, one observation per patient is expected for the analysis
-to be meaningful.
+When a single endpoint is selected, both unadjusted and adjusted comparison are provided. This modules
+expects that the analysis data has the following variables:
+\itemize{
+\item \code{AVISIT}: variable used to filter for analysis visits.
+\item \code{PARAMCD}: variable used to filter for endpoints, after filtering for \code{paramcd} and \code{avisit}, one
+observation per patient is expected for the analysis to be meaningful.
 }
 }
 \examples{
@@ -168,4 +156,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

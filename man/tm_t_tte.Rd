@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_tte.R
 \name{tm_t_tte}
 \alias{tm_t_tte}
-\title{Teal Module: Time To Event Table Teal Module}
+\title{teal Module: Time-To-Event Table}
 \usage{
 tm_t_tte(
   label,
@@ -27,104 +27,100 @@ tm_t_tte(
     "AVALU", fixed = TRUE),
   event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
   add_total = FALSE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
+  na_level = default_na_str(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr
-If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-names of the variables for stratified analysis.}
+\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
+the variables for stratified analysis.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis
-variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{cnsr_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the censoring
-variable.}
+\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the censoring variable.}
 
-\item{conf_level_coxph}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level_coxph}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
+pre-selected option for confidence level, each within range of (0, 1).}
 
-\item{conf_level_survfit}{(\code{\link[=choices_selected]{choices_selected()}})\cr object with all available choices and pre-selected option
-for confidence level, each within range of (0, 1).}
+\item{conf_level_survfit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
+pre-selected option for confidence level, each within range of (0, 1).}
 
-\item{time_points}{(\code{choices_selected})\cr
-object with all available choices and preselected option for time points that
-can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
+\item{time_points}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and preselected option
+for time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the time unit
-variable.}
+\item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
+with all available choices and pre-selected option for the time unit variable.}
 
 \item{event_desc_var}{(\code{character} or \code{\link[=data_extract_spec]{data_extract_spec()}})\cr variable name with the event description
 information, optional.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
+
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
-
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Time To Event Table Teal Module
+This module produces a time-to-event analysis summary table, consistent with the TLG Catalog
+template for \code{TTET01} available \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/ttet01.html}{here}.
 }
 \details{
-This module produces a response summary table that is similar to \code{TTET01}. The core functionality is based
-on \code{\link[=coxph_pairwise]{coxph_pairwise()}}, \code{\link[=surv_timepoint]{surv_timepoint()}} and \code{\link[=surv_time]{surv_time()}} from package \code{tern}.\cr
-The following variables are used in the module:
-
-\tabular{ll}{
-\code{AVAL} \tab time to event\cr
-\code{CNSR} \tab boolean or 0,1 is element in \code{AVAL} censored\cr
-\code{PARAMCD} \tab variable used to filter for endpoint (e.g. OS), after
-filtering for \code{paramcd} one observation per patient is expected
+\itemize{
+\item The core functionality of this module is based on \code{\link[=coxph_pairwise]{coxph_pairwise()}}, \code{\link[=surv_timepoint]{surv_timepoint()}}, and \code{\link[=surv_time]{surv_time()}} from
+the \code{tern} package.
+\item The arm and stratification variables are taken from the \code{parentname} data.
+\item The following variables are used in the module:
+\itemize{
+\item \code{AVAL}: time to event
+\item \code{CNSR}: 1 if record in \code{AVAL} is censored, 0 otherwise
+\item \code{PARAMCD}: variable used to filter for endpoint (e.g. OS). After
+filtering for \code{PARAMCD} one observation per patient is expected
 }
-
-The arm and stratification variables and taken from the \code{parentname} data.
+}
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -180,4 +176,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

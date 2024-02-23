@@ -1,22 +1,17 @@
 #' Template: Events by Term
 #'
+#' Creates a valid expression to generate a table of events by term.
+#'
 #' @inheritParams template_arguments
-#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
-#'   Default is "event".
-#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
-#'   on column `sort_freq_col` by decreasing number of patients with event. Alternative option `alpha` sorts events
-#'   alphabetically.
 #' @param sort_freq_col (`character`)\cr column to sort by frequency on if `sort_criteria` is set to `freq_desc`.
 #' @param incl_overall_sum (`flag`)\cr  whether two rows which summarize the overall number of adverse events
 #'   should be included at the top of the table.
 #'
-#' @seealso [tm_t_events()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [tm_t_events()]
+#'
+#' @keywords internal
 template_events <- function(dataname,
                             parentname,
                             arm_var,
@@ -25,7 +20,8 @@ template_events <- function(dataname,
                             label_hlt = NULL,
                             label_llt = NULL,
                             add_total = TRUE,
-                            total_label = "All Patients",
+                            total_label = default_total_label(),
+                            na_level = default_na_str(),
                             event_type = "event",
                             sort_criteria = c("freq_desc", "alpha"),
                             sort_freq_col = total_label,
@@ -34,20 +30,19 @@ template_events <- function(dataname,
                             drop_arm_levels = TRUE,
                             incl_overall_sum = TRUE,
                             basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    assertthat::is.string(hlt) || is.null(hlt),
-    assertthat::is.string(llt) || is.null(llt),
-    assertthat::is.string(label_hlt) || is.null(label_hlt),
-    assertthat::is.string(label_llt) || is.null(label_llt),
-    is.character(c(llt, hlt)),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(event_type),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+  checkmate::assert_string(hlt, null.ok = TRUE)
+  checkmate::assert_string(llt, null.ok = TRUE)
+  checkmate::assert_string(label_hlt, null.ok = TRUE)
+  checkmate::assert_string(label_llt, null.ok = TRUE)
+  checkmate::assert_character(c(llt, hlt))
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(event_type)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
 
@@ -90,8 +85,8 @@ template_events <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_lvl),
+      env = list(parentname = as.name(parentname), na_lvl = na_level)
     )
   )
 
@@ -100,8 +95,8 @@ template_events <- function(dataname,
       data_list <- add_expr(
         data_list,
         substitute(
-          expr = anl <- anl %>% dplyr::mutate(`:=`(hlt, as.character(hlt))),
-          env = list(hlt = as.name(hlt))
+          expr = anl[[hlt]] <- as.character(anl[[hlt]]),
+          env = list(hlt = hlt)
         )
       )
     }
@@ -110,8 +105,8 @@ template_events <- function(dataname,
       data_list <- add_expr(
         data_list,
         substitute(
-          expr = anl <- anl %>% dplyr::mutate(`:=`(llt, as.character(llt))),
-          env = list(llt = as.name(llt))
+          expr = anl[[llt]] <- as.character(anl[[llt]]),
+          env = list(llt = llt)
         )
       )
     }
@@ -204,9 +199,10 @@ template_events <- function(dataname,
           .labels = c(
             unique = unique_label,
             nonunique = nonunique_label
-          )
+          ),
+          na_str = na_str
         ),
-        env = list(unique_label = unique_label, nonunique_label = nonunique_label)
+        env = list(unique_label = unique_label, nonunique_label = nonunique_label, na_str = na_level)
       )
     )
   }
@@ -251,7 +247,8 @@ template_events <- function(dataname,
             .labels = c(
               unique = unique_label,
               nonunique = nonunique_label
-            )
+            ),
+            na_str = na_str
           ) %>%
           count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
           append_varlabels(dataname, llt, indent = 1L),
@@ -260,7 +257,8 @@ template_events <- function(dataname,
           hlt = hlt,
           llt = llt,
           unique_label = unique_label,
-          nonunique_label = nonunique_label
+          nonunique_label = nonunique_label,
+          na_str = na_level
         )
       )
     )
@@ -454,18 +452,20 @@ template_events <- function(dataname,
   y
 }
 
-#' Teal Module: Events by Term
+#' teal Module: Events by Term
+#'
+#' This module produces a table of events by term.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events
 #'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADAE <- tmc_ex_adae
 #'
-#' app <- teal::init(
+#' app <- init(
 #'   data = cdisc_data(
 #'     ADSL = ADSL,
 #'     ADAE = ADAE,
@@ -496,6 +496,7 @@ template_events <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_events <- function(label,
                         dataname,
                         parentname = ifelse(
@@ -507,7 +508,8 @@ tm_t_events <- function(label,
                         hlt,
                         llt,
                         add_total = TRUE,
-                        total_label = "All Patients",
+                        total_label = default_total_label(),
+                        na_level = default_na_str(),
                         event_type = "event",
                         sort_criteria = c("freq_desc", "alpha"),
                         sort_freq_col = total_label,
@@ -522,9 +524,13 @@ tm_t_events <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(hlt, "choices_selected")
+  checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_string(sort_freq_col)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
@@ -556,6 +562,7 @@ tm_t_events <- function(label,
         event_type = event_type,
         label = label,
         total_label = total_label,
+        na_level = na_level,
         sort_freq_col = sort_freq_col,
         incl_overall_sum = incl_overall_sum,
         basic_table_args = basic_table_args
@@ -565,7 +572,7 @@ tm_t_events <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_events_byterm <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -647,7 +654,7 @@ ui_t_events_byterm <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_events_byterm <- function(id,
                                 data,
                                 filter_panel_api,
@@ -662,6 +669,7 @@ srv_t_events_byterm <- function(id,
                                 incl_overall_sum,
                                 label,
                                 total_label,
+                                na_level,
                                 sort_freq_col,
                                 basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
@@ -781,6 +789,7 @@ srv_t_events_byterm <- function(id,
         label_llt = label_llt,
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         event_type = event_type,
         sort_criteria = input$sort_criteria,
         sort_freq_col = sort_freq_col,

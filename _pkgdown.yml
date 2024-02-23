@@ -39,6 +39,7 @@ reference:
   - title: Helper functions
     contents:
       - add_expr
+      - as_num
       - bracket_expr
       - call_concatenate
       - clean_description
@@ -48,6 +49,7 @@ reference:
       - cs_to_des_select
       - cs_to_filter_spec
       - cs_to_select_spec
+      - default_total_label
       - extract_input
       - get_var_labels
       - h_concat_expr
@@ -58,7 +60,6 @@ reference:
       - split_choices
       - split_col_expr
       - split_interactions
-      - styled_expr
   - title: Data
     desc: Data included in the package.
     contents:

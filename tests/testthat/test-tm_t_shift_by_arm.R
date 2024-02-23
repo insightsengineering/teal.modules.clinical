@@ -6,7 +6,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with de
     paramcd = "PARAMCD",
     visit_var = "AVISIT",
     aval_var = "ANRIND",
-    base_var = "BNRIND",
+    baseline_var = "BNRIND",
     na_level = "<Missing>"
   )
 
@@ -22,7 +22,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with ad
     paramcd = "PARAMCD",
     visit_var = "AVISIT",
     aval_var = "ANRIND",
-    base_var = "BNRIND",
+    baseline_var = "BNRIND",
     na_level = "<Missing>",
     add_total = TRUE
   )
@@ -39,7 +39,7 @@ testthat::test_that("template_shift_by_arm generates correct expressions with na
     paramcd = "PARAMCD",
     visit_var = "AVISIT",
     aval_var = "ANRIND",
-    base_var = "BNRIND",
+    baseline_var = "BNRIND",
     na.rm = TRUE,
     na_level = "<Missing>"
   )

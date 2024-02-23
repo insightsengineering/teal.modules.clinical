@@ -15,24 +15,22 @@ prepare_arm(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{character})\cr
-the level of reference arm in case of arm comparison.}
+\item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr
-the level of comparison arm in case of arm comparison.}
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{compare_arm}{(\code{logical})\cr
-triggers the comparison between study arms.}
+\item{compare_arm}{(\code{logical})\cr triggers the comparison between study arms.}
 
 \item{ref_arm_val}{(\code{character})\cr replacement name for the reference level.}
 
 \item{drop}{(\code{logical})\cr drop the unused variable levels.}
+}
+\value{
+a \code{call}
 }
 \description{
 The function generate the standard expression for pre-processing of dataset
@@ -60,20 +58,18 @@ arm are dropped.
 }
 }
 \examples{
-\dontrun{
-teal.modules.clinical::prepare_arm(
+prepare_arm(
   dataname = "adrs",
   arm_var = "ARMCD",
   ref_arm = "ARM A",
   comp_arm = c("ARM B", "ARM C")
 )
 
-teal.modules.clinical::prepare_arm(
+prepare_arm(
   dataname = "adsl",
   arm_var = "ARMCD",
   ref_arm = c("ARM B", "ARM C"),
   comp_arm = "ARM A"
 )
-}
 
 }

@@ -1,6 +1,11 @@
 # teal.modules.clinical
 
 <!-- start badges -->
+[![CRAN Version](https://www.r-pkg.org/badges/version/teal.modules.clinical?color=green)](https://cran.r-project.org/package=teal.modules.clinical)
+[![Total Downloads](http://cranlogs.r-pkg.org/badges/grand-total/teal.modules.clinical?color=green)](https://cran.r-project.org/package=teal.modules.clinical)
+[![Last Month Downloads](http://cranlogs.r-pkg.org/badges/last-month/teal.modules.clinical?color=green)](https://cran.r-project.org/package=teal.modules.clinical)
+[![Last Week Downloads](http://cranlogs.r-pkg.org/badges/last-week/teal.modules.clinical?color=green)](https://cran.r-project.org/package=teal.modules.clinical)
+
 [![Check 🛠](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/check.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/main/unit-test-report/) [![Docs 📚](https://github.com/insightsengineering/teal.modules.clinical/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/teal.modules.clinical/)
 
 ![GitHub forks](https://img.shields.io/github/forks/insightsengineering/teal.modules.clinical?style=social)
@@ -23,45 +28,59 @@ These modules include, but are not limited to:
 
 <!-- markdownlint-disable MD007 MD030 -->
 -   Data visualizations:
-    -   forest plots (`tm_g_forest_rsp`/`tm_g_forest_tte`)
-    -   line plots (`tm_g_lineplot`)
-    -   `Kaplan-Meier` plots (`tm_g_km`)
+    -   Forest plots (`tm_g_forest_rsp()`/`tm_g_forest_tte()`)
+    -   Line plots (`tm_g_lineplot()`)
+    -   Kaplan-Meier plots (`tm_g_km()`)
     -   ...
 -   Statistical model fits:
-    -   `MMRM` (`tm_a_mmrm`)
-    -   logistic regression (`tm_t_logistic`)
-    -   Cox regression (`tm_t_coxreg`)
+    -   MMRM (`tm_a_mmrm()`)
+    -   Logistic regression (`tm_t_logistic()`)
+    -   Cox regression (`tm_t_coxreg()`)
     -   ...
 -   Summary tables:
-    -   unique patients (`tm_t_summary`)
-    -   exposure across patients (`tm_t_exposure`)
-    -   change from baseline for parameters (`tm_t_summary_by`)
+    -   Unique patients (`tm_t_summary()`)
+    -   Exposure across patients (`tm_t_exposure()`)
+    -   Change from baseline for parameters (`tm_t_summary_by()`)
     -   ...
 -   Patient-level profile modules:
-    -   table of basic information about chosen patient (`tm_t_pp_basic_info`)
-    -   plot of patient vitals over time (`tm_g_pp_vitals`)
-    -   general timeline for individual patients (`tm_g_pp_patient_timeline`)
+    -   Table of basic information about chosen patient (`tm_t_pp_basic_info()`)
+    -   Plot of patient vitals over time (`tm_g_pp_vitals()`)
+    -   General timeline for individual patients (`tm_g_pp_patient_timeline()`)
     -   ...
 
 <!-- markdownlint-enable MD007 MD030 -->
 
-Most of the modules in `teal.modules.clinical` use functions from the R package [tern](https://insightsengineering.github.io/tern/) in order to produce their output.
+Most modules in the package are implemented using functions from the R package [`tern`](https://insightsengineering.github.io/tern/) in order to produce their output.
 
-Please see [teal gallery](https://insightsengineering.github.io/teal.gallery/main/) and [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/) for examples of `teal` apps created using modules from this package.
+Please see the [Teal Gallery](https://insightsengineering.github.io/teal.gallery/) and [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/) for examples of `shiny` apps created using modules from this package.
 
 ## Installation
 
-From July 2023 `insightsengineering` packages are available on [r-universe](https://r-universe.dev/).
-
 ```r
 # stable versions
-install.packages('teal.modules.clinical', repos = c('https://insightsengineering.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('teal.modules.clinical')
 
-# beta versions
-install.packages('teal.modules.clinical', repos = c('https://pharmaverse.r-universe.dev', 'https://cloud.r-project.org'))
+# install.packages("pak")
+pak::pak("insightsengineering/teal.modules.clinical@*release")
 ```
 
-See package vignettes `browseVignettes(package = "teal.modules.clinical")` for usage of this package.
+Alternatively, you might want to use the development version available on [r-universe](https://r-universe.dev/).
+
+```r
+# beta versions
+install.packages('teal.modules.clinical', repos = c('https://pharmaverse.r-universe.dev', getOption('repos')))
+
+# install.packages("pak")
+pak::pak("insightsengineering/teal.modules.clinical")
+```
+
+## Usage
+
+To understand how to use this package, please refer to the [Package Website](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/).
+
+## Getting help
+
+If you encounter a bug or have a feature request, please file an issue. For questions, discussions, and staying up to date, please use the `teal` channel in the [`pharmaverse` slack workspace](https://pharmaverse.slack.com).
 
 ## Acknowledgment
 

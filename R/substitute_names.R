@@ -1,6 +1,6 @@
 #' Substitute in Quoted Expressions
 #'
-#' This version of substitute is needed because \code{substitute} does not
+#' This version of substitute is needed because [substitute()] does not
 #' evaluate it's first argument, and it's often useful to be able to modify
 #' a quoted expression.
 #'
@@ -12,11 +12,8 @@
 #' @note This is simplified from the package `pryr` to avoid another dependency.
 #' @seealso [substitute_names()]
 #'
-#' @examples
-#' x <- quote(a + b)
-#' substitute(x, list(a = 1, b = 2))
-#' teal.modules.clinical:::substitute_q(x, list(a = 1, b = 2))
 #' @keywords internal
+#'
 substitute_q <- function(qexpr, env) {
   stopifnot(is.language(qexpr))
   call <- substitute(substitute(qexpr, env), list(qexpr = qexpr))
@@ -38,21 +35,8 @@ substitute_q <- function(qexpr, env) {
 #' @return The modified expression.
 #' @seealso [substitute_q()]
 #'
-#' @examples
-#' teal.modules.clinical:::substitute_names(
-#'   mutate(a = a + b, b = c + d),
-#'   names = list(a = as.name("d"), b = as.name("e"))
-#' )
-#' teal.modules.clinical:::substitute_names(
-#'   c(a = fun(a), b = 3),
-#'   names = list(a = as.name("b"), b = as.name("c"))
-#' )
-#' teal.modules.clinical:::substitute_names(
-#'   c(a = fun(a), b = bla),
-#'   names = list(a = as.name("b"), b = as.name("c")),
-#'   others = list(bla = "foo")
-#' )
 #' @keywords internal
+#'
 substitute_names <- function(expr, names, others = list()) {
   checkmate::assert_list(names, min.len = 1, names = "unique", types = "name")
   checkmate::assert_list(others, min.len = 0, names = "unique")

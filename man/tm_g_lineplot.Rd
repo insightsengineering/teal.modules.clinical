@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_lineplot.R
 \name{tm_g_lineplot}
 \alias{tm_g_lineplot}
-\title{Teal Module: Line Plot}
+\title{teal Module: Line Plot}
 \usage{
 tm_g_lineplot(
   label,
@@ -38,14 +38,11 @@ tm_g_lineplot(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{strata}{(\code{character} or \code{NA})\cr deprecated - group variable name.}
 
@@ -55,13 +52,13 @@ parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{y_unit}{(\code{character} or \code{NA})\cr \code{y_unit} variable name.}
 
-\item{paramcd}{(\code{character} or \code{NA})\cr \code{paramcd} variable name.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{param}{(\code{character})\cr
-parameter chosen to filter the data by.}
+\item{param}{(\code{character})\cr parameter to filter the data by.}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
 \item{interval}{(\code{character} or \code{NULL})\cr names of the statistics that will be plotted as intervals.
 All the statistics indicated in \code{interval} variable must be present in the object returned by \code{sfun},
@@ -87,42 +84,39 @@ or point and line (\code{pl}).}
 
 \item{table_font_size}{(\code{integer} or \code{double})\cr controls the font size of values in the table.}
 
-\item{plot_height}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the height of
-the main plot and renders a slider on the plot to interactively adjust the plot
-height.}
+\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{plot_width}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the width of
-the main plot and renders a slider on the plot to interactively adjust the plot
-width.}
+\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
-\code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}.
-No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
-with default module arguments (hard coded in the module body)
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of
+following child elements: \code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}. No other elements would be taken into
+account. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments (hard coded in
+the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a grid style Line Plot for data with
-\code{ADaM} structure.
+This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type line plot, with optional summary table, for standard ADaM data.
 }
 \examples{
 library(nestcolor)
+library(dplyr)
+library(forcats)
 
 ADSL <- tmc_ex_adsl
-ADLB <- tmc_ex_adlb \%>\% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+ADLB <- tmc_ex_adlb \%>\% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
 
 app <- init(
   data = cdisc_data(
@@ -130,7 +124,7 @@ app <- init(
     ADLB = ADLB,
     code = "
       ADSL <- tmc_ex_adsl
-      ADLB <- tmc_ex_adlb \%>\% dplyr::mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min))
+      ADLB <- tmc_ex_adlb \%>\% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
     "
   ),
   modules = modules(
@@ -153,7 +147,11 @@ app <- init(
   )
 )
 if (interactive()) {
-  shinyApp(ui = app$ui, server = app$server)
+  shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

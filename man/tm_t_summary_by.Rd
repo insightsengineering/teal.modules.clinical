@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_summary_by.R
 \name{tm_t_summary_by}
 \alias{tm_t_summary_by}
-\title{Teal Module: Summarize Variables by Row Groups Module}
+\title{teal Module: Summarize Variables by Row Groups}
 \usage{
 tm_t_summary_by(
   label,
@@ -16,11 +16,11 @@ tm_t_summary_by(
     subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
-  total_label = "All Patients",
+  total_label = default_total_label(),
   parallel_vars = FALSE,
   row_groups = FALSE,
   useNA = c("ifany", "no"),
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   numeric_stats = c("n", "mean_sd", "median", "range"),
   denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed =
     TRUE),
@@ -32,88 +32,78 @@ tm_t_summary_by(
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{by_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for variable names
-used to split the summary by rows.}
+\item{by_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names used to split the summary by rows.}
 
-\item{summarize_vars}{(\code{choices_selected} or \code{data_extract_spec})\cr
-names of the variables that should be summarized.}
+\item{summarize_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
+the variables that should be summarized.}
 
-\item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object specifying the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
+the variable name for subject id.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{parallel_vars}{(\code{logical}) used to display \code{summarize_vars} as parallel columns
-(\code{FALSE} on default). Can be used only if all chosen analysis variables are numeric.}
+\item{parallel_vars}{(\code{logical})\cr whether summarized variables should be arranged in columns. Can only be set to
+\code{TRUE} if all chosen analysis variables are numeric.}
 
-\item{row_groups}{(\code{logical}) used to display \code{summarize_vars} as row groups
-(\code{FALSE} on default).}
+\item{row_groups}{(\code{logical})\cr whether summarized variables should be arranged in row groups.}
 
-\item{useNA}{(\code{character})\cr
-whether missing data (\code{NA}) should be displayed as a level.}
+\item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{numeric_stats}{(\code{character})\cr
-selected statistics for numeric summarize variables to be displayed. Possible values are \code{n}, \code{mean_sd}, \code{mean_ci},
-\code{median}, \code{median_ci}, \code{range}, \code{geom_mean}. By default,  \code{n}, \code{mean_sd}, \code{median}, \code{range} are selected.}
+\item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
+statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
-\item{denominator}{(\code{character})\cr
-chooses how percentages are calculated. With option \code{N}, the reference
-population from the column total is used as the denominator. With option
-\code{n}, the number of non-missing records in this row and column intersection
-is used as the denominator. If \code{omit} is chosen, then the percentage is omitted.}
+\item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
+population from the column total is used as the denominator. With option \code{n}, the number of non-missing
+records in this row and column intersection is used as the denominator. If \code{omit} is chosen, then the
+percentage is omitted.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parentname} dataset.
-If \code{dataname} dataset and \code{parentname} dataset are the same (i.e. \code{ADSL}), then \code{drop_arm_levels} will always be
-TRUE regardless of the user choice when \code{tm_t_summary_by} is called.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
-\item{drop_zero_levels}{(\code{logical}) used to remove rows with zero counts from the result table.}
+\item{drop_zero_levels}{(\code{logical})\cr whether rows with zero counts in all columns should be removed from the table.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
-
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Summarize Variables by Row Groups Module
+This module produces a table to summarize variables by row groups.
 }
 \examples{
 ADSL <- tmc_ex_adsl
@@ -156,4 +146,9 @@ app <- init(
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
+
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

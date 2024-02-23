@@ -10,8 +10,8 @@
           arm_levels <- levels(anl[["ARMCD"]])
           adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
-          anl <- df_explicit_na(anl, na_level = "")
-          adsl <- df_explicit_na(adsl, na_level = "")
+          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -40,8 +40,8 @@
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(adsl[["ARM"]])
           anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
-          anl <- df_explicit_na(anl, na_level = "")
-          adsl <- df_explicit_na(adsl, na_level = "")
+          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -70,8 +70,8 @@
           arm_levels <- levels(anl[["ARMCD"]])
           adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
-          anl <- df_explicit_na(anl, na_level = "")
-          adsl <- df_explicit_na(adsl, na_level = "")
+          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout

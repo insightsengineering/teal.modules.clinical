@@ -2,13 +2,21 @@
 % Please edit documentation in R/utils.R
 \name{clean_description}
 \alias{clean_description}
-\title{Clean a categorical variable descriptions}
+\title{Clean up categorical variable description}
 \usage{
 clean_description(x)
 }
 \arguments{
 \item{x}{(\code{character})\cr vector with categories descriptions.}
 }
+\value{
+a string
+}
 \description{
 Cleaning categorical variable descriptions before presenting.
+}
+\examples{
+clean_description("Level A (other text)")
+clean_description("A long string that should be shortened")
+
 }

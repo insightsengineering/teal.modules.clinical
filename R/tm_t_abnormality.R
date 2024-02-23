@@ -1,14 +1,18 @@
 #' Template: Abnormality Summary Table
 #'
+#' Creates a valid expression to generate a table to summarize abnormality.
+#'
 #' @inheritParams template_arguments
 #' @param exclude_base_abn (`logical`)\cr whether to exclude patients who had abnormal values at baseline.
-#' @param grade (`character`)\cr name of the variable that can be used to
+#' @param grade (`character`)\cr name of the variable used to
 #'   specify the abnormality grade. Variable must be factor.
 #' @param abnormal (`named list`)\cr indicating abnormality direction and grades.
 #' @param baseline_var (`character`)\cr
-#'   name of the variable for baseline abnormality grade.
-#' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
+#'   name of the variable specifying baseline abnormality grade.
+#' @param na_level (`character`)\cr the NA level in the input dataset, defaults to `"<Missing>"`.
 #' @param tbl_title (`character`)\cr Title with label of variables from by bars
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_abnormality()]
 #' @keywords internal
@@ -24,29 +28,27 @@ template_abnormality <- function(parentname,
                                  treatment_flag_var = "ONTRTFL",
                                  treatment_flag = "Y",
                                  add_total = FALSE,
-                                 total_label = "All Patients",
+                                 total_label = default_total_label(),
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE,
-                                 na_level = "<Missing>",
+                                 na_level = default_na_str(),
                                  basic_table_args = teal.widgets::basic_table_args(),
                                  tbl_title) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(id_var),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    is.character(by_vars),
-    is.list(abnormal),
-    assertthat::is.string(grade),
-    assertthat::is.string(baseline_var),
-    assertthat::is.string(treatment_flag_var),
-    assertthat::is.string(treatment_flag),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.flag(exclude_base_abn),
-    assertthat::is.flag(drop_arm_levels),
-    assertthat::is.string(tbl_title)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::check_character(by_vars)
+  checkmate::check_list(abnormal)
+  checkmate::assert_string(grade)
+  checkmate::assert_string(baseline_var)
+  checkmate::assert_string(treatment_flag_var)
+  checkmate::assert_string(treatment_flag)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_flag(exclude_base_abn)
+  checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_string(tbl_title)
 
   y <- list()
 
@@ -220,33 +222,39 @@ template_abnormality <- function(parentname,
   y
 }
 
-
-#' Teal Module: Abnormality Summary Table
+#' teal Module: Abnormality Summary Table
+#'
+#' This module produces a table to summarize abnormality.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality
-#' @param grade ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param grade ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for variable names that can be used to
 #'   specify the abnormality grade. Variable must be factor.
 #' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
-#' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param baseline_var ([teal.transform::choices_selected()])\cr
 #'   variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
-#' @note Patients with the same abnormality at baseline as on the treatment visit can be
-#'   excluded in accordance with `GDSR` specifications by using `exclude_base_abn`.
+#' @inherit module_arguments return seealso
 #'
-#' @export
+#' @note Patients with the same abnormality at baseline as on the treatment visit can be
+#'   excluded in accordance with GDSR specifications by using `exclude_base_abn`.
+#'
 #' @examples
+#'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(dplyr)
+#'   library(formatters)
+#'
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb %>%
-#'     dplyr::mutate(
-#'       ONTRTFL = dplyr::case_when(
+#'     mutate(
+#'       ONTRTFL = case_when(
 #'         AVISIT %in% c("SCREENING", "BASELINE") ~ "",
 #'         TRUE ~ "Y"
-#'       ) %>% formatters::with_label("On Treatment Record Flag")
+#'       ) %>% with_label("On Treatment Record Flag")
 #'     )
 #' })
 #' datanames <- c("ADSL", "ADLB")
@@ -269,8 +277,8 @@ template_abnormality <- function(parentname,
 #'         selected = c("LBCAT", "PARAM"),
 #'         keep_order = TRUE
 #'       ),
-#'       baseline_var = teal.transform::choices_selected(
-#'         teal.transform::variable_choices(data[["ADLB"]], subset = "BNRIND"),
+#'       baseline_var = choices_selected(
+#'         variable_choices(data[["ADLB"]], subset = "BNRIND"),
 #'         selected = "BNRIND", fixed = TRUE
 #'       ),
 #'       grade = choices_selected(
@@ -287,6 +295,7 @@ template_abnormality <- function(parentname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_abnormality <- function(label,
                              dataname,
                              parentname = ifelse(
@@ -310,17 +319,14 @@ tm_t_abnormality <- function(label,
                                teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
                                selected = "ONTRTFL", fixed = TRUE
                              ),
-                             treatment_flag = teal.transform::choices_selected(
-                               teal.transform::value_choices(dataname, "ONTRTFL"),
-                               selected = "Y", fixed = TRUE
-                             ),
+                             treatment_flag = teal.transform::choices_selected("Y"),
                              add_total = TRUE,
-                             total_label = "All Patients",
+                             total_label = default_total_label(),
                              exclude_base_abn = FALSE,
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL,
-                             na_level = "<Missing>",
+                             na_level = default_na_str(),
                              basic_table_args = teal.widgets::basic_table_args()) {
   logger::log_info("Initializing tm_t_abnormality")
   checkmate::assert_string(label)
@@ -333,8 +339,8 @@ tm_t_abnormality <- function(label,
   checkmate::assert_class(grade, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(baseline_var, "choices_selected")
-  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(treatment_flag_var, "choices_selected")
+  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)
@@ -365,6 +371,7 @@ tm_t_abnormality <- function(label,
         dataname = dataname,
         parentname = parentname,
         abnormal = abnormal,
+        treatment_flag = treatment_flag,
         label = label,
         total_label = total_label,
         na_level = na_level,
@@ -375,7 +382,7 @@ tm_t_abnormality <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_abnormality <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -457,11 +464,9 @@ ui_t_abnormality <- function(id, ...) {
           ),
           teal.widgets::optionalSelectInput(
             ns("treatment_flag"),
-            "Value Indicating On Treatment",
-            a$treatment_flag$choices,
-            a$treatment_flag$selected,
+            label = "Value Indicating On Treatment",
             multiple = FALSE,
-            fixed = a$treatment_flag$fixed
+            fixed_on_single = TRUE
           )
         )
       )
@@ -475,7 +480,7 @@ ui_t_abnormality <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_abnormality <- function(id,
                               data,
                               reporter,
@@ -489,6 +494,7 @@ srv_t_abnormality <- function(id,
                               grade,
                               baseline_var,
                               treatment_flag_var,
+                              treatment_flag,
                               add_total,
                               total_label,
                               drop_arm_levels,
@@ -532,6 +538,16 @@ srv_t_abnormality <- function(id,
         )
       )
     )
+
+    shiny::isolate({
+      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
+      teal.widgets::updateOptionalSelectInput(
+        session = session,
+        inputId = "treatment_flag",
+        choices = resolved$choices,
+        selected = resolved$selected
+      )
+    })
 
     iv_r <- shiny::reactive({
       iv <- shinyvalidate::InputValidator$new()

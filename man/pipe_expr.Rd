@@ -12,16 +12,18 @@ pipeline (\verb{\%>\%}).}
 
 \item{pipe_str}{(\code{character})\cr the character which separates the expressions.}
 }
+\value{
+a \code{call}
+}
 \description{
 Concatenate expressions in a single pipeline-flavor expression.
 }
 \examples{
-
-result <- teal.modules.clinical:::pipe_expr(
+pipe_expr(
   list(
     expr1 = substitute(df),
     expr2 = substitute(head)
   )
 )
-result
+
 }

@@ -14,7 +14,7 @@
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              df_explicit_na()
+              df_explicit_na(na_level = "<Missing>")
       }
       
       $layout
@@ -52,7 +52,7 @@
           ADSL <- ADSL %>% dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", 
               "C: Combination")) %>% dplyr::mutate(ARM = stats::relevel(ARM, 
               ref = "B: Placebo")) %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
-              df_explicit_na()
+              df_explicit_na(na_level = "<Missing>")
       }
       
       $layout
@@ -85,7 +85,7 @@
                   "Partial Response (PR)")) %>% dplyr::mutate(AVALC = factor(AVALC, 
               levels = c("Complete Response (CR)", "Partial Response (PR)")))
           ADSL <- ADSL %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
-              df_explicit_na()
+              df_explicit_na(na_level = "<Missing>")
       }
       
       $layout
@@ -117,7 +117,7 @@
           ADSL <- ADSL %>% dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", 
               "C: Combination")) %>% dplyr::mutate(ARM = stats::relevel(ARM, 
               ref = "B: Placebo")) %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
-              df_explicit_na()
+              df_explicit_na(na_level = "<Missing>")
       }
       
       $layout
@@ -162,7 +162,7 @@
           ADSL <- ADSL %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              df_explicit_na()
+              df_explicit_na(na_level = "<Missing>")
       }
       
       $combine_comp_arms
@@ -200,7 +200,7 @@
                   "Partial Response (PR)")) %>% dplyr::mutate(AVALC = factor(AVALC, 
               levels = c("Complete Response (CR)", "Partial Response (PR)")))
           ADSL <- ADSL %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              df_explicit_na()
+              df_explicit_na(na_level = "<Missing>")
       }
       
       $layout
@@ -255,7 +255,7 @@
               "ARM C")) %>% dplyr::mutate(ARMCD = combine_levels(ARMCD, 
               levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>% 
               dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>% 
-              dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% df_explicit_na()
+              dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% df_explicit_na(na_level = "<Missing>")
       }
       
       $layout

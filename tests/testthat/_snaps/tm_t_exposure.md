@@ -16,12 +16,13 @@
       lyt <- rtables::basic_table(main_footer = "* Patient time is the sum of TDURD") %>% 
           rtables::split_cols_by("SEX") %>% rtables::add_colcounts() %>% 
           analyze_patients_exposure_in_cols(var = "RACE", ex_var = "AVAL", 
-              col_split = TRUE, add_total_level = TRUE, .labels = c(n_patients = "Number of Patients", 
-                  sum_exposure = ifelse("Days" == " ", paste("Sum of", 
-                      "TDURD"), paste("Sum of", "TDURD", sprintf("(%s)", 
-                      "Days")))), custom_label = "Total number of patients and patient time*") %>% 
-          analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE) %>% 
-          append_topleft(c(formatters::var_labels(adex["RACE"], fill = TRUE)))
+              col_split = TRUE, add_total_level = TRUE, na_str = "<Missing>", 
+              .labels = c(n_patients = "Number of Patients", sum_exposure = ifelse("Days" == 
+                  " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
+                  sprintf("(%s)", "Days")))), custom_label = "Total number of patients and patient time*") %>% 
+          analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE, 
+              na_str = "<Missing>") %>% append_topleft(c(formatters::var_labels(adex["RACE"], 
+          fill = TRUE)))
       
       $table
       {
@@ -48,13 +49,13 @@
       lyt <- rtables::basic_table(main_footer = "* Patient time is the sum of myTDURD") %>% 
           rtables::split_cols_by("SEX") %>% rtables::add_colcounts() %>% 
           analyze_patients_exposure_in_cols(var = "myRACE", ex_var = "myAVAL", 
-              col_split = TRUE, add_total_level = TRUE, .labels = c(n_patients = "Number of Patients", 
-                  sum_exposure = ifelse("Days" == " ", paste("Sum of", 
-                      "myTDURD"), paste("Sum of", "myTDURD", sprintf("(%s)", 
-                      "Days")))), custom_label = "Total number of patients and patient time*") %>% 
-          analyze_patients_exposure_in_cols(var = "myRACE", col_split = FALSE) %>% 
-          append_topleft(c(formatters::var_labels(myadex["myRACE"], 
-              fill = TRUE)))
+              col_split = TRUE, add_total_level = TRUE, na_str = "<myMissing>", 
+              .labels = c(n_patients = "Number of Patients", sum_exposure = ifelse("Days" == 
+                  " ", paste("Sum of", "myTDURD"), paste("Sum of", 
+                  "myTDURD", sprintf("(%s)", "Days")))), custom_label = "Total number of patients and patient time*") %>% 
+          analyze_patients_exposure_in_cols(var = "myRACE", col_split = FALSE, 
+              na_str = "<myMissing>") %>% append_topleft(c(formatters::var_labels(myadex["myRACE"], 
+          fill = TRUE)))
       
       $table
       {
@@ -81,12 +82,13 @@
       lyt <- rtables::basic_table(main_footer = "* Patient time is the sum of Total Duration (Days)") %>% 
           rtables::split_cols_by("SEX") %>% rtables::add_colcounts() %>% 
           analyze_patients_exposure_in_cols(var = "RACE", ex_var = "AVAL", 
-              col_split = TRUE, add_total_level = TRUE, .labels = c(n_patients = "Number of Patients", 
-                  sum_exposure = ifelse("Days" == " ", paste("Sum of", 
-                      "TDURD"), paste("Sum of", "TDURD", sprintf("(%s)", 
-                      "Days")))), custom_label = "Total number of patients and patient time*") %>% 
-          analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE) %>% 
-          append_topleft(c(formatters::var_labels(adex["RACE"], fill = TRUE)))
+              col_split = TRUE, add_total_level = TRUE, na_str = "<Missing>", 
+              .labels = c(n_patients = "Number of Patients", sum_exposure = ifelse("Days" == 
+                  " ", paste("Sum of", "TDURD"), paste("Sum of", "TDURD", 
+                  sprintf("(%s)", "Days")))), custom_label = "Total number of patients and patient time*") %>% 
+          analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE, 
+              na_str = "<Missing>") %>% append_topleft(c(formatters::var_labels(adex["RACE"], 
+          fill = TRUE)))
       
       $table
       {
