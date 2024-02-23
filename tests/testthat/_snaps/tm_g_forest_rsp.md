@@ -30,7 +30,6 @@
           vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
       
       $plot
-<<<<<<< HEAD
       $plot[[1]]
       f <- g_forest(tbl = result, col_symbol_size = NULL, font_size = 15, 
           as_list = TRUE)
@@ -40,14 +39,5 @@
           f[["plot"]] + ggplot2::labs(caption = ""), align = "h", axis = "tblr", 
           rel_widths = c(1 - 0.25, 0.25))
       
-=======
-      {
-          p <- decorate_grob(g_forest(tbl = result, col_symbol_size = NULL), 
-              titles = "Forest Plot of Best Overall Response for ", 
-              footnotes = "", gp_footnotes = grid::gpar(fontsize = 12))
-          grid::grid.newpage()
-          grid::grid.draw(p)
-      }
->>>>>>> main
       
 
