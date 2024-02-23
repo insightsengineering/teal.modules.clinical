@@ -89,7 +89,7 @@ get_var_labels <- function(datasets, dataname, vars) {
 #'   basic_table() %>%
 #'     split_cols_by(var = "ARMCD") %>%
 #'     test_proportion_diff(
-#'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
+#'       vars = "rsp", method = "cmh", variables = list(strata = "strata")
 #'     ) %>%
 #'     build_table(df = dta)
 #' })
@@ -155,7 +155,7 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'   lyt,
 #'   substitute(
 #'     test_proportion_diff(
-#'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
+#'       vars = "rsp", method = "cmh", variables = list(strata = "strata")
 #'     )
 #'   )
 #' )

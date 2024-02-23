@@ -21,7 +21,7 @@
       {
           df <- extract_survival_subgroups(variables = list(tte = "AVAL", 
               is_event = "is_event", arm = "ARMCD", subgroups = c("SEX", 
-                  "BMRKR2"), strat = "STRATA2"), control = control_coxph(conf_level = 0.9), 
+                  "BMRKR2"), strata = "STRATA2"), control = control_coxph(conf_level = 0.9), 
               data = anl)
       }
       
