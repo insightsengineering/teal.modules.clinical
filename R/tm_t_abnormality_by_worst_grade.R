@@ -235,15 +235,15 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param atoxgr_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param atoxgr_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option
 #' for variable names that can be used as Analysis Toxicity Grade.
-#' @param worst_high_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_high_flag_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option for variable names that can be used as Worst High
 #' Grade flag.
-#' @param worst_low_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_low_flag_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option for variable names that can be used as Worst Low Grade flag.
-#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_flag_indicator ([teal.transform::choices_selected()])\cr
 #' value indicating worst grade.
 #'
 #' @inherit module_arguments return seealso

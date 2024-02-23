@@ -213,13 +213,13 @@ template_exposure <- function(parentname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_exposure
-#' @param row_by_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param row_by_var ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for
 #'   variable names that can be used to split rows.
-#' @param col_by_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param col_by_var ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for
 #'   variable names that can be used to split columns.
-#' @param parcat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param parcat ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for
 #'   parameter category values.
 #' @param paramcd_label (`character`)\cr the column from the dataset where the value will be used to
@@ -328,9 +328,9 @@ tm_t_exposure <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(row_by_var, "choices_selected")
   checkmate::assert_class(col_by_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(parcat, "choices_selected")
   checkmate::assert_class(aval_var, "choices_selected")

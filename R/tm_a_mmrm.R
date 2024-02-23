@@ -445,7 +445,7 @@ template_mmrm_plots <- function(fit_name,
 #' @inheritParams module_arguments
 #' @inheritParams template_mmrm_tables
 #' @inheritParams template_mmrm_plots
-#' @param method ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param method ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and pre-selected option for the adjustment method.
 #' @param ggplot2_args (`ggplot2_args`) \cr optional, object created by [`teal.widgets::ggplot2_args()`]
 #'   with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
@@ -544,6 +544,12 @@ tm_a_mmrm <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
   checkmate::assert_string(dataname)
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(visit_var, "choices_selected")
+  checkmate::assert_class(cov_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(method, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)

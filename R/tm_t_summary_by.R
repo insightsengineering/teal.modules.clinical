@@ -398,7 +398,11 @@ tm_t_summary_by <- function(label,
   checkmate::assert_string(parentname)
   useNA <- match.arg(useNA) # nolint
   checkmate::assert_string(na_level)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(by_vars, "choices_selected")
+  checkmate::assert_class(summarize_vars, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(denominator, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)

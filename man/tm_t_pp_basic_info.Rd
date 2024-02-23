@@ -20,7 +20,7 @@ tm_t_pp_basic_info(
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr  object with all
+\item{vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr  object with all
 available choices and preselected option for variables from \code{dataname} to show in the table.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.

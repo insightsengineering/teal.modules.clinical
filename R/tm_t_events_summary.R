@@ -483,20 +483,20 @@ template_events_summary <- function(anl_name,
 #' @inheritParams module_arguments
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
-#' @param dthfl_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param dthfl_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as death flag variable.
 #'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
-#' @param dcsreas_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param dcsreas_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as study discontinuation
 #'   reason variable. Records with `"ADVERSE EVENTS"` are summarized in the table row for
 #'   "Total number of patients withdrawn from study due to an AE".
-#' @param flag_var_anl ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()] or `NULL`)\cr
+#' @param flag_var_anl ([teal.transform::choices_selected()] or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious events,
 #'   Related events, etc.). Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()] or `NULL`)\cr
+#' @param flag_var_aesi ([teal.transform::choices_selected()] or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event special interest groups. All flag
 #'   variables must be of type `logical`. Variable labels are used as table row names if they exist.
-#' @param aeseq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable for
+#' @param aeseq_var ([teal.transform::choices_selected()])\cr variable for
 #'   adverse events sequence number from `dataset`. Used for counting total number of events.
 #'
 #' @inherit module_arguments return seealso
@@ -618,6 +618,13 @@ tm_t_events_summary <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(flag_var_anl, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(flag_var_aesi, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dthfl_var, "choices_selected")
+  checkmate::assert_class(dcsreas_var, "choices_selected")
+  checkmate::assert_class(llt, "choices_selected")
+  checkmate::assert_class(aeseq_var, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)

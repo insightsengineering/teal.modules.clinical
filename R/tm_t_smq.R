@@ -308,9 +308,9 @@ template_smq <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_smq
-#' @param baskets ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param baskets ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected options for standardized/customized queries.
-#' @param scopes ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param scopes ([teal.transform::choices_selected()])\cr object with all
 #'   available choices for the scopes of standardized queries.
 #'
 #' @inherit module_arguments return seealso
@@ -396,6 +396,8 @@ tm_t_smq <- function(label,
   checkmate::assert_class(arm_var, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(llt, "choices_selected")
+  checkmate::assert_class(baskets, "choices_selected")
+  checkmate::assert_class(scopes, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)

@@ -206,7 +206,7 @@ template_vitals <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_vitals
-#' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param xaxis ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
 #'
 #' @inherit module_arguments return
@@ -283,6 +283,9 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(paramcd, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aval_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(xaxis, "choices_selected", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
