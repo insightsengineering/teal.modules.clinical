@@ -82,7 +82,7 @@
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/cs_to_select_spec.html</loc>
   </url>
   <url>
-    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/dyn_assertion.html</loc>
+    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/default_total_label.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/ex_data.html</loc>
@@ -134,9 +134,6 @@
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/split_interactions.html</loc>
-  </url>
-  <url>
-    <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/styled_expr.html</loc>
   </url>
   <url>
     <loc>https://insightsengineering.github.io/teal.modules.clinical/reference/substitute_names.html</loc>
