@@ -1,10 +1,13 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.8.16.9096
-Date: 2024-02-22
+Version: 0.9.0.9000
+Date: 2024-02-26
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
+    person("Davide", "Garolini", , "davide.garolini@roche.com", role = "aut"),
+    person("Emily", "de la Rua", , "emily.de_la_rua@contractors.roche.com", role = "aut"),
+    person("Abinaya", "Yogasekaram", , "abinaya.yogasekaram@contractors.roche.com", role = "aut"),
     person("Mahmoud", "Hallal", , "mahmoud.hallal@roche.com", role = "aut"),
     person("Dawid", "Kaledkowski", , "dawid.kaledkowski@roche.com", role = "aut"),
     person("Rosemary", "Li", , "li.yaqiong@gene.com", role = "aut"),
@@ -19,7 +22,7 @@ Authors@R: c(
   )
 Description: Provides user-friendly tools for creating and customizing
     clinical trial reports. By leveraging the 'teal' framework, this
-    package provides teal modules to easily create an interactive panel
+    package provides 'teal' modules to easily create an interactive panel
     that allows for seamless adjustments to data presentation, thereby
     streamlining the creation of detailed and accurate reports.
 License: Apache License 2.0
