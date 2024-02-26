@@ -1,0 +1,12 @@
+pandoc: 3.1.1
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  generate_tmc_test_data: generate_tmc_test_data.html
+  quickstart_substitute: quickstart_substitute.html
+  teal-modules-clinical: teal-modules-clinical.html
+last_built: 2024-02-26T01:42Z
+urls:
+  reference: https://insightsengineering.github.io/teal.modules.clinical/reference
+  article: https://insightsengineering.github.io/teal.modules.clinical/articles
+
