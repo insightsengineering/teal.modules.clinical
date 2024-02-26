@@ -61,7 +61,6 @@ Categories can be defined up to four levels deep and are defined through the \co
 \examples{
 library(nestcolor)
 library(dplyr)
-library(formatters)
 
 ADSL <- tmc_ex_adsl \%>\%
   mutate(ITTFL = factor("Y") \%>\%
