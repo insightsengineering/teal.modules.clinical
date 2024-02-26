@@ -350,7 +350,6 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
-#' library(formatters)
 #'
 #' data <- teal_data()
 #' data <- within(data, {

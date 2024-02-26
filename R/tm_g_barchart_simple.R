@@ -18,7 +18,6 @@
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
-#' library(formatters)
 #'
 #' ADSL <- tmc_ex_adsl %>%
 #'   mutate(ITTFL = factor("Y") %>%

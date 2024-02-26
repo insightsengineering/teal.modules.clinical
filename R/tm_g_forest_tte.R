@@ -227,7 +227,6 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(formatters)
 #'
 #' ADSL <- tmc_ex_adsl
 #' ADTTE <- tmc_ex_adtte
