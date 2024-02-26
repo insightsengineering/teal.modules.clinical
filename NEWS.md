@@ -1,5 +1,8 @@
 # teal.modules.clinical 0.9.0.9000
 
+### Miscellaneous
+* Removed `formatters` from dependencies and replaced the use of its functions relating to variable labels with functions from `teal.data`.
+
 # teal.modules.clinical 0.9.0
 
 ### Breaking Changes
@@ -24,7 +27,6 @@
 * Specified minimal version of package dependencies.
 * Replaced usage of deprecated `summarize_vars` function with `analyze_vars`.
 * Reduced package dependencies (removed `tidyr`, `rlang`, `magrittr` and `styler`).
-* Removed `formatters` from dependencies and replaced the use of its functions relating to variable labels with functions from `teal.data`.
 
 # teal.modules.clinical 0.8.16
 
