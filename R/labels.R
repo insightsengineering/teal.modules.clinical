@@ -4,7 +4,7 @@
 #' @param column (`character`)\cr column to get label from
 #' @param omit_raw_name (`logical`)\cr omits the raw name in square brackets if label is found
 #'
-#' @return "Label `[Column name]`" if label exists, otherwise "Column name"
+#' @return "Label `[Column name]`" if label exists, otherwise "Column name".
 #'
 #' @examples
 #' data <- mtcars
