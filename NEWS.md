@@ -1,5 +1,8 @@
 # teal.modules.clinical 0.9.0.9000
 
+### Miscellaneous
+* Updated all template functions to use argument/list element name `strata` instead of `strat` in all `tern` function inputs following the deprecation of this argument/name within `tern`.
+
 # teal.modules.clinical 0.9.0
 
 ### Breaking Changes
