@@ -157,7 +157,7 @@ template_abnormality <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = formatters::var_labels(dataname, fill = FALSE)[[by_var]],
+      expr = teal.data::col_labels(dataname, fill = FALSE)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -246,7 +246,6 @@ template_abnormality <- function(parentname,
 #' data <- teal_data()
 #' data <- within(data, {
 #'   library(dplyr)
-#'   library(formatters)
 #'
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb %>%

@@ -158,7 +158,7 @@ template_exposure <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = formatters::var_labels(dataname[row_by_var], fill = TRUE),
+    expr = teal.data::col_labels(dataname[row_by_var], fill = TRUE),
     env = list(
       dataname = as.name(dataname),
       row_by_var = row_by_var
@@ -229,7 +229,6 @@ template_exposure <- function(parentname,
 #'
 #' @examples
 #' library(dplyr)
-#' library(formatters)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
@@ -237,7 +236,7 @@ template_exposure <- function(parentname,
 #'   ADEX <- tmc_ex_adex
 #'
 #'   set.seed(1, kind = "Mersenne-Twister")
-#'   labels <- var_labels(ADEX, fill = FALSE)
+#'   labels <- col_labels(ADEX, fill = FALSE)
 #'   ADEX <- ADEX %>%
 #'     distinct(USUBJID, .keep_all = TRUE) %>%
 #'     mutate(
@@ -247,7 +246,7 @@ template_exposure <- function(parentname,
 #'       AVALU = "Days"
 #'     ) %>%
 #'     bind_rows(ADEX)
-#'   var_labels(ADEX) <- labels
+#'   col_labels(ADEX) <- labels
 #' })
 #'
 #' datanames <- c("ADSL", "ADEX")

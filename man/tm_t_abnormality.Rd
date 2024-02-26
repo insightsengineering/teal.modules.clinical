@@ -107,7 +107,6 @@ excluded in accordance with GDSR specifications by using \code{exclude_base_abn}
 data <- teal_data()
 data <- within(data, {
   library(dplyr)
-  library(formatters)
 
   ADSL <- tmc_ex_adsl
   ADLB <- tmc_ex_adlb \%>\%

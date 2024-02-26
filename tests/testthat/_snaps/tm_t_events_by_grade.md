@@ -25,11 +25,11 @@
           rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
           grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEDECOD", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEDECOD"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEDECOD"])) %>% 
           summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -"), 
               na_str = "<Missing>") %>% count_occurrences_by_grade(var = "AESEV", 
           .indent_mods = -1L, na_str = "<Missing>") %>% append_varlabels(adae, 
@@ -81,11 +81,11 @@
           rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
           grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEDECOD", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEDECOD"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEDECOD"])) %>% 
           summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -"), 
               na_str = "<Missing>") %>% count_occurrences_by_grade(var = "AESEV", 
           .indent_mods = -1L, na_str = "<Missing>") %>% append_varlabels(adae, 
@@ -140,11 +140,11 @@
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEDECOD", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEDECOD"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEDECOD"])) %>% 
           summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -"), 
               na_str = "<Missing>") %>% count_occurrences_by_grade(var = "AESEV", 
           .indent_mods = -1L, na_str = "<Missing>") %>% append_varlabels(adae, 
@@ -194,7 +194,7 @@
           rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
           grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -"), 
               na_str = "<Missing>") %>% count_occurrences_by_grade(var = "AESEV", 
           .indent_mods = -1L, na_str = "<Missing>") %>% append_varlabels(adae, 
