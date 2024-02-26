@@ -99,7 +99,6 @@ This module produces a grid-style forest plot for time-to-event data with ADaM s
 }
 \examples{
 library(nestcolor)
-library(formatters)
 
 ADSL <- tmc_ex_adsl
 ADTTE <- tmc_ex_adtte

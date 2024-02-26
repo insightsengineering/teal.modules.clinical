@@ -1,4 +1,7 @@
-# teal.modules.clinical 0.9.0.9000
+# teal.modules.clinical 0.9.0.9001
+
+### Miscellaneous
+* Removed `formatters` from dependencies and replaced the use of its functions relating to variable labels with functions from `teal.data`.
 
 ### Miscellaneous
 * Updated all template functions to use argument/list element name `strata` instead of `strat` in all `tern` function inputs following the deprecation of this argument/name within `tern`.

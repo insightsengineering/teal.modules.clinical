@@ -4,7 +4,7 @@
       res
     Output
       $arm_lab
-      arm_var_lab <- formatters::var_labels(ANL["ARMCD"], fill = FALSE)
+      arm_var_lab <- teal.data::col_labels(ANL["ARMCD"], fill = FALSE)
       
       $data
       {
@@ -18,7 +18,7 @@
       }
       
       $relabel
-      formatters::var_labels(ANL["ARMCD"]) <- arm_var_lab
+      teal.data::col_labels(ANL["ARMCD"]) <- arm_var_lab
       
       $model
       mod <- fit_logistic(ANL, variables = list(response = "Response", 
@@ -40,7 +40,7 @@
       res
     Output
       $arm_lab
-      arm_var_lab <- formatters::var_labels(ANL["ARMCD"], fill = FALSE)
+      arm_var_lab <- teal.data::col_labels(ANL["ARMCD"], fill = FALSE)
       
       $data
       {
@@ -54,7 +54,7 @@
       }
       
       $relabel
-      formatters::var_labels(ANL["ARMCD"]) <- arm_var_lab
+      teal.data::col_labels(ANL["ARMCD"]) <- arm_var_lab
       
       $model
       mod <- fit_logistic(ANL, variables = list(response = "Response", 
