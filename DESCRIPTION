@@ -38,6 +38,7 @@ Depends:
 Imports:
     broom (>= 0.7.10),
     checkmate (>= 2.1.0),
+    cowplot (>= 0.7.0),
     dplyr (>= 1.0.5),
     DT (>= 0.13),
     ggplot2 (>= 3.4.0),
