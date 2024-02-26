@@ -1,5 +1,8 @@
 # teal.modules.clinical 0.9.0.9001
 
+### Enhancements
+* Updated `tm_g_forest_rsp` and `tm_g_forest_tte` to use refactored version of `g_forest`. Plots are now displayed as `ggplot` objects instead of `grob` objects. Added parameters `font_size` and `rel_width_forest` to control font size and width of plot relative to table, respectively.
+
 ### Miscellaneous
 * Removed `formatters` from dependencies and replaced the use of its functions relating to variable labels with functions from `teal.data`.
 
@@ -16,7 +19,6 @@
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
 * Added `default_total_label` and `set_default_total_label` functions to get and set default total column label (`total_label`) for modules.
 * Implemented `tern::default_na_str` and `tern::set_default_na_str` functions to get and set default missing value replacement string (`na_level`) for modules.
-* Updated `tm_g_forest_rsp` and `tm_g_forest_tte` to use refactored version of `g_forest`. Plots are now displayed as `ggplot` objects instead of `grob` objects. Added parameters `font_size` and `rel_width_forest` to control font size and width of plot relative to table, respectively.
 
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
