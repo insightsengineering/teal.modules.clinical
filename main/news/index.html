@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.16.9095</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,16 +34,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -72,15 +62,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.8.16.9095" id="tealmodulesclinical-08169095">teal.modules.clinical 0.8.16.9095<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08169095"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.9.0" id="tealmodulesclinical-090">teal.modules.clinical 0.9.0<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-090"></a></h2><p class="text-muted">CRAN release: 2024-02-23</p>
 <div class="section level4">
-<h4 id="breaking-changes-0-8-16-9095">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-8-16-9095"></a></h4>
+<h4 id="breaking-changes-0-9-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-9-0"></a></h4>
 <ul><li>Adapted all modules to use <code>teal_data</code> objects.</li>
 <li>Module arguments that previously accepted inputs from <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code> now only accept input from <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>. The affected modules are: <code>tm_a_gee</code>, <code>tm_a_mmrm</code>, <code>tm_g_ci</code>, <code>tm_g_forest_rsp</code>, <code>tm_g_forest_tte</code>, <code>tm_g_ipp</code>, <code>tm_g_km</code>, <code>tm_g_lineplot</code>, <code>tm_g_pp_adverse_events</code>, <code>tm_g_pp_patient_timeline</code>, <code>tm_g_pp_therapy</code>, <code>tm_g_pp_vitals</code>, <code>tm_t_abnormality</code>, <code>tm_t_abnormality_by_worst_grade</code>, <code>tm_t_ancova</code>, <code>tm_t_binary_outcome</code>, <code>tm_t_coxreg</code>, <code>tm_t_events</code>, <code>tm_t_events_by_grade</code>, <code>tm_t_events_patyear</code>, <code>tm_t_events_summary</code>, <code>tm_t_exposure</code>, <code>tm_t_logistic</code>, <code>tm_t_mult_events</code>, <code>tm_t_pp_basic_info</code>, <code>tm_t_pp_laboratory</code>, <code>tm_t_pp_medical_history</code>, <code>tm_t_pp_prior_medication</code>, <code>tm_t_shift_by_arm</code>, <code>tm_t_shift_by_arm_by_worst</code>, <code>tm_t_shift_by_grade</code>, <code>tm_t_smq</code>, <code>tm_t_summary</code>, <code>tm_t_summary_by</code>, and <code>tm_t_tte</code>
 </li>
 </ul></div>
 <div class="section level4">
-<h4 id="enhancements-0-8-16-9095">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-16-9095"></a></h4>
+<h4 id="enhancements-0-9-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-9-0"></a></h4>
 <ul><li>Updated the documentation and vignettes to demonstrate method to pass <code>teal_data</code> object to <code><a href="https://insightsengineering.github.io/teal/latest-tag/reference/init.html" class="external-link">teal::init()</a></code>.</li>
 <li>Added parameter <code>sort_freq_col</code> to <code>tm_t_events</code> to allow the user to select column to use when sorting by decreasing frequency.</li>
 <li>Added parameter <code>incl_overall_sum</code> to <code>tm_t_events</code> to allow the user to choose whether overall summary rows are included at the top of the table.</li>
@@ -89,11 +79,11 @@
 <li>Implemented <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/default_na_str.html" class="external-link">tern::default_na_str</a></code> and <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/default_na_str.html" class="external-link">tern::set_default_na_str</a></code> functions to get and set default missing value replacement string (<code>na_level</code>) for modules.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-8-16-9095">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-16-9095"></a></h4>
+<h4 id="bug-fixes-0-9-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-0"></a></h4>
 <ul><li>Fixed bug in <code>tm_g_lineplot</code> forcing module to initialize with a table.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="miscellaneous-0-8-16-9095">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-16-9095"></a></h4>
+<h4 id="miscellaneous-0-9-0">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-9-0"></a></h4>
 <ul><li>Deprecated the <code>aval</code> argument in <code>tm_t_pp_laboratory</code> and <code>tm_g_pp_vitals</code> and replaced it with the <code>aval_var</code> argument.</li>
 <li>Deprecated the <code>avalu</code> argument in <code>tm_t_pp_laboratory</code> and replaced it with the <code>avalu_var</code> argument.</li>
 <li>Deprecated the <code>base_var</code> argument in <code>tm_g_ipp</code>, <code>tm_t_shift_by_arm</code>, and <code>template_shift_by_arm_by_worst</code> and replaced it with the <code>baseline_var</code> argument.</li>
@@ -103,9 +93,9 @@
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.8.16.9010" id="tealmodulesclinical-08169010">teal.modules.clinical 0.8.16.9010<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-08169010"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.16" id="tealmodulesclinical-0816">teal.modules.clinical 0.8.16<a class="anchor" aria-label="anchor" href="#tealmodulesclinical-0816"></a></h2>
 <div class="section level4">
-<h4 id="enhancements-0-8-16-9010">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-16-9010"></a></h4>
+<h4 id="enhancements-0-8-16">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-0-8-16"></a></h4>
 <ul><li>Added more informative error message when grade mapping error occurs in <code>tm_t_abnormality_by_worst_grade</code>.</li>
 <li>Fixed label indentation in <code>tm_t_abnormality_by_worst_grade</code>.</li>
 <li>Added <code>total_label</code> argument to enable customization of the “All Patients” column/row label in the following modules: <code>tm_a_mmrm</code>, <code>tm_t_abnormality</code>, <code>tm_t_abnormality_by_worst_grade</code>, <code>tm_t_binary_outcome</code>, <code>tm_t_events</code>, <code>tm_t_events_by_grade</code>, <code>tm_t_events_patyear</code>, <code>tm_t_events_summary</code>, <code>tm_t_exposure</code>, <code>tm_t_mult_events</code>, <code>tm_t_shift_by_arm</code>, <code>tm_t_shift_by_arm_worst</code>, <code>tm_t_shift_by_grade</code>, <code>tm_t_smq</code>, <code>tm_t_summary</code>, <code>tm_t_summary_by</code>, and <code>tm_t_tte</code>.</li>
@@ -121,11 +111,11 @@
 <li>Updated the documentation and vignettes to demonstrate method to pass <code>teal_data</code> object to <code><a href="https://insightsengineering.github.io/teal/latest-tag/reference/init.html" class="external-link">teal::init()</a></code>.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="bug-fixes-0-8-16-9010">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-16-9010"></a></h4>
+<h4 id="bug-fixes-0-8-16">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-8-16"></a></h4>
 <ul><li>Fixed bug in <code>tm_t_coxreg</code> preventing table from being displayed when no covariates are selected.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="miscellaneous-0-8-16-9010">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-16-9010"></a></h4>
+<h4 id="miscellaneous-0-8-16">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous-0-8-16"></a></h4>
 <ul><li>Updated <code>control_incidence_rate</code> parameter names in <code>tm_t_events_patyear</code> from <code>time_unit_input</code> and <code>time_unit_output</code> to <code>input_time_unit</code> and <code>num_pt_year</code>, respectively, after parameter names were changed in <code>tern</code>.</li>
 <li>Hid the datasets that were not being used by the <em>patient profile</em> modules in the filter panel. Replaced the <code>datanames = "all"</code> parameter with the datasets used internally by the module.</li>
 </ul></div>
