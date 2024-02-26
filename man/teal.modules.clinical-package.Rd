@@ -4,7 +4,7 @@
 \name{teal.modules.clinical-package}
 \alias{teal.modules.clinical}
 \alias{teal.modules.clinical-package}
-\title{Teal Modules for Standard Clinical Outputs}
+\title{\code{teal} Modules for Standard Clinical Outputs}
 \description{
 Provides teal modules for the standard clinical trials outputs.
 The teal modules add an encoding panel to interactively change the encodings within teal.
@@ -12,7 +12,8 @@ The teal modules add an encoding panel to interactively change the encodings wit
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/insightsengineering/teal.modules.clinical}
+  \item \url{https://insightsengineering.github.io/teal.modules.clinical/}
+  \item \url{https://github.com/insightsengineering/teal.modules.clinical/}
   \item Report bugs at \url{https://github.com/insightsengineering/teal.modules.clinical/issues}
 }
 
@@ -23,6 +24,9 @@ Useful links:
 Authors:
 \itemize{
   \item Jana Stoilova \email{jana.stoilova@roche.com}
+  \item Davide Garolini \email{davide.garolini@roche.com}
+  \item Emily de la Rua \email{emily.de_la_rua@contractors.roche.com}
+  \item Abinaya Yogasekaram \email{abinaya.yogasekaram@contractors.roche.com}
   \item Mahmoud Hallal \email{mahmoud.hallal@roche.com}
   \item Dawid Kaledkowski \email{dawid.kaledkowski@roche.com}
   \item Rosemary Li \email{li.yaqiong@gene.com}

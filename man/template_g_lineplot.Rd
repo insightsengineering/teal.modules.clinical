@@ -39,8 +39,7 @@ template_g_lineplot(
 
 \item{paramcd}{(\code{character} or \code{NA})\cr \code{paramcd} variable name.}
 
-\item{param}{(\code{character})\cr
-parameter chosen to filter the data by.}
+\item{param}{(\code{character})\cr parameter to filter the data by.}
 
 \item{mid}{(\code{character} or \code{NULL})\cr names of the statistics that will be plotted as midpoints.
 All the statistics indicated in \code{mid} variable must be present in the object returned by \code{sfun},
@@ -64,8 +63,7 @@ or point and line (\code{pl}).}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{incl_screen}{(\code{logical})\cr
-should the screening visit be included.}
+\item{incl_screen}{(\code{logical})\cr whether the screening visit should be included.}
 
 \item{mid_point_size}{(\code{integer} or \code{double})\cr controls the font size of the point for \code{mid} plot.}
 
@@ -75,17 +73,19 @@ should the screening visit be included.}
 
 \item{y_lab}{(\code{character})\cr y-axis label. If equal to \code{NULL}, then no label will be added.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
-\code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}.
-No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
-with default module arguments (hard coded in the module body).
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of
+following child elements: \code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}. No other elements would be taken into
+account. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments (hard coded in
+the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Line Plot
+Creates a valid expression to generate a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} line plot.
 }
 \seealso{
 \code{\link[=tm_g_lineplot]{tm_g_lineplot()}}

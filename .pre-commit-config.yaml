@@ -21,7 +21,6 @@ repos:
           - insightsengineering/teal
           - insightsengineering/teal.transform
           - tern
-          - assertthat
           - broom
           - checkmate
           - dplyr
@@ -80,6 +79,7 @@ repos:
           (.*/|)DESCRIPTION|
           (.*/|)LICENSE|
           (.*/|)NAMESPACE|
+          .*-package.Rd|
           (.*/|)staged_dependencies\.y[a]?ml|
           (.*/|)WORDLIST|
           \.github/.*\.y[a]?ml|

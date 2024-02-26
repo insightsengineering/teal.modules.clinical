@@ -5,9 +5,11 @@
 #' @param args arguments to concatenate with operator
 #' @param bin_op binary operator to concatenate it with
 #'
-#' @export
+#' @return a `call`
 #'
 #' @examples
+#' library(ggplot2)
+#'
 #' # What we want to achieve
 #' call("+", quote(f), quote(g))
 #' call("+", quote(f), call("+", quote(g), quote(h))) # parentheses not wanted
@@ -19,14 +21,16 @@
 #' call_concatenate(list(quote(f)))
 #' call_concatenate(list())
 #' call_concatenate(
-#'   list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+#'   list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))
 #' )
 #'
 #' eval(
 #'   call_concatenate(
-#'     list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+#'     list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))
 #'   )
 #' )
+#'
+#' @export
 call_concatenate <- function(args, bin_op = "+") {
   checkmate::assert_string(bin_op)
   checkmate::assert_list(args, types = c("symbol", "name", "call", "expression"))
@@ -54,7 +58,7 @@ count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars 
 #' @param dataname (`character`)\cr name of the dataset
 #' @param vars (`character`)\cr Column names in the data
 #'
-#' @return  `character` variable labels.
+#' @return `character` variable labels.
 #'
 #' @export
 get_var_labels <- function(datasets, dataname, vars) {
@@ -80,16 +84,17 @@ get_var_labels <- function(datasets, dataname, vars) {
 #'
 #' @export
 #' @examples
-#' expr <- quote(
+#' expr <- quote({
+#'   library(rtables)
 #'   basic_table() %>%
 #'     split_cols_by(var = "ARMCD") %>%
 #'     test_proportion_diff(
 #'       vars = "rsp", method = "cmh", variables = list(strata = "strat")
 #'     ) %>%
 #'     build_table(df = dta)
-#' )
+#' })
 #'
-#' teal.modules.clinical:::h_concat_expr(expr)
+#' h_concat_expr(expr)
 h_concat_expr <- function(expr) {
   expr <- deparse(expr)
   paste(expr, collapse = " ")
@@ -104,16 +109,17 @@ h_concat_expr <- function(expr) {
 #'   pipeline (`%>%`).
 #' @param pipe_str (`character`)\cr the character which separates the expressions.
 #'
-#' @export
+#' @return a `call`
 #'
 #' @examples
-#' result <- teal.modules.clinical:::pipe_expr(
+#' pipe_expr(
 #'   list(
 #'     expr1 = substitute(df),
 #'     expr2 = substitute(head)
 #'   )
 #' )
-#' result
+#'
+#' @export
 pipe_expr <- function(exprs, pipe_str = "%>%") {
   exprs <- lapply(exprs, h_concat_expr)
   exprs <- unlist(exprs)
@@ -135,16 +141,17 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'   list. The list of expressions can be later used to generate a pipeline,
 #'   for instance with `pipe_expr`.
 #'
-#' @import assertthat
 #' @export
 #'
 #' @examples
+#' library(rtables)
+#'
 #' lyt <- list()
-#' lyt <- teal.modules.clinical:::add_expr(lyt, substitute(basic_table()))
-#' lyt <- teal.modules.clinical:::add_expr(
+#' lyt <- add_expr(lyt, substitute(basic_table()))
+#' lyt <- add_expr(
 #'   lyt, substitute(split_cols_by(var = arm), env = list(armcd = "ARMCD"))
 #' )
-#' lyt <- teal.modules.clinical:::add_expr(
+#' lyt <- add_expr(
 #'   lyt,
 #'   substitute(
 #'     test_proportion_diff(
@@ -152,13 +159,11 @@ pipe_expr <- function(exprs, pipe_str = "%>%") {
 #'     )
 #'   )
 #' )
-#' lyt <- teal.modules.clinical:::add_expr(lyt, quote(build_table(df = dta)))
-#' teal.modules.clinical:::pipe_expr(lyt)
+#' lyt <- add_expr(lyt, quote(build_table(df = dta)))
+#' pipe_expr(lyt)
 add_expr <- function(expr_ls, new_expr) {
-  assertthat::assert_that(
-    is.list(expr_ls),
-    is.call(new_expr) || is.name(new_expr)
-  )
+  checkmate::assert_list(expr_ls)
+  checkmate::assert(is.call(new_expr) || is.name(new_expr))
 
   # support nested expressions such as expr({a <- 1; b <- 2})
   if (inherits(new_expr, "{")) {
@@ -183,7 +188,7 @@ add_expr <- function(expr_ls, new_expr) {
 #' @param exprs (`list` of `call`)\cr expressions to concatenate into
 #'   a single _bracketed_ expression.
 #'
-#' @export
+#' @return a `{` object. See [base::Paren()] for details.
 #'
 #' @examples
 #' adsl <- tmc_ex_adsl
@@ -204,6 +209,8 @@ add_expr <- function(expr_ls, new_expr) {
 #' res <- bracket_expr(list(expr1, expr2, expr3))
 #' eval(res)
 #' table(anl$rsp_lab, anl$is_rsp)
+#'
+#' @export
 bracket_expr <- function(exprs) {
   expr <- lapply(exprs, deparse)
 
@@ -356,7 +363,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
   }
 }
 
-#' Whether object is of class [teal.transform::choices_selected()] or [teal.transform::data_extract_spec()]
+#' Whether object is of class [teal.transform::choices_selected()]
 #'
 #' @param x object to be checked
 #'
@@ -376,6 +383,16 @@ is.cs_or_des <- function(x) { # nolint
 #' @param combine (`logical`)\cr if `TRUE` the group combination is included.
 #' @param ref (`character`)\cr the reference level (not used for `combine = TRUE`).
 #' @param arm_var (`character`)\cr the arm or grouping variable name.
+#'
+#' @return a `call`
+#'
+#' @examples
+#' split_col_expr(
+#'   compare = TRUE,
+#'   combine = FALSE,
+#'   ref = "ARM A",
+#'   arm_var = "ARMCD"
+#' )
 #'
 #' @export
 split_col_expr <- function(compare, combine, ref, arm_var) {
@@ -415,8 +432,14 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #' @param x (`choices_selected`)\cr
 #'   object with interaction terms
 #'
-#' @export
 #' @note uses the regex `\\*|:` to perform the split.
+#'
+#' @return  a [choices_selected()] object.
+#'
+#' @examples
+#' split_choices(choices_selected(choices = c("x:y", "a*b"), selected = all_choices()))
+#'
+#' @export
 split_choices <- function(x) {
   checkmate::assert_class(x, "choices_selected")
   checkmate::assert_character(x$choices, min.len = 1)
@@ -431,8 +454,10 @@ split_choices <- function(x) {
 }
 
 #' Extracts html id for `data_extract_ui`
-#' @description The `data_extract_ui` is located under extended html id.
-#'   We could not use `ns("original id")` for reference, as it is extended with specific suffixes.
+#'
+#' The `data_extract_ui` is located under extended html id. We could not use `ns("original id")`
+#' for reference, as it is extended with specific suffixes.
+#'
 #' @param varname (`character`)\cr
 #'   the original html id.  This should be retrieved with `ns("original id")` in the UI function
 #'   or `session$ns("original id")`/"original id" in the server function.
@@ -441,6 +466,11 @@ split_choices <- function(x) {
 #'   This might be retrieved like `data_extract_spec(...)[[1]]$dataname`.
 #' @param filter optional, (`logical`)\cr
 #'   if the connected `extract_data_spec` has objects passed to its `filter` argument
+#'
+#' @return a string
+#'
+#' @examples
+#' extract_input("ARM", "ADSL")
 #'
 #' @export
 extract_input <- function(varname, dataname, filter = FALSE) {
@@ -459,6 +489,13 @@ extract_input <- function(varname, dataname, filter = FALSE) {
 #' @param by (`character`)\cr
 #'  regex with which to split the interaction
 #'  term by.
+#'
+#' @return a vector of strings where each element is a component
+#'   variable extracted from interaction term `x`.
+#'
+#' @examples
+#' split_interactions("x:y")
+#' split_interactions("x*y")
 #'
 #' @export
 split_interactions <- function(x, by = "\\*|:") {
@@ -498,7 +535,7 @@ split_interactions <- function(x, by = "\\*|:") {
 #' @param ref_arm_val (`character`)\cr replacement name for the reference level.
 #' @param drop (`logical`)\cr drop the unused variable levels.
 #'
-#' @export
+#' @return a `call`
 #'
 #' @examples
 #' prepare_arm(
@@ -515,6 +552,7 @@ split_interactions <- function(x, by = "\\*|:") {
 #'   comp_arm = "ARM A"
 #' )
 #'
+#' @export
 prepare_arm <- function(dataname,
                         arm_var,
                         ref_arm,
@@ -522,15 +560,13 @@ prepare_arm <- function(dataname,
                         compare_arm = !is.null(ref_arm),
                         ref_arm_val = paste(ref_arm, collapse = "/"),
                         drop = TRUE) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(arm_var),
-    is.null(ref_arm) || is.character(ref_arm),
-    is.character(comp_arm) || is.null(comp_arm),
-    assertthat::is.flag(compare_arm),
-    assertthat::is.string(ref_arm_val),
-    assertthat::is.flag(drop)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_character(ref_arm, null.ok = TRUE)
+  checkmate::assert_character(comp_arm, null.ok = TRUE)
+  checkmate::assert_flag(compare_arm)
+  checkmate::assert_string(ref_arm_val)
+  checkmate::assert_flag(drop)
 
   data_list <- list()
 
@@ -601,7 +637,8 @@ prepare_arm <- function(dataname,
 #'
 #' @inheritParams template_arguments
 #'
-#' @export
+#' @return a `{` object. See [base::Paren()] for details.
+#'
 #' @examples
 #' prepare_arm_levels(
 #'   dataname = "adae",
@@ -617,16 +654,15 @@ prepare_arm <- function(dataname,
 #'   drop_arm_levels = FALSE
 #' )
 #'
+#' @export
 prepare_arm_levels <- function(dataname,
                                parentname,
                                arm_var,
                                drop_arm_levels = TRUE) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_flag(drop_arm_levels)
 
   data_list <- list()
 
@@ -734,8 +770,13 @@ prepare_arm_levels <- function(dataname,
 #' @param default_color (`character`)\cr default color.
 #' @param icons (`list`)\cr certain icons per level.
 #'
-#' @export
+#' @return a character vector where each element is a formatted HTML tag corresponding to
+#'   a value in `x`.
 #'
+#' @examples
+#' color_lab_values(c("LOW", "LOW", "HIGH", "NORMAL", "HIGH"))
+#'
+#' @export
 color_lab_values <- function(x,
                              classes = c("HIGH", "NORMAL", "LOW"),
                              colors = list(HIGH = "red", NORMAL = "grey", LOW = "blue"),
@@ -772,8 +813,13 @@ color_lab_values <- function(x,
 #'
 #' @param x (`character`)\cr vector with categories descriptions.
 #'
-#' @export
+#' @return a string
 #'
+#' @examples
+#' clean_description("Level A (other text)")
+#' clean_description("A long string that should be shortened")
+#'
+#' @export
 clean_description <- function(x) {
   x <- gsub("\\(.*?\\)", "", x)
   x <- trimws(x)

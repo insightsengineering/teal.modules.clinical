@@ -1,15 +1,20 @@
 #' Template for Generalized Estimating Equations (GEE) analysis module
 #'
+#' Creates a valid expression to generate an analysis table using Generalized Estimating Equations (GEE).
+#'
 #' @inheritParams template_arguments
-#' @param output_table (`character`)\cr type of output table (`"t_gee_cov", "t_gee_coef", "t_gee_lsmeans"`)
-#' @param data_model_fit (`character`)\cr dataset used to fit the model by `tern.gee::fit_gee()`
-#' @param dataname_lsmeans (`character`)\cr dataset used for `alt_counts_df` argument of `rtables::build_table()`
-#' @param split_covariates (`character`)\cr vector of names of variables to use as covariates in `tern.gee::vars_gee()`
+#' @param output_table (`character`)\cr type of output table (`"t_gee_cov", "t_gee_coef", "t_gee_lsmeans"`).
+#' @param data_model_fit (`character`)\cr dataset used to fit the model by `tern.gee::fit_gee()`.
+#' @param dataname_lsmeans (`character`)\cr dataset used for `alt_counts_df` argument of `rtables::build_table()`.
+#' @param split_covariates (`character`)\cr vector of names of variables to use as covariates in
+#'   `tern.gee::vars_gee()`.
 #' @param cor_struct (`character`)\cr assumed correlation structure in `tern.gee::fit_gee`.
 #'
-#' @seealso [tm_a_gee()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [tm_a_gee()]
+#'
+#' @keywords internal
 template_a_gee <- function(output_table,
                            data_model_fit = "ANL",
                            dataname_lsmeans = "ANL_ADSL",
@@ -121,21 +126,24 @@ template_a_gee <- function(output_table,
   y
 }
 
-#' Teal Module: Teal module for Generalized Estimating Equations (GEE) analysis
+#' teal Module: Generalized Estimating Equations (GEE) analysis
+#'
+#' This module produces an analysis table using Generalized Estimating Equations (GEE).
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_arguments
 #' @inheritParams template_a_gee
 #'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
+#' library(dplyr)
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
 #'   ADQS <- tmc_ex_adqs %>%
-#'     dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
-#'     dplyr::mutate(
+#'     filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
+#'     mutate(
 #'       AVISIT = as.factor(AVISIT),
 #'       AVISITN = rank(AVISITN) %>%
 #'         as.factor() %>%
@@ -171,6 +179,7 @@ template_a_gee <- function(output_table,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_a_gee <- function(label,
                      dataname,
                      parentname = ifelse(
@@ -196,6 +205,12 @@ tm_a_gee <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(visit_var, "choices_selected")
+  checkmate::assert_class(cov_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)

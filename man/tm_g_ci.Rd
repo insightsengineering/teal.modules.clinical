@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_ci.R
 \name{tm_g_ci}
 \alias{tm_g_ci}
-\title{Teal Module: Confidence Interval Plot (\code{CIG01})}
+\title{teal Module: Confidence Interval Plot}
 \usage{
 tm_g_ci(
   label,
@@ -22,17 +22,16 @@ tm_g_ci(
 \arguments{
 \item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{x_var}{(\code{character})\cr treatment variable corresponding to the x axis.}
+\item{x_var}{(\code{character})\cr name of the treatment variable to put on the x-axis.}
 
-\item{y_var}{(\code{character})\cr response variable corresponding to the y axis.}
+\item{y_var}{(\code{character})\cr name of the response variable to put on the y-axis.}
 
-\item{color}{(\code{data_extract_spec})\cr the group variable (color, line type
-and point shape).}
+\item{color}{(\code{data_extract_spec})\cr the group variable used to determine the plot colors, shapes, and line types.}
 
-\item{stat}{(\code{character})\cr either \code{mean} or \code{median}.}
+\item{stat}{(\code{character})\cr statistic to plot. Options are \code{"mean"} and \code{"median"}.}
 
-\item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
-confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -49,11 +48,14 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-The module generates the R code and returns the corresponding output.
+This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type confidence interval plot consistent with the TLG Catalog template
+\code{CIG01} available \href{https://insightsengineering.github.io/tlg-catalog/stable/graphs/other/cig01.html}{here}.
 }
 \examples{
 library(nestcolor)
@@ -119,10 +121,18 @@ app <- init(
         )
       )
     )
+  ),
+  header = "Example of Confidence Interval Plot",
+  footer = tags$p(
+    class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
   )
 )
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

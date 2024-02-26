@@ -1,25 +1,26 @@
-#' Template: Medical History
+#' Template: Patient Profile Medical History
 #'
-#' Creates medical history template.
+#' Creates a valid expression to generate a patient profile medical history report using ADaM datasets.
 #'
 #' @inheritParams template_arguments
-#' @param mhterm (`character`)\cr name of the reported name for medical history variable.
+#' @param mhterm (`character`)\cr name of the reported term for the medical history variable.
 #' @param mhbodsys (`character`)\cr name of the body system or organ class variable.
 #' @param mhdistat (`character`)\cr name of the status of the disease variable.
-#' @param patient_id (`character`)\cr patient ID.
-#' @keywords internal
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_t_pp_medical_history()]
+#'
+#' @keywords internal
 template_medical_history <- function(dataname = "ANL",
                                      mhterm = "MHTERM",
                                      mhbodsys = "MHBODSYS",
                                      mhdistat = "MHDISTAT",
                                      patient_id = NULL) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(mhterm),
-    assertthat::is.string(mhbodsys),
-    assertthat::is.string(mhdistat)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(mhterm)
+  checkmate::assert_string(mhbodsys)
+  checkmate::assert_string(mhdistat)
 
   y <- list()
   y$table <- list()
@@ -73,21 +74,20 @@ template_medical_history <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Patient Medical History Teal Module
+#' teal Module: Patient Profile Medical History
 #'
-#' This teal module produces a patient medical history report using `ADaM` datasets.
+#' This module produces a patient profile medical history report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_medical_history
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param mhterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   `MHTERM` column of the `ADMH` dataset.
-#' @param mhbodsys ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   `MHBODSYS` column of the `ADMH` dataset.
-#' @param mhdistat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   `MHDISTAT` column of the `ADMH` dataset.
+#' @param mhterm ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `MHTERM` variable from `dataname`.
+#' @param mhbodsys ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `MHBODSYS` variable from `dataname`.
+#' @param mhdistat ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `MHDISTAT` variable from `dataname`.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -127,6 +127,7 @@ template_medical_history <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_pp_medical_history <- function(label,
                                     dataname = "ADMH",
                                     parentname = "ADSL",
@@ -141,6 +142,9 @@ tm_t_pp_medical_history <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(mhterm, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(mhbodsys, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(mhdistat, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
@@ -169,6 +173,7 @@ tm_t_pp_medical_history <- function(label,
   )
 }
 
+#' @keywords internal
 ui_t_medical_history <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -222,7 +227,7 @@ ui_t_medical_history <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_t_medical_history <- function(id,
                                   data,
                                   reporter,

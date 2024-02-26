@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_ipp.R
 \name{tm_g_ipp}
 \alias{tm_g_ipp}
-\title{Teal Module: Individual Patient Plot}
+\title{teal Module: Individual Patient Plots}
 \usage{
 tm_g_ipp(
   label,
@@ -41,36 +41,37 @@ tm_g_ipp(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices
-and preselected option for variable values that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for variable values that can be used as arm variable.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object specifying the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
+the variable name for subject id.}
 
-\item{visit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for variable names that can be used as \code{visit} variable.
+Must be a factor in \code{dataname}.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-object with all available choices
-and preselected option for variable values that can be used as \code{avalu_var}.}
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for the analysis unit variable.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
 
-\item{add_baseline_hline}{(\code{flag})\cr adds horizontal line at baseline y-value on plot}
+\item{add_baseline_hline}{(\code{logical})\cr whether a horizontal line should be added to the plot at baseline y-value.}
 
-\item{separate_by_obs}{(\code{flag})\cr creates multi panel plots when TRUE}
+\item{separate_by_obs}{(\code{logical})\cr whether to create multi-panel plots.}
 
-\item{suppress_legend}{(\code{flag})\cr allow user to suppress legend}
+\item{suppress_legend}{(\code{logical})\cr whether to suppress the plot legend.}
 
-\item{add_avalu}{(\code{flag})\cr allow user to not display value unit in the plot.}
+\item{add_avalu}{(\code{logical})\cr whether \code{avalu_first} text should be appended to the plot title and y-axis label.}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -84,39 +85,41 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
-\code{title}, \code{subtitle}, \code{x}, \code{y}.
-No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
-with default module arguments (hard coded in the module body).
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of
+the following child elements: \code{title}, \code{subtitle}, \code{x}, \code{y}. No other elements are taken into account. The
+argument is merged with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module
+body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces grid style Individual patient plot(s) that show
-trends in parameter values over time for each patient using data with
-\code{ADaM} structure.
+This module produces \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type individual patient plots that display trends in parameter
+values over time for each patient, using data with ADaM structure.
 }
 \examples{
 library(nestcolor)
+library(dplyr)
 
 ADSL <- tmc_ex_adsl \%>\%
-  dplyr::slice(1:20) \%>\%
+  slice(1:20) \%>\%
   df_explicit_na()
 ADLB <- tmc_ex_adlb \%>\%
-  dplyr::filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
+  filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
   df_explicit_na() \%>\%
-  dplyr::filter(AVISIT != "SCREENING")
+  filter(AVISIT != "SCREENING")
 
 app <- init(
   data = cdisc_data(
     ADSL = ADSL,
     ADLB = ADLB,
     code = "
-      ADSL <- tmc_ex_adsl \%>\% dplyr::slice(1:20) \%>\% df_explicit_na()
-      ADLB <- tmc_ex_adlb \%>\% dplyr::filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
-        df_explicit_na() \%>\% dplyr::filter(AVISIT != \"SCREENING\")
+      ADSL <- tmc_ex_adsl \%>\% slice(1:20) \%>\% df_explicit_na()
+      ADLB <- tmc_ex_adlb \%>\% filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
+        df_explicit_na() \%>\% filter(AVISIT != \"SCREENING\")
     "
   ),
   modules = modules(
@@ -160,7 +163,11 @@ app <- init(
   )
 )
 if (interactive()) {
-  shinyApp(ui = app$ui, server = app$server)
+  shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

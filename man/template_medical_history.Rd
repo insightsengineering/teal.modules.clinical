@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_medical_history.R
 \name{template_medical_history}
 \alias{template_medical_history}
-\title{Template: Medical History}
+\title{Template: Patient Profile Medical History}
 \usage{
 template_medical_history(
   dataname = "ANL",
@@ -15,7 +15,7 @@ template_medical_history(
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{mhterm}{(\code{character})\cr name of the reported name for medical history variable.}
+\item{mhterm}{(\code{character})\cr name of the reported term for the medical history variable.}
 
 \item{mhbodsys}{(\code{character})\cr name of the body system or organ class variable.}
 
@@ -23,7 +23,13 @@ template_medical_history(
 
 \item{patient_id}{(\code{character})\cr patient ID.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates medical history template.
+Creates a valid expression to generate a patient profile medical history report using ADaM datasets.
+}
+\seealso{
+\code{\link[=tm_t_pp_medical_history]{tm_t_pp_medical_history()}}
 }
 \keyword{internal}

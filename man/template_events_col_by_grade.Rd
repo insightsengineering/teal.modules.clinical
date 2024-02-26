@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_events_by_grade.R
 \name{template_events_col_by_grade}
 \alias{template_events_col_by_grade}
-\title{Template: Adverse Events grouped by Grade with threshold}
+\title{Template: Adverse Events Grouped by Grade with Threshold}
 \usage{
 template_events_col_by_grade(
   dataname,
@@ -33,7 +33,7 @@ template_events_col_by_grade(
 
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{grading_groups}{(\code{character})\cr list of grading groups.}
+\item{grading_groups}{(\code{list})\cr named list of grading groups.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -41,7 +41,7 @@ template_events_col_by_grade(
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{id}{(\code{character}) \cr unique identifier of patients in datasets, default to \code{"USUBJID"}.}
+\item{id}{(\code{character})\cr name of variable to uniquely identify patients in datasets.}
 
 \item{hlt}{(\code{character})\cr name of the variable with high level term for events.}
 
@@ -53,10 +53,9 @@ module.}
 \item{label_llt}{(\code{string})\cr label of the \code{llt} variable from \code{dataname}. The label will be extracted from the
 module.}
 
-\item{grade}{(\code{character}) \cr grade term which grading_groups is based on, default to \code{"AETOXGR"}.}
+\item{grade}{(\code{character})\cr name of grade variable to base \code{grading_groups} on.}
 
-\item{label_grade}{(\code{string})\cr label of the \code{grade} variable from \code{dataname}. The label will be extracted from the
-module.}
+\item{label_grade}{(\code{character})\cr label of the \code{grade} variable from \code{dataname}.}
 
 \item{prune_freq}{(\code{number})\cr threshold to use for trimming table using event incidence rate in any column.}
 
@@ -67,18 +66,21 @@ rates between any two columns.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Adverse Events grouped by Grade with threshold
+Creates a valid expression to generate a table to summarize adverse events grouped by grade.
 }
 \seealso{
 \code{\link[=tm_t_events_by_grade]{tm_t_events_by_grade()}}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_tte.R
 \name{template_tte}
 \alias{template_tte}
-\title{Template: Time-to-Event}
+\title{Template: Time-To-Event}
 \usage{
 template_tte(
   dataname = "ANL",
@@ -55,8 +55,7 @@ template_tte(
 
 \item{event_desc_var}{(\code{character})\cr name of the variable with events description.}
 
-\item{control}{(\code{list})\cr list of settings for the analysis,
-see \code{\link[=control_tte]{control_tte()}}.}
+\item{control}{(\code{list})\cr list of settings for the analysis. See \code{\link[=control_tte]{control_tte()}} for details.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -71,13 +70,15 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression for time-to-event analysis.
+Creates a valid expression to generate a time-to-event analysis.
 }
 \seealso{
-\code{\link[=tm_t_tte]{tm_t_tte()}}
+\code{\link[=control_tte]{control_tte()}}, \code{\link[=tm_t_tte]{tm_t_tte()}}
 }
 \keyword{internal}

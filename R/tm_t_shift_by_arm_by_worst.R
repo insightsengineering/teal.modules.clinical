@@ -1,12 +1,12 @@
-#' Template: Shift by Arm
+#' Template: Shift by Arm by Worst Analysis Indicator Level
 #'
-#' Creates a valid expression to generate a summary table of analysis indicator levels by arm.
+#' Creates a valid expression to generate a summary table of worst analysis indicator variable level per subject by arm.
 #'
+#' @inheritParams template_shift_by_arm
 #' @inheritParams template_arguments
-#' @param add_total (`logical`)\cr whether to include row with total number of patients.
-#' @param aval_var (`character`)\cr name of the analysis reference range indicator variable.
-#' @param baseline_var (`character`)\cr name of the baseline reference range indicator variable.
 #' @param worst_flag (`character`)\cr value indicating worst analysis indicator level.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_shift_by_arm()]
 #'
@@ -37,21 +37,19 @@ template_shift_by_arm_by_worst <- function(dataname,
     )
   }
 
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    is.null(worst_flag_var) || is.character(worst_flag_var),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(baseline_var),
-    assertthat::is.flag(na.rm),
-    assertthat::is.string(na_level),
-    assertthat::is.string(treatment_flag_var),
-    assertthat::is.string(treatment_flag),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_character(worst_flag_var, null.ok = TRUE)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(baseline_var)
+  checkmate::assert_flag(na.rm)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(treatment_flag_var)
+  checkmate::assert_string(treatment_flag)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
 
   y <- list()
 
@@ -184,13 +182,12 @@ template_shift_by_arm_by_worst <- function(dataname,
   y
 }
 
-#' Teal Module: Shift by Arm by Worst Analysis Indicator Level
+#' teal Module: Shift by Arm by Worst Analysis Indicator Level
 #'
 #' This module produces a summary table of worst analysis indicator variable level per subject by arm.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_arm_by_worst
-#' @param add_total (`logical`)\cr whether to include row with total number of patients.
 #'
 #' @inherit module_arguments return
 #'
@@ -288,8 +285,13 @@ tm_t_shift_by_arm_by_worst <- function(label,
   useNA <- match.arg(useNA) # nolint
   checkmate::assert_string(na_level)
   checkmate::assert_string(total_label)
-  checkmate::assert_class(treatment_flag, "choices_selected")
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(baseline_var, "choices_selected")
+  checkmate::assert_class(worst_flag_var, "choices_selected")
   checkmate::assert_class(treatment_flag_var, "choices_selected")
+  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")

@@ -1,20 +1,23 @@
 #' Template: Exposure Table for Risk management plan
 #'
+#' Creates a valid expression to generate exposure table for risk management plan.
+#'
 #' @inheritParams template_arguments
-#' @param row_by_var (`character`)\cr
-#'   variable name used to split the rows.
-#' @param col_by_var (`character`)\cr
-#'   variable name used to split the columns.
-#' @param drop_levels (`flag`)\cr
-#'   whether empty rows should be removed from the table.
-#' @param paramcd_label (`character`)\cr
-#'   the column from the dataset where the value will be used to label the argument `paramcd`.
+#' @param row_by_var (`character`)\cr variable name used to split the values by rows.
+#' @param col_by_var (`character`)\cr variable name used to split the values by columns.
+#' @param drop_levels (`flag`)\cr whether empty rows should be removed from the table.
+#' @param paramcd_label (`character`)\cr the column from the `dataname` dataset where the
+#'   value will be used to label the argument `paramcd`.
 #' @param add_total_row (`flag`)\cr whether a "total" level should be added after the others which includes all the
 #'   levels that constitute the split. A custom label can be set for this level via the `total_row_label` argument.
-#' @param total_row_label (`character`)\cr string to display as total row label if row is enabled (see `add_total_row`).
-#' @seealso [tm_t_exposure()]
-#' @keywords internal
+#' @param total_row_label (`character`)\cr string to display as total row label if row is
+#'   enabled (see `add_total_row`).
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_t_exposure()]
+#'
+#' @keywords internal
 template_exposure <- function(parentname,
                               dataname,
                               id_var,
@@ -31,22 +34,20 @@ template_exposure <- function(parentname,
                               aval_var,
                               avalu_var,
                               basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(row_by_var),
-    assertthat::is.string(col_by_var) || length(col_by_var) == 0,
-    assertthat::is.string(paramcd),
-    assertthat::is.string(id_var),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.flag(add_total_row),
-    assertthat::is.string(total_row_label),
-    assertthat::is.string(na_level),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(avalu_var) || length(avalu_var) == 0,
-    assertthat::is.flag(drop_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(row_by_var)
+  checkmate::assert_string(col_by_var, null.ok = TRUE)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(id_var)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_flag(add_total_row)
+  checkmate::assert_string(total_row_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(avalu_var, null.ok = TRUE)
+  checkmate::assert_flag(drop_levels)
 
   y <- list()
   data_list <- list()
@@ -206,27 +207,30 @@ template_exposure <- function(parentname,
   y
 }
 
-#' Teal module: Exposure Table for Risk management plan
+#' teal Module: Exposure Table for Risk management plan
+#'
+#' The module produces an exposure table for risk management plan.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_exposure
-#' @param row_by_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param row_by_var ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for
 #'   variable names that can be used to split rows.
-#' @param col_by_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param col_by_var ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for
 #'   variable names that can be used to split columns.
-#' @param parcat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param parcat ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for
 #'   parameter category values.
-#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with the analysis unit variable.
-#' @param paramcd_label (`character`)\cr
-#'   the column from the dataset where the value will be used to label the argument `paramcd`.
+#' @param paramcd_label (`character`)\cr the column from the dataset where the value will be used to
+#'   label the argument `paramcd`.
 #'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
+#' library(dplyr)
+#' library(formatters)
+#'
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
@@ -235,14 +239,14 @@ template_exposure <- function(parentname,
 #'   set.seed(1, kind = "Mersenne-Twister")
 #'   labels <- var_labels(ADEX, fill = FALSE)
 #'   ADEX <- ADEX %>%
-#'     dplyr::distinct(USUBJID, .keep_all = TRUE) %>%
-#'     dplyr::mutate(
+#'     distinct(USUBJID, .keep_all = TRUE) %>%
+#'     mutate(
 #'       PARAMCD = "TDURD",
 #'       PARAM = "Overall duration (days)",
-#'       AVAL = sample(x = seq(1, 200), size = dplyr::n(), replace = TRUE),
+#'       AVAL = sample(x = seq(1, 200), size = n(), replace = TRUE),
 #'       AVALU = "Days"
 #'     ) %>%
-#'     dplyr::bind_rows(ADEX)
+#'     bind_rows(ADEX)
 #'   var_labels(ADEX) <- labels
 #' })
 #'
@@ -281,6 +285,7 @@ template_exposure <- function(parentname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_exposure <- function(label,
                           dataname,
                           parentname = ifelse(
@@ -324,9 +329,9 @@ tm_t_exposure <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(row_by_var, "choices_selected")
   checkmate::assert_class(col_by_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(parcat, "choices_selected")
   checkmate::assert_class(aval_var, "choices_selected")
@@ -373,7 +378,7 @@ tm_t_exposure <- function(label,
 }
 
 
-#' @noRd
+#' @keywords internal
 ui_t_exposure <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -457,7 +462,7 @@ ui_t_exposure <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_exposure <- function(id,
                            data,
                            reporter,

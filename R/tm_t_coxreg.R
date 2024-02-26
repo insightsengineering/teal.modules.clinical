@@ -1,16 +1,18 @@
 #' Template: Univariable Cox Regression
 #'
-#' Creates a valid expression for Cox regression analysis.
+#' Creates a valid expression to generate a univariable Cox regression analysis.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis, see [control_coxreg()].
-#' @param at (`list` of `numeric`)\cr when the candidate covariate is a `numeric`, use `at`
-#' to specify the value of the covariate at which the effect should be estimated.
-#' @param append (`logical`)\cr if the result should be appended to the previous one.
+#' @param control (`list`)\cr list of settings for the analysis (see [control_coxreg()]).
+#' @param at (`list` of `numeric`)\cr when the candidate covariate is a `numeric` type variable, use `at`
+#'   to specify the value of the covariate at which the effect should be estimated.
+#' @param append (`logical`)\cr whether the result should be appended to the previous one.
 #'
-#' @seealso [tm_t_coxreg()]
+#' @inherit template_arguments return
+#'
+#' @seealso [template_coxreg_m()], [tm_t_coxreg()]
+#'
 #' @keywords internal
-#'
 template_coxreg_u <- function(dataname,
                               cov_var,
                               arm_var,
@@ -169,18 +171,16 @@ template_coxreg_u <- function(dataname,
 
 #' Template: Multi-Variable Cox Regression
 #'
-#' Creates a valid expression for Cox regression analysis.
+#' Creates a valid expression to generate a multi-variable Cox regression analysis.
 #'
+#' @inheritParams template_coxreg_u
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis,
-#'   see [control_coxreg()].
-#' @param at (`list` of `numeric`)\cr when the candidate covariate is a
-#'  `numeric`, use `at` to specify the value of the covariate at which the
-#'  effect should be estimated.
 #'
-#' @seealso [tm_t_coxreg()]
+#' @inherit template_arguments return
+#'
+#' @seealso [template_coxreg_u()], [tm_t_coxreg()]
+#'
 #' @keywords internal
-#'
 template_coxreg_m <- function(dataname,
                               cov_var,
                               arm_var,
@@ -325,47 +325,41 @@ template_coxreg_m <- function(dataname,
   y
 }
 
-#' Teal Module: Cox Regression Model
+#' teal Module: Cox Regression Model
 #'
-#' Teal module to fit Cox univariable or multi-variable models consistent with
-#' `COXT01` and `COXT02` standard outputs, respectively.
+#' This module fits Cox univariable or multi-variable models, consistent with the TLG Catalog
+#' templates for Cox regression tables `COXT01` and `COXT02`, respectively. See the TLG Catalog entries
+#' for `COXT01` [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt01.html)
+#' and `COXT02` [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt02.html).
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_coxreg_u
 #' @inheritParams template_coxreg_m
-#' @param multivariate (`logical`)\cr
-#'   If `FALSE`, the univariable approach is used
-#'   (equivalent to `COXT01` standard) instead of the multi-variable model
-#'   (equivalent to `COXT02` standard).
+#' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used instead of the
+#'   multi-variable model.
 #'
 #' @details
 #' The Cox Proportional Hazards (PH) model is the most commonly used method to
-#' estimate the magnitude of
-#' the effect in survival analysis. It assumes proportional hazards: the ratio
-#' of the hazards between groups (e.g., two arms) is constant over time.
+#' estimate the magnitude of the effect in survival analysis. It assumes proportional
+#' hazards: the ratio of the hazards between groups (e.g., two arms) is constant over time.
 #' This ratio is referred to as the "hazard ratio" (HR) and is one of the most
 #' commonly reported metrics to describe the effect size in survival analysis.
-#' For further information about the Cox Proportional Hazards Model, check
-#' "Statistical Analysis of Clinical Trials Data with R", NEST team.
 #'
 #' This modules expects that the analysis data has the following variables:
 #'
-#' \tabular{ll}{
-#'  `AVAL` \tab time to event\cr
-#'  `CNSR` \tab boolean or 0,1 is element in `AVAL` censored\cr
-#'  `PARAMCD` \tab variable used to filter for endpoint (e.g. OS), after
-#'  filtering for `paramcd` one observation per patient is expected
-#' }
+#' * `AVAL`: time to event
+#' * `CNSR`: 1 if record in `AVAL` is censored, 0 otherwise
+#' * `PARAMCD`: variable used to filter for endpoint (e.g. OS). After
+#'   filtering for `PARAMCD` one observation per patient is expected
 #'
-#' The arm variables, stratification and covariate variables are taken from the
-#' `ADSL` data.
+#' The arm variables and stratification/covariate variables are taken from the `ADSL` data.
 #'
-#' @section Note:
-#' - The likelihood ratio test is not supported for model including strata,
-#'   Wald test will be substituted.
-#' - Multi-Variable is the default choice for backward compatibility.
+#' @note
+#' * The likelihood ratio test is not supported for models that include strata - the Wald
+#'   test will be substituted in these cases.
+#' * Multi-variable is the default choice for backward compatibility.
 #'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ## First example
@@ -418,10 +412,9 @@ template_coxreg_m <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
-#'
 #' ## Second example
 #' ## ==============
-#' ## This time, a synthetic pair of ADTTE/ADSL is fabricated for a Cox regression
+#' ## This time, a synthetic pair of ADTTE/ADSL data is fabricated for Cox regression
 #' ## where ties and pval_method matter.
 #'
 #' ## Dataset fabrication
@@ -429,6 +422,7 @@ template_coxreg_m <- function(dataname,
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(dplyr)
 #'   ADTTE <- data.frame(
 #'     STUDYID = "LUNG",
 #'     AVAL = c(4, 3, 1, 1, 2, 2, 3, 1, 2),
@@ -444,8 +438,8 @@ template_coxreg_m <- function(dataname,
 #'     INST = factor(c("A", "A", "B", "B", "A", "B", "A", "B", "A")),
 #'     stringsAsFactors = FALSE
 #'   )
-#'   ADTTE <- base::rbind(ADTTE, ADTTE, ADTTE, ADTTE)
-#'   ADTTE <- dplyr::as_tibble(ADTTE)
+#'   ADTTE <- rbind(ADTTE, ADTTE, ADTTE, ADTTE)
+#'   ADTTE <- as_tibble(ADTTE)
 #'   set.seed(1)
 #'   ADTTE$INST <- sample(ADTTE$INST)
 #'   ADTTE$AGE <- sample(seq(5, 75, 5), size = nrow(ADTTE), replace = TRUE)
@@ -461,10 +455,10 @@ template_coxreg_m <- function(dataname,
 #' datanames(data) <- datanames
 #' join_keys(data) <- default_cdisc_join_keys[datanames]
 #'
-#' ## Teal application
-#' ## ================
+#' ## `teal` application
+#' ## ----------------
 #' ## Note that the R code exported by `Show R Code` does not include the data
-#' ## preprocessing. You will need to create the dataset as above before
+#' ## pre-processing. You will need to create the dataset as above before
 #' ## running the exported R code.
 #'
 #' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
@@ -489,6 +483,7 @@ template_coxreg_m <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_coxreg <- function(label,
                         dataname,
                         parentname = ifelse(
@@ -520,6 +515,12 @@ tm_t_coxreg <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(cov_var, "choices_selected")
+  checkmate::assert_class(strata_var, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(cnsr_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -556,7 +557,7 @@ tm_t_coxreg <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_coxreg <- function(id, ...) {
   a <- list(...) # module args
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -693,7 +694,7 @@ ui_t_coxreg <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_coxreg <- function(id,
                          data,
                          reporter,

@@ -1,7 +1,10 @@
-# teal.modules.clinical 0.8.16.9045
+# teal.modules.clinical 0.9.0.9000
+
+# teal.modules.clinical 0.9.0
 
 ### Breaking Changes
-+ Adapted all modules to use `teal_data` objects.
+* Adapted all modules to use `teal_data` objects.
+* Module arguments that previously accepted inputs from `teal.transform::choices_selected()` or `teal.transform::data_extract_spec()` now only accept input from `teal.transform::choices_selected()`. The affected modules are: `tm_a_gee`, `tm_a_mmrm`, `tm_g_ci`, `tm_g_forest_rsp`, `tm_g_forest_tte`, `tm_g_ipp`, `tm_g_km`, `tm_g_lineplot`, `tm_g_pp_adverse_events`, `tm_g_pp_patient_timeline`, `tm_g_pp_therapy`, `tm_g_pp_vitals`, `tm_t_abnormality`, `tm_t_abnormality_by_worst_grade`, `tm_t_ancova`, `tm_t_binary_outcome`, `tm_t_coxreg`, `tm_t_events`, `tm_t_events_by_grade`, `tm_t_events_patyear`, `tm_t_events_summary`, `tm_t_exposure`, `tm_t_logistic`, `tm_t_mult_events`, `tm_t_pp_basic_info`, `tm_t_pp_laboratory`, `tm_t_pp_medical_history`, `tm_t_pp_prior_medication`, `tm_t_shift_by_arm`, `tm_t_shift_by_arm_by_worst`, `tm_t_shift_by_grade`, `tm_t_smq`, `tm_t_summary`, `tm_t_summary_by`, and `tm_t_tte`
 
 ### Enhancements
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
@@ -25,7 +28,7 @@
 * Reduced package dependencies (removed `tidyr`, `rlang`, `magrittr` and `styler`).
 * Introduced tests against partial matching.
 
-# teal.modules.clinical 0.8.16.9010
+# teal.modules.clinical 0.8.16
 
 ### Enhancements
 * Added more informative error message when grade mapping error occurs in `tm_t_abnormality_by_worst_grade`.

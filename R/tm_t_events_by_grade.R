@@ -1,18 +1,18 @@
 #' Template: Events by Grade
 #'
+#' Creates a valid expression to generate a table to summarize events by grade.
+#'
 #' @inheritParams template_arguments
-#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#' module.
 #' @param id (`character`)\cr unique identifier of patients in datasets, default to `"USUBJID"`.
 #' @param grade (`character`)\cr name of the severity level variable.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
 #' module.
 #'
-#' @seealso [tm_t_events_by_grade()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [tm_t_events_by_grade()]
+#'
+#' @keywords internal
 template_events_by_grade <- function(dataname,
                                      parentname,
                                      arm_var,
@@ -30,22 +30,20 @@ template_events_by_grade <- function(dataname,
                                      na_level = default_na_str(),
                                      drop_arm_levels = TRUE,
                                      basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(hlt) || is.null(hlt),
-    assertthat::is.string(llt) || is.null(llt),
-    !is.null(hlt) || !is.null(llt),
-    assertthat::is.string(label_hlt) || is.null(label_hlt),
-    assertthat::is.string(label_llt) || is.null(label_llt),
-    assertthat::is.string(grade),
-    assertthat::is.string(label_grade) || is.null(label_grade),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(hlt, null.ok = TRUE)
+  checkmate::assert_string(llt, null.ok = TRUE)
+  if (is.null(hlt) && is.null(llt)) stop("At least one of 'hlt' or 'llt' can not be empty.")
+  checkmate::assert_string(label_hlt, null.ok = TRUE)
+  checkmate::assert_string(label_llt, null.ok = TRUE)
+  checkmate::assert_string(grade)
+  checkmate::assert_string(label_grade, null.ok = TRUE)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
 
@@ -371,18 +369,17 @@ template_events_by_grade <- function(dataname,
   y
 }
 
-#' Template: Adverse Events grouped by Grade with threshold
+#' Template: Adverse Events Grouped by Grade with Threshold
+#'
+#' Creates a valid expression to generate a table to summarize adverse events grouped by grade.
 #'
 #' @inheritParams template_arguments
-#' @param id (`character`) \cr unique identifier of patients in datasets, default to `"USUBJID"`.
-#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param grade (`character`) \cr grade term which grading_groups is based on, default to `"AETOXGR"`.
-#' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param grading_groups (`character`)\cr list of grading groups.
+#' @param id (`character`)\cr name of variable to uniquely identify patients in datasets.
+#' @param grade (`character`)\cr name of grade variable to base `grading_groups` on.
+#' @param label_grade (`character`)\cr label of the `grade` variable from `dataname`.
+#' @param grading_groups (`list`)\cr named list of grading groups.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_events_by_grade()]
 #' @keywords internal
@@ -410,26 +407,23 @@ template_events_col_by_grade <- function(dataname,
                                          na_level = default_na_str(),
                                          drop_arm_levels = TRUE,
                                          basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    is.list(grading_groups),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(id),
-    assertthat::is.string(hlt) || is.null(hlt),
-    assertthat::is.string(llt),
-    assertthat::is.string(grade),
-    assertthat::is.string(label_hlt) || is.null(label_hlt),
-    assertthat::is.string(label_llt) || is.null(label_llt),
-    assertthat::is.string(label_grade) || is.null(label_grade),
-    assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_list(grading_groups)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(id)
+  checkmate::assert_string(hlt, null.ok = TRUE)
+  checkmate::assert_string(llt)
+  checkmate::assert_string(grade)
+  checkmate::assert_string(label_hlt, null.ok = TRUE)
+  checkmate::assert_string(label_llt, null.ok = TRUE)
+  checkmate::assert_string(label_grade, null.ok = TRUE)
+  checkmate::assert_string(na_level)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
-
 
   y <- list()
 
@@ -787,22 +781,29 @@ template_events_col_by_grade <- function(dataname,
   y
 }
 
-#' Teal Module: Events by Grade
+#' teal Module: Events by Grade
+#'
+#' This module produces a table to summarize events by grade.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
-#' @param col_by_grade (`flag`)\cr whether to display the grading groups in nested columns.
-#' @param grading_groups (`character`)\cr list of grading groups used when col_by_grade = TRUE.
+#' @param col_by_grade (`logical`)\cr whether to display the grading groups in nested columns.
+#' @param grading_groups (`list`)\cr named list of grading groups used when `col_by_grade = TRUE`.
+#'
+#' @inherit module_arguments return seealso
 #'
 #' @export
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(formatters)
+#'   library(dplyr)
+#'
 #'   ADSL <- tmc_ex_adsl
 #'   lbls_adae <- var_labels(tmc_ex_adae)
 #'   ADAE <- tmc_ex_adae %>%
-#'     dplyr::mutate_if(is.character, as.factor) #' be certain of having factors
+#'     mutate_if(is.character, as.factor) #' be certain of having factors
 #'   var_labels(ADAE) <- lbls_adae
 #' })
 #'
@@ -867,6 +868,9 @@ tm_t_events_by_grade <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(hlt, "choices_selected")
+  checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -908,7 +912,7 @@ tm_t_events_by_grade <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_events_by_grade <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -995,7 +999,7 @@ ui_t_events_by_grade <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_events_by_grade <- function(id,
                                   data,
                                   reporter,
@@ -1093,7 +1097,10 @@ srv_t_events_by_grade <- function(id,
       anl_filtered <- merged$anl_q()[[dataname]]
       adsl_keys <- merged$adsl_input_r()$keys
 
-      assertthat::assert_that("USUBJID" %in% adsl_keys)
+      checkmate::assert(
+        .var.name = "adsl_keys",
+        if ("USUBJID" %in% adsl_keys) TRUE else "Must contain \"USUBJID\""
+      )
 
       input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       input_level_term <- c(
