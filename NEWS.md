@@ -3,6 +3,9 @@
 ### Enhancements
 * Updated `tm_g_forest_rsp` and `tm_g_forest_tte` to use refactored version of `g_forest`. Plots are now displayed as `ggplot` objects instead of `grob` objects. Added parameters `font_size` and `rel_width_forest` to control font size and width of plot relative to table, respectively.
 
+### Enhancements
+* Updated `tm_t_summary_by` to allow `NULL` input to `paramcd` argument.
+
 ### Miscellaneous
 * Removed `formatters` from dependencies and replaced the use of its functions relating to variable labels with functions from `teal.data`.
 
