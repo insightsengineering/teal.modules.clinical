@@ -402,7 +402,7 @@ tm_t_summary_by <- function(label,
   checkmate::assert_class(by_vars, "choices_selected")
   checkmate::assert_class(summarize_vars, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(denominator, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
