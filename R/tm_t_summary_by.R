@@ -135,7 +135,7 @@ template_summary_by <- function(parentname,
   })
   layout_list <- Reduce(add_expr, split_cols_call, init = layout_list)
 
-  if (add_total) {
+  if (add_total && !parallel_vars) {
     layout_list <- add_expr(
       layout_list,
       substitute(
