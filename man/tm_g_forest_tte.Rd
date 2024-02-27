@@ -24,8 +24,10 @@ tm_g_forest_tte(
     teal.transform::choices_selected(teal.transform::variable_choices(dataname, "AVALU"),
     "AVALU", fixed = TRUE),
   fixed_symbol_size = TRUE,
-  plot_height = c(700L, 200L, 2000L),
-  plot_width = c(1200L, 800L, 3000L),
+  plot_height = c(500L, 200L, 2000L),
+  plot_width = c(1500L, 800L, 3000L),
+  rel_width_forest = c(25L, 0L, 100L),
+  font_size = c(15L, 1L, 30L),
   pre_output = NULL,
   post_output = NULL,
   ggplot2_args = teal.widgets::ggplot2_args()
@@ -79,6 +81,11 @@ height of the main plot and renders a slider on the plot to interactively adjust
 
 \item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
 of the main plot and renders a slider on the plot to interactively adjust the plot width.}
+
+\item{rel_width_forest}{(\code{proportion})\cr proportion of total width to allocate to the forest plot. Relative
+width of table is then \code{1 - rel_width_forest}. If \code{as_list = TRUE}, this parameter is ignored.}
+
+\item{font_size}{(\code{numeric})\cr font size.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -145,8 +152,7 @@ app <- init(
       strata_var = choices_selected(
         variable_choices(ADSL, c("STRATA1", "STRATA2")),
         "STRATA2"
-      ),
-      plot_height = c(600, 200, 2000)
+      )
     )
   )
 )
