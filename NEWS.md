@@ -1,5 +1,8 @@
 # teal.modules.clinical 0.9.0.9001
 
+### Enhancements
+* Updated `tm_t_summary_by` to allow `NULL` input to `paramcd` argument.
+
 ### Miscellaneous
 * Removed `formatters` from dependencies and replaced the use of its functions relating to variable labels with functions from `teal.data`.
 
