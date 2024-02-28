@@ -108,7 +108,7 @@ template_abnormality <- function(parentname,
         variables = list(anl = grade, split_rows = by_vars),
         abnormal = abnormal,
         method = "default",
-        na_level = na_level
+        na_str = na_level
       ),
       env = list(dataname = as.name("anl"), by_vars = by_vars, grade = grade, abnormal = abnormal, na_level = na_level)
     )

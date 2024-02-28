@@ -253,7 +253,7 @@ template_summary_by <- function(parentname,
               vars = sum_vars,
               var_labels = sum_var_labels,
               na.rm = na.rm,
-              na_level = na_level,
+              na_str = na_level,
               denom = denom,
               .stats = stats
             ),
@@ -264,7 +264,7 @@ template_summary_by <- function(parentname,
             expr = analyze_vars(
               vars = sum_vars,
               na.rm = na.rm,
-              na_level = na_level,
+              na_str = na_level,
               denom = denom,
               .stats = stats
             ),

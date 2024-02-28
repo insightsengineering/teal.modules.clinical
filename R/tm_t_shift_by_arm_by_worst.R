@@ -118,7 +118,10 @@ template_shift_by_arm_by_worst <- function(dataname,
           add_rowcounts() %>%
           analyze_vars(
             baseline_var,
-            denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction"
+            denom = "N_row",
+            na_str = na_str,
+            na.rm = na.rm,
+            .stats = "count_fraction"
           ) %>%
           append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
@@ -149,7 +152,10 @@ template_shift_by_arm_by_worst <- function(dataname,
           add_rowcounts() %>%
           analyze_vars(
             baseline_var,
-            denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction"
+            denom = "N_row",
+            na_str = na_str,
+            na.rm = na.rm,
+            .stats = "count_fraction"
           ) %>%
           append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
