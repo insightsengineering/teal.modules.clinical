@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.9.0.9003
+# teal.modules.clinical 0.9.0.9004
 
 ### Enhancements
 * Updated `tm_g_forest_rsp` and `tm_g_forest_tte` to use refactored version of `g_forest`. Plots are now displayed as `ggplot` objects instead of `grob` objects. Added parameters `font_size` and `rel_width_forest` to control font size and width of plot relative to table, respectively.
@@ -6,6 +6,7 @@
 
 ### Miscellaneous
 * Removed `formatters` from dependencies and replaced the use of its functions relating to variable labels with functions from `teal.data`.
+* Replaced instances of deprecated `na_level` argument to `tern` functions with `na_str`.
 * Updated all template functions to use argument/list element name `strata` instead of `strat` in all `tern` function inputs following the deprecation of this argument/name within `tern`.
 
 # teal.modules.clinical 0.9.0
