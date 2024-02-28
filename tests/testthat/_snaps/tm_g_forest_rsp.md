@@ -21,7 +21,7 @@
       $summary
       {
           df <- extract_rsp_subgroups(variables = list(rsp = "is_rsp", 
-              arm = "ARMCD", subgroups = c("SEX", "STRATA2"), strat = NULL), 
+              arm = "ARMCD", subgroups = c("SEX", "STRATA2"), strata = NULL), 
               data = adrs, conf_level = 0.95)
       }
       

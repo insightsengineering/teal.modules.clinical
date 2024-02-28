@@ -296,7 +296,7 @@ template_tte <- function(dataname = "ANL",
           vars = aval_var,
           is_event = "is_event",
           var_labels = paste0("Stratified By: ", paste(strata_var, collapse = ", ")),
-          strat = strata_var,
+          strata = strata_var,
           control = control_coxph(
             pval_method = pval_method,
             ties = ties,

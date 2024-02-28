@@ -124,7 +124,7 @@ template_forest_tte <- function(dataname = "ANL",
           is_event = "is_event",
           arm = arm_var,
           subgroups = subgroup_var,
-          strat = strata_var
+          strata = strata_var
         ),
         control = control_coxph(conf_level = conf_level),
         data = anl
