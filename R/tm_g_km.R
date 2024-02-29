@@ -99,7 +99,7 @@ template_g_km <- function(dataname = "ANL",
 
   y$variables <- if (length(strata_var) != 0) {
     substitute(
-      expr = variables <- list(tte = tte, is_event = "is_event", arm = arm, strat = strata_var),
+      expr = variables <- list(tte = tte, is_event = "is_event", arm = arm, strata = strata_var),
       env = list(tte = aval_var, arm = arm_var, strata_var = strata_var)
     )
   } else {

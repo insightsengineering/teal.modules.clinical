@@ -3,7 +3,7 @@
     Code
       res
     Output
-      [1] "rtables::basic_table() %>% rtables::split_cols_by(var = \"ARMCD\") %>%      tern::test_proportion_diff(vars = \"rsp\", method = \"cmh\",          variables = list(strata = \"strat\")) %>% rtables::build_table(df = dta)"
+      [1] "rtables::basic_table() %>% rtables::split_cols_by(var = \"ARMCD\") %>%      tern::test_proportion_diff(vars = \"rsp\", method = \"cmh\",          variables = list(strata = \"strata\")) %>% rtables::build_table(df = dta)"
 
 # add_expr adds expressions to expression list
 
@@ -17,7 +17,7 @@
       rtables::split_cols_by(var = arm)
       
       [[3]]
-      tern::test_proportion_diff(vars = "rsp", method = "cmh", variables = list(strata = "strat"))
+      tern::test_proportion_diff(vars = "rsp", method = "cmh", variables = list(strata = "strata"))
       
       [[4]]
       rtables::build_table(df = dta)
@@ -29,7 +29,7 @@
       res
     Output
       rtables::basic_table() %>% rtables::split_cols_by(var = arm) %>% 
-          test_proportion_diff(vars = "rsp", method = "cmh", variables = list(strata = "strat")) %>% 
+          test_proportion_diff(vars = "rsp", method = "cmh", variables = list(strata = "strata")) %>% 
           rtables::build_table(df = dta)
 
 # bracket_expr concatenates expressions into a single expression

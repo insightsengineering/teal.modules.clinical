@@ -35,7 +35,7 @@ lyt <- add_expr(
   lyt,
   substitute(
     test_proportion_diff(
-      vars = "rsp", method = "cmh", variables = list(strata = "strat")
+      vars = "rsp", method = "cmh", variables = list(strata = "strata")
     )
   )
 )

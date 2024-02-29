@@ -21,8 +21,10 @@ tm_g_forest_rsp(
     TRUE),
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)"),
-  plot_height = c(700L, 200L, 2000L),
-  plot_width = c(1200L, 800L, 3000L),
+  plot_height = c(500L, 200L, 2000L),
+  plot_width = c(1500L, 800L, 3000L),
+  rel_width_forest = c(25L, 0L, 100L),
+  font_size = c(15L, 1L, 30L),
   pre_output = NULL,
   post_output = NULL,
   ggplot2_args = teal.widgets::ggplot2_args()
@@ -78,15 +80,21 @@ height of the main plot and renders a slider on the plot to interactively adjust
 \item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
 of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
+\item{rel_width_forest}{(\code{proportion})\cr proportion of total width to allocate to the forest plot. Relative
+width of table is then \code{1 - rel_width_forest}. If \code{as_list = TRUE}, this parameter is ignored.}
+
+\item{font_size}{(\code{numeric})\cr font size.}
+
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
 \item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
-for the module plot. For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of
-following child elements: \code{title}, \code{caption}. No other elements would be taken into account. The argument is
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot. For this
+module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child
+elements: \code{title}, \code{caption}. No other elements would be taken into account. The argument is
 merged with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
