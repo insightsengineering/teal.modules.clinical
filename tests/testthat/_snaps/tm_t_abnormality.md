@@ -20,7 +20,7 @@
           map <- h_map_for_count_abnormal(df = anl, variables = list(anl = "ANRIND", 
               split_rows = c("AVISIT", "PARAM")), abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), method = "default", 
-              na_level = "<Missing>")
+              na_str = "<Missing>")
       }
       
       $layout
@@ -63,7 +63,7 @@
       {
           map <- h_map_for_count_abnormal(df = anl, variables = list(anl = "MYANRIND", 
               split_rows = c("AVISIT", "PARAMCD")), abnormal = list(Low = "LOW", 
-              Medium = "MEDIUM"), method = "default", na_level = "<Missing>")
+              Medium = "MEDIUM"), method = "default", na_str = "<Missing>")
       }
       
       $layout
@@ -109,7 +109,7 @@
           map <- h_map_for_count_abnormal(df = anl, variables = list(anl = "ANRIND", 
               split_rows = c("AVISIT", "PARAM")), abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), method = "default", 
-              na_level = "NA")
+              na_str = "NA")
       }
       
       $layout

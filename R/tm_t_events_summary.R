@@ -508,7 +508,7 @@ template_events_summary <- function(anl_name,
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl %>%
 #'     mutate(
-#'       DTHFL = case_when( #' nolint
+#'       DTHFL = case_when(
 #'         !is.na(DTHDT) ~ "Y",
 #'         TRUE ~ ""
 #'       ) %>% with_label("Subject Death Flag")

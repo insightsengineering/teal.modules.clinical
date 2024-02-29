@@ -23,7 +23,7 @@
           rtables::add_overall_col("All Patients") %>% rtables::add_colcounts() %>% 
           rtables::split_rows_by("AVISIT", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["AVISIT"]], split_fun = split_fun, label_pos = "topleft") %>% 
-          analyze_vars(vars = "AVAL", na.rm = FALSE, na_level = "<Missing>", 
+          analyze_vars(vars = "AVAL", na.rm = FALSE, na_str = "<Missing>", 
               denom = "N_col", .stats = c("n", "mean_sd", "mean_ci", 
                   "median", "median_ci", "quantiles", "range", "count_fraction"))
       
@@ -138,7 +138,7 @@
           rtables::add_overall_col("All Patients") %>% rtables::add_colcounts() %>% 
           rtables::split_rows_by("AVISIT", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["AVISIT"]], split_fun = split_fun, label_pos = "topleft") %>% 
-          analyze_vars(vars = "AVAL", na.rm = FALSE, na_level = "<Missing>", 
+          analyze_vars(vars = "AVAL", na.rm = FALSE, na_str = "<Missing>", 
               denom = "N_col", .stats = c("n", "count_fraction"))
       
       $table
@@ -173,7 +173,7 @@
           rtables::add_overall_col("All Patients") %>% rtables::add_colcounts() %>% 
           rtables::split_rows_by("AVISIT", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["AVISIT"]], split_fun = split_fun, label_pos = "topleft") %>% 
-          analyze_vars(vars = "AVAL", na.rm = FALSE, na_level = "<Missing>", 
+          analyze_vars(vars = "AVAL", na.rm = FALSE, na_str = "<Missing>", 
               denom = "N_col", .stats = c("n", "mean_sd", "mean_ci", 
                   "median", "median_ci", "quantiles", "range", "count_fraction"))
       
