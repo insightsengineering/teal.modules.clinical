@@ -4,8 +4,3 @@ linters: linters_with_defaults(
   object_usage_linter = NULL,
   indentation_linter = NULL
   )
-exclusions: list(
-    "vignettes/generate_tmc_test_data.Rmd" = list(
-      object_name_linter = Inf
-    )
-  )
