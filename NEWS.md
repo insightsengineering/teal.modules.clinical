@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.9.0.9005
+# teal.modules.clinical 0.9.0.9006
 
 ### Enhancements
 * Updated `tm_g_forest_rsp` and `tm_g_forest_tte` to use refactored version of `g_forest`. Plots are now displayed as `ggplot` objects instead of `grob` objects. Added parameters `font_size` and `rel_width_forest` to control font size and width of plot relative to table, respectively.
@@ -17,6 +17,7 @@
 
 ### Enhancements
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
+* Simplify examples and vignettes code by removing package prefixes where possible.
 * Added parameter `sort_freq_col` to `tm_t_events` to allow the user to select column to use when sorting by decreasing frequency.
 * Added parameter `incl_overall_sum` to `tm_t_events` to allow the user to choose whether overall summary rows are included at the top of the table.
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
@@ -25,6 +26,7 @@
 
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
+* Fixes partial matching.
 
 ### Miscellaneous
 * Deprecated the `aval` argument in `tm_t_pp_laboratory` and `tm_g_pp_vitals` and replaced it with the `aval_var` argument.
@@ -33,6 +35,7 @@
 * Specified minimal version of package dependencies.
 * Replaced usage of deprecated `summarize_vars` function with `analyze_vars`.
 * Reduced package dependencies (removed `tidyr`, `rlang`, `magrittr` and `styler`).
+* Introduced tests against partial matching.
 
 # teal.modules.clinical 0.8.16
 

@@ -12,7 +12,7 @@ vignette: >
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 editor_options:
-    markdown: 
+    markdown:
         wrap: 72
 ---
 
@@ -24,13 +24,13 @@ _Disclaimer_: this vignette concerns mainly the development of minimal and stabl
 
 ## Setup & Helper Functions
 
-```{r setup, eval=FALSE}
+```{r setup, eval=FALSE, tidy = function(code, ...) gsub(pattern = "#\\s?nolint.*", replacement = "", code)}
 library(dplyr)
 library(teal.data)
 
 study_duration_secs <- lubridate::seconds(lubridate::years(2))
 
-sample_fct <- function(x, N, ...) { # nolint
+sample_fct <- function(x, N, ...) { # nolint object_name_linter.
   checkmate::assert_number(N)
   factor(sample(x, N, replace = TRUE, ...), levels = if (is.factor(x)) levels(x) else x)
 }
@@ -152,8 +152,8 @@ common_var_labels <- c(
 
 ## `ADSL`
 
-```{r adsl, eval=FALSE}
-generate_adsl <- function(N = 200) { # nolint
+```{r adsl, eval=FALSE, tidy = function(code, ...) gsub(pattern = "#\\s?nolint.*", replacement = "", code)}
+generate_adsl <- function(N = 200) { # nolint object_name_linter.
   set.seed(1)
   sys_dtm <- lubridate::fast_strptime("20/2/2019 11:16:16.683", "%d/%m/%Y %H:%M:%OS", tz = "UTC")
   country_site_prob <- c(.5, .121, .077, .077, .075, .052, .046, .025, .014, .003)
@@ -1685,7 +1685,7 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
 
 ## `ADRS`
 
-```{r adrs, eval=FALSE}
+```{r adrs, eval=FALSE, tidy = function(code, ...) gsub(pattern = "#\\s?nolint.*", replacement = "", code)}
 generate_adrs <- function(adsl = tmc_ex_adsl) {
   set.seed(1)
   param_codes <- stats::setNames(1:5, c("CR", "PR", "SD", "PD", "NE"))
@@ -1723,8 +1723,8 @@ generate_adrs <- function(adsl = tmc_ex_adsl) {
       avisit <- c("SCREENING", "BASELINE", "CYCLE 2 DAY 1", "CYCLE 4 DAY 1", "END OF INDUCTION", "FOLLOW UP")
 
       # meaningful date information
-      TRTSTDT <- lubridate::date(pinfo$TRTSDTM) # nolint
-      TRTENDT <- lubridate::date(dplyr::if_else( # nolint
+      TRTSTDT <- lubridate::date(pinfo$TRTSDTM) # nolint object_name_linter.
+      TRTENDT <- lubridate::date(dplyr::if_else( # nolint object_name_linter.
         !is.na(pinfo$TRTEDTM), pinfo$TRTEDTM,
         lubridate::floor_date(TRTSTDT + study_duration_secs, unit = "day")
       ))

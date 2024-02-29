@@ -53,8 +53,8 @@ library(nestcolor)
 ADSL <- tmc_ex_adsl
 ADAE <- tmc_ex_adae
 
-app <- teal::init(
-  data = teal.data::cdisc_data(
+app <- init(
+  data = cdisc_data(
     ADSL = ADSL,
     ADAE = ADAE,
     code = "
@@ -83,7 +83,7 @@ app <- teal::init(
   )
 )
 
-if (interactive()) shiny::shinyApp(app$ui, app$server)
+if (interactive()) shinyApp(app$ui, app$server)
 ```
 Consider consulting the documentation and examples of each module (e.g. `?tm_g_barchart_simple`). In many, you can also find useful links to the  [TLG Catalog](https://insightsengineering.github.io/tlg-catalog/stable/) where additional example apps can be found.
 
@@ -117,8 +117,8 @@ argument tells `teal` about the input data - the ADaM datasets `ADSL` and `ADAE`
 argument indicates the modules included in the application. Here, we include only one module: `tm_g_barchart_simple()`.
 
 ```r
-app <- teal::init(
-  data = teal.data::cdisc_data(
+app <- init(
+  data = cdisc_data(
     ADSL = ADSL,
     ADAE = ADAE,
     code = "
@@ -151,7 +151,7 @@ app <- teal::init(
 Finally, we use `shiny` to launch the application:
 
 ```r
-if (interactive()) shiny::shinyApp(app$ui, app$server)
+if (interactive()) shinyApp(app$ui, app$server)
 ```
 
 Some `teal.modules.clinical` modules allow for the specification of arguments using
