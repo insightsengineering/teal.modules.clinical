@@ -137,7 +137,7 @@ template_forest_rsp <- function(dataname = "ANL",
     substitute(
       expr = df <- extract_rsp_subgroups(
         variables = list(
-          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strat = strata_var
+          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strata = strata_var
         ),
         data = anl,
         conf_level = conf_level
