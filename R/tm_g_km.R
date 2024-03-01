@@ -480,7 +480,7 @@ ui_g_km <- function(id, ...) {
               label = shiny::HTML(
                 paste(
                   "p-value method for ",
-                  shiny::span(class = "text-primary", "Coxph"), # nolint
+                  shiny::span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -493,7 +493,7 @@ ui_g_km <- function(id, ...) {
               label = shiny::HTML(
                 paste(
                   "Ties for ",
-                  shiny::span(class = "text-primary", "Coxph"), # nolint
+                  shiny::span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -711,7 +711,7 @@ srv_g_km <- function(id,
 
       anl_m <- anl_inputs()
 
-      anl <- anl_q()[["ANL"]] # nolint
+      anl <- anl_q()[["ANL"]]
       teal::validate_has_data(anl, 2)
 
       input_xticks <- if (!is.null(input$xticks)) {

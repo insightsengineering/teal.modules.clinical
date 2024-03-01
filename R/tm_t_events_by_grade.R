@@ -1116,7 +1116,10 @@ srv_t_events_by_grade <- function(id,
           shiny::need(
             is.factor(anl_filtered[[input_grade]]) &&
               all(as.character(unique(anl_filtered[[input_grade]])) %in% as.character(c(1:5))),
-            "Data includes records with grade levels outside of 1-5. Please use filter panel to exclude from analysis in order to display grade grouping in nested columns." # nolint
+            paste(
+              "Data includes records with grade levels outside of 1-5.",
+              "Please use filter panel to exclude from analysis in order to display grade grouping in nested columns."
+            )
           )
         )
       } else {
@@ -1141,7 +1144,7 @@ srv_t_events_by_grade <- function(id,
     # The R-code corresponding to the analysis.
     table_q <- shiny::reactive({
       validate_checks()
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
 
       input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)

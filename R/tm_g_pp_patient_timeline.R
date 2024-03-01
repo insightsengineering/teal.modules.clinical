@@ -825,8 +825,10 @@ srv_g_patient_timeline <- function(id,
       shiny::validate(
         shiny::need(
           input$relday_x_axis ||
-            (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
-              sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
+            (
+              sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
+                sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0
+            ),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )
@@ -890,7 +892,7 @@ srv_g_patient_timeline <- function(id,
         anl_q(),
         substitute(
           expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()

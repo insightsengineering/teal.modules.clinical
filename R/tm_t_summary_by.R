@@ -24,7 +24,7 @@ template_summary_by <- function(parentname,
                                 total_label = default_total_label(),
                                 parallel_vars = FALSE,
                                 row_groups = FALSE,
-                                na.rm = FALSE, # nolint
+                                na.rm = FALSE, # nolint: object_name.
                                 na_level = default_na_str(),
                                 numeric_stats = c(
                                   "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"
@@ -95,7 +95,7 @@ template_summary_by <- function(parentname,
   y$layout_prep <- quote(split_fun <- drop_split_levels)
   if (row_groups) {
     y$layout_cfun <- quote(
-      cfun_unique <- function(x, labelstr = "", .N_col) { # nolint
+      cfun_unique <- function(x, labelstr = "", .N_col) { # nolint: object_name.
         y <- length(unique(x))
         rcell(
           c(y, y / .N_col),
@@ -383,7 +383,7 @@ tm_t_summary_by <- function(label,
                             total_label = default_total_label(),
                             parallel_vars = FALSE,
                             row_groups = FALSE,
-                            useNA = c("ifany", "no"), # nolint
+                            useNA = c("ifany", "no"), # nolint: object_name.
                             na_level = default_na_str(),
                             numeric_stats = c("n", "mean_sd", "median", "range"),
                             denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
@@ -396,7 +396,7 @@ tm_t_summary_by <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  useNA <- match.arg(useNA) # nolint
+  useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
   checkmate::assert_class(arm_var, "choices_selected")
   checkmate::assert_class(by_vars, "choices_selected")

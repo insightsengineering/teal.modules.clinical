@@ -16,6 +16,12 @@ editor_options:
         wrap: 72
 ---
 
+```{r, include=FALSE}
+knitr::opts_template$set(
+  remove_linter_comments = list(tidy = function(code, ...) gsub(pattern = "#\\s?nolint.*", replacement = "", code))
+)
+```
+
 ## Generating minimal data to test `teal.modules.clinical`
 
 The following script is used to create and save cached synthetic `CDISC` data to the `data/` directory to use in examples and tests in the `teal.modules.clinical` package. This script/vignette was initialized by Emily de la Rua in `tern`.
@@ -24,13 +30,13 @@ _Disclaimer_: this vignette concerns mainly the development of minimal and stabl
 
 ## Setup & Helper Functions
 
-```{r setup, eval=FALSE, tidy = function(code, ...) gsub(pattern = "#\\s?nolint.*", replacement = "", code)}
+```{r setup, eval=FALSE, opts.label=c("remove_linter_comments")}
 library(dplyr)
 library(teal.data)
 
 study_duration_secs <- lubridate::seconds(lubridate::years(2))
 
-sample_fct <- function(x, N, ...) { # nolint object_name_linter.
+sample_fct <- function(x, N, ...) { # nolint: object_name.
   checkmate::assert_number(N)
   factor(sample(x, N, replace = TRUE, ...), levels = if (is.factor(x)) levels(x) else x)
 }
@@ -152,8 +158,8 @@ common_var_labels <- c(
 
 ## `ADSL`
 
-```{r adsl, eval=FALSE, tidy = function(code, ...) gsub(pattern = "#\\s?nolint.*", replacement = "", code)}
-generate_adsl <- function(N = 200) { # nolint object_name_linter.
+```{r adsl, eval=FALSE, opts.label=c("remove_linter_comments")}
+generate_adsl <- function(N = 200) { # nolint: object_name.
   set.seed(1)
   sys_dtm <- lubridate::fast_strptime("20/2/2019 11:16:16.683", "%d/%m/%Y %H:%M:%OS", tz = "UTC")
   country_site_prob <- c(.5, .121, .077, .077, .075, .052, .046, .025, .014, .003)
@@ -210,8 +216,10 @@ generate_adsl <- function(N = 200) { # nolint object_name_linter.
       )) %>% with_label("Geographic Region 1"),
       SAFFL = factor("Y") %>% with_label("Safety Population Flag")
     ) %>%
-    dplyr::mutate(USUBJID = paste(.data$STUDYID, .data$SITEID, .data$SUBJID, sep = "-") %>%
-      with_label("Unique Subject Identifier"))
+    dplyr::mutate(
+      USUBJID = paste(.data$STUDYID, .data$SITEID, .data$SUBJID, sep = "-") %>%
+        with_label("Unique Subject Identifier")
+    )
 
   # disposition related variables
   # using probability of 1 for the "DEATH" level to ensure at least one death record exists
@@ -1685,7 +1693,7 @@ generate_adqs <- function(adsl = tmc_ex_adsl,
 
 ## `ADRS`
 
-```{r adrs, eval=FALSE, tidy = function(code, ...) gsub(pattern = "#\\s?nolint.*", replacement = "", code)}
+```{r adrs, eval=FALSE, opts.label=c("remove_linter_comments")}
 generate_adrs <- function(adsl = tmc_ex_adsl) {
   set.seed(1)
   param_codes <- stats::setNames(1:5, c("CR", "PR", "SD", "PD", "NE"))
@@ -1723,8 +1731,8 @@ generate_adrs <- function(adsl = tmc_ex_adsl) {
       avisit <- c("SCREENING", "BASELINE", "CYCLE 2 DAY 1", "CYCLE 4 DAY 1", "END OF INDUCTION", "FOLLOW UP")
 
       # meaningful date information
-      TRTSTDT <- lubridate::date(pinfo$TRTSDTM) # nolint object_name_linter.
-      TRTENDT <- lubridate::date(dplyr::if_else( # nolint object_name_linter.
+      TRTSTDT <- lubridate::date(pinfo$TRTSDTM) # nolint: object_name.
+      TRTENDT <- lubridate::date(dplyr::if_else( # nolint: object_name.
         !is.na(pinfo$TRTEDTM), pinfo$TRTEDTM,
         lubridate::floor_date(TRTSTDT + study_duration_secs, unit = "day")
       ))

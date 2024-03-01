@@ -644,7 +644,7 @@ ui_t_tte <- function(id, ...) {
             label = shiny::HTML(
               paste(
                 "p-value method for ",
-                shiny::span(class = "text-primary", "Coxph"), # nolint
+                shiny::span(class = "text-primary", "Coxph"),
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -657,7 +657,7 @@ ui_t_tte <- function(id, ...) {
             label = shiny::HTML(
               paste(
                 "Ties for ",
-                shiny::span(class = "text-primary", "Coxph"), # nolint
+                shiny::span(class = "text-primary", "Coxph"),
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -670,7 +670,7 @@ ui_t_tte <- function(id, ...) {
             label = shiny::HTML(
               paste(
                 "Confidence Level for ",
-                shiny::span(class = "text-primary", "Coxph"), # nolint
+                shiny::span(class = "text-primary", "Coxph"),
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -689,7 +689,7 @@ ui_t_tte <- function(id, ...) {
           label = shiny::HTML(
             paste(
               "Confidence Level for ",
-              shiny::span(class = "text-primary", "Survfit"), # nolint
+              shiny::span(class = "text-primary", "Survfit"),
               " (KM Median Estimate & Event Free Rate)",
               sep = ""
             )

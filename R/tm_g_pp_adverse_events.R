@@ -516,7 +516,7 @@ srv_g_adverse_events <- function(id,
       teal::validate_inputs(iv_r())
       anl_m <- anl_inputs()
 
-      ANL <- anl_q()[["ANL"]] # nolint
+      ANL <- anl_q()[["ANL"]]
 
       teal::validate_has_data(ANL[ANL[[patient_col]] == input$patient_id, ], min_nrow = 1)
 
@@ -525,7 +525,7 @@ srv_g_adverse_events <- function(id,
         substitute(
           expr = {
             pt_id <- patient_id
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
