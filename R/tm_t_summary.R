@@ -19,7 +19,7 @@ template_summary <- function(dataname,
                              add_total = TRUE,
                              total_label = default_total_label(),
                              var_labels = character(),
-                             na.rm = FALSE, # nolint
+                             na.rm = FALSE, # nolint: object_name.
                              na_level = default_na_str(),
                              numeric_stats = c(
                                "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
@@ -244,7 +244,7 @@ tm_t_summary <- function(label,
                          summarize_vars,
                          add_total = TRUE,
                          total_label = default_total_label(),
-                         useNA = c("ifany", "no"), # nolint
+                         useNA = c("ifany", "no"), # nolint: object_name.
                          na_level = default_na_str(),
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
@@ -262,7 +262,7 @@ tm_t_summary <- function(label,
   checkmate::assert_class(summarize_vars, "choices_selected")
   checkmate::assert_string(na_level)
   checkmate::assert_character(numeric_stats, min.len = 1)
-  useNA <- match.arg(useNA) # nolint
+  useNA <- match.arg(useNA) # nolint: object_name.
   denominator <- match.arg(denominator)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
@@ -523,7 +523,7 @@ srv_summary <- function(id,
         add_total = input$add_total,
         total_label = total_label,
         var_labels = var_labels,
-        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
+        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         numeric_stats = input$numeric_stats,
         denominator = input$denominator,

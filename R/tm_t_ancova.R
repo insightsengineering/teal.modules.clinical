@@ -844,7 +844,7 @@ srv_ancova <- function(id,
         "ANCOVA table cannot be calculated as all values are missing."
       ))
       # check that for each visit there is at least one record with no missing data
-      all_NA_dataset <- merged$anl_q()[["ANL"]] %>% # nolint
+      all_NA_dataset <- merged$anl_q()[["ANL"]] %>% # nolint: object_name.
         dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
         dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
       shiny::validate(shiny::need(
@@ -888,7 +888,7 @@ srv_ancova <- function(id,
     # The R-code corresponding to the analysis.
     table_q <- shiny::reactive({
       validate_checks()
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
 
       label_paramcd <- get_paramcd_label(ANL, paramcd)
       input_aval <- as.vector(merged$anl_input_r()$columns_source$aval_var)

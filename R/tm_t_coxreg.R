@@ -1001,7 +1001,7 @@ srv_t_coxreg <- function(id,
     all_q <- shiny::reactive({
       validate_checks()
 
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
       paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
       multivariate <- input$type == "Multivariate"
       strata_var <- as.vector(merged$anl_input_r()$columns_source$strata_var)

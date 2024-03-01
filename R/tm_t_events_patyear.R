@@ -511,7 +511,7 @@ srv_events_patyear <- function(id,
     table_q <- shiny::reactive({
       validate_checks()
 
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
       label_paramcd <- get_paramcd_label(ANL, paramcd)
 
       my_calls <- template_events_patyear(
@@ -525,7 +525,7 @@ srv_events_patyear <- function(id,
         total_label = total_label,
         na_level = na_level,
         control = control_incidence_rate(
-          conf_level = as.numeric(input$conf_level), # nolint
+          conf_level = as.numeric(input$conf_level),
           conf_type = if (input$conf_method == "Normal (rate)") {
             "normal"
           } else if (input$conf_method == "Normal (log rate)") {

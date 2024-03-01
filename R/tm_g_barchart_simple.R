@@ -488,7 +488,7 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      ANL <- count_q()[["ANL"]] # nolint
+      ANL <- count_q()[["ANL"]]
 
       all_q <- count_q() %>%
         teal.code::eval_code(substitute(
@@ -689,11 +689,11 @@ make_barchart_simple_call <- function(y_name,
     # center text and move slightly to the top or to the right (depending on flip axes)
     # see https://stackoverflow.com/questions/7263849/what-do-hjust-and-vjust-do-when-making-a-plot-using-ggplot
     if (isTRUE(flip_axis)) {
-      hjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked # nolint
+      hjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked
       vjust <- 0.5
     } else {
       hjust <- 0.5
-      vjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked # nolint
+      vjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked
     }
 
     plot_args <- c(plot_args, bquote(

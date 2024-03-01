@@ -772,7 +772,7 @@ srv_t_events_byterm <- function(id,
     # The R-code corresponding to the analysis.
     table_q <- shiny::reactive({
       validate_checks()
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
 
       input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)

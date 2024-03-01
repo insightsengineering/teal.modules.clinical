@@ -22,7 +22,7 @@ template_shift_by_arm_by_worst <- function(dataname,
                                            aval_var = "ANRIND",
                                            base_var = lifecycle::deprecated(),
                                            baseline_var = "BNRIND",
-                                           na.rm = FALSE, # nolint
+                                           na.rm = FALSE, # nolint: object_name.
                                            na_level = default_na_str(),
                                            add_total = FALSE,
                                            total_label = default_total_label(),
@@ -266,7 +266,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                          selected = "ONTRTFL"
                                        ),
                                        treatment_flag = teal.transform::choices_selected("Y"),
-                                       useNA = c("ifany", "no"), # nolint
+                                       useNA = c("ifany", "no"), # nolint: object_name.
                                        na_level = default_na_str(),
                                        add_total = FALSE,
                                        total_label = default_total_label(),
@@ -288,7 +288,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  useNA <- match.arg(useNA) # nolint
+  useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
   checkmate::assert_string(total_label)
   checkmate::assert_class(arm_var, "choices_selected")
@@ -581,7 +581,7 @@ srv_shift_by_arm_by_worst <- function(id,
         treatment_flag = input$treatment_flag,
         aval_var = names(merged$anl_input_r()$columns_source$aval_var),
         baseline_var = names(merged$anl_input_r()$columns_source$baseline_var),
-        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
+        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         add_total = input$add_total,
         total_label = total_label,

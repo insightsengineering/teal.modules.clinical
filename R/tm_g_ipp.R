@@ -574,7 +574,7 @@ srv_g_ipp <- function(id,
       validate_checks()
       anl_m <- anl_inputs()
 
-      ANL <- anl_q()[["ANL"]] # nolint
+      ANL <- anl_q()[["ANL"]]
       teal::validate_has_data(ANL, 2)
 
       arm_var <- unlist(arm_var$filter)["vars_selected"]

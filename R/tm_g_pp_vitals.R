@@ -538,7 +538,7 @@ srv_g_vitals <- function(id,
         merged$anl_q(),
         substitute(
           expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()

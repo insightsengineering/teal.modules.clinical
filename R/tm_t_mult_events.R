@@ -165,7 +165,7 @@ template_mult_events <- function(dataname,
 
       lbl_lst <- add_expr(
         lbl_lst,
-        substitute( # nolint
+        substitute(
           expr = attr(dataname$hlt_new, which = "label"),
           env = list(
             dataname = as.name(dataname),

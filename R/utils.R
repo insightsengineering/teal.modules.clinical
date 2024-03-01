@@ -369,7 +369,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
 #'
 #' @export
 #' @return (`logical`)
-is.cs_or_des <- function(x) { # nolint
+is.cs_or_des <- function(x) { # nolint: object_name.
   inherits(x, c("data_extract_spec", "choices_selected"))
 }
 

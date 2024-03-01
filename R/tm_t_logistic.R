@@ -87,7 +87,7 @@ template_logistic <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute(
-        expr = ANL <- data_pipe, # nolint
+        expr = ANL <- data_pipe,
         env = list(data_pipe = pipe_expr(data_pipe))
       )
     )
@@ -96,7 +96,7 @@ template_logistic <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = ANL <- df %>% # nolint
+      expr = ANL <- df %>%
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
         df_explicit_na(na_level = "_NA_"),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
@@ -107,7 +107,7 @@ template_logistic <- function(dataname,
 
   if (!is.null(arm_var)) {
     y$relabel <- substitute(
-      expr = teal.data::col_labels(ANL[arm_var]) <- arm_var_lab, # nolint
+      expr = teal.data::col_labels(ANL[arm_var]) <- arm_var_lab,
       env = list(arm_var = arm_var)
     )
   }
@@ -658,7 +658,7 @@ srv_t_logistic <- function(id,
     all_q <- shiny::reactive({
       validate_checks()
 
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
 
       label_paramcd <- get_paramcd_label(ANL, paramcd)
 

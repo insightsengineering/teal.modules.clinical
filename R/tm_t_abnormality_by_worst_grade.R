@@ -15,7 +15,7 @@
 #'
 #' @seealso [tm_t_abnormality_by_worst_grade()]
 #' @keywords internal
-template_abnormality_by_worst_grade <- function(parentname, # nolint
+template_abnormality_by_worst_grade <- function(parentname, # nolint: object_length.
                                                 dataname,
                                                 arm_var,
                                                 id_var = "USUBJID",
@@ -291,7 +291,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
-tm_t_abnormality_by_worst_grade <- function(label, # nolint
+tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             dataname,
                                             parentname = ifelse(
                                               inherits(arm_var, "data_extract_spec"),
@@ -383,7 +383,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
 }
 
 #' @keywords internal
-ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
+ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
 
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -480,7 +480,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 }
 
 #' @keywords internal
-srv_t_abnormality_by_worst_grade <- function(id, # nolint
+srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                              data,
                                              reporter,
                                              filter_panel_api,
