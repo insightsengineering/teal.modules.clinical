@@ -54,7 +54,7 @@
       
       $layout
       lyt <- rtables::basic_table(title = "Summary Table for AVAL, CHG by AVISIT") %>% 
-          rtables::split_cols_by("ARM") %>% rtables::add_colcounts() %>% 
+          rtables::split_cols_by("ARM") %>% rtables::add_cc() %>% 
           rtables::split_rows_by("AVISIT", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["AVISIT"]], split_fun = split_fun, label_pos = "topleft") %>% 
           split_cols_by_multivar(vars = c("AVAL", "CHG")) %>% summarize_colvars(vars = c("AVAL", 
