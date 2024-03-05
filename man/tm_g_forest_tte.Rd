@@ -82,7 +82,10 @@ height of the main plot and renders a slider on the plot to interactively adjust
 \item{plot_width}{(\code{numeric}) optional,\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
 of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
+\item{rel_width_forest}{(\code{proportion})\cr proportion of total width to allocate to the forest plot. Relative
+width of table is then \code{1 - rel_width_forest}. If \code{as_list = TRUE}, this parameter is ignored.}
+
+\item{font_size}{(\code{numeric})\cr font size.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
