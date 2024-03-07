@@ -175,14 +175,14 @@ ui_t_prior_medication <- function(id, ...) {
 
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = shiny::div(
+    output = tags$div(
       DT::DTOutput(outputId = ns("prior_medication_table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("atirel", "cmdecod", "cmindc", "cmstdy")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),

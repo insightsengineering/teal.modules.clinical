@@ -582,11 +582,11 @@ ui_t_events_byterm <- function(id, ...) {
     output = teal.widgets::white_small_well(
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "hlt", "llt")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -624,7 +624,7 @@ ui_t_events_byterm <- function(id, ...) {
           selected = a$sort_criteria,
           multiple = FALSE
         ),
-        shiny::helpText(shiny::strong("Pruning Options:")),
+        shiny::helpText(tags$strong("Pruning Options:")),
         shiny::numericInput(
           inputId = ns("prune_freq"),
           label = "Minimum Incidence Rate(%) in any of the treatment groups",

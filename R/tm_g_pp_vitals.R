@@ -342,11 +342,11 @@ ui_g_vitals <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("vitals_plot")),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("paramcd", "aval_var", "xaxis")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),

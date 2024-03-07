@@ -573,20 +573,20 @@ ui_t_coxreg <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
       shiny::radioButtons(
         ns("type"),
-        label = shiny::tags$label("Type of Regression:", class = "text-primary"),
+        label = tags$label("Type of Regression:", class = "text-primary"),
         choices = c(
           "Separate models for comparison groups with one covariate at a time" = "Univariate",
           "One model with all comparison groups and covariates" = "Multivariate"
         ),
         selected = dplyr::if_else(a$multivariate, "Multivariate", "Univariate")
       ),
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]
       ),
@@ -649,9 +649,9 @@ ui_t_coxreg <- function(id, ...) {
             condition = paste0("input['", ns("strata_var"), "'] != ''"),
             shiny::radioButtons(
               ns("pval_method"),
-              label = shiny::p(
+              label = tags$p(
                 "p-value method for",
-                shiny::span(class = "text-primary", "Coxph"),
+                tags$span(class = "text-primary", "Coxph"),
                 "(Hazard Ratio)"
               ),
               choices = c("wald", "likelihood"),
@@ -660,9 +660,9 @@ ui_t_coxreg <- function(id, ...) {
           ),
           shiny::radioButtons(
             ns("ties"),
-            label = shiny::p(
+            label = tags$p(
               "Ties for ",
-              shiny::span(class = "text-primary", "Coxph"),
+              tags$span(class = "text-primary", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
             ),
@@ -671,9 +671,9 @@ ui_t_coxreg <- function(id, ...) {
           ),
           teal.widgets::optionalSelectInput(
             inputId = ns("conf_level"),
-            label = shiny::p(
+            label = tags$p(
               "Confidence level for ",
-              shiny::span(class = "text-primary", "Coxph"),
+              tags$span(class = "text-primary", "Coxph"),
               " (Hazard Ratio)",
               sep = ""
             ),

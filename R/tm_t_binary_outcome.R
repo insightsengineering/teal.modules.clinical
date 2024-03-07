@@ -511,11 +511,11 @@ ui_t_binary_outcome <- function(id, ...) {
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -536,9 +536,9 @@ ui_t_binary_outcome <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::div(
+      tags$div(
         class = "arm-comp-box",
-        shiny::tags$label("Compare Treatments"),
+        tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
@@ -546,7 +546,7 @@ ui_t_binary_outcome <- function(id, ...) {
         ),
         shiny::conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          shiny::div(
+          tags$div(
             shiny::uiOutput(
               ns("arms_buckets"),
               title = paste(
@@ -594,7 +594,7 @@ ui_t_binary_outcome <- function(id, ...) {
               multiple = FALSE,
               fixed = FALSE
             ),
-            shiny::tags$label("Odds Ratio Estimation"),
+            tags$label("Odds Ratio Estimation"),
             shinyWidgets::switchInput(
               inputId = ns("u_odds_ratio"), value = TRUE, size = "mini"
             )
@@ -664,7 +664,7 @@ ui_t_binary_outcome <- function(id, ...) {
           multiple = FALSE,
           fixed = a$conf_level$fixed
         ),
-        shiny::tags$label("Show All Response Categories"),
+        tags$label("Show All Response Categories"),
         shinyWidgets::switchInput(
           inputId = ns("show_rsp_cat"),
           value = ifelse(a$rsp_table, TRUE, FALSE),

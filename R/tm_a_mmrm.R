@@ -617,20 +617,20 @@ ui_mmrm <- function(id, ...) {
 
   shiny::tagList(
     shiny::singleton(
-      shiny::tags$head(shiny::includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
+      tags$head(shiny::includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
     ),
     teal.widgets::standard_layout(
       output = teal.widgets::white_small_well(
         shiny::textOutput(ns("null_input_msg")),
-        shiny::h3(shiny::textOutput(ns("mmrm_title"))),
+        tags$h3(shiny::textOutput(ns("mmrm_title"))),
         teal.widgets::table_with_settings_ui(ns("mmrm_table")),
         teal.widgets::plot_with_settings_ui(id = ns("mmrm_plot"))
       ),
-      encoding = shiny::div(
+      encoding = tags$div(
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),
         ###
-        shiny::tags$label("Encodings", class = "text-primary"),
+        tags$label("Encodings", class = "text-primary"),
         teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
         teal.widgets::panel_group(
           teal.widgets::panel_item(

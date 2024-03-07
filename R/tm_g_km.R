@@ -402,11 +402,11 @@ ui_g_km <- function(id, ...) {
         id = ns("myplot")
       )
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -438,9 +438,9 @@ ui_g_km <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::div(
+      tags$div(
         class = "arm-comp-box",
-        shiny::tags$label("Compare Treatments"),
+        tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
@@ -448,7 +448,7 @@ ui_g_km <- function(id, ...) {
         ),
         shiny::conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          shiny::div(
+          tags$div(
             shiny::uiOutput(
               ns("arms_buckets"),
               title = paste(
@@ -480,7 +480,7 @@ ui_g_km <- function(id, ...) {
               label = shiny::HTML(
                 paste(
                   "p-value method for ",
-                  shiny::span(class = "text-primary", "Coxph"),
+                  tags$span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -493,7 +493,7 @@ ui_g_km <- function(id, ...) {
               label = shiny::HTML(
                 paste(
                   "Ties for ",
-                  shiny::span(class = "text-primary", "Coxph"),
+                  tags$span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -513,7 +513,7 @@ ui_g_km <- function(id, ...) {
           ),
           shiny::radioButtons(
             ns("yval"),
-            shiny::tags$label("Value on y-axis", class = "text-primary"),
+            tags$label("Value on y-axis", class = "text-primary"),
             choices = c("Survival probability", "Failure probability"),
             selected = c("Survival probability"),
           ),

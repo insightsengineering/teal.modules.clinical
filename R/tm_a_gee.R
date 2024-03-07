@@ -262,14 +262,14 @@ ui_gee <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
-      shiny::h3(shiny::textOutput(ns("gee_title"))),
+      tags$h3(shiny::textOutput(ns("gee_title"))),
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
       teal.transform::data_extract_ui(
         id = ns("aval_var"),

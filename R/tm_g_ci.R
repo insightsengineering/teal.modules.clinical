@@ -320,11 +320,11 @@ ui_g_ci <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(args[c("x_var", "y_var", "color")]),
       teal.transform::data_extract_ui(
         id = ns("x_var"),

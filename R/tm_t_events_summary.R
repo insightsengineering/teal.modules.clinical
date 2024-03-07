@@ -692,11 +692,11 @@ ui_t_events_summary <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]
       ),
@@ -731,7 +731,7 @@ ui_t_events_summary <- function(id, ...) {
         "Add All Patients column",
         value = a$add_total
       ),
-      shiny::tags$label("Table Settings"),
+      tags$label("Table Settings"),
       shiny::checkboxInput(
         ns("count_subj"),
         "Count patients",

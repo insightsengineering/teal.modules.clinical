@@ -184,14 +184,14 @@ ui_t_medical_history <- function(id, ...) {
 
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = shiny::div(
+    output = tags$div(
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("mhterm", "mhbodsys", "mhdistat")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),

@@ -359,11 +359,11 @@ ui_t_logistic <- function(id, ...) {
     output = teal.widgets::white_small_well(
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "avalc_var", "cov_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -385,7 +385,7 @@ ui_t_logistic <- function(id, ...) {
         multiple = TRUE
       ),
       if (!is.null(a$arm_var)) {
-        shiny::div(
+        tags$div(
           teal.transform::data_extract_ui(
             id = ns("arm_var"),
             label = "Select Treatment Variable",
@@ -410,9 +410,9 @@ ui_t_logistic <- function(id, ...) {
       shiny::uiOutput(ns("interaction_input")),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
-        label = shiny::p(
+        label = tags$p(
           "Confidence level for ",
-          shiny::span(class = "text-primary", "Coxph"),
+          tags$span(class = "text-primary", "Coxph"),
           " (Hazard Ratio)",
           sep = ""
         ),

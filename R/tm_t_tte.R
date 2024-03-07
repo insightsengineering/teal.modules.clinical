@@ -559,11 +559,11 @@ ui_t_tte <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var")]
       ),
@@ -591,9 +591,9 @@ ui_t_tte <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::div(
+      tags$div(
         class = "arm-comp-box",
-        shiny::tags$label("Compare Treatments"),
+        tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
@@ -601,7 +601,7 @@ ui_t_tte <- function(id, ...) {
         ),
         shiny::conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          shiny::div(
+          tags$div(
             shiny::uiOutput(ns("arms_buckets")),
             shiny::uiOutput(ns("helptext_ui")),
             shiny::checkboxInput(
@@ -644,7 +644,7 @@ ui_t_tte <- function(id, ...) {
             label = shiny::HTML(
               paste(
                 "p-value method for ",
-                shiny::span(class = "text-primary", "Coxph"),
+                tags$span(class = "text-primary", "Coxph"),
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -657,7 +657,7 @@ ui_t_tte <- function(id, ...) {
             label = shiny::HTML(
               paste(
                 "Ties for ",
-                shiny::span(class = "text-primary", "Coxph"),
+                tags$span(class = "text-primary", "Coxph"),
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -670,7 +670,7 @@ ui_t_tte <- function(id, ...) {
             label = shiny::HTML(
               paste(
                 "Confidence Level for ",
-                shiny::span(class = "text-primary", "Coxph"),
+                tags$span(class = "text-primary", "Coxph"),
                 " (Hazard Ratio)",
                 sep = ""
               )
@@ -689,7 +689,7 @@ ui_t_tte <- function(id, ...) {
           label = shiny::HTML(
             paste(
               "Confidence Level for ",
-              shiny::span(class = "text-primary", "Survfit"),
+              tags$span(class = "text-primary", "Survfit"),
               " (KM Median Estimate & Event Free Rate)",
               sep = ""
             )
