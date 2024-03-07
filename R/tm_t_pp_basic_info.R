@@ -134,15 +134,15 @@ ui_t_basic_info <- function(id, ...) {
 
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = tags$div(
+    output = shiny::tags$div(
       shiny::htmlOutput(ns("title")),
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
-    encoding = tags$div(
+    encoding = shiny::tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("vars")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),

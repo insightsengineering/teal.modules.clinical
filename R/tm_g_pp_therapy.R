@@ -429,17 +429,17 @@ ui_g_therapy <- function(id, ...) {
 
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = tags$div(
+    output = shiny::tags$div(
       shiny::htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
       teal.widgets::plot_with_settings_ui(id = ns("therapy_plot"))
     ),
-    encoding = tags$div(
+    encoding = shiny::tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c(
         "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
         "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"

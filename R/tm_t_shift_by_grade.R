@@ -640,11 +640,11 @@ ui_t_shift_by_grade <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = tags$div(
+    encoding = shiny::tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "id_var", "visit_var", "paramcd", "worst_flag_var", "anl_toxgrade_var", "base_toxgrade_var")]
       ),

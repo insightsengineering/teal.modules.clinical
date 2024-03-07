@@ -200,18 +200,18 @@ ui_g_barchart_simple <- function(id, ...) {
 
   shiny::tagList(
     shiny::singleton(
-      tags$head(shiny::includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
+      shiny::tags$head(shiny::includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
     ),
     teal.widgets::standard_layout(
       output = teal.widgets::white_small_well(
         teal.widgets::plot_with_settings_ui(id = ns("myplot")),
         shiny::uiOutput(ns("table"), class = "overflow-y-scroll max-h-250")
       ),
-      encoding = tags$div(
+      encoding = shiny::tags$div(
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),
         ###
-        tags$label("Encodings", class = "text-primary"),
+        shiny::tags$label("Encodings", class = "text-primary"),
         teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
         if (!is.null(args$x)) {
           teal.transform::data_extract_ui(

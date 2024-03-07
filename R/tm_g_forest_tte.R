@@ -388,11 +388,11 @@ ui_g_forest_tte <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = tags$div(
+    encoding = shiny::tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),

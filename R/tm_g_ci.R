@@ -255,7 +255,7 @@ template_g_ci <- function(dataname,
 #'     )
 #'   ),
 #'   header = "Example of Confidence Interval Plot",
-#'   footer = tags$p(
+#'   footer = shiny::tags$p(
 #'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
@@ -320,11 +320,11 @@ ui_g_ci <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = tags$div(
+    encoding = shiny::tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(args[c("x_var", "y_var", "color")]),
       teal.transform::data_extract_ui(
         id = ns("x_var"),

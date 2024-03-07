@@ -341,11 +341,11 @@ ui_shift_by_arm <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = tags$div(
+    encoding = shiny::tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c(
         "arm_var", "paramcd_var", "paramcd", "aval_var", "baseline_var", "visit_var", "treamtment_flag_var"
       )]),

@@ -580,11 +580,11 @@ ui_ancova <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = tags$div(
+    encoding = shiny::tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd", "interact_var")]),
       teal.transform::data_extract_ui(
         id = ns("avisit"),
@@ -637,8 +637,8 @@ ui_ancova <- function(id, ...) {
         multiple = FALSE,
         fixed = a$conf_level$fixed
       ),
-      tags$div(
-        tags$label("Include Interaction Term"),
+      shiny::tags$div(
+        shiny::tags$label("Include Interaction Term"),
         shinyWidgets::switchInput(
           inputId = ns("include_interact"),
           value = FALSE,
@@ -646,7 +646,7 @@ ui_ancova <- function(id, ...) {
         ),
         shiny::conditionalPanel(
           condition = paste0("input['", ns("include_interact"), "']"),
-          tags$div(
+          shiny::tags$div(
             teal.transform::data_extract_ui(
               id = ns("interact_var"),
               label = "Select Interaction Variable",

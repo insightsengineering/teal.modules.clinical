@@ -331,17 +331,17 @@ ui_g_adverse_events <- function(id, ...) {
 
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
-    output = tags$div(
+    output = shiny::tags$div(
       shiny::htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("table"), ns("table_rows")),
       DT::DTOutput(outputId = ns("table")),
       teal.widgets::plot_with_settings_ui(id = ns("chart"))
     ),
-    encoding = tags$div(
+    encoding = shiny::tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c(
         "aeterm", "tox_grade", "causality", "outcome",
         "action", "time", "decod"

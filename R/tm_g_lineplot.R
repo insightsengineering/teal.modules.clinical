@@ -357,11 +357,11 @@ ui_g_lineplot <- function(id, ...) {
         id = ns("myplot")
       )
     ),
-    encoding = tags$div(
+    encoding = shiny::tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      shiny::tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
       teal.transform::data_extract_ui(
         id = ns("param"),
