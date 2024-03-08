@@ -175,7 +175,7 @@ app <- init(
   )
 )
 
-if (interactive()) shiny::shinyApp(app$ui, app$server)
+if (interactive()) shinyApp(app$ui, app$server)
 ```
 
 Please refer to the [API reference](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/reference/)

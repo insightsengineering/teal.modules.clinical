@@ -14,7 +14,7 @@ arm_ref_comp_observer(
   data,
   arm_ref_comp,
   module,
-  on_off = shiny::reactive(TRUE),
+  on_off = reactive(TRUE),
   input_id = "buckets",
   output_id = "arms_buckets"
 )

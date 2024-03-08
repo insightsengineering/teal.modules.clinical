@@ -677,7 +677,7 @@ tm_t_events_summary <- function(label,
 
 #' @keywords internal
 ui_t_events_summary <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   a <- list(...)
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -692,11 +692,11 @@ ui_t_events_summary <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::tags$div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]
       ),
@@ -726,23 +726,23 @@ ui_t_events_summary <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      shiny::checkboxInput(
+      checkboxInput(
         ns("add_total"),
         "Add All Patients column",
         value = a$add_total
       ),
-      shiny::tags$label("Table Settings"),
-      shiny::checkboxInput(
+      tags$label("Table Settings"),
+      checkboxInput(
         ns("count_subj"),
         "Count patients",
         value = a$count_subj
       ),
-      shiny::checkboxInput(
+      checkboxInput(
         ns("count_pt"),
         "Count preferred terms",
         value = a$count_pt
       ),
-      shiny::checkboxInput(
+      checkboxInput(
         ns("count_events"),
         "Count events",
         value = a$count_events
@@ -777,7 +777,7 @@ ui_t_events_summary <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -809,7 +809,7 @@ srv_t_events_summary <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     data_extract_vars <- list(
       arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
       aeseq_var = aeseq_var, llt = llt
@@ -835,7 +835,7 @@ srv_t_events_summary <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
@@ -852,7 +852,7 @@ srv_t_events_summary <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -864,7 +864,7 @@ srv_t_events_summary <- function(id,
       anl_q = anl_q
     )
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
 
       adsl_filtered <- merged$anl_q()[[parentname]]
@@ -886,10 +886,10 @@ srv_t_events_summary <- function(id,
       input_aeseq_var <- as.vector(merged$anl_input_r()$columns_source$aeseq_var)
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
 
-      shiny::validate(
-        shiny::need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor."),
+      validate(
+        need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor."),
         if (length(input_arm_var) == 2) {
-          shiny::need(
+          need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) && all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
               "", NA
             )),
@@ -909,7 +909,7 @@ srv_t_events_summary <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    table_q <- shiny::reactive({
+    table_q <- reactive({
       validate_checks()
 
       input_flag_var_anl <- if (!is.null(flag_var_anl)) {
@@ -965,7 +965,7 @@ srv_t_events_summary <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(table_q()[["result"]])
+    table_r <- reactive(table_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -974,14 +974,14 @@ srv_t_events_summary <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
+      verbatim_content = reactive(teal.code::get_code(table_q())),
       title = label
     )
 
