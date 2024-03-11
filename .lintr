@@ -2,5 +2,8 @@ linters: linters_with_defaults(
   line_length_linter = line_length_linter(120),
   cyclocomp_linter = NULL,
   object_usage_linter = NULL,
-  indentation_linter = NULL
+  object_name_linter = object_name_linter(
+    styles = c("snake_case", "symbols"),
+    regexes = c(ANL = "^ANL_?[0-9A-Z_]*$", ADaM = "^r?AD[A-Z]{2,3}_?[0-9]*$")
+  )
   )

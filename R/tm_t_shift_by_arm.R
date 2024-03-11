@@ -1,14 +1,17 @@
 #' Template: Shift by Arm
 #'
+#' Creates a valid expression to generate a summary table of analysis indicator levels by arm.
+#'
 #' @inheritParams template_arguments
-#' @param aval_var (`character`)\cr the variable name for the analysis reference range indicator.
-#' @param baseline_var (`character`)\cr the variable name for the baseline reference range indicator.
-#' @param add_total (`logical`)\cr
-#'   whether to include row with total number of patients.
+#' @param aval_var (`character`)\cr name of the analysis reference range indicator variable.
+#' @param baseline_var (`character`)\cr name of the baseline reference range indicator variable.
+#' @param add_total (`logical`)\cr whether to include row with total number of patients.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_shift_by_arm()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_shift_by_arm <- function(dataname,
                                   parentname,
                                   arm_var = "ARM",
@@ -19,7 +22,7 @@ template_shift_by_arm <- function(dataname,
                                   aval_var = "ANRIND",
                                   base_var = lifecycle::deprecated(),
                                   baseline_var = "BNRIND",
-                                  na.rm = FALSE, # nolint
+                                  na.rm = FALSE, # nolint: object_name.
                                   na_level = default_na_str(),
                                   add_total = FALSE,
                                   total_label = default_total_label(),
@@ -33,21 +36,19 @@ template_shift_by_arm <- function(dataname,
     )
   }
 
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(visit_var),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(baseline_var),
-    assertthat::is.flag(na.rm),
-    assertthat::is.string(na_level),
-    assertthat::is.string(treatment_flag_var),
-    assertthat::is.string(treatment_flag),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(visit_var)
+  checkmate::assert_string(paramcd, na.ok = TRUE)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(baseline_var)
+  checkmate::assert_flag(na.rm)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(treatment_flag_var)
+  checkmate::assert_string(treatment_flag)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
 
   y <- list()
 
@@ -109,7 +110,10 @@ template_shift_by_arm <- function(dataname,
           add_rowcounts() %>%
           analyze_vars(
             baseline_var,
-            denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction"
+            denom = "N_row",
+            na_str = na_str,
+            na.rm = na.rm,
+            .stats = "count_fraction"
           ) %>%
           append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
@@ -141,7 +145,10 @@ template_shift_by_arm <- function(dataname,
           add_rowcounts() %>%
           analyze_vars(
             baseline_var,
-            denom = "N_row", na_level = na_str, na.rm = na.rm, .stats = "count_fraction"
+            denom = "N_row",
+            na_str = na_str,
+            na.rm = na.rm,
+            .stats = "count_fraction"
           ) %>%
           append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
@@ -175,14 +182,15 @@ template_shift_by_arm <- function(dataname,
   y
 }
 
-#' Teal Module: Shift by Arm
+#' teal Module: Shift by Arm
+#'
+#' This module produces a summary table of analysis indicator levels by arm.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_arm
-#' @param add_total (`logical`)\cr
-#'   whether to include row with total number of patients.
 #'
-#' @export
+#' @inherit module_arguments return seealso
+#'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADEG <- tmc_ex_adeg
@@ -228,6 +236,7 @@ template_shift_by_arm <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_shift_by_arm <- function(label,
                               dataname,
                               parentname = ifelse(
@@ -246,7 +255,7 @@ tm_t_shift_by_arm <- function(label,
                                 selected = "ONTRTFL"
                               ),
                               treatment_flag = teal.transform::choices_selected("Y"),
-                              useNA = c("ifany", "no"), # nolint
+                              useNA = c("ifany", "no"), # nolint: object_name.
                               na_level = default_na_str(),
                               add_total = FALSE,
                               total_label = default_total_label(),
@@ -268,11 +277,16 @@ tm_t_shift_by_arm <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  useNA <- match.arg(useNA) # nolint
+  useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
   checkmate::assert_string(total_label)
-  checkmate::assert_class(treatment_flag, "choices_selected")
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(visit_var, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(baseline_var, "choices_selected")
   checkmate::assert_class(treatment_flag_var, "choices_selected")
+  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -309,7 +323,7 @@ tm_t_shift_by_arm <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_shift_by_arm <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -399,7 +413,7 @@ ui_shift_by_arm <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_shift_by_arm <- function(id,
                              data,
                              reporter,
@@ -532,7 +546,7 @@ srv_shift_by_arm <- function(id,
         treatment_flag = input$treatment_flag,
         aval_var = names(merged$anl_input_r()$columns_source$aval_var),
         baseline_var = names(merged$anl_input_r()$columns_source$baseline_var),
-        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
+        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         add_total = input$add_total,
         total_label = total_label,

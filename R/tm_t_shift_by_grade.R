@@ -7,6 +7,8 @@
 #' @param base_toxgrade_var (`character`)\cr name of the variable indicating the baseline toxicity grade.
 #' @param code_missing_baseline (`logical`)\cr whether missing baseline grades should be counted as grade 0.
 #'
+#' @inherit template_arguments return
+#'
 #' @seealso [tm_t_shift_by_grade()]
 #'
 #' @keywords internal
@@ -26,22 +28,20 @@ template_shift_by_grade <- function(parentname,
                                     na_level = default_na_str(),
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(id_var),
-    assertthat::is.string(visit_var),
-    assertthat::is.string(worst_flag_indicator),
-    is.character(worst_flag_var),
-    assertthat::is.string(anl_toxgrade_var),
-    assertthat::is.string(base_toxgrade_var),
-    assertthat::is.string(paramcd),
-    assertthat::is.flag(drop_arm_levels),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(na_level)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(visit_var)
+  checkmate::assert_string(worst_flag_indicator)
+  checkmate::assert_character(worst_flag_var)
+  checkmate::assert_string(anl_toxgrade_var)
+  checkmate::assert_string(base_toxgrade_var)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_flag(drop_arm_levels)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
 
   worst_flag_var <- match.arg(worst_flag_var)
 
@@ -267,12 +267,12 @@ template_shift_by_grade <- function(parentname,
     substitute(
       expr = {
         column_labels <- list(
-          PARAMCD = formatters::var_labels(dataname, fill = FALSE)[[paramcd]],
-          AVISIT = formatters::var_labels(dataname, fill = FALSE)[[visit_var]],
+          PARAMCD = teal.data::col_labels(dataname, fill = FALSE)[[paramcd]],
+          AVISIT = teal.data::col_labels(dataname, fill = FALSE)[[visit_var]],
           ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
           BTOXGR_GP = "Baseline Grade"
         )
-        formatters::var_labels(dataname)[names(column_labels)] <- as.character(column_labels)
+        teal.data::col_labels(dataname)[names(column_labels)] <- as.character(column_labels)
         dataname
       },
       env = list(
@@ -326,7 +326,7 @@ template_shift_by_grade <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = formatters::var_labels(dataname, fill = FALSE)[[paramcd]],
+    expr = teal.data::col_labels(dataname, fill = FALSE)[[paramcd]],
     env = list(
       dataname = as.name("anl"),
       paramcd = paramcd
@@ -351,7 +351,7 @@ template_shift_by_grade <- function(parentname,
 
   if (by_visit_fl) {
     split_label <- substitute(
-      expr = formatters::var_labels(dataname, fill = FALSE)[[visit_var]],
+      expr = teal.data::col_labels(dataname, fill = FALSE)[[visit_var]],
       env = list(
         dataname = as.name("anl"),
         visit_var = visit_var
@@ -382,7 +382,7 @@ template_shift_by_grade <- function(parentname,
   }
 
   split_label <- substitute(
-    expr = formatters::var_labels(dataname, fill = FALSE)[[by_var_gp]],
+    expr = teal.data::col_labels(dataname, fill = FALSE)[[by_var_gp]],
     env = list(
       dataname = as.name("anl"),
       by_var_gp = by_var_gp
@@ -460,18 +460,18 @@ template_shift_by_grade <- function(parentname,
   y
 }
 
-#' Teal Module: Grade Summary Table
+#' teal Module: Grade Summary Table
 #'
 #' This module produces a summary table of worst grades per subject by visit and parameter.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_grade
-#' @param anl_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param anl_toxgrade_var ([teal.transform::choices_selected()])\cr
 #'   variable for analysis toxicity grade.
-#' @param base_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param base_toxgrade_var ([teal.transform::choices_selected()])\cr
 #'   variable for baseline toxicity grade.
 #'
-#' @inherit module_arguments return
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -575,6 +575,7 @@ tm_t_shift_by_grade <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(visit_var, "choices_selected")
   checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(worst_flag_var, "choices_selected")
   checkmate::assert_class(worst_flag_indicator, "choices_selected")

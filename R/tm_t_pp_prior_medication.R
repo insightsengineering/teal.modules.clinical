@@ -1,26 +1,24 @@
-#' Template: Prior Medication
+#' Template: Patient Profile Prior Medication
 #'
-#' Creates a prior medication template.
+#' Creates a valid expression to generate a patient profile prior medication report using ADaM datasets.
 #'
 #' @inheritParams template_arguments
-#' @param atirel (`character`)\cr name of time relation of medication variable.
-#' @param cmdecod (`character`)\cr name of standardized medication name variable.
-#' @param cmindc (`character`)\cr name of indication variable.
-#' @param cmstdy (`character`)\cr name of study day of start of medication variable.
-#' @keywords internal
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_t_pp_prior_medication()]
+#'
+#' @keywords internal
 template_prior_medication <- function(dataname = "ANL",
                                       atirel = "ATIREL",
                                       cmdecod = "CMDECOD",
                                       cmindc = "CMINDC",
                                       cmstdy = "CMSTDY") {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(atirel),
-    assertthat::is.string(cmdecod),
-    assertthat::is.string(cmindc),
-    assertthat::is.string(cmstdy)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(atirel)
+  checkmate::assert_string(cmdecod)
+  checkmate::assert_string(cmindc)
+  checkmate::assert_string(cmstdy)
 
   y <- list()
   y$table <- list()
@@ -54,27 +52,20 @@ template_prior_medication <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Patient Prior Medication Teal Module
+#' teal Module: Patient Profile Prior Medication
 #'
-#' This teal module produces a patient prior medication report using `ADaM` datasets.
+#' This module produces a patient profile prior medication report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_prior_medication
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `ATIREL` column of the `ADCM` dataset.
-#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMDECOD` column of the `ADCM` dataset.
-#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMINDC` column of the `ADCM` dataset.
-#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `CMSTDY` column of the `ADCM` dataset.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
+#' library(dplyr)
+#'
 #' ADCM <- tmc_ex_adcm
-#' ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#' ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
@@ -88,7 +79,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'     ADCM = ADCM,
 #'     code = "
 #'       ADCM <- tmc_ex_adcm
-#'       ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#'       ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
 #'     ",
@@ -123,6 +114,7 @@ template_prior_medication <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_pp_prior_medication <- function(label,
                                      dataname = "ADCM",
                                      parentname = "ADSL",
@@ -138,6 +130,10 @@ tm_t_pp_prior_medication <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmindc, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmstdy, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
@@ -167,6 +163,7 @@ tm_t_pp_prior_medication <- function(label,
   )
 }
 
+#' @keywords internal
 ui_t_prior_medication <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -227,7 +224,7 @@ ui_t_prior_medication <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_t_prior_medication <- function(id,
                                    data,
                                    reporter,
@@ -322,7 +319,7 @@ srv_t_prior_medication <- function(id,
         teal.code::eval_code(
           substitute(
             expr = {
-              ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+              ANL <- ANL[ANL[[patient_col]] == patient_id, ]
             }, env = list(
               patient_col = patient_col,
               patient_id = patient_id()

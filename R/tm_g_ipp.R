@@ -1,26 +1,30 @@
 #' Template: Individual Patient Plots
 #'
+#' Creates a valid expression to generate [ggplot2::ggplot()] plots of individual patients.
+#'
 #' @inheritParams template_arguments
-#' @param avalu_var (`string`)\cr variable name designating the unit of the analysis variable.
-#' @param baseline_var (`string`)\cr variable name designating the baseline values of analysis variable.
-#' @param visit_var (`string`)\cr variable name designating the visit timepoint variable.
-#' @param add_baseline_hline (`flag`)\cr adds horizontal line at baseline y-value on plot
-#' @param separate_by_obs (`flag`)\cr creates multi panel plots when TRUE
-#' @param suppress_legend (`flag`)\cr allow user to suppress legend
-#' @param arm_levels (`character`)\cr vector of all arm variable levels.
-#' @param avalu_first (`string`)\cr `avalu` value.
-#' @param paramcd_first (`string`)\cr `paramcd` value.
-#' @param add_avalu (`flag`)\cr allow user to not display value unit in the plot.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `subtitle`, `x`, `y`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).
+#' @param visit_var (`character`)\cr name of the variable for visit timepoints.
+#' @param add_baseline_hline (`logical`)\cr whether a horizontal line should be added to the plot at baseline y-value.
+#' @param separate_by_obs (`logical`)\cr whether to create multi-panel plots.
+#' @param suppress_legend (`logical`)\cr whether to suppress the plot legend.
+#' @param arm_levels (`character`)\cr vector of all levels of `arm_var`.
+#' @param avalu_first (`character`)\cr `avalu_var` text to append to the plot title and y-axis label if `add_avalu` is
+#'   `TRUE`.
+#' @param paramcd_first (`character`)\cr `paramcd` text to append to the plot title and y-axis label.
+#' @param add_avalu (`logical`)\cr whether `avalu_first` text should be appended to the plot title and y-axis label.
+#' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
+#'   for the module plot. For this module, this argument will only accept `ggplot2_args` object with `labs` list of
+#'   the following child elements: `title`, `subtitle`, `x`, `y`. No other elements are taken into account. The
+#'   argument is merged with option `teal.ggplot2_args` and with default module arguments (hard coded in the module
+#'   body).
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_g_ipp()]
+#'
 #' @keywords internal
-#'
 template_g_ipp <- function(dataname = "ANL",
                            paramcd,
                            arm_var,
@@ -47,20 +51,18 @@ template_g_ipp <- function(dataname = "ANL",
     )
   }
 
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(avalu_var),
-    assertthat::is.string(id_var),
-    assertthat::is.string(visit_var),
-    assertthat::is.string(baseline_var),
-    assertthat::is.flag(add_baseline_hline),
-    assertthat::is.flag(separate_by_obs),
-    assertthat::is.flag(suppress_legend),
-    assertthat::is.flag(add_avalu)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(avalu_var)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(visit_var)
+  checkmate::assert_string(baseline_var)
+  checkmate::assert_flag(add_baseline_hline)
+  checkmate::assert_flag(separate_by_obs)
+  checkmate::assert_flag(suppress_legend)
+  checkmate::assert_flag(add_avalu)
 
   y <- list()
   # Data preprocessing
@@ -92,8 +94,6 @@ template_g_ipp <- function(dataname = "ANL",
       )
     )
   )
-
-
 
   graph_list <- list()
   graph_list <- add_expr(
@@ -167,50 +167,38 @@ template_g_ipp <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Individual Patient Plot
+#' teal Module: Individual Patient Plots
 #'
-#' This teal module produces grid style Individual patient plot(s) that show
-#' trends in parameter values over time for each patient using data with
-#' `ADaM` structure.
+#' This module produces [ggplot2::ggplot()] type individual patient plots that display trends in parameter
+#' values over time for each patient, using data with ADaM structure.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_ipp
-#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices
-#'   and preselected option for variable values that can be used as `arm_var`.
-#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices
-#'   and preselected option for variable values that can be used as `avalu_var`.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `subtitle`, `x`, `y`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).
+#' @param arm_var ([teal.transform::choices_selected()])\cr object with
+#'   all available choices and preselected option for variable values that can be used as arm variable.
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
-#'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
 #'
 #' ADSL <- tmc_ex_adsl %>%
-#'   dplyr::slice(1:20) %>%
+#'   slice(1:20) %>%
 #'   df_explicit_na()
 #' ADLB <- tmc_ex_adlb %>%
-#'   dplyr::filter(USUBJID %in% ADSL$USUBJID) %>%
+#'   filter(USUBJID %in% ADSL$USUBJID) %>%
 #'   df_explicit_na() %>%
-#'   dplyr::filter(AVISIT != "SCREENING")
+#'   filter(AVISIT != "SCREENING")
 #'
 #' app <- init(
 #'   data = cdisc_data(
 #'     ADSL = ADSL,
 #'     ADLB = ADLB,
 #'     code = "
-#'       ADSL <- tmc_ex_adsl %>% dplyr::slice(1:20) %>% df_explicit_na()
-#'       ADLB <- tmc_ex_adlb %>% dplyr::filter(USUBJID %in% ADSL$USUBJID) %>%
-#'         df_explicit_na() %>% dplyr::filter(AVISIT != \"SCREENING\")
+#'       ADSL <- tmc_ex_adsl %>% slice(1:20) %>% df_explicit_na()
+#'       ADLB <- tmc_ex_adlb %>% filter(USUBJID %in% ADSL$USUBJID) %>%
+#'         df_explicit_na() %>% filter(AVISIT != \"SCREENING\")
 #'     "
 #'   ),
 #'   modules = modules(
@@ -254,9 +242,10 @@ template_g_ipp <- function(dataname = "ANL",
 #'   )
 #' )
 #' if (interactive()) {
-#'   shinyApp(ui = app$ui, server = app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_ipp <- function(label,
                      dataname,
                      parentname = ifelse(
@@ -313,6 +302,13 @@ tm_g_ipp <- function(label,
   }
 
   message("Initializing tm_g_ipp")
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(visit_var, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(avalu_var, "choices_selected")
+  checkmate::assert_class(baseline_var, "choices_selected")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -361,7 +357,7 @@ tm_g_ipp <- function(label,
   )
 }
 
-
+#' @keywords internal
 ui_g_ipp <- function(id, ...) {
   a <- list(...) # module args
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -463,6 +459,7 @@ ui_g_ipp <- function(id, ...) {
   )
 }
 
+#' @keywords internal
 srv_g_ipp <- function(id,
                       data,
                       reporter,
@@ -577,7 +574,7 @@ srv_g_ipp <- function(id,
       validate_checks()
       anl_m <- anl_inputs()
 
-      ANL <- anl_q()[["ANL"]] # nolint
+      ANL <- anl_q()[["ANL"]]
       teal::validate_has_data(ANL, 2)
 
       arm_var <- unlist(arm_var$filter)["vars_selected"]

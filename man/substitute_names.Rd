@@ -45,21 +45,6 @@ quoted expression.
 Note that this is just a synonym for \code{\link[=substitute_q]{substitute_q()}}.
 
 }}
-\examples{
-teal.modules.clinical:::substitute_names(
-  mutate(a = a + b, b = c + d),
-  names = list(a = as.name("d"), b = as.name("e"))
-)
-teal.modules.clinical:::substitute_names(
-  c(a = fun(a), b = 3),
-  names = list(a = as.name("b"), b = as.name("c"))
-)
-teal.modules.clinical:::substitute_names(
-  c(a = fun(a), b = bla),
-  names = list(a = as.name("b"), b = as.name("c")),
-  others = list(bla = "foo")
-)
-}
 \seealso{
 \code{\link[=substitute_q]{substitute_q()}}
 }

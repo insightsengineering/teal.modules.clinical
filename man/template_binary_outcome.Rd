@@ -48,7 +48,7 @@ template_binary_outcome(
 \item{show_rsp_cat}{(\code{logical})\cr display the multinomial response estimations.}
 
 \item{responder_val}{(\code{character})\cr the short label for observations to
-translate \code{AVALC} into responder / non-responder.}
+translate \code{AVALC} into responder/non-responder.}
 
 \item{responder_val_levels}{(\code{character})\cr the levels of responses that will be shown in the multinomial
 response estimations.}
@@ -68,36 +68,13 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a valid expression for binary outcome analysis.
-}
-\examples{
-if (interactive()) {
-  # Preparation of the test case.
-  adsl <- tmc_ex_adsl
-  adrs <- tmc_ex_adrs
-
-  # Generate an expression for the analysis of responders.
-  a <- template_binary_outcome(
-    dataname = "adrs",
-    parentname = "adsl",
-    arm_var = "ARMCD",
-    paramcd = "BESRSPI",
-    ref_arm = "ARM A",
-    comp_arm = c("ARM B"),
-    compare_arm = TRUE,
-    show_rsp_cat = TRUE
-  )
-
-  b <- mapply(expr = a, FUN = eval)
-  b$data
-  b$layout
-  b$table
-}
-
+Creates a valid expression to generate a binary outcome analysis.
 }
 \seealso{
 \code{\link[=tm_t_binary_outcome]{tm_t_binary_outcome()}}

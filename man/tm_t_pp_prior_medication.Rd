@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_pp_prior_medication.R
 \name{tm_t_pp_prior_medication}
 \alias{tm_t_pp_prior_medication}
-\title{Teal Module: Patient Prior Medication Teal Module}
+\title{teal Module: Patient Profile Prior Medication}
 \usage{
 tm_t_pp_prior_medication(
   label,
@@ -24,19 +24,19 @@ tm_t_pp_prior_medication(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character})\cr patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ATIREL} column of the \code{ADCM} dataset.}
+\item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{ATIREL} variable from \code{dataname}.}
 
-\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMDECOD} column of the \code{ADCM} dataset.}
+\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{CMDECOD} variable from \code{dataname}.}
 
-\item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMINDC} column of the \code{ADCM} dataset.}
+\item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{CMINDC} variable from \code{dataname}.}
 
-\item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMSTDY} column of the \code{ADCM} dataset.}
+\item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{CMSTDY} variable from \code{dataname}.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -44,12 +44,17 @@ For example a title.}
 \item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a patient prior medication report using \code{ADaM} datasets.
+This module produces a patient profile prior medication report using ADaM datasets.
 }
 \examples{
+library(dplyr)
+
 ADCM <- tmc_ex_adcm
-ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADCM$USUBJID)
+ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADCM$USUBJID)
 ADCM$CMASTDTM <- ADCM$ASTDTM
 ADCM$CMAENDTM <- ADCM$AENDTM
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
@@ -63,7 +68,7 @@ app <- init(
     ADCM = ADCM,
     code = "
       ADCM <- tmc_ex_adcm
-      ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADCM$USUBJID)
+      ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADCM$USUBJID)
       ADCM$CMASTDTM <- ADCM$ASTDTM
       ADCM$CMAENDTM <- ADCM$AENDTM
     ",

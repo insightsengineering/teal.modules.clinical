@@ -1,16 +1,19 @@
-#' Template: Laboratory
+#' Template: Patient Profile Laboratory Table
 #'
-#' Creates a laboratory template.
+#' Creates a valid expression to generate a patient profile laboratory table using ADaM datasets.
+#'
 #' @inheritParams template_arguments
 #' @param paramcd (`character`)\cr name of the parameter code variable.
 #' @param param (`character`)\cr name of the parameter variable.
-#' @param timepoints (`character`)\cr name of time variable used for
-#' the laboratory table.
+#' @param timepoints (`character`)\cr name of time variable.
 #' @param anrind (`character`)\cr name of the analysis reference range indicator variable.
-#' @param patient_id (`character`)\cr patient ID.
-#' @param round_value (`numeric`)\cr number of decimal places to be used when rounding.
-#' @keywords internal
+#' @param round_value (`numeric`)\cr number of decimal places to round to.
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_t_pp_laboratory()]
+#'
+#' @keywords internal
 template_laboratory <- function(dataname = "ANL",
                                 paramcd = "PARAMCD",
                                 param = "PARAM",
@@ -40,16 +43,14 @@ template_laboratory <- function(dataname = "ANL",
     )
   }
 
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(param),
-    assertthat::is.string(anrind),
-    assertthat::is.string(timepoints),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(avalu_var),
-    is.integer(round_value) && round_value >= 0
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(param)
+  checkmate::assert_string(anrind)
+  checkmate::assert_string(timepoints)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(avalu_var)
+  checkmate::assert_integer(round_value, lower = 0)
 
   y <- list()
   y$table <- list()
@@ -70,7 +71,8 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::select(-c(aval_var, anrind))
 
         labor_table_raw <- labor_table_base %>%
-          reshape(
+          as.data.frame() %>%
+          stats::reshape(
             direction = "wide",
             idvar = c(paramcd_char, param_char, avalu_char),
             v.names = "aval_anrind",
@@ -90,7 +92,8 @@ template_laboratory <- function(dataname = "ANL",
         labor_table_html <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
           dplyr::select(-aval_anrind) %>%
-          reshape(
+          as.data.frame() %>%
+          stats::reshape(
             direction = "wide",
             idvar = c(paramcd_char, param_char, avalu_char),
             v.names = "aval_anrind_col",
@@ -128,28 +131,21 @@ template_laboratory <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Patient Profile Laboratory Teal Module
+#' teal Module: Patient Profile Laboratory Table
 #'
-#' This teal module produces a patient profile laboratory table using `ADaM` datasets.
+#' This module produces a patient profile laboratory table using ADaM datasets.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_laboratory
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `PARAMCD` column of the `ADLB` dataset.
-#' @param param ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `PARAM` column of the `ADLB` dataset.
-#' @param timepoints ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' Time variable to be represented in the laboratory table.
-#' @param anrind ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `ANRIND` column of the `ADLB` dataset with 3 possible levels "HIGH", "LOW" and "NORMAL".
-#' @param aval_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AVAL` column of the `ADLB` dataset.
-#' @param avalu_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' `AVALU` column of the `ADLB` dataset.
-#' @inheritParams module_arguments
+#' @param param ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `PARAM` variable from `dataname`.
+#' @param timepoints ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the time variable from `dataname`.
+#' @param anrind ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `ANRIND` variable from `dataname`. Variable should have the
+#'   following 3 levels: `"HIGH"`, `"LOW"`, and `"NORMAL"`.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -200,6 +196,7 @@ template_laboratory <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_pp_laboratory <- function(label,
                                dataname = "ADLB",
                                parentname = "ADSL",
@@ -241,6 +238,12 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(timepoints, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aval_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(avalu_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(param, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(paramcd, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(anrind, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
@@ -272,6 +275,7 @@ tm_t_pp_laboratory <- function(label,
   )
 }
 
+#' @keywords internal
 ui_g_laboratory <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -352,6 +356,7 @@ ui_g_laboratory <- function(id, ...) {
   )
 }
 
+#' @keywords internal
 srv_g_laboratory <- function(id,
                              data,
                              reporter,
@@ -468,7 +473,7 @@ srv_g_laboratory <- function(id,
         substitute(
           expr = {
             pt_id <- patient_id
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()

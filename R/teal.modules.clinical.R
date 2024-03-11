@@ -1,9 +1,8 @@
-#' Teal Modules for Standard Clinical Outputs
+#' `teal` Modules for Standard Clinical Outputs
 #'
 #' Provides teal modules for the standard clinical trials outputs.
 #' The teal modules add an encoding panel to interactively change the encodings within teal.
 #'
-#' @name teal.modules.clinical
 "_PACKAGE"
 
 #' @import teal

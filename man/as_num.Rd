@@ -44,6 +44,5 @@ dta <- list(
   numeric   = c(1, -5e+2, NA),
   logical   = c(TRUE, FALSE, NA)
 )
-lapply(dta, teal.modules.clinical:::as_num)
+lapply(dta, as_num)
 }
-\keyword{internal}

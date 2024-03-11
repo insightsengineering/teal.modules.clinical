@@ -1,15 +1,17 @@
-#' Template: `Kaplan-Meier`
+#' Template: Kaplan-Meier Plot
+#'
+#' Creates a valid expression to generate a Kaplan-Meier plot.
 #'
 #' @inheritParams template_arguments
 #' @inheritParams tern::g_km
 #' @inheritParams tern::control_coxreg
-#' @param facet_var (`character`)\cr
-#'   object with all available choices and preselected option
-#'   for variable names that can be used for facet plotting.
+#' @param facet_var (`character`)\cr name of the variable to use to facet the plot.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_g_km()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_g_km <- function(dataname = "ANL",
                           arm_var = "ARM",
                           ref_arm = NULL,
@@ -35,17 +37,15 @@ template_g_km <- function(dataname = "ANL",
                           width_annots = list(surv_med = grid::unit(0.45, "npc"), coxph = grid::unit(0.6, "npc")),
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(cnsr_var),
-    assertthat::is.string(time_unit_var),
-    assertthat::is.flag(compare_arm),
-    assertthat::is.flag(combine_comp_arms),
-    is.null(xticks) | is.numeric(xticks),
-    assertthat::is.string(title)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(cnsr_var)
+  checkmate::assert_string(time_unit_var)
+  checkmate::assert_flag(compare_arm)
+  checkmate::assert_flag(combine_comp_arms)
+  checkmate::assert_numeric(xticks, null.ok = TRUE)
+  checkmate::assert_string(title)
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
@@ -99,7 +99,7 @@ template_g_km <- function(dataname = "ANL",
 
   y$variables <- if (length(strata_var) != 0) {
     substitute(
-      expr = variables <- list(tte = tte, is_event = "is_event", arm = arm, strat = strata_var),
+      expr = variables <- list(tte = tte, is_event = "is_event", arm = arm, strata = strata_var),
       env = list(tte = aval_var, arm = arm_var, strata_var = strata_var)
     )
   } else {
@@ -231,19 +231,16 @@ template_g_km <- function(dataname = "ANL",
   y
 }
 
-
-#' Teal Module: `Kaplan-Meier`
+#' teal Module: Kaplan-Meier Plot
 #'
-#' This teal module produces a grid style `Kaplan-Meier` plot for data with
-#' `ADaM` structure.
+#' This module produces a grid-style Kaplan-Meier plot for data with ADaM structure.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_km
-#' @param facet_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices and preselected option
-#'   for variable names that can be used for facet plotting.
+#' @param facet_var ([teal.transform::choices_selected()])\cr object with
+#'   all available choices and preselected option for names of variable that can be used for plot faceting.
 #'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' library(nestcolor)
@@ -296,9 +293,10 @@ template_g_km <- function(dataname = "ANL",
 #'   )
 #' )
 #' if (interactive()) {
-#'   shinyApp(ui = app$ui, server = app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_km <- function(label,
                     dataname,
                     parentname = ifelse(
@@ -333,6 +331,13 @@ tm_g_km <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(strata_var, "choices_selected")
+  checkmate::assert_class(facet_var, "choices_selected")
+  checkmate::assert_class(time_unit_var, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(cnsr_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -375,9 +380,7 @@ tm_g_km <- function(label,
   )
 }
 
-
-#' User Interface for KM Module
-#' @noRd
+#' @keywords internal
 ui_g_km <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -477,7 +480,7 @@ ui_g_km <- function(id, ...) {
               label = shiny::HTML(
                 paste(
                   "p-value method for ",
-                  shiny::span(class = "text-primary", "Coxph"), # nolint
+                  shiny::span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -490,7 +493,7 @@ ui_g_km <- function(id, ...) {
               label = shiny::HTML(
                 paste(
                   "Ties for ",
-                  shiny::span(class = "text-primary", "Coxph"), # nolint
+                  shiny::span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -562,10 +565,7 @@ ui_g_km <- function(id, ...) {
   )
 }
 
-
-#' Server for KM Module
-#' @noRd
-#'
+#' @keywords internal
 srv_g_km <- function(id,
                      data,
                      reporter,
@@ -711,7 +711,7 @@ srv_g_km <- function(id,
 
       anl_m <- anl_inputs()
 
-      anl <- anl_q()[["ANL"]] # nolint
+      anl <- anl_q()[["ANL"]]
       teal::validate_has_data(anl, 2)
 
       input_xticks <- if (!is.null(input$xticks)) {

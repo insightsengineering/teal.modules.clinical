@@ -1,22 +1,17 @@
 #' Template: Events by Term
 #'
+#' Creates a valid expression to generate a table of events by term.
+#'
 #' @inheritParams template_arguments
-#' @param label_hlt (`string`)\cr label of the `hlt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param label_llt (`string`)\cr label of the `llt` variable from `dataname`. The label will be extracted from the
-#' module.
-#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
-#'   Default is "event".
-#' @param sort_criteria (`character`)\cr how to sort the final table. Default option `freq_desc` sorts
-#'   on column `sort_freq_col` by decreasing number of patients with event. Alternative option `alpha` sorts events
-#'   alphabetically.
 #' @param sort_freq_col (`character`)\cr column to sort by frequency on if `sort_criteria` is set to `freq_desc`.
 #' @param incl_overall_sum (`flag`)\cr  whether two rows which summarize the overall number of adverse events
 #'   should be included at the top of the table.
 #'
-#' @seealso [tm_t_events()]
-#' @keywords internal
+#' @inherit template_arguments return
 #'
+#' @seealso [tm_t_events()]
+#'
+#' @keywords internal
 template_events <- function(dataname,
                             parentname,
                             arm_var,
@@ -35,21 +30,19 @@ template_events <- function(dataname,
                             drop_arm_levels = TRUE,
                             incl_overall_sum = TRUE,
                             basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    is.character(arm_var) && length(arm_var) %in% c(1, 2),
-    assertthat::is.string(hlt) || is.null(hlt),
-    assertthat::is.string(llt) || is.null(llt),
-    assertthat::is.string(label_hlt) || is.null(label_hlt),
-    assertthat::is.string(label_llt) || is.null(label_llt),
-    is.character(c(llt, hlt)),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(na_level),
-    assertthat::is.string(event_type),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+  checkmate::assert_string(hlt, null.ok = TRUE)
+  checkmate::assert_string(llt, null.ok = TRUE)
+  checkmate::assert_string(label_hlt, null.ok = TRUE)
+  checkmate::assert_string(label_llt, null.ok = TRUE)
+  checkmate::assert_character(c(llt, hlt))
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(event_type)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_scalar(prune_freq)
   checkmate::assert_scalar(prune_diff)
 
@@ -246,7 +239,7 @@ template_events <- function(dataname,
           indent_mod = -1L,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(dataname[hlt])
+          split_label = teal.data::col_labels(dataname[hlt])
         ) %>%
           summarize_num_patients(
             var = "USUBJID",
@@ -459,18 +452,20 @@ template_events <- function(dataname,
   y
 }
 
-#' Teal Module: Events by Term
+#' teal Module: Events by Term
+#'
+#' This module produces a table of events by term.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events
 #'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
 #' ADAE <- tmc_ex_adae
 #'
-#' app <- teal::init(
+#' app <- init(
 #'   data = cdisc_data(
 #'     ADSL = ADSL,
 #'     ADAE = ADAE,
@@ -501,6 +496,7 @@ template_events <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_events <- function(label,
                         dataname,
                         parentname = ifelse(
@@ -528,6 +524,9 @@ tm_t_events <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(hlt, "choices_selected")
+  checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
@@ -573,7 +572,7 @@ tm_t_events <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_events_byterm <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -655,7 +654,7 @@ ui_t_events_byterm <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_events_byterm <- function(id,
                                 data,
                                 filter_panel_api,
@@ -773,7 +772,7 @@ srv_t_events_byterm <- function(id,
     # The R-code corresponding to the analysis.
     table_q <- shiny::reactive({
       validate_checks()
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
 
       input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)

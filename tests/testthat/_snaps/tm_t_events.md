@@ -26,7 +26,7 @@
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
@@ -86,7 +86,7 @@
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
@@ -169,8 +169,8 @@
           adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
           adsl <- df_explicit_na(adsl, na_level = "<Missing>")
-          anl <- anl %>% dplyr::mutate(`:=`(AEBODSYS, as.character(AEBODSYS)))
-          anl <- anl %>% dplyr::mutate(`:=`(AEDECOD, as.character(AEDECOD)))
+          anl[["AEBODSYS"]] <- as.character(anl[["AEBODSYS"]])
+          anl[["AEDECOD"]] <- as.character(anl[["AEDECOD"]])
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("AEBODSYS", "AEDECOD")))
       }
@@ -186,7 +186,7 @@
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
@@ -236,7 +236,7 @@
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
@@ -305,7 +305,7 @@
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 

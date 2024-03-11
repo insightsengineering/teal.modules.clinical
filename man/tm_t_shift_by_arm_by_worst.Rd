@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_shift_by_arm_by_worst.R
 \name{tm_t_shift_by_arm_by_worst}
 \alias{tm_t_shift_by_arm_by_worst}
-\title{Teal Module: Shift by Arm by Worst Analysis Indicator Level}
+\title{teal Module: Shift by Arm by Worst Analysis Indicator Level}
 \usage{
 tm_t_shift_by_arm_by_worst(
   label,
@@ -35,31 +35,33 @@ tm_t_shift_by_arm_by_worst(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
 
-\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and preselected option for variable names that can be used as worst flag variable.}
 
 \item{worst_flag}{(\code{character})\cr value indicating worst analysis indicator level.}
 
-\item{treatment_flag_var}{(\code{choices_selected} or \code{data_extract_spec})\cr on treatment flag variable.}
+\item{treatment_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr on
+treatment flag variable.}
 
-\item{treatment_flag}{(\code{choices_selected}] or \code{data_extract_spec})\cr value indicating on treatment
-records in \code{treatment_flag_var}.}
+\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value
+indicating on treatment records in \code{treatment_flag_var}.}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
@@ -82,11 +84,10 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-a \code{\link[teal:module]{teal::module()}} object which can be added to a \code{teal} app via \code{\link[teal:init]{teal::init()}}.
+a \code{teal_module} object.
 }
 \description{
 This module produces a summary table of worst analysis indicator variable level per subject by arm.

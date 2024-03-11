@@ -29,6 +29,9 @@ prepare_arm(
 
 \item{drop}{(\code{logical})\cr drop the unused variable levels.}
 }
+\value{
+a \code{call}
+}
 \description{
 The function generate the standard expression for pre-processing of dataset
 in teal module applications. This is especially of interest when the same
@@ -55,20 +58,18 @@ arm are dropped.
 }
 }
 \examples{
-\dontrun{
-teal.modules.clinical::prepare_arm(
+prepare_arm(
   dataname = "adrs",
   arm_var = "ARMCD",
   ref_arm = "ARM A",
   comp_arm = c("ARM B", "ARM C")
 )
 
-teal.modules.clinical::prepare_arm(
+prepare_arm(
   dataname = "adsl",
   arm_var = "ARMCD",
   ref_arm = c("ARM B", "ARM C"),
   comp_arm = "ARM A"
 )
-}
 
 }

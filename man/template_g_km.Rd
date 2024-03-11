@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_km.R
 \name{template_g_km}
 \alias{template_g_km}
-\title{Template: \code{Kaplan-Meier}}
+\title{Template: Kaplan-Meier Plot}
 \usage{
 template_g_km(
   dataname = "ANL",
@@ -57,11 +57,9 @@ an optimal tick position on the x axis.}
 
 \item{time_points}{(\code{character})\cr time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
-\item{facet_var}{(\code{character})\cr
-object with all available choices and preselected option
-for variable names that can be used for facet plotting.}
+\item{facet_var}{(\code{character})\cr name of the variable to use to facet the plot.}
 
-\item{font_size}{(\code{number})\cr font size to be used.}
+\item{font_size}{(\code{numeric})\cr font size value.}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
@@ -91,8 +89,11 @@ median survival time per group.}
 
 \item{title}{(\code{character})\cr title of the output.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: \code{Kaplan-Meier}
+Creates a valid expression to generate a Kaplan-Meier plot.
 }
 \seealso{
 \code{\link[=tm_g_km]{tm_g_km()}}

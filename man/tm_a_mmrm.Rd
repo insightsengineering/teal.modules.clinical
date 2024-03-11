@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_a_mmrm.R
 \name{tm_a_mmrm}
 \alias{tm_a_mmrm}
-\title{Teal Module: Teal module for Mixed Model Repeated Measurements (\code{MMRM}) analysis}
+\title{teal Module: Mixed Model Repeated Measurements (MMRM) Analysis}
 \usage{
 tm_a_mmrm(
   label,
@@ -36,22 +36,24 @@ tm_a_mmrm(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{id_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object specifying the variable name for subject id.}
+\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
+the variable name for subject id.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{visit_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for variable names that can be used as \code{visit} variable.
+Must be a factor in \code{dataname}.}
 
-\item{cov_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices and preselected
-option for the covariates variables.}
+\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the covariates variables.}
 
 \item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -59,13 +61,14 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{method}{(\code{choices_selected})\cr
-object with all available choices and preselected option for the adjustment method.}
+\item{method}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the adjustment method.}
 
-\item{conf_level}{(\code{choices_selected})\cr object with all available choices and preselected option for the
-confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -86,18 +89,19 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args}) \cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for all the plots or named list of \code{ggplot2_args}
-objects for plot-specific settings. List names should match the following:\cr \code{ c("default", "lsmeans", "diagnostic")}.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
-(hard coded in the module body).\cr For more details, see the help vignette:\cr
-\code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+\item{ggplot2_args}{(\code{ggplot2_args}) \cr optional, object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}}
+with settings for all the plots or named list of \code{ggplot2_args} objects for plot-specific settings.
+List names should match the following: \code{c("default", "lsmeans", "diagnostic")}. The argument is merged
+with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
+For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+}
+\value{
+a \code{teal_module} object.
 }
 \description{
-Teal Module: Teal module for Mixed Model Repeated Measurements (\code{MMRM}) analysis
+This module produces analysis tables and plots for Mixed Model Repeated Measurements.
 }
 \note{
 The ordering of the input data sets can lead to slightly different numerical results or
@@ -106,6 +110,7 @@ different convergence behavior. This is a known observation with the used packag
 numerical precision.
 }
 \examples{
+library(dplyr)
 arm_ref_comp <- list(
   ARMCD = list(
     ref = "ARM B",
@@ -117,9 +122,9 @@ data <- teal_data()
 data <- within(data, {
   ADSL <- tmc_ex_adsl
   ADQS <- tmc_ex_adqs \%>\%
-    dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
-    dplyr::filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
-    dplyr::mutate(
+    filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%
+    filter(AVISIT \%in\% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) \%>\%
+    mutate(
       AVISIT = as.factor(AVISIT),
       AVISITN = rank(AVISITN) \%>\%
         as.factor() \%>\%
@@ -154,4 +159,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

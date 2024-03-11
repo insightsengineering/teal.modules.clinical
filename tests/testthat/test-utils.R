@@ -3,7 +3,7 @@ testthat::test_that("h_concat_expr returns a string for long expression", {
     rtables::basic_table() %>%
       rtables::split_cols_by(var = "ARMCD") %>%
       tern::test_proportion_diff(
-        vars = "rsp", method = "cmh", variables = list(strata = "strat")
+        vars = "rsp", method = "cmh", variables = list(strata = "strata")
       ) %>%
       rtables::build_table(df = dta)
   )
@@ -34,7 +34,7 @@ testthat::test_that("add_expr adds expressions to expression list", {
     lyt,
     substitute(
       tern::test_proportion_diff(
-        vars = "rsp", method = "cmh", variables = list(strata = "strat")
+        vars = "rsp", method = "cmh", variables = list(strata = "strata")
       )
     )
   )
@@ -54,7 +54,7 @@ testthat::test_that("add_expr manages expression list which can be used by pipe_
     lyt,
     substitute(
       test_proportion_diff(
-        vars = "rsp", method = "cmh", variables = list(strata = "strat")
+        vars = "rsp", method = "cmh", variables = list(strata = "strata")
       )
     )
   )

@@ -5,12 +5,12 @@
     Output
       $data
       {
-          anl_labels <- formatters::var_labels(adlb, fill = FALSE)
+          anl_labels <- teal.data::col_labels(adlb, fill = FALSE)
           anl <- adlb %>% dplyr::mutate(GRADE_DIR = factor(dplyr::case_when(as.numeric(as.character(ATOXGR)) < 
               0 ~ "LOW", ATOXGR == "0" ~ "ZERO", as.numeric(as.character(ATOXGR)) > 
               0 ~ "HIGH"), levels = c("LOW", "ZERO", "HIGH")), GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))) %>% 
               dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>% droplevels()
-          formatters::var_labels(anl) <- c(anl_labels, GRADE_DIR = "   Direction of Abnormality", 
+          teal.data::col_labels(anl) <- c(anl_labels, GRADE_DIR = "   Direction of Abnormality", 
               GRADE_ANL = "Highest Grade")
           anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
           arm_levels <- levels(anl[["ARMCD"]])
@@ -53,12 +53,12 @@
     Output
       $data
       {
-          anl_labels <- formatters::var_labels(myadlb, fill = FALSE)
+          anl_labels <- teal.data::col_labels(myadlb, fill = FALSE)
           anl <- myadlb %>% dplyr::mutate(GRADE_DIR = factor(dplyr::case_when(as.numeric(as.character(ATOXGR)) < 
               0 ~ "LOW", ATOXGR == "0" ~ "ZERO", as.numeric(as.character(ATOXGR)) > 
               0 ~ "HIGH"), levels = c("LOW", "ZERO", "HIGH")), GRADE_ANL = factor(abs(as.numeric(as.character(ATOXGR))))) %>% 
               dplyr::filter(WGRLOFL == "Y" | WGRHIFL == "Y") %>% droplevels()
-          formatters::var_labels(anl) <- c(anl_labels, GRADE_DIR = "   Direction of Abnormality", 
+          teal.data::col_labels(anl) <- c(anl_labels, GRADE_DIR = "   Direction of Abnormality", 
               GRADE_ANL = "Highest Grade")
           anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
           arm_levels <- levels(anl[["ARMCD"]])

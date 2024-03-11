@@ -21,19 +21,16 @@ repos:
           - insightsengineering/teal
           - insightsengineering/teal.transform
           - tern
-          - assertthat
           - broom
           - checkmate
           - dplyr
           - DT
-          - formatters
           - ggplot2
           - ggrepel
           - grid
           - lifecycle
-          - magrittr
+          - logger
           - methods
-          - rlang
           - rlistings
           - rmarkdown
           - rtables
@@ -43,7 +40,6 @@ repos:
           - shinyvalidate
           - shinyWidgets
           - stats
-          - styler
           - insightsengineering/teal.code
           - insightsengineering/teal.data
           - insightsengineering/teal.logger
@@ -51,7 +47,6 @@ repos:
           - insightsengineering/teal.widgets
           - insightsengineering/tern.gee
           - insightsengineering/tern.mmrm
-          - tidyr
           - utils
           - vistime
       - id: spell-check
@@ -83,6 +78,7 @@ repos:
           (.*/|)DESCRIPTION|
           (.*/|)LICENSE|
           (.*/|)NAMESPACE|
+          .*-package.Rd|
           (.*/|)staged_dependencies\.y[a]?ml|
           (.*/|)WORDLIST|
           \.github/.*\.y[a]?ml|

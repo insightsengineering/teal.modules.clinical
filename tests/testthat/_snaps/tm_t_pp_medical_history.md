@@ -4,7 +4,7 @@
       res
     Output
       {
-          labels <- formatters::var_labels(anl, fill = FALSE)[c("mhbodsys", 
+          labels <- teal.data::col_labels(anl, fill = FALSE)[c("mhbodsys", 
               "mhterm", "mhdistat")]
           mhbodsys_label <- labels["mhbodsys"]
           result_raw <- anl %>% dplyr::select(mhbodsys, mhterm, mhdistat) %>% 

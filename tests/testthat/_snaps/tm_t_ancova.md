@@ -20,9 +20,9 @@
       lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for Function/Well-Being (GF1,GF3,GF7) and BFI All Questions at WEEK 1 DAY 8 for Absolute Change from Baseline") %>% 
           rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>% 
           rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adqs["AVISIT"], 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adqs["AVISIT"], 
               fill = TRUE)) %>% rtables::split_rows_by("PARAMCD", split_fun = split_fun, 
-          label_pos = "topleft", split_label = formatters::var_labels(adqs["PARAMCD"], 
+          label_pos = "topleft", split_label = teal.data::col_labels(adqs["PARAMCD"], 
               fill = TRUE)) %>% summarize_ancova(vars = "CHG", variables = list(arm = "ARMCD", 
           covariates = c("BASE", "STRATA1")), conf_level = 0.95, var_labels = "Adjusted mean", 
           show_labels = "hidden", .labels = NULL)
@@ -56,9 +56,9 @@
       lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for Function/Well-Being (GF1,GF3,GF7) and BFI All Questions at WEEK 1 DAY 8 for Absolute Change from Baseline") %>% 
           rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>% 
           rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adqs["AVISIT"], 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adqs["AVISIT"], 
               fill = TRUE)) %>% rtables::split_rows_by("PARAMCD", split_fun = split_fun, 
-          label_pos = "topleft", split_label = formatters::var_labels(adqs["PARAMCD"], 
+          label_pos = "topleft", split_label = teal.data::col_labels(adqs["PARAMCD"], 
               fill = TRUE)) %>% rtables::append_topleft(paste0("    Interaction Variable: ", 
           "SEX")) %>% summarize_ancova(vars = "CHG", variables = list(arm = "ARMCD", 
           covariates = c("BASE", "STRATA1", "ARMCD*SEX")), conf_level = 0.95, 
@@ -96,9 +96,9 @@
       lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for A and B at WEEK 1 DAY 8 for Absolute Change from Baseline") %>% 
           rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>% 
           rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adqs["AVISIT"], 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adqs["AVISIT"], 
               fill = TRUE)) %>% rtables::split_rows_by("PARAMCD", split_fun = split_fun, 
-          label_pos = "topleft", split_label = formatters::var_labels(adqs["PARAMCD"], 
+          label_pos = "topleft", split_label = teal.data::col_labels(adqs["PARAMCD"], 
               fill = TRUE)) %>% summarize_ancova(vars = "CHG", variables = list(arm = "ARMCD", 
           covariates = c("BASE", "STRATA1")), conf_level = 0.95, var_labels = "Adjusted mean", 
           show_labels = "hidden", .labels = NULL)
@@ -136,9 +136,9 @@
       lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for A and B at WEEK 2 DAY 1 for Absolute Change from Baseline") %>% 
           rtables::split_cols_by(var = "ARMCD", ref_group = "ARM B/ARM C") %>% 
           rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adqs["AVISIT"], 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adqs["AVISIT"], 
               fill = TRUE)) %>% rtables::split_rows_by("PARAMCD", split_fun = split_fun, 
-          label_pos = "topleft", split_label = formatters::var_labels(adqs["PARAMCD"], 
+          label_pos = "topleft", split_label = teal.data::col_labels(adqs["PARAMCD"], 
               fill = TRUE)) %>% summarize_ancova(vars = "CHG", variables = list(arm = "ARMCD", 
           covariates = c("BASE", "STRATA1")), conf_level = 0.95, var_labels = "Adjusted mean", 
           show_labels = "hidden", .labels = NULL)
@@ -172,7 +172,7 @@
       lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for MYFAVORITE at  for Absolute Change from Baseline") %>% 
           rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>% 
           rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adqs["AVISIT"], 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adqs["AVISIT"], 
               fill = TRUE)) %>% rtables::append_topleft(paste0("  ", 
           "MYFAVORITE")) %>% summarize_ancova(vars = "CHG", variables = list(arm = "ARMCD", 
           covariates = NULL), conf_level = 0.95, var_labels = "Unadjusted comparison", 
@@ -212,9 +212,9 @@
       lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for Function/Well-Being (GF1,GF3,GF7) and BFI All Questions at WEEK 1 DAY 8 for Absolute Change from Baseline") %>% 
           rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>% 
           rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adqs["AVISIT"], 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adqs["AVISIT"], 
               fill = TRUE)) %>% rtables::split_rows_by("PARAMCD", split_fun = split_fun, 
-          label_pos = "topleft", split_label = formatters::var_labels(adqs["PARAMCD"], 
+          label_pos = "topleft", split_label = teal.data::col_labels(adqs["PARAMCD"], 
               fill = TRUE)) %>% rtables::append_topleft(paste0("    Interaction Variable: ", 
           "SEX")) %>% summarize_ancova(vars = "CHG", variables = list(arm = "ARMCD", 
           covariates = c("BASE", "STRATA1", "ARMCD*SEX")), conf_level = 0.95, 
@@ -250,9 +250,9 @@
       lyt <- rtables::basic_table(title = "Summary of Analysis of Variance for Function/Well-Being (GF1,GF3,GF7) and BFI All Questions at WEEK 1 DAY 8 for Absolute Change from Baseline") %>% 
           rtables::split_cols_by(var = "ARMCD", ref_group = "ARM A") %>% 
           rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adqs["AVISIT"], 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adqs["AVISIT"], 
               fill = TRUE)) %>% rtables::split_rows_by("PARAMCD", split_fun = split_fun, 
-          label_pos = "topleft", split_label = formatters::var_labels(adqs["PARAMCD"], 
+          label_pos = "topleft", split_label = teal.data::col_labels(adqs["PARAMCD"], 
               fill = TRUE)) %>% rtables::append_topleft(paste0("    Interaction Variable: ", 
           "BASE")) %>% summarize_ancova(vars = "CHG", variables = list(arm = "ARMCD", 
           covariates = c("BASE", "STRATA1", "ARMCD*BASE")), conf_level = 0.95, 

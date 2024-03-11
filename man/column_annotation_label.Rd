@@ -14,7 +14,7 @@ column_annotation_label(dataset, column, omit_raw_name = FALSE)
 \item{omit_raw_name}{(\code{logical})\cr omits the raw name in square brackets if label is found}
 }
 \value{
-"Label \verb{[Column name]}" if label exists, otherwise "Column name"
+"Label \verb{[Column name]}" if label exists, otherwise "Column name".
 }
 \description{
 Get full label, useful for annotating plots
@@ -25,7 +25,5 @@ column_annotation_label(data, "cyl")
 attr(data[["cyl"]], "label") <- "Cylinder"
 column_annotation_label(data, "cyl")
 column_annotation_label(data, "cyl", omit_raw_name = TRUE)
-\dontrun{
 column_annotation_label(tmc_ex_adsl, "ACTARM")
-}
 }

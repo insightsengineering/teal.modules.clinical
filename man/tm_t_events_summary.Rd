@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_events_summary.R
 \name{tm_t_events_summary}
 \alias{tm_t_events_summary}
-\title{Teal Module: Adverse Events Summary}
+\title{teal Module: Adverse Events Summary}
 \usage{
 tm_t_events_summary(
   label,
@@ -40,34 +40,34 @@ tm_t_events_summary(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{flag_var_anl}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-vector with names of flag variables from \code{dataset} used to count adverse event
-sub-groups (e.g. Serious events, Related events, etc.). Variable labels are used
-as table row names if they exist.}
+\item{flag_var_anl}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr
+vector with names of flag variables from \code{dataset} used to count adverse event sub-groups (e.g. Serious events,
+Related events, etc.). Variable labels are used as table row names if they exist.}
 
-\item{flag_var_aesi}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-vector with names of flag variables from \code{dataset} used to count adverse event
-special interest groups. All flag variables must be of type \code{logical}. Variable
-labels are used as table row names if they exist.}
+\item{flag_var_aesi}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{NULL})\cr
+vector with names of flag variables from \code{dataset} used to count adverse event special interest groups. All flag
+variables must be of type \code{logical}. Variable labels are used as table row names if they exist.}
 
-\item{dthfl_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-variable for subject death flag from \code{parentname}. Records with `"Y"`` are summarized in
-the table row for "Total number of deaths".}
+\item{dthfl_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
+with all available choices and preselected option for variable names that can be used as death flag variable.
+Records with `"Y"`` are summarized in the table row for "Total number of deaths".}
 
-\item{dcsreas_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable
-for study discontinuation reason from \code{parentname}. Records with \code{"ADVERSE EVENTS"} are
-summarized in the table row for \code{"Total number of patients withdrawn from study due to an AE"}.}
+\item{dcsreas_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
+with all available choices and preselected option for variable names that can be used as study discontinuation
+reason variable. Records with \code{"ADVERSE EVENTS"} are summarized in the table row for
+"Total number of patients withdrawn from study due to an AE".}
 
-\item{llt}{(\code{choices_selected} or \code{data_extract_spec})\cr name of the variable with low level term for events.}
+\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
+with low level term for events.}
 
-\item{aeseq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable
-for adverse events sequence number from \code{dataset}. Used for counting total number of events.}
+\item{aeseq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr variable for
+adverse events sequence number from \code{dataset}. Used for counting total number of events.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -79,17 +79,14 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{count_subj}{(\code{logical})\cr w
-whether to show count of unique subjects based on \code{USUBJID}. Only applies if event flag
-variables are provided.}
+\item{count_subj}{(\code{logical})\cr whether to show count of unique subjects (based on \code{USUBJID}). Only applies if
+event flag variables are provided.}
 
-\item{count_pt}{(\code{logical})\cr
-whether to show count of unique preferred terms based on \code{llt}. Only applies if event
+\item{count_pt}{(\code{logical})\cr whether to show count of unique preferred terms (based on \code{llt}). Only applies if
+event flag variables are provided.}
+
+\item{count_events}{(\code{logical})\cr whether to show count of events (based on \code{aeseq_var}). Only applies if event
 flag variables are provided.}
-
-\item{count_events}{(\code{logical})\cr
-whether to show count of events based on \code{aeseq_var}. Only applies if event flag variables
-are provided.}
 
 \item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -100,27 +97,31 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 \item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-Teal Module: Adverse Events Summary
+This module produces an adverse events summary table.
 }
 \examples{
+library(dplyr)
+
 data <- teal_data()
 data <- within(data, {
   ADSL <- tmc_ex_adsl \%>\%
-    dplyr::mutate(
-      DTHFL = dplyr::case_when( #' nolint
+    mutate(
+      DTHFL = case_when(
         !is.na(DTHDT) ~ "Y",
         TRUE ~ ""
-      ) \%>\% formatters::with_label("Subject Death Flag")
+      ) \%>\% with_label("Subject Death Flag")
     )
   ADAE <- tmc_ex_adae
 
   add_event_flags <- function(dat) {
     dat <- dat \%>\%
-      dplyr::mutate(
+      mutate(
         TMPFL_SER = AESER == "Y",
         TMPFL_REL = AEREL == "Y",
         TMPFL_GR5 = AETOXGR == "5",
@@ -136,7 +137,7 @@ data <- within(data, {
       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
       TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
     )
-    formatters::var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+    col_labels(dat)[names(column_labels)] <- as.character(column_labels)
     dat
   }
 
@@ -181,4 +182,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

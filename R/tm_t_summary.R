@@ -1,15 +1,16 @@
 #' Template: Summary of Variables
 #'
-#' @param show_labels (`character`)\cr
-#'   defines whether the labels for `sum_vars` should display. For details see [rtables::analyze()].
-#' @param numeric_stats (`character`)\cr
-#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. All are selected by default.
+#' Creates a valid expression to generate a table to summarize variables.
+#'
 #' @inheritParams template_arguments
+#' @param show_labels (`character`)\cr defines whether variable labels should be displayed. Options are
+#'   `"default"`, `"visible"`, and `"hidden"`.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_summary()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_summary <- function(dataname,
                              parentname,
                              arm_var,
@@ -18,7 +19,7 @@ template_summary <- function(dataname,
                              add_total = TRUE,
                              total_label = default_total_label(),
                              var_labels = character(),
-                             na.rm = FALSE, # nolint
+                             na.rm = FALSE, # nolint: object_name.
                              na_level = default_na_str(),
                              numeric_stats = c(
                                "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
@@ -26,23 +27,22 @@ template_summary <- function(dataname,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    is.character(sum_vars),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    is.character(var_labels),
-    assertthat::is.flag(na.rm),
-    assertthat::is.string(na_level),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_character(sum_vars)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_character(var_labels)
+  checkmate::assert_flag(na.rm)
+  checkmate::assert_string(na_level)
+  checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
     numeric_stats,
     c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
   )
+
   denominator <- match.arg(denominator)
   show_labels <- match.arg(show_labels)
 
@@ -155,7 +155,7 @@ template_summary <- function(dataname,
           var_labels = sum_var_labels,
           show_labels = show_labels,
           na.rm = na.rm,
-          na_level = na_level,
+          na_str = na_level,
           denom = denom,
           .stats = stats
         ),
@@ -167,7 +167,7 @@ template_summary <- function(dataname,
           vars = sum_vars,
           show_labels = show_labels,
           na.rm = na.rm,
-          na_level = na_level,
+          na_str = na_level,
           denom = denom,
           .stats = stats
         ),
@@ -192,35 +192,19 @@ template_summary <- function(dataname,
   y
 }
 
-#' Teal Module: Summary of Variables
+#' teal Module: Summary of Variables
+#'
+#' This module produces a table to summarize variables.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_summary
-#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'   object with all available choices and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
-#'   second variable will be nested under the first variable.
-#' @param drop_arm_levels (`logical`)\cr drop the unused `arm_var` levels.
-#'   When `TRUE`, `arm_var` levels are set to those used in the `dataname` dataset. When `FALSE`,
-#'   `arm_var` levels are set to those used in the `parentname` dataset.
-#'   If `dataname` dataset and `parentname` dataset are the same (i.e. `ADSL`), then `drop_arm_levels` will always be
-#'   TRUE regardless of the user choice when `tm_t_summary` is called.
-#' @param numeric_stats (`character`)\cr
-#'   selected statistics for numeric summarize variables to be displayed. Possible values are `n`, `mean_sd`, `mean_ci`,
-#'   `median`, `median_ci`, `quantiles`, `range` and `geom_mean`. By default,  `n`, `mean_sd`, `median`, `range` are
-#'   selected.
 #'
-#' @export
+#' @inherit module_arguments return seealso
+#'
 #' @examples
-#' # Preparation of the test case
+#' # Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.
 #' ADSL <- tmc_ex_adsl
 #' ADSL$EOSDY[1] <- NA_integer_
-#'
-#' # Include `EOSDY` and `DCSREAS` variables below because they contain missing data.
-#' stopifnot(
-#'   any(is.na(ADSL$EOSDY)),
-#'   any(is.na(ADSL$DCSREAS))
-#' )
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -228,10 +212,6 @@ template_summary <- function(dataname,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADSL$EOSDY[1] <- NA_integer_
-#'       stopifnot(
-#'         any(is.na(ADSL$EOSDY)),
-#'         any(is.na(ADSL$DCSREAS))
-#'       )
 #'     "
 #'   ),
 #'   modules = modules(
@@ -252,6 +232,7 @@ template_summary <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_summary <- function(label,
                          dataname,
                          parentname = ifelse(
@@ -263,7 +244,7 @@ tm_t_summary <- function(label,
                          summarize_vars,
                          add_total = TRUE,
                          total_label = default_total_label(),
-                         useNA = c("ifany", "no"), # nolint
+                         useNA = c("ifany", "no"), # nolint: object_name.
                          na_level = default_na_str(),
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
@@ -277,9 +258,11 @@ tm_t_summary <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(summarize_vars, "choices_selected")
   checkmate::assert_string(na_level)
   checkmate::assert_character(numeric_stats, min.len = 1)
-  useNA <- match.arg(useNA) # nolint
+  useNA <- match.arg(useNA) # nolint: object_name.
   denominator <- match.arg(denominator)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
@@ -317,7 +300,7 @@ tm_t_summary <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_summary <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -402,7 +385,7 @@ ui_summary <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_summary <- function(id,
                         data,
                         reporter,
@@ -530,7 +513,7 @@ srv_summary <- function(id,
       validate_checks()
 
       summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
-      var_labels <- formatters::var_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
+      var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
@@ -540,7 +523,7 @@ srv_summary <- function(id,
         add_total = input$add_total,
         total_label = total_label,
         var_labels = var_labels,
-        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE), # nolint
+        na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         numeric_stats = input$numeric_stats,
         denominator = input$denominator,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_therapy.R
 \name{template_therapy}
 \alias{template_therapy}
-\title{Template: Therapy}
+\title{Template: Patient Profile Therapy Table and Plot}
 \usage{
 template_therapy(
   dataname = "ANL",
@@ -40,21 +40,27 @@ template_therapy(
 
 \item{cmdosfrq}{(\code{character})\cr name of dosing frequency per interval variable.}
 
-\item{cmstdy}{(\code{character})\cr name of study day of start of medication variable.}
+\item{cmstdy}{(\code{character})\cr name of study relative day of start of medication variable.}
 
 \item{cmendy}{(\code{character})\cr name of study day of end of medication variable.}
 
 \item{patient_id}{(\code{character})\cr patient ID.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+\item{font_size}{(\code{numeric})\cr font size value.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a therapy template call.
+Creates a valid expression to generate a patient profile therapy table and \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plot using ADaM
+datasets.
+}
+\seealso{
+\code{\link[=tm_g_pp_therapy]{tm_g_pp_therapy()}}
 }
 \keyword{internal}

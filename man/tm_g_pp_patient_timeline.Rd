@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_patient_timeline.R
 \name{tm_g_pp_patient_timeline}
 \alias{tm_g_pp_patient_timeline}
-\title{Teal Module: Patient Profile Timeline Teal Module}
+\title{teal Module: Patient Profile Timeline Plot}
 \usage{
 tm_g_pp_patient_timeline(
   label,
@@ -37,39 +37,39 @@ tm_g_pp_patient_timeline(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{patient_col}{(\code{character})\cr patient ID column to be used.}
+\item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AETERM} column of the \code{ADAE} dataset.}
+\item{aeterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{AETERM} variable from \code{dataname}.}
 
-\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMDECOD} column of the \code{ADCM} dataset.}
+\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{CMDECOD} variable from \code{dataname_adcm}.}
 
-\item{aetime_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ASTDTM} column of the \code{AE} start of the \code{ADAE} dataset.}
+\item{aetime_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for the \code{ASTDTM} variable from \code{dataname_adae}.}
 
-\item{aetime_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{AENDTM} column of the \code{AE} end of the \code{ADAE} dataset.}
+\item{aetime_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{AENDTM} variable from \code{dataname_adae}.}
 
-\item{dstime_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMASTDTM} column of treatment start of the \code{ADCM} dataset.}
+\item{dstime_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for the \code{CMASTDTM} variable from \code{dataname_adcm}.}
 
-\item{dstime_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{CMAENDTM} column of treatment end of the \code{ADCM} dataset.}
+\item{dstime_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the \code{CMAENDTM} variable from \code{dataname_adcm}.}
 
-\item{aerelday_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
-\code{ASTDY} column of the \code{ADAE} dataset.}
+\item{aerelday_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
+with all available choices and preselected option for the \code{ASTDY} variable from \code{dataname_adae}.}
 
-\item{aerelday_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr \code{AENDY}
-column of the \code{ADAE} dataset.}
+\item{aerelday_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
+with all available choices and preselected option for the \code{AENDY} variable from \code{dataname_adae}.}
 
-\item{dsrelday_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr \code{ASTDY}
-column of the \code{ADCM} dataset.}
+\item{dsrelday_start}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
+with all available choices and preselected option for the \code{ASTDY} variable from \code{dataname_adcm}.}
 
-\item{dsrelday_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr \code{AENDY}
-column of the \code{ADCM} dataset.}
+\item{dsrelday_end}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
+with all available choices and preselected option for the \code{AENDY} variable from \code{dataname_adcm}.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+\item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
 \item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
@@ -86,37 +86,39 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a patient profile timeline plot using \code{ADaM} datasets.
+This module produces a patient profile timeline \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type plot using ADaM datasets.
 }
 \examples{
 library(nestcolor)
-
-adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+library(dplyr)
 
 data <- teal_data()
 data <- within(data, {
   ADAE <- tmc_ex_adae
-  ADSL <- tmc_ex_adsl \%>\% dplyr::filter(USUBJID \%in\% ADAE$USUBJID)
-  ADCM <- tmc_ex_adcm \%>\% dplyr::mutate(
-    CMSTDY = dplyr::case_when(
+  ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADAE$USUBJID)
+  ADCM <- tmc_ex_adcm \%>\% mutate(
+    CMSTDY = case_when(
       CMCAT == "medcl B" ~ 20,
       CMCAT == "medcl C" ~ 150,
       TRUE ~ 1
-    ) \%>\% formatters::with_label("Study Day of Start of Medication"),
-    CMENDY = dplyr::case_when(
+    ) \%>\% with_label("Study Day of Start of Medication"),
+    CMENDY = case_when(
       CMCAT == "medcl B" ~ 700,
       CMCAT == "medcl C" ~ 1000,
       TRUE ~ 500
-    ) \%>\% formatters::with_label("Study Day of End of Medication"),
+    ) \%>\% with_label("Study Day of End of Medication"),
     CMASTDTM = ASTDTM,
     CMAENDTM = AENDTM
   )
 })
 
+adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 datanames(data) <- c("ADSL", "ADAE", "ADCM")
 join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADAE", "ADCM")]
 join_keys(data)["ADCM", "ADCM"] <- adcm_keys

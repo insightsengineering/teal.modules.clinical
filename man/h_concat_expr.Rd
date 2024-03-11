@@ -16,14 +16,15 @@ a \code{string}.
 Deparse an expression into a \code{string}.
 }
 \examples{
-expr <- quote(
-  rtables::basic_table() \%>\%
-    rtables::split_cols_by(var = "ARMCD") \%>\%
+expr <- quote({
+  library(rtables)
+  basic_table() \%>\%
+    split_cols_by(var = "ARMCD") \%>\%
     test_proportion_diff(
-      vars = "rsp", method = "cmh", variables = list(strata = "strat")
+      vars = "rsp", method = "cmh", variables = list(strata = "strata")
     ) \%>\%
-    rtables::build_table(df = dta)
-)
+    build_table(df = dta)
+})
 
-teal.modules.clinical:::h_concat_expr(expr)
+h_concat_expr(expr)
 }

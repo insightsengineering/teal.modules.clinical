@@ -1,6 +1,7 @@
-#' Template: `ANCOVA` summary
+#' Template: ANCOVA Summary
 #'
-#' Creates a valid expression for analysis of variance summary table.
+#' Creates a valid expression to generate an analysis of variance summary table.
+#'
 #' @inheritParams template_arguments
 #' @param paramcd_levels (`character`)\cr
 #'   variable levels for the studied parameter.
@@ -12,10 +13,16 @@
 #'   label of value variable used for title rendering.
 #' @param label_paramcd (`character`)\cr
 #'   variable label used for title rendering.
+#' @param interact_var (`character`)\cr name of the variable that should have interactions with arm. If the
+#'   interaction is not needed, the default option is `NULL`.
+#' @param interact_y (`character`)\cr a selected item from the `interact_var` column which will be used to select the
+#'   specific ANCOVA results. If the interaction is not needed, the default option is `FALSE`.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_ancova()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_ancova <- function(dataname = "ANL",
                             parentname = "ADSL",
                             arm_var,
@@ -35,18 +42,16 @@ template_ancova <- function(dataname = "ANL",
                             visit_var = "AVISIT",
                             conf_level = 0.95,
                             basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(label_aval) || is.null(label_aval),
-    assertthat::is.flag(combine_comp_arms),
-    assertthat::is.string(aval_var),
-    is.character(cov_var),
-    assertthat::is.flag(include_interact),
-    all(sapply(interact_y, assertthat::is.string)) || isFALSE(interact_y),
-    assertthat::is.string(interact_var) || is.null(interact_var)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(label_aval, null.ok = TRUE)
+  checkmate::assert_flag(combine_comp_arms)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_character(cov_var)
+  checkmate::assert_flag(include_interact)
+  if (!isFALSE(interact_y)) checkmate::assert_character(interact_y)
+  checkmate::assert_string(interact_var, null.ok = TRUE)
 
   y <- list()
 
@@ -182,7 +187,7 @@ template_ancova <- function(dataname = "ANL",
           visit_var,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(dataname[visit_var], fill = TRUE)
+          split_label = teal.data::col_labels(dataname[visit_var], fill = TRUE)
         ),
       env = list(
         arm_var = arm_var,
@@ -201,7 +206,7 @@ template_ancova <- function(dataname = "ANL",
           paramcd_var,
           split_fun = split_fun,
           label_pos = "topleft",
-          split_label = formatters::var_labels(dataname[paramcd_var], fill = TRUE)
+          split_label = teal.data::col_labels(dataname[paramcd_var], fill = TRUE)
         ),
         env = list(
           paramcd_var = paramcd_var,
@@ -409,25 +414,27 @@ template_ancova <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: `ANCOVA` Teal Module
+#' teal Module: ANCOVA Summary
+#'
+#' This module produces a table to summarize analysis of variance, consistent with the TLG Catalog
+#' template for `AOVT01` available [here](
+#' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/aovt01.html) when multiple
+#' endpoints are selected.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_ancova
 #'
-#' @details This module produces an analysis of variance summary table that is
-#' similar to `AOVT01` when multiple endpoints are selected.
-#' When a single endpoint is selected, both unadjusted and adjusted comparison
-#' would be provided. This modules expects that the analysis data has the
-#' following variables:
+#' @inherit module_arguments return
 #'
-#' \tabular{ll}{
-#'  `AVISIT` \tab variable used to filter for analysis visits.\cr
-#'  `PARAMCD` \tab variable used to filter for endpoints, after filtering for
-#'  `paramcd` and `avisit`, one observation per patient is expected for the analysis
-#'  to be meaningful.
-#' }
+#' @details
+#' When a single endpoint is selected, both unadjusted and adjusted comparison are provided. This modules
+#' expects that the analysis data has the following variables:
 #'
-#' @export
+#' * `AVISIT`: variable used to filter for analysis visits.
+#' * `PARAMCD`: variable used to filter for endpoints, after filtering for `paramcd` and `avisit`, one
+#'   observation per patient is expected for the analysis to be meaningful.
+#'
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -489,6 +496,7 @@ template_ancova <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_ancova <- function(label,
                         dataname,
                         parentname = ifelse(
@@ -513,6 +521,11 @@ tm_t_ancova <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(cov_var, "choices_selected")
+  checkmate::assert_class(avisit, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -556,7 +569,7 @@ tm_t_ancova <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_ancova <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -661,7 +674,7 @@ ui_ancova <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_ancova <- function(id,
                        data,
                        reporter,
@@ -831,7 +844,7 @@ srv_ancova <- function(id,
         "ANCOVA table cannot be calculated as all values are missing."
       ))
       # check that for each visit there is at least one record with no missing data
-      all_NA_dataset <- merged$anl_q()[["ANL"]] %>% # nolint
+      all_NA_dataset <- merged$anl_q()[["ANL"]] %>% # nolint: object_name.
         dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
         dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
       shiny::validate(shiny::need(
@@ -875,7 +888,7 @@ srv_ancova <- function(id,
     # The R-code corresponding to the analysis.
     table_q <- shiny::reactive({
       validate_checks()
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
 
       label_paramcd <- get_paramcd_label(ANL, paramcd)
       input_aval <- as.vector(merged$anl_input_r()$columns_source$aval_var)

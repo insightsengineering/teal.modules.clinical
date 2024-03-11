@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_vitals.R
 \name{template_vitals}
 \alias{template_vitals}
-\title{Template: Vitals}
+\title{Template: Patient Profile Vitals Plot}
 \usage{
 template_vitals(
   dataname = "ANL",
@@ -21,9 +21,9 @@ template_vitals(
 
 \item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
-\item{paramcd_levels}{(\code{character})\cr (\code{paramcd})\cr vector with (\verb{#'paramcd})\cr levels.}
+\item{paramcd_levels}{(\code{character})\cr vector of all levels of \code{paramcd}.}
 
-\item{xaxis}{(\code{character})\cr name of time variable used for the x-axis.}
+\item{xaxis}{(\code{character})\cr name of the time variable to put on the x-axis.}
 
 \item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
@@ -31,18 +31,20 @@ template_vitals(
 
 \item{patient_id}{(\code{character})\cr patient ID.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+\item{font_size}{(\code{numeric})\cr font size value.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
-\description{
-Creates a vitals template.
+\value{
+a \code{list} of expressions to generate a table or plot object.
 }
-\note{
-The vitals plot supports horizontal lines for 6 \code{PARAMCD} levels (\verb{SYSBP, DIABP, TEMP, RESP, OXYSAT and PULSE})\cr when these levels are present in the analyzed dataset and the spelling matches.
+\description{
+Creates a valid expression to generate a patient profile vitals \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plot using ADaM datasets.
+}
+\seealso{
+\code{\link[=tm_g_pp_vitals]{tm_g_pp_vitals()}}
 }
 \keyword{internal}
