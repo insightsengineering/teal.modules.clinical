@@ -1,35 +1,40 @@
-#' Template: Vitals
+#' Template: Patient Profile Vitals Plot
 #'
-#' Creates a vitals template.
+#' Creates a valid expression to generate a patient profile vitals [ggplot2::ggplot()] plot using ADaM datasets.
+#'
 #' @inheritParams template_arguments
-#' @param paramcd (`character`)\cr name of the parameter code variable.
-#' @param paramcd_levels (`character`)\cr (`paramcd`)\cr vector with (`#'paramcd`)\cr levels.
-#' @param xaxis (`character`)\cr name of time variable used for the x-axis.
-#' @param aval (`character`)\cr name of the analysis value variable.
-#' @param patient_id (`character`)\cr patient ID.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @param paramcd_levels (`character`)\cr vector of all levels of `paramcd`.
+#' @param xaxis (`character`)\cr name of the time variable to put on the x-axis.
 #'
-#' @note
-#' The vitals plot supports horizontal lines for 6 `PARAMCD` levels (`SYSBP, DIABP, TEMP, RESP, OXYSAT
-#' and PULSE`)\cr when these levels are present in the analyzed dataset and the spelling matches.
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_g_pp_vitals()]
+#'
 #' @keywords internal
-#'
 template_vitals <- function(dataname = "ANL",
                             paramcd = "PARAMCD",
                             paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
                             xaxis = "ADY",
-                            aval = "AVAL",
+                            aval = lifecycle::deprecated(),
+                            aval_var = "AVAL",
                             patient_id,
                             font_size = 12L,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(xaxis),
-    assertthat::is.string(aval),
-    assertthat::is.string(patient_id),
-    is.numeric(font_size)
-  )
+  if (lifecycle::is_present(aval)) {
+    aval_var <- aval
+    warning(
+      "The `aval` argument of `template_vitals()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "Please use the `aval_var` argument instead.",
+      call. = FALSE
+    )
+  }
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(xaxis)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(patient_id)
+  checkmate::assert_number(font_size)
 
   # Note: VSDY (study day of vital signs) was replaced with ADY (analysis day)
   y <- list()
@@ -69,7 +74,7 @@ template_vitals <- function(dataname = "ANL",
         dataname = as.name(dataname),
         paramcd = as.name(paramcd),
         xaxis = as.name(xaxis),
-        aval = as.name(aval)
+        aval_var = as.name(aval_var)
       ),
       others = list(paramcd_levels = paramcd_levels),
       expr = {
@@ -77,9 +82,9 @@ template_vitals <- function(dataname = "ANL",
           dataname %>%
           dplyr::group_by(paramcd, xaxis) %>%
           dplyr::filter(paramcd %in% paramcd_levels) %>%
-          dplyr::summarise(aval = max(aval, na.rm = TRUE)) %>%
+          dplyr::summarise(aval_var = max(aval_var, na.rm = TRUE)) %>%
           dplyr::mutate(
-            aval = ifelse(is.infinite(aval), NA, aval),
+            aval_var = ifelse(is.infinite(aval_var), NA, aval_var),
             xaxis = as.numeric(xaxis) # difftime fails ggplot2::scale_x_continuous
           )
       }
@@ -121,7 +126,7 @@ template_vitals <- function(dataname = "ANL",
         result_plot <- ggplot2::ggplot(data = vitals, mapping = ggplot2::aes(x = xaxis)) + # replaced VSDY
           ggplot2::geom_line(
             data = vitals,
-            mapping = ggplot2::aes(y = aval, color = paramcd),
+            mapping = ggplot2::aes(y = aval_var, color = paramcd),
             size = 1.5,
             alpha = 0.5
           ) +
@@ -177,8 +182,8 @@ template_vitals <- function(dataname = "ANL",
         paramcd_levels = paramcd_levels,
         xaxis = as.name(xaxis),
         xaxis_char = xaxis,
-        aval = as.name(aval),
-        aval_char = aval,
+        aval_var = as.name(aval_var),
+        aval_char = aval_var,
         patient_id = patient_id,
         font_size_var = font_size,
         labs = parsed_ggplot2_args$labs,
@@ -192,21 +197,19 @@ template_vitals <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Patient Profile Vitals Teal Module
+#' teal Module: Patient Profile Vitals Plot
 #'
-#' This teal module produces a patient profile vitals plot using `ADaM` datasets.
+#' This module produces a patient profile vitals [ggplot2::ggplot()] type plot using ADaM datasets.
+#'
+#' This plot supports horizontal lines for the following 6 `PARAMCD` levels when they are present in `dataname`:
+#' `"SYSBP"`, `"DIABP"`, `"TEMP"`, `"RESP"`, `"OXYSAT"`.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param paramcd ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{PARAMCD} column of the `ADVS` dataset.
-#' @param aval ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AVAL} column of the `ADVS` dataset.
-#' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' time variable to be represented in the vitals plot x-axis.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @inheritParams template_vitals
+#' @param xaxis ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' library(nestcolor)
@@ -238,7 +241,7 @@ template_vitals <- function(dataname = "ANL",
 #'         choices = variable_choices(ADVS, "ADY"),
 #'         selected = "ADY"
 #'       ),
-#'       aval = choices_selected(
+#'       aval_var = choices_selected(
 #'         choices = variable_choices(ADVS, "AVAL"),
 #'         selected = "AVAL"
 #'       )
@@ -249,12 +252,14 @@ template_vitals <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_pp_vitals <- function(label,
                            dataname = "ADVS",
                            parentname = "ADSL",
                            patient_col = "USUBJID",
                            paramcd = NULL,
-                           aval = NULL,
+                           aval = lifecycle::deprecated(),
+                           aval_var = NULL,
                            xaxis = NULL,
                            font_size = c(12L, 12L, 25L),
                            plot_height = c(700L, 200L, 2000L),
@@ -262,11 +267,25 @@ tm_g_pp_vitals <- function(label,
                            pre_output = NULL,
                            post_output = NULL,
                            ggplot2_args = teal.widgets::ggplot2_args()) {
+  if (lifecycle::is_present(aval)) {
+    aval_var <- aval
+    warning(
+      "The `aval` argument of `tm_g_pp_vitals()` is deprecated as of teal.modules.clinical 0.8.16. ",
+      "Please use the `aval_var` argument instead.",
+      call. = FALSE
+    )
+  } else {
+    aval <- aval_var # resolves missing argument error
+  }
+
   logger::log_info("Initializing tm_g_pp_vitals")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(paramcd, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aval_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(xaxis, "choices_selected", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -280,13 +299,13 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
-  checkmate::assert_multi_class(aval, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
+  checkmate::assert_multi_class(aval_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(xaxis, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(
     paramcd = `if`(is.null(paramcd), NULL, cs_to_des_select(paramcd, dataname = dataname)),
-    aval = `if`(is.null(aval), NULL, cs_to_des_select(aval, dataname = dataname)),
+    aval_var = `if`(is.null(aval_var), NULL, cs_to_des_select(aval_var, dataname = dataname)),
     xaxis = `if`(is.null(xaxis), NULL, cs_to_des_select(xaxis, dataname = dataname))
   )
 
@@ -311,11 +330,12 @@ tm_g_pp_vitals <- function(label,
   )
 }
 
+#' @keywords internal
 ui_g_vitals <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     ui_args$paramcd,
-    ui_args$aval,
+    ui_args$aval_var,
     ui_args$xaxis
   )
 
@@ -327,7 +347,7 @@ ui_g_vitals <- function(id, ...) {
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
       shiny::tags$label("Encodings", class = "text-primary"),
-      teal.transform::datanames_input(ui_args[c("paramcd", "aval", "xaxis")]),
+      teal.transform::datanames_input(ui_args[c("paramcd", "aval_var", "xaxis")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
@@ -348,9 +368,9 @@ ui_g_vitals <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
-        id = ns("aval"),
+        id = ns("aval_var"),
         label = "Select AVAL variable:",
-        data_extract_spec = ui_args$aval,
+        data_extract_spec = ui_args$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
       teal.widgets::panel_item(
@@ -371,7 +391,7 @@ ui_g_vitals <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_g_vitals <- function(id,
                          data,
                          reporter,
@@ -380,7 +400,7 @@ srv_g_vitals <- function(id,
                          parentname,
                          patient_col,
                          paramcd,
-                         aval,
+                         aval_var,
                          xaxis,
                          plot_height,
                          plot_width,
@@ -422,7 +442,7 @@ srv_g_vitals <- function(id,
     # Vitals tab ----
 
     selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(paramcd = paramcd, xaxis = xaxis, aval = aval),
+      data_extract = list(paramcd = paramcd, xaxis = xaxis, aval_var = aval_var),
       datasets = data,
       select_validation_rule = list(
         paramcd = shinyvalidate::sv_required(
@@ -431,7 +451,7 @@ srv_g_vitals <- function(id,
         xaxis = shinyvalidate::sv_required(
           "Please select Vitals x-axis variable."
         ),
-        aval = shinyvalidate::sv_required(
+        aval_var = shinyvalidate::sv_required(
           "Please select AVAL variable."
         )
       )
@@ -508,7 +528,7 @@ srv_g_vitals <- function(id,
         paramcd = input[[extract_input("paramcd", dataname)]],
         paramcd_levels = input[["paramcd_levels_vals"]],
         xaxis = input[[extract_input("xaxis", dataname)]],
-        aval = input[[extract_input("aval", dataname)]],
+        aval_var = input[[extract_input("aval_var", dataname)]],
         patient_id = patient_id(),
         font_size = input[["font_size"]],
         ggplot2_args = ggplot2_args
@@ -518,7 +538,7 @@ srv_g_vitals <- function(id,
         merged$anl_q(),
         substitute(
           expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()

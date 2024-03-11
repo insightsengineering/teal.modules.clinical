@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_barchart_simple.R
 \name{tm_g_barchart_simple}
 \alias{tm_g_barchart_simple}
-\title{Simple bar chart plot that shows counts per category.}
+\title{teal Module: Simple Bar Chart and Table of Counts per Category}
 \usage{
 tm_g_barchart_simple(
   x = NULL,
@@ -21,65 +21,62 @@ tm_g_barchart_simple(
 \arguments{
 \item{x}{(\code{data_extract_spec})\cr variable on the x-axis.}
 
-\item{fill}{(\code{data_extract_spec})\cr grouping variable assigned to the bar colors.}
+\item{fill}{(\code{data_extract_spec})\cr grouping variable to determine bar colors.}
 
-\item{x_facet}{(\code{data_extract_spec})\cr faceting groups on the row dimension.}
+\item{x_facet}{(\code{data_extract_spec})\cr row-wise faceting groups.}
 
-\item{y_facet}{(\code{data_extract_spec})\cr faceting groups on the col dimension.}
+\item{y_facet}{(\code{data_extract_spec})\cr column-wise faceting groups.}
 
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
 \item{plot_options}{(\code{list})\cr list of plot options.}
 
-\item{plot_height}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the height of
-the main plot and renders a slider on the plot to interactively adjust the plot
-height.}
+\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{plot_width}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the width of
-the main plot and renders a slider on the plot to interactively adjust the plot
-width.}
+\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
-For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+}
+\value{
+a \code{teal_module} object.
 }
 \description{
-Categories can be defined up to four levels deep and are defined through
-\code{x}, \code{fill}, \code{x_facet} and \code{y_facet}. If any of them is \code{NULL},
-it is ignored.
+This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type bar chart and summary table of counts per category.
+}
+\details{
+Categories can be defined up to four levels deep and are defined through the \code{x}, \code{fill},
+\code{x_facet}, and \code{y_facet} parameters. Any parameters set to \code{NULL} (default) are ignored.
 }
 \examples{
 library(nestcolor)
+library(dplyr)
 
 ADSL <- tmc_ex_adsl \%>\%
-  dplyr::mutate(ITTFL = factor("Y") \%>\%
-    formatters::with_label("Intent-To-Treat Population Flag"))
+  mutate(ITTFL = factor("Y") \%>\%
+    with_label("Intent-To-Treat Population Flag"))
 ADAE <- tmc_ex_adae \%>\%
-  dplyr::filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+  filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 
 app <- init(
   data = cdisc_data(
     ADSL = ADSL,
     ADAE = ADAE,
     code = "ADSL <- tmc_ex_adsl \%>\%
-              dplyr::mutate(ITTFL = factor(\"Y\") \%>\%
-              formatters::with_label(\"Intent-To-Treat Population Flag\"))
+              mutate(ITTFL = factor(\"Y\") \%>\%
+              with_label(\"Intent-To-Treat Population Flag\"))
             ADAE <- tmc_ex_adae \%>\%
-              dplyr::filter(!((AETOXGR == 1) & (AESEV == \"MILD\") & (ARM == \"A: Drug X\")))"
+              filter(!((AETOXGR == 1) & (AESEV == \"MILD\") & (ARM == \"A: Drug X\")))"
   ),
   modules = modules(
     tm_g_barchart_simple(
@@ -176,4 +173,9 @@ app <- init(
 if (interactive()) {
   shinyApp(app$ui, app$server)
 }
+
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

@@ -1,29 +1,26 @@
 #' Template: Logistic Regression
 #'
-#' Creates an expression for logistic regressions.
+#' Creates a valid expression to generate a logistic regression table.
 #'
 #' @inheritParams template_arguments
-#' @param arm_var (`character`)\cr
-#'   variable names that can be used as `arm_var`. No arm or treatment variable is included in the logistic model is
-#'   being `NULL`.
-#' @param topleft (`character`)\cr
-#'  the top-left annotation in the table.
-#' @param at optional, (`NULL` or `numeric`)\cr
-#'  values for the interaction variable. Otherwise the median is used.
-#' @param interaction_var (`character`)\cr
-#'  names of the variables that can be used for interaction variable selection.
-#' @param responder_val (`character`)\cr
-#'  values of the responder variable corresponding with a successful response.
-#' @param paramcd (`character`)\cr response parameter value to use in the table title.
-#' @param label_paramcd (`character`)\cr Label of response parameter value to use in the table title.
+#' @inheritParams tern::tidy.glm
+#' @param arm_var (`character`)\cr variable names that can be used as `arm_var`. To fit a logistic model with no
+#'   arm/treatment variable, set to `NULL`.
+#' @param topleft (`character`)\cr text to use as top-left annotation in the table.
+#' @param interaction_var (`character`)\cr names of the variables that can be used for interaction variable selection.
+#' @param responder_val (`character`)\cr values of the responder variable corresponding with a successful response.
+#' @param paramcd `r lifecycle::badge("deprecated")` The `paramcd` argument is not used in this function.
+#' @param label_paramcd (`character`)\cr label of response parameter value to print in the table title.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_logistic()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
-                              paramcd,
+                              paramcd = lifecycle::deprecated(),
                               label_paramcd,
                               cov_var,
                               interaction_var,
@@ -35,16 +32,17 @@ template_logistic <- function(dataname,
                               responder_val = c("CR", "PR"),
                               at = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
+  if (lifecycle::is_present(paramcd)) {
+    lifecycle::deprecate_warn("0.8.16", "template_logistic(paramcd)")
+  }
+
   # Common assertion no matter if arm_var is NULL or not.
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(label_paramcd) || is.null(label_paramcd),
-    assertthat::is.string(topleft) || is.null(topleft),
-    is.character(cov_var) || is.null(cov_var),
-    assertthat::is.string(interaction_var) || is.null(interaction_var)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(label_paramcd, null.ok = TRUE)
+  checkmate::assert_string(topleft, null.ok = TRUE)
+  checkmate::assert_character(cov_var, null.ok = TRUE)
+  checkmate::assert_string(interaction_var, null.ok = TRUE)
 
   y <- list()
 
@@ -53,15 +51,13 @@ template_logistic <- function(dataname,
 
   # Conditional assertion depends on if arm_var isn't NULL.
   if (!is.null(arm_var)) {
-    assertthat::assert_that(
-      assertthat::is.string(arm_var),
-      assertthat::is.flag(combine_comp_arms)
-    )
+    checkmate::assert_string(arm_var)
+    checkmate::assert_flag(combine_comp_arms)
 
     ref_arm_val <- paste(ref_arm, collapse = "/")
 
     y$arm_lab <- substitute(
-      expr = arm_var_lab <- formatters::var_labels(anl[arm_var], fill = FALSE),
+      expr = arm_var_lab <- teal.data::col_labels(anl[arm_var], fill = FALSE),
       env = list(anl = as.name(dataname), arm_var = arm_var)
     )
 
@@ -91,7 +87,7 @@ template_logistic <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute(
-        expr = ANL <- data_pipe, # nolint
+        expr = ANL <- data_pipe,
         env = list(data_pipe = pipe_expr(data_pipe))
       )
     )
@@ -100,7 +96,7 @@ template_logistic <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = ANL <- df %>% # nolint
+      expr = ANL <- df %>%
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
         df_explicit_na(na_level = "_NA_"),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
@@ -111,7 +107,7 @@ template_logistic <- function(dataname,
 
   if (!is.null(arm_var)) {
     y$relabel <- substitute(
-      expr = formatters::var_labels(ANL[arm_var]) <- arm_var_lab, # nolint
+      expr = teal.data::col_labels(ANL[arm_var]) <- arm_var_lab,
       env = list(arm_var = arm_var)
     )
   }
@@ -181,8 +177,6 @@ template_logistic <- function(dataname,
     paste("Summary of Logistic Regression Analysis for", label_paramcd, "for", responder_val, "Responders")
   }
 
-
-
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
@@ -211,26 +205,29 @@ template_logistic <- function(dataname,
   y
 }
 
-
-#' Teal Module: Logistic Regression
+#' teal Module: Logistic Regression
 #'
-#' @description This module produces a multi-variable logistic regression table that matches `LGRT02`.
+#' This module produces a multi-variable logistic regression table consistent with the TLG Catalog template
+#' `LGRT02` available [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/lgrt02.html).
 #'
 #' @inheritParams module_arguments
-#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()]) or `NULL`\cr
-#'   object with all available choices
-#'   and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table. If there are two elements selected for `arm_var`,
-#'   second variable will be nested under the first variable.
-#'   arm_var is optional, when being NULL, no arm or treatment variable is included in the logistic model.
-#' @param avalc_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#'  object with all available choices and preselected option for the analysis variable (categorical).
+#' @inheritParams template_logistic
+#' @param arm_var ([teal.transform::choices_selected()] or `NULL`)\cr object
+#'   with all available choices and preselected option for variable names that can be used as `arm_var`. This defines
+#'   the grouping variable(s) in the results table. If there are two elements selected for `arm_var`, the second
+#'   variable will be nested under the first variable. If `NULL`, no arm/treatment variable is included in the
+#'   logistic model.
+#' @param avalc_var ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the analysis variable (categorical).
 #'
-#' @export
+#' @inherit module_arguments return seealso
+#'
 #' @examples
+#' library(dplyr)
+#'
 #' ADSL <- tmc_ex_adsl
 #' ADRS <- tmc_ex_adrs %>%
-#'   dplyr::filter(PARAMCD %in% c("BESRSPI", "INVET"))
+#'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -250,7 +247,7 @@ template_logistic <- function(dataname,
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADRS <- tmc_ex_adrs %>%
-#'         dplyr::filter(PARAMCD %in% c(\"BESRSPI\", \"INVET\"))
+#'         filter(PARAMCD %in% c(\"BESRSPI\", \"INVET\"))
 #'     "
 #'   ),
 #'   modules = modules(
@@ -274,9 +271,10 @@ template_logistic <- function(dataname,
 #'   )
 #' )
 #' if (interactive()) {
-#'   shinyApp(ui = app$ui, server = app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_t_logistic <- function(label,
                           dataname,
                           parentname = ifelse(
@@ -300,12 +298,12 @@ tm_t_logistic <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_multi_class(arm_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
+  checkmate::assert_class(arm_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(cov_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(avalc_var, "choices_selected")
+  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
-  checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"))
-  checkmate::assert_multi_class(cov_var, c("choices_selected", "data_extract_spec"))
-  checkmate::assert_multi_class(avalc_var, c("choices_selected", "data_extract_spec"))
-  checkmate::assert_class(conf_level, classes = "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -338,9 +336,7 @@ tm_t_logistic <- function(label,
   )
 }
 
-#' User Interface for `tm_t_logistic`
-#' @noRd
-#'
+#' @keywords internal
 ui_t_logistic <- function(id, ...) {
   a <- list(...)
   if (!is.null(a$arm_var)) {
@@ -357,7 +353,6 @@ ui_t_logistic <- function(id, ...) {
       a$cov_var
     )
   }
-
 
   ns <- shiny::NS(id)
   teal.widgets::standard_layout(
@@ -436,9 +431,7 @@ ui_t_logistic <- function(id, ...) {
   )
 }
 
-#' Server Function for `tm_t_logistic`
-#' @noRd
-#'
+#' @keywords internal
 srv_t_logistic <- function(id,
                            data,
                            reporter,
@@ -665,7 +658,7 @@ srv_t_logistic <- function(id,
     all_q <- shiny::reactive({
       validate_checks()
 
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
 
       label_paramcd <- get_paramcd_label(ANL, paramcd)
 
@@ -683,7 +676,6 @@ srv_t_logistic <- function(id,
         dataname = "ANL",
         arm_var = names(merged$anl_input_r()$columns_source$arm_var),
         aval_var = names(merged$anl_input_r()$columns_source$avalc_var),
-        paramcd = paramcd,
         label_paramcd = label_paramcd,
         cov_var = if (length(cov_var) > 0) cov_var else NULL,
         interaction_var = if (interaction_flag) interaction_var else NULL,

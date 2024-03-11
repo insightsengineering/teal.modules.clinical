@@ -7,11 +7,11 @@
 get_var_labels(datasets, dataname, vars)
 }
 \arguments{
-\item{datasets}{(\code{teal::FilteredData}) Data built up by teal}
+\item{datasets}{(\code{teal::FilteredData})\cr Data built up by teal}
 
-\item{dataname}{(\code{character}) name of the dataset}
+\item{dataname}{(\code{character})\cr name of the dataset}
 
-\item{vars}{(\code{character}) Column names in the data}
+\item{vars}{(\code{character})\cr Column names in the data}
 }
 \value{
 \code{character} variable labels.

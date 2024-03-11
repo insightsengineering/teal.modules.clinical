@@ -24,6 +24,14 @@ color_lab_values(
 
 \item{icons}{(\code{list})\cr certain icons per level.}
 }
+\value{
+a character vector where each element is a formatted HTML tag corresponding to
+a value in \code{x}.
+}
 \description{
 Map value and level characters to values with with proper html tags, colors and icons.
+}
+\examples{
+color_lab_values(c("LOW", "LOW", "HIGH", "NORMAL", "HIGH"))
+
 }

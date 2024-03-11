@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_smq.R
 \name{template_smq}
 \alias{template_smq}
-\title{Adverse Events Table by Standardized \code{MedDRA} Query}
+\title{Template: Adverse Events Table by Standardized MedDRA Query}
 \usage{
 template_smq(
   dataname,
@@ -13,7 +13,7 @@ template_smq(
   total_label = default_total_label(),
   sort_criteria = c("freq_desc", "alpha"),
   drop_arm_levels = TRUE,
-  na_level = "<Missing>",
+  na_level = default_na_str(),
   smq_varlabel = "Standardized MedDRA Query",
   baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
   id_var = "USUBJID",
@@ -21,50 +21,49 @@ template_smq(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{llt}{(\code{character})\cr
-name of the variable with low level term for events.}
+\item{llt}{(\code{character})\cr name of the variable with low level term for events.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
+
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
 \item{sort_criteria}{(\code{character})\cr how to sort the final table. Default option \code{freq_desc} sorts
-by decreasing total number of patients with event. Alternative option \code{alpha} sorts events
+on column \code{sort_freq_col} by decreasing number of patients with event. Alternative option \code{alpha} sorts events
 alphabetically.}
 
-\item{drop_arm_levels}{(\code{logical})\cr drop the unused \code{arm_var} levels.
-When \code{TRUE}, \code{arm_var} levels are set to those used in the \code{dataname} dataset. When \code{FALSE},
-\code{arm_var} levels are set to those used in the \code{parantname} dataset.}
+\item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
+set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
+\code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
+user input for this parameter is ignored.}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
-in character or factor variables in the data.}
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{smq_varlabel}{(\code{character})\cr label of the new column \code{SMQ}
-created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
+\item{smq_varlabel}{(\code{character})\cr label to use for new column \code{SMQ} created by \code{\link[tern:h_stack_by_baskets]{tern::h_stack_by_baskets()}}.}
 
-\item{baskets}{(\code{character})\cr
-variable names of the selected Standardized/Customized queries}
+\item{baskets}{(\code{character})\cr names of the selected standardized/customized queries variables.}
 
-\item{id_var}{(\code{character})\cr
-the variable name for subject id.}
+\item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
-
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Adverse Events Table by Standardized \code{MedDRA} Query
+Creates a valid expression to generate an adverse events table by Standardized MedDRA Query.
 }
 \seealso{
 \code{\link[=tm_t_smq]{tm_t_smq()}}

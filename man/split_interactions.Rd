@@ -15,6 +15,15 @@ usually in the form \code{x:y} or \code{x*y}.}
 regex with which to split the interaction
 term by.}
 }
+\value{
+a vector of strings where each element is a component
+variable extracted from interaction term \code{x}.
+}
 \description{
 Split interaction terms into their component variables
+}
+\examples{
+split_interactions("x:y")
+split_interactions("x*y")
+
 }

@@ -11,11 +11,15 @@ call_concatenate(args, bin_op = "+")
 
 \item{bin_op}{binary operator to concatenate it with}
 }
+\value{
+a \code{call}
+}
 \description{
 e.g. combine with \code{+} for \code{ggplot} without introducing parentheses due to associativity
 }
 \examples{
-\dontrun{
+library(ggplot2)
+
 # What we want to achieve
 call("+", quote(f), quote(g))
 call("+", quote(f), call("+", quote(g), quote(h))) # parentheses not wanted
@@ -27,13 +31,13 @@ call_concatenate(list(quote(f), quote(g), quote(h)))
 call_concatenate(list(quote(f)))
 call_concatenate(list())
 call_concatenate(
-  list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+  list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))
 )
 
 eval(
   call_concatenate(
-    list(quote(ggplot2::ggplot(mtcars)), quote(ggplot2::geom_point(ggplot2::aes(wt, mpg))))
+    list(quote(ggplot(mtcars)), quote(geom_point(aes(wt, mpg))))
   )
 )
-}
+
 }

@@ -20,15 +20,15 @@
           map <- h_map_for_count_abnormal(df = anl, variables = list(anl = "ANRIND", 
               split_rows = c("AVISIT", "PARAM")), abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), method = "default", 
-              na_level = "<Missing>")
+              na_str = "<Missing>")
       }
       
       $layout
       lyt <- rtables::basic_table(title = "my_title", main_footer = "Variables without observed abnormalities are excluded.") %>% 
           rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
-          rtables::split_rows_by("AVISIT", split_label = formatters::var_labels(adlb, 
+          rtables::split_rows_by("AVISIT", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["AVISIT"]], label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
-          rtables::split_rows_by("PARAM", split_label = formatters::var_labels(adlb, 
+          rtables::split_rows_by("PARAM", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["PARAM"]], label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
           count_abnormal(var = "ANRIND", abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), variables = list(id = "USUBJID", 
@@ -63,16 +63,16 @@
       {
           map <- h_map_for_count_abnormal(df = anl, variables = list(anl = "MYANRIND", 
               split_rows = c("AVISIT", "PARAMCD")), abnormal = list(Low = "LOW", 
-              Medium = "MEDIUM"), method = "default", na_level = "<Missing>")
+              Medium = "MEDIUM"), method = "default", na_str = "<Missing>")
       }
       
       $layout
       lyt <- rtables::basic_table(title = "my_title", main_footer = "Variables without observed abnormalities are excluded.") %>% 
           rtables::split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", 
               first = FALSE)) %>% rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
-          split_label = formatters::var_labels(adlb, fill = FALSE)[["AVISIT"]], 
+          split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
           label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
-          rtables::split_rows_by("PARAMCD", split_label = formatters::var_labels(adlb, 
+          rtables::split_rows_by("PARAMCD", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["PARAMCD"]], label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
           count_abnormal(var = "MYANRIND", abnormal = list(Low = "LOW", 
               Medium = "MEDIUM"), variables = list(id = "USUBJID", 
@@ -109,15 +109,15 @@
           map <- h_map_for_count_abnormal(df = anl, variables = list(anl = "ANRIND", 
               split_rows = c("AVISIT", "PARAM")), abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), method = "default", 
-              na_level = "NA")
+              na_str = "NA")
       }
       
       $layout
       lyt <- rtables::basic_table(title = "my_title", main_footer = "Variables without observed abnormalities are excluded.") %>% 
           rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
-          rtables::split_rows_by("AVISIT", split_label = formatters::var_labels(adlb, 
+          rtables::split_rows_by("AVISIT", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["AVISIT"]], label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
-          rtables::split_rows_by("PARAM", split_label = formatters::var_labels(adlb, 
+          rtables::split_rows_by("PARAM", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["PARAM"]], label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
           count_abnormal(var = "ANRIND", abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), variables = list(id = "USUBJID", 

@@ -15,26 +15,40 @@ repos:
       - id: roxygenize
         name: Regenerate package documentation
         additional_dependencies:
+          - insightsengineering/teal.slice # missing
+          - davidgohel/flextable # Error: package 'flextable' is not available
+          - davidgohel/gdtools # for flextable
+          - insightsengineering/teal
+          - insightsengineering/teal.transform
+          - tern
+          - broom
           - checkmate
-          - digest
           - dplyr
+          - DT
           - ggplot2
-          - glue
-          - grDevices
+          - ggrepel
+          - grid
           - lifecycle
           - logger
-          - magrittr
           - methods
-          - bioc::MultiAssayExperiment
-          - R6
-          - rlang
+          - rlistings
+          - rmarkdown
           - rtables
+          - scales
+          - shiny
           - shinyjs
+          - shinyvalidate
           - shinyWidgets
           - stats
-          - bioc::SummarizedExperiment
+          - insightsengineering/teal.code
+          - insightsengineering/teal.data
+          - insightsengineering/teal.logger
+          - insightsengineering/teal.reporter
+          - insightsengineering/teal.widgets
+          - insightsengineering/tern.gee
+          - insightsengineering/tern.mmrm
           - utils
-          - yaml
+          - vistime
       - id: spell-check
         name: Check spelling with `spelling`
         exclude: >
@@ -64,6 +78,7 @@ repos:
           (.*/|)DESCRIPTION|
           (.*/|)LICENSE|
           (.*/|)NAMESPACE|
+          .*-package.Rd|
           (.*/|)staged_dependencies\.y[a]?ml|
           (.*/|)WORDLIST|
           \.github/.*\.y[a]?ml|

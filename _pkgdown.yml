@@ -39,6 +39,7 @@ reference:
   - title: Helper functions
     contents:
       - add_expr
+      - as_num
       - bracket_expr
       - call_concatenate
       - clean_description
@@ -59,7 +60,6 @@ reference:
       - split_choices
       - split_col_expr
       - split_interactions
-      - styled_expr
   - title: Data
     desc: Data included in the package.
     contents:

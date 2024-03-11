@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_pp_patient_timeline.R
 \name{template_patient_timeline}
 \alias{template_patient_timeline}
-\title{Template: Patient Timeline Tab}
+\title{Template: Patient Profile Timeline Plot}
 \usage{
 template_patient_timeline(
   dataname = "ANL",
@@ -23,43 +23,46 @@ template_patient_timeline(
 )
 }
 \arguments{
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{aeterm}{(\code{character})\cr name of the reported term for the adverse event variable.}
 
-\item{aetime_start}{(\code{character})\cr name of \code{datetime} start of adverse event variable.}
+\item{aetime_start}{(\code{character})\cr name of start date/time of adverse event variable.}
 
-\item{aetime_end}{(\code{character})\cr name of \code{datetime} end of adverse event variable.}
+\item{aetime_end}{(\code{character})\cr name of end date/time of adverse event variable.}
 
-\item{dstime_start}{(\code{character})\cr name of \code{datetime} first exposure to treatment variable.}
+\item{dstime_start}{(\code{character})\cr name of date/time of first exposure to treatment variable.}
 
-\item{dstime_end}{(\code{character})\cr name of \code{datetime} last exposure to treatment variable.}
+\item{dstime_end}{(\code{character})\cr name of date/time of last exposure to treatment variable.}
 
-\item{cmdecod}{(\code{character})\cr name of reported standardized name of drug, med, or therapy variable.}
+\item{cmdecod}{(\code{character})\cr name of standardized medication name variable.}
 
-\item{aerelday_start}{(\code{character})\cr name of start study day variable.}
+\item{aerelday_start}{(\code{character})\cr name of adverse event study start day variable.}
 
-\item{aerelday_end}{(\code{character})\cr name of end study day variable.}
+\item{aerelday_end}{(\code{character})\cr name of adverse event study end day variable.}
 
-\item{dsrelday_start}{(\code{character})\cr name of start study day variable.}
+\item{dsrelday_start}{(\code{character})\cr name of concomitant medications study start day variable.}
 
-\item{dsrelday_end}{(\code{character})\cr name of end study day variable.}
+\item{dsrelday_end}{(\code{character})\cr name of concomitant medications study day start variable.}
 
-\item{relative_day}{(\code{logical})\cr whether to use relative days or absolute dates}
+\item{relative_day}{(\code{logical})\cr whether to use relative days (\code{TRUE}) or absolute dates (\code{FALSE}).}
 
 \item{patient_id}{(\code{character})\cr patient ID.}
 
-\item{font_size}{(\code{numeric})\cr numeric vector of length 3 for current, min and max font size values.}
+\item{font_size}{(\code{numeric})\cr font size value.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Creates a patient timeline template call.
+Creates a valid expression to generate a patient profile timeline \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plot using ADaM datasets.
+}
+\seealso{
+\code{\link[=tm_g_pp_patient_timeline]{tm_g_pp_patient_timeline()}}
 }
 \keyword{internal}

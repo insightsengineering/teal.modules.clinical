@@ -10,6 +10,9 @@ bracket_expr(exprs)
 \item{exprs}{(\code{list} of \code{call})\cr expressions to concatenate into
 a single \emph{bracketed} expression.}
 }
+\value{
+a \verb{\{} object. See \code{\link[base:Paren]{base::Paren()}} for details.
+}
 \description{
 Groups several expressions in a single \emph{bracketed} expression.
 }
@@ -21,7 +24,7 @@ expr1 <- substitute(
   expr = anl <- subset(df, PARAMCD == param),
   env = list(df = as.name("adrs"), param = "INVET")
 )
-expr2 <- substitute(expr = anl$rsp_lab <- tern::d_onco_rsp_label(anl$AVALC))
+expr2 <- substitute(expr = anl$rsp_lab <- d_onco_rsp_label(anl$AVALC))
 expr3 <- substitute(
   expr = {
     anl$is_rsp <- anl$rsp_lab \%in\%
@@ -32,4 +35,5 @@ expr3 <- substitute(
 res <- bracket_expr(list(expr1, expr2, expr3))
 eval(res)
 table(anl$rsp_lab, anl$is_rsp)
+
 }

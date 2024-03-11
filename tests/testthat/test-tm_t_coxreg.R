@@ -9,7 +9,7 @@ testthat::test_that("template_coxreg generates correct univariate cox regression
     comp_arm = c("ARM B", "ARM C"),
     paramcd = "OS",
     at = list(AGE = c(35, 45)),
-    strata = "STRATA1",
+    strata_var = "STRATA1",
     combine_comp_arms = FALSE,
     control = control_coxreg(
       pval_method = "wald",
@@ -32,7 +32,7 @@ testthat::test_that("template_coxreg generates correct univariate cox regression
     comp_arm = c("ARM B", "ARM C"),
     paramcd = "OS",
     at = list(AGE = c(35, 45)),
-    strata = "STRATA1",
+    strata_var = "STRATA1",
     combine_comp_arms = FALSE,
     control = control_coxreg(
       pval_method = "wald",

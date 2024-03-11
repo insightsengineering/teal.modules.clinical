@@ -3,7 +3,7 @@
 #' Generic to parse text into numeric vectors. This was initially designed
 #' for a robust interpretation of text input in teal modules.
 #'
-#' @param str `vector` to extract numeric from.
+#' @param str (`vector`)\cr to extract numeric from.
 #' @details The function is intended to extract any numeric from a character
 #'   string, factor levels, boolean and return a vector of numeric.
 #'
@@ -20,22 +20,21 @@
 #'   numeric   = c(1, -5e+2, NA),
 #'   logical   = c(TRUE, FALSE, NA)
 #' )
-#' lapply(dta, teal.modules.clinical:::as_num)
-#' @keywords internal
-as_num <- function(str) { # nolint # nousage
+#' lapply(dta, as_num)
+#' @export
+as_num <- function(str) {
   UseMethod("as_num")
 }
 
 #' @export
 #' @rdname as_num
-as_num.default <- function(str) { # nolint # nousage
+as_num.default <- function(str) {
   stop("No default implementation for `as_num.default`.")
 }
 
 #' @export
 #' @rdname as_num
-as_num.character <- function(str) { # nolint # nousage
-
+as_num.character <- function(str) {
   y <- regmatches(
     x = str,
     m = gregexpr(
@@ -53,13 +52,13 @@ as_num.character <- function(str) { # nolint # nousage
 
 #' @export
 #' @rdname as_num
-as_num.numeric <- function(str) { # nolint # nousage
+as_num.numeric <- function(str) {
   return(str)
 }
 
 #' @export
 #' @rdname as_num
-as_num.factor <- function(str) { # nolint # nousage
+as_num.factor <- function(str) {
   y <- as.character(str)
   y <- as_num(y)
   return(y)
@@ -67,7 +66,7 @@ as_num.factor <- function(str) { # nolint # nousage
 
 #' @export
 #' @rdname as_num
-as_num.logical <- function(str) { # nolint # nousage
+as_num.logical <- function(str) {
   y <- as.numeric(str)
   return(y)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_t_binary_outcome.R
 \name{tm_t_binary_outcome}
 \alias{tm_t_binary_outcome}
-\title{Teal Module: Binary Outcome Table}
+\title{teal Module: Binary Outcome Table}
 \usage{
 tm_t_binary_outcome(
   label,
@@ -23,113 +23,99 @@ tm_t_binary_outcome(
   rsp_table = FALSE,
   add_total = FALSE,
   total_label = default_total_label(),
+  na_level = default_na_str(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args()
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr
-If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-names of the variables for stratified analysis.}
+\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
+the variables for stratified analysis.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis
-variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{conf_level}{(\code{choices_selected})\cr
-object with all available choices and preselected option for the confidence
-level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
-\item{default_responses}{(\code{list} or \code{character}) \cr defines
+\item{default_responses}{(\code{list} or \code{character})\cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.
 A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named
 and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
 may contain default response values or named arrays \code{rsp} of default selected response
 values and \code{levels} of default level choices.}
 
-\item{rsp_table}{(\code{logical})\cr should the initial set-up of the module match \code{RSPT01}. (default FALSE)}
+\item{rsp_table}{(\code{logical})\cr whether the initial set-up of the module should match \code{RSPT01}. Defaults to \code{FALSE}.}
 
-\item{add_total}{(\code{logical})\cr
-whether to include column with total number of patients.}
+\item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
-enabled (see \code{add_total}).}
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
+in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
+default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
+
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
-
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 }
 \value{
-an \code{\link[teal:module]{teal::module()}} object
+a \code{teal_module} object.
 }
 \description{
-This module produces a binary outcome response summary
-table, with the option to match the STREAM template \code{RSPT01}.
+This module produces a binary outcome response summary table, with the option to match the template for
+response table \code{RSPT01} available in the TLG Catalog \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html}{here}.
 }
 \details{
-Additional standard UI inputs include \code{responders},
-\code{ref_arm}, \code{comp_arm} and \code{combine_comp_arms} (default FALSE)
-
-Default values of the inputs \code{var_arm}, \code{ref_arm} and
-\code{comp_arm} are set to NULL, and updated accordingly based on selection
-of \code{paramcd} and \code{var_arm}
-
-This display order of response categories in partitioned statistics section
-inherits the factor level order of the source data. Use
-\code{\link[base:factor]{base::factor()}} and its \code{levels} argument to manipulate
-the source data in order to include/exclude or re-categorize response
-categories and arrange the display order. If response categories are
-"Missing" or "Not Evaluable (NE)" or "Missing or unevaluable", 95\\%
-confidence interval will not be calculated.
-
-Reference arms automatically combined if multiple arms selected as
-reference group.
+\itemize{
+\item The display order of response categories inherits the factor level order of the source data. Use
+\code{\link[base:factor]{base::factor()}} and its \code{levels} argument to manipulate the source data in order to include/exclude
+or re-categorize response categories and arrange the display order. If response categories are \code{"Missing"},
+\code{"Not Evaluable (NE)"}, or \code{"Missing or unevaluable"}, 95\% confidence interval will not be calculated.
+\item Reference arms are automatically combined if multiple arms selected as reference group.
+}
 }
 \examples{
+library(dplyr)
+
 ADSL <- tmc_ex_adsl
 ADRS <- tmc_ex_adrs \%>\%
-  dplyr::mutate(
-    AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
-      formatters::with_label("Character Result/Finding")
+  mutate(
+    AVALC = d_onco_rsp_label(AVALC) \%>\%
+      with_label("Character Result/Finding")
   ) \%>\%
-  dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
 arm_ref_comp <- list(
   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
@@ -142,11 +128,11 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADRS <- tmc_ex_adrs \%>\%
-        dplyr::mutate(
-          AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
-            formatters::with_label(\"Character Result/Finding\")
+        mutate(
+          AVALC = d_onco_rsp_label(AVALC) \%>\%
+            with_label(\"Character Result/Finding\")
         ) \%>\%
-        dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
+        filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
     "
   ),
   modules = modules(
@@ -164,7 +150,7 @@ app <- init(
       arm_ref_comp = arm_ref_comp,
       strata_var = choices_selected(
         choices = variable_choices(ADRS, c("SEX", "BMRKR2", "RACE")),
-        select = "RACE"
+        selected = "RACE"
       ),
       default_responses = list(
         BESRSPI = list(
@@ -193,4 +179,8 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

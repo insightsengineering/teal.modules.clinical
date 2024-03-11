@@ -13,7 +13,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -26,7 +26,7 @@
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC1"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
@@ -63,7 +63,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "ATC2", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -76,10 +76,10 @@
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC1"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           rtables::split_rows_by("ATC2", child_labels = "visible", 
               nested = TRUE, indent_mod = 0L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC2"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC2"])) %>% 
           summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
@@ -117,7 +117,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "ATC2", "ATC3", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -130,13 +130,13 @@
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC1"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           rtables::split_rows_by("ATC2", child_labels = "visible", 
               nested = TRUE, indent_mod = 0L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC2"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC2"])) %>% 
           rtables::split_rows_by("ATC3", child_labels = "visible", 
               nested = TRUE, indent_mod = 0L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC3"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC3"])) %>% 
           summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
@@ -174,7 +174,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "ATC2", "ATC3", "ATC4", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -187,16 +187,16 @@
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC1"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           rtables::split_rows_by("ATC2", child_labels = "visible", 
               nested = TRUE, indent_mod = 0L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC2"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC2"])) %>% 
           rtables::split_rows_by("ATC3", child_labels = "visible", 
               nested = TRUE, indent_mod = 0L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC3"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC3"])) %>% 
           rtables::split_rows_by("ATC4", child_labels = "visible", 
               nested = TRUE, indent_mod = 0L, split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC4"])) %>% 
+              label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC4"])) %>% 
           summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
@@ -235,7 +235,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               "CMDECOD"))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -281,7 +281,7 @@
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
@@ -293,7 +293,7 @@
           count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
               nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adcm["ATC1"])) %>% 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 

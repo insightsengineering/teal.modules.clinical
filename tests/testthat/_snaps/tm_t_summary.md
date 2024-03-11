@@ -11,17 +11,17 @@
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
-          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
+          rtables::add_colcounts() %>% analyze_vars(vars = c("RACE", 
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
-          na_level = "<Missing>", denom = "N_col", .stats = c("n", 
-              "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
-              "range", "geom_mean", "count_fraction"))
+          na_str = "<Missing>", denom = "N_col", .stats = c("n", "mean_sd", 
+              "mean_ci", "median", "median_ci", "quantiles", "range", 
+              "geom_mean", "count_fraction"))
       
       $table
       {
@@ -42,17 +42,17 @@
           adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
           arm_levels <- levels(adsl[["ARMCD"]])
           anl <- anl %>% dplyr::mutate(ARMCD = factor(ARMCD, levels = arm_levels))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
           rtables::split_cols_by("ARMCD") %>% rtables::add_overall_col("All Patients") %>% 
-          rtables::add_colcounts() %>% summarize_vars(vars = "RACE", 
+          rtables::add_colcounts() %>% analyze_vars(vars = "RACE", 
           var_labels = c(RACE = "Race"), show_labels = "visible", na.rm = TRUE, 
-          na_level = "<Missing>", denom = "N_col", .stats = c("n", 
-              "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
-              "range", "geom_mean", "count"))
+          na_str = "<Missing>", denom = "N_col", .stats = c("n", "mean_sd", 
+              "mean_ci", "median", "median_ci", "quantiles", "range", 
+              "geom_mean", "count"))
       
       $table
       {
@@ -78,18 +78,18 @@
           arm_levels <- levels(anl[["STRATA1"]])
           adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
           rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>% 
-          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
+          rtables::add_colcounts() %>% analyze_vars(vars = c("RACE", 
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
-          na_level = "<Missing>", denom = "N_col", .stats = c("n", 
-              "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
-              "range", "geom_mean", "count_fraction"))
+          na_str = "<Missing>", denom = "N_col", .stats = c("n", "mean_sd", 
+              "mean_ci", "median", "median_ci", "quantiles", "range", 
+              "geom_mean", "count_fraction"))
       
       $table
       {
@@ -115,7 +115,7 @@
           arm_levels <- levels(anl[["STRATA1"]])
           adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -123,8 +123,8 @@
           rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
           rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% rtables::add_colcounts() %>% 
-          summarize_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
-              na.rm = FALSE, na_level = "<Missing>", denom = "N_col", 
+          analyze_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
+              na.rm = FALSE, na_str = "<Missing>", denom = "N_col", 
               .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", 
                   "quantiles", "range", "geom_mean", "count_fraction"))
       
@@ -152,17 +152,16 @@
           arm_levels <- levels(anl[["STRATA1"]])
           adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
       lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
           rtables::split_cols_by("STRATA1", split_fun = drop_split_levels) %>% 
-          rtables::add_colcounts() %>% summarize_vars(vars = c("RACE", 
+          rtables::add_colcounts() %>% analyze_vars(vars = c("RACE", 
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
-          na_level = "<Missing>", denom = "N_col", .stats = c("n", 
-              "count_fraction"))
+          na_str = "<Missing>", denom = "N_col", .stats = c("n", "count_fraction"))
       
       $table
       {

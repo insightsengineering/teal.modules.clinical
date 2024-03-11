@@ -10,7 +10,7 @@
           arm_levels <- levels(anl[["ACTARM"]])
           adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("AEBODSYS", "AEDECOD")))
       }
@@ -23,14 +23,15 @@
           rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
           rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
-          child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
+              nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
-          "AEDECOD", indent = 1L)
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          count_occurrences(vars = "AEDECOD", .indent_mods = c(count_fraction = 1L)) %>% 
+          append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -68,7 +69,7 @@
           arm_levels <- levels(anl[["ACTARMCD"]])
           adsl <- adsl %>% dplyr::filter(ACTARMCD %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARMCD = droplevels(ACTARMCD))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("AEBODSYS", "AEDECOD")))
       }
@@ -82,14 +83,15 @@
           split_fun = drop_split_levels) %>% rtables::add_colcounts() %>% 
           rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
-          child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
+              nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
-          "AEDECOD", indent = 1L)
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          count_occurrences(vars = "AEDECOD", .indent_mods = c(count_fraction = 1L)) %>% 
+          append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -122,7 +124,7 @@
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
           arm_levels <- levels(adsl[["ACTARM"]])
           anl <- anl %>% dplyr::mutate(ACTARM = factor(ACTARM, levels = arm_levels))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               "CMDECOD"))
       }
@@ -132,7 +134,7 @@
           rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-              nonunique = "Overall total number of treatments")) %>% 
+              nonunique = "Overall total number of treatments"), na_str = "<Missing>") %>% 
           count_occurrences(vars = "CMDECOD", .indent_mods = -1L) %>% 
           append_varlabels(adcm, "CMDECOD")
       
@@ -166,9 +168,9 @@
           arm_levels <- levels(anl[["ACTARM"]])
           adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
-          adsl <- df_explicit_na(adsl, na_level = "")
-          anl <- anl %>% dplyr::mutate(`:=`(AEBODSYS, as.character(AEBODSYS)))
-          anl <- anl %>% dplyr::mutate(`:=`(AEDECOD, as.character(AEDECOD)))
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+          anl[["AEBODSYS"]] <- as.character(anl[["AEBODSYS"]])
+          anl[["AEDECOD"]] <- as.character(anl[["AEDECOD"]])
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("AEBODSYS", "AEDECOD")))
       }
@@ -181,14 +183,15 @@
           rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
           rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
-          child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
+              nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
-          "AEDECOD", indent = 1L)
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          count_occurrences(vars = "AEDECOD", .indent_mods = c(count_fraction = 1L)) %>% 
+          append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -217,7 +220,7 @@
           arm_levels <- levels(anl[["ACTARM"]])
           adsl <- adsl %>% dplyr::filter(ACTARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARM = droplevels(ACTARM))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("AEBODSYS", "AEDECOD")))
       }
@@ -230,14 +233,15 @@
           rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
           rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
-          child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
+              nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
-          "AEDECOD", indent = 1L)
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          count_occurrences(vars = "AEDECOD", .indent_mods = c(count_fraction = 1L)) %>% 
+          append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
@@ -284,7 +288,7 @@
           arm_levels <- levels(anl[["ACTARMCD"]])
           adsl <- adsl %>% dplyr::filter(ACTARMCD %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ACTARMCD = droplevels(ACTARMCD))
-          adsl <- df_explicit_na(adsl, na_level = "")
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
           anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
               c("AEBODSYS", "AEDECOD")))
       }
@@ -298,14 +302,15 @@
           split_fun = drop_split_levels) %>% rtables::add_colcounts() %>% 
           rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% rtables::split_rows_by("AEBODSYS", 
-          child_labels = "visible", nested = FALSE, indent_mod = -1L, 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(adae["AEBODSYS"])) %>% 
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
+              nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
+              label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "USUBJID", .stats = c("unique", 
               "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
-              nonunique = "Overall total number of events")) %>% count_occurrences(vars = "AEDECOD", 
-          .indent_mods = c(count_fraction = 1L)) %>% append_varlabels(adae, 
-          "AEDECOD", indent = 1L)
+              nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
+          count_occurrences(vars = "AEDECOD", .indent_mods = c(count_fraction = 1L)) %>% 
+          append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
       result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)

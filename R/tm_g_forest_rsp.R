@@ -1,27 +1,28 @@
 #' Template: Response Forest Plot
 #'
-#' Creates a valid expression for response forest plot.
+#' Creates a valid expression to generate a response forest plot.
 #'
+#' @inheritParams tern::g_forest
 #' @inheritParams template_arguments
-#' @param obj_var_name (`character`)\cr additional text string append to output title.
+#' @param obj_var_name (`character`)\cr additional text to append to the table title.
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
-#' @param col_symbol_size (`integer`)\cr column index to be used to determine relative size for
+#' @param col_symbol_size (`integer` or `NULL`)\cr column index to be used to determine relative size for
 #'  estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 #'  to calculate the estimator. If `NULL`, the same symbol size is used for all subgroups.
-#' @param strata_var (`character`)\cr
-#'   names of the variables for stratified analysis.
+#' @param strata_var (`character`)\cr names of the variables for stratified analysis.
 #' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `caption`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).
+#'   object created by [teal.widgets::ggplot2_args()] with settings for the module plot. For this
+#'   module, this argument will only accept `ggplot2_args` object with `labs` list of following child
+#'   elements: `title`, `caption`. No other elements would be taken into account. The argument is
+#'   merged with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_g_forest_rsp()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_forest_rsp <- function(dataname = "ANL",
                                 parentname = "ADSL",
                                 arm_var,
@@ -34,15 +35,17 @@ template_forest_rsp <- function(dataname = "ANL",
                                 strata_var = NULL,
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
+                                rel_width_forest = 0.25,
+                                font_size = 15,
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(aval_var),
-    assertthat::is.string(obj_var_name),
-    is.null(subgroup_var) || is.character(subgroup_var)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(aval_var)
+  checkmate::assert_string(obj_var_name)
+  checkmate::assert_character(subgroup_var, null.ok = TRUE)
+  checkmate::assert_number(rel_width_forest, lower = 0, upper = 1)
+  checkmate::assert_number(font_size)
 
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -134,7 +137,7 @@ template_forest_rsp <- function(dataname = "ANL",
     substitute(
       expr = df <- extract_rsp_subgroups(
         variables = list(
-          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strat = strata_var
+          rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strata = strata_var
         ),
         data = anl,
         conf_level = conf_level
@@ -160,68 +163,78 @@ template_forest_rsp <- function(dataname = "ANL",
   all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
     user_plot = ggplot2_args,
     module_plot = teal.widgets::ggplot2_args(
-      labs = list(title = paste0("Forest plot of best overall response for ", obj_var_name), caption = "")
+      labs = list(
+        title = paste("Forest Plot of Best Overall Response for", obj_var_name),
+        caption = ""
+      )
     )
   )
 
-  plot_call <- substitute(
-    expr = g_forest(
-      tbl = result,
-      col_symbol_size = col_s_size
-    ),
-    env = list(col_s_size = col_symbol_size)
+  plot_list <- list()
+
+  plot_list <- add_expr(
+    plot_list,
+    substitute(
+      expr = {
+        f <- g_forest(
+          tbl = result,
+          col_symbol_size = col_s_size,
+          font_size = font_size,
+          as_list = TRUE
+        )
+      },
+      env = list(
+        col_s_size = col_symbol_size,
+        font_size = font_size
+      )
+    )
   )
 
-  plot_call <- substitute(
-    decorate_grob(p, titles = title, footnotes = caption, gp_footnotes = grid::gpar(fontsize = 12)),
-    env = list(title = all_ggplot2_args$labs$title, caption = all_ggplot2_args$labs$caption, p = plot_call)
-  )
-
-  plot_call <- substitute(
-    expr = {
-      p <- plot_call
-      grid::grid.newpage()
-      grid::grid.draw(p)
-    },
-    env = list(plot_call = plot_call)
+  plot_list <- add_expr(
+    plot_list,
+    substitute(
+      expr = {
+        p <- cowplot::plot_grid(
+          f[["table"]] + ggplot2::labs(title = ggplot2_args_title),
+          f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
+          align = "h",
+          axis = "tblr",
+          rel_widths = c(1 - rel_width_forest, rel_width_forest)
+        )
+      },
+      env = list(
+        rel_width_forest = rel_width_forest,
+        ggplot2_args_title = all_ggplot2_args$labs$title,
+        ggplot2_args_caption = all_ggplot2_args$labs$caption
+      )
+    )
   )
 
   # Plot output.
-  y$plot <- plot_call
+  y$plot <- plot_list
 
   y
 }
 
-#' Teal Module: Forest Response Plot teal module
+#' teal Module: Forest Response Plot
 #'
-#' This teal module produces a grid style Forest plot for response data with `ADaM` structure.
+#' This module produces a grid-style forest plot for response data with ADaM structure.
 #'
+#' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
-#' @inheritParams tm_t_binary_outcome
-#' @param fixed_symbol_size (`logical`)\cr
-#' When (`TRUE`), the same symbol size is used for plotting each estimate.
-#' Otherwise, the symbol size will be proportional to the sample size in each each subgroup.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr
-#' object created by [teal.widgets::ggplot2_args()] with settings for the module plot.
-#' For this module, this argument will only accept `ggplot2_args` object with `labs` list of following child elements:
-#' `title`, `caption`.
-#' No other elements would be taken into account. The argument is merged with option `teal.ggplot2_args` and
-#' with default module arguments (hard coded in the module body).
+#' @inheritParams template_forest_rsp
 #'
-#' For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
-#'
-#' @export
-#'
-#' @template author_song24
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
 #'
 #' ADSL <- tmc_ex_adsl
 #' ADRS <- tmc_ex_adrs %>%
-#'   dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) %>%
-#'     formatters::with_label("Character Result/Finding")) %>%
-#'   dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#'   mutate(AVALC = d_onco_rsp_label(AVALC) %>%
+#'     with_label("Character Result/Finding")) %>%
+#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -241,9 +254,9 @@ template_forest_rsp <- function(dataname = "ANL",
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADRS <- tmc_ex_adrs %>%
-#'         dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) %>%
-#'           formatters::with_label(\"Character Result/Finding\")) %>%
-#'         dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
+#'         mutate(AVALC = d_onco_rsp_label(AVALC) %>%
+#'         with_label(\"Character Result/Finding\")) %>%
+#'         filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
 #'     "
 #'   ),
 #'   modules = modules(
@@ -295,6 +308,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_forest_rsp <- function(label,
                             dataname,
                             parentname = ifelse(
@@ -314,8 +328,10 @@ tm_g_forest_rsp <- function(label,
                             fixed_symbol_size = TRUE,
                             conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
-                            plot_height = c(700L, 200L, 2000L),
-                            plot_width = c(1200L, 800L, 3000L),
+                            plot_height = c(500L, 200L, 2000L),
+                            plot_width = c(1500L, 800L, 3000L),
+                            rel_width_forest = c(25L, 0L, 100L),
+                            font_size = c(15L, 1L, 30L),
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
@@ -324,11 +340,13 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_flag(fixed_symbol_size)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(subgroup_var, "choices_selected")
+  checkmate::assert_class(strata_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
-  assertthat::assert_that(
-    inherits(default_responses, c("list", "character", "numeric", "NULL")),
-    msg = "`default_responses` must be a named list or an array."
-  )
+  checkmate::assert_multi_class(default_responses, c("list", "character", "numeric"), null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
@@ -372,7 +390,7 @@ tm_g_forest_rsp <- function(label,
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_g_forest_rsp <- function(id, ...) {
   a <- list(...) # module args
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
@@ -442,7 +460,19 @@ ui_g_forest_rsp <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          shiny::checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE)
+          shiny::checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
+          teal.widgets::optionalSliderInputValMinMax(
+            ns("rel_width_forest"),
+            "Relative Width of Forest Plot (%)",
+            a$rel_width_forest,
+            ticks = FALSE, step = 1
+          ),
+          teal.widgets::optionalSliderInputValMinMax(
+            ns("font_size"),
+            "Table Font Size",
+            a$font_size,
+            ticks = FALSE, step = 1
+          )
         )
       )
     ),
@@ -455,6 +485,7 @@ ui_g_forest_rsp <- function(id, ...) {
   )
 }
 
+#' @keywords internal
 srv_g_forest_rsp <- function(id,
                              data,
                              reporter,
@@ -692,6 +723,8 @@ srv_g_forest_rsp <- function(id,
         strata_var = if (length(strata_var) != 0) strata_var else NULL,
         conf_level = as.numeric(input$conf_level),
         col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
+        rel_width_forest = input$rel_width_forest / 100,
+        font_size = input$font_size,
         ggplot2_args = ggplot2_args
       )
 

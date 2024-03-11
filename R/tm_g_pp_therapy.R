@@ -1,22 +1,21 @@
-#' Template: Therapy
+#' Template: Patient Profile Therapy Table and Plot
 #'
-#' Creates a therapy template call.
+#' Creates a valid expression to generate a patient profile therapy table and [ggplot2::ggplot()] plot using ADaM
+#' datasets.
 #'
 #' @inheritParams template_arguments
-#' @param atirel (`character`)\cr name of time relation of medication variable.
-#' @param cmdecod (`character`)\cr name of standardized medication name variable.
-#' @param cmindc (`character`)\cr name of indication variable.
 #' @param cmdose (`character`)\cr name of dose per administration variable.
 #' @param cmtrt (`character`)\cr name of reported name of drug, med, or therapy variable.
 #' @param cmdosu (`character`)\cr name of dose units variable.
 #' @param cmroute (`character`)\cr name of route of administration variable.
 #' @param cmdosfrq (`character`)\cr name of dosing frequency per interval variable.
-#' @param cmstdy (`character`)\cr name of study day of start of medication variable.
 #' @param cmendy (`character`)\cr name of study day of end of medication variable.
-#' @param patient_id (`character`)\cr patient ID.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
-#' @keywords internal
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_g_pp_therapy()]
+#'
+#' @keywords internal
 template_therapy <- function(dataname = "ANL",
                              atirel = "ATIREL",
                              cmdecod = "CMDECOD",
@@ -31,21 +30,19 @@ template_therapy <- function(dataname = "ANL",
                              patient_id,
                              font_size = 12L,
                              ggplot2_args = teal.widgets::ggplot2_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(atirel),
-    assertthat::is.string(cmdecod),
-    assertthat::is.string(cmindc),
-    assertthat::is.string(cmdose),
-    assertthat::is.string(cmtrt),
-    assertthat::is.string(cmdosu),
-    assertthat::is.string(cmroute),
-    assertthat::is.string(cmdosfrq),
-    assertthat::is.string(cmstdy),
-    assertthat::is.string(cmendy),
-    assertthat::is.string(patient_id),
-    is.numeric(font_size)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(atirel)
+  checkmate::assert_string(cmdecod)
+  checkmate::assert_string(cmindc)
+  checkmate::assert_string(cmdose)
+  checkmate::assert_string(cmtrt)
+  checkmate::assert_string(cmdosu)
+  checkmate::assert_string(cmroute)
+  checkmate::assert_string(cmdosfrq)
+  checkmate::assert_string(cmstdy)
+  checkmate::assert_string(cmendy)
+  checkmate::assert_string(patient_id)
+  checkmate::assert_number(font_size)
 
   y <- list()
   y$table_list <- list()
@@ -230,41 +227,33 @@ template_therapy <- function(dataname = "ANL",
   y
 }
 
-#' Teal Module: Patient Profile Therapy Teal Module
+#' teal Module: Patient Profile Therapy Table and Plot
 #'
-#' This teal module produces a patient profile therapy plot using `ADaM` datasets.
+#' This module produces a patient profile therapy table and [ggplot2::ggplot()] type plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param atirel ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ATIREL} column of the `ADCM` dataset.
-#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDECOD} column of the `ADCM` dataset.
-#' @param cmdose ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDOSE} column of the `ADCM` dataset.
-#' @param cmtrt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMTRT} column of the `ADCM` dataset.
-#' @param cmdosu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDOSU} column of the `ADCM` dataset.
-#' @param cmroute ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMROUTE} column of the `ADCM` dataset.
-#' @param cmdosfrq ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMDOSFRQ} column of the `ADCM` dataset.
-#' @param cmstdy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMSTDY} column of the `ADCM` dataset.
-#' @param cmendy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMENDY} column of the `ADCM` dataset.
-#' @param cmindc ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMINDC} column of the `ADCM` dataset.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @inheritParams template_therapy
+#' @param cmdose ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `CMDOSE` variable from `dataname`.
+#' @param cmtrt ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `CMTRT` variable from `dataname`.
+#' @param cmdosu ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `CMDOSU` variable from `dataname`.
+#' @param cmroute ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `CMROUTE` variable from `dataname`.
+#' @param cmdosfrq ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `CMDOSFRQ` variable from `dataname`.
+#' @param cmendy ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `CMENDY` variable from `dataname`.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
 #'
 #' ADCM <- tmc_ex_adcm
-#' ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#' ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #' ADCM$CMASTDTM <- ADCM$ASTDTM
 #' ADCM$CMAENDTM <- ADCM$AENDTM
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
@@ -278,7 +267,7 @@ template_therapy <- function(dataname = "ANL",
 #'     ADCM = ADCM,
 #'     code = "
 #'       ADCM <- tmc_ex_adcm
-#'       ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADCM$USUBJID)
+#'       ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
 #'       ADCM$CMASTDTM <- ADCM$ASTDTM
 #'       ADCM$CMAENDTM <- ADCM$AENDTM
 #'     ",
@@ -338,6 +327,7 @@ template_therapy <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_pp_therapy <- function(label,
                             dataname = "ADCM",
                             parentname = "ADSL",
@@ -359,6 +349,16 @@ tm_g_pp_therapy <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
   logger::log_info("Initializing tm_g_pp_therapy")
+  checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmindc, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdose, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmtrt, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdosu, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmroute, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdosfrq, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmstdy, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmendy, "choices_selected", null.ok = TRUE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -411,6 +411,7 @@ tm_g_pp_therapy <- function(label,
   )
 }
 
+#' @keywords internal
 ui_g_therapy <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -530,7 +531,7 @@ ui_g_therapy <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_g_therapy <- function(id,
                           data,
                           reporter,
@@ -658,7 +659,7 @@ srv_g_therapy <- function(id,
         substitute(
           expr = {
             pt_id <- patient_id
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()

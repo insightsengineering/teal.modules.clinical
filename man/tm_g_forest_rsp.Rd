@@ -2,7 +2,7 @@
 % Please edit documentation in R/tm_g_forest_rsp.R
 \name{tm_g_forest_rsp}
 \alias{tm_g_forest_rsp}
-\title{Teal Module: Forest Response Plot teal module}
+\title{teal Module: Forest Response Plot}
 \usage{
 tm_g_forest_rsp(
   label,
@@ -21,104 +21,99 @@ tm_g_forest_rsp(
     TRUE),
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)"),
-  plot_height = c(700L, 200L, 2000L),
-  plot_width = c(1200L, 800L, 3000L),
+  plot_height = c(500L, 200L, 2000L),
+  plot_width = c(1500L, 800L, 3000L),
+  rel_width_forest = c(25L, 0L, 100L),
+  font_size = c(15L, 1L, 30L),
   pre_output = NULL,
   post_output = NULL,
   ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
 \arguments{
-\item{label}{(\code{character})\cr
-menu item label of the module in the teal app.}
+\item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices
-and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr
-If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{choices_selected} or \code{data_extract_spec})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{aval_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for the analysis
-variable.}
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the analysis variable.}
 
-\item{subgroup_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-object with all available choices and preselected option for variable names that can be used
-as the default subgroups.}
+\item{subgroup_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and preselected option for variable names that can be used as the default subgroups.}
 
-\item{strata_var}{(\code{choices_selected} or \code{data_extract_spec})\cr
-names of the variables for stratified analysis.}
+\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
+the variables for stratified analysis.}
 
-\item{fixed_symbol_size}{(\code{logical})\cr
-When (\code{TRUE}), the same symbol size is used for plotting each estimate.
+\item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
 
-\item{conf_level}{(\code{choices_selected})\cr
-object with all available choices and preselected option for the confidence
-level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
-\item{default_responses}{(\code{list} or \code{character}) \cr defines
+\item{default_responses}{(\code{list} or \code{character})\cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.
 A passed vector is transmitted for all \code{paramcd} values. A passed \code{list} must be named
 and contain arrays, each name corresponding to a single value of \code{paramcd}. Each array
 may contain default response values or named arrays \code{rsp} of default selected response
 values and \code{levels} of default level choices.}
 
-\item{plot_height}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the height of
-the main plot and renders a slider on the plot to interactively adjust the plot
-height.}
+\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{plot_width}{optional, (\code{numeric})\cr
-a vector of length three with \code{c(value, min, max)}. Specifies the width of
-the main plot and renders a slider on the plot to interactively adjust the plot
-width.}
+\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr
-with text placed before the output to put the output into context.
+\item{rel_width_forest}{(\code{proportion})\cr proportion of total width to allocate to the forest plot. Relative
+width of table is then \code{1 - rel_width_forest}. If \code{as_list = TRUE}, this parameter is ignored.}
+
+\item{font_size}{(\code{numeric})\cr font size.}
+
+\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr
-with text placed after the output to put the output into context. For example
-the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child elements:
-\code{title}, \code{caption}.
-No other elements would be taken into account. The argument is merged with option \code{teal.ggplot2_args} and
-with default module arguments (hard coded in the module body).
+object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot. For this
+module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child
+elements: \code{title}, \code{caption}. No other elements would be taken into account. The argument is
+merged with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{teal_module} object.
+}
 \description{
-This teal module produces a grid style Forest plot for response data with \code{ADaM} structure.
+This module produces a grid-style forest plot for response data with ADaM structure.
 }
 \examples{
 library(nestcolor)
+library(dplyr)
 
 ADSL <- tmc_ex_adsl
 ADRS <- tmc_ex_adrs \%>\%
-  dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
-    formatters::with_label("Character Result/Finding")) \%>\%
-  dplyr::filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+  mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
+    with_label("Character Result/Finding")) \%>\%
+  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 
 arm_ref_comp <- list(
   ARM = list(
@@ -138,9 +133,9 @@ app <- init(
     code = "
       ADSL <- tmc_ex_adsl
       ADRS <- tmc_ex_adrs \%>\%
-        dplyr::mutate(AVALC = tern::d_onco_rsp_label(AVALC) \%>\%
-          formatters::with_label(\"Character Result/Finding\")) \%>\%
-        dplyr::filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
+        mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
+        with_label(\"Character Result/Finding\")) \%>\%
+        filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
     "
   ),
   modules = modules(
@@ -193,6 +188,7 @@ if (interactive()) {
 }
 
 }
-\author{
-Yuyao Song (songy24) \email{yuyao.song@roche.com}
+\seealso{
+The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
+apps implementing this module can be found.
 }

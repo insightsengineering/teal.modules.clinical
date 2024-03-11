@@ -16,8 +16,8 @@
           split_fun = drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
           rtables::split_rows_by("ARM", split_fun = drop_split_levels, 
               label_pos = "topleft", split_label = obj_label(adeg$ARM)) %>% 
-          add_rowcounts() %>% summarize_vars("BNRIND", denom = "N_row", 
-          na_level = "<Missing>", na.rm = FALSE, .stats = "count_fraction") %>% 
+          add_rowcounts() %>% analyze_vars("BNRIND", denom = "N_row", 
+          na_str = "<Missing>", na.rm = FALSE, .stats = "count_fraction") %>% 
           append_varlabels(adeg, "BNRIND", indent = 1L)
       
       $table
@@ -45,8 +45,8 @@
           split_fun = drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
           rtables::split_rows_by("ARM", split_fun = add_overall_level("All Patients", 
               first = FALSE), label_pos = "topleft", split_label = obj_label(adeg$ARM)) %>% 
-          add_rowcounts() %>% summarize_vars("BNRIND", denom = "N_row", 
-          na_level = "<Missing>", na.rm = FALSE, .stats = "count_fraction") %>% 
+          add_rowcounts() %>% analyze_vars("BNRIND", denom = "N_row", 
+          na_str = "<Missing>", na.rm = FALSE, .stats = "count_fraction") %>% 
           append_varlabels(adeg, "BNRIND", indent = 1L)
       
       $table
@@ -74,8 +74,8 @@
           split_fun = drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
           rtables::split_rows_by("ARM", split_fun = drop_split_levels, 
               label_pos = "topleft", split_label = obj_label(adeg$ARM)) %>% 
-          add_rowcounts() %>% summarize_vars("BNRIND", denom = "N_row", 
-          na_level = "<Missing>", na.rm = TRUE, .stats = "count_fraction") %>% 
+          add_rowcounts() %>% analyze_vars("BNRIND", denom = "N_row", 
+          na_str = "<Missing>", na.rm = TRUE, .stats = "count_fraction") %>% 
           append_varlabels(adeg, "BNRIND", indent = 1L)
       
       $table

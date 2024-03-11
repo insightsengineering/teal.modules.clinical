@@ -1,13 +1,16 @@
-#' Template: Events by Term
+#' Template: Multiple Events by Term
+#'
+#' Creates a valid expression to generate a table of multiple events by term.
 #'
 #' @inheritParams template_arguments
-#' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment).
-#'   Default is "event".
-#' @param seq_var (`numeric`) \cr Analysis Sequence Number. Used for counting the unique number of events.
+#' @param seq_var (`character`)\cr name of analysis sequence number variable. Used for counting the unique number
+#'   of events.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_mult_events()]
-#' @keywords internal
 #'
+#' @keywords internal
 template_mult_events <- function(dataname,
                                  parentname,
                                  arm_var,
@@ -16,22 +19,21 @@ template_mult_events <- function(dataname,
                                  llt,
                                  add_total = TRUE,
                                  total_label = default_total_label(),
+                                 na_level = default_na_str(),
                                  event_type = "event",
                                  drop_arm_levels = TRUE,
                                  basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(seq_var),
-    !is.null(llt),
-    is.null(hlt) || is.character(hlt),
-    assertthat::is.string(llt),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.string(event_type),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(seq_var)
+  checkmate::assert_character(hlt, null.ok = TRUE)
+  checkmate::assert_string(llt, null.ok = FALSE)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
+  checkmate::assert_string(event_type)
+  checkmate::assert_flag(drop_arm_levels)
 
   y <- list()
 
@@ -87,8 +89,8 @@ template_mult_events <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = ""),
-      env = list(parentname = as.name(parentname))
+      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
@@ -163,7 +165,7 @@ template_mult_events <- function(dataname,
 
       lbl_lst <- add_expr(
         lbl_lst,
-        substitute( # nolint
+        substitute(
           expr = attr(dataname$hlt_new, which = "label"),
           env = list(
             dataname = as.name(dataname),
@@ -186,7 +188,7 @@ template_mult_events <- function(dataname,
               indent_mod = indent_mod,
               split_fun = split_fun,
               label_pos = "topleft",
-              split_label = formatters::var_labels(dataname[hlt_new])
+              split_label = teal.data::col_labels(dataname[hlt_new])
             ),
           env = list(
             hlt = hlt_new,
@@ -269,15 +271,17 @@ template_mult_events <- function(dataname,
   y
 }
 
-#' Teal Module: Multiple Events by Term
+#' teal Module: Multiple Events by Term
+#'
+#' This module produces a table of multiple events by term.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_mult_events
+#' @param seq_var ([teal.transform::choices_selected()])\cr object with
+#'   all available choices and preselected option for variable names that can be used as analysis sequence number
+#'   variable. Used for counting the unique number of events.
 #'
-#' @param seq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' Analysis Sequence Number. Used for counting the unique number of events.
-#'
-#' @export
+#' @inherit module_arguments return seealso
 #'
 #' @examples
 #' ADSL <- tmc_ex_adsl
@@ -287,7 +291,7 @@ template_mult_events <- function(dataname,
 #' join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
 #' join_keys["ADCM", "ADCM"] <- adcm_keys
 #'
-#' app <- teal::init(
+#' app <- init(
 #'   data = cdisc_data(
 #'     ADSL = ADSL,
 #'     ADCM = ADCM,
@@ -319,7 +323,9 @@ template_mult_events <- function(dataname,
 #' if (interactive()) {
 #'   shinyApp(app$ui, app$server)
 #' }
-tm_t_mult_events <- function(label, # nolint
+#'
+#' @export
+tm_t_mult_events <- function(label,
                              dataname,
                              parentname = ifelse(
                                inherits(arm_var, "data_extract_spec"),
@@ -332,6 +338,7 @@ tm_t_mult_events <- function(label, # nolint
                              llt,
                              add_total = TRUE,
                              total_label = default_total_label(),
+                             na_level = default_na_str(),
                              event_type = "event",
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
@@ -341,9 +348,14 @@ tm_t_mult_events <- function(label, # nolint
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(seq_var, "choices_selected")
+  checkmate::assert_class(hlt, "choices_selected")
+  checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
+  checkmate::assert_string(na_level)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -371,6 +383,7 @@ tm_t_mult_events <- function(label, # nolint
         event_type = event_type,
         label = label,
         total_label = total_label,
+        na_level = na_level,
         basic_table_args = basic_table_args
       )
     ),
@@ -378,7 +391,7 @@ tm_t_mult_events <- function(label, # nolint
   )
 }
 
-#' @noRd
+#' @keywords internal
 ui_t_mult_events_byterm <- function(id, ...) {
   ns <- shiny::NS(id)
   a <- list(...)
@@ -444,7 +457,7 @@ ui_t_mult_events_byterm <- function(id, ...) {
   )
 }
 
-#' @noRd
+#' @keywords internal
 srv_t_mult_events_byterm <- function(id,
                                      data,
                                      reporter,
@@ -459,6 +472,7 @@ srv_t_mult_events_byterm <- function(id,
                                      drop_arm_levels,
                                      label,
                                      total_label,
+                                     na_level,
                                      basic_table_args) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
@@ -568,6 +582,7 @@ srv_t_mult_events_byterm <- function(id,
         llt = input_llt,
         add_total = input$add_total,
         total_label = total_label,
+        na_level = na_level,
         event_type = event_type,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args

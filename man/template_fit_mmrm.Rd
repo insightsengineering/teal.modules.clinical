@@ -4,7 +4,7 @@
 \alias{template_fit_mmrm}
 \alias{template_mmrm_tables}
 \alias{template_mmrm_plots}
-\title{Template: Mixed Model Repeated Measurements (\code{MMRM}) analysis}
+\title{Template: Mixed Model Repeated Measurements (MMRM) Analysis}
 \usage{
 template_fit_mmrm(
   parentname,
@@ -47,86 +47,81 @@ template_mmrm_plots(
 )
 }
 \arguments{
-\item{parentname}{(\code{character})\cr
-parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+\item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{dataname}{(\code{character})\cr
-analysis data used in teal module.}
+\item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{aval_var}{(\code{character})\cr
-name of the analysis variable.}
+\item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 
-\item{arm_var}{(\code{character})\cr
-variable names that can be used as \code{arm_var}.}
+\item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
-\item{ref_arm}{(\code{character})\cr
-the level of reference arm in case of arm comparison.}
+\item{ref_arm}{(\code{character})\cr the level of reference arm in case of arm comparison.}
 
-\item{comp_arm}{(\code{character})\cr
-the level of comparison arm in case of arm comparison.}
+\item{comp_arm}{(\code{character})\cr the level of comparison arm in case of arm comparison.}
 
-\item{combine_comp_arms}{(\code{logical})\cr
-triggers the combination of comparison arms.}
+\item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
-\item{id_var}{(\code{character})\cr
-the variable name for subject id.}
+\item{id_var}{(\code{character})\cr the variable name for subject id.}
 
-\item{visit_var}{(\code{character})\cr
-variable names that can be used as \code{visit} variable. Must be a factor in \code{dataname}.}
+\item{visit_var}{(\code{character})\cr variable names that can be used as \code{visit} variable. Must be a factor in
+\code{dataname}.}
 
-\item{cov_var}{(\code{character})\cr
-names of the covariates variables.}
+\item{cov_var}{(\code{character})\cr names of the covariates variables.}
 
-\item{conf_level}{(\code{numeric})\cr
-value for the confidence level within the range of (0, 1).}
+\item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
-\item{method}{a string specifying the adjustment method.}
+\item{method}{(\code{string})\cr a string specifying the adjustment method.}
 
-\item{cor_struct}{a string specifying the correlation structure, defaults to
-\code{"unstructured"}. See the details.}
+\item{cor_struct}{(\code{string})\cr a string specifying the correlation structure, defaults to
+\code{"unstructured"}. See \code{\link[tern.mmrm:build_formula]{tern.mmrm::build_formula()}} for more options.}
 
 \item{weights_emmeans}{argument from \code{\link[emmeans:emmeans]{emmeans::emmeans()}}, "proportional" by default.}
 
-\item{parallel}{flag that controls whether optimizer search can use available free cores on the
+\item{parallel}{(\code{flag})\cr flag that controls whether optimizer search can use available free cores on the
 machine (not default).}
 
-\item{fit_name}{name of fitted \code{MMRM} object}
+\item{fit_name}{(\code{string})\cr name of fitted MMRM object.}
 
-\item{paramcd}{(\code{character})\cr
-variable value designating the studied parameter.}
+\item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
-\item{show_relative}{should the "reduction" (\code{control - treatment}, default) or the "increase"
-(\code{treatment - control}) be shown for the relative change from baseline}
+\item{show_relative}{(\code{string})\cr should the "reduction" (\code{control - treatment}, default) or the "increase"
+(\code{treatment - control}) be shown for the relative change from baseline.}
 
-\item{table_type}{(\code{character})\cr
-type of table to output.}
+\item{table_type}{(\code{string})\cr type of table to output.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr
-object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}} with settings for the module table.
-The argument is merged with option \code{teal.basic_table_args} and with default module arguments
-(hard coded in the module body).
+\item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
+enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
+apply in all modules, run \code{set_default_total_label("new_default")}.}
 
+\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
+module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
-\item{lsmeans_plot}{a \code{list} of controls for LS means plot. See more \code{\link[tern.mmrm:g_mmrm_lsmeans]{tern.mmrm::g_mmrm_lsmeans()}}}
+\item{lsmeans_plot}{(named \code{list})\cr a \code{list} of controls for LS means plot.
+See more \code{\link[tern.mmrm:g_mmrm_lsmeans]{tern.mmrm::g_mmrm_lsmeans()}}.}
 
-\item{diagnostic_plot}{a \code{list} of controls for diagnostic_plot. See more \code{\link[tern.mmrm:g_mmrm_diagnostic]{tern.mmrm::g_mmrm_diagnostic()}}}
+\item{diagnostic_plot}{(named \code{list})\cr a \code{list} of controls for diagnostic_plot.
+See more \code{\link[tern.mmrm:g_mmrm_diagnostic]{tern.mmrm::g_mmrm_diagnostic()}}.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
-object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot.
-The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
+\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
-
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 }
+\value{
+a \code{list} of expressions to generate a table or plot object.
+}
 \description{
-Template: Mixed Model Repeated Measurements (\code{MMRM}) analysis
+Creates a valid expression to generate analysis tables and plots for Mixed Model Repeated Measurements.
 }
 \section{Functions}{
 \itemize{
-\item \code{template_mmrm_tables()}: 
+\item \code{template_mmrm_tables()}: Creates valid expressions to generate MMRM LS means, covariance matrix,
+fixed effects, and diagnostic tables.
 
-\item \code{template_mmrm_plots()}: 
+\item \code{template_mmrm_plots()}: Creates valid expressions to generate MMRM LS means and
+diagnostic plots.
 
 }}
 \seealso{

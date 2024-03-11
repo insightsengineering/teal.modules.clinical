@@ -1,16 +1,21 @@
 #' Template: Laboratory test results with highest grade post-baseline
+#'
+#' Creates a valid expression to generate a table to summarize abnormality by grade.
+#'
 #' @inheritParams template_arguments
-#' @param atoxgr_var (`character`)\cr the variable name indicating
+#' @param atoxgr_var (`character`)\cr name of the variable indicating
 #' Analysis Toxicity Grade.
-#' @param worst_high_flag_var (`character`)\cr the variable name indicating
+#' @param worst_high_flag_var (`character`)\cr name of the variable indicating
 #' Worst High Grade flag
-#' @param worst_low_flag_var (`character`)\cr the variable name indicating
+#' @param worst_low_flag_var (`character`)\cr name of the variable indicating
 #' Worst Low Grade flag
-#' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
+#' @param worst_flag_indicator (`character`)\cr flag value indicating the worst grade.
+#'
+#' @inherit template_arguments return
 #'
 #' @seealso [tm_t_abnormality_by_worst_grade()]
 #' @keywords internal
-template_abnormality_by_worst_grade <- function(parentname, # nolint
+template_abnormality_by_worst_grade <- function(parentname, # nolint: object_length.
                                                 dataname,
                                                 arm_var,
                                                 id_var = "USUBJID",
@@ -23,20 +28,18 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
                                                 total_label = default_total_label(),
                                                 drop_arm_levels = TRUE,
                                                 basic_table_args = teal.widgets::basic_table_args()) {
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(parentname),
-    assertthat::is.string(arm_var),
-    assertthat::is.string(id_var),
-    assertthat::is.string(paramcd),
-    assertthat::is.string(atoxgr_var),
-    assertthat::is.string(worst_high_flag_var),
-    assertthat::is.string(worst_low_flag_var),
-    assertthat::is.string(worst_flag_indicator),
-    assertthat::is.flag(add_total),
-    assertthat::is.string(total_label),
-    assertthat::is.flag(drop_arm_levels)
-  )
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(arm_var)
+  checkmate::assert_string(id_var)
+  checkmate::assert_string(paramcd)
+  checkmate::assert_string(atoxgr_var)
+  checkmate::assert_string(worst_high_flag_var)
+  checkmate::assert_string(worst_low_flag_var)
+  checkmate::assert_string(worst_flag_indicator)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_string(total_label)
+  checkmate::assert_flag(drop_arm_levels)
 
   y <- list()
 
@@ -45,7 +48,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl_labels <- formatters::var_labels(df, fill = FALSE),
+      expr = anl_labels <- teal.data::col_labels(df, fill = FALSE),
       env = list(
         df = as.name(dataname)
       )
@@ -92,7 +95,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   data_list <- add_expr(
     data_list,
     quote(
-      expr = formatters::var_labels(anl) <- c(
+      expr = teal.data::col_labels(anl) <- c(
         anl_labels,
         GRADE_DIR = "   Direction of Abnormality",
         GRADE_ANL = "Highest Grade"
@@ -226,28 +229,33 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   y
 }
 
-#' Teal Module: Laboratory test results with highest grade post-baseline
+#' teal Module: Laboratory test results with highest grade post-baseline
 #'
+#' This module produces a table to summarize laboratory test results with highest grade post-baseline
+
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param atoxgr_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param atoxgr_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option
 #' for variable names that can be used as Analysis Toxicity Grade.
-#' @param worst_high_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_high_flag_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option for variable names that can be used as Worst High
 #' Grade flag.
-#' @param worst_low_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_low_flag_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option for variable names that can be used as Worst Low Grade flag.
-#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_flag_indicator ([teal.transform::choices_selected()])\cr
 #' value indicating worst grade.
-#' @seealso [template_abnormality_by_worst_grade()]
+#'
+#' @inherit module_arguments return seealso
 #'
 #' @export
 #'
 #' @examples
+#' library(dplyr)
+#'
 #' ADSL <- tmc_ex_adsl
 #' ADLB <- tmc_ex_adlb %>%
-#'   dplyr::filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+#'   filter(!AVISIT %in% c("SCREENING", "BASELINE"))
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -256,7 +264,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'     code = "
 #'       ADSL <- tmc_ex_adsl
 #'       ADLB <- tmc_ex_adlb %>%
-#'         dplyr::filter(!AVISIT %in% c(\"SCREENING\", \"BASELINE\"))
+#'         filter(!AVISIT %in% c(\"SCREENING\", \"BASELINE\"))
 #'     "
 #'   ),
 #'   modules = modules(
@@ -283,7 +291,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
-tm_t_abnormality_by_worst_grade <- function(label, # nolint
+tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             dataname,
                                             parentname = ifelse(
                                               inherits(arm_var, "data_extract_spec"),
@@ -374,8 +382,8 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
   )
 }
 
-#' @noRd
-ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
+#' @keywords internal
+ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
 
   ns <- shiny::NS(id)
   a <- list(...) # module args
@@ -471,8 +479,8 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
   )
 }
 
-#' @noRd
-srv_t_abnormality_by_worst_grade <- function(id, # nolint
+#' @keywords internal
+srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                              data,
                                              reporter,
                                              filter_panel_api,

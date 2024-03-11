@@ -1,23 +1,24 @@
-#' Template: Patient Timeline Tab
+#' Template: Patient Profile Timeline Plot
 #'
-#' Creates a patient timeline template call.
+#' Creates a valid expression to generate a patient profile timeline [ggplot2::ggplot()] plot using ADaM datasets.
 #'
+#' @inheritParams template_adverse_events
 #' @inheritParams template_arguments
-#' @param aeterm (`character`)\cr name of the reported term for the adverse event variable.
-#' @param aetime_start (`character`)\cr name of `datetime` start of adverse event variable.
-#' @param aetime_end (`character`)\cr name of `datetime` end of adverse event variable.
-#' @param dstime_start (`character`)\cr name of `datetime` first exposure to treatment variable.
-#' @param dstime_end (`character`)\cr name of `datetime` last exposure to treatment variable.
-#' @param cmdecod (`character`)\cr name of reported standardized name of drug, med, or therapy variable.
-#' @param aerelday_start (`character`)\cr name of start study day variable.
-#' @param aerelday_end (`character`)\cr name of end study day variable.
-#' @param dsrelday_start (`character`)\cr name of start study day variable.
-#' @param dsrelday_end (`character`)\cr name of end study day variable.
-#' @param relative_day (`logical`)\cr whether to use relative days or absolute dates
-#' @param patient_id (`character`)\cr patient ID.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
-#' @keywords internal
+#' @param aetime_start (`character`)\cr name of start date/time of adverse event variable.
+#' @param aetime_end (`character`)\cr name of end date/time of adverse event variable.
+#' @param dstime_start (`character`)\cr name of date/time of first exposure to treatment variable.
+#' @param dstime_end (`character`)\cr name of date/time of last exposure to treatment variable.
+#' @param aerelday_start (`character`)\cr name of adverse event study start day variable.
+#' @param aerelday_end (`character`)\cr name of adverse event study end day variable.
+#' @param dsrelday_start (`character`)\cr name of concomitant medications study start day variable.
+#' @param dsrelday_end (`character`)\cr name of concomitant medications study day start variable.
+#' @param relative_day (`logical`)\cr whether to use relative days (`TRUE`) or absolute dates (`FALSE`).
 #'
+#' @inherit template_arguments return
+#'
+#' @seealso [tm_g_pp_patient_timeline()]
+#'
+#' @keywords internal
 template_patient_timeline <- function(dataname = "ANL",
                                       aeterm = "AETERM",
                                       aetime_start = "ASTDTM",
@@ -35,20 +36,19 @@ template_patient_timeline <- function(dataname = "ANL",
                                       ggplot2_args = teal.widgets::ggplot2_args()) {
   # Note: The variables used for aetime_start, aetime_end, dstime_start and dstime_end are to be
   # updated after random.cdisc.data updates.
-  assertthat::assert_that(
-    assertthat::is.string(dataname),
-    assertthat::is.string(aeterm) || is.null(aeterm),
-    assertthat::is.string(aetime_start) || is.null(aetime_start),
-    assertthat::is.string(aetime_end) || is.null(aetime_end),
-    assertthat::is.string(dstime_start) || is.null(dstime_start),
-    assertthat::is.string(dstime_end) || is.null(dstime_end),
-    assertthat::is.string(cmdecod) || is.null(cmdecod),
-    assertthat::is.string(aerelday_start) || is.null(aerelday_start),
-    assertthat::is.string(dsrelday_start) || is.null(dsrelday_start),
-    is.numeric(font_size),
-    is.logical(relative_day),
-    assertthat::is.string(patient_id)
-  )
+
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(aeterm, null.ok = TRUE)
+  checkmate::assert_string(aetime_start, null.ok = TRUE)
+  checkmate::assert_string(aetime_end, null.ok = TRUE)
+  checkmate::assert_string(dstime_start, null.ok = TRUE)
+  checkmate::assert_string(dstime_end, null.ok = TRUE)
+  checkmate::assert_string(cmdecod, null.ok = TRUE)
+  checkmate::assert_string(aerelday_start, null.ok = TRUE)
+  checkmate::assert_string(dsrelday_start, null.ok = TRUE)
+  checkmate::assert_number(font_size)
+  checkmate::assert_flag(relative_day)
+  checkmate::assert_string(patient_id)
 
   chart_list <- list()
   if (!relative_day) {
@@ -317,63 +317,61 @@ template_patient_timeline <- function(dataname = "ANL",
   chart_list
 }
 
-#' Teal Module: Patient Profile Timeline Teal Module
+#' teal Module: Patient Profile Timeline Plot
 #'
-#' This teal module produces a patient profile timeline plot using `ADaM` datasets.
+#' This module produces a patient profile timeline [ggplot2::ggplot()] type plot using ADaM datasets.
 #'
+#' @inheritParams tm_g_pp_adverse_events
 #' @inheritParams module_arguments
-#' @param patient_col (`character`)\cr patient ID column to be used.
-#' @param aeterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AETERM} column of the `ADAE` dataset.
+#' @inheritParams template_patient_timeline
 #' @param dataname_adcm (`character`)\cr name of `ADCM` dataset or equivalent.
 #' @param dataname_adae (`character`)\cr name of `ADAE` dataset or equivalent.
-#' @param aerelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ASTDY} column of the `ADAE` dataset.
-#' @param aerelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{AENDY}
-#' column of the `ADAE` dataset.
-#' @param dsrelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{ASTDY}
-#' column of the `ADCM` dataset.
-#' @param dsrelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr \code{AENDY}
-#' column of the `ADCM` dataset.
-#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{cmdecod} column of the `ADCM` dataset.
-#' @param aetime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{ASTDTM} column of the `AE` start of the `ADAE` dataset.
-#' @param aetime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{AENDTM} column of the `AE` end of the `ADAE` dataset.
-#' @param dstime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMASTDTM} column of treatment start of the `ADCM` dataset.
-#' @param dstime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
-#' \code{CMAENDTM} column of treatment end of the `ADCM` dataset.
-#' @param font_size (`numeric`)\cr numeric vector of length 3 for current, min and max font size values.
+#' @param aerelday_start ([teal.transform::choices_selected()])\cr object
+#'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adae`.
+#' @param aerelday_end ([teal.transform::choices_selected()])\cr object
+#'   with all available choices and preselected option for the `AENDY` variable from `dataname_adae`.
+#' @param dsrelday_start ([teal.transform::choices_selected()])\cr object
+#'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adcm`.
+#' @param dsrelday_end ([teal.transform::choices_selected()])\cr object
+#'   with all available choices and preselected option for the `AENDY` variable from `dataname_adcm`.
+#' @param cmdecod ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `CMDECOD` variable from `dataname_adcm`.
+#' @param aetime_start ([teal.transform::choices_selected()])\cr object with
+#'   all available choices and preselected option for the `ASTDTM` variable from `dataname_adae`.
+#' @param aetime_end ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `AENDTM` variable from `dataname_adae`.
+#' @param dstime_start ([teal.transform::choices_selected()])\cr object with
+#'   all available choices and preselected option for the `CMASTDTM` variable from `dataname_adcm`.
+#' @param dstime_end ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for the `CMAENDTM` variable from `dataname_adcm`.
 #'
-#' @export
+#' @inherit module_arguments return
 #'
 #' @examples
 #' library(nestcolor)
-#'
-#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADAE <- tmc_ex_adae
-#'   ADSL <- tmc_ex_adsl %>% dplyr::filter(USUBJID %in% ADAE$USUBJID)
-#'   ADCM <- tmc_ex_adcm %>% dplyr::mutate(
-#'     CMSTDY = dplyr::case_when(
+#'   ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADAE$USUBJID)
+#'   ADCM <- tmc_ex_adcm %>% mutate(
+#'     CMSTDY = case_when(
 #'       CMCAT == "medcl B" ~ 20,
 #'       CMCAT == "medcl C" ~ 150,
 #'       TRUE ~ 1
-#'     ) %>% formatters::with_label("Study Day of Start of Medication"),
-#'     CMENDY = dplyr::case_when(
+#'     ) %>% with_label("Study Day of Start of Medication"),
+#'     CMENDY = case_when(
 #'       CMCAT == "medcl B" ~ 700,
 #'       CMCAT == "medcl C" ~ 1000,
 #'       TRUE ~ 500
-#'     ) %>% formatters::with_label("Study Day of End of Medication"),
+#'     ) %>% with_label("Study Day of End of Medication"),
 #'     CMASTDTM = ASTDTM,
 #'     CMAENDTM = AENDTM
 #'   )
 #' })
 #'
+#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #' datanames(data) <- c("ADSL", "ADAE", "ADCM")
 #' join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADAE", "ADCM")]
 #' join_keys(data)["ADCM", "ADCM"] <- adcm_keys
@@ -436,6 +434,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @export
 tm_g_pp_patient_timeline <- function(label,
                                      dataname_adcm = "ADCM",
                                      dataname_adae = "ADAE",
@@ -463,6 +462,16 @@ tm_g_pp_patient_timeline <- function(label,
   checkmate::assert_string(dataname_adae)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(aeterm, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aetime_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aetime_end, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dstime_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dstime_end, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aerelday_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aerelday_end, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dsrelday_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dsrelday_end, "choices_selected", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -472,14 +481,29 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-  assertthat::assert_that(!xor(is.null(aetime_start), is.null(aetime_end)))
-  assertthat::assert_that(!xor(is.null(dstime_start), is.null(dstime_end)))
-  assertthat::assert_that(!xor(is.null(aerelday_start), is.null(aerelday_end)))
-  assertthat::assert_that(!xor(is.null(dsrelday_start), is.null(dsrelday_end)))
-  assertthat::assert_that(
-    (!is.null(aeterm) && (!is.null(aetime_start) || !is.null(aerelday_start))) ||
-      (!is.null(cmdecod) && (!is.null(dstime_start) || !is.null(dsrelday_start)))
-  )
+
+  xor_error_string <- function(x, y) {
+    paste(
+      "Assertion on `", x, "` and `", y, "` failed:",
+      "Both `", x, "` and `", y, "` needs to be provided or both need to be `NULL`."
+    )
+  }
+
+  if (xor(is.null(aetime_start), is.null(aetime_end))) stop(xor_error_string("aetime_start", "aetime_end"))
+  if (xor(is.null(dstime_start), is.null(dstime_end))) stop(xor_error_string("dstime_start", "dstime_end"))
+  if (xor(is.null(aerelday_start), is.null(aerelday_end))) stop(xor_error_string("aerelday_start", "aerelday_end"))
+  if (xor(is.null(dsrelday_start), is.null(dsrelday_end))) stop(xor_error_string("dsrelday_start", "dsrelday_end"))
+
+  if (is.null(aeterm) && is.null(cmdecod)) {
+    stop("At least one of 'aeterm' or 'cmdecod' needs to be provided.")
+  }
+  if (!is.null(aeterm) && (is.null(aetime_start) || is.null(aerelday_start))) {
+    stop("If 'aeterm' is provided, then one of 'aetime_start' and 'aerelday_start' must not be empty.")
+  }
+  if (!is.null(cmdecod) && (is.null(dstime_start) || is.null(dsrelday_start))) {
+    stop("If 'cmdecod' is provided, then one of 'dstime_start' and 'dsrelday_start' must not be empty.")
+  }
+
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
@@ -520,6 +544,7 @@ tm_g_pp_patient_timeline <- function(label,
   )
 }
 
+#' @keywords internal
 ui_g_patient_timeline <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -558,13 +583,13 @@ ui_g_patient_timeline <- function(id, ...) {
       ),
       teal.transform::data_extract_ui(
         id = ns("cmdecod"),
-        label = "Select CMDECOD variable:",
+        label = "Select Medication standardized term variable:",
         data_extract_spec = ui_args$cmdecod,
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
         id = ns("aeterm"),
-        label = "Select AETERM variable:",
+        label = "Select AE reported term variable:",
         data_extract_spec = ui_args$aeterm,
         is_single_dataset = is_single_dataset_value
       ),
@@ -660,7 +685,7 @@ ui_g_patient_timeline <- function(id, ...) {
   )
 }
 
-
+#' @keywords internal
 srv_g_patient_timeline <- function(id,
                                    data,
                                    reporter,
@@ -716,7 +741,6 @@ srv_g_patient_timeline <- function(id,
       ignoreInit = TRUE
     )
 
-
     # Patient timeline tab ----
     check_box <- shiny::reactive(input$relday_x_axis)
 
@@ -731,7 +755,7 @@ srv_g_patient_timeline <- function(id,
     rule_one_parameter <- function(other) {
       function(value) {
         if (length(value) == 0L && length(selector_list()[[other]]()$select) == 0L) {
-          "At least one parameter must be selected."
+          "At least one term variable must be selected."
         }
       }
     }
@@ -801,8 +825,10 @@ srv_g_patient_timeline <- function(id,
       shiny::validate(
         shiny::need(
           input$relday_x_axis ||
-            (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
-              sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
+            (
+              sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
+                sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0
+            ),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )
@@ -866,7 +892,7 @@ srv_g_patient_timeline <- function(id,
         anl_q(),
         substitute(
           expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
