@@ -443,6 +443,9 @@ srv_g_adverse_events <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
+
+    ns <- session$ns
+
     patient_id <- shiny::reactive(input$patient_id)
 
     # Init
@@ -451,7 +454,7 @@ srv_g_adverse_events <- function(id,
       session,
       "patient_id",
       choices = patient_data_base(),
-      selected = patient_data_base()[1]
+      selected = shiny::restoreInput(ns("patient_id"), patient_data_base()[1])
     )
 
     shiny::observeEvent(patient_data_base(),
@@ -460,11 +463,14 @@ srv_g_adverse_events <- function(id,
           session,
           "patient_id",
           choices = patient_data_base(),
-          selected = if (length(patient_data_base()) == 1) {
-            patient_data_base()
-          } else {
-            intersect(patient_id(), patient_data_base())
-          }
+          selected = shiny::restoreInput(
+            ns("patient_id"),
+            if (length(patient_data_base()) == 1) {
+              patient_data_base()
+            } else {
+              intersect(patient_id(), patient_data_base())
+            }
+          )
         )
       },
       ignoreInit = TRUE

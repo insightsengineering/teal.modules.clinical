@@ -697,6 +697,9 @@ srv_ancova <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
+
+    ns <- session$ns
+
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
     iv_arco <- arm_ref_comp_observer(
@@ -796,7 +799,7 @@ srv_ancova <- function(id,
               session,
               "interact_y",
               selected = interact_select,
-              choices = interact_choices
+              choices = shiny::restoreInputns(ns("interact_y"), interact_choices)
             )
           }
         }

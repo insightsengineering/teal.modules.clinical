@@ -390,6 +390,9 @@ srv_gee <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
+
+    ns <- session$ns
+
     ## split_covariates ----
     shiny::observeEvent(input[[extract_input("cov_var", dataname)]],
       ignoreNULL = FALSE,
@@ -408,7 +411,7 @@ srv_gee <- function(id,
         teal.widgets::updateOptionalSelectInput(
           session,
           inputId = extract_input("split_covariates", dataname),
-          selected = split_covariates_selected
+          selected = shiny::restoreInput(ns(extract_input("split_covariates", dataname)), split_covariates_selected)
         )
       }
     )

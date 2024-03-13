@@ -509,6 +509,9 @@ srv_g_forest_rsp <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
+
+    ns <- session$ns
+
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -609,7 +612,7 @@ srv_g_forest_rsp <- function(id,
         shiny::updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = intersect(responder_choices, common_rsp)
+          selected = shiny::restoreInput(ns("responders"), intersect(responder_choices, common_rsp))
         )
       }
     )

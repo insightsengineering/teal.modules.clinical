@@ -451,6 +451,9 @@ srv_t_logistic <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
+
+    ns <- session$ns
+
     # Observer to update reference and comparison arm input options.
     iv_arco <- arm_ref_comp_observer(
       session,
@@ -554,7 +557,7 @@ srv_t_logistic <- function(id,
       shiny::updateSelectInput(
         session, "responders",
         choices = responder_choices,
-        selected = responder_sel
+        selected = shiny::restoreInputns(ns("responders"), responder_sel)
       )
     })
 

@@ -846,6 +846,9 @@ srv_mmrm <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
+
+    ns <- session$ns
+
     # Reactive responsible for sending a disable/enable signal
     # to show R code and debug info buttons
     disable_r_code <- shiny::reactiveVal(FALSE)
@@ -863,7 +866,7 @@ srv_mmrm <- function(id,
       teal.widgets::updateOptionalSelectInput(
         session,
         inputId = extract_input("split_covariates", dataname),
-        selected = split_covariates_selected
+        selected = shiny::restoreInput(ns(extract_input("split_covariates", dataname)), split_covariates_selected)
       )
     })
 

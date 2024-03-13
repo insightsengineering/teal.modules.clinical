@@ -506,6 +506,9 @@ srv_t_abnormality <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
+
+    ns <- session$ns
+
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -544,7 +547,7 @@ srv_t_abnormality <- function(id,
         session = session,
         inputId = "treatment_flag",
         choices = resolved$choices,
-        selected = resolved$selected
+        selected = shiny::restoreInputns(ns("treatment_flag"), resolved$selected)
       )
     })
 

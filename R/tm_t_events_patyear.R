@@ -402,6 +402,9 @@ srv_events_patyear <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
+
+    ns <- session$ns
+
     shiny::observeEvent(anl_q(), {
       data_anl <- merged$anl_q()[["ANL"]]
       aval_unit_var <- merged$anl_input_r()$columns_source$avalu_var
@@ -413,7 +416,7 @@ srv_events_patyear <- function(id,
           session,
           "input_time_unit",
           choices = choices,
-          selected = choices[1]
+          selected = shiny::restoreInputns(ns("input_time_unit"), choices[1])
         )
       }
     })
