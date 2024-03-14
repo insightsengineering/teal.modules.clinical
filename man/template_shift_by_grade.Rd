@@ -62,7 +62,7 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 
 \item{code_missing_baseline}{(\code{logical})\cr whether missing baseline grades should be counted as grade 0.}
 
-\item{basic_table_args}{(\code{basic_table_args}) optional,\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+\item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}

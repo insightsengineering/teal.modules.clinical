@@ -52,7 +52,7 @@ also be drawn as text.}
 \item{facet_scales}{(\code{character})\cr value passed to \code{scales} argument of \code{\link[ggplot2:facet_grid]{ggplot2::facet_grid()}}. Options are
 \code{fixed}, \code{free_x}, \code{free_y}, and \code{free}.}
 
-\item{ggplot2_args}{(\code{ggplot2_args}) optional,\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+\item{ggplot2_args}{(\code{ggplot2_args}) optional\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}

@@ -73,7 +73,7 @@ or point and line (\code{pl}).}
 
 \item{y_lab}{(\code{character})\cr y-axis label. If equal to \code{NULL}, then no label will be added.}
 
-\item{ggplot2_args}{(\code{ggplot2_args}) optional,\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+\item{ggplot2_args}{(\code{ggplot2_args}) optional\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of
 following child elements: \code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}. No other elements would be taken into
 account. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments (hard coded in
