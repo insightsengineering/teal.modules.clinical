@@ -467,7 +467,7 @@ srv_shift_by_arm <- function(id,
         session = session,
         inputId = "treatment_flag",
         choices = resolved$choices,
-        selected = shiny::restoreInputns(ns("treatment_flag"), resolved$selected)
+        selected = shiny::restoreInput(ns("treatment_flag"), resolved$selected)
       )
     })
 

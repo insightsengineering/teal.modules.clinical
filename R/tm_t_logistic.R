@@ -556,7 +556,7 @@ srv_t_logistic <- function(id,
       shiny::updateSelectInput(
         session, "responders",
         choices = responder_choices,
-        selected = shiny::restoreInputns(ns("responders"), responder_sel)
+        selected = shiny::restoreInput(ns("responders"), responder_sel)
       )
     })
 

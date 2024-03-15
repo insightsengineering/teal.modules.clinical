@@ -512,7 +512,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         session = session,
         inputId = "worst_flag_indicator",
         choices = resolved$choices,
-        selected = shiny::restoreInputns(ns("worst_flag_indicator"), resolved$selected)
+        selected = shiny::restoreInput(ns("worst_flag_indicator"), resolved$selected)
       )
     })
 

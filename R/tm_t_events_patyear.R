@@ -415,7 +415,7 @@ srv_events_patyear <- function(id,
           session,
           "input_time_unit",
           choices = choices,
-          selected = shiny::restoreInputns(ns("input_time_unit"), choices[1])
+          selected = shiny::restoreInput(ns("input_time_unit"), choices[1])
         )
       }
     })

@@ -798,7 +798,7 @@ srv_ancova <- function(id,
               session,
               "interact_y",
               selected = interact_select,
-              choices = shiny::restoreInputns(ns("interact_y"), interact_choices)
+              choices = shiny::restoreInput(ns("interact_y"), interact_choices)
             )
           }
         }

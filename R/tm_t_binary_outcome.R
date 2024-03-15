@@ -806,7 +806,7 @@ srv_t_binary_outcome <- function(id,
         shiny::updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = shiny::restoreInputns(ns("responders"), intersect(responder_choices, common_rsp))
+          selected = shiny::restoreInput(ns("responders"), intersect(responder_choices, common_rsp))
         )
       }
     )
