@@ -390,7 +390,6 @@ srv_gee <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     ## split_covariates ----

@@ -402,7 +402,6 @@ srv_events_patyear <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     shiny::observeEvent(anl_q(), {

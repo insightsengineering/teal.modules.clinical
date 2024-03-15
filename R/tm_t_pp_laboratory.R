@@ -377,7 +377,6 @@ srv_g_laboratory <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     patient_id <- shiny::reactive(input$patient_id)

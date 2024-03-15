@@ -504,7 +504,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     shiny::isolate({

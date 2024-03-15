@@ -457,7 +457,6 @@ srv_shift_by_arm_by_worst <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     selector_list <- teal.transform::data_extract_multiple_srv(

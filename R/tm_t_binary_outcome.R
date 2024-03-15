@@ -712,7 +712,6 @@ srv_t_binary_outcome <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     # Setup arm variable selection, default reference arms, and default

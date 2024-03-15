@@ -846,7 +846,6 @@ srv_mmrm <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     # Reactive responsible for sending a disable/enable signal

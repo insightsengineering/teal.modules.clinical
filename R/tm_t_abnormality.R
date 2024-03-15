@@ -506,7 +506,6 @@ srv_t_abnormality <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   shiny::moduleServer(id, function(input, output, session) {
-
     ns <- session$ns
 
     selector_list <- teal.transform::data_extract_multiple_srv(
