@@ -39,7 +39,7 @@ template_summary_by(
 
 \item{by_vars}{(\code{character})\cr variable names used to split the summary by rows.}
 
-\item{var_labels}{optional, (named \code{character})\cr variable labels for relabeling the analysis variables.}
+\item{var_labels}{(named \code{character}) optional\cr variable labels for relabeling the analysis variables.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -73,7 +73,7 @@ user input for this parameter is ignored.}
 
 \item{drop_zero_levels}{(\code{logical})\cr whether rows with zero counts in all columns should be removed from the table.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+\item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}

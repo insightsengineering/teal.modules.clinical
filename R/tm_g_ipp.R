@@ -12,7 +12,7 @@
 #'   `TRUE`.
 #' @param paramcd_first (`character`)\cr `paramcd` text to append to the plot title and y-axis label.
 #' @param add_avalu (`logical`)\cr whether `avalu_first` text should be appended to the plot title and y-axis label.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
+#' @param ggplot2_args (`ggplot2_args`) optional\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. For this module, this argument will only accept `ggplot2_args` object with `labs` list of
 #'   the following child elements: `title`, `subtitle`, `x`, `y`. No other elements are taken into account. The
 #'   argument is merged with option `teal.ggplot2_args` and with default module arguments (hard coded in the module
