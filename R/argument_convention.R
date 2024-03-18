@@ -19,7 +19,7 @@
 #' @param aval_var (`character`)\cr name of the analysis value variable.
 #' @param baseline_var (`character`)\cr name of the variable for baseline values of the analysis variable.
 #' @param base_var `r lifecycle::badge("deprecated")` Please use the `baseline_var` argument instead.
-#' @param basic_table_args optional, (`basic_table_args`)\cr object created by [teal.widgets::basic_table_args()]
+#' @param basic_table_args (`basic_table_args`) optional\cr object created by [teal.widgets::basic_table_args()]
 #'   with settings for the module table. The argument is merged with option `teal.basic_table_args` and with default
 #'   module arguments (hard coded in the module body).
 #'   For more details, see the vignette: `vignette("custom-basic-table-arguments", package = "teal.widgets")`.
@@ -46,7 +46,7 @@
 #' @param event_type (`character`)\cr type of event that is summarized (e.g. adverse event, treatment). Default
 #'   is `"event"`.
 #' @param font_size (`numeric`)\cr font size value.
-#' @param ggplot2_args optional, (`ggplot2_args`)\cr object created by [teal.widgets::ggplot2_args()] with settings
+#' @param ggplot2_args (`ggplot2_args`) optional\cr object created by [teal.widgets::ggplot2_args()] with settings
 #'   for the module plot. The argument is merged with option `teal.ggplot2_args` and with default module arguments
 #'   (hard coded in the module body).
 #'   For more details, see the vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
@@ -88,7 +88,7 @@
 #'   records in `treatment_flag_var`.
 #' @param treatment_flag_var (`character`)\cr name of the on treatment flag variable.
 #' @param useNA (`character`)\cr whether missing data (`NA`) should be displayed as a level.
-#' @param var_labels optional, (named `character`)\cr variable labels for relabeling the analysis variables.
+#' @param var_labels (named `character`) optional\cr variable labels for relabeling the analysis variables.
 #' @param visit_var (`character`)\cr variable names that can be used as `visit` variable. Must be a factor in
 #'   `dataname`.
 #' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
@@ -115,7 +115,7 @@ NULL
 #'   excluded to reduce duplication as each module function inherits parameters from its corresponding template
 #'   function.
 #'
-#' @param arm_ref_comp optional, (`list`)\cr If specified it must be a named list with each element corresponding to
+#' @param arm_ref_comp (`list`) optional,\cr if specified it must be a named list with each element corresponding to
 #'   an arm variable in `ADSL` and the element must be another list (possibly
 #'   with delayed [teal.transform::variable_choices()] or delayed [teal.transform::value_choices()]
 #'   with the elements named `ref` and `comp` that the defined the default
@@ -175,13 +175,13 @@ NULL
 #'   available choices and preselected option for the parameter code variable from `dataname`.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_col (`character`)\cr name of patient ID variable.
-#' @param plot_height optional, (`numeric`)\cr a vector of length three with `c(value, min, max)`. Specifies the
+#' @param plot_height (`numeric`) optional\cr vector of length three with `c(value, min, max)`. Specifies the
 #'   height of the main plot and renders a slider on the plot to interactively adjust the plot height.
-#' @param plot_width optional, (`numeric`)\cr a vector of length three with `c(value, min, max)`. Specifies the width
+#' @param plot_width (`numeric`) optional\cr vector of length three with `c(value, min, max)`. Specifies the width
 #'   of the main plot and renders a slider on the plot to interactively adjust the plot width.
-#' @param post_output optional, (`shiny.tag`)\cr with text placed after the output to put the output into context.
+#' @param post_output (`shiny.tag`) optional,\cr with text placed after the output to put the output into context.
 #'   For example the [shiny::helpText()] elements are useful.
-#' @param pre_output optional, (`shiny.tag`)\cr with text placed before the output to put the output into context.
+#' @param pre_output (`shiny.tag`) optional,\cr with text placed before the output to put the output into context.
 #'   For example a title.
 #' @param strata_var ([teal.transform::choices_selected()])\cr names of
 #'   the variables for stratified analysis.

@@ -464,7 +464,7 @@ split_choices <- function(x) {
 #' @param dataname (`character`)\cr
 #'   `dataname` from data_extract input.
 #'   This might be retrieved like `data_extract_spec(...)[[1]]$dataname`.
-#' @param filter optional, (`logical`)\cr
+#' @param filter (`logical`) optional,\cr
 #'   if the connected `extract_data_spec` has objects passed to its `filter` argument
 #'
 #' @return a string

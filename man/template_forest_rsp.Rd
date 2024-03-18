@@ -54,7 +54,7 @@ width of table is then \code{1 - rel_width_forest}. If \code{as_list = TRUE}, th
 
 \item{font_size}{(\code{numeric})\cr font size.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr
+\item{ggplot2_args}{(\code{ggplot2_args}) optional\cr
 object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings for the module plot. For this
 module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of following child
 elements: \code{title}, \code{caption}. No other elements would be taken into account. The argument is

@@ -53,10 +53,10 @@ available choices and preselected option for the parameter code variable from \c
 available choices and preselected option for the \code{ANRIND} variable from \code{dataname}. Variable should have the
 following 3 levels: \code{"HIGH"}, \code{"LOW"}, and \code{"NORMAL"}.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+\item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+\item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 }
 \value{

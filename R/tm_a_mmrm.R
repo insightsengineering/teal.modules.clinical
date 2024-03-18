@@ -447,7 +447,7 @@ template_mmrm_plots <- function(fit_name,
 #' @inheritParams template_mmrm_plots
 #' @param method ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and pre-selected option for the adjustment method.
-#' @param ggplot2_args (`ggplot2_args`) \cr optional, object created by [`teal.widgets::ggplot2_args()`]
+#' @param ggplot2_args (`ggplot2_args`) optional\cr object created by [`teal.widgets::ggplot2_args()`]
 #'   with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
 #'   List names should match the following: `c("default", "lsmeans", "diagnostic")`. The argument is merged
 #'   with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).
