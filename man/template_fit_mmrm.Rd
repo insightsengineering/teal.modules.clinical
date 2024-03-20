@@ -93,7 +93,7 @@ machine (not default).}
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+\item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
@@ -104,7 +104,7 @@ See more \code{\link[tern.mmrm:g_mmrm_lsmeans]{tern.mmrm::g_mmrm_lsmeans()}}.}
 \item{diagnostic_plot}{(named \code{list})\cr a \code{list} of controls for diagnostic_plot.
 See more \code{\link[tern.mmrm:g_mmrm_diagnostic]{tern.mmrm::g_mmrm_diagnostic()}}.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+\item{ggplot2_args}{(\code{ggplot2_args}) optional\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}

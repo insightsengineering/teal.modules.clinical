@@ -40,7 +40,7 @@ template_summary(
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
 
-\item{var_labels}{optional, (named \code{character})\cr variable labels for relabeling the analysis variables.}
+\item{var_labels}{(named \code{character}) optional\cr variable labels for relabeling the analysis variables.}
 
 \item{na.rm}{(\code{logical})\cr whether \code{NA} values should be removed prior to analysis.}
 
@@ -61,7 +61,7 @@ set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var
 \code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
 user input for this parameter is ignored.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+\item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}

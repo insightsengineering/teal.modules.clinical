@@ -4,7 +4,7 @@
 \alias{module_arguments}
 \title{Standard Module Arguments}
 \arguments{
-\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
@@ -91,16 +91,16 @@ available choices and preselected option for the parameter code variable from \c
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+\item{plot_height}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+\item{plot_width}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the width
 of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+\item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+\item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
 
 \item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
