@@ -97,7 +97,7 @@ tm_t_pp_basic_info <- function(label,
                                vars = NULL,
                                pre_output = NULL,
                                post_output = NULL) {
-  logger::log_info("Initializing tm_t_pp_basic_info")
+  message("Initializing tm_t_pp_basic_info")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(patient_col)

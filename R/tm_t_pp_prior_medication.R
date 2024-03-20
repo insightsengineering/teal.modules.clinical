@@ -125,7 +125,7 @@ tm_t_pp_prior_medication <- function(label,
                                      cmstdy = NULL,
                                      pre_output = NULL,
                                      post_output = NULL) {
-  logger::log_info("Initializing tm_t_pp_prior_medication")
+  message("Initializing tm_t_pp_prior_medication")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

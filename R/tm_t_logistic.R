@@ -294,7 +294,7 @@ tm_t_logistic <- function(label,
                           pre_output = NULL,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_logistic")
+  message("Initializing tm_t_logistic")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

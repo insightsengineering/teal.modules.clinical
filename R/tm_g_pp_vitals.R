@@ -278,7 +278,7 @@ tm_g_pp_vitals <- function(label,
     aval <- aval_var # resolves missing argument error
   }
 
-  logger::log_info("Initializing tm_g_pp_vitals")
+  message("Initializing tm_g_pp_vitals")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

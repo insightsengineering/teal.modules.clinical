@@ -569,7 +569,7 @@ tm_t_shift_by_grade <- function(label,
                                 na_level = default_na_str(),
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_shift_by_grade")
+  message("Initializing tm_t_shift_by_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

@@ -614,7 +614,7 @@ tm_t_events_summary <- function(label,
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_events_summary")
+  message("Initializing tm_t_events_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

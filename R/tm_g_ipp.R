@@ -301,7 +301,7 @@ tm_g_ipp <- function(label,
     base_var <- baseline_var # resolves missing argument error
   }
 
-  logger::log_info("Initializing tm_g_ipp")
+  message("Initializing tm_g_ipp")
   checkmate::assert_class(arm_var, "choices_selected")
   checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
