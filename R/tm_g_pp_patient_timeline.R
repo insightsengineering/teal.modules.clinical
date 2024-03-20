@@ -724,7 +724,7 @@ srv_g_patient_timeline <- function(id,
       session,
       "patient_id",
       choices = patient_data_base(),
-      selected = shiny::restoreInput(ns("patient_id"), patient_data_base()[1])
+      selected = restoreInput(ns("patient_id"), patient_data_base()[1])
     )
 
     observeEvent(patient_data_base(),
@@ -733,7 +733,7 @@ srv_g_patient_timeline <- function(id,
           session,
           "patient_id",
           choices = patient_data_base(),
-          selected = shiny::restoreInput(
+          selected = restoreInput(
             ns("patient_id"),
             if (length(patient_data_base()) == 1) {
               patient_data_base()

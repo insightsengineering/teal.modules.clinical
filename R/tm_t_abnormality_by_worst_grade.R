@@ -501,7 +501,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -512,7 +512,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         session = session,
         inputId = "worst_flag_indicator",
         choices = resolved$choices,
-        selected = shiny::restoreInput(ns("worst_flag_indicator"), resolved$selected)
+        selected = restoreInput(ns("worst_flag_indicator"), resolved$selected)
       )
     })
 

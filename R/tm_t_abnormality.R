@@ -546,7 +546,7 @@ srv_t_abnormality <- function(id,
         session = session,
         inputId = "treatment_flag",
         choices = resolved$choices,
-        selected = shiny::restoreInput(ns("treatment_flag"), resolved$selected)
+        selected = restoreInput(ns("treatment_flag"), resolved$selected)
       )
     })
 

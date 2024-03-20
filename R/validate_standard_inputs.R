@@ -76,7 +76,7 @@ validate_standard_inputs <- function(adsl,
 #' @keywords internal
 #'
 validate_arm <- function(arm_vec) {
-  validate(shiny::need(is.factor(arm_vec), "Treatment variable is not a factor"))
+  validate(need(is.factor(arm_vec), "Treatment variable is not a factor"))
   validate(
     need(
       all(trimws(levels(arm_vec)) != ""),

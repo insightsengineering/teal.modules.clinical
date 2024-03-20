@@ -374,7 +374,7 @@ srv_g_laboratory <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -387,7 +387,7 @@ srv_g_laboratory <- function(id,
       session,
       "patient_id",
       choices = patient_data_base(),
-      selected = shiny::restoreInput(ns("patient_id"), patient_data_base()[1])
+      selected = restoreInput(ns("patient_id"), patient_data_base()[1])
     )
 
     observeEvent(patient_data_base(),
@@ -396,7 +396,7 @@ srv_g_laboratory <- function(id,
           session,
           "patient_id",
           choices = patient_data_base(),
-          selected = shiny::restoreInput(
+          selected = restoreInput(
             ns("patient_id"),
             if (length(patient_data_base()) == 1) {
               patient_data_base()
@@ -418,7 +418,7 @@ srv_g_laboratory <- function(id,
       session,
       "round_value",
       choices = seq(0, max_decimal),
-      selected = shiny::restoreInput(ns("round_value"), min(4, max_decimal))
+      selected = restoreInput(ns("round_value"), min(4, max_decimal))
     )
 
     # Laboratory values tab ----

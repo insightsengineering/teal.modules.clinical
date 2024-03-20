@@ -611,7 +611,7 @@ srv_g_forest_rsp <- function(id,
         updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = shiny::restoreInput(ns("responders"), intersect(responder_choices, common_rsp))
+          selected = restoreInput(ns("responders"), intersect(responder_choices, common_rsp))
         )
       }
     )

@@ -714,7 +714,7 @@ srv_t_coxreg <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     # Observer to update reference and comparison arm input options.
@@ -903,7 +903,7 @@ srv_t_coxreg <- function(id,
       } else {
         c(sum(arm_n[unlist(input$buckets$Ref)]), arm_n[unlist(input$buckets$Comp)])
       }
-      validate(shiny::need(
+      validate(need(
         all(anl_arm_n >= 2),
         "Each treatment group should have at least 2 records."
       ))

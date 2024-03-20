@@ -399,7 +399,7 @@ srv_events_patyear <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -415,7 +415,7 @@ srv_events_patyear <- function(id,
           session,
           "input_time_unit",
           choices = choices,
-          selected = shiny::restoreInput(ns("input_time_unit"), choices[1])
+          selected = restoreInput(ns("input_time_unit"), choices[1])
         )
       }
     })

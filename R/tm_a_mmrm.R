@@ -865,7 +865,7 @@ srv_mmrm <- function(id,
       teal.widgets::updateOptionalSelectInput(
         session,
         inputId = extract_input("split_covariates", dataname),
-        selected = shiny::restoreInput(ns(extract_input("split_covariates", dataname)), split_covariates_selected)
+        selected = restoreInput(ns(extract_input("split_covariates", dataname)), split_covariates_selected)
       )
     })
 
