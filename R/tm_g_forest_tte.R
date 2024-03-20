@@ -315,7 +315,7 @@ tm_g_forest_tte <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_forest_tte")
+  message("Initializing tm_g_forest_tte")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

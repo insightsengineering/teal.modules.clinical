@@ -233,7 +233,7 @@ tm_t_pp_laboratory <- function(label,
     avalu <- avalu_var # resolves missing argument error
   }
 
-  logger::log_info("Initializing tm_t_pp_laboratory")
+  message("Initializing tm_t_pp_laboratory")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

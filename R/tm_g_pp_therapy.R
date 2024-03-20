@@ -348,7 +348,7 @@ tm_g_pp_therapy <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_pp_therapy")
+  message("Initializing tm_g_pp_therapy")
   checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(cmindc, "choices_selected", null.ok = TRUE)
