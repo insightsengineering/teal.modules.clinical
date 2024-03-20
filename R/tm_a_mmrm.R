@@ -539,7 +539,7 @@ tm_a_mmrm <- function(label,
                       post_output = NULL,
                       basic_table_args = teal.widgets::basic_table_args(),
                       ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_a_mmrm")
+  message("Initializing tm_a_mmrm")
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)

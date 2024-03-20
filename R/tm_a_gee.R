@@ -198,7 +198,7 @@ tm_a_gee <- function(label,
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_a_gee (prototype)")
+  message("Initializing tm_a_gee (prototype)")
 
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
 

@@ -335,7 +335,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             pre_output = NULL,
                                             post_output = NULL,
                                             basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_abnormality_by_worst_grade")
+  message("Initializing tm_t_abnormality_by_worst_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

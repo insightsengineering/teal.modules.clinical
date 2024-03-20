@@ -326,7 +326,7 @@ tm_g_km <- function(label,
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL) {
-  logger::log_info("Initializing tm_g_km")
+  message("Initializing tm_g_km")
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
