@@ -370,15 +370,15 @@ ui_g_ipp <- function(id, ...) {
     a$baseline_var
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "baseline_var")]
       ),
@@ -427,22 +427,22 @@ ui_g_ipp <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
-          shiny::checkboxInput(
+          checkboxInput(
             ns("add_baseline_hline"),
             "Add reference lines at baseline value",
             value = a$add_baseline_hline
           ),
-          shiny::checkboxInput(
+          checkboxInput(
             ns("separate_by_obs"),
             "Separate plots by ID",
             value = a$separate_by_obs
           ),
-          shiny::checkboxInput(
+          checkboxInput(
             ns("suppress_legend"),
             "Suppress legend",
             value = a$suppress_legend
           ),
-          shiny::checkboxInput(
+          checkboxInput(
             ns("add_avalu"),
             "Add unit value in title/y axis",
             value = a$add_avalu
@@ -450,7 +450,7 @@ ui_g_ipp <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -480,9 +480,9 @@ srv_g_ipp <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       datasets = data,
       data_extract = list(
@@ -507,7 +507,7 @@ srv_g_ipp <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
@@ -525,14 +525,14 @@ srv_g_ipp <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
 
       adsl_filtered <- anl_q()[[parentname]]
@@ -570,7 +570,7 @@ srv_g_ipp <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
       anl_m <- anl_inputs()
 
@@ -607,7 +607,7 @@ srv_g_ipp <- function(id,
     })
 
     # Outputs to render.
-    plot_r <- shiny::reactive(all_q()[["plot"]])
+    plot_r <- reactive(all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -619,14 +619,14 @@ srv_g_ipp <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

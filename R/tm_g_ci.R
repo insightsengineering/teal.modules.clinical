@@ -315,16 +315,16 @@ tm_g_ci <- function(label,
 
 #' @keywords internal
 ui_g_ci <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   args <- list(...)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(args[c("x_var", "y_var", "color")]),
       teal.transform::data_extract_ui(
         id = ns("x_var"),
@@ -349,14 +349,14 @@ ui_g_ci <- function(id, ...) {
         multiple = FALSE,
         fixed = args$conf_level$fixed
       ),
-      shiny::radioButtons(
+      radioButtons(
         inputId = ns("stat"),
         label = "Statistic to use",
         choices = c("mean", "median"),
         selected = args$stat
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
@@ -380,9 +380,9 @@ srv_g_ci <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(x_var = x_var, y_var = y_var, color = color),
       datasets = data,
@@ -395,7 +395,7 @@ srv_g_ci <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
@@ -411,12 +411,12 @@ srv_g_ci <- function(id,
       selector_list = selector_list
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_inputs(iv_r())
       teal::validate_has_data(anl_q()[["ANL"]], min_nrow = 2)
 
@@ -424,8 +424,8 @@ srv_g_ci <- function(id,
       y <- anl_inputs()$columns_source$y_var
       color <- anl_inputs()$columns_source$color
 
-      shiny::validate(
-        shiny::need(
+      validate(
+        need(
           !all(is.na(anl_q()[["ANL"]][[y]])),
           "No valid data. Please check the filtering option for analysis value (y axis)"
         )
@@ -465,18 +465,18 @@ srv_g_ci <- function(id,
       teal.code::eval_code(anl_q(), list_calls)
     })
 
-    plot_r <- shiny::reactive(all_q()[["gg"]])
+    plot_r <- reactive(all_q()[["gg"]])
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

@@ -395,15 +395,15 @@ ui_g_forest_rsp <- function(id, ...) {
   a <- list(...) # module args
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -417,7 +417,7 @@ ui_g_forest_rsp <- function(id, ...) {
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::selectInput(
+      selectInput(
         ns("responders"),
         "Responders",
         choices = c("CR", "PR"),
@@ -430,7 +430,7 @@ ui_g_forest_rsp <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::uiOutput(
+      uiOutput(
         ns("arms_buckets"),
         title = paste(
           "Multiple reference groups are automatically combined into a single group when more than one",
@@ -460,7 +460,7 @@ ui_g_forest_rsp <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          shiny::checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
+          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
           teal.widgets::optionalSliderInputValMinMax(
             ns("rel_width_forest"),
             "Relative Width of Forest Plot (%)",
@@ -476,7 +476,7 @@ ui_g_forest_rsp <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
@@ -506,9 +506,9 @@ srv_g_forest_rsp <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Setup arm variable selection, default reference arms, and default
@@ -539,7 +539,7 @@ srv_g_forest_rsp <- function(id,
       filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
       iv$add_rule(
@@ -563,19 +563,19 @@ srv_g_forest_rsp <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_inputs()$expr))
     })
 
-    shiny::observeEvent(
+    observeEvent(
       eventExpr = c(
         input[[extract_input("aval_var", "ADRS")]],
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
       ),
       handlerExpr = {
-        shiny::req(anl_q())
+        req(anl_q())
         anl <- anl_q()[["ANL"]]
         aval_var <- anl_inputs()$columns_source$aval_var
         paramcd_level <- unlist(anl_inputs()$filter_info$paramcd[[1]]$selected)
@@ -608,7 +608,7 @@ srv_g_forest_rsp <- function(id,
             unique(anl[[aval_var]])
           }
         }
-        shiny::updateSelectInput(
+        updateSelectInput(
           session, "responders",
           choices = responder_choices,
           selected = shiny::restoreInput(ns("responders"), intersect(responder_choices, common_rsp))
@@ -617,9 +617,9 @@ srv_g_forest_rsp <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
-      shiny::req(anl_q())
+      req(anl_q())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
@@ -649,16 +649,16 @@ srv_g_forest_rsp <- function(id,
       teal::validate_one_row_per_id(anl_q()[["ANL"]], key = c("USUBJID", "STUDYID", input_paramcd))
 
       if (length(input_subgroup_var) > 0) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
             "Not all subgroup variables are factors."
           )
         )
       }
       if (length(input_strata_var) > 0) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
             "Not all stratification variables are factors."
           )
@@ -666,8 +666,8 @@ srv_g_forest_rsp <- function(id,
       }
 
       if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             all(unlist(lapply(default_responses, function(x) {
               if (is.list(x) & "levels" %in% names(x)) {
                 lvls <- x$levels
@@ -687,8 +687,8 @@ srv_g_forest_rsp <- function(id,
       }
 
       if (is.list(default_responses)) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             all(
               grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
                 names(unlist(default_responses)) %in% names(default_responses)
@@ -703,7 +703,7 @@ srv_g_forest_rsp <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
       anl_m <- anl_inputs()
 
@@ -733,7 +733,7 @@ srv_g_forest_rsp <- function(id,
       teal.code::eval_code(anl_q(), as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["p"]])
+    plot_r <- reactive(all_q()[["p"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -744,14 +744,14 @@ srv_g_forest_rsp <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

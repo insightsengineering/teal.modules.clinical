@@ -325,7 +325,7 @@ tm_t_shift_by_arm <- function(label,
 
 #' @keywords internal
 ui_shift_by_arm <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   a <- list(...)
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -341,11 +341,11 @@ ui_shift_by_arm <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c(
         "arm_var", "paramcd_var", "paramcd", "aval_var", "baseline_var", "visit_var", "treamtment_flag_var"
       )]),
@@ -379,8 +379,8 @@ ui_shift_by_arm <- function(id, ...) {
         data_extract_spec = a$baseline_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(ns("add_total"), "Add All Patients row", value = a$add_total),
-      shiny::radioButtons(
+      checkboxInput(ns("add_total"), "Add All Patients row", value = a$add_total),
+      radioButtons(
         ns("useNA"),
         label = "Display NA counts",
         choices = c("ifany", "no"),
@@ -404,7 +404,7 @@ ui_shift_by_arm <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -436,7 +436,7 @@ srv_shift_by_arm <- function(id,
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     selector_list <- teal.transform::data_extract_multiple_srv(
@@ -461,7 +461,7 @@ srv_shift_by_arm <- function(id,
       )
     )
 
-    shiny::isolate({
+    isolate({
       resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
       teal.widgets::updateOptionalSelectInput(
         session = session,
@@ -471,7 +471,7 @@ srv_shift_by_arm <- function(id,
       )
     })
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule(
         "treatment_flag",
@@ -492,7 +492,7 @@ srv_shift_by_arm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -505,7 +505,7 @@ srv_shift_by_arm <- function(id,
     )
 
     # validate inputs
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
 
       adsl_filtered <- merged$anl_q()[[parentname]]
@@ -516,8 +516,8 @@ srv_shift_by_arm <- function(id,
       input_baseline_var <- names(merged$anl_input_r()$columns_source$baseline_var)
       input_treatment_flag_var <- names(merged$anl_input_r()$columns_source$treatment_flag_var)
 
-      shiny::validate(
-        shiny::need(
+      validate(
+        need(
           nrow(merged$anl_q()[["ANL"]]) > 0,
           paste0(
             "Please make sure the analysis dataset is not empty or\n",
@@ -536,7 +536,7 @@ srv_shift_by_arm <- function(id,
     })
 
     # generate r code for the analysis
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
 
       my_calls <- template_shift_by_arm(
@@ -559,7 +559,7 @@ srv_shift_by_arm <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -569,15 +569,15 @@ srv_shift_by_arm <- function(id,
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     ### REPORTER

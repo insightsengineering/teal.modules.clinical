@@ -576,15 +576,15 @@ ui_ancova <- function(id, ...) {
     a$arm_var, a$aval_var, a$cov_var, a$avisit, a$paramcd, a$interact_var
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "aval_var", "cov_var", "avisit", "paramcd", "interact_var")]),
       teal.transform::data_extract_ui(
         id = ns("avisit"),
@@ -610,15 +610,15 @@ ui_ancova <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::uiOutput(
+      uiOutput(
         ns("arms_buckets"),
         title = paste(
           "Multiple reference groups are automatically combined into a single group",
           "when more than one value is selected."
         )
       ),
-      shiny::uiOutput(ns("helptext_ui")),
-      shiny::checkboxInput(
+      uiOutput(ns("helptext_ui")),
+      checkboxInput(
         ns("combine_comp_arms"),
         "Combine all comparison groups?",
         value = FALSE
@@ -631,22 +631,22 @@ ui_ancova <- function(id, ...) {
       ),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
-        label = shiny::HTML(paste("Confidence Level")),
+        label = HTML(paste("Confidence Level")),
         a$conf_level$choices,
         a$conf_level$selected,
         multiple = FALSE,
         fixed = a$conf_level$fixed
       ),
-      shiny::div(
-        shiny::tags$label("Include Interaction Term"),
+      tags$div(
+        tags$label("Include Interaction Term"),
         shinyWidgets::switchInput(
           inputId = ns("include_interact"),
           value = FALSE,
           size = "mini"
         ),
-        shiny::conditionalPanel(
+        conditionalPanel(
           condition = paste0("input['", ns("include_interact"), "']"),
-          shiny::div(
+          tags$div(
             teal.transform::data_extract_ui(
               id = ns("interact_var"),
               label = "Select Interaction Variable",
@@ -665,7 +665,7 @@ ui_ancova <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -696,7 +696,7 @@ srv_ancova <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     # Setup arm variable selection, default reference arms, and default
@@ -733,7 +733,7 @@ srv_ancova <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
       iv$add_rule("conf_level", shinyvalidate::sv_between(
@@ -756,7 +756,7 @@ srv_ancova <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -768,15 +768,15 @@ srv_ancova <- function(id,
       anl_q = anl_q
     )
 
-    output$helptext_ui <- shiny::renderUI({
+    output$helptext_ui <- renderUI({
       if (length(selector_list()$arm_var()$select) != 0) {
-        shiny::helpText("Multiple reference groups are automatically combined into a single group.")
+        helpText("Multiple reference groups are automatically combined into a single group.")
       }
     })
 
     # Event handler:
     # Update interact_y choices to all levels of selected interact_var
-    shiny::observeEvent(
+    observeEvent(
       {
         input$include_interact
         input$`interact_var-dataset_ADQS_singleextract-select`
@@ -806,7 +806,7 @@ srv_ancova <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -836,12 +836,12 @@ srv_ancova <- function(id,
       do.call(what = "validate_standard_inputs", validate_args)
 
       # Other validations.
-      shiny::validate(shiny::need(
+      validate(shiny::need(
         length(unique(adsl_filtered[[input_arm_var]])) > 1,
         "ANCOVA table needs at least 2 arm groups to make comparisons."
       ))
       # check that there is at least one record with no missing data
-      shiny::validate(shiny::need(
+      validate(shiny::need(
         !all(is.na(merged$anl_q()[["ANL"]][[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))
@@ -849,14 +849,14 @@ srv_ancova <- function(id,
       all_NA_dataset <- merged$anl_q()[["ANL"]] %>% # nolint: object_name.
         dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
         dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
-      shiny::validate(shiny::need(
+      validate(shiny::need(
         !any(all_NA_dataset$all_NA),
         "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."
       ))
 
       if (input$include_interact) {
         if (!is.null(input_interact_var) && length(input_interact_var) > 0) {
-          shiny::validate(shiny::need(
+          validate(shiny::need(
             !input_interact_var %in% c(input_avisit, input_paramcd) &&
               length(as.vector(unique(anl_filtered[[input_interact_var]]))) > 1,
             paste(
@@ -865,7 +865,7 @@ srv_ancova <- function(id,
             )
           ))
           if (!all(is.numeric(as.vector(unique(anl_filtered[[input_interact_var]]))))) {
-            shiny::validate(shiny::need(
+            validate(shiny::need(
               !is.null(input$interact_y),
               paste(
                 "Interaction y must be selected when a discrete variable is chosen for interact variable.",
@@ -878,8 +878,8 @@ srv_ancova <- function(id,
 
       if (length(input_cov_var >= 1L)) {
         input_cov_var_dataset <- anl_filtered[input_cov_var]
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             all(vapply(input_cov_var_dataset, function(col) length(unique(col)) > 1L, logical(1))),
             "Selected covariates should have more than one level for showing the adjusted analysis."
           )
@@ -888,7 +888,7 @@ srv_ancova <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    table_q <- shiny::reactive({
+    table_q <- reactive({
       validate_checks()
       ANL <- merged$anl_q()[["ANL"]]
 
@@ -939,7 +939,7 @@ srv_ancova <- function(id,
     })
 
     # Output to render.
-    table_r <- shiny::reactive({
+    table_r <- reactive({
       table_q()[["result"]]
     })
 
@@ -950,15 +950,15 @@ srv_ancova <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
+      verbatim_content = reactive(teal.code::get_code(table_q())),
       title = label
     )
 
