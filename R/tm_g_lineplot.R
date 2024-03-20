@@ -349,19 +349,19 @@ ui_g_lineplot <- function(id, ...) {
     a$y_unit
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
-      shiny::verbatimTextOutput(outputId = ns("text")),
+      verbatimTextOutput(outputId = ns("text")),
       teal.widgets::plot_with_settings_ui(
         id = ns("myplot")
       )
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
       teal.transform::data_extract_ui(
         id = ns("param"),
@@ -387,7 +387,7 @@ ui_g_lineplot <- function(id, ...) {
         data_extract_spec = a$x,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::selectInput(
+      selectInput(
         ns("mid"),
         "Midpoint Statistic",
         choices = c(
@@ -407,7 +407,7 @@ ui_g_lineplot <- function(id, ...) {
         ),
         selected = "mean_ci"
       ),
-      shiny::checkboxInput(
+      checkboxInput(
         ns("incl_screen"),
         "Include screening visit",
         value = TRUE
@@ -429,13 +429,13 @@ ui_g_lineplot <- function(id, ...) {
             a$mid_point_size,
             ticks = FALSE
           ),
-          shiny::checkboxGroupInput(
+          checkboxGroupInput(
             ns("whiskers"),
             "Whiskers to display",
             choices = c("Upper", "Lower"),
             selected = c("Upper", "Lower")
           ),
-          shiny::radioButtons(
+          radioButtons(
             ns("mid_type"),
             label = "Plot type",
             choices = c(
@@ -468,7 +468,7 @@ ui_g_lineplot <- function(id, ...) {
             a$table_font_size,
             ticks = FALSE
           ),
-          shiny::checkboxGroupInput(
+          checkboxGroupInput(
             ns("table"),
             label = "Choose the statistics to display in the table",
             choices = c(
@@ -485,7 +485,7 @@ ui_g_lineplot <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -514,9 +514,9 @@ srv_g_lineplot <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
       datasets = data,
@@ -530,7 +530,7 @@ srv_g_lineplot <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
@@ -549,14 +549,14 @@ srv_g_lineplot <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
 
       adsl_filtered <- merged$anl_q()[[parentname]]
@@ -587,7 +587,7 @@ srv_g_lineplot <- function(id,
       NULL
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
       ANL <- merged$anl_q()[["ANL"]]
       teal::validate_has_data(ANL, 2)
@@ -624,7 +624,7 @@ srv_g_lineplot <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["plot"]])
+    plot_r <- reactive(all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -636,14 +636,14 @@ srv_g_lineplot <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

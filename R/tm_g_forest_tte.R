@@ -384,15 +384,15 @@ ui_g_forest_tte <- function(id, ...) {
     a$time_unit_var
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -418,7 +418,7 @@ ui_g_forest_tte <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::uiOutput(
+      uiOutput(
         ns("arms_buckets"),
         title = paste(
           "Multiple reference groups are automatically combined into a single group when more than one",
@@ -448,7 +448,7 @@ ui_g_forest_tte <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          shiny::checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
+          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
           teal.transform::data_extract_ui(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
@@ -470,7 +470,7 @@ ui_g_forest_tte <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -500,9 +500,9 @@ srv_g_forest_tte <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -534,7 +534,7 @@ srv_g_forest_tte <- function(id,
       filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
@@ -557,13 +557,13 @@ srv_g_forest_tte <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
@@ -596,8 +596,8 @@ srv_g_forest_tte <- function(id,
       )
 
       if (length(input_subgroup_var) > 0) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
             "Not all subgroup variables are factors."
           )
@@ -605,8 +605,8 @@ srv_g_forest_tte <- function(id,
       }
 
       if (length(input_strata_var) > 0) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
             "Not all stratification variables are factors."
           )
@@ -615,7 +615,7 @@ srv_g_forest_tte <- function(id,
 
       do.call(what = "validate_standard_inputs", validate_args)
 
-      shiny::validate(shiny::need(
+      validate(need(
         length(anl[[input_paramcd]]) > 0,
         "Value of the endpoint variable should not be empty."
       ))
@@ -624,7 +624,7 @@ srv_g_forest_tte <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
 
       anl_m <- anl_inputs()
@@ -656,7 +656,7 @@ srv_g_forest_tte <- function(id,
     })
 
     # Outputs to render.
-    plot_r <- shiny::reactive(all_q()[["p"]])
+    plot_r <- reactive(all_q()[["p"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -667,14 +667,14 @@ srv_g_forest_tte <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = "R Code for the Current Time-to-Event Forest Plot"
     )
 

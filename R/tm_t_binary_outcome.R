@@ -508,14 +508,14 @@ ui_t_binary_outcome <- function(id, ...) {
     a$strata_var
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -523,7 +523,7 @@ ui_t_binary_outcome <- function(id, ...) {
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::selectInput(
+      selectInput(
         ns("responders"),
         "Responders",
         choices = NULL,
@@ -536,26 +536,26 @@ ui_t_binary_outcome <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::div(
+      tags$div(
         class = "arm-comp-box",
-        shiny::tags$label("Compare Treatments"),
+        tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
           size = "mini"
         ),
-        shiny::conditionalPanel(
+        conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          shiny::div(
-            shiny::uiOutput(
+          tags$div(
+            uiOutput(
               ns("arms_buckets"),
               title = paste(
                 "Multiple reference groups are automatically combined into a single group when more than one",
                 "value is selected."
               )
             ),
-            shiny::helpText("Multiple reference groups are automatically combined into a single group."),
-            shiny::checkboxInput(
+            helpText("Multiple reference groups are automatically combined into a single group."),
+            checkboxInput(
               ns("combine_comp_arms"),
               "Combine all comparison groups?",
               value = FALSE
@@ -563,7 +563,7 @@ ui_t_binary_outcome <- function(id, ...) {
           )
         )
       ),
-      shiny::conditionalPanel(
+      conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
@@ -594,7 +594,7 @@ ui_t_binary_outcome <- function(id, ...) {
               multiple = FALSE,
               fixed = FALSE
             ),
-            shiny::tags$label("Odds Ratio Estimation"),
+            tags$label("Odds Ratio Estimation"),
             shinyWidgets::switchInput(
               inputId = ns("u_odds_ratio"), value = TRUE, size = "mini"
             )
@@ -634,9 +634,9 @@ ui_t_binary_outcome <- function(id, ...) {
           )
         )
       ),
-      shiny::conditionalPanel(
+      conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-        shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       teal.widgets::panel_item(
         "Additional table settings",
@@ -664,7 +664,7 @@ ui_t_binary_outcome <- function(id, ...) {
           multiple = FALSE,
           fixed = a$conf_level$fixed
         ),
-        shiny::tags$label("Show All Response Categories"),
+        tags$label("Show All Response Categories"),
         shinyWidgets::switchInput(
           inputId = ns("show_rsp_cat"),
           value = ifelse(a$rsp_table, TRUE, FALSE),
@@ -678,7 +678,7 @@ ui_t_binary_outcome <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -711,7 +711,7 @@ srv_t_binary_outcome <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -722,7 +722,7 @@ srv_t_binary_outcome <- function(id,
       data = data()[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_binary_outcome",
-      on_off = shiny::reactive(input$compare_arms)
+      on_off = reactive(input$compare_arms)
     )
 
     selector_list <- teal.transform::data_extract_multiple_srv(
@@ -735,7 +735,7 @@ srv_t_binary_outcome <- function(id,
       filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select a filter."))
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
 
       if (isTRUE(input$compare_arms)) {
@@ -763,13 +763,13 @@ srv_t_binary_outcome <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
-    shiny::observeEvent(
+    observeEvent(
       c(
         input[[extract_input("aval_var", "ADRS")]],
         input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
@@ -801,7 +801,7 @@ srv_t_binary_outcome <- function(id,
             unique(anl[[aval_var]])
           }
         }
-        shiny::updateSelectInput(
+        updateSelectInput(
           session, "responders",
           choices = responder_choices,
           selected = intersect(responder_choices, common_rsp)
@@ -809,7 +809,7 @@ srv_t_binary_outcome <- function(id,
       }
     )
 
-    validate_check <- shiny::reactive({
+    validate_check <- reactive({
       teal::validate_inputs(iv_r())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
@@ -843,9 +843,9 @@ srv_t_binary_outcome <- function(id,
 
       teal::validate_one_row_per_id(anl, key = c("USUBJID", "STUDYID", input_paramcd))
 
-      shiny::validate(
+      validate(
         if (length(input_strata_var) >= 1L) {
-          shiny::need(
+          need(
             sum(
               vapply(
                 anl[input_strata_var],
@@ -860,9 +860,9 @@ srv_t_binary_outcome <- function(id,
         }
       )
 
-      shiny::validate(
+      validate(
         if (length(input_strata_var) >= 1L) {
-          shiny::need(
+          need(
             sum(
               vapply(
                 anl[input_strata_var],
@@ -880,8 +880,8 @@ srv_t_binary_outcome <- function(id,
       )
 
       if (is.list(default_responses)) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             all(
               grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
                 gsub("[0-9]*", "", names(unlist(default_responses))) %in% names(default_responses)
@@ -894,7 +894,7 @@ srv_t_binary_outcome <- function(id,
       NULL
     })
 
-    table_q <- shiny::reactive({
+    table_q <- reactive({
       validate_check()
 
       qenv <- anl_q()
@@ -902,7 +902,7 @@ srv_t_binary_outcome <- function(id,
       anl <- qenv[["ANL"]]
 
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      shiny::req(input$responders %in% anl[[input_aval_var]])
+      req(input$responders %in% anl[[input_aval_var]])
 
       input_strata_var <- as.vector(anl_m$columns_source$strata_var)
       input_paramcd <- unlist(anl_m$filter_info$paramcd)["selected"]
@@ -954,7 +954,7 @@ srv_t_binary_outcome <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(table_q()[["result"]])
+    table_r <- reactive(table_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -963,15 +963,15 @@ srv_t_binary_outcome <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive({
+      verbatim_content = reactive({
         teal.code::get_code(table_q())
       }),
       title = label
