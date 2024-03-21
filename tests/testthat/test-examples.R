@@ -34,7 +34,7 @@ for (i in rd_files()) {
     ),
     runApp = function(appDir, ...) { # nolint object_name_linter.
       app_driver <- shinytest2::AppDriver$new(appDir)
-      on.exit(app_driver$stop)
+      on.exit(app_driver$stop())
       # shinytest2 will capture app crash but actually teal continues on error inside the module
       # we need to use a different way to check if there are errors
       if (!is.null(app_driver$get_html(".shiny-output-error:not(.shiny-output-error-validation)"))) {
