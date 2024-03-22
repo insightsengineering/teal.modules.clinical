@@ -44,19 +44,22 @@ template_g_km <- function(dataname = "ANL",
   if (lifecycle::is_present(position_coxph)) {
     control_annot_coxph[["x"]] <- position_coxph[1]
     control_annot_coxph[["y"]] <- position_coxph[2]
-    warning(
-      "The `position_coxph` argument of `template_g_km()` is deprecated as of teal.modules.clinical 0.8.17. ",
-      "Please use the 'x' and 'y' elements of the `control_annot_coxph` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_warn(
+      "0.8.17",
+      "template_g_km(position_coxph)",
+      details = "Please use the 'x' and 'y' elements of the `control_annot_coxph` argument instead."
     )
   }
   if (lifecycle::is_present(width_annots)) {
     control_annot_surv_med[["w"]] <- width_annots[["surv_med"]]
     control_annot_coxph[["w"]] <- width_annots[["coxph"]]
-    warning(
-      "The `width_annots` argument of `template_g_km()` is deprecated as of teal.modules.clinical 0.8.17. ",
-      "Please use the 'w' element of the `control_annot_surv_med` and `control_annot_coxph` arguments instead.",
-      call. = FALSE
+    lifecycle::deprecate_warn(
+      "0.8.17",
+      "template_g_km(width_annots)",
+      details = paste(
+        "Please use the 'w' element of the `control_annot_surv_med`",
+        "and `control_annot_coxph` arguments instead."
+      )
     )
   }
   checkmate::assert_string(dataname)
