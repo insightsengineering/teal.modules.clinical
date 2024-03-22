@@ -53,7 +53,7 @@ for (i in rd_files()) {
         )
       }
 
-      ## Throw an error instead of warning (only warnings are raised)
+      ## Throw an error instead of a warning (default `check_names = TRUE` of `$new()` throws a warning)
       app_driver$expect_unique_names()
 
       ## shinytest2 captures app crash but teal continues on error inside the module
