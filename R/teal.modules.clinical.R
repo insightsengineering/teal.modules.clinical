@@ -5,6 +5,7 @@
 #'
 "_PACKAGE"
 
+#' @import shiny
 #' @import teal
 #' @import teal.transform
 #' @import tern

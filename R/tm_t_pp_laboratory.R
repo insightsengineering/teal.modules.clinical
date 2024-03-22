@@ -233,7 +233,7 @@ tm_t_pp_laboratory <- function(label,
     avalu <- avalu_var # resolves missing argument error
   }
 
-  logger::log_info("Initializing tm_t_pp_laboratory")
+  message("Initializing tm_t_pp_laboratory")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -287,17 +287,17 @@ ui_g_laboratory <- function(id, ...) {
     ui_args$anrind
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
-    output = shiny::div(
-      shiny::htmlOutput(ns("title")),
+    output = tags$div(
+      htmlOutput(ns("title")),
       DT::DTOutput(outputId = ns("lab_values_table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("timepoints", "aval_var", "avalu_var", "param", "paramcd", "anrind")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
@@ -341,13 +341,13 @@ ui_g_laboratory <- function(id, ...) {
         data_extract_spec = ui_args$anrind,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::selectInput(
+      selectInput(
         inputId = ns("round_value"),
         label = "Select number of decimal places for rounding:",
         choices = NULL
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -376,11 +376,11 @@ srv_g_laboratory <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    patient_id <- shiny::reactive(input$patient_id)
+  moduleServer(id, function(input, output, session) {
+    patient_id <- reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(data()[[parentname]][[patient_col]]))
+    patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -388,7 +388,7 @@ srv_g_laboratory <- function(id,
       selected = patient_data_base()[1]
     )
 
-    shiny::observeEvent(patient_data_base(),
+    observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -405,11 +405,11 @@ srv_g_laboratory <- function(id,
     )
 
     # Update round_values
-    aval_values <- shiny::isolate(data())[[dataname]][, aval_var$select$selected]
+    aval_values <- isolate(data())[[dataname]][, aval_var$select$selected]
     decimal_nums <- aval_values[trunc(aval_values) != aval_values]
     max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", decimal_nums)))
 
-    shiny::updateSelectInput(
+    updateSelectInput(
       session,
       "round_value",
       choices = seq(0, max_decimal),
@@ -437,7 +437,7 @@ srv_g_laboratory <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -448,12 +448,12 @@ srv_g_laboratory <- function(id,
       selector_list = selector_list
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_inputs(iv_r())
 
       labor_calls <- template_laboratory(
@@ -483,11 +483,11 @@ srv_g_laboratory <- function(id,
         teal.code::eval_code(as.expression(labor_calls))
     })
 
-    output$title <- shiny::renderText({
+    output$title <- renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    table_r <- shiny::reactive({
+    table_r <- reactive({
       q <- all_q()
       list(
         html = q[["labor_table_html"]],
@@ -506,14 +506,14 @@ srv_g_laboratory <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

@@ -326,7 +326,7 @@ tm_g_km <- function(label,
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL) {
-  logger::log_info("Initializing tm_g_km")
+  message("Initializing tm_g_km")
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -393,20 +393,20 @@ ui_g_km <- function(id, ...) {
     a$time_unit_var
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
-      shiny::verbatimTextOutput(outputId = ns("text")),
+      verbatimTextOutput(outputId = ns("text")),
       teal.widgets::plot_with_settings_ui(
         id = ns("myplot")
       )
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -438,25 +438,25 @@ ui_g_km <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::div(
+      tags$div(
         class = "arm-comp-box",
-        shiny::tags$label("Compare Treatments"),
+        tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
           size = "mini"
         ),
-        shiny::conditionalPanel(
+        conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          shiny::div(
-            shiny::uiOutput(
+          tags$div(
+            uiOutput(
               ns("arms_buckets"),
               title = paste(
                 "Multiple reference groups are automatically combined into a single group when more than one",
                 "value is selected."
               )
             ),
-            shiny::checkboxInput(
+            checkboxInput(
               ns("combine_comp_arms"),
               "Combine all comparison groups?",
               value = FALSE
@@ -470,17 +470,17 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      shiny::conditionalPanel(
+      conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
             "Comparison settings",
-            shiny::radioButtons(
+            radioButtons(
               ns("pval_method_coxph"),
-              label = shiny::HTML(
+              label = HTML(
                 paste(
                   "p-value method for ",
-                  shiny::span(class = "text-primary", "Coxph"),
+                  tags$span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -488,12 +488,12 @@ ui_g_km <- function(id, ...) {
               choices = c("wald", "log-rank", "likelihood"),
               selected = "log-rank"
             ),
-            shiny::radioButtons(
+            radioButtons(
               ns("ties_coxph"),
-              label = shiny::HTML(
+              label = HTML(
                 paste(
                   "Ties for ",
-                  shiny::span(class = "text-primary", "Coxph"),
+                  tags$span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -507,17 +507,17 @@ ui_g_km <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
-          shiny::textInput(
+          textInput(
             inputId = ns("xticks"),
             label = "Specify break intervals for x-axis e.g. 0 ; 500"
           ),
-          shiny::radioButtons(
+          radioButtons(
             ns("yval"),
-            shiny::tags$label("Value on y-axis", class = "text-primary"),
+            tags$label("Value on y-axis", class = "text-primary"),
             choices = c("Survival probability", "Failure probability"),
             selected = c("Survival probability"),
           ),
-          shiny::numericInput(
+          numericInput(
             inputId = ns("font_size"),
             label = "Plot tables font size",
             value = 10,
@@ -526,13 +526,13 @@ ui_g_km <- function(id, ...) {
             step = 1,
             width = "100%"
           ),
-          shiny::checkboxInput(
+          checkboxInput(
             inputId = ns("show_ci_ribbon"),
             label = "Show CI ribbon",
             value = FALSE,
             width = "100%"
           ),
-          shiny::checkboxInput(
+          checkboxInput(
             inputId = ns("show_km_table"),
             label = "Show KM table",
             value = TRUE,
@@ -546,7 +546,7 @@ ui_g_km <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          shiny::textInput(ns("xlab"), "X-axis label", "Time"),
+          textInput(ns("xlab"), "X-axis label", "Time"),
           teal.transform::data_extract_ui(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
@@ -556,7 +556,7 @@ ui_g_km <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -586,9 +586,9 @@ srv_g_km <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -599,7 +599,7 @@ srv_g_km <- function(id,
       data = data()[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
-      on_off = shiny::reactive(input$compare_arms)
+      on_off = reactive(input$compare_arms)
     )
 
     selector_list <- teal.transform::data_extract_multiple_srv(
@@ -623,7 +623,7 @@ srv_g_km <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
 
       if (isTRUE(input$compare_arms)) {
@@ -662,12 +662,12 @@ srv_g_km <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr))
     })
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
 
       adsl_filtered <- anl_q()[[parentname]]
@@ -706,7 +706,7 @@ srv_g_km <- function(id,
       NULL
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
 
       anl_m <- anl_inputs()
@@ -749,7 +749,7 @@ srv_g_km <- function(id,
       teal.code::eval_code(anl_q(), as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["plot"]])
+    plot_r <- reactive(all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -761,14 +761,14 @@ srv_g_km <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
