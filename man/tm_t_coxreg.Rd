@@ -34,31 +34,31 @@ tm_t_coxreg(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the covariates variables.}
 
-\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr names of
+\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
 the variables for stratified analysis.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
 
-\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the censoring variable.}
 
 \item{multivariate}{(\code{logical})\cr if \code{FALSE}, the univariable approach is used instead of the
@@ -68,16 +68,16 @@ multi-variable model.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+\item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+\item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+\item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
@@ -209,7 +209,7 @@ datanames <- c("ADSL", "ADTTE")
 datanames(data) <- datanames
 join_keys(data) <- default_cdisc_join_keys[datanames]
 
-## Teal application
+## `teal` application
 ## ----------------
 ## Note that the R code exported by `Show R Code` does not include the data
 ## pre-processing. You will need to create the dataset as above before

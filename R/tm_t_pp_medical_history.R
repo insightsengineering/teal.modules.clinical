@@ -28,7 +28,7 @@ template_medical_history <- function(dataname = "ANL",
   table_list <- add_expr(
     list(),
     substitute(expr = {
-      labels <- formatters::var_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
+      labels <- teal.data::col_labels(dataname, fill = FALSE)[c(mhbodsys_char, mhterm_char, mhdistat_char)]
       mhbodsys_label <- labels[mhbodsys_char]
 
       result_raw <-
@@ -80,11 +80,11 @@ template_medical_history <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_medical_history
-#' @param mhterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param mhterm ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHTERM` variable from `dataname`.
-#' @param mhbodsys ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param mhbodsys ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHBODSYS` variable from `dataname`.
-#' @param mhdistat ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param mhdistat ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHDISTAT` variable from `dataname`.
 #'
 #' @inherit module_arguments return
@@ -137,11 +137,14 @@ tm_t_pp_medical_history <- function(label,
                                     mhdistat = NULL,
                                     pre_output = NULL,
                                     post_output = NULL) {
-  logger::log_info("Initializing tm_t_pp_medical_history")
+  message("Initializing tm_t_pp_medical_history")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(mhterm, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(mhbodsys, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(mhdistat, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
@@ -179,16 +182,16 @@ ui_t_medical_history <- function(id, ...) {
     ui_args$mhdistat
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
-    output = shiny::div(
+    output = tags$div(
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("mhterm", "mhbodsys", "mhdistat")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
@@ -215,7 +218,7 @@ ui_t_medical_history <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -241,17 +244,17 @@ srv_t_medical_history <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    patient_id <- shiny::reactive(input$patient_id)
+  moduleServer(id, function(input, output, session) {
+    patient_id <- reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(data()[[parentname]][[patient_col]]))
+    patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
       choices = patient_data_base(), selected = patient_data_base()[1]
     )
 
-    shiny::observeEvent(patient_data_base(),
+    observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -278,7 +281,7 @@ srv_t_medical_history <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -290,16 +293,16 @@ srv_t_medical_history <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_inputs(iv_r())
 
-      shiny::validate(
-        shiny::need(
+      validate(
+        need(
           nrow(anl_q()[["ANL"]][anl_q()[["ANL"]][[patient_col]] == patient_id(), ]) > 0,
           "Patient has no data about medical history."
         )
@@ -317,7 +320,7 @@ srv_t_medical_history <- function(id,
         anl_q(),
         substitute(
           expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
@@ -327,7 +330,7 @@ srv_t_medical_history <- function(id,
         teal.code::eval_code(as.expression(my_calls))
     })
 
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -336,14 +339,14 @@ srv_t_medical_history <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

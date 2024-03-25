@@ -15,7 +15,7 @@
 #'
 #' @seealso [tm_t_abnormality_by_worst_grade()]
 #' @keywords internal
-template_abnormality_by_worst_grade <- function(parentname, # nolint
+template_abnormality_by_worst_grade <- function(parentname, # nolint: object_length.
                                                 dataname,
                                                 arm_var,
                                                 id_var = "USUBJID",
@@ -48,7 +48,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl_labels <- formatters::var_labels(df, fill = FALSE),
+      expr = anl_labels <- teal.data::col_labels(df, fill = FALSE),
       env = list(
         df = as.name(dataname)
       )
@@ -95,7 +95,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
   data_list <- add_expr(
     data_list,
     quote(
-      expr = formatters::var_labels(anl) <- c(
+      expr = teal.data::col_labels(anl) <- c(
         anl_labels,
         GRADE_DIR = "   Direction of Abnormality",
         GRADE_ANL = "Highest Grade"
@@ -235,15 +235,15 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param atoxgr_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param atoxgr_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option
 #' for variable names that can be used as Analysis Toxicity Grade.
-#' @param worst_high_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_high_flag_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option for variable names that can be used as Worst High
 #' Grade flag.
-#' @param worst_low_flag_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_low_flag_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option for variable names that can be used as Worst Low Grade flag.
-#' @param worst_flag_indicator ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param worst_flag_indicator ([teal.transform::choices_selected()])\cr
 #' value indicating worst grade.
 #'
 #' @inherit module_arguments return seealso
@@ -252,7 +252,6 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'
 #' @examples
 #' library(dplyr)
-#' library(formatters)
 #'
 #' ADSL <- tmc_ex_adsl
 #' ADLB <- tmc_ex_adlb %>%
@@ -292,7 +291,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
-tm_t_abnormality_by_worst_grade <- function(label, # nolint
+tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             dataname,
                                             parentname = ifelse(
                                               inherits(arm_var, "data_extract_spec"),
@@ -336,7 +335,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
                                             pre_output = NULL,
                                             post_output = NULL,
                                             basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_abnormality_by_worst_grade")
+  message("Initializing tm_t_abnormality_by_worst_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -384,9 +383,9 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint
 }
 
 #' @keywords internal
-ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
+ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   a <- list(...) # module args
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -401,11 +400,11 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c(
           "arm_var",
@@ -423,7 +422,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Lab Parameter",
@@ -463,7 +462,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
             multiple = FALSE,
             fixed_on_single = TRUE
           ),
-          shiny::checkboxInput(
+          checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
@@ -471,7 +470,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -481,7 +480,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint
 }
 
 #' @keywords internal
-srv_t_abnormality_by_worst_grade <- function(id, # nolint
+srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                              data,
                                              reporter,
                                              filter_panel_api,
@@ -504,8 +503,8 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    shiny::isolate({
+  moduleServer(id, function(input, output, session) {
+    isolate({
       resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env))
       teal.widgets::updateOptionalSelectInput(
         session = session,
@@ -537,7 +536,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       teal.transform::compose_and_enable_validators(iv, selector_list)
       iv$add_rule(
@@ -560,7 +559,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -572,7 +571,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       anl_q = anl_q
     )
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
       anl <- merged$anl_q()[["ANL"]]
@@ -586,8 +585,8 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       teal::validate_inputs(iv_r())
 
       if (length(input_paramcd_var) > 0) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             is.factor(anl[[input_paramcd_var]]),
             "Parameter variable should be a factor."
           )
@@ -595,16 +594,16 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       }
 
       if (length(input_atoxgr) > 0) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             all(as.character(unique(anl[[input_atoxgr]])) %in% as.character(c(-4:4))),
             "All grade values should be within -4:4 range."
           ),
-          shiny::need(
+          need(
             is.factor(anl[[input_atoxgr]]),
             "Grade variable should be a factor."
           ),
-          shiny::need(
+          need(
             all(sapply(1:4, function(y) any(abs(as.numeric(as.character(anl[[input_atoxgr]]))) == y))),
             paste(
               "To display the table there must be at least one record for",
@@ -616,8 +615,8 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       }
 
       if (length(input_atoxgr) > 0) {
-        shiny::validate(
-          shiny::need(
+        validate(
+          need(
             is.factor(anl[[input_atoxgr]]),
             "Treatment variable should be a factor."
           ),
@@ -638,7 +637,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
       )
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
 
       my_calls <- template_abnormality_by_worst_grade(
@@ -661,7 +660,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -670,15 +669,15 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

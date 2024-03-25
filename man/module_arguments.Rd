@@ -4,52 +4,52 @@
 \alias{module_arguments}
 \title{Standard Module Arguments}
 \arguments{
-\item{arm_ref_comp}{optional, (\code{list})\cr If specified it must be a named list with each element corresponding to
+\item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{atirel}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{ATIREL} variable from \code{dataname}.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
 
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for the analysis unit variable.}
 
-\item{avisit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr value of analysis
+\item{avisit}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value of analysis
 visit \code{AVISIT} of interest.}
 
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
 
-\item{by_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{by_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names used to split the summary by rows.}
 
-\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{cmdecod}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{CMDECOD} variable from \code{dataname}.}
 
-\item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{cmindc}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{CMINDC} variable from \code{dataname}.}
 
-\item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{cmstdy}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{CMSTDY} variable from \code{dataname}.}
 
-\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the censoring variable.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
-\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the covariates variables.}
 
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
@@ -66,10 +66,10 @@ Otherwise, the symbol size will be proportional to the sample size in each each 
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
-\item{hlt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr name of the variable
+\item{hlt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
 with high level term for events.}
 
-\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object specifying
+\item{id_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object specifying
 the variable name for subject id.}
 
 \item{interact_var}{(\code{character})\cr name of the variable that should have interactions
@@ -81,59 +81,59 @@ needed, the default option is \code{FALSE}.}
 
 \item{label}{(\code{character})\cr menu item label of the module in the teal app.}
 
-\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr name of the variable
+\item{llt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
 with low level term for events.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+\item{plot_height}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+\item{plot_width}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the width
 of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+\item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+\item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr names of
+\item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
 the variables for stratified analysis.}
 
-\item{summarize_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr names of
+\item{summarize_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
 the variables that should be summarized.}
 
-\item{subgroup_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{subgroup_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable names that can be used as the default subgroups.}
 
 \item{time_points}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and preselected option
 for time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+\item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and pre-selected option for the time unit variable.}
 
-\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr value
+\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value
 indicating on treatment records in \code{treatment_flag_var}.}
 
-\item{treatment_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr on
+\item{treatment_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr on
 treatment flag variable.}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
-\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable names that can be used as \code{visit} variable.
 Must be a factor in \code{dataname}.}
 
-\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr
+\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
 value indicating worst grade.}
 
-\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object
+\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and preselected option for variable names that can be used as worst flag variable.}
 }
 \value{

@@ -33,7 +33,7 @@ arm_ref_comp_observer <- function(session,
                                   data,
                                   arm_ref_comp,
                                   module,
-                                  on_off = shiny::reactive(TRUE),
+                                  on_off = reactive(TRUE),
                                   input_id = "buckets",
                                   output_id = "arms_buckets") {
   iv <- shinyvalidate::InputValidator$new()
@@ -47,16 +47,16 @@ arm_ref_comp_observer <- function(session,
   iv$add_validator(iv2)
 
 
-  output[[output_id]] <- shiny::renderUI({
+  output[[output_id]] <- renderUI({
     if (isTRUE(on_off())) {
-      df <- if (shiny::is.reactive(data)) {
+      df <- if (is.reactive(data)) {
         data()
       } else {
         data
       }
       check_arm_ref_comp(arm_ref_comp, df, module) ## throws an error if there are issues
 
-      arm_var <- shiny::req(input[[id_arm_var]])
+      arm_var <- req(input[[id_arm_var]])
 
       arm <- df[[arm_var]]
       teal::validate_has_elements(arm, "Treatment variable is empty.")

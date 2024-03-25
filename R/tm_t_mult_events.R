@@ -165,7 +165,7 @@ template_mult_events <- function(dataname,
 
       lbl_lst <- add_expr(
         lbl_lst,
-        substitute( # nolint
+        substitute(
           expr = attr(dataname$hlt_new, which = "label"),
           env = list(
             dataname = as.name(dataname),
@@ -188,7 +188,7 @@ template_mult_events <- function(dataname,
               indent_mod = indent_mod,
               split_fun = split_fun,
               label_pos = "topleft",
-              split_label = formatters::var_labels(dataname[hlt_new])
+              split_label = teal.data::col_labels(dataname[hlt_new])
             ),
           env = list(
             hlt = hlt_new,
@@ -277,7 +277,7 @@ template_mult_events <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_mult_events
-#' @param seq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param seq_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as analysis sequence number
 #'   variable. Used for counting the unique number of events.
 #'
@@ -344,10 +344,14 @@ tm_t_mult_events <- function(label,
                              pre_output = NULL,
                              post_output = NULL,
                              basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_mult_events")
+  message("Initializing tm_t_mult_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(seq_var, "choices_selected")
+  checkmate::assert_class(hlt, "choices_selected")
+  checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
@@ -389,7 +393,7 @@ tm_t_mult_events <- function(label,
 
 #' @keywords internal
 ui_t_mult_events_byterm <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$seq_var, a$hlt, a$llt)
 
@@ -397,11 +401,11 @@ ui_t_mult_events_byterm <- function(id, ...) {
     output = teal.widgets::white_small_well(
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "seq_var", "hlt", "llt")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -421,11 +425,11 @@ ui_t_mult_events_byterm <- function(id, ...) {
         data_extract_spec = a$llt,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          shiny::checkboxInput(
+          checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
@@ -444,7 +448,7 @@ ui_t_mult_events_byterm <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -475,7 +479,7 @@ srv_t_mult_events_byterm <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -490,7 +494,7 @@ srv_t_mult_events_byterm <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "llt"))
     })
@@ -509,13 +513,13 @@ srv_t_mult_events_byterm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_merge_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
     })
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
@@ -528,11 +532,11 @@ srv_t_mult_events_byterm <- function(id,
       input_llt <- as.vector(anl_m$columns_source$llt)
 
 
-      shiny::validate(
-        shiny::need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
+      validate(
+        need(is.factor(adsl_filtered[[input_arm_var]]), "Treatment variable is not a factor.")
       )
-      shiny::validate(
-        shiny::need(is.integer(anl_filtered[[input_seq_var]]), "Analysis sequence variable is not an integer.")
+      validate(
+        need(is.integer(anl_filtered[[input_seq_var]]), "Analysis sequence variable is not an integer.")
       )
 
       # validate inputs
@@ -546,7 +550,7 @@ srv_t_mult_events_byterm <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
 
       anl_q <- anl_q()
@@ -587,21 +591,21 @@ srv_t_mult_events_byterm <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

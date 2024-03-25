@@ -34,22 +34,22 @@ tm_t_events_patyear(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{events_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{events_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for the variable with all event counts.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
 
-\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{avalu_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for the analysis unit variable.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
@@ -62,7 +62,7 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
 \item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
@@ -70,13 +70,13 @@ set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var
 \code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
 user input for this parameter is ignored.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+\item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+\item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{basic_table_args}{optional, (\code{basic_table_args})\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
+\item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}

@@ -11,6 +11,9 @@ call_concatenate(args, bin_op = "+")
 
 \item{bin_op}{binary operator to concatenate it with}
 }
+\value{
+a \code{call}
+}
 \description{
 e.g. combine with \code{+} for \code{ggplot} without introducing parentheses due to associativity
 }

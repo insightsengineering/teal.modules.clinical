@@ -24,7 +24,7 @@ testthat::test_that("template_fit_mmrm works as expected when combining combinat
     arm_var = "ARMCD",
     ref_arm = "ARM A",
     comp_arm = c("ARM B", "ARM C"),
-    combine_comp_arm = TRUE,
+    combine_comp_arms = TRUE,
     id_var = "USUBJID",
     visit_var = "AVISIT",
     cov_var = c("SEX", "BASE", "AVISIT"),

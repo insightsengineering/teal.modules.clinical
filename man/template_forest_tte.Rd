@@ -18,6 +18,8 @@ template_forest_tte(
   conf_level = 0.95,
   col_symbol_size = NULL,
   time_unit_var = "AVALU",
+  rel_width_forest = 0.25,
+  font_size = 15,
   ggplot2_args = teal.widgets::ggplot2_args()
 )
 }
@@ -50,7 +52,12 @@ to calculate the estimator. If \code{NULL}, the same symbol size is used for all
 
 \item{time_unit_var}{(\code{character})\cr name of the variable representing time units.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+\item{rel_width_forest}{(\code{proportion})\cr proportion of total width to allocate to the forest plot. Relative
+width of table is then \code{1 - rel_width_forest}. If \code{as_list = TRUE}, this parameter is ignored.}
+
+\item{font_size}{(\code{numeric})\cr font size value.}
+
+\item{ggplot2_args}{(\code{ggplot2_args}) optional\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}

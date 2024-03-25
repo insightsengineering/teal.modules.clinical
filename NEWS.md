@@ -1,10 +1,23 @@
-# teal.modules.clinical 0.8.16.9092
+# teal.modules.clinical 0.9.0.9012
+
+### Enhancements
+* Updated `tm_g_forest_rsp` and `tm_g_forest_tte` to use refactored version of `g_forest`. Plots are now displayed as `ggplot` objects instead of `grob` objects. Added parameters `font_size` and `rel_width_forest` to control font size and width of plot relative to table, respectively.
+* Updated `tm_t_summary_by` to allow `NULL` input to `paramcd` argument.
+
+### Miscellaneous
+* Removed `formatters` from dependencies and replaced the use of its functions relating to variable labels with functions from `teal.data`.
+* Replaced instances of deprecated `na_level` argument to `tern` functions with `na_str`.
+* Updated all template functions to use argument/list element name `strata` instead of `strat` in all `tern` function inputs following the deprecation of this argument/name within `tern`.
+
+# teal.modules.clinical 0.9.0
 
 ### Breaking Changes
-+ Adapted all modules to use `teal_data` objects.
+* Adapted all modules to use `teal_data` objects.
+* Module arguments that previously accepted inputs from `teal.transform::choices_selected()` or `teal.transform::data_extract_spec()` now only accept input from `teal.transform::choices_selected()`. The affected modules are: `tm_a_gee`, `tm_a_mmrm`, `tm_g_ci`, `tm_g_forest_rsp`, `tm_g_forest_tte`, `tm_g_ipp`, `tm_g_km`, `tm_g_lineplot`, `tm_g_pp_adverse_events`, `tm_g_pp_patient_timeline`, `tm_g_pp_therapy`, `tm_g_pp_vitals`, `tm_t_abnormality`, `tm_t_abnormality_by_worst_grade`, `tm_t_ancova`, `tm_t_binary_outcome`, `tm_t_coxreg`, `tm_t_events`, `tm_t_events_by_grade`, `tm_t_events_patyear`, `tm_t_events_summary`, `tm_t_exposure`, `tm_t_logistic`, `tm_t_mult_events`, `tm_t_pp_basic_info`, `tm_t_pp_laboratory`, `tm_t_pp_medical_history`, `tm_t_pp_prior_medication`, `tm_t_shift_by_arm`, `tm_t_shift_by_arm_by_worst`, `tm_t_shift_by_grade`, `tm_t_smq`, `tm_t_summary`, `tm_t_summary_by`, and `tm_t_tte`
 
 ### Enhancements
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
+* Simplify examples and vignettes code by removing package prefixes where possible.
 * Added parameter `sort_freq_col` to `tm_t_events` to allow the user to select column to use when sorting by decreasing frequency.
 * Added parameter `incl_overall_sum` to `tm_t_events` to allow the user to choose whether overall summary rows are included at the top of the table.
 * Updated the documentation and vignettes to demonstrate method to pass `teal_data` object to `teal::init()`.
@@ -13,6 +26,7 @@
 
 ### Bug fixes
 * Fixed bug in `tm_g_lineplot` forcing module to initialize with a table.
+* Fixes partial matching.
 
 ### Miscellaneous
 * Deprecated the `aval` argument in `tm_t_pp_laboratory` and `tm_g_pp_vitals` and replaced it with the `aval_var` argument.
@@ -21,8 +35,9 @@
 * Specified minimal version of package dependencies.
 * Replaced usage of deprecated `summarize_vars` function with `analyze_vars`.
 * Reduced package dependencies (removed `tidyr`, `rlang`, `magrittr` and `styler`).
+* Introduced tests against partial matching.
 
-# teal.modules.clinical 0.8.16.9010
+# teal.modules.clinical 0.8.16
 
 ### Enhancements
 * Added more informative error message when grade mapping error occurs in `tm_t_abnormality_by_worst_grade`.

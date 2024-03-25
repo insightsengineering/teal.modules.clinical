@@ -169,19 +169,19 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_adverse_events
-#' @param aeterm ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param aeterm ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETERM` variable from `dataname`.
-#' @param tox_grade ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param tox_grade ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETOXGR` variable from `dataname`.
-#' @param causality ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param causality ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEREL` variable from `dataname`.
-#' @param outcome ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param outcome ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEOUT` variable from `dataname`.
-#' @param action ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param action ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEACN` variable from `dataname`.
-#' @param time ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param time ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `ASTDY` variable from `dataname`.
-#' @param decod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param decod ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEDECOD` variable from `dataname`.
 #'
 #' @inherit module_arguments return
@@ -259,11 +259,18 @@ tm_g_pp_adverse_events <- function(label,
                                    pre_output = NULL,
                                    post_output = NULL,
                                    ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_pp_adverse_events")
+  message("Initializing tm_g_pp_adverse_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(aeterm, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(tox_grade, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(causality, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(outcome, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(action, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(time, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(decod, "choices_selected", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -322,19 +329,19 @@ ui_g_adverse_events <- function(id, ...) {
     ui_args$decod
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
-    output = shiny::div(
-      shiny::htmlOutput(ns("title")),
+    output = tags$div(
+      htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("table"), ns("table_rows")),
       DT::DTOutput(outputId = ns("table")),
       teal.widgets::plot_with_settings_ui(id = ns("chart"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c(
         "aeterm", "tox_grade", "causality", "outcome",
         "action", "time", "decod"
@@ -402,7 +409,7 @@ ui_g_adverse_events <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -433,13 +440,13 @@ srv_g_adverse_events <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    patient_id <- shiny::reactive(input$patient_id)
+  moduleServer(id, function(input, output, session) {
+    patient_id <- reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(data()[[parentname]][[patient_col]]))
+    patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -447,7 +454,7 @@ srv_g_adverse_events <- function(id,
       selected = patient_data_base()[1]
     )
 
-    shiny::observeEvent(patient_data_base(),
+    observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -489,7 +496,7 @@ srv_g_adverse_events <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -500,16 +507,16 @@ srv_g_adverse_events <- function(id,
       selector_list = selector_list
     )
 
-    anl_q <- shiny::reactive(
+    anl_q <- reactive(
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     )
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_inputs(iv_r())
       anl_m <- anl_inputs()
 
-      ANL <- anl_q()[["ANL"]] # nolint
+      ANL <- anl_q()[["ANL"]]
 
       teal::validate_has_data(ANL[ANL[[patient_col]] == input$patient_id, ], min_nrow = 1)
 
@@ -518,7 +525,7 @@ srv_g_adverse_events <- function(id,
         substitute(
           expr = {
             pt_id <- patient_id
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
@@ -543,7 +550,7 @@ srv_g_adverse_events <- function(id,
       teal.code::eval_code(anl_q2, as.expression(calls))
     })
 
-    output$title <- shiny::renderText({
+    output$title <- renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
@@ -552,8 +559,8 @@ srv_g_adverse_events <- function(id,
       options = list(pageLength = input$table_rows)
     )
 
-    plot_r <- shiny::reactive({
-      shiny::req(iv_r()$is_valid())
+    plot_r <- reactive({
+      req(iv_r()$is_valid())
       all_q()[["plot"]]
     })
 
@@ -566,14 +573,14 @@ srv_g_adverse_events <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

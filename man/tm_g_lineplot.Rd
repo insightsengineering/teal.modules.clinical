@@ -52,12 +52,12 @@ tm_g_lineplot(
 
 \item{y_unit}{(\code{character} or \code{NA})\cr \code{y_unit} variable name.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with all
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{param}{(\code{character})\cr parameter to filter the data by.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr object with
+\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
 
 \item{interval}{(\code{character} or \code{NULL})\cr names of the statistics that will be plotted as intervals.
@@ -84,19 +84,19 @@ or point and line (\code{pl}).}
 
 \item{table_font_size}{(\code{integer} or \code{double})\cr controls the font size of values in the table.}
 
-\item{plot_height}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the
+\item{plot_height}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}
 
-\item{plot_width}{optional, (\code{numeric})\cr a vector of length three with \code{c(value, min, max)}. Specifies the width
+\item{plot_width}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the width
 of the main plot and renders a slider on the plot to interactively adjust the plot width.}
 
-\item{pre_output}{optional, (\code{shiny.tag})\cr with text placed before the output to put the output into context.
+\item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
 
-\item{post_output}{optional, (\code{shiny.tag})\cr with text placed after the output to put the output into context.
+\item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
-\item{ggplot2_args}{optional, (\code{ggplot2_args})\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
+\item{ggplot2_args}{(\code{ggplot2_args}) optional\cr object created by \code{\link[teal.widgets:ggplot2_args]{teal.widgets::ggplot2_args()}} with settings
 for the module plot. For this module, this argument will only accept \code{ggplot2_args} object with \code{labs} list of
 following child elements: \code{title}, \code{subtitle}, \code{caption}, \code{y}, \code{lty}. No other elements would be taken into
 account. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments (hard coded in

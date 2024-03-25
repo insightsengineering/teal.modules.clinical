@@ -125,11 +125,15 @@ tm_t_pp_prior_medication <- function(label,
                                      cmstdy = NULL,
                                      pre_output = NULL,
                                      post_output = NULL) {
-  logger::log_info("Initializing tm_t_pp_prior_medication")
+  message("Initializing tm_t_pp_prior_medication")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmindc, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmstdy, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
@@ -169,16 +173,16 @@ ui_t_prior_medication <- function(id, ...) {
     ui_args$cmstdy
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
-    output = shiny::div(
+    output = tags$div(
       DT::DTOutput(outputId = ns("prior_medication_table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("atirel", "cmdecod", "cmindc", "cmstdy")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
@@ -211,7 +215,7 @@ ui_t_prior_medication <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -238,8 +242,8 @@ srv_t_prior_medication <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    patient_id <- shiny::reactive(input$patient_id)
+  moduleServer(id, function(input, output, session) {
+    patient_id <- reactive(input$patient_id)
 
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
@@ -257,14 +261,14 @@ srv_t_prior_medication <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required("Please select patient id"))
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     # Init
-    patient_data_base <- shiny::reactive(unique(data()[[parentname]][[patient_col]]))
+    patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -272,7 +276,7 @@ srv_t_prior_medication <- function(id,
       selected = patient_data_base()[1]
     )
 
-    shiny::observeEvent(patient_data_base(),
+    observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -295,12 +299,12 @@ srv_t_prior_medication <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_inputs(iv_r())
 
       my_calls <- template_prior_medication(
@@ -315,7 +319,7 @@ srv_t_prior_medication <- function(id,
         teal.code::eval_code(
           substitute(
             expr = {
-              ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+              ANL <- ANL[ANL[[patient_col]] == patient_id, ]
             }, env = list(
               patient_col = patient_col,
               patient_id = patient_id()
@@ -325,7 +329,7 @@ srv_t_prior_medication <- function(id,
         teal.code::eval_code(as.expression(my_calls))
     })
 
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     output$prior_medication_table <- DT::renderDataTable(
       expr = table_r(),
@@ -336,14 +340,14 @@ srv_t_prior_medication <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 
