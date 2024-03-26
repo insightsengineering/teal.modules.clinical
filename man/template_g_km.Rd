@@ -17,7 +17,7 @@ template_g_km(
   strata_var = NULL,
   time_points = NULL,
   facet_var = "SEX",
-  font_size = 10,
+  font_size = 11,
   conf_level = 0.95,
   ties = "efron",
   xlab = "Survival time",
@@ -26,8 +26,12 @@ template_g_km(
   pval_method = "log-rank",
   annot_surv_med = TRUE,
   annot_coxph = TRUE,
-  position_coxph = c(-0.04, 0.02),
-  width_annots = list(surv_med = grid::unit(0.45, "npc"), coxph = grid::unit(0.6, "npc")),
+  control_annot_surv_med = control_surv_med_annot(),
+  control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+  legend_pos = NULL,
+  position_coxph = lifecycle::deprecated(),
+  width_annots = lifecycle::deprecated(),
+  rel_height_plot = 0.8,
   ci_ribbon = FALSE,
   title = "KM Plot"
 )
@@ -80,11 +84,27 @@ median survival time per group.}
 
 \item{annot_coxph}{(\code{flag})\cr add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
 
+\item{control_annot_surv_med}{(\code{list})\cr parameters to control the position and size of the annotation table added
+to the plot when \code{annot_surv_med = TRUE}, specified using the \code{\link[tern:control_surv_med_annot]{control_surv_med_annot()}} function. Parameter
+options are: \code{x}, \code{y}, \code{w}, \code{h}, and \code{fill}. See \code{\link[tern:control_surv_med_annot]{control_surv_med_annot()}} for details.}
+
+\item{control_annot_coxph}{(\code{list})\cr parameters to control the position and size of the annotation table added
+to the plot when \code{annot_coxph = TRUE}, specified using the \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} function. Parameter
+options are: \code{x}, \code{y}, \code{w}, \code{h}, \code{fill}, and \code{ref_lbls}. See \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} for details.}
+
+\item{legend_pos}{(\code{numeric(2)})\cr vector of length 2 containing x- and y-coordinates, respectively, for the legend
+position relative to the KM plot area. If \code{NULL} (default), the legend is positioned in the bottom right corner of
+the plot, or the middle right of the plot if needed to prevent overlapping.}
+
 \item{position_coxph}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}  Please use the \code{x} and \code{y} elements of
 \code{control_annot_coxph} instead.}
 
 \item{width_annots}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{w} element of \code{control_annot_surv_med}
 (for surv_med) and \code{control_annot_coxph} (for coxph)."}
+
+\item{rel_height_plot}{(\code{proportion})\cr proportion of total figure height to allocate to the Kaplan-Meier plot.
+Relative height of patients at risk table is then \code{1 - rel_height_plot}. If \code{annot_at_risk = FALSE} or
+\code{as_list = TRUE}, this parameter is ignored.}
 
 \item{ci_ribbon}{(\code{flag})\cr whether the confidence interval should be drawn around the Kaplan-Meier curve.}
 
