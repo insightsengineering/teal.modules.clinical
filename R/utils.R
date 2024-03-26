@@ -945,4 +945,4 @@ set_default_total_label <- function(total_label) {
 }
 
 # for mocking in tests
-interactive <- base::interactive
+interactive <- NULL
