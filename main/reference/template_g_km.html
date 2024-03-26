@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9011</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9012</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,17 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -92,7 +81,7 @@
 <span>  strata_var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  time_points <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  facet_var <span class="op">=</span> <span class="st">"SEX"</span>,</span>
-<span>  font_size <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  font_size <span class="op">=</span> <span class="fl">11</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  ties <span class="op">=</span> <span class="st">"efron"</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Survival time"</span>,</span>
@@ -101,8 +90,12 @@
 <span>  pval_method <span class="op">=</span> <span class="st">"log-rank"</span>,</span>
 <span>  annot_surv_med <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  annot_coxph <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  position_coxph <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.04</span>, <span class="fl">0.02</span><span class="op">)</span>,</span>
-<span>  width_annots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>surv_med <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.45</span>, <span class="st">"npc"</span><span class="op">)</span>, coxph <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="st">"npc"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  control_annot_surv_med <span class="op">=</span> <span class="fu">control_surv_med_annot</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  control_annot_coxph <span class="op">=</span> <span class="fu">control_coxph_annot</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0.27</span>, y <span class="op">=</span> <span class="fl">0.35</span>, w <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,</span>
+<span>  legend_pos <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  position_coxph <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  width_annots <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  rel_height_plot <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  ci_ribbon <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"KM Plot"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -143,9 +136,9 @@
 
 
 <dt>xticks</dt>
-<dd><p>(<code>numeric</code>, <code>number</code>, or <code>NULL</code>)<br> numeric vector of ticks or single number with spacing
-between ticks on the x axis. If <code>NULL</code> (default), <code><a href="https://rdrr.io/pkg/labeling/man/extended.html" class="external-link">labeling::extended()</a></code> is used to determine
-an optimal tick position on the x axis.</p></dd>
+<dd><p>(<code>numeric</code>, <code>number</code>, or <code>NULL</code>)<br> numeric vector of tick positions or single number with spacing
+between ticks on the x-axis. If <code>NULL</code> (default), <code><a href="https://rdrr.io/pkg/labeling/man/extended.html" class="external-link">labeling::extended()</a></code> is used to determine
+optimal tick positions on the x-axis.</p></dd>
 
 
 <dt>strata_var</dt>
@@ -174,7 +167,7 @@ see <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-
 
 
 <dt>xlab</dt>
-<dd><p>(<code>string</code>)<br> label of x-axis.</p></dd>
+<dd><p>(<code>string</code>)<br> x-axis label.</p></dd>
 
 
 <dt>time_unit_var</dt>
@@ -182,7 +175,8 @@ see <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-
 
 
 <dt>yval</dt>
-<dd><p>(<code>string</code>)<br> value of y-axis. Options are <code>Survival</code> (default) and <code>Failure</code> probability.</p></dd>
+<dd><p>(<code>string</code>)<br> type of plot, to be plotted on the y-axis. Options are <code>Survival</code> (default) and <code>Failure</code>
+probability.</p></dd>
 
 
 <dt>pval_method</dt>
@@ -198,18 +192,42 @@ median survival time per group.</p></dd>
 <dd><p>(<code>flag</code>)<br> add the annotation table from a <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> model.</p></dd>
 
 
+<dt>control_annot_surv_med</dt>
+<dd><p>(<code>list</code>)<br> parameters to control the position and size of the annotation table added
+to the plot when <code>annot_surv_med = TRUE</code>, specified using the <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html" class="external-link">control_surv_med_annot()</a></code> function. Parameter
+options are: <code>x</code>, <code>y</code>, <code>w</code>, <code>h</code>, and <code>fill</code>. See <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html" class="external-link">control_surv_med_annot()</a></code> for details.</p></dd>
+
+
+<dt>control_annot_coxph</dt>
+<dd><p>(<code>list</code>)<br> parameters to control the position and size of the annotation table added
+to the plot when <code>annot_coxph = TRUE</code>, specified using the <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html" class="external-link">control_coxph_annot()</a></code> function. Parameter
+options are: <code>x</code>, <code>y</code>, <code>w</code>, <code>h</code>, <code>fill</code>, and <code>ref_lbls</code>. See <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html" class="external-link">control_coxph_annot()</a></code> for details.</p></dd>
+
+
+<dt>legend_pos</dt>
+<dd><p>(<code>numeric(2)</code>)<br> vector of length 2 containing x- and y-coordinates, respectively, for the legend
+position relative to the KM plot area. If <code>NULL</code> (default), the legend is positioned in the bottom right corner of
+the plot, or the middle right of the plot if needed to prevent overlapping.</p></dd>
+
+
 <dt>position_coxph</dt>
-<dd><p>(<code>numeric</code>)<br> x and y positions for plotting <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> model.</p></dd>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a>  Please use the <code>x</code> and <code>y</code> elements of
+<code>control_annot_coxph</code> instead.</p></dd>
 
 
 <dt>width_annots</dt>
-<dd><p>(named <code>list</code> of <code>unit</code>s)<br> a named list of widths for annotation tables with names <code>surv_med</code>
-(median survival time table) and <code>coxph</code> (<code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> model table), where each value is the width
-(in units) to implement when printing the annotation table.</p></dd>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Please use the <code>w</code> element of <code>control_annot_surv_med</code>
+(for surv_med) and <code>control_annot_coxph</code> (for coxph)."</p></dd>
+
+
+<dt>rel_height_plot</dt>
+<dd><p>(<code>proportion</code>)<br> proportion of total figure height to allocate to the Kaplan-Meier plot.
+Relative height of patients at risk table is then <code>1 - rel_height_plot</code>. If <code>annot_at_risk = FALSE</code> or
+<code>as_list = TRUE</code>, this parameter is ignored.</p></dd>
 
 
 <dt>ci_ribbon</dt>
-<dd><p>(<code>flag</code>)<br> draw the confidence interval around the Kaplan-Meier curve.</p></dd>
+<dd><p>(<code>flag</code>)<br> whether the confidence interval should be drawn around the Kaplan-Meier curve.</p></dd>
 
 
 <dt>title</dt>
