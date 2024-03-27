@@ -228,7 +228,7 @@ tm_a_gee <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname)
   )
 
-  teal::module(
+  ans <- teal::module(
     label = label,
     server = srv_gee,
     ui = ui_gee,
@@ -245,6 +245,8 @@ tm_a_gee <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- FALSE
+  ans
 }
 
 ui_gee <- function(id, ...) {
