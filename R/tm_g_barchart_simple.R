@@ -174,7 +174,7 @@ tm_g_barchart_simple <- function(x = NULL,
   )
 
   ui_args <- as.list(environment())
-  module(
+  ans <- module(
     label = label,
     server = srv_g_barchart_simple,
     ui = ui_g_barchart_simple,
@@ -190,6 +190,8 @@ tm_g_barchart_simple <- function(x = NULL,
     ),
     datanames = "all"
   )
+  attr(ans, "teal_bookmarkable") <- TRUE
+  ans
 }
 
 #' @keywords internal
