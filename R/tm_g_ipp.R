@@ -355,7 +355,7 @@ tm_g_ipp <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
-  attr(ans, "teal_bookmarkable") <- NULL
+  attr(ans, "teal_bookmarkable") <- FALSE
   ans
 }
 
