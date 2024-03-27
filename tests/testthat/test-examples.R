@@ -28,6 +28,7 @@ with_mocked_app_bindings <- function(code) {
       options = options() # https://github.com/rstudio/shinytest2/issues/377
     )
     on.exit(app_driver$stop(), add = TRUE)
+    app_driver$wait_for_idle(timeout = 20000)
 
     # Simple testing
     ## warning in the app does not invoke a warning in the test
