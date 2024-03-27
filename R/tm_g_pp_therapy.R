@@ -409,7 +409,8 @@ tm_g_pp_therapy <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
-  attr(ans, "teal_bookmarkable") <- NULL
+  # presence of data extracts in UI may cause bookmarking problems as in other modules
+  attr(ans, "teal_bookmarkable") <- TRUE
   ans
 }
 
@@ -446,12 +447,7 @@ ui_g_therapy <- function(id, ...) {
         "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
         "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
       )]),
-      teal.widgets::optionalSelectInput(
-        ns("patient_id"),
-        "Select Patient:",
-        multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
-      ),
+      uiOutput(ns("container_patient_id")),
       teal.transform::data_extract_ui(
         id = ns("cmdecod"),
         label = "Select the medication decoding column:",
@@ -563,34 +559,33 @@ srv_g_therapy <- function(id,
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    patient_id <- reactive(input$patient_id)
-
-    # Init
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
-    teal.widgets::updateOptionalSelectInput(
-      session, "patient_id",
-      choices = patient_data_base(),
-      selected = restoreInput(ns("patient_id"), patient_data_base()[1])
-    )
 
-    observeEvent(patient_data_base(),
-      handlerExpr = {
-        teal.widgets::updateOptionalSelectInput(
-          session,
-          "patient_id",
-          choices = patient_data_base(),
-          selected = restoreInput(
-            ns("patient_id"),
-            if (length(patient_data_base()) == 1) {
-              patient_data_base()
-            } else {
-              intersect(patient_id(), patient_data_base())
-            }
-          )
-        )
-      },
-      ignoreInit = TRUE
-    )
+    output$container_patient_id <- renderUI({
+      req(patient_data_base())
+
+      selected <-
+        if (!isTruthy(patient_id())) {
+          patient_data_base()[1]
+        } else {
+          if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        }
+
+      teal.widgets::optionalSelectInput(
+        ns("patient_id"),
+        "Select Patient:",
+        choices = patient_data_base(),
+        selected = selected,
+        multiple = FALSE,
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
+      )
+    })
+
+    patient_id <- reactive(input$patient_id)
 
     # Therapy tab ----
     selector_list <- teal.transform::data_extract_multiple_srv(
