@@ -57,7 +57,7 @@ with_mocked_app_bindings <- function(code) {
     }
 
     ## validation errors from shinyvalidate - added by default to assure the examples are "clean"
-    if (!is.null(err_el <- app_driver$get_html(".shiny-input-container.has-error:not(.shiny-output-error-validation)"))) {
+    if (!is.null(err_el <- app_driver$get_html(".shiny-input-container.has-error:not(.shiny-output-error-validation)"))) { # nolint line_length_linter.
       stop(sprintf("shinyvalidate error is observed:\n%s", err_el))
     }
   }
