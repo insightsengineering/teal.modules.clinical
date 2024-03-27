@@ -496,7 +496,8 @@ tm_t_binary_outcome <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
-  attr(ans, "teal_bookmarkable") <- NULL
+  # pending https://github.com/insightsengineering/teal.widgets/issues/239
+  attr(ans, "teal_bookmarkable") <- FALSE
   ans
 }
 
@@ -525,13 +526,7 @@ ui_t_binary_outcome <- function(id, ...) {
         data_extract_spec = a$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
-        ns("responders"),
-        "Responders",
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
-      ),
+      uiOutput(ns("container_responders")),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
@@ -773,45 +768,42 @@ srv_t_binary_outcome <- function(id,
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
-    observeEvent(
-      c(
-        input[[extract_input("aval_var", "ADRS")]],
-        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
-      ),
-      handlerExpr = {
-        anl <- anl_q()[["ANL"]]
-        aval_var <- anl_inputs()$columns_source$aval_var
-        paramcd <- input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
-        sel_param <- if (is.list(default_responses) && (!is.null(paramcd))) {
-          default_responses[[paramcd]]
-        } else {
-          default_responses
-        }
-        common_rsp <- if (is.list(sel_param)) {
-          sel_param$rsp
-        } else {
-          sel_param
-        }
-        responder_choices <- if (length(aval_var) == 0) {
-          character(0)
-        } else {
-          if ("levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1) {
-              sel_param$levels
-            } else {
-              unique(anl[[aval_var]])
-            }
+    output$container_responders <- renderUI({
+      anl <- req(anl_q()[["ANL"]])
+      aval_var <- req(anl_inputs()$columns_source$aval_var)
+      paramcd <- req(input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]])
+      sel_param <- if (is.list(default_responses) && (!is.null(paramcd))) {
+        default_responses[[paramcd]]
+      } else {
+        default_responses
+      }
+      common_rsp <- if (is.list(sel_param)) {
+        sel_param$rsp
+      } else {
+        sel_param
+      }
+      responder_choices <- if (length(aval_var) == 0) {
+        character(0)
+      } else {
+        if ("levels" %in% names(sel_param)) {
+          if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1) {
+            sel_param$levels
           } else {
             unique(anl[[aval_var]])
           }
+        } else {
+          unique(anl[[aval_var]])
         }
-        updateSelectInput(
-          session, "responders",
-          choices = responder_choices,
-          selected = restoreInput(ns("responders"), intersect(responder_choices, common_rsp))
-        )
       }
-    )
+
+      selectInput(
+        ns("responders"),
+        "Responders",
+        choices = responder_choices,
+        selected = common_rsp,
+        multiple = TRUE
+      )
+    })
 
     validate_check <- reactive({
       teal::validate_inputs(iv_r())
