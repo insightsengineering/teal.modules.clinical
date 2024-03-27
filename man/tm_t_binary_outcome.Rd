@@ -21,6 +21,10 @@ tm_t_binary_outcome(
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)", "M"),
   rsp_table = FALSE,
+  control = list(global = list(method = ifelse(rsp_table, "clopper-pearson", "waldcc"),
+    conf_level = 0.95), unstrat = list(method_ci = ifelse(rsp_table, "wald", "waldcc"),
+    method_test = "schouten", odds = TRUE), strat = list(method_ci = "cmh", method_test =
+    "cmh")),
   add_total = FALSE,
   total_label = default_total_label(),
   na_level = default_na_str(),
@@ -68,6 +72,18 @@ may contain default response values or named arrays \code{rsp} of default select
 values and \code{levels} of default level choices.}
 
 \item{rsp_table}{(\code{logical})\cr whether the initial set-up of the module should match \code{RSPT01}. Defaults to \code{FALSE}.}
+
+\item{control}{(named \code{list})\cr named list containing 3 named lists as follows:
+\itemize{
+\item \code{global}: a list of settings for overall analysis with 2 named elements \code{method} and \code{conf_level}.
+\item \code{unstrat}: a list of settings for unstratified analysis with 3 named elements \code{method_ci} and \code{method_test}, and
+\code{odds}. See \code{\link[tern:prop_diff]{tern::estimate_proportion_diff()}}, \code{\link[tern:prop_diff_test]{tern::test_proportion_diff()}}, and
+\code{\link[tern:odds_ratio]{tern::estimate_odds_ratio()}}, respectively, for options and details on how these settings are implemented in the
+analysis.
+\item \code{strat}: a list of settings for stratified analysis with elements \code{method_ci} and \code{method_test}. See
+\code{\link[tern:prop_diff]{tern::estimate_proportion_diff()}} and \code{\link[tern:prop_diff_test]{tern::test_proportion_diff()}}, respectively, for options and details on
+how these settings are implemented in the analysis.
+}}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
