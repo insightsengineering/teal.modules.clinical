@@ -379,7 +379,8 @@ tm_t_abnormality <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
-  attr(ans, "teal_bookmarkable") <- NULL
+  # may be affected by https://github.com/insightsengineering/teal.widgets/issues/238
+  attr(ans, "teal_bookmarkable") <- TRUE
   ans
 }
 
