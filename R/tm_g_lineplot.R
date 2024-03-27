@@ -335,6 +335,7 @@ tm_g_lineplot <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  # pending https://github.com/insightsengineering/teal.transform/issues/210
   attr(ans, "teal_bookmarkable") <- NULL
   ans
 }
