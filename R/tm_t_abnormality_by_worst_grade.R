@@ -380,7 +380,8 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
-  attr(ans, "teal_bookmarkable") <- NULL
+  # may be affected by https://github.com/insightsengineering/teal.widgets/issues/238
+  attr(ans, "teal_bookmarkable") <- TRUE
   ans
 }
 
@@ -458,12 +459,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
             data_extract_spec = a$id_var,
             is_single_dataset = is_single_dataset_value
           ),
-          teal.widgets::optionalSelectInput(
-            ns("worst_flag_indicator"),
-            label = "Value Indicating Worst Grade",
-            multiple = FALSE,
-            fixed_on_single = TRUE
-          ),
+          uiOutput(ns("container_worst_flag_indicator")),
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
@@ -508,13 +504,17 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    isolate({
-      resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env))
-      teal.widgets::updateOptionalSelectInput(
-        session = session,
-        inputId = "worst_flag_indicator",
+
+    output$container_worst_flag_indicator <- renderUI({
+      resolved <- isolate(teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env)))
+
+      teal.widgets::optionalSelectInput(
+        ns("worst_flag_indicator"),
+        label = "Value Indicating Worst Grade",
         choices = resolved$choices,
-        selected = restoreInput(ns("worst_flag_indicator"), resolved$selected)
+        selected = resolved$selected,
+        multiple = FALSE,
+        fixed_on_single = TRUE
       )
     })
 
