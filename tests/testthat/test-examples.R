@@ -21,11 +21,15 @@ with_mocked_app_bindings <- function(code) {
   }
 
   mocked_runApp <- function(x, ...) { # nolint object_name_linter.
-    app_driver <- shinytest2::AppDriver$new(
-      x,
-      shiny_args = list(...),
-      check_names = FALSE, # explicit check below
-      options = options() # https://github.com/rstudio/shinytest2/issues/377
+    # suppress warnings coming from saving qenv https://github.com/insightsengineering/teal.code/issues/194
+    suppress_warnings(
+      app_driver <- shinytest2::AppDriver$new(
+        x,
+        shiny_args = list(...),
+        check_names = FALSE, # explicit check below
+        options = options() # https://github.com/rstudio/shinytest2/issues/377
+      ),
+      "may not be available when loading"
     )
     on.exit(app_driver$stop(), add = TRUE)
     app_driver$wait_for_idle(timeout = 20000)
@@ -48,13 +52,13 @@ with_mocked_app_bindings <- function(code) {
 
     ## shinytest2 captures app crash but teal continues on error inside the module
     ## we need to use a different way to check if there are errors
-    if (!is.null(app_driver$get_html(".shiny-output-error:not(.shiny-output-error-validation)"))) {
-      stop("Module error is observed.")
+    if (!is.null(err_el <- app_driver$get_html(".shiny-output-error"))) {
+      stop(sprintf("Module error is observed:\n%s", err_el))
     }
 
     ## validation errors from shinyvalidate - added by default to assure the examples are "clean"
-    if (!is.null(app_driver$get_html(".shiny-input-container.has-error"))) {
-      stop("shinyvalidate error is observed.")
+    if (!is.null(err_el <- app_driver$get_html(".shiny-input-container.has-error:not(.shiny-output-error-validation)"))) {
+      stop(sprintf("shinyvalidate error is observed:\n%s", err_el))
     }
   }
 
@@ -72,19 +76,33 @@ with_mocked_app_bindings <- function(code) {
   )
 }
 
+strict_exceptions <- c(
+  # https://github.com/r-lib/gtable/pull/94
+  "tm_g_barchart_simple.Rd",
+  "tm_g_ci.Rd",
+  "tm_g_ipp.Rd",
+  "tm_g_pp_adverse_events.Rd",
+  "tm_g_pp_vitals.Rd"
+)
+
 for (i in rd_files()) {
   with_mocked_app_bindings(
     testthat::test_that(
       paste0("example-", basename(i)),
       {
         testthat::skip_on_cran()
-        testthat::expect_no_error(
-          # suppress warnings coming from saving qenv https://github.com/insightsengineering/teal.code/issues/194
-          suppress_warnings(
-            pkgload::run_example(i, run_donttest = TRUE, run_dontrun = FALSE, quiet = TRUE),
-            "may not be available when loading"
+        if (basename(i) %in% strict_exceptions) {
+          withr::with_options(
+            opts_partial_match_old,
+            testthat::expect_no_error(
+              pkgload::run_example(i, run_donttest = TRUE, run_dontrun = FALSE, quiet = TRUE)
+            )
           )
-        )
+        } else {
+          testthat::expect_no_error(
+            pkgload::run_example(i, run_donttest = TRUE, run_dontrun = FALSE, quiet = TRUE)
+          )
+        }
       }
     )
   )
