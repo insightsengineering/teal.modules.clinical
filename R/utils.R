@@ -943,3 +943,6 @@ set_default_total_label <- function(total_label) {
   checkmate::assert_character(total_label, len = 1, null.ok = TRUE)
   options("tmc_default_total_label" = total_label)
 }
+
+# for mocking in tests
+interactive <- NULL
