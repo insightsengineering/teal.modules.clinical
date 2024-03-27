@@ -542,6 +542,7 @@ tm_g_pp_patient_timeline <- function(label,
     ),
     datanames = c(dataname_adcm, dataname_adae, parentname)
   )
+  # pending https://github.com/insightsengineering/teal.transform/issues/211
   attr(ans, "teal_bookmarkable") <- NULL
   ans
 }
@@ -577,12 +578,7 @@ ui_g_patient_timeline <- function(id, ...) {
           "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
         )]
       ),
-      teal.widgets::optionalSelectInput(
-        ns("patient_id"),
-        "Select Patient:",
-        multiple = FALSE,
-        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
-      ),
+      uiOutput(ns('container_patient_id')),
       teal.transform::data_extract_ui(
         id = ns("cmdecod"),
         label = "Select Medication standardized term variable:",
@@ -720,33 +716,31 @@ srv_g_patient_timeline <- function(id,
 
     patient_id <- reactive(input$patient_id)
 
-    # Init
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
-    teal.widgets::updateOptionalSelectInput(
-      session,
-      "patient_id",
-      choices = patient_data_base(),
-      selected = restoreInput(ns("patient_id"), patient_data_base()[1])
-    )
 
-    observeEvent(patient_data_base(),
-      handlerExpr = {
-        teal.widgets::updateOptionalSelectInput(
-          session,
-          "patient_id",
-          choices = patient_data_base(),
-          selected = restoreInput(
-            ns("patient_id"),
-            if (length(patient_data_base()) == 1) {
-              patient_data_base()
-            } else {
-              intersect(patient_id(), patient_data_base())
-            }
-          )
-        )
-      },
-      ignoreInit = TRUE
-    )
+    output$container_patient_id <- renderUI({
+      req(patient_data_base())
+
+      selected <-
+        if (!isTruthy(patient_id())) {
+          patient_data_base()[1]
+        } else {
+          if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        }
+
+      teal.widgets::optionalSelectInput(
+        ns("patient_id"),
+        "Select Patient:",
+        multiple = FALSE,
+        choices = patient_data_base(),
+        selected = selected,
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
+      )
+    })
 
     # Patient timeline tab ----
     check_box <- reactive(input$relday_x_axis)
