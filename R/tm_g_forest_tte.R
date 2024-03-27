@@ -369,6 +369,8 @@ tm_g_forest_tte <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  # pending https://github.com/insightsengineering/teal.transform/issues/210
+  # likely also https://github.com/insightsengineering/teal.widgets/issues/239
   attr(ans, "teal_bookmarkable") <- NULL
   ans
 }
