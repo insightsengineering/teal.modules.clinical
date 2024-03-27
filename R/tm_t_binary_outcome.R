@@ -475,7 +475,7 @@ tm_t_binary_outcome <- function(label,
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_binary_outcome,
     ui_args = c(data_extract_list, args),
@@ -496,6 +496,8 @@ tm_t_binary_outcome <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -709,9 +711,11 @@ srv_t_binary_outcome <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -804,7 +808,7 @@ srv_t_binary_outcome <- function(id,
         updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = intersect(responder_choices, common_rsp)
+          selected = restoreInput(ns("responders"), intersect(responder_choices, common_rsp))
         )
       }
     )

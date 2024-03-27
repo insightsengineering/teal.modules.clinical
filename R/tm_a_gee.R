@@ -228,7 +228,7 @@ tm_a_gee <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname)
   )
 
-  teal::module(
+  ans <- teal::module(
     label = label,
     server = srv_gee,
     ui = ui_gee,
@@ -245,6 +245,8 @@ tm_a_gee <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- FALSE
+  ans
 }
 
 ui_gee <- function(id, ...) {
@@ -390,6 +392,8 @@ srv_gee <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     ## split_covariates ----
     observeEvent(input[[extract_input("cov_var", dataname)]],
       ignoreNULL = FALSE,
@@ -408,7 +412,7 @@ srv_gee <- function(id,
         teal.widgets::updateOptionalSelectInput(
           session,
           inputId = extract_input("split_covariates", dataname),
-          selected = split_covariates_selected
+          selected = restoreInput(ns(extract_input("split_covariates", dataname)), split_covariates_selected)
         )
       }
     )

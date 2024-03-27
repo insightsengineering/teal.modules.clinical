@@ -351,7 +351,7 @@ tm_g_forest_tte <- function(label,
     time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_g_forest_tte,
     ui = ui_g_forest_tte,
@@ -369,6 +369,8 @@ tm_g_forest_tte <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

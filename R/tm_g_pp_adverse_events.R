@@ -295,7 +295,7 @@ tm_g_pp_adverse_events <- function(label,
     decod = `if`(is.null(decod), NULL, cs_to_des_select(decod, dataname = dataname))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_g_adverse_events,
     ui_args = c(data_extract_list, args),
@@ -314,6 +314,8 @@ tm_g_pp_adverse_events <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -443,6 +445,8 @@ srv_g_adverse_events <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     patient_id <- reactive(input$patient_id)
 
     # Init
@@ -451,7 +455,7 @@ srv_g_adverse_events <- function(id,
       session,
       "patient_id",
       choices = patient_data_base(),
-      selected = patient_data_base()[1]
+      selected = restoreInput(ns("patient_id"), patient_data_base()[1])
     )
 
     observeEvent(patient_data_base(),
@@ -460,11 +464,14 @@ srv_g_adverse_events <- function(id,
           session,
           "patient_id",
           choices = patient_data_base(),
-          selected = if (length(patient_data_base()) == 1) {
-            patient_data_base()
-          } else {
-            intersect(patient_id(), patient_data_base())
-          }
+          selected = restoreInput(
+            ns("patient_id"),
+            if (length(patient_data_base()) == 1) {
+              patient_data_base()
+            } else {
+              intersect(patient_id(), patient_data_base())
+            }
+          )
         )
       },
       ignoreInit = TRUE

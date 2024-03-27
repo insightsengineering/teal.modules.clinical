@@ -317,7 +317,7 @@ tm_g_lineplot <- function(label,
     paramcd = cs_to_des_select(paramcd, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_g_lineplot,
     ui = ui_g_lineplot,
@@ -335,6 +335,8 @@ tm_g_lineplot <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

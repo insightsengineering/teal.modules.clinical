@@ -579,7 +579,7 @@ tm_a_mmrm <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_mmrm,
     ui = ui_mmrm,
@@ -600,6 +600,8 @@ tm_a_mmrm <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -846,6 +848,8 @@ srv_mmrm <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     # Reactive responsible for sending a disable/enable signal
     # to show R code and debug info buttons
     disable_r_code <- reactiveVal(FALSE)
@@ -863,7 +867,7 @@ srv_mmrm <- function(id,
       teal.widgets::updateOptionalSelectInput(
         session,
         inputId = extract_input("split_covariates", dataname),
-        selected = split_covariates_selected
+        selected = restoreInput(ns(extract_input("split_covariates", dataname)), split_covariates_selected)
       )
     })
 

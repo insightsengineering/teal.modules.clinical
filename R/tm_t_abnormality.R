@@ -359,7 +359,7 @@ tm_t_abnormality <- function(label,
 
   args <- as.list(environment())
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_abnormality,
     server = srv_t_abnormality,
@@ -379,6 +379,8 @@ tm_t_abnormality <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -506,6 +508,8 @@ srv_t_abnormality <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -544,7 +548,7 @@ srv_t_abnormality <- function(id,
         session = session,
         inputId = "treatment_flag",
         choices = resolved$choices,
-        selected = resolved$selected
+        selected = restoreInput(ns("treatment_flag"), resolved$selected)
       )
     })
 

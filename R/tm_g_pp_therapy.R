@@ -390,7 +390,7 @@ tm_g_pp_therapy <- function(label,
     cmendy = `if`(is.null(cmendy), NULL, cs_to_des_select(cmendy, dataname = dataname))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_g_therapy,
     ui_args = c(data_extract_list, args),
@@ -409,6 +409,8 @@ tm_g_pp_therapy <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -559,13 +561,16 @@ srv_g_therapy <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     patient_id <- reactive(input$patient_id)
 
     # Init
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
-      choices = patient_data_base(), selected = patient_data_base()[1]
+      choices = patient_data_base(),
+      selected = restoreInput(ns("patient_id"), patient_data_base()[1])
     )
 
     observeEvent(patient_data_base(),
@@ -574,11 +579,14 @@ srv_g_therapy <- function(id,
           session,
           "patient_id",
           choices = patient_data_base(),
-          selected = if (length(patient_data_base()) == 1) {
-            patient_data_base()
-          } else {
-            intersect(patient_id(), patient_data_base())
-          }
+          selected = restoreInput(
+            ns("patient_id"),
+            if (length(patient_data_base()) == 1) {
+              patient_data_base()
+            } else {
+              intersect(patient_id(), patient_data_base())
+            }
+          )
         )
       },
       ignoreInit = TRUE

@@ -522,7 +522,7 @@ tm_g_pp_patient_timeline <- function(label,
     dsrelday_end = `if`(is.null(dsrelday_end), NULL, cs_to_des_select(dsrelday_end, dataname = dataname_adcm))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_g_patient_timeline,
     ui_args = c(data_extract_list, args),
@@ -542,6 +542,8 @@ tm_g_pp_patient_timeline <- function(label,
     ),
     datanames = c(dataname_adcm, dataname_adae, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -714,6 +716,8 @@ srv_g_patient_timeline <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     patient_id <- reactive(input$patient_id)
 
     # Init
@@ -722,7 +726,7 @@ srv_g_patient_timeline <- function(id,
       session,
       "patient_id",
       choices = patient_data_base(),
-      selected = patient_data_base()[1]
+      selected = restoreInput(ns("patient_id"), patient_data_base()[1])
     )
 
     observeEvent(patient_data_base(),
@@ -731,11 +735,14 @@ srv_g_patient_timeline <- function(id,
           session,
           "patient_id",
           choices = patient_data_base(),
-          selected = if (length(patient_data_base()) == 1) {
-            patient_data_base()
-          } else {
-            intersect(patient_id(), patient_data_base())
-          }
+          selected = restoreInput(
+            ns("patient_id"),
+            if (length(patient_data_base()) == 1) {
+              patient_data_base()
+            } else {
+              intersect(patient_id(), patient_data_base())
+            }
+          )
         )
       },
       ignoreInit = TRUE

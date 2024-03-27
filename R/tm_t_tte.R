@@ -521,7 +521,7 @@ tm_t_tte <- function(label,
     time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_t_tte,
     ui = ui_t_tte,
@@ -540,6 +540,8 @@ tm_t_tte <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -753,7 +755,7 @@ srv_t_tte <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
@@ -885,7 +887,7 @@ srv_t_tte <- function(id,
       do.call(what = "validate_standard_inputs", validate_args)
 
       # check that there is at least one record with no missing data
-      validate(shiny::need(
+      validate(need(
         !all(is.na(anl[[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))

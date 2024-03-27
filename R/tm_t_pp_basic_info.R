@@ -110,7 +110,7 @@ tm_t_pp_basic_info <- function(label,
     vars = `if`(is.null(vars), NULL, cs_to_des_select(vars, dataname = dataname, multiple = TRUE))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_basic_info,
     ui_args = c(data_extract_list, args),
@@ -125,6 +125,8 @@ tm_t_pp_basic_info <- function(label,
     ),
     datanames = dataname
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -178,9 +180,11 @@ srv_t_basic_info <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     patient_id <- reactive(input$patient_id)
 
     # Init
@@ -189,7 +193,7 @@ srv_t_basic_info <- function(id,
       session,
       "patient_id",
       choices = patient_data_base(),
-      selected = patient_data_base()[1]
+      selected = restoreInput(ns("patient_id"), patient_data_base()[1])
     )
 
     observeEvent(patient_data_base(),
@@ -198,11 +202,14 @@ srv_t_basic_info <- function(id,
           session,
           "patient_id",
           choices = patient_data_base(),
-          selected = if (length(patient_data_base()) == 1) {
-            patient_data_base()
-          } else {
-            intersect(patient_id(), patient_data_base())
-          }
+          selected = restoreInput(
+            ns("patient_id"),
+            if (length(patient_data_base()) == 1) {
+              patient_data_base()
+            } else {
+              intersect(patient_id(), patient_data_base())
+            }
+          )
         )
       },
       ignoreInit = TRUE

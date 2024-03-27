@@ -433,7 +433,7 @@ tm_t_summary_by <- function(label,
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE, ordered = TRUE)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_summary_by,
     ui_args = c(data_extract_list, args),
@@ -451,6 +451,8 @@ tm_t_summary_by <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -596,7 +598,7 @@ srv_summary_by <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     vars <- list(arm_var = arm_var, id_var = id_var, summarize_vars = summarize_vars, by_vars = by_vars)
@@ -673,7 +675,7 @@ srv_summary_by <- function(id,
       )
 
       if (input$parallel_vars) {
-        validate(shiny::need(
+        validate(need(
           all(vapply(anl_filtered[input_summarize_vars], is.numeric, logical(1))),
           "Summarize variables must all be numeric to display in parallel columns."
         ))

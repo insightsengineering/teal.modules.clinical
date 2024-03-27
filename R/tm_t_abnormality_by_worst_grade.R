@@ -362,7 +362,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
 
   args <- as.list(environment())
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_abnormality_by_worst_grade,
     server = srv_t_abnormality_by_worst_grade,
@@ -380,6 +380,8 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -501,16 +503,18 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     isolate({
       resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env))
       teal.widgets::updateOptionalSelectInput(
         session = session,
         inputId = "worst_flag_indicator",
         choices = resolved$choices,
-        selected = resolved$selected
+        selected = restoreInput(ns("worst_flag_indicator"), resolved$selected)
       )
     })
 

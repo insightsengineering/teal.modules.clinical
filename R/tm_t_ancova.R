@@ -549,7 +549,7 @@ tm_t_ancova <- function(label,
     interact_var = cs_to_des_select(interact_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_ancova,
     ui_args = c(data_extract_list, args),
@@ -567,6 +567,8 @@ tm_t_ancova <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -694,9 +696,11 @@ srv_ancova <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
     iv_arco <- arm_ref_comp_observer(
@@ -796,7 +800,7 @@ srv_ancova <- function(id,
               session,
               "interact_y",
               selected = interact_select,
-              choices = interact_choices
+              choices = restoreInput(ns("interact_y"), interact_choices)
             )
           }
         }
@@ -834,12 +838,12 @@ srv_ancova <- function(id,
       do.call(what = "validate_standard_inputs", validate_args)
 
       # Other validations.
-      validate(shiny::need(
+      validate(need(
         length(unique(adsl_filtered[[input_arm_var]])) > 1,
         "ANCOVA table needs at least 2 arm groups to make comparisons."
       ))
       # check that there is at least one record with no missing data
-      validate(shiny::need(
+      validate(need(
         !all(is.na(merged$anl_q()[["ANL"]][[input_aval_var]])),
         "ANCOVA table cannot be calculated as all values are missing."
       ))
@@ -847,14 +851,14 @@ srv_ancova <- function(id,
       all_NA_dataset <- merged$anl_q()[["ANL"]] %>% # nolint: object_name.
         dplyr::group_by(dplyr::across(dplyr::all_of(c(input_avisit, input_arm_var)))) %>%
         dplyr::summarize(all_NA = all(is.na(.data[[input_aval_var]])))
-      validate(shiny::need(
+      validate(need(
         !any(all_NA_dataset$all_NA),
         "ANCOVA table cannot be calculated as all values are missing for one visit for (at least) one arm."
       ))
 
       if (input$include_interact) {
         if (!is.null(input_interact_var) && length(input_interact_var) > 0) {
-          validate(shiny::need(
+          validate(need(
             !input_interact_var %in% c(input_avisit, input_paramcd) &&
               length(as.vector(unique(anl_filtered[[input_interact_var]]))) > 1,
             paste(
@@ -863,7 +867,7 @@ srv_ancova <- function(id,
             )
           ))
           if (!all(is.numeric(as.vector(unique(anl_filtered[[input_interact_var]]))))) {
-            validate(shiny::need(
+            validate(need(
               !is.null(input$interact_y),
               paste(
                 "Interaction y must be selected when a discrete variable is chosen for interact variable.",

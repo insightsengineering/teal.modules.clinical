@@ -260,7 +260,7 @@ tm_t_events_patyear <- function(label,
     events_var = cs_to_des_select(events_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_events_patyear,
     ui_args = c(data_extract_list, args),
@@ -278,6 +278,8 @@ tm_t_events_patyear <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -399,9 +401,11 @@ srv_events_patyear <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     observeEvent(anl_q(), {
       data_anl <- merged$anl_q()[["ANL"]]
       aval_unit_var <- merged$anl_input_r()$columns_source$avalu_var
@@ -413,7 +417,7 @@ srv_events_patyear <- function(id,
           session,
           "input_time_unit",
           choices = choices,
-          selected = choices[1]
+          selected = restoreInput(ns("input_time_unit"), choices[1])
         )
       }
     })

@@ -280,7 +280,7 @@ tm_t_summary <- function(label,
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE, ordered = TRUE)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_summary,
     ui = ui_summary,
@@ -298,6 +298,8 @@ tm_t_summary <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -403,7 +405,7 @@ srv_summary <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),

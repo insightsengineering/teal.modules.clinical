@@ -337,7 +337,7 @@ tm_g_ipp <- function(label,
     paramcd = cs_to_des_filter(paramcd, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_g_ipp,
     ui = ui_g_ipp,
@@ -355,6 +355,8 @@ tm_g_ipp <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

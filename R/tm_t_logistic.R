@@ -317,7 +317,7 @@ tm_t_logistic <- function(label,
     avalc_var = cs_to_des_select(avalc_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_t_logistic,
     ui = ui_t_logistic,
@@ -334,6 +334,8 @@ tm_t_logistic <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -448,9 +450,11 @@ srv_t_logistic <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     # Observer to update reference and comparison arm input options.
     iv_arco <- arm_ref_comp_observer(
       session,
@@ -554,7 +558,7 @@ srv_t_logistic <- function(id,
       updateSelectInput(
         session, "responders",
         choices = responder_choices,
-        selected = responder_sel
+        selected = restoreInput(ns("responders"), responder_sel)
       )
     })
 
@@ -632,7 +636,7 @@ srv_t_logistic <- function(id,
         } else {
           c(sum(arm_n[unlist(input$buckets$Ref)]), arm_n[unlist(input$buckets$Comp)])
         }
-        validate(shiny::need(
+        validate(need(
           all(anl_arm_n >= 2),
           "Each treatment group should have at least 2 records."
         ))

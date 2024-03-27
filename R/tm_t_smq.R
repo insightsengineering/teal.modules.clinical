@@ -416,7 +416,7 @@ tm_t_smq <- function(label,
     llt = cs_to_des_select(llt, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_smq,
     server = srv_t_smq,
@@ -434,6 +434,8 @@ tm_t_smq <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -542,7 +544,7 @@ srv_t_smq <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(

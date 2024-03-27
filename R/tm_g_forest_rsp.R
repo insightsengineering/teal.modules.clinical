@@ -368,7 +368,7 @@ tm_g_forest_rsp <- function(label,
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_g_forest_rsp,
     ui_args = c(data_extract_list, args),
@@ -388,6 +388,8 @@ tm_g_forest_rsp <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -509,6 +511,8 @@ srv_g_forest_rsp <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -609,7 +613,7 @@ srv_g_forest_rsp <- function(id,
         updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = intersect(responder_choices, common_rsp)
+          selected = restoreInput(ns("responders"), intersect(responder_choices, common_rsp))
         )
       }
     )

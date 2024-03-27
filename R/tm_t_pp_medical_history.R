@@ -155,7 +155,7 @@ tm_t_pp_medical_history <- function(label,
     mhdistat = `if`(is.null(mhdistat), NULL, cs_to_des_select(mhdistat, dataname = dataname))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_medical_history,
     ui_args = c(data_extract_list, args),
@@ -171,6 +171,8 @@ tm_t_pp_medical_history <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
@@ -242,16 +244,19 @@ srv_t_medical_history <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
     patient_id <- reactive(input$patient_id)
 
     # Init
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
-      choices = patient_data_base(), selected = patient_data_base()[1]
+      choices = patient_data_base(),
+      selected = restoreInput(ns("patient_id"), patient_data_base()[1])
     )
 
     observeEvent(patient_data_base(),
@@ -260,11 +265,14 @@ srv_t_medical_history <- function(id,
           session,
           "patient_id",
           choices = patient_data_base(),
-          selected = if (length(patient_data_base()) == 1) {
-            patient_data_base()
-          } else {
-            intersect(patient_id(), patient_data_base())
-          }
+          selected = restoreInput(
+            ns("patient_id"),
+            if (length(patient_data_base()) == 1) {
+              patient_data_base()
+            } else {
+              intersect(patient_id(), patient_data_base())
+            }
+          )
         )
       },
       ignoreInit = TRUE
