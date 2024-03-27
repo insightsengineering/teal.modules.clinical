@@ -257,7 +257,7 @@ tm_t_pp_laboratory <- function(label,
     anrind = `if`(is.null(anrind), NULL, cs_to_des_select(anrind, dataname = dataname))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_g_laboratory,
     ui_args = c(data_extract_list, args),
@@ -273,6 +273,8 @@ tm_t_pp_laboratory <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

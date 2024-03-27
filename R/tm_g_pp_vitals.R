@@ -309,7 +309,7 @@ tm_g_pp_vitals <- function(label,
     xaxis = `if`(is.null(xaxis), NULL, cs_to_des_select(xaxis, dataname = dataname))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_g_vitals,
     ui_args = c(data_extract_list, args),
@@ -328,6 +328,8 @@ tm_g_pp_vitals <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

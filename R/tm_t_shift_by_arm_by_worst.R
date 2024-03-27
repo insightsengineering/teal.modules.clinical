@@ -314,7 +314,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
   )
 
 
-  module(
+  ans <- module(
     label = label,
     server = srv_shift_by_arm_by_worst,
     ui = ui_shift_by_arm_by_worst,
@@ -333,6 +333,8 @@ tm_t_shift_by_arm_by_worst <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

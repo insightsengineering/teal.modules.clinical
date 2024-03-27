@@ -302,7 +302,7 @@ tm_t_shift_by_arm <- function(label,
     baseline_var = cs_to_des_select(baseline_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_shift_by_arm,
     ui = ui_shift_by_arm,
@@ -321,6 +321,8 @@ tm_t_shift_by_arm <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

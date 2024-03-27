@@ -390,7 +390,7 @@ tm_g_pp_therapy <- function(label,
     cmendy = `if`(is.null(cmendy), NULL, cs_to_des_select(cmendy, dataname = dataname))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_g_therapy,
     ui_args = c(data_extract_list, args),
@@ -409,6 +409,8 @@ tm_g_pp_therapy <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

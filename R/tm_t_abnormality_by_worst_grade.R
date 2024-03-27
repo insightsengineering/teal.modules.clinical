@@ -362,7 +362,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
 
   args <- as.list(environment())
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_abnormality_by_worst_grade,
     server = srv_t_abnormality_by_worst_grade,
@@ -380,6 +380,8 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

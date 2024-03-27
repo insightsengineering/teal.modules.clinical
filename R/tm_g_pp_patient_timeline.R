@@ -522,7 +522,7 @@ tm_g_pp_patient_timeline <- function(label,
     dsrelday_end = `if`(is.null(dsrelday_end), NULL, cs_to_des_select(dsrelday_end, dataname = dataname_adcm))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_g_patient_timeline,
     ui_args = c(data_extract_list, args),
@@ -542,6 +542,8 @@ tm_g_pp_patient_timeline <- function(label,
     ),
     datanames = c(dataname_adcm, dataname_adae, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

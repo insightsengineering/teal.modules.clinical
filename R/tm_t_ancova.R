@@ -549,7 +549,7 @@ tm_t_ancova <- function(label,
     interact_var = cs_to_des_select(interact_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_ancova,
     ui_args = c(data_extract_list, args),
@@ -567,6 +567,8 @@ tm_t_ancova <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

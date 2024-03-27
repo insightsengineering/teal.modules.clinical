@@ -521,7 +521,7 @@ tm_t_tte <- function(label,
     time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_t_tte,
     ui = ui_t_tte,
@@ -540,6 +540,8 @@ tm_t_tte <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

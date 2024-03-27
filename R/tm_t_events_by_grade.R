@@ -890,7 +890,7 @@ tm_t_events_by_grade <- function(label,
     grade = cs_to_des_select(grade, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_t_events_by_grade,
     ui = ui_t_events_by_grade,
@@ -909,6 +909,8 @@ tm_t_events_by_grade <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

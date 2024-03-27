@@ -655,7 +655,7 @@ tm_t_events_summary <- function(label,
     llt = cs_to_des_select(llt, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_events_summary,
     ui_args = c(data_extract_list, args),
@@ -673,6 +673,8 @@ tm_t_events_summary <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

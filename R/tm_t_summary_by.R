@@ -433,7 +433,7 @@ tm_t_summary_by <- function(label,
     summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE, ordered = TRUE)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_summary_by,
     ui_args = c(data_extract_list, args),
@@ -451,6 +451,8 @@ tm_t_summary_by <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

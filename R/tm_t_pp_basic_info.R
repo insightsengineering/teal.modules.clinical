@@ -110,7 +110,7 @@ tm_t_pp_basic_info <- function(label,
     vars = `if`(is.null(vars), NULL, cs_to_des_select(vars, dataname = dataname, multiple = TRUE))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_basic_info,
     ui_args = c(data_extract_list, args),
@@ -125,6 +125,8 @@ tm_t_pp_basic_info <- function(label,
     ),
     datanames = dataname
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

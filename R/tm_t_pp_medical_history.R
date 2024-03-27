@@ -155,7 +155,7 @@ tm_t_pp_medical_history <- function(label,
     mhdistat = `if`(is.null(mhdistat), NULL, cs_to_des_select(mhdistat, dataname = dataname))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_medical_history,
     ui_args = c(data_extract_list, args),
@@ -171,6 +171,8 @@ tm_t_pp_medical_history <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

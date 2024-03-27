@@ -360,7 +360,7 @@ tm_g_km <- function(label,
     time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_g_km,
     ui = ui_g_km,
@@ -378,6 +378,8 @@ tm_g_km <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

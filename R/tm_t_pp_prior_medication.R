@@ -145,7 +145,7 @@ tm_t_pp_prior_medication <- function(label,
     cmstdy = `if`(is.null(cmstdy), NULL, cs_to_des_select(cmstdy, dataname = dataname))
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_prior_medication,
     ui_args = c(data_extract_list, args),
@@ -161,6 +161,8 @@ tm_t_pp_prior_medication <- function(label,
     ),
     datanames = c(dataname, parentname)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

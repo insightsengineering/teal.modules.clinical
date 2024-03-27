@@ -359,7 +359,7 @@ tm_t_abnormality <- function(label,
 
   args <- as.list(environment())
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_abnormality,
     server = srv_t_abnormality,
@@ -379,6 +379,8 @@ tm_t_abnormality <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

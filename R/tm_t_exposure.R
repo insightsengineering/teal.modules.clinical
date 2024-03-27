@@ -354,7 +354,7 @@ tm_t_exposure <- function(label,
   )
 
   args <- as.list(environment())
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_exposure,
     server = srv_t_exposure,
@@ -374,6 +374,8 @@ tm_t_exposure <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 

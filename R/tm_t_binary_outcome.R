@@ -475,7 +475,7 @@ tm_t_binary_outcome <- function(label,
     strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_binary_outcome,
     ui_args = c(data_extract_list, args),
@@ -496,6 +496,8 @@ tm_t_binary_outcome <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

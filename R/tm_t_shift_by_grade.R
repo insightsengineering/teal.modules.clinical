@@ -602,7 +602,7 @@ tm_t_shift_by_grade <- function(label,
     base_toxgrade_var = cs_to_des_select(base_toxgrade_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_t_shift_by_grade,
     server = srv_t_shift_by_grade,
@@ -620,6 +620,8 @@ tm_t_shift_by_grade <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

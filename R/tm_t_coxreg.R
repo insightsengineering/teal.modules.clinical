@@ -537,7 +537,7 @@ tm_t_coxreg <- function(label,
     cov_var = cs_to_des_select(cov_var, dataname = parentname, multiple = TRUE, ordered = TRUE)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_t_coxreg,
     ui = ui_t_coxreg,
@@ -555,6 +555,8 @@ tm_t_coxreg <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

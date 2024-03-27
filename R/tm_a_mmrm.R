@@ -579,7 +579,7 @@ tm_a_mmrm <- function(label,
     aval_var = cs_to_des_select(aval_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     server = srv_mmrm,
     ui = ui_mmrm,
@@ -600,6 +600,8 @@ tm_a_mmrm <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal

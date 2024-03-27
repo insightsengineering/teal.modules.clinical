@@ -260,7 +260,7 @@ tm_t_events_patyear <- function(label,
     events_var = cs_to_des_select(events_var, dataname = dataname)
   )
 
-  module(
+  ans <- module(
     label = label,
     ui = ui_events_patyear,
     ui_args = c(data_extract_list, args),
@@ -278,6 +278,8 @@ tm_t_events_patyear <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
+  attr(ans, "teal_bookmarkable") <- NULL
+  ans
 }
 
 #' @keywords internal
