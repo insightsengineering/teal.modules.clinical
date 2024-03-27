@@ -388,7 +388,8 @@ tm_g_forest_rsp <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
-  attr(ans, "teal_bookmarkable") <- NULL
+  # not bookmarkable b/c of arm_ref_comp_observer using teal.wigdets::draggable_buckets and JS therein
+  attr(ans, "teal_bookmarkable") <- FALSE
   ans
 }
 
@@ -419,13 +420,7 @@ ui_g_forest_rsp <- function(id, ...) {
         data_extract_spec = a$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      selectInput(
-        ns("responders"),
-        "Responders",
-        choices = c("CR", "PR"),
-        selected = c("CR", "PR"),
-        multiple = TRUE
-      ),
+      uiOutput(ns("container_responders")),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
         label = "Select Treatment Variable",
@@ -571,52 +566,48 @@ srv_g_forest_rsp <- function(id,
         teal.code::eval_code(code = as.expression(adsl_inputs()$expr))
     })
 
-    observeEvent(
-      eventExpr = c(
-        input[[extract_input("aval_var", "ADRS")]],
-        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
-      ),
-      handlerExpr = {
-        req(anl_q())
-        anl <- anl_q()[["ANL"]]
-        aval_var <- anl_inputs()$columns_source$aval_var
-        paramcd_level <- unlist(anl_inputs()$filter_info$paramcd[[1]]$selected)
-        if (length(paramcd_level) == 0) {
-          return(NULL)
-        }
+    output$container_responders <- renderUI({
+      req(anl_q())
 
-        sel_param <- if (is.list(default_responses)) {
-          default_responses[[paramcd_level]]
-        } else {
-          default_responses
-        }
+      anl <- anl_q()[["ANL"]]
+      aval_var <- anl_inputs()$columns_source$aval_var
+      paramcd_level <- unlist(anl_inputs()$filter_info$paramcd[[1]]$selected)
 
+      req(length(paramcd_level) != 0)
 
-        common_rsp <- if (is.list(sel_param)) {
-          sel_param$rsp
-        } else {
-          sel_param
-        }
-        responder_choices <- if (length(aval_var) == 0) {
-          character(0)
-        } else {
-          if ("levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1) {
-              sel_param$levels
-            } else {
-              union(anl[[aval_var]], sel_param$levels)
-            }
-          } else {
-            unique(anl[[aval_var]])
-          }
-        }
-        updateSelectInput(
-          session, "responders",
-          choices = responder_choices,
-          selected = restoreInput(ns("responders"), intersect(responder_choices, common_rsp))
-        )
+      sel_param <- if (is.list(default_responses)) {
+        default_responses[[paramcd_level]]
+      } else {
+        default_responses
       }
-    )
+
+      common_rsp <- if (is.list(sel_param)) {
+        sel_param$rsp
+      } else {
+        sel_param
+      }
+      responder_choices <- if (length(aval_var) == 0) {
+        character(0)
+      } else {
+        if ("levels" %in% names(sel_param)) {
+          if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1) {
+            sel_param$levels
+          } else {
+            union(anl[[aval_var]], sel_param$levels)
+          }
+        } else {
+          unique(anl[[aval_var]])
+        }
+      }
+
+      selectInput(
+        ns("responders"),
+        "Responders",
+        choices = responder_choices,
+        selected = intersect(responder_choices, common_rsp),
+        multiple = TRUE
+      )
+    })
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- reactive({
