@@ -295,7 +295,7 @@ tm_g_ci <- function(label,
 
   args <- as.list(environment())
 
-  module(
+  ans <- module(
     label = label,
     server = srv_g_ci,
     server_args = list(
@@ -311,6 +311,8 @@ tm_g_ci <- function(label,
     ui_args = args,
     datanames = "all"
   )
+  attr(ans, "teal_bookmarkable") <- TRUE
+  ans
 }
 
 #' @keywords internal
