@@ -389,6 +389,7 @@ tm_g_forest_rsp <- function(label,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
   # not bookmarkable b/c of arm_ref_comp_observer using teal.wigdets::draggable_buckets and JS therein
+  # https://github.com/insightsengineering/teal.widgets/issues/239
   attr(ans, "teal_bookmarkable") <- FALSE
   ans
 }
