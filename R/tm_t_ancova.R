@@ -567,7 +567,9 @@ tm_t_ancova <- function(label,
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
-  attr(ans, "teal_bookmarkable") <- NULL
+  # affected by https://github.com/insightsengineering/teal.widgets/issues/239
+  # An ATTEMPT was made but failed. Good luck.
+  attr(ans, "teal_bookmarkable") <- FALSE
   ans
 }
 
@@ -663,6 +665,8 @@ ui_ancova <- function(id, ...) {
               multiple = TRUE,
               fixed = FALSE
             )
+            ### ATTEMPT AT ENABLING BOOKMARKING
+            # uiOutput(ns("container_interact_y")) # nolint: commented_code.
           )
         )
       )
@@ -806,6 +810,39 @@ srv_ancova <- function(id,
         }
       }
     )
+
+    ### ATTEMPT AT ENABLING BOOKMARKING
+    # nolint start: commented_code.
+    # # Render interact_y with choices set to all levels of selected interact_var
+    # output$container_interact_y <- renderUI({
+    #   req(!is.null(input$include_interact))
+    #   interact_var <- isolate(req(input$`interact_var-dataset_ADQS_singleextract-select`))
+    #
+    #   interact_choices <- sort(as.vector(unique(merged$anl_q()[[dataname]][[interact_var]])))
+    #
+    #   current_selection <- isolate(input$interact_y)
+    #   interact_selected <-
+    #     if (isTruthy(current_selection) && all(current_selection %in% interact_choices)) {
+    #       current_selection
+    #     } else {
+    #       interact_choices[1L]
+    #     }
+    #
+    #   if (is.numeric(interact_choices)) {
+    #     interact_choices <- NULL
+    #     interact_selected <- NULL
+    #   }
+    #
+    #   teal.widgets::optionalSelectInput(
+    #     ns("interact_y"),
+    #     label = "Select Interaction y",
+    #     choices = interact_choices,
+    #     selected = interact_selected,
+    #     multiple = TRUE,
+    #     fixed = FALSE
+    #   )
+    # })
+    # nolint end.
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- reactive({
