@@ -49,9 +49,9 @@ template_g_km(
 
 \item{cnsr_var}{(\code{character})\cr name of the censoring variable.}
 
-\item{xticks}{(\code{numeric}, \code{number}, or \code{NULL})\cr numeric vector of ticks or single number with spacing
-between ticks on the x axis. If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
-an optimal tick position on the x axis.}
+\item{xticks}{(\code{numeric}, \code{number}, or \code{NULL})\cr numeric vector of tick positions or single number with spacing
+between ticks on the x-axis. If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
+optimal tick positions on the x-axis.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
@@ -66,11 +66,12 @@ an optimal tick position on the x axis.}
 \item{ties}{(\code{string})\cr among \code{exact} (equivalent to \code{DISCRETE} in SAS), \code{efron} and \code{breslow},
 see \code{\link[survival:coxph]{survival::coxph()}}. Note: there is no equivalent of SAS \code{EXACT} method in R.}
 
-\item{xlab}{(\code{string})\cr label of x-axis.}
+\item{xlab}{(\code{string})\cr x-axis label.}
 
 \item{time_unit_var}{(\code{character})\cr name of the variable representing time units.}
 
-\item{yval}{(\code{string})\cr value of y-axis. Options are \code{Survival} (default) and \code{Failure} probability.}
+\item{yval}{(\code{string})\cr type of plot, to be plotted on the y-axis. Options are \code{Survival} (default) and \code{Failure}
+probability.}
 
 \item{pval_method}{(\code{string})\cr the method used for estimation of p.values; \code{wald} (default) or \code{likelihood}.}
 
@@ -79,13 +80,13 @@ median survival time per group.}
 
 \item{annot_coxph}{(\code{flag})\cr add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
 
-\item{position_coxph}{(\code{numeric})\cr x and y positions for plotting \code{\link[survival:coxph]{survival::coxph()}} model.}
+\item{position_coxph}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}  Please use the \code{x} and \code{y} elements of
+\code{control_annot_coxph} instead.}
 
-\item{width_annots}{(named \code{list} of \code{unit}s)\cr a named list of widths for annotation tables with names \code{surv_med}
-(median survival time table) and \code{coxph} (\code{\link[survival:coxph]{survival::coxph()}} model table), where each value is the width
-(in units) to implement when printing the annotation table.}
+\item{width_annots}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{w} element of \code{control_annot_surv_med}
+(for surv_med) and \code{control_annot_coxph} (for coxph)."}
 
-\item{ci_ribbon}{(\code{flag})\cr draw the confidence interval around the Kaplan-Meier curve.}
+\item{ci_ribbon}{(\code{flag})\cr whether the confidence interval should be drawn around the Kaplan-Meier curve.}
 
 \item{title}{(\code{character})\cr title of the output.}
 }
