@@ -578,7 +578,7 @@ ui_g_patient_timeline <- function(id, ...) {
           "aerelday_start", "aerelday_end", "dsrelday_start", "dsrelday_end"
         )]
       ),
-      uiOutput(ns('container_patient_id')),
+      uiOutput(ns("container_patient_id")),
       teal.transform::data_extract_ui(
         id = ns("cmdecod"),
         label = "Select Medication standardized term variable:",
