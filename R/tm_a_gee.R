@@ -198,7 +198,7 @@ tm_a_gee <- function(label,
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_a_gee (prototype)")
+  message("Initializing tm_a_gee (prototype)")
 
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
 
@@ -250,7 +250,7 @@ tm_a_gee <- function(label,
 ui_gee <- function(id, ...) {
   a <- list(...) # module args
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
     a$paramcd,
@@ -262,14 +262,14 @@ ui_gee <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
-      shiny::h3(shiny::textOutput(ns("gee_title"))),
+      tags$h3(textOutput(ns("gee_title"))),
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
       teal.transform::data_extract_ui(
         id = ns("aval_var"),
@@ -310,11 +310,11 @@ ui_gee <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       shinyjs::hidden(
-        shiny::uiOutput(ns("arms_buckets")),
-        shiny::helpText(
+        uiOutput(ns("arms_buckets")),
+        helpText(
           id = ns("help_text"), "Multiple reference groups are automatically combined into a single group."
         ),
-        shiny::checkboxInput(
+        checkboxInput(
           ns("combine_comp_arms"),
           "Combine all comparison groups?",
           value = FALSE
@@ -326,7 +326,7 @@ ui_gee <- function(id, ...) {
         data_extract_spec = a$id_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::selectInput(
+      selectInput(
         ns("cor_struct"),
         "Correlation Structure",
         choices = c(
@@ -346,7 +346,7 @@ ui_gee <- function(id, ...) {
         multiple = FALSE,
         fixed = a$conf_level$fixed
       ),
-      shiny::radioButtons(
+      radioButtons(
         ns("output_table"),
         "Output Type",
         choices = c(
@@ -357,7 +357,7 @@ ui_gee <- function(id, ...) {
         selected = "t_gee_lsmeans"
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -387,11 +387,11 @@ srv_gee <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     ## split_covariates ----
-    shiny::observeEvent(input[[extract_input("cov_var", dataname)]],
+    observeEvent(input[[extract_input("cov_var", dataname)]],
       ignoreNULL = FALSE,
       {
         # update covariates as actual variables
@@ -419,7 +419,7 @@ srv_gee <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      data = shiny::reactive(data()[[parentname]]),
+      data = reactive(data()[[parentname]]),
       arm_ref_comp = arm_ref_comp,
       module = "tm_a_gee"
     )
@@ -446,7 +446,7 @@ srv_gee <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
       iv$add_rule(
@@ -473,7 +473,7 @@ srv_gee <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -488,7 +488,7 @@ srv_gee <- function(id,
     # Initially hide the output title because there is no output yet.
     shinyjs::show("gee_title")
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
 
       # To do in production: add validations.
@@ -496,14 +496,14 @@ srv_gee <- function(id,
     })
 
     ## table_r ----
-    table_q <- shiny::reactive({
+    table_q <- reactive({
       validate_checks()
       output_table <- input$output_table
       conf_level <- as.numeric(input$conf_level)
       col_source <- merged$anl_input_r()$columns_source
       filter_info <- merged$anl_input_r()$filter_info
 
-      shiny::req(output_table)
+      req(output_table)
 
       basic_table_args$subtitles <- paste0(
         "Analysis Variable: ", col_source$aval_var,
@@ -531,7 +531,7 @@ srv_gee <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
     })
 
-    output$gee_title <- shiny::renderText({
+    output$gee_title <- renderText({
       # Input on output type.
       output_table <- input$output_table
 
@@ -543,7 +543,7 @@ srv_gee <- function(id,
       output_title
     })
 
-    table_r <- shiny::reactive({
+    table_r <- reactive({
       table_q()[["result_table"]]
     })
 
@@ -554,15 +554,15 @@ srv_gee <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
+      verbatim_content = reactive(teal.code::get_code(table_q())),
       title = label
     )
 

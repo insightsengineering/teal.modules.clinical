@@ -24,7 +24,7 @@ template_g_km <- function(dataname = "ANL",
                           strata_var = NULL,
                           time_points = NULL,
                           facet_var = "SEX",
-                          font_size = 10,
+                          font_size = 11,
                           conf_level = 0.95,
                           ties = "efron",
                           xlab = "Survival time",
@@ -33,10 +33,35 @@ template_g_km <- function(dataname = "ANL",
                           pval_method = "log-rank",
                           annot_surv_med = TRUE,
                           annot_coxph = TRUE,
-                          position_coxph = c(-0.04, 0.02),
-                          width_annots = list(surv_med = grid::unit(0.45, "npc"), coxph = grid::unit(0.6, "npc")),
+                          control_annot_surv_med = control_surv_med_annot(),
+                          control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+                          legend_pos = NULL,
+                          position_coxph = lifecycle::deprecated(),
+                          width_annots = lifecycle::deprecated(),
+                          rel_height_plot = 0.80,
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
+  if (lifecycle::is_present(position_coxph)) {
+    control_annot_coxph[["x"]] <- position_coxph[1]
+    control_annot_coxph[["y"]] <- position_coxph[2]
+    lifecycle::deprecate_warn(
+      "0.8.17",
+      "template_g_km(position_coxph)",
+      details = "Please use the 'x' and 'y' elements of the `control_annot_coxph` argument instead."
+    )
+  }
+  if (lifecycle::is_present(width_annots)) {
+    control_annot_surv_med[["w"]] <- width_annots[["surv_med"]]
+    control_annot_coxph[["w"]] <- width_annots[["coxph"]]
+    lifecycle::deprecate_warn(
+      "0.8.17",
+      "template_g_km(width_annots)",
+      details = paste(
+        "Please use the 'w' element of the `control_annot_surv_med`",
+        "and `control_annot_coxph` arguments instead."
+      )
+    )
+  }
   checkmate::assert_string(dataname)
   checkmate::assert_string(arm_var)
   checkmate::assert_string(aval_var)
@@ -46,6 +71,8 @@ template_g_km <- function(dataname = "ANL",
   checkmate::assert_flag(combine_comp_arms)
   checkmate::assert_numeric(xticks, null.ok = TRUE)
   checkmate::assert_string(title)
+  checkmate::assert_number(font_size)
+  checkmate::assert_number(rel_height_plot, lower = 0, upper = 1)
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
@@ -139,11 +166,6 @@ template_g_km <- function(dataname = "ANL",
     graph_list,
     substitute(
       expr = {
-        grid::grid.newpage()
-        lyt <- grid::grid.layout(nrow = length(anl), ncol = 1) %>%
-          grid::viewport(layout = .) %>%
-          grid::pushViewport()
-
         g_km_counter_generator <- function() {
           plot_number <- 0L
           function(x) {
@@ -182,16 +204,15 @@ template_g_km <- function(dataname = "ANL",
                   "p-value Method for Coxph (Hazard Ratio):", pval_method
                 )
               },
-              newpage = FALSE,
-              vp = grid::viewport(layout.pos.row = plot_number, layout.pos.col = 1),
               font_size = font_size,
               ci_ribbon = ci_ribbon,
-              ggtheme = ggplot2::theme_minimal(),
               annot_surv_med = annot_surv_med,
               annot_coxph = annot_coxph,
               control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
-              position_coxph = position_coxph,
-              width_annots = width_annots
+              control_annot_surv_med = control_annot_surv_med,
+              control_annot_coxph = control_annot_coxph,
+              legend_pos = legend_pos,
+              rel_height_plot = rel_height_plot
             )
           }
         }
@@ -203,7 +224,10 @@ template_g_km <- function(dataname = "ANL",
           g_km_counter
         )
 
-        plot <- tern::stack_grobs(grobs = plot_list)
+        plot <- cowplot::plot_grid(
+          plotlist = plot_list,
+          ncol = 1
+        )
         plot
       },
       env = list(
@@ -218,10 +242,12 @@ template_g_km <- function(dataname = "ANL",
         pval_method = pval_method,
         annot_surv_med = annot_surv_med,
         annot_coxph = annot_coxph,
-        position_coxph = position_coxph,
-        width_annots = width_annots,
+        control_annot_surv_med = control_annot_surv_med,
+        control_annot_coxph = control_annot_coxph,
+        legend_pos = legend_pos,
         ties = ties,
         ci_ribbon = ci_ribbon,
+        rel_height_plot = rel_height_plot,
         title = title
       )
     )
@@ -233,7 +259,7 @@ template_g_km <- function(dataname = "ANL",
 
 #' teal Module: Kaplan-Meier Plot
 #'
-#' This module produces a grid-style Kaplan-Meier plot for data with ADaM structure.
+#' This module produces a `ggplot`-style Kaplan-Meier plot for data with ADaM structure.
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_km
@@ -322,11 +348,16 @@ tm_g_km <- function(label,
                       fixed = TRUE
                     ),
                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                    plot_height = c(1200L, 400L, 5000L),
+                    font_size = c(11L, 1L, 30),
+                    control_annot_surv_med = control_surv_med_annot(),
+                    control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+                    legend_pos = c(0.9, 0.5),
+                    rel_height_plot = c(80L, 0L, 100L),
+                    plot_height = c(800L, 400L, 5000L),
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL) {
-  logger::log_info("Initializing tm_g_km")
+  message("Initializing tm_g_km")
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -373,7 +404,10 @@ tm_g_km <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         plot_height = plot_height,
-        plot_width = plot_width
+        plot_width = plot_width,
+        control_annot_surv_med = control_annot_surv_med,
+        control_annot_coxph = control_annot_coxph,
+        legend_pos = legend_pos
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -393,20 +427,20 @@ ui_g_km <- function(id, ...) {
     a$time_unit_var
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
-      shiny::verbatimTextOutput(outputId = ns("text")),
+      verbatimTextOutput(outputId = ns("text")),
       teal.widgets::plot_with_settings_ui(
         id = ns("myplot")
       )
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -438,25 +472,25 @@ ui_g_km <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::div(
+      tags$div(
         class = "arm-comp-box",
-        shiny::tags$label("Compare Treatments"),
+        tags$label("Compare Treatments"),
         shinyWidgets::switchInput(
           inputId = ns("compare_arms"),
           value = !is.null(a$arm_ref_comp),
           size = "mini"
         ),
-        shiny::conditionalPanel(
+        conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          shiny::div(
-            shiny::uiOutput(
+          tags$div(
+            uiOutput(
               ns("arms_buckets"),
               title = paste(
                 "Multiple reference groups are automatically combined into a single group when more than one",
                 "value is selected."
               )
             ),
-            shiny::checkboxInput(
+            checkboxInput(
               ns("combine_comp_arms"),
               "Combine all comparison groups?",
               value = FALSE
@@ -470,17 +504,17 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      shiny::conditionalPanel(
+      conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
             "Comparison settings",
-            shiny::radioButtons(
+            radioButtons(
               ns("pval_method_coxph"),
-              label = shiny::HTML(
+              label = HTML(
                 paste(
                   "p-value method for ",
-                  shiny::span(class = "text-primary", "Coxph"),
+                  tags$span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -488,12 +522,12 @@ ui_g_km <- function(id, ...) {
               choices = c("wald", "log-rank", "likelihood"),
               selected = "log-rank"
             ),
-            shiny::radioButtons(
+            radioButtons(
               ns("ties_coxph"),
-              label = shiny::HTML(
+              label = HTML(
                 paste(
                   "Ties for ",
-                  shiny::span(class = "text-primary", "Coxph"),
+                  tags$span(class = "text-primary", "Coxph"),
                   " (Hazard Ratio)",
                   sep = ""
                 )
@@ -507,32 +541,35 @@ ui_g_km <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
-          shiny::textInput(
+          textInput(
             inputId = ns("xticks"),
             label = "Specify break intervals for x-axis e.g. 0 ; 500"
           ),
-          shiny::radioButtons(
+          radioButtons(
             ns("yval"),
-            shiny::tags$label("Value on y-axis", class = "text-primary"),
+            tags$label("Value on y-axis", class = "text-primary"),
             choices = c("Survival probability", "Failure probability"),
             selected = c("Survival probability"),
           ),
-          shiny::numericInput(
-            inputId = ns("font_size"),
-            label = "Plot tables font size",
-            value = 10,
-            min = 5,
-            max = 15,
-            step = 1,
-            width = "100%"
+          teal.widgets::optionalSliderInputValMinMax(
+            ns("font_size"),
+            "Table Font Size",
+            a$font_size,
+            ticks = FALSE, step = 1
           ),
-          shiny::checkboxInput(
+          teal.widgets::optionalSliderInputValMinMax(
+            ns("rel_height_plot"),
+            "Relative Height of Plot (%)",
+            a$rel_height_plot,
+            ticks = FALSE, step = 1
+          ),
+          checkboxInput(
             inputId = ns("show_ci_ribbon"),
             label = "Show CI ribbon",
             value = FALSE,
             width = "100%"
           ),
-          shiny::checkboxInput(
+          checkboxInput(
             inputId = ns("show_km_table"),
             label = "Show KM table",
             value = TRUE,
@@ -546,7 +583,7 @@ ui_g_km <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
-          shiny::textInput(ns("xlab"), "X-axis label", "Time"),
+          textInput(ns("xlab"), "X-axis label", "Time"),
           teal.transform::data_extract_ui(
             id = ns("time_unit_var"),
             label = "Time Unit Variable",
@@ -556,7 +593,7 @@ ui_g_km <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -582,13 +619,16 @@ srv_g_km <- function(id,
                      label,
                      time_unit_var,
                      plot_height,
-                     plot_width) {
+                     plot_width,
+                     control_annot_surv_med,
+                     control_annot_coxph,
+                     legend_pos) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -599,7 +639,7 @@ srv_g_km <- function(id,
       data = data()[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
-      on_off = shiny::reactive(input$compare_arms)
+      on_off = reactive(input$compare_arms)
     )
 
     selector_list <- teal.transform::data_extract_multiple_srv(
@@ -623,7 +663,7 @@ srv_g_km <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
 
       if (isTRUE(input$compare_arms)) {
@@ -662,12 +702,12 @@ srv_g_km <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr))
     })
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
 
       adsl_filtered <- anl_q()[[parentname]]
@@ -706,7 +746,7 @@ srv_g_km <- function(id,
       NULL
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
 
       anl_m <- anl_inputs()
@@ -736,6 +776,9 @@ srv_g_km <- function(id,
         facet_var = as.vector(anl_m$columns_source$facet_var),
         annot_surv_med = input$show_km_table,
         annot_coxph = input$compare_arms,
+        control_annot_surv_med = control_annot_surv_med,
+        control_annot_coxph = control_annot_coxph,
+        legend_pos = legend_pos,
         xticks = input_xticks,
         font_size = input$font_size,
         pval_method = input$pval_method_coxph,
@@ -743,13 +786,14 @@ srv_g_km <- function(id,
         ties = input$ties_coxph,
         xlab = input$xlab,
         yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
+        rel_height_plot = input$rel_height_plot / 100,
         ci_ribbon = input$show_ci_ribbon,
         title = title
       )
       teal.code::eval_code(anl_q(), as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["plot"]])
+    plot_r <- reactive(all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -761,14 +805,14 @@ srv_g_km <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

@@ -16,9 +16,6 @@
       {
           facets <- droplevels(anl$SEX)
           anl <- split(anl, f = facets)
-          grid::grid.newpage()
-          lyt <- grid::grid.layout(nrow = length(anl), ncol = 1) %>% 
-              grid::viewport(layout = .) %>% grid::pushViewport()
           g_km_counter_generator <- function() {
               plot_number <- 0L
               function(x) {
@@ -43,20 +40,18 @@
                         paste("Ties for Coxph (Hazard Ratio):", "efron", 
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
-                      }, newpage = FALSE, vp = grid::viewport(layout.pos.row = plot_number, 
-                        layout.pos.col = 1), font_size = 10, ci_ribbon = FALSE, 
-                      ggtheme = ggplot2::theme_minimal(), annot_surv_med = TRUE, 
+                      }, font_size = 11, ci_ribbon = FALSE, annot_surv_med = TRUE, 
                       annot_coxph = TRUE, control_coxph_pw = control_coxph(conf_level = 0.95, 
                         pval_method = "log-rank", ties = "efron"), 
-                      position_coxph = c(-0.04, 0.02), width_annots = list(surv_med = structure(0.45, 
-                        unit = 0L, class = c("simpleUnit", "unit", 
-                          "unit_v2")), coxph = structure(0.6, unit = 0L, 
-                        class = c("simpleUnit", "unit", "unit_v2"))))
+                      control_annot_surv_med = list(x = 0.8, y = 0.85, 
+                        w = 0.32, h = 0.16, fill = TRUE), control_annot_coxph = list(x = 0.27, 
+                        y = 0.35, w = 0.3, h = 0.125, fill = TRUE, 
+                        ref_lbls = FALSE), legend_pos = NULL, rel_height_plot = 0.8)
               }
           }
           g_km_counter <- g_km_counter_generator()
           plot_list <- lapply(anl, g_km_counter)
-          plot <- tern::stack_grobs(grobs = plot_list)
+          plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
           plot
       }
       
@@ -83,9 +78,6 @@
       {
           facets <- droplevels(anl$SEX)
           anl <- split(anl, f = facets)
-          grid::grid.newpage()
-          lyt <- grid::grid.layout(nrow = length(anl), ncol = 1) %>% 
-              grid::viewport(layout = .) %>% grid::pushViewport()
           g_km_counter_generator <- function() {
               plot_number <- 0L
               function(x) {
@@ -110,20 +102,18 @@
                         paste("Ties for Coxph (Hazard Ratio):", "efron", 
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
-                      }, newpage = FALSE, vp = grid::viewport(layout.pos.row = plot_number, 
-                        layout.pos.col = 1), font_size = 10, ci_ribbon = FALSE, 
-                      ggtheme = ggplot2::theme_minimal(), annot_surv_med = TRUE, 
+                      }, font_size = 11, ci_ribbon = FALSE, annot_surv_med = TRUE, 
                       annot_coxph = TRUE, control_coxph_pw = control_coxph(conf_level = 0.95, 
                         pval_method = "log-rank", ties = "efron"), 
-                      position_coxph = c(-0.04, 0.02), width_annots = list(surv_med = structure(0.45, 
-                        unit = 0L, class = c("simpleUnit", "unit", 
-                          "unit_v2")), coxph = structure(0.6, unit = 0L, 
-                        class = c("simpleUnit", "unit", "unit_v2"))))
+                      control_annot_surv_med = list(x = 0.8, y = 0.85, 
+                        w = 0.32, h = 0.16, fill = TRUE), control_annot_coxph = list(x = 0.27, 
+                        y = 0.35, w = 0.3, h = 0.125, fill = TRUE, 
+                        ref_lbls = FALSE), legend_pos = NULL, rel_height_plot = 0.8)
               }
           }
           g_km_counter <- g_km_counter_generator()
           plot_list <- lapply(anl, g_km_counter)
-          plot <- tern::stack_grobs(grobs = plot_list)
+          plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
           plot
       }
       
@@ -151,9 +141,6 @@
       {
           facets <- droplevels(anl$SEX)
           anl <- split(anl, f = facets)
-          grid::grid.newpage()
-          lyt <- grid::grid.layout(nrow = length(anl), ncol = 1) %>% 
-              grid::viewport(layout = .) %>% grid::pushViewport()
           g_km_counter_generator <- function() {
               plot_number <- 0L
               function(x) {
@@ -178,20 +165,18 @@
                         paste("Ties for Coxph (Hazard Ratio):", "efron", 
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
-                      }, newpage = FALSE, vp = grid::viewport(layout.pos.row = plot_number, 
-                        layout.pos.col = 1), font_size = 10, ci_ribbon = FALSE, 
-                      ggtheme = ggplot2::theme_minimal(), annot_surv_med = TRUE, 
+                      }, font_size = 11, ci_ribbon = FALSE, annot_surv_med = TRUE, 
                       annot_coxph = TRUE, control_coxph_pw = control_coxph(conf_level = 0.95, 
                         pval_method = "log-rank", ties = "efron"), 
-                      position_coxph = c(-0.04, 0.02), width_annots = list(surv_med = structure(0.45, 
-                        unit = 0L, class = c("simpleUnit", "unit", 
-                          "unit_v2")), coxph = structure(0.6, unit = 0L, 
-                        class = c("simpleUnit", "unit", "unit_v2"))))
+                      control_annot_surv_med = list(x = 0.8, y = 0.85, 
+                        w = 0.32, h = 0.16, fill = TRUE), control_annot_coxph = list(x = 0.27, 
+                        y = 0.35, w = 0.3, h = 0.125, fill = TRUE, 
+                        ref_lbls = FALSE), legend_pos = NULL, rel_height_plot = 0.8)
               }
           }
           g_km_counter <- g_km_counter_generator()
           plot_list <- lapply(anl, g_km_counter)
-          plot <- tern::stack_grobs(grobs = plot_list)
+          plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
           plot
       }
       

@@ -15,7 +15,7 @@ or \code{session$ns("original id")}/"original id" in the server function.}
 \code{dataname} from data_extract input.
 This might be retrieved like \code{data_extract_spec(...)[[1]]$dataname}.}
 
-\item{filter}{optional, (\code{logical})\cr
+\item{filter}{(\code{logical}) optional,\cr
 if the connected \code{extract_data_spec} has objects passed to its \code{filter} argument}
 }
 \value{
