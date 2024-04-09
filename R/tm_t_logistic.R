@@ -573,7 +573,7 @@ srv_t_logistic <- function(id,
       }
     })
 
-    output$interaction_variable <- renderUI({
+    output$interaction_input <- renderUI({
       interaction_var <- input$interaction_var
       if (length(interaction_var) > 0) {
         if (is.numeric(merged$anl_q()[["ANL"]][[interaction_var]])) {
