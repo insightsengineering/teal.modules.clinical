@@ -156,7 +156,7 @@ template_g_lineplot <- function(dataname = "ANL",
       y_lab = ggplot2_args_ylab,
       legend_title = ggplot2_args_legend_title,
       ggtheme = ggplot2::theme_minimal(),
-      control = control_summarize_vars(conf_level = conf_level),
+      control = control_analyze_vars(conf_level = conf_level),
       subtitle_add_paramcd = FALSE,
       subtitle_add_unit = FALSE
     ),
