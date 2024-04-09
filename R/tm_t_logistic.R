@@ -406,7 +406,7 @@ ui_t_logistic <- function(id, ...) {
         data_extract_spec = a$cov_var,
         is_single_dataset = is_single_dataset_value
       ),
-      uiOutput(ns("interaction_var_wrapper")),
+      uiOutput(ns("interaction_variable")),
       uiOutput(ns("interaction_input")),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
@@ -558,11 +558,11 @@ srv_t_logistic <- function(id,
       )
     })
 
-    output$interaction_var_wrapper <- renderUI({
+    output$interaction_variable <- renderUI({
       cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       if (length(cov_var) > 0) {
         teal.widgets::optionalSelectInput(
-          session$ns("interaction_var"),
+          session$ns("interaction_variable"),
           label = "Interaction",
           choices = cov_var,
           selected = NULL,
@@ -573,7 +573,7 @@ srv_t_logistic <- function(id,
       }
     })
 
-    output$interaction_input <- renderUI({
+    output$interaction_variable <- renderUI({
       interaction_var <- input$interaction_var
       if (length(interaction_var) > 0) {
         if (is.numeric(merged$anl_q()[["ANL"]][[interaction_var]])) {
