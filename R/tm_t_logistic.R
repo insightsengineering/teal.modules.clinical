@@ -406,7 +406,7 @@ ui_t_logistic <- function(id, ...) {
         data_extract_spec = a$cov_var,
         is_single_dataset = is_single_dataset_value
       ),
-      uiOutput(ns("interaction_var")),
+      uiOutput(ns("interaction_var_wrapper")),
       uiOutput(ns("interaction_input")),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
@@ -558,7 +558,7 @@ srv_t_logistic <- function(id,
       )
     })
 
-    output$interaction_var <- renderUI({
+    output$interaction_var_wrapper <- renderUI({
       cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       if (length(cov_var) > 0) {
         teal.widgets::optionalSelectInput(
