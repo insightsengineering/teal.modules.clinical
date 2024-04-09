@@ -562,7 +562,7 @@ srv_t_logistic <- function(id,
       cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       if (length(cov_var) > 0) {
         teal.widgets::optionalSelectInput(
-          session$ns("interaction_variable"),
+          session$ns("interaction_var"),
           label = "Interaction",
           choices = cov_var,
           selected = NULL,
