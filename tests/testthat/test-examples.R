@@ -7,11 +7,14 @@ rd_files <- function() {
 }
 
 suppress_warnings <- function(expr, pattern = "*", ...) {
-  withCallingHandlers(expr, warning = function(w) {
-    if (grepl(pattern, conditionMessage(w))) {
-      invokeRestart("muffleWarning")
+  withCallingHandlers(
+    expr,
+    warning = function(w) {
+      if (grepl(pattern, conditionMessage(w))) {
+        invokeRestart("muffleWarning")
+      }
     }
-  })
+  )
 }
 
 with_mocked_app_bindings <- function(code) {
@@ -28,15 +31,11 @@ with_mocked_app_bindings <- function(code) {
   }
 
   mocked_runApp <- function(x, ...) { # nolint object_name_linter.
-    # suppress warnings coming from saving qenv https://github.com/insightsengineering/teal.code/issues/194
-    suppress_warnings(
-      app_driver <- shinytest2::AppDriver$new(
-        x,
-        shiny_args = list(...),
-        check_names = FALSE, # explicit check below
-        options = options() # https://github.com/rstudio/shinytest2/issues/377
-      ),
-      "may not be available when loading"
+    app_driver <- shinytest2::AppDriver$new(
+      x,
+      shiny_args = list(...),
+      check_names = FALSE, # explicit check below
+      options = options() # https://github.com/rstudio/shinytest2/issues/377
     )
     on.exit(app_driver$stop(), add = TRUE)
     app_driver$wait_for_idle(timeout = 20000)
@@ -106,8 +105,12 @@ for (i in rd_files()) {
         withr::defer(options(op))
       }
       with_mocked_app_bindings(
-        testthat::expect_no_error(
-          pkgload::run_example(i, run_donttest = TRUE, run_dontrun = FALSE, quiet = TRUE)
+        # suppress warnings coming from saving qenv https://github.com/insightsengineering/teal.code/issues/194
+        suppress_warnings(
+          testthat::expect_no_error(
+            pkgload::run_example(i, run_donttest = TRUE, run_dontrun = FALSE, quiet = TRUE)
+          ),
+          "may not be available when loading"
         )
       )
     }
