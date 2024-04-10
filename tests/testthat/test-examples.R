@@ -3,7 +3,11 @@
 # this also requires `devtools::document()` to be run before running the tests
 
 rd_files <- function() {
-  list.files(testthat::test_path("man"), pattern = "\\.[Rr]d$", full.names = TRUE)
+  list.files(
+    normalizePath(file.path(testthat::test_path(), "..", "..", "man")),
+    pattern = "\\.[Rr]d$",
+    full.names = TRUE
+  )
 }
 
 suppress_warnings <- function(expr, pattern = "*", ...) {
