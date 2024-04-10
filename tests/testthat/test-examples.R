@@ -25,7 +25,7 @@ with_mocked_app_bindings <- function(code) {
   mocked_shinyApp <- function(ui, server, ...) { # nolint object_name_linter.
     functionBody(server) <- bquote({
       pkgload::load_all(
-        .(normalizePath(file.path(testthat::test_path(), "../.."))),
+        .(normalizePath(file.path(testthat::test_path(), "..", ".."))),
         export_all = FALSE,
         attach_testthat = FALSE,
         warn_conflicts = FALSE
