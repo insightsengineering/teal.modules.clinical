@@ -31,9 +31,12 @@ with_mocked_app_bindings <- function(code) {
   }
 
   mocked_runApp <- function(x, ...) { # nolint object_name_linter.
+    args <- list(...)
+    args[["launch.browser"]] <- FALSE # needed for RStudio
+
     app_driver <- shinytest2::AppDriver$new(
       x,
-      shiny_args = list(...),
+      shiny_args = args,
       check_names = FALSE, # explicit check below
       options = options() # https://github.com/rstudio/shinytest2/issues/377
     )
