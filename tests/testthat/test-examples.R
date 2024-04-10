@@ -21,10 +21,10 @@ with_mocked_app_bindings <- function(code) {
   shiny__shinyApp <- shiny::shinyApp # nolint object_name_linter.
 
   # workaround of https://github.com/rstudio/shinytest2/issues/381
-  # change to `print(shiny__shinyApp(...))` once fixed
+  # change to `print(shiny__shinyApp(...))` and remove allow warning once fixed
   mocked_shinyApp <- function(ui, server, ...) { # nolint object_name_linter.
     functionBody(server) <- bquote({
-      library(.(testthat::testing_package()), character.only = TRUE)
+      pkgload::load_all(.(normalizePath(file.path(testthat::test_path(), "../.."))), export_all = FALSE, attach_testthat = FALSE, warn_conflicts = FALSE)
       .(functionBody(server))
     })
     print(do.call(shiny__shinyApp, append(x = list(ui = ui, server = server), list(...))))
@@ -47,7 +47,8 @@ with_mocked_app_bindings <- function(code) {
     ## warning in the app does not invoke a warning in the test
     ## https://github.com/rstudio/shinytest2/issues/378
     app_logs <- subset(app_driver$get_logs(), location == "shiny")[["message"]]
-    if (any(grepl("Warning in.*", app_logs))) {
+    # allow `Warning in file(con, "r")` warning coming from pkgload::load_all()
+    if (any(grepl("Warning in.*", app_logs) & !grepl("Warning in file\\(con, \"r\"\\)", app_logs))) {
       warning(
         sprintf(
           "Detected a warning in the application logs:\n%s",
