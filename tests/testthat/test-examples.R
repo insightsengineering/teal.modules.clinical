@@ -24,7 +24,12 @@ with_mocked_app_bindings <- function(code) {
   # change to `print(shiny__shinyApp(...))` and remove allow warning once fixed
   mocked_shinyApp <- function(ui, server, ...) { # nolint object_name_linter.
     functionBody(server) <- bquote({
-      pkgload::load_all(.(normalizePath(file.path(testthat::test_path(), "../.."))), export_all = FALSE, attach_testthat = FALSE, warn_conflicts = FALSE)
+      pkgload::load_all(
+        .(normalizePath(file.path(testthat::test_path(), "../.."))),
+        export_all = FALSE,
+        attach_testthat = FALSE,
+        warn_conflicts = FALSE
+      )
       .(functionBody(server))
     })
     print(do.call(shiny__shinyApp, append(x = list(ui = ui, server = server), list(...))))
