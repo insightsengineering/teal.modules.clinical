@@ -3,8 +3,18 @@
 # this also requires `devtools::document()` to be run before running the tests
 
 rd_files <- function() {
+  man_path <- if (testthat::is_checking()) {
+    testthat::test_path("..", "..", "00_pkg_src", testthat::testing_package(), "man")
+  } else {
+    testthat::test_path("..", "..", "man")
+  }
+
+  if (!dir.exists(man_path)) {
+    stop("Cannot find path to `man` directory.")
+  }
+
   list.files(
-    normalizePath(file.path(testthat::test_path(), "..", "..", "man")),
+    man_path,
     pattern = "\\.[Rr]d$",
     full.names = TRUE
   )
