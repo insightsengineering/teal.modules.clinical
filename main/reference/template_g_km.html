@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9016</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9017</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,17 +34,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -147,7 +136,7 @@
 
 
 <dt>xticks</dt>
-<dd><p>(<code>numeric</code>, <code>number</code>, or <code>NULL</code>)<br> numeric vector of tick positions or single number with spacing
+<dd><p>(<code>numeric</code> or <code>NULL</code>)<br> numeric vector of tick positions or a single number with spacing
 between ticks on the x-axis. If <code>NULL</code> (default), <code><a href="https://rdrr.io/pkg/labeling/man/extended.html" class="external-link">labeling::extended()</a></code> is used to determine
 optimal tick positions on the x-axis.</p></dd>
 
@@ -200,7 +189,7 @@ median survival time per group.</p></dd>
 
 
 <dt>annot_coxph</dt>
-<dd><p>(<code>flag</code>)<br> add the annotation table from a <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> model.</p></dd>
+<dd><p>(<code>flag</code>)<br> whether to add the annotation table from a <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> model.</p></dd>
 
 
 <dt>control_annot_surv_med</dt>
@@ -216,7 +205,7 @@ options are: <code>x</code>, <code>y</code>, <code>w</code>, <code>h</code>, <co
 
 
 <dt>legend_pos</dt>
-<dd><p>(<code>numeric(2)</code>)<br> vector of length 2 containing x- and y-coordinates, respectively, for the legend
+<dd><p>(<code>numeric(2)</code> or <code>NULL</code>)<br> vector containing x- and y-coordinates, respectively, for the legend
 position relative to the KM plot area. If <code>NULL</code> (default), the legend is positioned in the bottom right corner of
 the plot, or the middle right of the plot if needed to prevent overlapping.</p></dd>
 
@@ -228,7 +217,7 @@ the plot, or the middle right of the plot if needed to prevent overlapping.</p><
 
 <dt>width_annots</dt>
 <dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Please use the <code>w</code> element of <code>control_annot_surv_med</code>
-(for surv_med) and <code>control_annot_coxph</code> (for coxph)."</p></dd>
+(for <code>surv_med</code>) and <code>control_annot_coxph</code> (for <code>coxph</code>)."</p></dd>
 
 
 <dt>rel_height_plot</dt>
