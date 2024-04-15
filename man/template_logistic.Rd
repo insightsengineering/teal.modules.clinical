@@ -50,7 +50,7 @@ arm/treatment variable, set to \code{NULL}.}
 
 \item{responder_val}{(\code{character})\cr values of the responder variable corresponding with a successful response.}
 
-\item{at}{(\code{NULL} or \code{numeric})\cr optional values for the interaction variable. Otherwise the median is used.}
+\item{at}{(\code{numeric} or \code{NULL})\cr optional values for the interaction variable. Otherwise the median is used.}
 
 \item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default

@@ -84,7 +84,7 @@ options are: \code{x}, \code{y}, \code{w}, \code{h}, and \code{fill}. See \code{
 to the plot when \code{annot_coxph = TRUE}, specified using the \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} function. Parameter
 options are: \code{x}, \code{y}, \code{w}, \code{h}, \code{fill}, and \code{ref_lbls}. See \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} for details.}
 
-\item{legend_pos}{(\code{numeric(2)})\cr vector of length 2 containing x- and y-coordinates, respectively, for the legend
+\item{legend_pos}{(\code{numeric(2)} or \code{NULL})\cr vector containing x- and y-coordinates, respectively, for the legend
 position relative to the KM plot area. If \code{NULL} (default), the legend is positioned in the bottom right corner of
 the plot, or the middle right of the plot if needed to prevent overlapping.}
 

@@ -44,13 +44,13 @@ tm_g_lineplot(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{strata}{(\code{character} or \code{NA})\cr deprecated - group variable name.}
+\item{strata}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} use the \code{group_var} parameter instead.}
 
-\item{x}{(\code{character})\cr x variable name.}
+\item{x}{(\code{string})\cr x-variable name.}
 
-\item{y}{(\code{character})\cr y variable name.}
+\item{y}{(\code{string})\cr y-variable name.}
 
-\item{y_unit}{(\code{character} or \code{NA})\cr \code{y_unit} variable name.}
+\item{y_unit}{(\code{string} or \code{NA})\cr y-axis unit variable name.}
 
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
@@ -77,12 +77,12 @@ of the list element \code{interval} that will be returned by \code{sfun} (e.g. \
 \item{table}{(\code{character} or \code{NULL})\cr names of the statistics that will be displayed in the table below the plot.
 All the statistics indicated in \code{table} variable must be present in the object returned by \code{sfun}.}
 
-\item{mid_type}{(\code{character})\cr controls the type of the \code{mid} plot, it can be point (\code{p}), line (\code{l}),
-or point and line (\code{pl}).}
+\item{mid_type}{(\code{string})\cr controls the type of the \code{mid} plot, it can be point (\code{"p"}), line (\code{"l"}),
+or point and line (\code{"pl"}).}
 
-\item{mid_point_size}{(\code{integer} or \code{double})\cr controls the font size of the point for \code{mid} plot.}
+\item{mid_point_size}{(\code{numeric(1)})\cr font size of the \code{mid} plot points.}
 
-\item{table_font_size}{(\code{integer} or \code{double})\cr controls the font size of values in the table.}
+\item{table_font_size}{(\code{numeric(1)})\cr font size of the text in the table.}
 
 \item{plot_height}{(\code{numeric}) optional\cr vector of length three with \code{c(value, min, max)}. Specifies the
 height of the main plot and renders a slider on the plot to interactively adjust the plot height.}

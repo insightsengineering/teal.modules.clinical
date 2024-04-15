@@ -53,7 +53,7 @@ template_g_km(
 
 \item{cnsr_var}{(\code{character})\cr name of the censoring variable.}
 
-\item{xticks}{(\code{numeric}, \code{number}, or \code{NULL})\cr numeric vector of tick positions or single number with spacing
+\item{xticks}{(\code{numeric} or \code{NULL})\cr numeric vector of tick positions or a single number with spacing
 between ticks on the x-axis. If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
 optimal tick positions on the x-axis.}
 
@@ -82,7 +82,7 @@ probability.}
 \item{annot_surv_med}{(\code{flag})\cr compute and add the annotation table on the Kaplan-Meier curve estimating the
 median survival time per group.}
 
-\item{annot_coxph}{(\code{flag})\cr add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
+\item{annot_coxph}{(\code{flag})\cr whether to add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
 
 \item{control_annot_surv_med}{(\code{list})\cr parameters to control the position and size of the annotation table added
 to the plot when \code{annot_surv_med = TRUE}, specified using the \code{\link[tern:control_surv_med_annot]{control_surv_med_annot()}} function. Parameter
@@ -92,7 +92,7 @@ options are: \code{x}, \code{y}, \code{w}, \code{h}, and \code{fill}. See \code{
 to the plot when \code{annot_coxph = TRUE}, specified using the \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} function. Parameter
 options are: \code{x}, \code{y}, \code{w}, \code{h}, \code{fill}, and \code{ref_lbls}. See \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} for details.}
 
-\item{legend_pos}{(\code{numeric(2)})\cr vector of length 2 containing x- and y-coordinates, respectively, for the legend
+\item{legend_pos}{(\code{numeric(2)} or \code{NULL})\cr vector containing x- and y-coordinates, respectively, for the legend
 position relative to the KM plot area. If \code{NULL} (default), the legend is positioned in the bottom right corner of
 the plot, or the middle right of the plot if needed to prevent overlapping.}
 
@@ -100,7 +100,7 @@ the plot, or the middle right of the plot if needed to prevent overlapping.}
 \code{control_annot_coxph} instead.}
 
 \item{width_annots}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{w} element of \code{control_annot_surv_med}
-(for surv_med) and \code{control_annot_coxph} (for coxph)."}
+(for \code{surv_med}) and \code{control_annot_coxph} (for \code{coxph})."}
 
 \item{rel_height_plot}{(\code{proportion})\cr proportion of total figure height to allocate to the Kaplan-Meier plot.
 Relative height of patients at risk table is then \code{1 - rel_height_plot}. If \code{annot_at_risk = FALSE} or
