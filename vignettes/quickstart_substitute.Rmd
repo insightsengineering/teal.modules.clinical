@@ -62,7 +62,7 @@ The choice was made to focus on `substitute`.
 
 ## NSE Principle
 
-```{r, error = TRUE}
+```{r, error = TRUE, purl = FALSE}
 non_evaluated_expression <- substitute(expr = a + b)
 non_evaluated_expression
 eval(non_evaluated_expression)
@@ -77,6 +77,7 @@ What happened?
 - If the values of `a` and `b` exist, the expression can run without error:
 
 ```{r}
+non_evaluated_expression <- substitute(expr = a + b)
 a <- 1
 b <- 5
 eval(non_evaluated_expression)
@@ -148,7 +149,7 @@ Note that:
 In formulas, character strings are not accepted,
 how do we execute the substitution?
 
-```{r, error = TRUE}
+```{r, error = TRUE, purl = FALSE}
 # Error expected:
 plot_expr <- substitute(
   expr = plot(y ~ x, data = iris, main = text),
@@ -161,7 +162,7 @@ plot_expr <- substitute(
 ```
 
 
-```{r, error = TRUE}
+```{r, error = TRUE, purl = FALSE}
 # Error expected:
 plot_expr <- substitute(
   expr = plot(y ~ x, data = iris, main = text),
