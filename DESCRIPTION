@@ -63,7 +63,7 @@ Imports:
     tern.gee (>= 0.1.3),
     tern.mmrm (>= 0.3.0),
     utils,
-    vistime
+    vistime (>= 1.2.3)
 Suggests:
     forcats,
     knitr (>= 1.34),
