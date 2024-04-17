@@ -38,12 +38,7 @@ with_mocked_app_bindings <- function(code) {
   # change to `print(shiny__shinyApp(...))` and remove allow warning once fixed
   mocked_shinyApp <- function(ui, server, ...) { # nolint object_name_linter.
     functionBody(server) <- bquote({
-      pkgload::load_all(
-        .(normalizePath(file.path(testthat::test_path(), "..", ".."))),
-        export_all = FALSE,
-        attach_testthat = FALSE,
-        warn_conflicts = FALSE
-      )
+      .hint_to_load_package <- tm_g_ci # Hint to shinytest2 when looking for packages in globals
       .(functionBody(server))
     })
     print(do.call(shiny__shinyApp, append(x = list(ui = ui, server = server), list(...))))
@@ -114,7 +109,9 @@ strict_exceptions <- c(
   "tm_g_ci.Rd",
   "tm_g_ipp.Rd",
   "tm_g_pp_adverse_events.Rd",
-  "tm_g_pp_vitals.Rd"
+  "tm_g_pp_vitals.Rd",
+  "tm_t_shift_by_arm.Rd",
+  "tm_t_summary_by.Rd"
 )
 
 for (i in rd_files()) {
