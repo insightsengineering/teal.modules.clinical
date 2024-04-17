@@ -1,3 +1,5 @@
+testthat::skip_on_cran()
+
 # this test requires a `man` directory in the `tests/testthat` directory
 # (presumably symlinked to the package root `man` directory to avoid duplication)
 # this also requires `devtools::document()` to be run before running the tests
@@ -121,7 +123,6 @@ for (i in rd_files()) {
   testthat::test_that(
     paste0("example-", basename(i)),
     {
-      testthat::skip_on_cran()
       if (basename(i) %in% strict_exceptions) {
         op <- options()
         withr::local_options(opts_partial_match_old)
