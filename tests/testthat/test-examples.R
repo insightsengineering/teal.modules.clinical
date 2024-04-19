@@ -9,10 +9,6 @@ rd_files <- function() {
     testthat::test_path("..", "..", "man")
   }
 
-  if (!dir.exists(man_path)) {
-    stop("Cannot find path to `man` directory.")
-  }
-
   list.files(
     man_path,
     pattern = "\\.[Rr]d$",
