@@ -38,15 +38,6 @@ app_driver_tm_a_gee <- function() {
   )
 }
 
-# returns base 64 encoded image
-plot_output <- function(app_driver) {
-  app_driver$get_attr(
-    app_driver$active_module_element("myplot-plot_main > img"),
-    "src"
-  )
-}
-
-
 testthat::test_that("e2e - tm_a_gee: example gee module initializes in teal without errors and produces table output", {
   skip_if_too_deep(5)
 
@@ -56,3 +47,41 @@ testthat::test_that("e2e - tm_a_gee: example gee module initializes in teal with
   testthat::expect_true(app_driver$is_visible(app_driver$active_module_element("table-table-with-settings")))
 })
 
+testthat::test_that("e2e - tm_a_gee: starts with specified label, id_var, arm_var, visit_var, paramcd and cov_var", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+
+  testthat::expect_equal(
+    app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
+    "GEE"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("aval_var-dataset_ADQS_singleextract-select"),
+    "AVALBIN"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("id_var-dataset_ADQS_singleextract-select"),
+    "USUBJID"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+    "ARM"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("visit_var-dataset_ADQS_singleextract-select"),
+    "AVISIT"
+  )
+  testthat::expect_equal(
+    app_driver$get_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals"),
+    "FKSI-FWB"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select"),
+    NULL
+  )
+})
