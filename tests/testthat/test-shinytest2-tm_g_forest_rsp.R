@@ -128,13 +128,82 @@ testthat::test_that("e2e - tm_g_forest_rsp: module is initialized with expected 
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_forest_rsp: module initializes without errors and produces plot output", {
+testthat::test_that("e2e - tm_g_forest_rsp: when endpoint is not selected a validation error occurs", {
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_forest_rsp()
-  app_driver$expect_no_shiny_error()
+  app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
+  app_driver$expect_validation_error()
+
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_forest_rsp: when responders are not selected a validation error occurs", {
+  skip_if_too_deep(5)
+
+  app_driver <- app_driver_tm_g_forest_rsp()
+  app_driver$set_active_module_input("responders", NULL)
+  app_driver$expect_validation_error()
+
+  app_driver$stop()
+})
+
+
+testthat::test_that("e2e - tm_g_forest_rsp: when treatement variable is not selected a validation error occurs", {
+  skip_if_too_deep(5)
+
+  app_driver <- app_driver_tm_g_forest_rsp()
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  app_driver$expect_validation_error()
+
+  app_driver$stop()
+})
+
+
+testthat::test_that("e2e - tm_g_forest_rsp: when subgroup variable is not selected the output plot is different", {
+  skip_if_too_deep(5)
+
+  app_driver <- app_driver_tm_g_forest_rsp()
+  old_plot_output <- app_driver$get_attr(
+    app_driver$active_module_element("myplot-plot_main > img"),
+    "src"
+  )
+
+  app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", NULL)
   app_driver$expect_no_validation_error()
-  testthat::expect_true(app_driver$is_visible(app_driver$active_module_element("myplot-plot_main")))
+  testthat::expect_false(
+    identical(
+      old_plot_output,
+      app_driver$get_attr(
+        app_driver$active_module_element("myplot-plot_main > img"),
+        "src"
+      )
+    )
+  )
+
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_forest_rsp: when stratify variable is not selected the output plot is different", {
+  skip_if_too_deep(5)
+
+  app_driver <- app_driver_tm_g_forest_rsp()
+  old_plot_output <- app_driver$get_attr(
+    app_driver$active_module_element("myplot-plot_main > img"),
+    "src"
+  )
+
+  app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(
+    identical(
+      old_plot_output,
+      app_driver$get_attr(
+        app_driver$active_module_element("myplot-plot_main > img"),
+        "src"
+      )
+    )
+  )
 
   app_driver$stop()
 })
