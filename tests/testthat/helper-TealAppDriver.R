@@ -24,10 +24,10 @@ init_teal_app_driver <- function(...) {
   )
 }
 
-# returns base 64 encoded image
-active_module_pws_output <- function(app_driver) {
-  app_driver$get_attr(
-    app_driver$active_module_element("myplot-plot_main > img"),
-    "src"
-  )
+# Returns data.frame with table output
+active_module_tws_output <- function(element = "table-table-with-settings", app_driver, which = 1) {
+  app_driver$active_module_element(element) %>%
+    app_driver$get_html_rvest() %>%
+    rvest::html_table(fill = TRUE) %>%
+    .[[which]]
 }
