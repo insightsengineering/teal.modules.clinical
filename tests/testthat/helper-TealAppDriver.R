@@ -24,8 +24,6 @@ init_teal_app_driver <- function(...) {
   )
 }
 
-
-
 # returns base 64 encoded image
 active_module_pws_output <- function(app_driver) {
   app_driver$get_attr(
