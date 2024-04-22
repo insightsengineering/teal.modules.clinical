@@ -86,6 +86,34 @@ testthat::test_that("e2e - tm_a_gee: starts with specified label, id_var, arm_va
   )
 })
 
+testthat::test_that("e2e - tm_a_gee: selection of id_var changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  table_before <- active_module_tws_output(app_driver)
+  app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", "SUBJID")
+  testthat::expect_false(
+    identical(
+      table_before,
+      active_module_tws_output(app_driver)
+    )
+  )
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_a_gee: deselection of id_var throws validation error", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", character(0))
+  testthat::expect_identical(active_module_tws_output(app_driver), list())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("id_var-dataset_ADQS_singleextract-select_input > div > span"),
+    "A Subject identifier is required"
+  )
+  app_driver$stop()
+})
+
 testthat::test_that("e2e - tm_a_gee: change in arm_var changes the table and does not throw validation errors", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
@@ -101,3 +129,102 @@ testthat::test_that("e2e - tm_a_gee: change in arm_var changes the table and doe
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
+
+testthat::test_that("e2e - tm_a_gee: deselection of arm_var throws validation error", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0))
+  testthat::expect_identical(active_module_tws_output(app_driver), list())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input > div > span"),
+    "A treatment variable is required"
+  )
+  app_driver$stop()
+})
+
+
+testthat::test_that("e2e - tm_a_gee: selection of visit_var changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  table_before <- active_module_tws_output(app_driver)
+  app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", "AVISITN")
+  testthat::expect_false(
+    identical(
+      table_before,
+      active_module_tws_output(app_driver)
+    )
+  )
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_a_gee: deselection of visit_var throws validation error", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", character(0))
+  testthat::expect_identical(active_module_tws_output(app_driver), list())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("visit_var-dataset_ADQS_singleextract-select_input > div > span"),
+    "A visit variable is required"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_a_gee: selection of paramcd changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  table_before <- active_module_tws_output(app_driver)
+  app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", "BFIALL")
+  testthat::expect_false(
+    identical(
+      table_before,
+      active_module_tws_output(app_driver)
+    )
+  )
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_a_gee: deselection of paramcd throws validation error", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0))
+  testthat::expect_identical(active_module_tws_output(app_driver), list())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("paramcd-dataset_ADQS_singleextract-filter1-vals_input > div > span"),
+    "An endpoint is required"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_a_gee: selection of cov_var changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  table_before <- active_module_tws_output(app_driver)
+  app_driver$set_active_module_input("cov_var-dataset_ADQS_singleextract-select", "BASE")
+  testthat::expect_false(
+    identical(
+      table_before,
+      active_module_tws_output(app_driver)
+    )
+  )
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_a_gee: deselection of cov_var throws validation error", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  app_driver$set_active_module_input("cov_var-dataset_ADQS_singleextract-select", character(0))
+  testthat::expect_identical(active_module_tws_output(app_driver), list())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("cov_var-dataset_ADQS_singleextract-select_input > div > span"),
+    "An endpoint is required"
+  )
+  app_driver$stop()
+})
+
