@@ -84,6 +84,24 @@ testthat::test_that("e2e - tm_a_gee: starts with specified label, id_var, arm_va
     app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select"),
     NULL
   )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("conf_level"),
+    "0.95"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("cor_struct"),
+    "unstructured"
+  )
+
+  radio_buttons <- app_driver$active_module_element_text("output_table")
+  testthat::expect_match(
+    radio_buttons,
+    "Output Type.*LS means.*Covariance.*Coefficients",
+    fixed = FALSE
+  )
+
 })
 
 testthat::test_that("e2e - tm_a_gee: selection of id_var changes the table and does not throw validation errors", {
@@ -228,3 +246,32 @@ testthat::test_that("e2e - tm_a_gee: deselection of cov_var throws validation er
   app_driver$stop()
 })
 
+testthat::test_that("e2e - tm_g_ci: selection of conf_level changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_ci()
+  table_before <- active_module_tws_output(app_driver)
+  app_driver$set_active_module_input("conf_level", 0.90)
+  testthat::expect_false(identical(table_before, active_module_tws_output(app_driver)))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_ci: selection of cor_struct changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_ci()
+  table_before <- active_module_tws_output(app_driver)
+  app_driver$set_active_module_input("cor_struct", "auto-regressive")
+  testthat::expect_false(identical(table_before, active_module_tws_output(app_driver)))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_ci: selection of output_table changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_ci()
+  table_before <- active_module_tws_output(app_driver)
+  app_driver$set_active_module_input("output_table", "t_gee_cov")
+  testthat::expect_false(identical(table_before, active_module_tws_output(app_driver)))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
