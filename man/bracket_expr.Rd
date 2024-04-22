@@ -10,6 +10,9 @@ bracket_expr(exprs)
 \item{exprs}{(\code{list} of \code{call})\cr expressions to concatenate into
 a single \emph{bracketed} expression.}
 }
+\value{
+a \verb{\{} object. See \code{\link[base:Paren]{base::Paren()}} for details.
+}
 \description{
 Groups several expressions in a single \emph{bracketed} expression.
 }
@@ -32,4 +35,5 @@ expr3 <- substitute(
 res <- bracket_expr(list(expr1, expr2, expr3))
 eval(res)
 table(anl$rsp_lab, anl$is_rsp)
+
 }

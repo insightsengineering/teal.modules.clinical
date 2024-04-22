@@ -267,12 +267,12 @@ template_shift_by_grade <- function(parentname,
     substitute(
       expr = {
         column_labels <- list(
-          PARAMCD = formatters::var_labels(dataname, fill = FALSE)[[paramcd]],
-          AVISIT = formatters::var_labels(dataname, fill = FALSE)[[visit_var]],
+          PARAMCD = teal.data::col_labels(dataname, fill = FALSE)[[paramcd]],
+          AVISIT = teal.data::col_labels(dataname, fill = FALSE)[[visit_var]],
           ATOXGR_GP = dplyr::if_else(by_visit_fl, "Grade at Visit", "Post-baseline Grade"),
           BTOXGR_GP = "Baseline Grade"
         )
-        formatters::var_labels(dataname)[names(column_labels)] <- as.character(column_labels)
+        teal.data::col_labels(dataname)[names(column_labels)] <- as.character(column_labels)
         dataname
       },
       env = list(
@@ -326,7 +326,7 @@ template_shift_by_grade <- function(parentname,
   )
 
   split_label <- substitute(
-    expr = formatters::var_labels(dataname, fill = FALSE)[[paramcd]],
+    expr = teal.data::col_labels(dataname, fill = FALSE)[[paramcd]],
     env = list(
       dataname = as.name("anl"),
       paramcd = paramcd
@@ -351,7 +351,7 @@ template_shift_by_grade <- function(parentname,
 
   if (by_visit_fl) {
     split_label <- substitute(
-      expr = formatters::var_labels(dataname, fill = FALSE)[[visit_var]],
+      expr = teal.data::col_labels(dataname, fill = FALSE)[[visit_var]],
       env = list(
         dataname = as.name("anl"),
         visit_var = visit_var
@@ -382,7 +382,7 @@ template_shift_by_grade <- function(parentname,
   }
 
   split_label <- substitute(
-    expr = formatters::var_labels(dataname, fill = FALSE)[[by_var_gp]],
+    expr = teal.data::col_labels(dataname, fill = FALSE)[[by_var_gp]],
     env = list(
       dataname = as.name("anl"),
       by_var_gp = by_var_gp
@@ -466,9 +466,9 @@ template_shift_by_grade <- function(parentname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_shift_by_grade
-#' @param anl_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param anl_toxgrade_var ([teal.transform::choices_selected()])\cr
 #'   variable for analysis toxicity grade.
-#' @param base_toxgrade_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param base_toxgrade_var ([teal.transform::choices_selected()])\cr
 #'   variable for baseline toxicity grade.
 #'
 #' @inherit module_arguments return seealso
@@ -569,12 +569,13 @@ tm_t_shift_by_grade <- function(label,
                                 na_level = default_na_str(),
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_shift_by_grade")
+  message("Initializing tm_t_shift_by_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(visit_var, "choices_selected")
   checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(worst_flag_var, "choices_selected")
   checkmate::assert_class(worst_flag_indicator, "choices_selected")
@@ -623,7 +624,7 @@ tm_t_shift_by_grade <- function(label,
 
 #' @keywords internal
 ui_t_shift_by_grade <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   a <- list(...) # module args
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -639,11 +640,11 @@ ui_t_shift_by_grade <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "id_var", "visit_var", "paramcd", "worst_flag_var", "anl_toxgrade_var", "base_toxgrade_var")]
       ),
@@ -653,7 +654,7 @@ ui_t_shift_by_grade <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = FALSE),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select Lab Parameter",
@@ -687,12 +688,12 @@ ui_t_shift_by_grade <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          shiny::checkboxInput(
+          checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
           ),
-          shiny::checkboxInput(
+          checkboxInput(
             ns("code_missing_baseline"),
             label = "Code missing baseline records as grade 0",
             value = a$code_missing_baseline
@@ -719,7 +720,7 @@ ui_t_shift_by_grade <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -753,7 +754,7 @@ srv_t_shift_by_grade <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -778,7 +779,7 @@ srv_t_shift_by_grade <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("worst_flag_indicator", shinyvalidate::sv_required("Please select the value indicating worst grade."))
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -796,7 +797,7 @@ srv_t_shift_by_grade <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -808,7 +809,7 @@ srv_t_shift_by_grade <- function(id,
       anl_q = anl_q
     )
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
@@ -835,7 +836,7 @@ srv_t_shift_by_grade <- function(id,
       )
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
 
       my_calls <- template_shift_by_grade(
@@ -861,7 +862,7 @@ srv_t_shift_by_grade <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -870,15 +871,15 @@ srv_t_shift_by_grade <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

@@ -326,23 +326,23 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @inheritParams template_patient_timeline
 #' @param dataname_adcm (`character`)\cr name of `ADCM` dataset or equivalent.
 #' @param dataname_adae (`character`)\cr name of `ADAE` dataset or equivalent.
-#' @param aerelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param aerelday_start ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adae`.
-#' @param aerelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param aerelday_end ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for the `AENDY` variable from `dataname_adae`.
-#' @param dsrelday_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param dsrelday_start ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for the `ASTDY` variable from `dataname_adcm`.
-#' @param dsrelday_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param dsrelday_end ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for the `AENDY` variable from `dataname_adcm`.
-#' @param cmdecod ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmdecod ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDECOD` variable from `dataname_adcm`.
-#' @param aetime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param aetime_start ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the `ASTDTM` variable from `dataname_adae`.
-#' @param aetime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param aetime_end ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AENDTM` variable from `dataname_adae`.
-#' @param dstime_start ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param dstime_start ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the `CMASTDTM` variable from `dataname_adcm`.
-#' @param dstime_end ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param dstime_end ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMAENDTM` variable from `dataname_adcm`.
 #'
 #' @inherit module_arguments return
@@ -350,7 +350,6 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
-#' library(formatters)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
@@ -457,12 +456,22 @@ tm_g_pp_patient_timeline <- function(label,
                                      pre_output = NULL,
                                      post_output = NULL,
                                      ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_pp_patient_timeline")
+  message("Initializing tm_g_pp_patient_timeline")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname_adcm)
   checkmate::assert_string(dataname_adae)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(aeterm, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aetime_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aetime_end, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dstime_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dstime_end, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aerelday_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aerelday_end, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dsrelday_start, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dsrelday_end, "choices_selected", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -551,14 +560,14 @@ ui_g_patient_timeline <- function(id, ...) {
     ui_args$dsrelday_end
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("patient_timeline_plot")),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         ui_args[c(
           "aeterm", "cmdecod",
@@ -585,13 +594,13 @@ ui_g_patient_timeline <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       if (!is.null(ui_args$aerelday_start) || !is.null(ui_args$dsrelday_start)) {
-        shiny::tagList(
-          shiny::checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
-          shiny::conditionalPanel(
+        tagList(
+          checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
+          conditionalPanel(
             paste0("input.relday_x_axis == true"),
             ns = ns,
             if (!is.null(ui_args$aerelday_start)) {
-              shiny::tagList(
+              tagList(
                 teal.transform::data_extract_ui(
                   id = ns("aerelday_start"),
                   label = "Select AE relative start date variable:",
@@ -607,7 +616,7 @@ ui_g_patient_timeline <- function(id, ...) {
               )
             },
             if (!is.null(ui_args$dsrelday_start)) {
-              shiny::tagList(
+              tagList(
                 teal.transform::data_extract_ui(
                   id = ns("dsrelday_start"),
                   label = "Select Medication relative start date variable:",
@@ -625,9 +634,9 @@ ui_g_patient_timeline <- function(id, ...) {
           )
         )
       } else {
-        shinyjs::hidden(shiny::checkboxInput(ns("relday_x_axis"), label = "", value = FALSE))
+        shinyjs::hidden(checkboxInput(ns("relday_x_axis"), label = "", value = FALSE))
       },
-      shiny::conditionalPanel(
+      conditionalPanel(
         paste0("input.relday_x_axis == false"),
         ns = ns,
         teal.transform::data_extract_ui(
@@ -667,7 +676,7 @@ ui_g_patient_timeline <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -702,13 +711,13 @@ srv_g_patient_timeline <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    patient_id <- shiny::reactive(input$patient_id)
+  moduleServer(id, function(input, output, session) {
+    patient_id <- reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(data()[[parentname]][[patient_col]]))
+    patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -716,7 +725,7 @@ srv_g_patient_timeline <- function(id,
       selected = patient_data_base()[1]
     )
 
-    shiny::observeEvent(patient_data_base(),
+    observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -733,7 +742,7 @@ srv_g_patient_timeline <- function(id,
     )
 
     # Patient timeline tab ----
-    check_box <- shiny::reactive(input$relday_x_axis)
+    check_box <- reactive(input$relday_x_axis)
 
     check_relative <- function(main_param, return_name) {
       function(value) {
@@ -775,7 +784,7 @@ srv_g_patient_timeline <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -786,12 +795,12 @@ srv_g_patient_timeline <- function(id,
       selector_list = selector_list
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_inputs(iv_r())
 
       aeterm <- input[[extract_input("aeterm", dataname_adae)]]
@@ -813,11 +822,13 @@ srv_g_patient_timeline <- function(id,
       # time variables can not be NA
       p_time_data_pat <- p_timeline_data[p_timeline_data[[patient_col]] == patient_id(), ]
 
-      shiny::validate(
-        shiny::need(
+      validate(
+        need(
           input$relday_x_axis ||
-            (sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
-              sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0),
+            (
+              sum(stats::complete.cases(p_time_data_pat[, c(aetime_start, aetime_end)])) > 0 ||
+                sum(stats::complete.cases(p_time_data_pat[, c(dstime_start, dstime_end)])) > 0
+            ),
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )
@@ -848,8 +859,8 @@ srv_g_patient_timeline <- function(id,
         dsrelday_end
       )
 
-      shiny::validate(
-        shiny::need(
+      validate(
+        need(
           !input$relday_x_axis ||
             (
               sum(stats::complete.cases(p_time_data_pat[, c(aerelday_start_name, aerelday_end_name)])) > 0 ||
@@ -881,7 +892,7 @@ srv_g_patient_timeline <- function(id,
         anl_q(),
         substitute(
           expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
@@ -892,7 +903,7 @@ srv_g_patient_timeline <- function(id,
       teal.code::eval_code(object = qenv, as.expression(patient_timeline_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["patient_timeline_plot"]])
+    plot_r <- reactive(all_q()[["patient_timeline_plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "patient_timeline_plot",
@@ -903,14 +914,14 @@ srv_g_patient_timeline <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

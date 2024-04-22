@@ -57,7 +57,7 @@ template_logistic <- function(dataname,
     ref_arm_val <- paste(ref_arm, collapse = "/")
 
     y$arm_lab <- substitute(
-      expr = arm_var_lab <- formatters::var_labels(anl[arm_var], fill = FALSE),
+      expr = arm_var_lab <- teal.data::col_labels(anl[arm_var], fill = FALSE),
       env = list(anl = as.name(dataname), arm_var = arm_var)
     )
 
@@ -87,7 +87,7 @@ template_logistic <- function(dataname,
     data_list <- add_expr(
       data_list,
       substitute(
-        expr = ANL <- data_pipe, # nolint
+        expr = ANL <- data_pipe,
         env = list(data_pipe = pipe_expr(data_pipe))
       )
     )
@@ -96,7 +96,7 @@ template_logistic <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = ANL <- df %>% # nolint
+      expr = ANL <- df %>%
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
         df_explicit_na(na_level = "_NA_"),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
@@ -107,7 +107,7 @@ template_logistic <- function(dataname,
 
   if (!is.null(arm_var)) {
     y$relabel <- substitute(
-      expr = formatters::var_labels(ANL[arm_var]) <- arm_var_lab, # nolint
+      expr = teal.data::col_labels(ANL[arm_var]) <- arm_var_lab,
       env = list(arm_var = arm_var)
     )
   }
@@ -212,12 +212,12 @@ template_logistic <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_logistic
-#' @param arm_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()] or `NULL`)\cr object
+#' @param arm_var ([teal.transform::choices_selected()] or `NULL`)\cr object
 #'   with all available choices and preselected option for variable names that can be used as `arm_var`. This defines
 #'   the grouping variable(s) in the results table. If there are two elements selected for `arm_var`, the second
 #'   variable will be nested under the first variable. If `NULL`, no arm/treatment variable is included in the
 #'   logistic model.
-#' @param avalc_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param avalc_var ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the analysis variable (categorical).
 #'
 #' @inherit module_arguments return seealso
@@ -294,16 +294,16 @@ tm_t_logistic <- function(label,
                           pre_output = NULL,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_logistic")
+  message("Initializing tm_t_logistic")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_multi_class(arm_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
+  checkmate::assert_class(arm_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(paramcd, "choices_selected")
+  checkmate::assert_class(cov_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(avalc_var, "choices_selected")
+  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
-  checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"))
-  checkmate::assert_multi_class(cov_var, c("choices_selected", "data_extract_spec"))
-  checkmate::assert_multi_class(avalc_var, c("choices_selected", "data_extract_spec"))
-  checkmate::assert_class(conf_level, classes = "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -354,16 +354,16 @@ ui_t_logistic <- function(id, ...) {
     )
   }
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "avalc_var", "cov_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -377,7 +377,7 @@ ui_t_logistic <- function(id, ...) {
         data_extract_spec = a$avalc_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::selectInput(
+      selectInput(
         ns("responders"),
         "Responders",
         choices = c("CR", "PR"),
@@ -385,15 +385,15 @@ ui_t_logistic <- function(id, ...) {
         multiple = TRUE
       ),
       if (!is.null(a$arm_var)) {
-        shiny::div(
+        tags$div(
           teal.transform::data_extract_ui(
             id = ns("arm_var"),
             label = "Select Treatment Variable",
             data_extract_spec = a$arm_var,
             is_single_dataset = is_single_dataset_value
           ),
-          shiny::uiOutput(ns("arms_buckets")),
-          shiny::checkboxInput(
+          uiOutput(ns("arms_buckets")),
+          checkboxInput(
             ns("combine_comp_arms"),
             "Combine all comparison groups?",
             value = FALSE
@@ -406,13 +406,13 @@ ui_t_logistic <- function(id, ...) {
         data_extract_spec = a$cov_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::uiOutput(ns("interaction_var")),
-      shiny::uiOutput(ns("interaction_input")),
+      uiOutput(ns("interaction_variable")),
+      uiOutput(ns("interaction_input")),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
-        label = shiny::p(
+        label = tags$p(
           "Confidence level for ",
-          shiny::span(class = "text-primary", "Coxph"),
+          tags$span(class = "text-primary", "Coxph"),
           " (Hazard Ratio)",
           sep = ""
         ),
@@ -422,7 +422,7 @@ ui_t_logistic <- function(id, ...) {
         fixed = a$conf_level$fixed
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -450,14 +450,14 @@ srv_t_logistic <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     # Observer to update reference and comparison arm input options.
     iv_arco <- arm_ref_comp_observer(
       session,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname),
-      data = shiny::reactive(data()[[parentname]]),
+      data = reactive(data()[[parentname]]),
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_logistic"
     )
@@ -480,7 +480,7 @@ srv_t_logistic <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
@@ -526,7 +526,7 @@ srv_t_logistic <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -539,7 +539,7 @@ srv_t_logistic <- function(id,
     )
 
     # Because the AVALC values depends on the selected PARAMCD.
-    shiny::observeEvent(merged$anl_input_r(), {
+    observeEvent(merged$anl_input_r(), {
       avalc_var <- merged$anl_input_r()$columns_source$avalc_var
       if (nrow(merged$anl_q()[["ANL"]]) == 0) {
         responder_choices <- c("CR", "PR")
@@ -549,16 +549,16 @@ srv_t_logistic <- function(id,
           return(NULL)
         }
         responder_choices <- unique(merged$anl_q()[["ANL"]][[avalc_var]])
-        responder_sel <- intersect(responder_choices, shiny::isolate(input$responders))
+        responder_sel <- intersect(responder_choices, isolate(input$responders))
       }
-      shiny::updateSelectInput(
+      updateSelectInput(
         session, "responders",
         choices = responder_choices,
         selected = responder_sel
       )
     })
 
-    output$interaction_var <- shiny::renderUI({
+    output$interaction_variable <- renderUI({
       cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
       if (length(cov_var) > 0) {
         teal.widgets::optionalSelectInput(
@@ -573,12 +573,12 @@ srv_t_logistic <- function(id,
       }
     })
 
-    output$interaction_input <- shiny::renderUI({
+    output$interaction_input <- renderUI({
       interaction_var <- input$interaction_var
       if (length(interaction_var) > 0) {
         if (is.numeric(merged$anl_q()[["ANL"]][[interaction_var]])) {
-          shiny::tagList(
-            shiny::textInput(
+          tagList(
+            textInput(
               session$ns("interaction_values"),
               label = sprintf("Specify %s values (comma delimited) for treatment ORs calculation:", interaction_var),
               value = as.character(stats::median(merged$anl_q()[["ANL"]][[interaction_var]]))
@@ -590,7 +590,7 @@ srv_t_logistic <- function(id,
       }
     })
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
@@ -632,15 +632,15 @@ srv_t_logistic <- function(id,
         } else {
           c(sum(arm_n[unlist(input$buckets$Ref)]), arm_n[unlist(input$buckets$Comp)])
         }
-        shiny::validate(shiny::need(
+        validate(shiny::need(
           all(anl_arm_n >= 2),
           "Each treatment group should have at least 2 records."
         ))
       }
 
       # validate covariate has at least two levels
-      shiny::validate(
-        shiny::need(
+      validate(
+        need(
           all(
             vapply(
               merged$anl_q()[["ANL"]][input_cov_var],
@@ -655,10 +655,10 @@ srv_t_logistic <- function(id,
       )
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
 
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
 
       label_paramcd <- get_paramcd_label(ANL, paramcd)
 
@@ -692,7 +692,7 @@ srv_t_logistic <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(calls))
     })
 
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -701,14 +701,14 @@ srv_t_logistic <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

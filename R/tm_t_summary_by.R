@@ -24,7 +24,7 @@ template_summary_by <- function(parentname,
                                 total_label = default_total_label(),
                                 parallel_vars = FALSE,
                                 row_groups = FALSE,
-                                na.rm = FALSE, # nolint
+                                na.rm = FALSE, # nolint: object_name.
                                 na_level = default_na_str(),
                                 numeric_stats = c(
                                   "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"
@@ -95,7 +95,7 @@ template_summary_by <- function(parentname,
   y$layout_prep <- quote(split_fun <- drop_split_levels)
   if (row_groups) {
     y$layout_cfun <- quote(
-      cfun_unique <- function(x, labelstr = "", .N_col) { # nolint
+      cfun_unique <- function(x, labelstr = "", .N_col) { # nolint: object_name.
         y <- length(unique(x))
         rcell(
           c(y, y / .N_col),
@@ -135,7 +135,7 @@ template_summary_by <- function(parentname,
   })
   layout_list <- Reduce(add_expr, split_cols_call, init = layout_list)
 
-  if (add_total) {
+  if (add_total && !parallel_vars) {
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -164,7 +164,7 @@ template_summary_by <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = formatters::var_labels(dataname, fill = FALSE)[[by_var]],
+      expr = teal.data::col_labels(dataname, fill = FALSE)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -253,7 +253,7 @@ template_summary_by <- function(parentname,
               vars = sum_vars,
               var_labels = sum_var_labels,
               na.rm = na.rm,
-              na_level = na_level,
+              na_str = na_level,
               denom = denom,
               .stats = stats
             ),
@@ -264,7 +264,7 @@ template_summary_by <- function(parentname,
             expr = analyze_vars(
               vars = sum_vars,
               na.rm = na.rm,
-              na_level = na_level,
+              na_str = na_level,
               denom = denom,
               .stats = stats
             ),
@@ -383,7 +383,7 @@ tm_t_summary_by <- function(label,
                             total_label = default_total_label(),
                             parallel_vars = FALSE,
                             row_groups = FALSE,
-                            useNA = c("ifany", "no"), # nolint
+                            useNA = c("ifany", "no"), # nolint: object_name.
                             na_level = default_na_str(),
                             numeric_stats = c("n", "mean_sd", "median", "range"),
                             denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
@@ -392,13 +392,17 @@ tm_t_summary_by <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_summary_by")
+  message("Initializing tm_t_summary_by")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  useNA <- match.arg(useNA) # nolint
+  useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(by_vars, "choices_selected")
+  checkmate::assert_class(summarize_vars, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(denominator, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
@@ -451,7 +455,7 @@ tm_t_summary_by <- function(label,
 
 #' @keywords internal
 ui_summary_by <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
@@ -463,11 +467,11 @@ ui_summary_by <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "id_var", "paramcd", "by_vars", "summarize_vars")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -475,7 +479,7 @@ ui_summary_by <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       `if`(
         is.null(a$paramcd),
         NULL,
@@ -498,13 +502,13 @@ ui_summary_by <- function(id, ...) {
         data_extract_spec = a$summarize_vars,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
-      shiny::checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = a$row_groups),
+      checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
+      checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = a$row_groups),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          shiny::checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
-          shiny::radioButtons(
+          checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
+          radioButtons(
             ns("useNA"),
             label = "Display NA counts",
             choices = c("ifany", "no"),
@@ -517,7 +521,7 @@ ui_summary_by <- function(id, ...) {
             selected = a$denominator$selected,
             fixed = a$denominator$fixed
           ),
-          shiny::checkboxGroupInput(
+          checkboxGroupInput(
             ns("numeric_stats"),
             label = "Choose the statistics to display for numeric variables",
             choices = c(
@@ -534,14 +538,14 @@ ui_summary_by <- function(id, ...) {
           ),
           if (a$dataname == a$parentname) {
             shinyjs::hidden(
-              shiny::checkboxInput(
+              checkboxInput(
                 ns("drop_arm_levels"),
                 label = "it's a BUG if you see this",
                 value = TRUE
               )
             )
           } else {
-            shiny::checkboxInput(
+            checkboxInput(
               ns("drop_arm_levels"),
               label = sprintf("Drop columns not in filtered %s", a$dataname),
               value = a$drop_arm_levels
@@ -561,7 +565,7 @@ ui_summary_by <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -594,7 +598,7 @@ srv_summary_by <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     vars <- list(arm_var = arm_var, id_var = id_var, summarize_vars = summarize_vars, by_vars = by_vars)
 
     if (!is.null(paramcd)) {
@@ -616,7 +620,7 @@ srv_summary_by <- function(id,
       filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select a filter."))
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -635,7 +639,7 @@ srv_summary_by <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -648,7 +652,7 @@ srv_summary_by <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
@@ -669,7 +673,7 @@ srv_summary_by <- function(id,
       )
 
       if (input$parallel_vars) {
-        shiny::validate(shiny::need(
+        validate(shiny::need(
           all(vapply(anl_filtered[input_summarize_vars], is.numeric, logical(1))),
           "Summarize variables must all be numeric to display in parallel columns."
         ))
@@ -677,10 +681,10 @@ srv_summary_by <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
       summarize_vars <- as.vector(merged$anl_input_r()$columns_source$summarize_vars)
-      var_labels <- formatters::var_labels(merged$anl_q()[[dataname]][, summarize_vars, drop = FALSE])
+      var_labels <- teal.data::col_labels(merged$anl_q()[[dataname]][, summarize_vars, drop = FALSE])
 
       my_calls <- template_summary_by(
         parentname = "ANL_ADSL",
@@ -707,7 +711,7 @@ srv_summary_by <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -716,15 +720,15 @@ srv_summary_by <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

@@ -233,17 +233,17 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_therapy
-#' @param cmdose ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmdose ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDOSE` variable from `dataname`.
-#' @param cmtrt ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmtrt ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMTRT` variable from `dataname`.
-#' @param cmdosu ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmdosu ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDOSU` variable from `dataname`.
-#' @param cmroute ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmroute ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMROUTE` variable from `dataname`.
-#' @param cmdosfrq ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmdosfrq ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDOSFRQ` variable from `dataname`.
-#' @param cmendy ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param cmendy ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMENDY` variable from `dataname`.
 #'
 #' @inherit module_arguments return
@@ -348,7 +348,17 @@ tm_g_pp_therapy <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_pp_therapy")
+  message("Initializing tm_g_pp_therapy")
+  checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmindc, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdose, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmtrt, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdosu, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmroute, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmdosfrq, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmstdy, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(cmendy, "choices_selected", null.ok = TRUE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -417,19 +427,19 @@ ui_g_therapy <- function(id, ...) {
     ui_args$cmendy
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
-    output = shiny::div(
-      shiny::htmlOutput(ns("title")),
+    output = tags$div(
+      htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
       teal.widgets::plot_with_settings_ui(id = ns("therapy_plot"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c(
         "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
         "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
@@ -512,7 +522,7 @@ ui_g_therapy <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -546,19 +556,19 @@ srv_g_therapy <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    patient_id <- shiny::reactive(input$patient_id)
+  moduleServer(id, function(input, output, session) {
+    patient_id <- reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(data()[[parentname]][[patient_col]]))
+    patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
       choices = patient_data_base(), selected = patient_data_base()[1]
     )
 
-    shiny::observeEvent(patient_data_base(),
+    observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -596,7 +606,7 @@ srv_g_therapy <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient."))
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -608,20 +618,20 @@ srv_g_therapy <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_has_data(merged$anl_q()[["ANL"]], 1)
 
       teal::validate_inputs(iv_r())
 
-      shiny::validate(
-        shiny::need(
+      validate(
+        need(
           nrow(merged$anl_q()[["ANL"]][input$patient_id == merged$anl_q()[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
@@ -649,7 +659,7 @@ srv_g_therapy <- function(id,
         substitute(
           expr = {
             pt_id <- patient_id
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
@@ -659,7 +669,7 @@ srv_g_therapy <- function(id,
         teal.code::eval_code(as.expression(my_calls))
     })
 
-    output$title <- shiny::renderText({
+    output$title <- renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
@@ -670,8 +680,8 @@ srv_g_therapy <- function(id,
       options = list(pageLength = input$therapy_table_rows)
     )
 
-    plot_r <- shiny::reactive({
-      shiny::req(iv_r()$is_valid())
+    plot_r <- reactive({
+      req(iv_r()$is_valid())
       all_q()[["therapy_plot"]]
     })
 
@@ -684,14 +694,14 @@ srv_g_therapy <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

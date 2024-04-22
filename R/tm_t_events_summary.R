@@ -126,7 +126,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_anl_label <- formatters::var_labels(anl[, flag_var_anl], fill = FALSE),
+        flag_var_anl_label <- teal.data::col_labels(anl[, flag_var_anl], fill = FALSE),
         env = list(flag_var_anl = flag_var_anl)
       )
     )
@@ -136,7 +136,7 @@ template_events_summary <- function(anl_name,
     data_list <- add_expr(
       data_list,
       substitute(
-        flag_var_aesi_label <- formatters::var_labels(anl[, flag_var_aesi], fill = FALSE),
+        flag_var_aesi_label <- teal.data::col_labels(anl[, flag_var_aesi], fill = FALSE),
         env = list(flag_var_aesi = flag_var_aesi)
       )
     )
@@ -483,33 +483,32 @@ template_events_summary <- function(anl_name,
 #' @inheritParams module_arguments
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
-#' @param dthfl_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param dthfl_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as death flag variable.
 #'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
-#' @param dcsreas_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object
+#' @param dcsreas_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as study discontinuation
 #'   reason variable. Records with `"ADVERSE EVENTS"` are summarized in the table row for
 #'   "Total number of patients withdrawn from study due to an AE".
-#' @param flag_var_anl ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()] or `NULL`)\cr
+#' @param flag_var_anl ([teal.transform::choices_selected()] or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious events,
 #'   Related events, etc.). Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()] or `NULL`)\cr
+#' @param flag_var_aesi ([teal.transform::choices_selected()] or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event special interest groups. All flag
 #'   variables must be of type `logical`. Variable labels are used as table row names if they exist.
-#' @param aeseq_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr variable for
+#' @param aeseq_var ([teal.transform::choices_selected()])\cr variable for
 #'   adverse events sequence number from `dataset`. Used for counting total number of events.
 #'
 #' @inherit module_arguments return seealso
 #'
 #' @examples
 #' library(dplyr)
-#' library(formatters)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl %>%
 #'     mutate(
-#'       DTHFL = case_when( #' nolint
+#'       DTHFL = case_when(
 #'         !is.na(DTHDT) ~ "Y",
 #'         TRUE ~ ""
 #'       ) %>% with_label("Subject Death Flag")
@@ -534,7 +533,7 @@ template_events_summary <- function(anl_name,
 #'       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
 #'       TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'     )
-#'     var_labels(dat)[names(column_labels)] <- as.character(column_labels)
+#'     col_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'     dat
 #'   }
 #'
@@ -615,10 +614,17 @@ tm_t_events_summary <- function(label,
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_events_summary")
+  message("Initializing tm_t_events_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(flag_var_anl, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(flag_var_aesi, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(dthfl_var, "choices_selected")
+  checkmate::assert_class(dcsreas_var, "choices_selected")
+  checkmate::assert_class(llt, "choices_selected")
+  checkmate::assert_class(aeseq_var, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -671,7 +677,7 @@ tm_t_events_summary <- function(label,
 
 #' @keywords internal
 ui_t_events_summary <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   a <- list(...)
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -686,11 +692,11 @@ ui_t_events_summary <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]
       ),
@@ -720,23 +726,23 @@ ui_t_events_summary <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      shiny::checkboxInput(
+      checkboxInput(
         ns("add_total"),
         "Add All Patients column",
         value = a$add_total
       ),
-      shiny::tags$label("Table Settings"),
-      shiny::checkboxInput(
+      tags$label("Table Settings"),
+      checkboxInput(
         ns("count_subj"),
         "Count patients",
         value = a$count_subj
       ),
-      shiny::checkboxInput(
+      checkboxInput(
         ns("count_pt"),
         "Count preferred terms",
         value = a$count_pt
       ),
-      shiny::checkboxInput(
+      checkboxInput(
         ns("count_events"),
         "Count events",
         value = a$count_events
@@ -771,7 +777,7 @@ ui_t_events_summary <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -803,7 +809,7 @@ srv_t_events_summary <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     data_extract_vars <- list(
       arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
       aeseq_var = aeseq_var, llt = llt
@@ -829,7 +835,7 @@ srv_t_events_summary <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
@@ -846,7 +852,7 @@ srv_t_events_summary <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -858,7 +864,7 @@ srv_t_events_summary <- function(id,
       anl_q = anl_q
     )
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
 
       adsl_filtered <- merged$anl_q()[[parentname]]
@@ -880,10 +886,10 @@ srv_t_events_summary <- function(id,
       input_aeseq_var <- as.vector(merged$anl_input_r()$columns_source$aeseq_var)
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
 
-      shiny::validate(
-        shiny::need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor."),
+      validate(
+        need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor."),
         if (length(input_arm_var) == 2) {
-          shiny::need(
+          need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) && all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
               "", NA
             )),
@@ -903,7 +909,7 @@ srv_t_events_summary <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    table_q <- shiny::reactive({
+    table_q <- reactive({
       validate_checks()
 
       input_flag_var_anl <- if (!is.null(flag_var_anl)) {
@@ -959,7 +965,7 @@ srv_t_events_summary <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(table_q()[["result"]])
+    table_r <- reactive(table_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -968,14 +974,14 @@ srv_t_events_summary <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
+      verbatim_content = reactive(teal.code::get_code(table_q())),
       title = label
     )
 

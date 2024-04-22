@@ -11,7 +11,7 @@ testthat::test_that("1. and 2. Mean and 95% CIs for mean", {
   res <- testthat::expect_silent(result)
   testthat::expect_snapshot(res)
   # Check the output.
-  # eval(result) ; gg # nolint
+  # eval(result) ; gg # nolint: commented_code.
 })
 
 testthat::test_that("3. Confidence Interval Plot (using different stratification variable)", {
@@ -26,7 +26,7 @@ testthat::test_that("3. Confidence Interval Plot (using different stratification
   res <- testthat::expect_silent(result)
   testthat::expect_snapshot(res)
   # Check the output.
-  # eval(result) ; gg # nolint
+  # eval(result) ; gg # nolint: commented_code.
 })
 
 testthat::test_that("4. Median and 95% CIs for median", {
@@ -41,7 +41,7 @@ testthat::test_that("4. Median and 95% CIs for median", {
   res <- testthat::expect_silent(result)
   testthat::expect_snapshot(res)
   # Check the output.
-  # eval(result) ; gg # nolint
+  # eval(result) ; gg # nolint: commented_code.
 })
 
 testthat::test_that("5. Using different alpha level", {
@@ -57,5 +57,5 @@ testthat::test_that("5. Using different alpha level", {
   res <- testthat::expect_silent(result)
   testthat::expect_snapshot(res)
   # Check the output.
-  # eval(result) ; gg # nolint
+  # eval(result) ; gg # nolint: commented_code.
 })

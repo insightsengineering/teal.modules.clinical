@@ -152,7 +152,7 @@ template_events_patyear <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_patyear
-#' @param events_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param events_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the variable with all event counts.
 #'
 #' @inherit module_arguments return seealso
@@ -232,7 +232,7 @@ tm_t_events_patyear <- function(label,
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_events_patyear")
+  message("Initializing tm_t_events_patyear")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -282,7 +282,7 @@ tm_t_events_patyear <- function(label,
 
 #' @keywords internal
 ui_events_patyear <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$events_var
@@ -290,11 +290,11 @@ ui_events_patyear <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("patyear_table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -302,7 +302,7 @@ ui_events_patyear <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
         label = "Select an Event Type Parameter",
@@ -346,7 +346,7 @@ ui_events_patyear <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          shiny::checkboxInput(
+          checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
@@ -359,7 +359,7 @@ ui_events_patyear <- function(id, ...) {
             multiple = FALSE,
             fixed = FALSE
           ),
-          shiny::selectInput(
+          selectInput(
             ns("input_time_unit"),
             "Analysis Unit",
             choices = NULL,
@@ -369,7 +369,7 @@ ui_events_patyear <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -401,15 +401,15 @@ srv_events_patyear <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    shiny::observeEvent(anl_q(), {
+  moduleServer(id, function(input, output, session) {
+    observeEvent(anl_q(), {
       data_anl <- merged$anl_q()[["ANL"]]
       aval_unit_var <- merged$anl_input_r()$columns_source$avalu_var
       if (length(aval_unit_var) > 0) {
         choices <- stats::na.omit(unique(data_anl[[aval_unit_var]]))
         choices <- gsub("s$", "", tolower(choices))
 
-        shiny::updateSelectInput(
+        updateSelectInput(
           session,
           "input_time_unit",
           choices = choices,
@@ -437,7 +437,7 @@ srv_events_patyear <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
@@ -465,7 +465,7 @@ srv_events_patyear <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -478,7 +478,7 @@ srv_events_patyear <- function(id,
     )
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
@@ -498,8 +498,8 @@ srv_events_patyear <- function(id,
         arm_var = input_arm_var
       )
 
-      shiny::validate(
-        shiny::need(
+      validate(
+        need(
           !any(is.na(merged$anl_q()[["ANL"]][[input_events_var]])),
           "`Event Variable` for selected parameter includes NA values."
         )
@@ -508,10 +508,10 @@ srv_events_patyear <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    table_q <- shiny::reactive({
+    table_q <- reactive({
       validate_checks()
 
-      ANL <- merged$anl_q()[["ANL"]] # nolint
+      ANL <- merged$anl_q()[["ANL"]]
       label_paramcd <- get_paramcd_label(ANL, paramcd)
 
       my_calls <- template_events_patyear(
@@ -525,7 +525,7 @@ srv_events_patyear <- function(id,
         total_label = total_label,
         na_level = na_level,
         control = control_incidence_rate(
-          conf_level = as.numeric(input$conf_level), # nolint
+          conf_level = as.numeric(input$conf_level),
           conf_type = if (input$conf_method == "Normal (rate)") {
             "normal"
           } else if (input$conf_method == "Normal (log rate)") {
@@ -549,7 +549,7 @@ srv_events_patyear <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive({
+    table_r <- reactive({
       table_q()[["result"]]
     })
 
@@ -560,15 +560,15 @@ srv_events_patyear <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(table_q())),
+      verbatim_content = reactive(teal.code::get_warnings(table_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(table_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(table_q())),
+      verbatim_content = reactive(teal.code::get_code(table_q())),
       title = label
     )
 

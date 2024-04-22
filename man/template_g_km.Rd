@@ -17,7 +17,7 @@ template_g_km(
   strata_var = NULL,
   time_points = NULL,
   facet_var = "SEX",
-  font_size = 10,
+  font_size = 11,
   conf_level = 0.95,
   ties = "efron",
   xlab = "Survival time",
@@ -26,8 +26,12 @@ template_g_km(
   pval_method = "log-rank",
   annot_surv_med = TRUE,
   annot_coxph = TRUE,
-  position_coxph = c(-0.04, 0.02),
-  width_annots = list(surv_med = grid::unit(0.45, "npc"), coxph = grid::unit(0.6, "npc")),
+  control_annot_surv_med = control_surv_med_annot(),
+  control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+  legend_pos = NULL,
+  position_coxph = lifecycle::deprecated(),
+  width_annots = lifecycle::deprecated(),
+  rel_height_plot = 0.8,
   ci_ribbon = FALSE,
   title = "KM Plot"
 )
@@ -49,9 +53,9 @@ template_g_km(
 
 \item{cnsr_var}{(\code{character})\cr name of the censoring variable.}
 
-\item{xticks}{(\code{numeric}, \code{number}, or \code{NULL})\cr numeric vector of ticks or single number with spacing
-between ticks on the x axis. If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
-an optimal tick position on the x axis.}
+\item{xticks}{(\code{numeric} or \code{NULL})\cr numeric vector of tick positions or a single number with spacing
+between ticks on the x-axis. If \code{NULL} (default), \code{\link[labeling:extended]{labeling::extended()}} is used to determine
+optimal tick positions on the x-axis.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
 
@@ -66,26 +70,43 @@ an optimal tick position on the x axis.}
 \item{ties}{(\code{string})\cr among \code{exact} (equivalent to \code{DISCRETE} in SAS), \code{efron} and \code{breslow},
 see \code{\link[survival:coxph]{survival::coxph()}}. Note: there is no equivalent of SAS \code{EXACT} method in R.}
 
-\item{xlab}{(\code{string})\cr label of x-axis.}
+\item{xlab}{(\code{string})\cr x-axis label.}
 
 \item{time_unit_var}{(\code{character})\cr name of the variable representing time units.}
 
-\item{yval}{(\code{string})\cr value of y-axis. Options are \code{Survival} (default) and \code{Failure} probability.}
+\item{yval}{(\code{string})\cr type of plot, to be plotted on the y-axis. Options are \code{Survival} (default) and \code{Failure}
+probability.}
 
 \item{pval_method}{(\code{string})\cr the method used for estimation of p.values; \code{wald} (default) or \code{likelihood}.}
 
 \item{annot_surv_med}{(\code{flag})\cr compute and add the annotation table on the Kaplan-Meier curve estimating the
 median survival time per group.}
 
-\item{annot_coxph}{(\code{flag})\cr add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
+\item{annot_coxph}{(\code{flag})\cr whether to add the annotation table from a \code{\link[survival:coxph]{survival::coxph()}} model.}
 
-\item{position_coxph}{(\code{numeric})\cr x and y positions for plotting \code{\link[survival:coxph]{survival::coxph()}} model.}
+\item{control_annot_surv_med}{(\code{list})\cr parameters to control the position and size of the annotation table added
+to the plot when \code{annot_surv_med = TRUE}, specified using the \code{\link[tern:control_surv_med_annot]{control_surv_med_annot()}} function. Parameter
+options are: \code{x}, \code{y}, \code{w}, \code{h}, and \code{fill}. See \code{\link[tern:control_surv_med_annot]{control_surv_med_annot()}} for details.}
 
-\item{width_annots}{(named \code{list} of \code{unit}s)\cr a named list of widths for annotation tables with names \code{surv_med}
-(median survival time table) and \code{coxph} (\code{\link[survival:coxph]{survival::coxph()}} model table), where each value is the width
-(in units) to implement when printing the annotation table.}
+\item{control_annot_coxph}{(\code{list})\cr parameters to control the position and size of the annotation table added
+to the plot when \code{annot_coxph = TRUE}, specified using the \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} function. Parameter
+options are: \code{x}, \code{y}, \code{w}, \code{h}, \code{fill}, and \code{ref_lbls}. See \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} for details.}
 
-\item{ci_ribbon}{(\code{flag})\cr draw the confidence interval around the Kaplan-Meier curve.}
+\item{legend_pos}{(\code{numeric(2)} or \code{NULL})\cr vector containing x- and y-coordinates, respectively, for the legend
+position relative to the KM plot area. If \code{NULL} (default), the legend is positioned in the bottom right corner of
+the plot, or the middle right of the plot if needed to prevent overlapping.}
+
+\item{position_coxph}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}  Please use the \code{x} and \code{y} elements of
+\code{control_annot_coxph} instead.}
+
+\item{width_annots}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{w} element of \code{control_annot_surv_med}
+(for \code{surv_med}) and \code{control_annot_coxph} (for \code{coxph})."}
+
+\item{rel_height_plot}{(\code{proportion})\cr proportion of total figure height to allocate to the Kaplan-Meier plot.
+Relative height of patients at risk table is then \code{1 - rel_height_plot}. If \code{annot_at_risk = FALSE} or
+\code{as_list = TRUE}, this parameter is ignored.}
+
+\item{ci_ribbon}{(\code{flag})\cr whether the confidence interval should be drawn around the Kaplan-Meier curve.}
 
 \item{title}{(\code{character})\cr title of the output.}
 }

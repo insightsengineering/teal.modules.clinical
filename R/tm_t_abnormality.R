@@ -108,7 +108,7 @@ template_abnormality <- function(parentname,
         variables = list(anl = grade, split_rows = by_vars),
         abnormal = abnormal,
         method = "default",
-        na_level = na_level
+        na_str = na_level
       ),
       env = list(dataname = as.name("anl"), by_vars = by_vars, grade = grade, abnormal = abnormal, na_level = na_level)
     )
@@ -157,7 +157,7 @@ template_abnormality <- function(parentname,
 
   for (by_var in by_vars) {
     split_label <- substitute(
-      expr = formatters::var_labels(dataname, fill = FALSE)[[by_var]],
+      expr = teal.data::col_labels(dataname, fill = FALSE)[[by_var]],
       env = list(
         dataname = as.name(dataname),
         by_var = by_var
@@ -228,11 +228,11 @@ template_abnormality <- function(parentname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_abnormality
-#' @param grade ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param grade ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for variable names that can be used to
 #'   specify the abnormality grade. Variable must be factor.
 #' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
-#' @param baseline_var ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr
+#' @param baseline_var ([teal.transform::choices_selected()])\cr
 #'   variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
@@ -246,7 +246,6 @@ template_abnormality <- function(parentname,
 #' data <- teal_data()
 #' data <- within(data, {
 #'   library(dplyr)
-#'   library(formatters)
 #'
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb %>%
@@ -328,7 +327,7 @@ tm_t_abnormality <- function(label,
                              post_output = NULL,
                              na_level = default_na_str(),
                              basic_table_args = teal.widgets::basic_table_args()) {
-  logger::log_info("Initializing tm_t_abnormality")
+  message("Initializing tm_t_abnormality")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -339,8 +338,8 @@ tm_t_abnormality <- function(label,
   checkmate::assert_class(grade, "choices_selected")
   checkmate::assert_class(id_var, "choices_selected")
   checkmate::assert_class(baseline_var, "choices_selected")
-  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(treatment_flag_var, "choices_selected")
+  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)
@@ -384,7 +383,7 @@ tm_t_abnormality <- function(label,
 
 #' @keywords internal
 ui_t_abnormality <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   a <- list(...) # module args
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -399,11 +398,11 @@ ui_t_abnormality <- function(id, ...) {
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(
         a[c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var")]
       ),
@@ -413,7 +412,7 @@ ui_t_abnormality <- function(id, ...) {
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       teal.transform::data_extract_ui(
         id = ns("by_vars"),
         label = "Row By Variable",
@@ -426,7 +425,7 @@ ui_t_abnormality <- function(id, ...) {
         data_extract_spec = a$grade,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::checkboxInput(
+      checkboxInput(
         ns("exclude_base_abn"),
         "Exclude subjects whose baseline grade is the same as abnormal grade",
         value = a$exclude_base_abn
@@ -434,7 +433,7 @@ ui_t_abnormality <- function(id, ...) {
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
-          shiny::checkboxInput(
+          checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
             value = a$drop_arm_levels
@@ -471,7 +470,7 @@ ui_t_abnormality <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -504,9 +503,9 @@ srv_t_abnormality <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -539,7 +538,7 @@ srv_t_abnormality <- function(id,
       )
     )
 
-    shiny::isolate({
+    isolate({
       resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
       teal.widgets::updateOptionalSelectInput(
         session = session,
@@ -549,7 +548,7 @@ srv_t_abnormality <- function(id,
       )
     })
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("treatment_flag", shinyvalidate::sv_required(
         "Please select indicator value for on treatment records."
@@ -569,7 +568,7 @@ srv_t_abnormality <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
@@ -581,7 +580,7 @@ srv_t_abnormality <- function(id,
       anl_q = anl_q
     )
 
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
@@ -604,7 +603,7 @@ srv_t_abnormality <- function(id,
       )
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       validate_checks()
 
       by_vars_names <- merged$anl_input_r()$columns_source$by_vars
@@ -642,7 +641,7 @@ srv_t_abnormality <- function(id,
     })
 
     # Outputs to render.
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -651,15 +650,15 @@ srv_t_abnormality <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

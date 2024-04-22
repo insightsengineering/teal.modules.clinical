@@ -18,7 +18,6 @@
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
-#' library(formatters)
 #'
 #' ADSL <- tmc_ex_adsl %>%
 #'   mutate(ITTFL = factor("Y") %>%
@@ -144,7 +143,7 @@ tm_g_barchart_simple <- function(x = NULL,
                                  pre_output = NULL,
                                  post_output = NULL,
                                  ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_g_barchart_simple")
+  message("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
   if (length(c(x, fill, x_facet, y_facet)) == 0) {
@@ -195,24 +194,24 @@ tm_g_barchart_simple <- function(x = NULL,
 
 #' @keywords internal
 ui_g_barchart_simple <- function(id, ...) {
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
 
-  shiny::tagList(
-    shiny::singleton(
-      shiny::tags$head(shiny::includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
+  tagList(
+    singleton(
+      tags$head(includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
     ),
     teal.widgets::standard_layout(
       output = teal.widgets::white_small_well(
         teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-        shiny::uiOutput(ns("table"), class = "overflow-y-scroll max-h-250")
+        uiOutput(ns("table"), class = "overflow-y-scroll max-h-250")
       ),
-      encoding = shiny::div(
+      encoding = tags$div(
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),
         ###
-        shiny::tags$label("Encodings", class = "text-primary"),
+        tags$label("Encodings", class = "text-primary"),
         teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
         if (!is.null(args$x)) {
           teal.transform::data_extract_ui(
@@ -250,7 +249,7 @@ ui_g_barchart_simple <- function(id, ...) {
           teal.widgets::panel_item(
             "Additional plot settings",
             if (!is.null(args$fill)) {
-              shiny::radioButtons(
+              radioButtons(
                 inputId = ns("barlayout"),
                 label = "Covariate Bar Layout",
                 choices = c("Side by side" = "side_by_side", "Stacked" = "stacked"),
@@ -259,50 +258,50 @@ ui_g_barchart_simple <- function(id, ...) {
               )
             },
             if (!(is.null(args$x_facet))) {
-              shiny::checkboxInput(
+              checkboxInput(
                 ns("facet_scale_x"),
                 "Fixed scales for column facets",
                 value = TRUE
               )
             },
             if (!(is.null(args$y_facet))) {
-              shiny::checkboxInput(
+              checkboxInput(
                 ns("facet_scale_y"),
                 "Fixed scales for row facets",
                 value = TRUE
               )
             },
-            shiny::checkboxInput(
+            checkboxInput(
               ns("label_bars"),
               "Label bars",
               value = `if`(is.null(args$plot_options$label_bars), TRUE, args$plot_options$label_bars)
             ),
-            shiny::checkboxInput(
+            checkboxInput(
               ns("rotate_bar_labels"),
               "Rotate bar labels",
               value = `if`(is.null(args$plot_options$rotate_bar_labels), FALSE, args$plot_options$rotate_bar_labels)
             ),
-            shiny::checkboxInput(
+            checkboxInput(
               ns("rotate_x_label"),
               "Rotate x label",
               value = `if`(is.null(args$plot_options$rotate_x_label), FALSE, args$plot_options$rotate_x_label)
             ),
-            shiny::checkboxInput(
+            checkboxInput(
               ns("rotate_y_label"),
               "Rotate y label",
               value = `if`(is.null(args$plot_options$rotate_y_label), FALSE, args$plot_options$rotate_y_label)
             ),
-            shiny::checkboxInput(
+            checkboxInput(
               ns("flip_axis"),
               "Flip axes",
               value = `if`(is.null(args$plot_options$flip_axis), FALSE, args$plot_options$flip_axis)
             ),
-            shiny::checkboxInput(
+            checkboxInput(
               ns("show_n"),
               "Show n",
               value = `if`(is.null(args$plot_options$show_n), TRUE, args$plot_options$show_n)
             ),
-            shiny::sliderInput(
+            sliderInput(
               inputId = ns("expand_y_range"),
               label = "Y-axis range expansion (fraction on top)",
               min = 0,
@@ -314,7 +313,7 @@ ui_g_barchart_simple <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -338,9 +337,9 @@ srv_g_barchart_simple <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     rule_dupl <- function(others) {
       function(value) {
         othervals <- lapply(
@@ -383,7 +382,7 @@ srv_g_barchart_simple <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
@@ -393,12 +392,12 @@ srv_g_barchart_simple <- function(id,
       selector_list = selector_list
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    count_q <- shiny::reactive({
+    count_q <- reactive({
       anl_q <- anl_q()
       teal::validate_has_data(anl_q[["ANL"]], 2)
       groupby_vars <- r_groupby_vars()
@@ -417,7 +416,7 @@ srv_g_barchart_simple <- function(id,
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
 
-      data_list <- sapply(teal.data::datanames(data()), function(x) shiny::reactive(data()[[x]]),
+      data_list <- sapply(teal.data::datanames(data()), function(x) reactive(data()[[x]]),
         simplify = FALSE
       )
 
@@ -452,7 +451,7 @@ srv_g_barchart_simple <- function(id,
         )
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_inputs(iv_r())
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
@@ -489,7 +488,7 @@ srv_g_barchart_simple <- function(id,
         ggplot2_args = all_ggplot2_args
       )
 
-      ANL <- count_q()[["ANL"]] # nolint
+      ANL <- count_q()[["ANL"]]
 
       all_q <- count_q() %>%
         teal.code::eval_code(substitute(
@@ -507,10 +506,10 @@ srv_g_barchart_simple <- function(id,
       teal.code::eval_code(all_q, code = quote(print(plot)))
     })
 
-    plot_r <- shiny::reactive(all_q()[["plot"]])
+    plot_r <- reactive(all_q()[["plot"]])
 
-    output$table <- shiny::renderTable({
-      shiny::req(iv_r()$is_valid())
+    output$table <- renderTable({
+      req(iv_r()$is_valid())
       teal.code::dev_suppress(all_q()[["counts"]])
     })
 
@@ -545,14 +544,14 @@ srv_g_barchart_simple <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = "Bar Chart"
     )
 
@@ -690,11 +689,11 @@ make_barchart_simple_call <- function(y_name,
     # center text and move slightly to the top or to the right (depending on flip axes)
     # see https://stackoverflow.com/questions/7263849/what-do-hjust-and-vjust-do-when-making-a-plot-using-ggplot
     if (isTRUE(flip_axis)) {
-      hjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked # nolint
+      hjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked
       vjust <- 0.5
     } else {
       hjust <- 0.5
-      vjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked # nolint
+      vjust <- if (barlayout == "stacked") 0.5 else -1 # put above bars if not stacked
     }
 
     plot_args <- c(plot_args, bquote(

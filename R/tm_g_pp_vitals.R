@@ -206,7 +206,7 @@ template_vitals <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_vitals
-#' @param xaxis ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with all
+#' @param xaxis ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
 #'
 #' @inherit module_arguments return
@@ -278,11 +278,14 @@ tm_g_pp_vitals <- function(label,
     aval <- aval_var # resolves missing argument error
   }
 
-  logger::log_info("Initializing tm_g_pp_vitals")
+  message("Initializing tm_g_pp_vitals")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(paramcd, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(aval_var, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(xaxis, "choices_selected", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -336,14 +339,14 @@ ui_g_vitals <- function(id, ...) {
     ui_args$xaxis
   )
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("vitals_plot")),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("paramcd", "aval_var", "xaxis")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
@@ -357,7 +360,7 @@ ui_g_vitals <- function(id, ...) {
         data_extract_spec = ui_args$paramcd,
         is_single_dataset = is_single_dataset_value
       ),
-      shiny::uiOutput(ns("paramcd_levels")),
+      uiOutput(ns("paramcd_levels")),
       teal.transform::data_extract_ui(
         id = ns("xaxis"),
         label = "Select vital plot x-axis:",
@@ -379,7 +382,7 @@ ui_g_vitals <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -406,13 +409,13 @@ srv_g_vitals <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    patient_id <- shiny::reactive(input$patient_id)
+  moduleServer(id, function(input, output, session) {
+    patient_id <- reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(data()[[parentname]][[patient_col]]))
+    patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -420,7 +423,7 @@ srv_g_vitals <- function(id,
       selected = patient_data_base()[1]
     )
 
-    shiny::observeEvent(patient_data_base(),
+    observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -454,7 +457,7 @@ srv_g_vitals <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required(
         "Please select a patient."
@@ -471,25 +474,25 @@ srv_g_vitals <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
-    output$paramcd_levels <- shiny::renderUI({
+    output$paramcd_levels <- renderUI({
       paramcd_var <- input[[extract_input("paramcd", dataname)]]
 
-      shiny::req(paramcd_var)
-      shiny::req(input$patient_id)
+      req(paramcd_var)
+      req(input$patient_id)
 
       vitals_dat <- merged$anl_q()[["ANL"]]
       vitals_dat_sub <- vitals_dat[vitals_dat[[patient_col]] == patient_id(), ]
       paramcd_col <- vitals_dat_sub[[paramcd_var]]
       paramcd_col_levels <- unique(paramcd_col)
 
-      cur_selected <- shiny::isolate(input$paramcd_levels_vals)
+      cur_selected <- isolate(input$paramcd_levels_vals)
 
       selected <- if (length(cur_selected) > 0) {
         cur_selected
@@ -497,8 +500,8 @@ srv_g_vitals <- function(id,
         paramcd_col_levels
       }
 
-      shiny::tagList(
-        shiny::selectInput(
+      tagList(
+        selectInput(
           session$ns("paramcd_levels_vals"),
           "Select PARAMCD variable levels:",
           selected = selected,
@@ -508,13 +511,13 @@ srv_g_vitals <- function(id,
       )
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_has_data(merged$anl_q()[["ANL"]], 1)
 
       teal::validate_inputs(iv_r())
 
-      shiny::validate(
-        shiny::need(
+      validate(
+        need(
           nrow(merged$anl_q()[["ANL"]][input$patient_id == merged$anl_q()[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
@@ -535,7 +538,7 @@ srv_g_vitals <- function(id,
         merged$anl_q(),
         substitute(
           expr = {
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
@@ -545,7 +548,7 @@ srv_g_vitals <- function(id,
         teal.code::eval_code(as.expression(my_calls))
     })
 
-    plot_r <- shiny::reactive(all_q()[["result_plot"]])
+    plot_r <- reactive(all_q()[["result_plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "vitals_plot",
@@ -556,14 +559,14 @@ srv_g_vitals <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

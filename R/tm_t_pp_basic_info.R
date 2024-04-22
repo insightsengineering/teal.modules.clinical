@@ -61,7 +61,7 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_basic_info
-#' @param vars ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr  object with all
+#' @param vars ([teal.transform::choices_selected()])\cr  object with all
 #'   available choices and preselected option for variables from `dataname` to show in the table.
 #'
 #' @inherit module_arguments return
@@ -97,10 +97,11 @@ tm_t_pp_basic_info <- function(label,
                                vars = NULL,
                                pre_output = NULL,
                                post_output = NULL) {
-  logger::log_info("Initializing tm_t_pp_basic_info")
+  message("Initializing tm_t_pp_basic_info")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(vars, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
@@ -131,17 +132,17 @@ ui_t_basic_info <- function(id, ...) {
   ui_args <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(ui_args$vars)
 
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   teal.widgets::standard_layout(
-    output = shiny::div(
-      shiny::htmlOutput(ns("title")),
+    output = tags$div(
+      htmlOutput(ns("title")),
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
-    encoding = shiny::div(
+    encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      shiny::tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"),
       teal.transform::datanames_input(ui_args[c("vars")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
@@ -156,7 +157,7 @@ ui_t_basic_info <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
@@ -179,11 +180,11 @@ srv_t_basic_info <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
-    patient_id <- shiny::reactive(input$patient_id)
+  moduleServer(id, function(input, output, session) {
+    patient_id <- reactive(input$patient_id)
 
     # Init
-    patient_data_base <- shiny::reactive(unique(data()[[dataname]][[patient_col]]))
+    patient_data_base <- reactive(unique(data()[[dataname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
       "patient_id",
@@ -191,7 +192,7 @@ srv_t_basic_info <- function(id,
       selected = patient_data_base()[1]
     )
 
-    shiny::observeEvent(patient_data_base(),
+    observeEvent(patient_data_base(),
       handlerExpr = {
         teal.widgets::updateOptionalSelectInput(
           session,
@@ -216,7 +217,7 @@ srv_t_basic_info <- function(id,
       )
     )
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
       teal.transform::compose_and_enable_validators(iv, selector_list)
@@ -228,12 +229,12 @@ srv_t_basic_info <- function(id,
       merge_function = "dplyr::left_join"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       teal::validate_inputs(iv_r())
       my_calls <- template_basic_info(
         dataname = "ANL",
@@ -246,7 +247,7 @@ srv_t_basic_info <- function(id,
         substitute(
           expr = {
             pt_id <- patient_id
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ] # nolint
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
           }, env = list(
             patient_col = patient_col,
             patient_id = patient_id()
@@ -256,11 +257,11 @@ srv_t_basic_info <- function(id,
         teal.code::eval_code(as.expression(my_calls))
     })
 
-    output$title <- shiny::renderText({
+    output$title <- renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    table_r <- shiny::reactive(all_q()[["result"]])
+    table_r <- reactive(all_q()[["result"]])
 
     output$basic_info_table <- DT::renderDataTable(
       expr = table_r(),
@@ -271,14 +272,14 @@ srv_t_basic_info <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
 

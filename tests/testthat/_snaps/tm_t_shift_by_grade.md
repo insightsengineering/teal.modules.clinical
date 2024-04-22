@@ -26,11 +26,11 @@
               levels = c(dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", 
                   "WGRLOFL"), "Not Low", "Not High"), "1", "2", "3", 
                   "4", "Missing")))
-          column_labels <- list(PARAMCD = formatters::var_labels(anl, 
-              fill = FALSE)[["PARAMCD"]], AVISIT = formatters::var_labels(anl, 
+          column_labels <- list(PARAMCD = teal.data::col_labels(anl, 
+              fill = FALSE)[["PARAMCD"]], AVISIT = teal.data::col_labels(anl, 
               fill = FALSE)[["AVISIT"]], ATOXGR_GP = dplyr::if_else(TRUE, 
               "Grade at Visit", "Post-baseline Grade"), BTOXGR_GP = "Baseline Grade")
-          formatters::var_labels(anl)[names(column_labels)] <- as.character(column_labels)
+          teal.data::col_labels(anl)[names(column_labels)] <- as.character(column_labels)
           anl
       }
       
@@ -41,11 +41,11 @@
       lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL") %>% 
           rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
           rtables::split_rows_by(var = "PARAMCD", split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(anl, 
+              label_pos = "topleft", split_label = teal.data::col_labels(anl, 
                   fill = FALSE)[["PARAMCD"]]) %>% rtables::split_rows_by("AVISIT", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(anl, 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
               fill = FALSE)[["AVISIT"]]) %>% rtables::split_rows_by(var = "ATOXGR_GP", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(anl, 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
               fill = FALSE)[["ATOXGR_GP"]]) %>% summarize_num_patients(var = "USUBJID", 
           .stats = c("unique_count")) %>% count_occurrences(vars = "BTOXGR_GP", 
           denom = "n", drop = TRUE, .indent_mods = 4L) %>% append_varlabels(anl, 
@@ -87,11 +87,11 @@
               levels = c(dplyr::if_else("WGRLOVFL" %in% c("WGRLOVFL", 
                   "WGRLOFL"), "Not Low", "Not High"), "1", "2", "3", 
                   "4", "Missing")))
-          column_labels <- list(PARAMCD = formatters::var_labels(anl, 
-              fill = FALSE)[["PARAMCD"]], AVISIT = formatters::var_labels(anl, 
+          column_labels <- list(PARAMCD = teal.data::col_labels(anl, 
+              fill = FALSE)[["PARAMCD"]], AVISIT = teal.data::col_labels(anl, 
               fill = FALSE)[["AVISIT"]], ATOXGR_GP = dplyr::if_else(TRUE, 
               "Grade at Visit", "Post-baseline Grade"), BTOXGR_GP = "Baseline Grade")
-          formatters::var_labels(anl)[names(column_labels)] <- as.character(column_labels)
+          teal.data::col_labels(anl)[names(column_labels)] <- as.character(column_labels)
           anl
       }
       
@@ -102,11 +102,11 @@
       lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL") %>% 
           rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
           rtables::split_rows_by(var = "PARAMCD", split_fun = split_fun, 
-              label_pos = "topleft", split_label = formatters::var_labels(anl, 
+              label_pos = "topleft", split_label = teal.data::col_labels(anl, 
                   fill = FALSE)[["PARAMCD"]]) %>% rtables::split_rows_by("AVISIT", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(anl, 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
               fill = FALSE)[["AVISIT"]]) %>% rtables::split_rows_by(var = "ATOXGR_GP", 
-          split_fun = split_fun, label_pos = "topleft", split_label = formatters::var_labels(anl, 
+          split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
               fill = FALSE)[["ATOXGR_GP"]]) %>% summarize_num_patients(var = "MYUSUBJID", 
           .stats = c("unique_count")) %>% count_occurrences(vars = "BTOXGR_GP", 
           denom = "n", drop = TRUE, .indent_mods = 4L) %>% append_varlabels(anl, 

@@ -30,7 +30,7 @@
               .labels = c(unique = "Total number of patients with at least one adverse event")) %>% 
           rtables::split_rows_by("SMQ", child_labels = "visible", nested = FALSE, 
               split_fun = trim_levels_in_group("AEDECOD", drop_outlevs = FALSE), 
-              indent_mod = -1L, label_pos = "topleft", split_label = formatters::var_labels(anl, 
+              indent_mod = -1L, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
                   fill = FALSE)[["SMQ"]]) %>% summarize_num_patients(var = "USUBJID", 
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one adverse event", 
               nonunique = "Total number of events")) %>% count_occurrences(vars = "AEDECOD", 
@@ -85,7 +85,7 @@
           .stats = c("unique"), .labels = c(unique = "Total number of patients with at least one adverse event")) %>% 
           rtables::split_rows_by("SMQ", child_labels = "visible", nested = FALSE, 
               split_fun = trim_levels_in_group("myAEDECOD", drop_outlevs = FALSE), 
-              indent_mod = -1L, label_pos = "topleft", split_label = formatters::var_labels(anl, 
+              indent_mod = -1L, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
                   fill = FALSE)[["SMQ"]]) %>% summarize_num_patients(var = "myUSUBJID", 
           .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one adverse event", 
               nonunique = "Total number of events")) %>% count_occurrences(vars = "myAEDECOD", 

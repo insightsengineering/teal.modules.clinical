@@ -445,9 +445,9 @@ template_mmrm_plots <- function(fit_name,
 #' @inheritParams module_arguments
 #' @inheritParams template_mmrm_tables
 #' @inheritParams template_mmrm_plots
-#' @param method ([teal.transform::choices_selected()] or [teal.transform::data_extract_spec()])\cr object with
+#' @param method ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and pre-selected option for the adjustment method.
-#' @param ggplot2_args (`ggplot2_args`) \cr optional, object created by [`teal.widgets::ggplot2_args()`]
+#' @param ggplot2_args (`ggplot2_args`) optional\cr object created by [`teal.widgets::ggplot2_args()`]
 #'   with settings for all the plots or named list of `ggplot2_args` objects for plot-specific settings.
 #'   List names should match the following: `c("default", "lsmeans", "diagnostic")`. The argument is merged
 #'   with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).
@@ -539,11 +539,17 @@ tm_a_mmrm <- function(label,
                       post_output = NULL,
                       basic_table_args = teal.widgets::basic_table_args(),
                       ggplot2_args = teal.widgets::ggplot2_args()) {
-  logger::log_info("Initializing tm_a_mmrm")
+  message("Initializing tm_a_mmrm")
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
   checkmate::assert_string(dataname)
+  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(id_var, "choices_selected")
+  checkmate::assert_class(arm_var, "choices_selected")
+  checkmate::assert_class(visit_var, "choices_selected")
+  checkmate::assert_class(cov_var, "choices_selected")
+  checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(method, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -599,7 +605,7 @@ tm_a_mmrm <- function(label,
 #' @keywords internal
 ui_mmrm <- function(id, ...) {
   a <- list(...) # module args
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
     a$paramcd,
@@ -609,22 +615,22 @@ ui_mmrm <- function(id, ...) {
     a$aval_var
   )
 
-  shiny::tagList(
-    shiny::singleton(
-      shiny::tags$head(shiny::includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
+  tagList(
+    singleton(
+      tags$head(includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
     ),
     teal.widgets::standard_layout(
       output = teal.widgets::white_small_well(
-        shiny::textOutput(ns("null_input_msg")),
-        shiny::h3(shiny::textOutput(ns("mmrm_title"))),
+        textOutput(ns("null_input_msg")),
+        tags$h3(textOutput(ns("mmrm_title"))),
         teal.widgets::table_with_settings_ui(ns("mmrm_table")),
         teal.widgets::plot_with_settings_ui(id = ns("mmrm_plot"))
       ),
-      encoding = shiny::div(
+      encoding = tags$div(
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),
         ###
-        shiny::tags$label("Encodings", class = "text-primary"),
+        tags$label("Encodings", class = "text-primary"),
         teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
@@ -667,14 +673,14 @@ ui_mmrm <- function(id, ...) {
               data_extract_spec = a$arm_var,
               is_single_dataset = is_single_dataset_value
             ),
-            shinyjs::hidden(shiny::uiOutput(ns("arms_buckets"))),
+            shinyjs::hidden(uiOutput(ns("arms_buckets"))),
             shinyjs::hidden(
-              shiny::helpText(
+              helpText(
                 id = ns("help_text"), "Multiple reference groups are automatically combined into a single group."
               )
             ),
             shinyjs::hidden(
-              shiny::checkboxInput(
+              checkboxInput(
                 ns("combine_comp_arms"),
                 "Combine all comparison groups?",
                 value = FALSE
@@ -686,14 +692,14 @@ ui_mmrm <- function(id, ...) {
               data_extract_spec = a$id_var,
               is_single_dataset = is_single_dataset_value
             ),
-            shiny::selectInput(
+            selectInput(
               ns("weights_emmeans"),
               "Weights for LS means",
               choices = c("proportional", "equal"),
               selected = "proportional",
               multiple = FALSE
             ),
-            shiny::selectInput(
+            selectInput(
               ns("cor_struct"),
               "Correlation Structure",
               choices = eval(formals(tern.mmrm::build_formula)$cor_struct),
@@ -715,7 +721,7 @@ ui_mmrm <- function(id, ...) {
               multiple = FALSE,
               fixed = a$conf_level$fixed
             ),
-            shiny::checkboxInput(
+            checkboxInput(
               ns("parallel"),
               "Parallel Computing",
               value = TRUE
@@ -723,14 +729,14 @@ ui_mmrm <- function(id, ...) {
             collapsed = FALSE # Start with having this panel opened.
           )
         ),
-        shiny::actionButton(
+        actionButton(
           ns("button_start"),
           "Fit Model",
-          icon = shiny::icon("calculator"),
+          icon = icon("calculator"),
           width = "100%",
           class = "btn action-button text-dark bg-orange mb-4"
         ),
-        shiny::radioButtons(
+        radioButtons(
           ns("output_function"),
           "Output Type",
           choices = c(
@@ -743,7 +749,7 @@ ui_mmrm <- function(id, ...) {
           ),
           selected = "t_mmrm_lsmeans"
         ),
-        shiny::conditionalPanel(
+        conditionalPanel(
           condition = paste0(
             "input['", ns("output_function"), "'] == 't_mmrm_lsmeans'", " || ",
             "input['", ns("output_function"), "'] == 'g_mmrm_lsmeans'", " || ",
@@ -753,14 +759,14 @@ ui_mmrm <- function(id, ...) {
             teal.widgets::panel_item(
               "Output Settings",
               # Additional option for LS means table.
-              shiny::selectInput(
+              selectInput(
                 ns("t_mmrm_lsmeans_show_relative"),
                 "Show Relative Change",
                 choices = c("reduction", "increase", "none"),
                 selected = "reduction",
                 multiple = FALSE
               ),
-              shiny::checkboxGroupInput(
+              checkboxGroupInput(
                 ns("g_mmrm_lsmeans_select"),
                 "LS means plots",
                 choices = c(
@@ -770,20 +776,20 @@ ui_mmrm <- function(id, ...) {
                 selected = c("estimates", "contrasts"),
                 inline = TRUE
               ),
-              shiny::sliderInput(
+              sliderInput(
                 ns("g_mmrm_lsmeans_width"),
                 "CI bar width",
                 min = 0.1,
                 max = 1,
                 value = 0.6
               ),
-              shiny::checkboxInput(
+              checkboxInput(
                 ns("g_mmrm_lsmeans_contrasts_show_pval"),
                 "Show contrasts p-values",
                 value = FALSE
               ),
               # Additional options for diagnostic plots.
-              shiny::radioButtons(
+              radioButtons(
                 ns("g_mmrm_diagnostic_type"),
                 "Diagnostic plot type",
                 choices = c(
@@ -792,7 +798,7 @@ ui_mmrm <- function(id, ...) {
                 ),
                 selected = NULL
               ),
-              shiny::sliderInput(
+              sliderInput(
                 ns("g_mmrm_diagnostic_z_threshold"),
                 "Label observations above this threshold",
                 min = 0.1,
@@ -804,7 +810,7 @@ ui_mmrm <- function(id, ...) {
         )
       )
     ),
-    forms = shiny::tagList(
+    forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
@@ -837,14 +843,14 @@ srv_mmrm <- function(id,
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+  checkmate::assert_class(isolate(data()), "teal_data")
 
-  shiny::moduleServer(id, function(input, output, session) {
+  moduleServer(id, function(input, output, session) {
     # Reactive responsible for sending a disable/enable signal
     # to show R code and debug info buttons
-    disable_r_code <- shiny::reactiveVal(FALSE)
+    disable_r_code <- reactiveVal(FALSE)
 
-    shiny::observeEvent(input[[extract_input("cov_var", dataname)]], {
+    observeEvent(input[[extract_input("cov_var", dataname)]], {
       # update covariates as actual variables
       split_interactions_values <- split_interactions(input[[extract_input("cov_var", dataname)]])
       arm_var_value <- input[[extract_input("arm_var", parentname)]]
@@ -866,7 +872,7 @@ srv_mmrm <- function(id,
       input,
       output,
       id_arm_var = extract_input("arm_var", parentname), # From UI.
-      data = shiny::reactive(data()[[parentname]]),
+      data = reactive(data()[[parentname]]),
       arm_ref_comp = arm_ref_comp,
       module = "tm_mmrm"
     )
@@ -912,11 +918,11 @@ srv_mmrm <- function(id,
 
     # selector_list includes cov_var as it is needed for validation rules
     # but not needed to merge so it is removed here
-    selector_list_without_cov <- shiny::reactive({
+    selector_list_without_cov <- reactive({
       selector_list()[names(selector_list()) != "cov_var"]
     })
 
-    iv_r <- shiny::reactive({
+    iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_validator(arm_ref_comp_iv)
       iv$add_rule("conf_level", shinyvalidate::sv_required("'Confidence Level' field is not selected"))
@@ -942,7 +948,7 @@ srv_mmrm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
-    anl_q <- shiny::reactive({
+    anl_q <- reactive({
       data() %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_merge_inputs()$expr))
@@ -952,11 +958,11 @@ srv_mmrm <- function(id,
     shinyjs::hide("mmrm_title")
 
     # reactiveVal used to send a signal to plot_with_settings module to hide the UI
-    show_plot_rv <- shiny::reactiveVal(FALSE)
+    show_plot_rv <- reactiveVal(FALSE)
 
     # this will store the current/last state of inputs and data that generated a model-fit
     # its purpose is to allow any input change to be checked whether it resulted in an out of sync state
-    state <- shiny::reactiveValues(input = NULL, button_start = 0)
+    state <- reactiveValues(input = NULL, button_start = 0)
 
     # Note:
     # input$parallel does not get us out of sync (it just takes longer to get to same result)
@@ -979,7 +985,7 @@ srv_mmrm <- function(id,
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
 
-    shiny::observeEvent(adsl_merge_inputs()$columns_source$arm_var, {
+    observeEvent(adsl_merge_inputs()$columns_source$arm_var, {
       arm_var <- as.vector(adsl_merge_inputs()$columns_source$arm_var)
       if (length(arm_var) == 0) {
         shinyjs::hide("arms_buckets")
@@ -994,7 +1000,7 @@ srv_mmrm <- function(id,
 
     # Event handler:
     # Show either the plot or the table output.
-    shiny::observeEvent(input$output_function, {
+    observeEvent(input$output_function, {
       output_function <- input$output_function
       if (isTRUE(grepl("^t_", output_function))) {
         show_plot_rv(FALSE)
@@ -1009,7 +1015,7 @@ srv_mmrm <- function(id,
 
     # Event handler:
     # Show or hide LS means table option.
-    shiny::observeEvent(input$output_function, {
+    observeEvent(input$output_function, {
       output_function <- input$output_function
       if (isTRUE(output_function == "t_mmrm_lsmeans")) {
         shinyjs::show("t_mmrm_lsmeans_show_relative")
@@ -1020,7 +1026,7 @@ srv_mmrm <- function(id,
 
     # Event handler:
     # Show or hide the LS means plot options.
-    shiny::observeEvent(list(input$output_function, input$g_mmrm_lsmeans_select), {
+    observeEvent(list(input$output_function, input$g_mmrm_lsmeans_select), {
       output_function <- input$output_function
       g_mmrm_lsmeans_select <- input$g_mmrm_lsmeans_select
       if (isTRUE(output_function == "g_mmrm_lsmeans")) {
@@ -1040,7 +1046,7 @@ srv_mmrm <- function(id,
 
     # Event handler:
     # Show or hide the diagnostic plot type option.
-    shiny::observeEvent(list(input$output_function, input$g_mmrm_diagnostic_type), {
+    observeEvent(list(input$output_function, input$g_mmrm_diagnostic_type), {
       output_function <- input$output_function
       g_mmrm_diagnostic_type <- input$g_mmrm_diagnostic_type
       if (isTRUE(output_function == "g_mmrm_diagnostic")) {
@@ -1074,7 +1080,7 @@ srv_mmrm <- function(id,
     })
 
     # all the inputs and data that can be out of sync with the fitted model
-    mmrm_inputs_reactive <- shiny::reactive({
+    mmrm_inputs_reactive <- reactive({
       shinyjs::disable("button_start")
       disable_r_code(TRUE)
       teal::validate_inputs(iv_r())
@@ -1099,7 +1105,7 @@ srv_mmrm <- function(id,
       c(list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered), encoding_inputs)
     })
 
-    output$null_input_msg <- shiny::renderText({
+    output$null_input_msg <- renderText({
       mmrm_inputs_reactive()
       paste(
         "Please first specify 'Model Settings' and press 'Fit Model'.",
@@ -1111,10 +1117,10 @@ srv_mmrm <- function(id,
     })
 
     # compares the mmrm_inputs_reactive values with the values stored in 'state'
-    state_has_changed <- shiny::reactive({
-      shiny::req(state$input)
+    state_has_changed <- reactive({
+      req(state$input)
       displayed_state <- mmrm_inputs_reactive()
-      equal_ADSL <- all.equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint
+      equal_ADSL <- all.equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint: object_name.
       equal_dataname <- all.equal(state$input$anl_filtered, displayed_state$anl_filtered)
       true_means_change <- vapply(
         sync_inputs,
@@ -1143,7 +1149,7 @@ srv_mmrm <- function(id,
     # Event handler:
     # These trigger when we are out of sync and then enable the start button and
     # disable the show R code button and show warning message
-    shiny::observeEvent(mmrm_inputs_reactive(), {
+    observeEvent(mmrm_inputs_reactive(), {
       shinyjs::enable("button_start")
       disable_r_code(TRUE)
       if (!state_has_changed()) {
@@ -1153,7 +1159,7 @@ srv_mmrm <- function(id,
     })
 
     # Prepare the analysis environment (filter data, check data, populate envir).
-    validate_checks <- shiny::reactive({
+    validate_checks <- reactive({
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl_data <- anl_q()[["ANL"]]
@@ -1203,7 +1209,7 @@ srv_mmrm <- function(id,
       Map(
         function(visit_df, visit_name) {
           dup <- any(duplicated(visit_df[[input_id_var]]))
-          shiny::validate(shiny::need(!dup, paste("Duplicated subject ID found at", visit_name)))
+          validate(need(!dup, paste("Duplicated subject ID found at", visit_name)))
         },
         split(anl_data, anl_data[[input_visit_var]]),
         levels(anl_data[[input_visit_var]])
@@ -1212,7 +1218,7 @@ srv_mmrm <- function(id,
 
     # Connector:
     # Fit the MMRM, once the user clicks on the start button.
-    mmrm_fit <- shiny::eventReactive(input$button_start, {
+    mmrm_fit <- eventReactive(input$button_start, {
       qenv <- anl_q()
       anl_m_inputs <- anl_inputs()
 
@@ -1236,10 +1242,10 @@ srv_mmrm <- function(id,
       teal.code::eval_code(qenv, as.expression(my_calls))
     })
 
-    output$mmrm_title <- shiny::renderText({
+    output$mmrm_title <- renderText({
       new_inputs <- try(state_has_changed(), silent = TRUE)
       # No message needed here because it will be displayed by either plots or tables output
-      shiny::validate(shiny::need(!inherits(new_inputs, "try-error") && !new_inputs, character(0)))
+      validate(need(!inherits(new_inputs, "try-error") && !new_inputs, character(0)))
 
       # Input on output type.
       output_function <- input$output_function
@@ -1266,9 +1272,9 @@ srv_mmrm <- function(id,
       output_title
     })
 
-    table_q <- shiny::reactive({
-      shiny::validate(
-        shiny::need(
+    table_q <- reactive({
+      validate(
+        need(
           !state_has_changed(),
           "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
         )
@@ -1286,8 +1292,8 @@ srv_mmrm <- function(id,
 
       anl_m_inputs <- anl_inputs()
 
-      ANL <- qenv[["ANL"]] # nolint
-      ANL_ADSL <- qenv[["ANL_ADSL"]] # nolint
+      ANL <- qenv[["ANL"]]
+      ANL_ADSL <- qenv[["ANL_ADSL"]]
       paramcd <- unique(ANL[[unlist(paramcd$filter)["vars_selected"]]])
 
       basic_table_args$subtitles <- paste0(
@@ -1320,9 +1326,9 @@ srv_mmrm <- function(id,
 
     # Endpoint:
     # Plot outputs.
-    plot_q <- shiny::reactive({
-      shiny::validate(
-        shiny::need(
+    plot_q <- reactive({
+      validate(
+        need(
           !state_has_changed(),
           "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
         )
@@ -1388,7 +1394,7 @@ srv_mmrm <- function(id,
       teal.code::eval_code(qenv, as.expression(mmrm_plot_expr))
     })
 
-    all_q <- shiny::reactive({
+    all_q <- reactive({
       if (!is.null(plot_q()) && !is.null(table_q())) {
         teal.code::join(plot_q(), table_q())
       } else if (!is.null(plot_q())) {
@@ -1398,7 +1404,7 @@ srv_mmrm <- function(id,
       }
     })
 
-    table_r <- shiny::reactive({
+    table_r <- reactive({
       switch(input$output_function,
         t_mmrm_lsmeans = table_q()[["lsmeans_table"]],
         t_mmrm_diagnostic = table_q()[["diagnostic_table"]],
@@ -1407,7 +1413,7 @@ srv_mmrm <- function(id,
       )
     })
 
-    plot_r <- shiny::reactive({
+    plot_r <- reactive({
       switch(input$output_function,
         g_mmrm_lsmeans = plot_q()[["lsmeans_plot"]],
         g_mmrm_diagnostic = plot_q()[["diagnostic_plot"]]
@@ -1419,26 +1425,26 @@ srv_mmrm <- function(id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width,
-      show_hide_signal = shiny::reactive(show_plot_rv())
+      show_hide_signal = reactive(show_plot_rv())
     )
 
     teal.widgets::table_with_settings_srv(
       id = "mmrm_table",
       table_r = table_r,
-      show_hide_signal = shiny::reactive(!show_plot_rv())
+      show_hide_signal = reactive(!show_plot_rv())
     )
 
     teal.widgets::verbatim_popup_srv(
       id = "warning",
-      verbatim_content = shiny::reactive(teal.code::get_warnings(all_q())),
+      verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
-      disabled = shiny::reactive(disable_r_code() || is.null(teal.code::get_warnings(all_q())))
+      disabled = reactive(disable_r_code() || is.null(teal.code::get_warnings(all_q())))
     )
 
     # Show R code once button is pressed.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = shiny::reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       disabled = disable_r_code,
       title = "R Code for the Current MMRM Analysis"
     )
