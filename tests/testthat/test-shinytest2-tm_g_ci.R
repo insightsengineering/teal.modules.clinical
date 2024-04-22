@@ -1,16 +1,15 @@
 app_driver_tm_g_ci <- function() {
-  ADSL <- tmc_ex_adsl
-  ADLB <- tmc_ex_adlb
+  data <- teal.data::teal_data()
+  data <- within(data, {
+    ADSL <- rADSL
+    ADLB <- rADLB
+  })
+  teal.data::datanames(data) <- c("ADSL", "ADLB")
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[c("ADSL", "ADLB")]
+
 
   init_teal_app_driver(
-    data = teal.data::cdisc_data(
-      ADSL = ADSL,
-      ADLB = ADLB,
-      code = "
-        ADSL <- tmc_ex_adsl
-        ADLB <- tmc_ex_adlb
-      "
-    ),
+    data = data,
     modules = tm_g_ci(
       label = "Confidence Interval Plot",
       x_var = teal.transform::data_extract_spec(
@@ -61,7 +60,6 @@ app_driver_tm_g_ci <- function() {
     )
   )
 }
-
 
 testthat::test_that("e2e - tm_g_ci: example ci module initializes in teal without errors and produces plot output", {
   skip_if_too_deep(5)
