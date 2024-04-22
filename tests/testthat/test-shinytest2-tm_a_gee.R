@@ -85,3 +85,19 @@ testthat::test_that("e2e - tm_a_gee: starts with specified label, id_var, arm_va
     NULL
   )
 })
+
+testthat::test_that("e2e - tm_a_gee: change in arm_var changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+
+  table_before <- active_module_tws_output(app_driver)
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+  testthat::expect_false(
+    identical(
+      table_before,
+      active_module_tws_output(app_driver)
+    )
+  )
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
