@@ -1,0 +1,53 @@
+app_driver_tm_g_lineplot <- function() {
+  data <- teal.data::teal_data() %>%
+    within({
+      library(dplyr)
+      library(forcats)
+
+      ADSL <- tmc_ex_adsl
+      ADLB <- tmc_ex_adlb %>%
+        mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
+    })
+
+  datanames <- c("ADSL", "ADLB")
+  teal.data::datanames(data) <- datanames
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+
+  init_teal_app_driver(
+    data = data,
+    modules = teal::modules(
+      tm_g_lineplot(
+        label = "Line Plot",
+        dataname = "ADLB",
+        strata = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "ACTARMCD")),
+          "ARM"
+        ),
+        y = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], c("AVAL", "BASE", "CHG", "PCHG")),
+          "AVAL"
+        ),
+        param = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADLB"]], "PARAMCD", "PARAM"),
+          "ALT"
+        )
+      )
+    )
+  )
+}
+
+testthat::test_that("e2e - tm_g_lineplot: module initializes in teal without errors and produces plot output", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_lineplot()
+  app_driver$expect_no_shiny_error()
+  app_driver$expect_no_validation_error()
+
+  testthat::expect_match(
+    app_driver$get_attr(
+      app_driver$active_module_element("myplot-plot_main > img"),
+      "src"
+    ),
+    "data:image/png;base64,"
+  )
+  app_driver$stop()
+})
