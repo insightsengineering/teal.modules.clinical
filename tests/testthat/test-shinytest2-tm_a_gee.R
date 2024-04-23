@@ -33,7 +33,8 @@ app_driver_tm_a_gee <- function() {
         choices = teal.transform::value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
         selected = "FKSI-FWB"
       ),
-      cov_var = teal.transform::choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
+      cov_var = teal.transform::choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
+      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE)
     )
   )
 }
@@ -247,9 +248,9 @@ testthat::test_that("e2e - tm_a_gee: deselection of cov_var throws validation er
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: selection of conf_level changes the table and does not throw validation errors", {
+testthat::test_that("e2e - tm_a_gee: selection of conf_level changes the table and does not throw validation errors", {
   skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_ci()
+  app_driver <- app_driver_tm_a_gee()
   table_before <- active_module_tws_output(app_driver)
   app_driver$set_active_module_input("conf_level", 0.90)
   testthat::expect_false(identical(table_before, active_module_tws_output(app_driver)))
@@ -257,9 +258,37 @@ testthat::test_that("e2e - tm_g_ci: selection of conf_level changes the table an
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: selection of cor_struct changes the table and does not throw validation errors", {
+testthat::test_that("e2e - tm_a_gee: selection of conf_level out of [0,1] range throws validation error", {
   skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_ci()
+  app_driver <- app_driver_tm_a_gee()
+  table_before <- active_module_tws_output(app_driver)
+  app_driver$set_active_module_input("conf_level", -1)
+  testthat::expect_identical(active_module_tws_output(app_driver), list())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("conf_level_input > div > span"),
+    "Confidence level must be between 0 and 1"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_a_gee: deselection of conf_level throws validation error", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
+  app_driver$set_active_module_input("conf_level", character(0))
+  testthat::expect_identical(active_module_tws_output(app_driver), list())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("conf_level_input > div > span"),
+    "Please choose a confidence level"
+  )
+  app_driver$stop()
+})
+
+
+testthat::test_that("e2e - tm_a_gee: selection of cor_struct changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
   table_before <- active_module_tws_output(app_driver)
   app_driver$set_active_module_input("cor_struct", "auto-regressive")
   testthat::expect_false(identical(table_before, active_module_tws_output(app_driver)))
@@ -267,9 +296,24 @@ testthat::test_that("e2e - tm_g_ci: selection of cor_struct changes the table an
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: selection of output_table changes the table and does not throw validation errors", {
+testthat::test_that("e2e - tm_a_gee: deselection of cor_struct throws validation error", {
   skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_ci()
+  app_driver <- app_driver_tm_a_gee()
+  app_driver$set_active_module_input("cor_struct", character(0))
+  testthat::expect_identical(active_module_tws_output(app_driver), list())
+  # TO BE FIXED - there is no error displayed
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("cov_struct_input > div > span"),
+    "Please choose a correlation structure"
+  )
+  app_driver$stop()
+})
+
+
+testthat::test_that("e2e - tm_a_gee: selection of output_table changes the table and does not throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_gee()
   table_before <- active_module_tws_output(app_driver)
   app_driver$set_active_module_input("output_table", "t_gee_cov")
   testthat::expect_false(identical(table_before, active_module_tws_output(app_driver)))
