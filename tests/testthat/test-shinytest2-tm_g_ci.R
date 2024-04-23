@@ -149,6 +149,10 @@ testthat::test_that("e2e - tm_g_ci: Deselecting x_var column throws validation e
   app_driver$set_active_module_input("x_var-dataset_ADSL_singleextract-select", character(0))
   testthat::expect_identical(active_module_pws_output(app_driver), character(0))
   app_driver$expect_validation_error()
+  testthat::expect_identical(
+    app_driver$active_module_element_text("x_var-dataset_ADSL_singleextract-select_input > div > span"),
+    "Select a treatment (x axis)"
+  )
   app_driver$stop()
 })
 
@@ -172,6 +176,10 @@ testthat::test_that("e2e - tm_g_ci: Deselecting y_var column throws validation e
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-select", character(0))
   testthat::expect_identical(active_module_pws_output(app_driver), character(0))
+  testthat::expect_identical(
+    app_driver$active_module_element_text("y_var-dataset_ADLB_singleextract-select_input > div > span"),
+    "Select an analysis value (y axis)"
+  )
   app_driver$expect_validation_error()
   app_driver$stop()
 })
@@ -196,6 +204,10 @@ testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter value throws vali
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter1-vals", character(0))
   testthat::expect_identical(active_module_pws_output(app_driver), character(0))
+  testthat::expect_identical(
+    app_driver$active_module_element_text("y_var-dataset_ADLB_singleextract-filter1-vals_input > div > span"),
+    "Please select the filters."
+  )
   app_driver$expect_validation_error()
   app_driver$stop()
 })
@@ -215,6 +227,10 @@ testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter value throws valid
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter2-vals", character(0))
   testthat::expect_identical(active_module_pws_output(app_driver), character(0))
+  testthat::expect_identical(
+    app_driver$active_module_element_text("y_var-dataset_ADLB_singleextract-filter2-vals_input > div > span"),
+    "Please select the filters."
+  )
   app_driver$expect_validation_error()
   app_driver$stop()
 })
