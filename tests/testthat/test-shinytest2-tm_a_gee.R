@@ -45,6 +45,7 @@ testthat::test_that("e2e - tm_a_gee: example gee module initializes in teal with
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(app_driver$is_visible(app_driver$active_module_element("table-table-with-settings")))
+  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: starts with specified label, id_var, arm_var, visit_var, paramcd and cov_var", {
