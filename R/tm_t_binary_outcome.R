@@ -454,7 +454,8 @@ tm_t_binary_outcome <- function(label,
                                   ),
                                   unstrat = list(
                                     method_ci = ifelse(rsp_table, "wald", "waldcc"),
-                                    method_test = "schouten", odds = TRUE
+                                    method_test = "schouten",
+                                    odds = TRUE
                                   ),
                                   strat = list(method_ci = "cmh", method_test = "cmh")
                                 ),
@@ -488,20 +489,21 @@ tm_t_binary_outcome <- function(label,
 
   # control checks
   checkmate::assert_names(names(control), permutation.of = c("global", "unstrat", "strat"))
-  checkmate::assert_names(names(control[["global"]]), permutation.of = c("method", "conf_level"))
-  checkmate::assert_names(names(control[["unstrat"]]), permutation.of = c("method_ci", "method_test", "odds"))
-  checkmate::assert_names(names(control[["strat"]]), permutation.of = c("method_ci", "method_test"))
+  checkmate::assert_names(names(control$global), permutation.of = c("method", "conf_level"))
+  checkmate::assert_names(names(control$unstrat), permutation.of = c("method_ci", "method_test", "odds"))
+  checkmate::assert_names(names(control$strat), permutation.of = c("method_ci", "method_test"))
   checkmate::assert_subset(
-    control[["global"]]$method, c("wald", "waldcc", "clopper-pearson", "wilson", "wilsonc", "jeffreys", "agresti-coull")
+    control$global$method,
+    c("wald", "waldcc", "clopper-pearson", "wilson", "wilsonc", "jeffreys", "agresti-coull")
   )
-  checkmate::assert_number(control[["global"]]$conf_level, lower = 0, upper = 1)
-  checkmate::assert_subset(control[["unstrat"]]$method_ci, c("wald", "waldcc", "ha", "newcombe", "newcombecc"))
-  checkmate::assert_subset(control[["unstrat"]]$method_test, c("chisq", "fisher", "schouten"))
-  checkmate::assert_logical(control[["unstrat"]]$odds)
+  checkmate::assert_number(control$global$conf_level, lower = 0, upper = 1)
+  checkmate::assert_subset(control$unstrat$method_ci, c("wald", "waldcc", "ha", "newcombe", "newcombecc"))
+  checkmate::assert_subset(control$unstrat$method_test, c("chisq", "fisher", "schouten"))
+  checkmate::assert_logical(control$unstrat$odds)
   checkmate::assert_subset(
-    control[["strat"]]$method_ci, c("wald", "waldcc", "cmh", "ha", "strat_newcombe", "strat_newcombecc")
+    control$strat$method_ci, c("wald", "waldcc", "cmh", "ha", "strat_newcombe", "strat_newcombecc")
   )
-  checkmate::assert_subset(control[["strat"]]$method_test, c("cmh"))
+  checkmate::assert_subset(control$strat$method_test, c("cmh"))
 
   args <- as.list(environment())
 
@@ -616,7 +618,7 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Newcombe, without correction" = "newcombe",
                 "Newcombe, with correction" = "newcombecc"
               ),
-              selected = a$control[["unstrat"]]$method_ci,
+              selected = a$control$unstrat$method_ci,
               multiple = FALSE,
               fixed = FALSE
             ),
@@ -628,13 +630,13 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Fisher's Exact Test" = "fisher",
                 "Chi-Squared Test with Schouten correction" = "schouten"
               ),
-              selected = a$control[["unstrat"]]$method_test,
+              selected = a$control$unstrat$method_test,
               multiple = FALSE,
               fixed = FALSE
             ),
             tags$label("Odds Ratio Estimation"),
             shinyWidgets::switchInput(
-              inputId = ns("u_odds_ratio"), value = a$control[["unstrat"]]$odds, size = "mini"
+              inputId = ns("u_odds_ratio"), value = a$control$unstrat$odds, size = "mini"
             )
           )
         ),
@@ -658,14 +660,14 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Stratified Newcombe, without correction" = "strat_newcombe",
                 "Stratified Newcombe, with correction" = "strat_newcombecc"
               ),
-              selected = a$control[["strat"]]$method_ci,
+              selected = a$control$strat$method_ci,
               multiple = FALSE
             ),
             teal.widgets::optionalSelectInput(
               ns("s_diff_test"),
               label = "Method for Difference of Proportions Test",
               choices = c("CMH Test" = "cmh"),
-              selected = a$control[["strat"]]$method_test,
+              selected = a$control$strat$method_test,
               multiple = FALSE,
               fixed = TRUE
             )
@@ -690,7 +692,7 @@ ui_t_binary_outcome <- function(id, ...) {
             "Jeffreys" = "jeffreys",
             "Agresti-Coull" = "agresti-coull"
           ),
-          selected = a$control[["global"]]$method,
+          selected = a$control$global$method,
           multiple = FALSE,
           fixed = FALSE
         ),
