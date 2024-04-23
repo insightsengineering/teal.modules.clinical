@@ -37,7 +37,7 @@ app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_leng
 }
 
 testthat::test_that(
-  "e2e - tm_t_abnormality_by_worst_grade: module initializes in teal without errors and produces table output",
+  "e2e - tm_t_abnormality_by_worst_grade: Module initializes in teal without errors and produces table output.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()

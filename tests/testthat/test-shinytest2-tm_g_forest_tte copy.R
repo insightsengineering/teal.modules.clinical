@@ -60,7 +60,7 @@ app_driver_tm_g_ipp <- function() {
   )
 }
 
-testthat::test_that("e2e - tm_g_ipp: module initializes in teal without errors and produces plot output", {
+testthat::test_that("e2e - tm_g_ipp: Module initializes in teal without errors and produces plot output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$expect_no_shiny_error()

@@ -51,7 +51,7 @@ app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length
 }
 
 testthat::test_that(
-  "e2e - tm_g_pp_adverse_events: module initializes in teal without errors and produces plot output",
+  "e2e - tm_g_pp_adverse_events: Module initializes in teal without errors and produces plot output.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()

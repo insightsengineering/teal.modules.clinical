@@ -2,7 +2,7 @@ app_driver_tm_t_tte <- function() {
 
 }
 
-testthat::test_that("e2e - tm_t_tte: module initializes in teal without errors and produces plot output", {
+testthat::test_that("e2e - tm_t_tte: Module initializes in teal without errors and produces plot output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
   app_driver$expect_no_shiny_error()
