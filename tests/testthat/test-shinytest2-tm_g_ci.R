@@ -62,17 +62,17 @@ app_driver_tm_g_ci <- function() {
   )
 }
 
-testthat::test_that("e2e - tm_g_ci: example ci module initializes in teal without errors and produces plot output", {
+testthat::test_that("e2e - tm_g_ci: example ci module initializes in teal without errors and produces plot output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_match(active_module_pws_output(app_driver), "data:image/png;base64,")
+  testthat::expect_match(app_driver$get_active_module_pws_output("myplot"), "data:image/png;base64,")
   app_driver$stop()
 })
 
 testthat::test_that(
-  "e2e - tm_g_ci: Module initializes with specified label, x_var, y_var, ADLB filters, color, conf_level and stat",
+  "e2e - tm_g_ci: Module initializes with specified label, x_var, y_var, ADLB filters, color, conf_level and stat.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_ci()
@@ -128,26 +128,26 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_g_ci: Selecting x_var column changes plot and doesn't throw validation errors", {
+testthat::test_that("e2e - tm_g_ci: Selecting x_var column changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
-  plot_before <- active_module_pws_output(app_driver)
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("x_var-dataset_ADSL_singleextract-select", "BMRKR2")
   testthat::expect_false(
     identical(
       plot_before,
-      active_module_pws_output(app_driver)
+      app_driver$get_active_module_pws_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: Deselecting x_var column throws validation error", {
+testthat::test_that("e2e - tm_g_ci: Deselecting x_var column throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("x_var-dataset_ADSL_singleextract-select", character(0))
-  testthat::expect_identical(active_module_pws_output(app_driver), character(0))
+  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_identical(
     app_driver$active_module_element_text("x_var-dataset_ADSL_singleextract-select_input > div > span"),
@@ -156,26 +156,26 @@ testthat::test_that("e2e - tm_g_ci: Deselecting x_var column throws validation e
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: Selecting y_var column changes plot and doesn't throw validation errors", {
+testthat::test_that("e2e - tm_g_ci: Selecting y_var column changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
-  plot_before <- active_module_pws_output(app_driver)
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-select", "CHG2")
   testthat::expect_false(
     identical(
       plot_before,
-      active_module_pws_output(app_driver)
+      app_driver$get_active_module_pws_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: Deselecting y_var column throws validation error", {
+testthat::test_that("e2e - tm_g_ci: Deselecting y_var column throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-select", character(0))
-  testthat::expect_identical(active_module_pws_output(app_driver), character(0))
+  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("y_var-dataset_ADLB_singleextract-select_input > div > span"),
     "Select an analysis value (y axis)"
@@ -184,26 +184,29 @@ testthat::test_that("e2e - tm_g_ci: Deselecting y_var column throws validation e
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: Selecting PARAMCD filter value changes plot and doesn't throw validation errors", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_ci()
-  plot_before <- active_module_pws_output(app_driver)
-  app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter1-vals", "CRP")
-  testthat::expect_false(
-    identical(
-      plot_before,
-      active_module_pws_output(app_driver)
+testthat::test_that(
+  "e2e - tm_g_ci: Selecting PARAMCD filter value changes plot and doesn't throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_g_ci()
+    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter1-vals", "CRP")
+    testthat::expect_false(
+      identical(
+        plot_before,
+        app_driver$get_active_module_pws_output("myplot")
+      )
     )
-  )
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter value throws validation error", {
+testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter value throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter1-vals", character(0))
-  testthat::expect_identical(active_module_pws_output(app_driver), character(0))
+  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("y_var-dataset_ADLB_singleextract-filter1-vals_input > div > span"),
     "Please select the filters."
@@ -212,21 +215,21 @@ testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter value throws vali
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value doesn't throw validation errors", {
+testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
-  plot_before <- active_module_pws_output(app_driver)
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter2-vals", "BASELINE")
-  testthat::expect_false(identical(plot_before, active_module_pws_output(app_driver)))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter value throws validation error", {
+testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter value throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter2-vals", character(0))
-  testthat::expect_identical(active_module_pws_output(app_driver), character(0))
+  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("y_var-dataset_ADLB_singleextract-filter2-vals_input > div > span"),
     "Please select the filters."
@@ -235,43 +238,43 @@ testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter value throws valid
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: Selecting color column changes plot output and doesn't throw validation errors", {
+testthat::test_that("e2e - tm_g_ci: Selecting color column changes plot output and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
-  plot_before <- active_module_pws_output(app_driver)
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("color-dataset_ADSL_singleextract-select", "SEX")
-  testthat::expect_false(identical(plot_before, active_module_pws_output(app_driver)))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: Deselecting color column changes plot output and doesn't throw validation error", {
+testthat::test_that("e2e - tm_g_ci: Deselecting color column changes plot output and doesn't throw validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
-  plot_before <- active_module_pws_output(app_driver)
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("color-dataset_ADSL_singleextract-select", character(0))
-  testthat::expect_false(identical(plot_before, active_module_pws_output(app_driver)))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ci: Selecting confidence interval value changes plot and doesn't throw any errors", {
+testthat::test_that("e2e - tm_g_ci: Selecting confidence interval value changes plot and doesn't throw any errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
-  plot_before <- active_module_pws_output(app_driver)
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("conf_level", 0.90)
-  testthat::expect_false(identical(plot_before, active_module_pws_output(app_driver)))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
 
-testthat::test_that("e2e - tm_g_ci: Selecting statistic to use changes a plot and doesn't throw any errors", {
+testthat::test_that("e2e - tm_g_ci: Selecting statistic to use changes a plot and doesn't throw any errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
-  plot_before <- active_module_pws_output(app_driver)
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("stat", "median")
-  testthat::expect_false(identical(plot_before, active_module_pws_output(app_driver)))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
