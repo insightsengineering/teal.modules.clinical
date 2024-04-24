@@ -297,3 +297,35 @@ for (id in c("fill", "x_facet", "y_facet")) {
     }
   )
 }
+
+# Plot settings ---------------------------------------------------------------
+
+test_that_plot_settings <- function(id, new_value) {
+  testthat::test_that(
+    sprintf(
+      "e2e - tm_g_barchart_simple: Changing '%s' changes the plot and does not throw validation errors.",
+      id
+    ),
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_g_barchart_simple()
+      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      browser()
+      app_driver$set_active_module_input(id, new_value)
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+      app_driver$expect_no_validation_error()
+      app_driver$stop()
+    }
+  )
+}
+
+test_that_plot_settings("barlayout", "side_by_side")
+test_that_plot_settings("expand_y_range", 0.9)
+test_that_plot_settings("facet_scale_x", FALSE)
+test_that_plot_settings("facet_scale_y", FALSE)
+test_that_plot_settings("label_bars", TRUE)
+test_that_plot_settings("rotate_bar_labels", FALSE)
+test_that_plot_settings("rotate_x_label", FALSE)
+test_that_plot_settings("rotate_y_label", FALSE)
+test_that_plot_settings("flip_axis", FALSE)
+test_that_plot_settings("show_n", TRUE)
