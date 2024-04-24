@@ -111,7 +111,7 @@ testthat::test_that(
 
   testthat::expect_equal(
     app_driver$get_active_module_input("aval_var-dataset_ADRS_singleextract-select"),
-    "AVALAC"
+    "AVALC"
   )
   
   testthat::expect_equal(
