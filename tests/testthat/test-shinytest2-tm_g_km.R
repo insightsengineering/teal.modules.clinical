@@ -121,7 +121,6 @@ testthat::test_that(
   app_driver$stop()
 })
 
-
 testthat::test_that("e2e - tm_q_km: Starts with specified groups.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_q_km()
