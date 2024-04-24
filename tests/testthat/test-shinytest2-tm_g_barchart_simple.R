@@ -257,19 +257,6 @@ test_dataset_selection("fill", "ADAE", "AESER")
 test_dataset_selection("x_facet", "ADSL", "RACE")
 test_dataset_selection("y_facet", "ADSL", "ARM")
 
-testthat::test_that(
-  "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_g_barchart_simple()
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
-    app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "RACE")
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-    app_driver$expect_no_validation_error()
-    app_driver$stop()
-  }
-)
-
 # Duplicate variables cannot be selected --------------------------------------
 
 testthat::test_that(
