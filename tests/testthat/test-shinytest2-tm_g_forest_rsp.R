@@ -90,54 +90,55 @@ testthat::test_that(
   "e2e - tm_g_forest_rsp: Module initializes with specified
   label, arm_var, paramcd, aval_var, subgroup_var, strata_var, conf_level, fixed_symbol_size, rel_width_forest, font_size",
   {
-  skip_if_too_deep(5)
+    skip_if_too_deep(5)
 
-  app_driver <- app_driver_tm_g_forest_rsp()
+    app_driver <- app_driver_tm_g_forest_rsp()
 
-  testthat::expect_equal(
-    app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
-    "Forest Response"
-  )
+    testthat::expect_equal(
+      app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
+      "Forest Response"
+    )
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
-    "ARMCD"
-  )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      "ARMCD"
+    )
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals"),
-    "INVET"
-  )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals"),
+      "INVET"
+    )
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("aval_var-dataset_ADRS_singleextract-select"),
-    "AVALC"
-  )
-  
-  testthat::expect_equal(
-    app_driver$get_active_module_input("subgroup_var-dataset_ADSL_singleextract-select"),
-    c("SEX", "BMRKR2")
-  )
-  testthat::expect_equal(
-    app_driver$get_active_module_input("strata_var-dataset_ADSL_singleextract-select"),
-    "STRATA2"
-  )
-  testthat::expect_equal(
-    app_driver$get_active_module_input("conf_level"),
-    "0.95"
-  )
-  testthat::expect_true(app_driver$get_active_module_input("fixed_symbol_size"))
-  testthat::expect_equal(
-    app_driver$get_active_module_input("rel_width_forest"),
-    25
-  )
-  testthat::expect_equal(
-    app_driver$get_active_module_input("font_size"),
-    15
-  )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("aval_var-dataset_ADRS_singleextract-select"),
+      "AVALC"
+    )
 
-  app_driver$stop()
-})
+    testthat::expect_equal(
+      app_driver$get_active_module_input("subgroup_var-dataset_ADSL_singleextract-select"),
+      c("SEX", "BMRKR2")
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("strata_var-dataset_ADSL_singleextract-select"),
+      "STRATA2"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("conf_level"),
+      "0.95"
+    )
+    testthat::expect_true(app_driver$get_active_module_input("fixed_symbol_size"))
+    testthat::expect_equal(
+      app_driver$get_active_module_input("rel_width_forest"),
+      25
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("font_size"),
+      15
+    )
+
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting arm_var changes plot and doesn't throw validation errors", {
   skip_if_too_deep(5)
