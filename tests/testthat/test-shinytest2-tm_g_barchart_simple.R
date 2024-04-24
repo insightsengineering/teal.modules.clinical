@@ -260,7 +260,6 @@ test_dataset_selection("y_facet", "ADSL", "ARM")
 # Duplicate variables cannot be selected --------------------------------------
 
 for (id in c("fill", "x_facet", "y_facet")) {
-  # x variable and Fill -----------------------------------------------------
   testthat::test_that(
     sprintf(
       "e2e - tm_g_barchart_simple: Duplicate between 'x' and '%s' selection throws validation error",
