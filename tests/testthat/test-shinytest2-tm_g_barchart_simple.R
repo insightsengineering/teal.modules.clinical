@@ -259,67 +259,42 @@ test_dataset_selection("y_facet", "ADSL", "ARM")
 
 # Duplicate variables cannot be selected --------------------------------------
 
-testthat::test_that(
-  "e2e - tm_g_barchart_simple: Duplicate values selection throws validation error",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_g_barchart_simple()
+for (id in c("fill", "x_facet", "y_facet")) {
+  # x variable and Fill -----------------------------------------------------
+  testthat::test_that(
+    sprintf(
+      "e2e - tm_g_barchart_simple: Duplicate between 'x' and '%s' selection throws validation error",
+      id
+    ),
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_g_barchart_simple()
 
-    # x variable and Fill -----------------------------------------------------
-    app_driver$set_active_module_input(ns_dataset("fill", "select", "ADSL"), "ACTARM")
+      app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "ACTARM")
+      app_driver$set_active_module_input(sprintf("%s-dataset", id), "ADSL")
+      app_driver$set_active_module_input(ns_dataset(id, "select", "ADSL"), "ACTARM")
 
-    app_driver$expect_validation_error()
+      app_driver$expect_validation_error()
 
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_dataset("x", "select_input", "ADSL")
-        )
-      ),
-      "^Duplicated value: ACTARM$"
-    )
+      testthat::expect_match(
+        app_driver$active_module_element_text(
+          sprintf(
+            "%s .shiny-validation-message",
+            ns_dataset("x", "select_input", "ADSL")
+          )
+        ),
+        "^Duplicated value: ACTARM$"
+      )
 
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_dataset("fill", "select_input", "ADSL")
-        )
-      ),
-      "^Duplicated value: ACTARM$"
-    )
-
-    # x variable and x_facet --------------------------------------------------
-
-    app_driver$set_active_module_input("y_facet-dataset", "ADSL")
-    app_driver$set_active_module_input(ns_dataset("y_facet", "select", "ADSL"), "ACTARM")
-
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_dataset("x_facet", "select_input", "ADSL")
-        )
-      ),
-      "^Duplicated value: ACTARM$"
-    )
-
-    # x variable and y_facet --------------------------------------------------
-
-    app_driver$set_active_module_input("y_facet-dataset", "ADSL")
-    app_driver$set_active_module_input(ns_dataset("y_facet", "select", "ADSL"), "ACTARM")
-
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_dataset("y_facet", "select_input", "ADSL")
-        )
-      ),
-      "^Duplicated value: ACTARM$"
-    )
-
-    app_driver$stop()
-  }
-)
+      testthat::expect_match(
+        app_driver$active_module_element_text(
+          sprintf(
+            "%s .shiny-validation-message",
+            ns_dataset(id, "select_input", "ADSL")
+          )
+        ),
+        "^Duplicated value: ACTARM$"
+      )
+    }
+  )
+}
