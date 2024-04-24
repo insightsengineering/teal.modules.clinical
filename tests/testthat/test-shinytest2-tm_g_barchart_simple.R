@@ -20,45 +20,49 @@ app_driver_tm_g_barchart_simple <- function() {
     data = data,
     modules = tm_g_barchart_simple(
       label = "ADAE Analysis (e2e)",
-      x = data_extract_spec(
+      x = teal.transform::data_extract_spec(
         dataname = "ADSL",
-        select = select_spec(
-          choices = variable_choices("ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")),
+        select = teal.transform::select_spec(
+          choices = teal.transform::variable_choices(
+            "ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+          ),
           selected = "ACTARM",
           multiple = FALSE
         )
       ),
       fill = list(
-        data_extract_spec(
+        teal.transform::data_extract_spec(
           dataname = "ADSL",
-          select = select_spec(
-            choices = variable_choices("ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")),
+          select = teal.transform::select_spec(
+            choices = teal.transform::variable_choices(
+              "ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+            ),
             selected = "SEX",
             multiple = FALSE
           )
         ),
-        data_extract_spec(
+        teal.transform::data_extract_spec(
           dataname = "ADAE",
-          select = select_spec(
-            choices = variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
+          select = teal.transform::select_spec(
+            choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
             selected = NULL,
             multiple = FALSE
           )
         )
       ),
       x_facet = list(
-        data_extract_spec(
+        teal.transform::data_extract_spec(
           dataname = "ADAE",
-          select = select_spec(
-            choices = variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
+          select = teal.transform::select_spec(
+            choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
             selected = "AETOXGR",
             multiple = FALSE
           )
         ),
-        data_extract_spec(
+        teal.transform::data_extract_spec(
           dataname = "ADSL",
-          select = select_spec(
-            choices = variable_choices("ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")),
+          select = teal.transform::select_spec(
+            choices = teal.transform::variable_choices("ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")),
             selected = NULL,
             multiple = FALSE
           )
@@ -67,16 +71,16 @@ app_driver_tm_g_barchart_simple <- function() {
       y_facet = list(
         data_extract_spec(
           dataname = "ADAE",
-          select = select_spec(
-            choices = variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
+          select = teal.transform::select_spec(
+            choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
             selected = "AESEV",
             multiple = FALSE
           )
         ),
         data_extract_spec(
           dataname = "ADSL",
-          select = select_spec(
-            choices = variable_choices("ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")),
+          select = teal.transform::select_spec(
+            choices = teal.transform::variable_choices("ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")),
             selected = NULL,
             multiple = FALSE
           )
