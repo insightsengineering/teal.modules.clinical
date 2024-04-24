@@ -309,7 +309,7 @@ for (id in c("fill", "x_facet", "y_facet")) {
 
 # Plot settings ---------------------------------------------------------------
 
-test_that_plot_settings <- function(id, new_value, app_driver_fun) {
+test_that_plot_settings <- function(id, new_value, setup_fun = function(app_driver) NULL) {
   testthat::test_that(
     sprintf(
       "e2e - tm_g_barchart_simple: Changing '%s' changes the plot and does not throw validation errors.",
@@ -317,7 +317,10 @@ test_that_plot_settings <- function(id, new_value, app_driver_fun) {
     ),
     {
       skip_if_too_deep(5)
-      app_driver <- app_driver_fun()
+      app_driver <- app_driver_tm_g_barchart_simple()
+      app_driver$view()
+      browser()
+      setup_fun(app_driver)
       plot_before <- app_driver$get_active_module_pws_output("myplot")
       app_driver$set_active_module_input(id, new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
@@ -337,16 +340,9 @@ test_that_plot_settings("rotate_y_label", FALSE)
 test_that_plot_settings("flip_axis", FALSE)
 test_that_plot_settings("show_n", TRUE)
 
-testthat::test_that(
-  "e2e - tm_g_barchart_simple: Changing 'rotate_bar_labels' changes the plot and does not throw validation errors.",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_g_barchart_simple()
-    app_driver$set_active_module_input("label_bars", TRUE) # Otherwise, the labels don't exist
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
-    app_driver$set_active_module_input("rotate_bar_labels", FALSE)
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-    app_driver$expect_no_validation_error()
-    app_driver$stop()
-  }
+# needs extra setup
+test_that_plot_settings(
+  "rotate_bar_labels",
+  FALSE,
+  setup_fun = function(app_driver) app_driver$set_active_module_input("label_bars", TRUE)
 )
