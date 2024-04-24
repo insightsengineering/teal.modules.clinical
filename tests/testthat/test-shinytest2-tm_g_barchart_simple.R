@@ -333,8 +333,25 @@ test_that_plot_settings("expand_y_range", 0.9)
 test_that_plot_settings("facet_scale_x", FALSE)
 test_that_plot_settings("facet_scale_y", FALSE)
 test_that_plot_settings("label_bars", TRUE)
-test_that_plot_settings("rotate_bar_labels", FALSE)
 test_that_plot_settings("rotate_x_label", FALSE)
 test_that_plot_settings("rotate_y_label", FALSE)
 test_that_plot_settings("flip_axis", FALSE)
 test_that_plot_settings("show_n", TRUE)
+
+testthat::test_that(
+  sprintf(
+    "e2e - tm_g_barchart_simple: Changing 'rotate_bar_labels' changes the plot and does not throw validation errors.",
+    id
+  ),
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_g_barchart_simple()
+    app_driver$set_active_module_input("barlayout", "stacked") # Otherwise, the labels don't exist
+
+    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    app_driver$set_active_module_input(rotate_bar_labels, TRUE)
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
