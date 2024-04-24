@@ -1,5 +1,4 @@
 app_driver_tm_a_mmrm <- function() {
-
   arm_ref_comp <- list(
     ARMCD = list(
       ref = "ARM B",
@@ -34,7 +33,8 @@ app_driver_tm_a_mmrm <- function() {
       label = "MMRM",
       dataname = "ADQS",
       parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-                          teal.transform::datanames_input(arm_var), "ADSL"),
+        teal.transform::datanames_input(arm_var), "ADSL"
+      ),
       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
       arm_var = arm_var,
@@ -45,10 +45,14 @@ app_driver_tm_a_mmrm <- function() {
         selected = "FKSI-FWB"
       ),
       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
-      method = teal.transform::choices_selected(c("Satterthwaite", "Kenward-Roger",
-                                                  "Kenward-Roger-Linear"), "Satterthwaite", keep_order = TRUE),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-                                                      TRUE),
+      method = teal.transform::choices_selected(c(
+        "Satterthwaite", "Kenward-Roger",
+        "Kenward-Roger-Linear"
+      ), "Satterthwaite", keep_order = TRUE),
+      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
+        keep_order =
+          TRUE
+      ),
       plot_height = c(700L, 200L, 2000L),
       plot_width = NULL,
       total_label = default_total_label(),
@@ -56,7 +60,8 @@ app_driver_tm_a_mmrm <- function() {
       post_output = NULL,
       basic_table_args = teal.widgets::basic_table_args(),
       ggplot2_args = teal.widgets::ggplot2_args()
-    )
+    ),
+    timeout = 30000
   )
 }
 
@@ -74,81 +79,165 @@ testthat::test_that("e2e - tm_a_mmrm: Module initializes in teal without errors.
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_a_mmrm: Module initializes with specified label, x_var, y_var, ADQS filters, color, conf_level and stat", {
+testthat::test_that("e2e - tm_a_mmrm:
+  Module initializes with specified label, x_var, y_var, ADQS filters, color, conf_level and stat", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
 
-  testthat::expect_equal(
-    app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
-    "MMRM"
-  )
+  testthat::expect_equal(app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"), "MMRM")
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("aval_var-dataset_ADQS_singleextract-select"),
-    "AVAL"
-  )
+  testthat::expect_equal(app_driver$get_active_module_input("aval_var-dataset_ADQS_singleextract-select"), "AVAL")
 
   testthat::expect_equal(
     app_driver$get_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals"),
     "FKSI-FWB"
   )
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("visit_var-dataset_ADQS_singleextract-select"),
-    "AVISIT"
-  )
+  testthat::expect_equal(app_driver$get_active_module_input("visit_var-dataset_ADQS_singleextract-select"), "AVISIT")
 
-  testthat::expect_NULL(
-    app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select")
-  )
+  testthat::expect_NULL(app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select"))
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
-    "ARM"
-  )
+  testthat::expect_equal(app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"), "ARM")
 
   testthat::expect_equal(
     app_driver$get_active_module_input("buckets"),
-    list(Ref = list("A: Drug X"),
-         Comp = list("B: Placebo", "C: Combination"))
+    list(
+      Ref = list("A: Drug X"),
+      Comp = list("B: Placebo", "C: Combination")
+    )
   )
+
+  testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
+
+  testthat::expect_equal(app_driver$get_active_module_input("id_var-dataset_ADQS_singleextract-select"), "USUBJID")
+
+  testthat::expect_equal(app_driver$get_active_module_input("weights_emmeans"), "proportional")
+
+  testthat::expect_equal(app_driver$get_active_module_input("cor_struct"), "unstructured")
+
+  testthat::expect_equal(app_driver$get_active_module_input("conf_level"), "0.95")
+
+  testthat::expect_equal(app_driver$get_active_module_input("method"), "Satterthwaite")
+
+  testthat::expect_true(app_driver$get_active_module_input("parallel"))
+
+  testthat::expect_equal(app_driver$get_active_module_input("output_function"), "t_mmrm_lsmeans")
+
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default selection", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_mmrm()
+  app_driver$click(selector = app_driver$active_module_element("button_start"))
+  app_driver$expect_no_validation_error()
+
+  table <- app_driver$get_active_module_tws_output("mmrm_table")
+  col_val <- app_driver$get_active_module_input("buckets")
+  testthat::expect_true(all(unlist(col_val, use.names = FALSE) %in% colnames(table)))
+  testthat::expect_gte(nrow(table), 25)
+
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output settings", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_mmrm()
+
+  app_driver$click(selector = app_driver$active_module_element("button_start"))
+  app_driver$expect_no_validation_error()
+
+  # LS means table (Default)
+  out_fun <- app_driver$get_active_module_input("output_function")
+  id <- sprintf("%s_show_relative", out_fun)
+  testthat::expect_equal(app_driver$get_active_module_input(id), "reduction")
+
+  app_driver$set_active_module_input(id, "increase")
+  app_driver$expect_no_validation_error()
+
+  # LS means plots
+  out_fun <- "g_mmrm_lsmeans"
+  app_driver$set_active_module_input("output_function", out_fun)
+  app_driver$expect_no_validation_error()
+
+  plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+  testthat::expect_match(plot_before, "data:image/png;base64,")
+
+  testthat::expect_equal(app_driver$get_active_module_input(sprintf("%s_select", out_fun)), c("estimates", "contrasts"))
+
+  testthat::expect_equal(app_driver$get_active_module_input(sprintf("%s_width", out_fun)), 0.6)
+
+  testthat::expect_false(app_driver$get_active_module_input(sprintf("%s_contrasts_show_pval", out_fun)))
+
+  app_driver$set_active_module_input(sprintf("%s_select", out_fun), "estimates")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input(sprintf("%s_select", out_fun), "contrasts")
+  app_driver$expect_no_validation_error()
+
+  app_driver$set_active_module_input(
+    sprintf("%s_select", out_fun),
+    c("estimates", "contrasts")
+  )
+  app_driver$expect_no_validation_error()
+
+
+  app_driver$set_active_module_input(sprintf("%s_width", out_fun), 0.9)
+  app_driver$expect_no_validation_error()
+
+  app_driver$set_active_module_input(sprintf("%s_contrasts_show_pval", out_fun), TRUE)
+  app_driver$expect_no_validation_error()
+
+  plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+  testthat::expect_match(plot, "data:image/png;base64,")
 
   testthat::expect_false(
-    app_driver$get_active_module_input("combine_comp_arms")
+    identical(
+      plot_before,
+      plot
+    )
   )
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("id_var-dataset_ADQS_singleextract-select"),
-    "USUBJID"
-  )
+  # Covariance estimate
+  app_driver$set_active_module_input("output_function", "t_mmrm_cov")
+  app_driver$expect_no_validation_error()
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("weights_emmeans"),
-    "proportional"
-  )
+  table <- app_driver$get_active_module_tws_output("mmrm_table")
+  testthat::expect_gt(nrow(table), 1)
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("cor_struct"),
-    "unstructured"
-  )
+  # Fixed effects
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("conf_level"),
-    "0.95"
-  )
+  app_driver$set_active_module_input("output_function", "t_mmrm_fixed")
+  app_driver$expect_no_validation_error()
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("method"),
-    "Satterthwaite"
-  )
+  table <- app_driver$get_active_module_tws_output("mmrm_table")
+  testthat::expect_gt(nrow(table), 1)
 
-  testthat::expect_true(
-    app_driver$get_active_module_input("parallel")
-  )
+  # Fit statistics
+  app_driver$set_active_module_input("output_function", "t_mmrm_diagnostic")
+  app_driver$expect_no_validation_error()
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("output_function"),
-    "t_mmrm_lsmeans"
+  table <- app_driver$get_active_module_tws_output("mmrm_table")
+  testthat::expect_gt(nrow(table), 1)
+
+  # Diagnostic plots
+  app_driver$set_active_module_input("output_function", "g_mmrm_diagnostic")
+  app_driver$expect_no_validation_error()
+
+  plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+  testthat::expect_match(plot_before, "data:image/png;base64,")
+
+  testthat::expect_equal(app_driver$get_active_module_input("g_mmrm_diagnostic_type"), "fit-residual")
+
+  app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
+
+  plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+  testthat::expect_match(plot, "data:image/png;base64,")
+
+  testthat::expect_false(
+    identical(
+      plot_before,
+      plot
+    )
   )
 
   app_driver$stop()
