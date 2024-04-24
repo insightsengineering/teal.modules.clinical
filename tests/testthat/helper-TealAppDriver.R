@@ -24,6 +24,10 @@ init_teal_app_driver <- function(...) {
   )
 }
 
+ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
+  sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
+}
+
 test_plot_changes_no_errors <- function(app_driver, input, value, pws) {
   plot_before <- app_driver$get_active_module_pws_output(pws)
   app_driver$set_active_module_input(input, value)
