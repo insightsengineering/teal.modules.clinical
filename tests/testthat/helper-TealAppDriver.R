@@ -49,7 +49,7 @@ test_validation_error <- function(app_driver, input, value = character(0), table
 
   if (!is.null(message)) {
     testthat::expect_equal(
-      app_driver$active_module_element_text(sprintf("%s > div > span", input)),
+      app_driver$active_module_element_text(sprintf("%s .shiny-validation-message", input)),
       message
     )
   }
