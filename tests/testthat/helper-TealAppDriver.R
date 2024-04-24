@@ -37,3 +37,20 @@ test_table_changes_no_errors <- function(app_driver, input, value, tws) {
   app_driver$expect_no_validation_error()
   testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output(tws)))
 }
+
+test_validation_error <- function(app_driver, input, value = character(0), table = FALSE, message = NULL) {
+  app_driver$set_active_module_input(input, value)
+
+  if (table) {
+    testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  }
+
+  app_driver$expect_validation_error()
+
+  if (!is.null(message)) {
+    testthat::expect_equal(
+      app_driver$active_module_element_text(sprintf("%s > div > span", input)),
+      message
+    )
+  }
+}
