@@ -49,7 +49,10 @@ testthat::test_that("e2e - tm_a_gee: Module initializes in teal without errors a
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_a_gee: Starts with specified label, id_var, arm_var, visit_var, paramcd, cov_var, conf_level and conf_struct.", {
+testthat::test_that(
+  "e2e - tm_a_gee: Starts with specified label, id_var, arm_var, visit_var, paramcd, cov_var,
+  conf_level and conf_struct.",
+  {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
 
