@@ -133,12 +133,28 @@ testthat::test_that("e2e - tm_g_km: Starts with specified groups.", {
     )
   )
 
+  testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
+
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_km: Starts with specified comparison settings.", {
+testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison settings.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
+
+  app_driver$is_visible(app_driver$active_module_element("pval_method_coxph"))
+  app_driver$is_visible(app_driver$active_module_element("ties_coxph"))
+
+  testthat::expect_equal(app_driver$get_active_module_input("pval_method_coxph"), "log-rank")
+  testthat::expect_equal(
+    app_driver$active_module_element_text("pval_method_coxph-label"),
+    "p-value method for Coxph (Hazard Ratio)"
+  )
+  testthat::expect_equal(app_driver$get_active_module_input("ties_coxph"), "exact")
+  testthat::expect_equal(
+    app_driver$active_module_element_text("ties_coxph-label"),
+    "Ties for Coxph (Hazard Ratio)"
+  )
 
   app_driver$stop()
 })
