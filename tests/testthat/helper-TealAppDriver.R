@@ -23,16 +23,3 @@ init_teal_app_driver <- function(...) {
     .package = "teal"
   )
 }
-
-# Returns data.frame with table output
-active_module_tws_output <- function(app_driver, element = "table-table-with-settings", which = 1) {
-  app_driver$active_module_element(element) %>%
-    app_driver$get_html_rvest() %>%
-    rvest::html_table(fill = TRUE) %>% {
-      if (identical(., list())) {
-        .
-      } else {
-        .[[which]]
-      }
-    }
-}
