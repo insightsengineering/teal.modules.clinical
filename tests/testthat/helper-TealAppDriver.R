@@ -23,3 +23,17 @@ init_teal_app_driver <- function(...) {
     .package = "teal"
   )
 }
+
+test_plot_changes_no_errors <- function(app_driver, input, value, pws) {
+  plot_before <- app_driver$get_active_module_pws_output(pws)
+  app_driver$set_active_module_input(input, value)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output(pws)))
+}
+
+test_table_changes_no_errors <- function(app_driver, input, value, tws) {
+  table_before <- app_driver$get_active_module_tws_output(tws)
+  app_driver$set_active_module_input(input, value)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output(tws)))
+}
