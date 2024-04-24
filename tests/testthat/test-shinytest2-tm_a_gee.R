@@ -87,15 +87,9 @@ testthat::test_that("e2e - tm_a_gee: Starts with specified label, id_var, arm_va
     NULL
   )
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("conf_level"),
-    "0.95"
-  )
+  testthat::expect_equal(app_driver$get_active_module_input("conf_level"), "0.95")
 
-  testthat::expect_equal(
-    app_driver$get_active_module_input("cor_struct"),
-    "unstructured"
-  )
+  testthat::expect_equal(app_driver$get_active_module_input("cor_struct"), "unstructured" )
 
   radio_buttons <- app_driver$active_module_element_text("output_table")
   testthat::expect_match(
