@@ -1,4 +1,4 @@
-app_driver_tm_g_barchart_simple <- function() {
+app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
   data <- within(teal.data::teal_data(), {
     ADSL <- dplyr::mutate(
       teal.modules.clinical::tmc_ex_adsl,
@@ -62,7 +62,10 @@ app_driver_tm_g_barchart_simple <- function() {
         teal.transform::data_extract_spec(
           dataname = "ADSL",
           select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices("ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")),
+            choices = teal.transform::variable_choices(
+              "ADSL",
+              c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+            ),
             selected = NULL,
             multiple = FALSE
           )
@@ -72,7 +75,10 @@ app_driver_tm_g_barchart_simple <- function() {
         data_extract_spec(
           dataname = "ADAE",
           select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
+            choices = teal.transform::variable_choices(
+              "ADAE",
+              c("AETOXGR", "AESEV", "AESER")
+            ),
             selected = "AESEV",
             multiple = FALSE
           )
@@ -80,7 +86,10 @@ app_driver_tm_g_barchart_simple <- function() {
         data_extract_spec(
           dataname = "ADSL",
           select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices("ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")),
+            choices = teal.transform::variable_choices(
+              "ADSL",
+              c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+            ),
             selected = NULL,
             multiple = FALSE
           )
