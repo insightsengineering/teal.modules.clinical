@@ -208,7 +208,7 @@ testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws valid
         ns_dataset("x", "select_input", "ADSL")
       )
     ),
-    validation_regex
+    "^Please select an x-variable$"
   )
   app_driver$stop()
 })
@@ -217,7 +217,10 @@ testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws valid
 
 test_dataset_selection <- function(id, new_dataset, new_value) {
   testthat::test_that(
-    "e2e - tm_g_barchart_simple: Selection of 'x_facet' dataset changes the element and does not throw validation errors",
+    sprintf(
+      "e2e - tm_g_barchart_simple: Selection of '%s' dataset changes the element and does not throw validation errors",
+      id
+    ),
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
@@ -233,7 +236,10 @@ test_dataset_selection <- function(id, new_dataset, new_value) {
   )
 
   testthat::test_that(
-    "e2e - tm_g_barchart_simple: De-selection of 'x_facet' dataset changes the element and does not throw validation errors",
+    sprintf(
+      "e2e - tm_g_barchart_simple: De-selection of 'x_facet' dataset changes the element and does not throw validation errors",
+      id
+    ),
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
@@ -249,7 +255,7 @@ test_dataset_selection <- function(id, new_dataset, new_value) {
 
 test_dataset_selection("fill", "ADAE", "AESER")
 test_dataset_selection("x_facet", "ADSL", "RACE")
-test_dataset_selection("y_dacet", "ADSL", "ARM")
+test_dataset_selection("y_facet", "ADSL", "ARM")
 
 testthat::test_that(
   "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors",
