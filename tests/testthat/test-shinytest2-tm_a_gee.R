@@ -103,7 +103,7 @@ testthat::test_that("e2e - tm_a_gee: Starts with specified label, id_var, arm_va
     "Output Type.*LS means.*Covariance.*Coefficients",
     fixed = FALSE
   )
-
+  app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of id_var changes the table and does not throw validation errors.", {
