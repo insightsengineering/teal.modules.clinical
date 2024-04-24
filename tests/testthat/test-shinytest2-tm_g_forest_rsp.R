@@ -145,12 +145,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting arm_var changes plot and d
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARM")
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -172,12 +167,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting paramcd changes plot and d
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", "OVRINV")
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -199,12 +189,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting subgroup_var changes plot 
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", c("SEX", "BMRKR2", "AGEU"))
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -226,12 +211,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting subgroup_var changes plo
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -241,12 +221,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting strata_var changes plot an
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "STRATA1")
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -256,12 +231,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting strata_var changes plot 
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -271,12 +241,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting conf_level changes plot an
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("conf_level", "0.9")
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -304,12 +269,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Unsetting fixed_symbol_size changes 
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("fixed_symbol_size", FALSE)
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -319,12 +279,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Changing rel_width_forest changes pl
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("rel_width_forest", 30)
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -334,12 +289,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Changing font_size changes plot and 
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("font_size", 25)
-  testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_pws_output("myplot")
-    )
-  )
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
