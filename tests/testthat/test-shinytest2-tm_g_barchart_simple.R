@@ -95,6 +95,12 @@ app_driver_tm_g_barchart_simple <- function() {
   )
 }
 
+ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
+  sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
+}
+
+# Initialization --------------------------------------------------------------
+
 testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal without errors and produces output.", {
   skip_if_too_deep(5)
 
@@ -118,10 +124,6 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
-
-    ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
-      sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
-    }
 
     testthat::expect_equal(
       trimws(app_driver$get_text("#teal-main_ui-root-active_tab > li.active")),
@@ -170,6 +172,156 @@ testthat::test_that(
     testthat::expect_equal(app_driver$get_active_module_input("rotate_y_label"), TRUE)
     testthat::expect_equal(app_driver$get_active_module_input("flip_axis"), TRUE)
     testthat::expect_equal(app_driver$get_active_module_input("show_n"), FALSE)
+
+    app_driver$stop()
+  }
+)
+
+# X-variable ------------------------------------------------------------------
+
+testthat::test_that(
+  "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_g_barchart_simple()
+    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "RACE")
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
+
+testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_barchart_simple()
+  app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), character(0L))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text(
+      sprintf(
+        "%s .shiny-validation-message",
+        ns_dataset("x", "select_input", "ADSL")
+      )
+    ),
+    validation_regex
+  )
+  app_driver$stop()
+})
+
+# Test pairs of dataset selection ---------------------------------------------
+
+test_dataset_selection <- function(id, new_dataset, new_value) {
+  testthat::test_that(
+    "e2e - tm_g_barchart_simple: Selection of 'x_facet' dataset changes the element and does not throw validation errors",
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_g_barchart_simple()
+      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      app_driver$set_active_module_input(sprintf("%s-dataset", id), new_dataset)
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+      testthat::expect_null(app_driver$get_active_module_input(ns_dataset(id, "select", new_dataset)))
+      app_driver$set_active_module_input(ns_dataset(id, "select", new_dataset), new_value)
+      testthat::expect_identical(app_driver$get_active_module_input(ns_dataset(id, "select", new_dataset)), new_value)
+      app_driver$expect_no_validation_error()
+      app_driver$stop()
+    }
+  )
+
+  testthat::test_that(
+    "e2e - tm_g_barchart_simple: De-selection of 'x_facet' dataset changes the element and does not throw validation errors",
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_g_barchart_simple()
+      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      app_driver$set_active_module_input(sprintf("%s-dataset", id), character(0L))
+      testthat::expect_null(app_driver$get_active_module_input(id))
+
+      app_driver$expect_no_validation_error()
+      app_driver$stop()
+    }
+  )
+}
+
+test_dataset_selection("fill", "ADAE", "AESER")
+test_dataset_selection("x_facet", "ADSL", "RACE")
+test_dataset_selection("y_dacet", "ADSL", "ARM")
+
+testthat::test_that(
+  "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_g_barchart_simple()
+    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "RACE")
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
+
+# Duplicate variables cannot be selected --------------------------------------
+
+testthat::test_that(
+  "e2e - tm_g_barchart_simple: Duplicate values selection throws validation error",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_g_barchart_simple()
+
+    # x variable and Fill -----------------------------------------------------
+    app_driver$set_active_module_input(ns_dataset("fill", "select", "ADSL"), "ACTARM")
+
+    app_driver$expect_validation_error()
+
+    testthat::expect_match(
+      app_driver$active_module_element_text(
+        sprintf(
+          "%s .shiny-validation-message",
+          ns_dataset("x", "select_input", "ADSL")
+        )
+      ),
+      "^Duplicated value: ACTARM$"
+    )
+
+    testthat::expect_match(
+      app_driver$active_module_element_text(
+        sprintf(
+          "%s .shiny-validation-message",
+          ns_dataset("fill", "select_input", "ADSL")
+        )
+      ),
+      "^Duplicated value: ACTARM$"
+    )
+
+    # x variable and x_facet --------------------------------------------------
+
+    app_driver$set_active_module_input("y_facet-dataset", "ADSL")
+    app_driver$set_active_module_input(ns_dataset("y_facet", "select", "ADSL"), "ACTARM")
+
+    testthat::expect_match(
+      app_driver$active_module_element_text(
+        sprintf(
+          "%s .shiny-validation-message",
+          ns_dataset("x_facet", "select_input", "ADSL")
+        )
+      ),
+      "^Duplicated value: ACTARM$"
+    )
+
+    # x variable and y_facet --------------------------------------------------
+
+    app_driver$set_active_module_input("y_facet-dataset", "ADSL")
+    app_driver$set_active_module_input(ns_dataset("y_facet", "select", "ADSL"), "ACTARM")
+
+    testthat::expect_match(
+      app_driver$active_module_element_text(
+        sprintf(
+          "%s .shiny-validation-message",
+          ns_dataset("y_facet", "select_input", "ADSL")
+        )
+      ),
+      "^Duplicated value: ACTARM$"
+    )
 
     app_driver$stop()
   }
