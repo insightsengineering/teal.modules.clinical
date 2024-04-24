@@ -88,7 +88,8 @@ testthat::test_that("e2e - tm_g_forest_rsp: Module initializes in teal without e
 
 testthat::test_that(
   "e2e - tm_g_forest_rsp: Module initializes with specified
-  label, arm_var, paramcd, aval_var, subgroup_var, strata_var, conf_level, fixed_symbol_size, rel_width_forest, font_size",
+  label, arm_var, paramcd, aval_var, subgroup_var, strata_var,
+  conf_level, fixed_symbol_size, rel_width_forest, font_size",
   {
     skip_if_too_deep(5)
 
@@ -206,7 +207,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting a non-factors column in su
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_forest_rsp: Deselecting subgroup_var changes plot and doesn't throw validation errors", {
+testthat::test_that("e2e - tm_g_forest_rsp: Deselecting subgroup_var changes plot and doesn't throw validation errors", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
@@ -246,7 +247,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting conf_level changes plot an
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting outside the range of 0-1 throws validation error", {
+testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting outside the range of 0-1 throws validation error", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   app_driver$set_active_module_input("conf_level", NULL)
@@ -264,7 +265,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting 
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_forest_rsp: Unsetting fixed_symbol_size changes plot and doesn't throw validation errors", {
+testthat::test_that("e2e - tm_g_forest_rsp: Unsetting fixed_symbol_size changes plot and doesn't throw validation errors", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
@@ -274,7 +275,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Unsetting fixed_symbol_size changes 
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_forest_rsp: Changing rel_width_forest changes plot and doesn't throw validation errors", {
+testthat::test_that("e2e - tm_g_forest_rsp: Changing rel_width_forest changes plot and doesn't throw validation errors", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
