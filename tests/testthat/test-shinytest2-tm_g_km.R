@@ -100,12 +100,10 @@ testthat::test_that(
     "CENSORING"
   )
 
-
   testthat::expect_equal(
     app_driver$get_active_module_input("facet_var-dataset_ADSL_singleextract-select"),
     NULL
   )
-
 
   testthat::expect_equal(
     app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
@@ -189,6 +187,17 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional p
   testthat::expect_equal(app_driver$active_module_element_text("font_size-label"), "Table Font Size")
   testthat::expect_equal(app_driver$active_module_element_text("rel_height_plot-label"), "Relative Height of Plot (%)")
   testthat::expect_equal(app_driver$active_module_element_text("xlab-label"), "X-axis label")
+
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Selecting changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+
+  app_driver$get_active_module_pws_out
+
+
 
   app_driver$stop()
 })
