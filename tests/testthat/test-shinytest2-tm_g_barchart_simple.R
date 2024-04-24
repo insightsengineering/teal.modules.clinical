@@ -310,7 +310,6 @@ test_that_plot_settings <- function(id, new_value) {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       plot_before <- app_driver$get_active_module_pws_output("myplot")
-      browser()
       app_driver$set_active_module_input(id, new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
       app_driver$expect_no_validation_error()
