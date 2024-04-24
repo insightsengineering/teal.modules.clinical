@@ -191,13 +191,97 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional p
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_km: Selecting changes the plot without errors.", {
+testthat::test_that("e2e - tm_g_km: Changing {paramcd} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
-
-  app_driver$get_active_module_pws_out
-
-
-
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", "EFS")
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$stop()
 })
+
+testthat::test_that("e2e - tm_g_km: Changing {facet_var} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("facet_var-dataset_ADSL_singleextract-select", "SEX")
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {arm_var} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ACTARMCD")
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {compare_arms} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("compare_arms", FALSE)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {strata_var} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "BMRKR2")
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", character(0))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text("paramcd-dataset_ADTTE_singleextract-filter1-vals_input > div > span"),
+    "An endpoint is required"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input > div > span"),
+    "Treatment variable must be selected"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Deselecting {compare_arms} sets it to FALSE.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  app_driver$set_active_module_input("compare_arms", NULL)
+  app_driver$expect_validation_error()
+  testthat::expect_false(app_driver$get_active_module_input("compare_arms"))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Deselecting {strata_var} does not throw errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", character(0))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+
+# TODO - comparison settings
+# TODO - plot settings
