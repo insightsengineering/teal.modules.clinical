@@ -73,3 +73,83 @@ testthat::test_that("e2e - tm_a_mmrm: Module initializes in teal without errors.
 
   app_driver$stop()
 })
+
+testthat::test_that("e2e - tm_a_mmrm: Module initializes with specified label, x_var, y_var, ADQS filters, color, conf_level and stat", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_mmrm()
+
+  testthat::expect_equal(
+    app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
+    "MMRM"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("aval_var-dataset_ADQS_singleextract-select"),
+    "AVAL"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals"),
+    "FKSI-FWB"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("visit_var-dataset_ADQS_singleextract-select"),
+    "AVISIT"
+  )
+
+  testthat::expect_NULL(
+    app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select")
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+    "ARM"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("buckets"),
+    list(Ref = list("A: Drug X"),
+         Comp = list("B: Placebo", "C: Combination"))
+  )
+
+  testthat::expect_false(
+    app_driver$get_active_module_input("combine_comp_arms")
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("id_var-dataset_ADQS_singleextract-select"),
+    "USUBJID"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("weights_emmeans"),
+    "proportional"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("cor_struct"),
+    "unstructured"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("conf_level"),
+    "0.95"
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("method"),
+    "Satterthwaite"
+  )
+
+  testthat::expect_true(
+    app_driver$get_active_module_input("parallel")
+  )
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("output_function"),
+    "t_mmrm_lsmeans"
+  )
+
+  app_driver$stop()
+})
