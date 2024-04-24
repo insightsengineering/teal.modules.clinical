@@ -15,7 +15,6 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
   teal.data::datanames(data) <- datanames
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
 
-
   init_teal_app_driver(
     data = data,
     modules = tm_g_barchart_simple(
@@ -246,7 +245,7 @@ test_dataset_selection <- function(id, new_dataset, new_value) {
 
   testthat::test_that(
     sprintf(
-      "%s: De-selection of 'x_facet' dataset changes the element and does not throw validation errors",
+      "%s: De-selection of '%s' dataset changes the element and does not throw validation errors",
       "e2e - tm_g_barchart_simple",
       id
     ),
@@ -310,7 +309,7 @@ for (id in c("fill", "x_facet", "y_facet")) {
 
 # Plot settings ---------------------------------------------------------------
 
-test_that_plot_settings <- function(id, new_value) {
+test_that_plot_settings <- function(id, new_value, app_driver_fun) {
   testthat::test_that(
     sprintf(
       "e2e - tm_g_barchart_simple: Changing '%s' changes the plot and does not throw validation errors.",
@@ -318,7 +317,7 @@ test_that_plot_settings <- function(id, new_value) {
     ),
     {
       skip_if_too_deep(5)
-      app_driver <- app_driver_tm_g_barchart_simple()
+      app_driver <- app_driver_fun()
       plot_before <- app_driver$get_active_module_pws_output("myplot")
       app_driver$set_active_module_input(id, new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
@@ -343,9 +342,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
-    app_driver$set_active_module_input("barlayout", "stacked") # Otherwise, the labels don't exist
+    app_driver$set_active_module_input("label_bars", TRUE) # Otherwise, the labels don't exist
     plot_before <- app_driver$get_active_module_pws_output("myplot")
-    app_driver$set_active_module_input("rotate_bar_labels", TRUE)
+    app_driver$set_active_module_input("rotate_bar_labels", FALSE)
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
