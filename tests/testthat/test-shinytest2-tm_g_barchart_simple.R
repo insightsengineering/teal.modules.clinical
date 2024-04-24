@@ -246,7 +246,8 @@ test_dataset_selection <- function(id, new_dataset, new_value) {
 
   testthat::test_that(
     sprintf(
-      "e2e - tm_g_barchart_simple: De-selection of 'x_facet' dataset changes the element and does not throw validation errors",
+      "%s: De-selection of 'x_facet' dataset changes the element and does not throw validation errors",
+      "e2e - tm_g_barchart_simple",
       id
     ),
     {
