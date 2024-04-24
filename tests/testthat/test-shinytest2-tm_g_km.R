@@ -159,9 +159,36 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison s
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_km: Starts with specified additional plot settings.", {
+testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional plot settings.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
+
+  app_driver$is_visible(app_driver$active_module_element("xticks"))
+  app_driver$is_visible(app_driver$active_module_element("yval"))
+  app_driver$is_visible(app_driver$active_module_element("font_size"))
+  app_driver$is_visible(app_driver$active_module_element("rel_height_plot"))
+  app_driver$is_visible(app_driver$active_module_element("show_ci_ribbon"))
+  app_driver$is_visible(app_driver$active_module_element("show_km_table"))
+  app_driver$is_visible(app_driver$active_module_element("conf_level"))
+  app_driver$is_visible(app_driver$active_module_element("xlab"))
+
+  testthat::expect_equal(app_driver$get_active_module_input("xticks"), "")
+  testthat::expect_equal(app_driver$get_active_module_input("yval"), "Survival probability")
+  testthat::expect_equal(app_driver$get_active_module_input("font_size"), 11)
+  testthat::expect_equal(app_driver$get_active_module_input("rel_height_plot"), 80)
+  testthat::expect_false(app_driver$get_active_module_input("show_ci_ribbon"))
+  testthat::expect_true(app_driver$get_active_module_input("show_km_table"))
+  testthat::expect_equal(app_driver$get_active_module_input("conf_level"), "0.95")
+  testthat::expect_equal(app_driver$get_active_module_input("xlab"), "Time")
+
+  testthat::expect_equal(
+    app_driver$active_module_element_text("xticks-label"),
+    "Specify break intervals for x-axis e.g. 0 ; 500"
+  )
+  testthat::expect_match(app_driver$active_module_element_text("yval-label"), "Value on y-axis", fixed = FALSE)
+  testthat::expect_equal(app_driver$active_module_element_text("font_size-label"), "Table Font Size")
+  testthat::expect_equal(app_driver$active_module_element_text("rel_height_plot-label"), "Relative Height of Plot (%)")
+  testthat::expect_equal(app_driver$active_module_element_text("xlab-label"), "X-axis label")
 
   app_driver$stop()
 })
