@@ -88,7 +88,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Module initializes in teal without e
 
 testthat::test_that(
   "e2e - tm_g_forest_rsp: Module initializes with specified
-  label, arm_var, paramcd, aval_var, subgroup_var, strata_var,
+  label, arm_var, paramcd, aval_var, responders, subgroup_var, strata_var,
   conf_level, fixed_symbol_size, rel_width_forest, font_size",
   {
     skip_if_too_deep(5)
@@ -113,6 +113,11 @@ testthat::test_that(
     testthat::expect_equal(
       app_driver$get_active_module_input("aval_var-dataset_ADRS_singleextract-select"),
       "AVALC"
+    )
+
+    testthat::expect_equal(
+      app_driver$get_active_module_input("responders"),
+      c("Complete Response (CR)", "Partial Response (PR)")
     )
 
     testthat::expect_equal(
@@ -181,6 +186,28 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting paramcd throws validatio
   testthat::expect_match(
     app_driver$active_module_element_text("myplot-plot_out_main"),
     "Please select Endpoint filter"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_forest_rsp: Selecting responders changes plot and doesn't throw validation errors", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_forest_rsp()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("responders", "Complete Response (CR)")
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_forest_rsp: Deselecting responders throws validation error", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_forest_rsp()
+  app_driver$set_active_module_input("responders", NULL)
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text("myplot-plot_out_main"),
+    "`Responders` field is empty"
   )
   app_driver$stop()
 })
