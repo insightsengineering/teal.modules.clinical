@@ -76,9 +76,9 @@ testthat::test_that("e2e - tm_g_km: Module initializes in teal without errors an
 })
 
 testthat::test_that(
-  "e2e - tm_q_km: Starts with specified paramcd, aval_var, cnsr_var, facet_var, arm_var, compare_arms, strata_var.", {
+  "e2e - tm_g_km: Starts with specified paramcd, aval_var, cnsr_var, facet_var, arm_var, compare_arms, strata_var.", {
   skip_if_too_deep(5)
-  app_driver <- app_driver_tm_q_km()
+  app_driver <- app_driver_tm_g_km()
 
   testthat::expect_equal(
     app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
@@ -121,23 +121,31 @@ testthat::test_that(
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_q_km: Starts with specified groups.", {
+testthat::test_that("e2e - tm_g_km: Starts with specified groups.", {
   skip_if_too_deep(5)
-  app_driver <- app_driver_tm_q_km()
+  app_driver <- app_driver_tm_g_km()
+
+  testthat::expect_equal(
+    app_driver$get_active_module_input("buckets"),
+    list(
+      Ref = list("B: Placebo"),
+      Comp = list("A: Drug X", "C: Combination")
+    )
+  )
 
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_q_km: Starts with specified comparison settings.", {
+testthat::test_that("e2e - tm_g_km: Starts with specified comparison settings.", {
   skip_if_too_deep(5)
-  app_driver <- app_driver_tm_q_km()
+  app_driver <- app_driver_tm_g_km()
 
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_q_km: Starts with specified additional plot settings.", {
+testthat::test_that("e2e - tm_g_km: Starts with specified additional plot settings.", {
   skip_if_too_deep(5)
-  app_driver <- app_driver_tm_q_km()
+  app_driver <- app_driver_tm_g_km()
 
   app_driver$stop()
 })
