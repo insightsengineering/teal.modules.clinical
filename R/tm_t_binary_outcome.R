@@ -331,6 +331,15 @@ template_binary_outcome <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_binary_outcome
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
+#' @param control (named `list`)\cr named list containing 3 named lists as follows:
+#'   * `global`: a list of settings for overall analysis with 2 named elements `method` and `conf_level`.
+#'   * `unstrat`: a list of settings for unstratified analysis with 3 named elements `method_ci` and `method_test`, and
+#'     `odds`. See [tern::estimate_proportion_diff()], [tern::test_proportion_diff()], and
+#'     [tern::estimate_odds_ratio()], respectively, for options and details on how these settings are implemented in the
+#'     analysis.
+#'   * `strat`: a list of settings for stratified analysis with elements `method_ci` and `method_test`. See
+#'     [tern::estimate_proportion_diff()] and [tern::test_proportion_diff()], respectively, for options and details on
+#'     how these settings are implemented in the analysis.
 #'
 #' @details
 #' * The display order of response categories inherits the factor level order of the source data. Use
@@ -438,6 +447,18 @@ tm_t_binary_outcome <- function(label,
                                 default_responses =
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 rsp_table = FALSE,
+                                control = list(
+                                  global = list(
+                                    method = ifelse(rsp_table, "clopper-pearson", "waldcc"),
+                                    conf_level = 0.95
+                                  ),
+                                  unstrat = list(
+                                    method_ci = ifelse(rsp_table, "wald", "waldcc"),
+                                    method_test = "schouten",
+                                    odds = TRUE
+                                  ),
+                                  strat = list(method_ci = "cmh", method_test = "cmh")
+                                ),
                                 add_total = FALSE,
                                 total_label = default_total_label(),
                                 na_level = default_na_str(),
@@ -466,6 +487,24 @@ tm_t_binary_outcome <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
+  # control checks
+  checkmate::assert_names(names(control), permutation.of = c("global", "unstrat", "strat"))
+  checkmate::assert_names(names(control$global), permutation.of = c("method", "conf_level"))
+  checkmate::assert_names(names(control$unstrat), permutation.of = c("method_ci", "method_test", "odds"))
+  checkmate::assert_names(names(control$strat), permutation.of = c("method_ci", "method_test"))
+  checkmate::assert_subset(
+    control$global$method,
+    c("wald", "waldcc", "clopper-pearson", "wilson", "wilsonc", "jeffreys", "agresti-coull")
+  )
+  checkmate::assert_number(control$global$conf_level, lower = 0, upper = 1)
+  checkmate::assert_subset(control$unstrat$method_ci, c("wald", "waldcc", "ha", "newcombe", "newcombecc"))
+  checkmate::assert_subset(control$unstrat$method_test, c("chisq", "fisher", "schouten"))
+  checkmate::assert_logical(control$unstrat$odds)
+  checkmate::assert_subset(
+    control$strat$method_ci, c("wald", "waldcc", "cmh", "ha", "strat_newcombe", "strat_newcombecc")
+  )
+  checkmate::assert_subset(control$strat$method_test, c("cmh"))
+
   args <- as.list(environment())
 
   data_extract_list <- list(
@@ -489,6 +528,7 @@ tm_t_binary_outcome <- function(label,
         label = label,
         total_label = total_label,
         default_responses = default_responses,
+        control = control,
         rsp_table = rsp_table,
         na_level = na_level,
         basic_table_args = basic_table_args
@@ -578,7 +618,7 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Newcombe, without correction" = "newcombe",
                 "Newcombe, with correction" = "newcombecc"
               ),
-              selected = ifelse(a$rsp_table, "wald", "waldcc"),
+              selected = a$control$unstrat$method_ci,
               multiple = FALSE,
               fixed = FALSE
             ),
@@ -590,13 +630,13 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Fisher's Exact Test" = "fisher",
                 "Chi-Squared Test with Schouten correction" = "schouten"
               ),
-              selected = "chisq",
+              selected = a$control$unstrat$method_test,
               multiple = FALSE,
               fixed = FALSE
             ),
             tags$label("Odds Ratio Estimation"),
             shinyWidgets::switchInput(
-              inputId = ns("u_odds_ratio"), value = TRUE, size = "mini"
+              inputId = ns("u_odds_ratio"), value = a$control$unstrat$odds, size = "mini"
             )
           )
         ),
@@ -620,14 +660,14 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Stratified Newcombe, without correction" = "strat_newcombe",
                 "Stratified Newcombe, with correction" = "strat_newcombecc"
               ),
-              selected = "cmh",
+              selected = a$control$strat$method_ci,
               multiple = FALSE
             ),
             teal.widgets::optionalSelectInput(
               ns("s_diff_test"),
               label = "Method for Difference of Proportions Test",
               choices = c("CMH Test" = "cmh"),
-              selected = "cmh",
+              selected = a$control$strat$method_test,
               multiple = FALSE,
               fixed = TRUE
             )
@@ -652,7 +692,7 @@ ui_t_binary_outcome <- function(id, ...) {
             "Jeffreys" = "jeffreys",
             "Agresti-Coull" = "agresti-coull"
           ),
-          selected = ifelse(a$rsp_table, "clopper-pearson", "waldcc"),
+          selected = a$control$global$method,
           multiple = FALSE,
           fixed = FALSE
         ),
@@ -700,6 +740,7 @@ srv_t_binary_outcome <- function(id,
                                  arm_ref_comp,
                                  strata_var,
                                  add_total,
+                                 control,
                                  total_label,
                                  label,
                                  default_responses,
