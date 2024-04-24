@@ -119,41 +119,6 @@ testthat::test_that(
   app_driver$stop()
 })
 
-
-testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional plot settings.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_km()
-
-  app_driver$is_visible(app_driver$active_module_element("xticks"))
-  app_driver$is_visible(app_driver$active_module_element("yval"))
-  app_driver$is_visible(app_driver$active_module_element("font_size"))
-  app_driver$is_visible(app_driver$active_module_element("rel_height_plot"))
-  app_driver$is_visible(app_driver$active_module_element("show_ci_ribbon"))
-  app_driver$is_visible(app_driver$active_module_element("show_km_table"))
-  app_driver$is_visible(app_driver$active_module_element("conf_level"))
-  app_driver$is_visible(app_driver$active_module_element("xlab"))
-
-  testthat::expect_equal(app_driver$get_active_module_input("xticks"), "")
-  testthat::expect_equal(app_driver$get_active_module_input("yval"), "Survival probability")
-  testthat::expect_equal(app_driver$get_active_module_input("font_size"), 11)
-  testthat::expect_equal(app_driver$get_active_module_input("rel_height_plot"), 80)
-  testthat::expect_false(app_driver$get_active_module_input("show_ci_ribbon"))
-  testthat::expect_true(app_driver$get_active_module_input("show_km_table"))
-  testthat::expect_equal(app_driver$get_active_module_input("conf_level"), "0.95")
-  testthat::expect_equal(app_driver$get_active_module_input("xlab"), "Time")
-
-  testthat::expect_equal(
-    app_driver$active_module_element_text("xticks-label"),
-    "Specify break intervals for x-axis e.g. 0 ; 500"
-  )
-  testthat::expect_match(app_driver$active_module_element_text("yval-label"), "Value on y-axis", fixed = FALSE)
-  testthat::expect_equal(app_driver$active_module_element_text("font_size-label"), "Table Font Size")
-  testthat::expect_equal(app_driver$active_module_element_text("rel_height_plot-label"), "Relative Height of Plot (%)")
-  testthat::expect_equal(app_driver$active_module_element_text("xlab-label"), "X-axis label")
-
-  app_driver$stop()
-})
-
 testthat::test_that("e2e - tm_g_km: Changing {paramcd} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
@@ -290,4 +255,90 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison s
   app_driver$stop()
 })
 
-# TODO - plot settings
+testthat::test_that("e2e - tm_g_km: Changing {pval_method_coxph} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("pval_method_coxph", "wald")
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {ties_coxph} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("ties_coxph", "breslow")
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Deselecting {pval_method_coxph} gives no validation error.", {
+  # TODO - verify if the module should be validating this
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  app_driver$set_active_module_input("pval_method_coxph", character(0))
+  app_driver$expect_no_validation_error()
+  # app_driver$expect_validation_error()
+  # testthat::expect_match(
+  #   app_driver$active_module_element_text("pval_method_coxph_input > div > span"),
+  #   ""
+  # )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Deselecting {ties_coxph} gives no validation error.", {
+  # TODO - verify if the module should be validating this
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  app_driver$set_active_module_input("ties_coxph", character(0))
+  app_driver$expect_no_validation_error()
+  # app_driver$expect_validation_error()
+  # testthat::expect_match(
+  #   app_driver$active_module_element_text("ties_coxph_input > div > span"),
+  #   ""
+  # )
+  app_driver$stop()
+})
+
+
+# plot settings ---------------------------------------------------------------------------------------------------
+
+testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional plot settings.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+
+  app_driver$is_visible(app_driver$active_module_element("xticks"))
+  app_driver$is_visible(app_driver$active_module_element("yval"))
+  app_driver$is_visible(app_driver$active_module_element("font_size"))
+  app_driver$is_visible(app_driver$active_module_element("rel_height_plot"))
+  app_driver$is_visible(app_driver$active_module_element("show_ci_ribbon"))
+  app_driver$is_visible(app_driver$active_module_element("show_km_table"))
+  app_driver$is_visible(app_driver$active_module_element("conf_level"))
+  app_driver$is_visible(app_driver$active_module_element("xlab"))
+
+  testthat::expect_equal(app_driver$get_active_module_input("xticks"), "")
+  testthat::expect_equal(app_driver$get_active_module_input("yval"), "Survival probability")
+  testthat::expect_equal(app_driver$get_active_module_input("font_size"), 11)
+  testthat::expect_equal(app_driver$get_active_module_input("rel_height_plot"), 80)
+  testthat::expect_false(app_driver$get_active_module_input("show_ci_ribbon"))
+  testthat::expect_true(app_driver$get_active_module_input("show_km_table"))
+  testthat::expect_equal(app_driver$get_active_module_input("conf_level"), "0.95")
+  testthat::expect_equal(app_driver$get_active_module_input("xlab"), "Time")
+
+  testthat::expect_equal(
+    app_driver$active_module_element_text("xticks-label"),
+    "Specify break intervals for x-axis e.g. 0 ; 500"
+  )
+  testthat::expect_match(app_driver$active_module_element_text("yval-label"), "Value on y-axis", fixed = FALSE)
+  testthat::expect_equal(app_driver$active_module_element_text("font_size-label"), "Table Font Size")
+  testthat::expect_equal(app_driver$active_module_element_text("rel_height_plot-label"), "Relative Height of Plot (%)")
+  testthat::expect_equal(app_driver$active_module_element_text("xlab-label"), "X-axis label")
+
+  app_driver$stop()
+})
+
+# TODO - selection/changing
+# TODO - deselection + validation
