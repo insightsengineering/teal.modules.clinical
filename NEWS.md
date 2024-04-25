@@ -1,9 +1,10 @@
-# teal.modules.clinical 0.9.0.9022
+# teal.modules.clinical 0.9.0.9023
 
 ### Enhancements
 * Updated `tm_g_forest_rsp` and `tm_g_forest_tte` to use refactored version of `g_forest`. Plots are now displayed as `ggplot` objects instead of `grob` objects. Added parameters `font_size` and `rel_width_forest` to control font size and width of plot relative to table, respectively.
 * Updated `tm_t_summary_by` to allow `NULL` input to `paramcd` argument.
 * Updated `tm_g_km` to use refactored version of `g_km`. Plots are now displayed as `ggplot` objects instead of `grob` objects. Added parameters `rel_height_plot`, `font_size`, `control_annot_surv_med`, and `control_annot_coxph` to control height of plot relative to table, font size, median survival time table size, and Cox-PH table size, respectively.
+* Added the `control` argument to `tm_t_binary_outcome` to control settings for the analysis (methods, confidence intervals, and odds ratios) within the module.
 
 ### Miscellaneous
 * Removed `formatters` from dependencies and replaced the use of its functions relating to variable labels with functions from `teal.data`.

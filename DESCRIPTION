@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.0.9022
-Date: 2024-04-22
+Version: 0.9.0.9023
+Date: 2024-04-25
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -71,6 +71,7 @@ Suggests:
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
     pkgload,
+    rvest,
     shinytest2,
     styler,
     testthat (>= 3.1.5),
@@ -90,6 +91,7 @@ Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/tern.gee, insightsengineering/tern.mmrm,
     tidyverse/tidyr, shosaco/vistime, tidyverse/forcats, yihui/knitr,
     tidyverse/lubridate, insightsengineering/nestcolor, r-lib/pkgload,
+    tidyverse/rvest,
     rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
