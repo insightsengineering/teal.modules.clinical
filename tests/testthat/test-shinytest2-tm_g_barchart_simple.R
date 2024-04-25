@@ -102,7 +102,12 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
         rotate_y_label = TRUE,
         flip_axis = TRUE,
         show_n = FALSE
-      )
+      ),
+      plot_height = c(600L, 200L, 2000L),
+      plot_width = NULL,
+      pre_output = NULL,
+      post_output = NULL,
+      ggplot2_args = teal.widgets::ggplot2_args()
     )
   )
 }
@@ -178,12 +183,12 @@ testthat::test_that(
     # only tests the options that are customizable
 
     testthat::expect_equal(app_driver$get_active_module_input("barlayout"), "stacked")
-    testthat::expect_equal(app_driver$get_active_module_input("label_bars"), FALSE)
-    testthat::expect_equal(app_driver$get_active_module_input("rotate_bar_labels"), TRUE)
-    testthat::expect_equal(app_driver$get_active_module_input("rotate_x_label"), TRUE)
-    testthat::expect_equal(app_driver$get_active_module_input("rotate_y_label"), TRUE)
-    testthat::expect_equal(app_driver$get_active_module_input("flip_axis"), TRUE)
-    testthat::expect_equal(app_driver$get_active_module_input("show_n"), FALSE)
+    testthat::expect_false(app_driver$get_active_module_input("label_bars"))
+    testthat::expect_true(app_driver$get_active_module_input("rotate_bar_labels"))
+    testthat::expect_true(app_driver$get_active_module_input("rotate_x_label"))
+    testthat::expect_true(app_driver$get_active_module_input("rotate_y_label"))
+    testthat::expect_true(app_driver$get_active_module_input("flip_axis"))
+    testthat::expect_false(app_driver$get_active_module_input("show_n"))
 
     app_driver$stop()
   }
