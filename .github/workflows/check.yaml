@@ -10,9 +10,11 @@ on:
       - ready_for_review
     branches:
       - main
+      - shinytest2@main
   push:
     branches:
       - main
+      - shinytest2@main
   workflow_dispatch:
 
 jobs:
@@ -27,6 +29,7 @@ jobs:
     with:
       additional-env-vars: |
         _R_CHECK_CRAN_INCOMING_REMOTE_=false
+        TESTING_DEPTH=5
       additional-r-cmd-check-params: --as-cran
       enforce-note-blocklist: true
       note-blocklist: |
