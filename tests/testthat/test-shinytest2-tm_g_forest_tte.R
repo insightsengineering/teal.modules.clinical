@@ -223,7 +223,7 @@ test_that_plot_settings <- function(input_id, new_value) {
   testthat::test_that(
     sprintf(
       "e2e - tm_g_forest_tte: Changing '%s' changes the plot and does not throw validation errors.",
-      id
+      input_id
     ),
     {
       skip_if_too_deep(5)
