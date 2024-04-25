@@ -306,3 +306,67 @@ testthat::test_that(
 
   app_driver$stop()
 })
+
+testthat::test_that("e2e - tm_a_mmrm: Validate output on different selection.", {
+  #skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_mmrm()
+
+  test_no_validation_error(app_driver, "aval_var-dataset_ADQS_singleextract-select", "CHG")
+  test_no_validation_error(app_driver, "paramcd-dataset_ADQS_singleextract-filter1-vals", "BFIALL")
+  test_no_validation_error(app_driver, "visit_var-dataset_ADQS_singleextract-select", "AVISITN")
+  test_no_validation_error(app_driver, "cov_var-dataset_ADQS_singleextract-select", "AGE")
+  test_no_validation_error(app_driver, "arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+  test_no_validation_error(app_driver, "combine_comp_arms", TRUE)
+  test_no_validation_error(app_driver, "id_var-dataset_ADQS_singleextract-select", "SUBJID")
+  test_no_validation_error(app_driver, "weights_emmeans", "equal")
+  test_no_validation_error(app_driver, "cor_struct", "ante-dependence")
+  test_no_validation_error(app_driver, "conf_level", "0.8")
+  test_no_validation_error(app_driver, "method", "Kenward-Roger")
+
+  app_driver$click(selector = app_driver$active_module_element("button_start"))
+  app_driver$expect_no_validation_error()
+
+  # Check and set different outputs and validate their effects
+  output_functions <- c("g_mmrm_lsmeans",
+                        "t_mmrm_lsmeans",
+                        "t_mmrm_cov",
+                        "t_mmrm_fixed",
+                        "t_mmrm_diagnostic",
+                        "g_mmrm_diagnostic")
+
+  for (func in output_functions) {
+    test_no_validation_error(app_driver, "output_function", func)
+
+    switch(func,
+           t_mmrm_lsmeans = {
+             table <- app_driver$get_active_module_tws_output("mmrm_table")
+             testthat::expect_gt(nrow(table), 1)
+
+           },
+           g_mmrm_lsmeans = {
+             plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+             testthat::expect_match(plot, "data:image/png;base64,")
+
+           },
+           t_mmrm_cov = {
+             table <- app_driver$get_active_module_tws_output("mmrm_table")
+             testthat::expect_gt(nrow(table), 1)
+           },
+           t_mmrm_fixed = {
+             table <- app_driver$get_active_module_tws_output("mmrm_table")
+             testthat::expect_gt(nrow(table), 1)
+           },
+           t_mmrm_diagnostic = {
+             table <- app_driver$get_active_module_tws_output("mmrm_table")
+             testthat::expect_gt(nrow(table), 1)
+           },
+           g_mmrm_diagnostic = {
+             plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+             testthat::expect_match(plot, "data:image/png;base64,")
+           }
+    )
+  }
+
+  app_driver$stop()
+})
+
