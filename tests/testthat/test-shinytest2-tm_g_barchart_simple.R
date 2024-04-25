@@ -318,7 +318,6 @@ test_that_plot_settings <- function(id, new_value, setup_fun = function(app_driv
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
-      app_driver$view()
       setup_fun(app_driver)
       plot_before <- app_driver$get_active_module_pws_output("myplot")
       app_driver$set_active_module_input(id, new_value)
