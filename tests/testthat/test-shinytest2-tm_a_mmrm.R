@@ -100,7 +100,7 @@ testthat::test_that(
 
     testthat::expect_equal(app_driver$get_active_module_input("visit_var-dataset_ADQS_singleextract-select"), "AVISIT")
 
-    testthat::expect_NULL(app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select"))
+    testthat::expect_null(app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select"))
 
     testthat::expect_equal(app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"), "ARM")
 
