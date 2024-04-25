@@ -172,7 +172,7 @@ for (input_id in c(ns_dataset("paramcd", "filter1-vals", "ADTTE"), ns_dataset("a
 }
 
 
-# Test pairs of dataset selection ---------------------------------------------
+# Test changing selection and de-selecting ------------------------------------
 
 test_dataset_selection <- function(input_id, dataset, new_value) {
   testthat::test_that(
@@ -216,46 +216,6 @@ test_dataset_selection <- function(input_id, dataset, new_value) {
 
 test_dataset_selection("subgroup_var", "ADSL", c("COUNTRY", "RACE"))
 test_dataset_selection("strata_var", "ADSL", "STRATA1")
-
-# Duplicate variables cannot be selected --------------------------------------
-
-for (input_id in c("fill", "x_facet", "y_facet")) {
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_g_forest_tte: Duplicate between 'x' and '%s' selection throws validation error",
-      input_id
-    ),
-    {
-      skip_if_too_deep(5)
-      app_driver <- app_driver_tm_g_forest_tte()
-      app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "ACTARM", wait_ = FALSE)
-      app_driver$set_active_module_input(sprintf("%s-dataset", input_id), "ADSL", wait_ = FALSE)
-      app_driver$set_active_module_input(ns_dataset(input_id, "select", "ADSL"), "ACTARM")
-
-      app_driver$expect_validation_error()
-
-      testthat::expect_match(
-        app_driver$active_module_element_text(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_dataset("x", "select_input", "ADSL")
-          )
-        ),
-        "^Duplicated value: ACTARM$"
-      )
-
-      testthat::expect_match(
-        app_driver$active_module_element_text(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_dataset(input_id, "select_input", "ADSL")
-          )
-        ),
-        "^Duplicated value: ACTARM$"
-      )
-    }
-  )
-}
 
 # Plot settings ---------------------------------------------------------------
 
