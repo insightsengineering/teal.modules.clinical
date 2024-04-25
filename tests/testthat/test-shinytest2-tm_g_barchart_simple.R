@@ -273,19 +273,19 @@ test_dataset_selection("y_facet", "ADSL", "ARM")
 
 # Duplicate variables cannot be selected --------------------------------------
 
-for (id in c("fill", "x_facet", "y_facet")) {
+for (input_id in c("fill", "x_facet", "y_facet")) {
   testthat::test_that(
     sprintf(
       "e2e - tm_g_barchart_simple: Duplicate between 'x' and '%s' selection throws validation error",
-      id
+      input_id
     ),
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
 
       app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "ACTARM")
-      app_driver$set_active_module_input(sprintf("%s-dataset", id), "ADSL")
-      app_driver$set_active_module_input(ns_dataset(id, "select", "ADSL"), "ACTARM")
+      app_driver$set_active_module_input(sprintf("%s-dataset", input_id), "ADSL")
+      app_driver$set_active_module_input(ns_dataset(input_id, "select", "ADSL"), "ACTARM")
 
       app_driver$expect_validation_error()
 
@@ -303,7 +303,7 @@ for (id in c("fill", "x_facet", "y_facet")) {
         app_driver$active_module_element_text(
           sprintf(
             "%s .shiny-validation-message",
-            ns_dataset(id, "select_input", "ADSL")
+            ns_dataset(input_id, "select_input", "ADSL")
           )
         ),
         "^Duplicated value: ACTARM$"
