@@ -150,65 +150,63 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
   # Check and set different outputs and validate their effects
   output_functions <- c("g_mmrm_lsmeans", "t_mmrm_lsmeans", "t_mmrm_cov", "t_mmrm_fixed", "t_mmrm_diagnostic", "g_mmrm_diagnostic")
   for (func in output_functions) {
-    #browser()
     set_input_and_validate(app_driver, "output_function", func)
 
-    # Test default behavior or specific behavior based on the function
     switch(func,
-           t_mmrm_lsmeans = {
-             testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
-             set_input_and_validate(app_driver, "t_mmrm_lsmeans_show_relative", "increase")
-           },
-           g_mmrm_lsmeans = {
-             plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
-             testthat::expect_match(plot_before, "data:image/png;base64,")
+      t_mmrm_lsmeans = {
+        testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
+        set_input_and_validate(app_driver, "t_mmrm_lsmeans_show_relative", "increase")
+      },
+      g_mmrm_lsmeans = {
+        plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+        testthat::expect_match(plot_before, "data:image/png;base64,")
 
-             app_driver$set_active_module_input("g_mmrm_lsmeans_select", "estimates")
-             app_driver$expect_no_validation_error()
-             app_driver$set_active_module_input("g_mmrm_lsmeans_select", "contrasts")
-             app_driver$expect_no_validation_error()
+        app_driver$set_active_module_input("g_mmrm_lsmeans_select", "estimates")
+        app_driver$expect_no_validation_error()
+        app_driver$set_active_module_input("g_mmrm_lsmeans_select", "contrasts")
+        app_driver$expect_no_validation_error()
 
-             app_driver$set_active_module_input(
-               "g_mmrm_lsmeans_select",
-               c("estimates", "contrasts")
-             )
-             app_driver$expect_no_validation_error()
+        app_driver$set_active_module_input(
+          "g_mmrm_lsmeans_select",
+          c("estimates", "contrasts")
+        )
+        app_driver$expect_no_validation_error()
 
-             app_driver$set_active_module_input("g_mmrm_lsmeans_width", 0.9)
-             app_driver$expect_no_validation_error()
+        app_driver$set_active_module_input("g_mmrm_lsmeans_width", 0.9)
+        app_driver$expect_no_validation_error()
 
-             app_driver$set_active_module_input("g_mmrm_lsmeans_contrasts_show_pval", TRUE)
-             app_driver$expect_no_validation_error()
+        app_driver$set_active_module_input("g_mmrm_lsmeans_contrasts_show_pval", TRUE)
+        app_driver$expect_no_validation_error()
 
-             plot <- app_driver$get_active_module_pws_output("mmrm_plot")
-             testthat::expect_match(plot, "data:image/png;base64,")
+        plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+        testthat::expect_match(plot, "data:image/png;base64,")
 
-             testthat::expect_false(identical(plot_before, plot))
-           },
-           t_mmrm_cov = {
-             table <- app_driver$get_active_module_tws_output("mmrm_table")
-             testthat::expect_gt(nrow(table), 1)
-           },
-           t_mmrm_fixed = {
-             table <- app_driver$get_active_module_tws_output("mmrm_table")
-             testthat::expect_gt(nrow(table), 1)
-           },
-           t_mmrm_diagnostic = {
-             table <- app_driver$get_active_module_tws_output("mmrm_table")
-             testthat::expect_gt(nrow(table), 1)
-           },
-           g_mmrm_diagnostic = {
-             plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
-             testthat::expect_match(plot_before, "data:image/png;base64,")
+        testthat::expect_false(identical(plot_before, plot))
+      },
+      t_mmrm_cov = {
+        table <- app_driver$get_active_module_tws_output("mmrm_table")
+        testthat::expect_gt(nrow(table), 1)
+      },
+      t_mmrm_fixed = {
+        table <- app_driver$get_active_module_tws_output("mmrm_table")
+        testthat::expect_gt(nrow(table), 1)
+      },
+      t_mmrm_diagnostic = {
+        table <- app_driver$get_active_module_tws_output("mmrm_table")
+        testthat::expect_gt(nrow(table), 1)
+      },
+      g_mmrm_diagnostic = {
+        plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+        testthat::expect_match(plot_before, "data:image/png;base64,")
 
-             app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
-             app_driver$expect_no_validation_error()
+        app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
+        app_driver$expect_no_validation_error()
 
-             plot <- app_driver$get_active_module_pws_output("mmrm_plot")
-             testthat::expect_match(plot, "data:image/png;base64,")
+        plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+        testthat::expect_match(plot, "data:image/png;base64,")
 
-             testthat::expect_false(identical(plot_before, plot))
-           }
+        testthat::expect_false(identical(plot_before, plot))
+      }
     )
   }
 
@@ -217,81 +215,81 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
 
 testthat::test_that("e2e - tm_a_mmrm:
   Deselection of x_var, y_var, ADQS filters, color, conf_level and stat throws validation error.", {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_a_mmrm()
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_a_mmrm()
 
 
-    app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_dataset("aval_var", "select_input", "ADQS")
-        )
-      ),
-      "Analysis Variable' field is not selected"
-    )
+  app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", character(0L))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text(
+      sprintf(
+        "%s .shiny-validation-message",
+        ns_dataset("aval_var", "select_input", "ADQS")
+      )
+    ),
+    "Analysis Variable' field is not selected"
+  )
 
-    app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_dataset("paramcd", "filter1-vals_input", "ADQS")
-        )
-      ),
-      "Select Endpoint' field is not selected"
-    )
+  app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0L))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text(
+      sprintf(
+        "%s .shiny-validation-message",
+        ns_dataset("paramcd", "filter1-vals_input", "ADQS")
+      )
+    ),
+    "Select Endpoint' field is not selected"
+  )
 
-    app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_dataset("visit_var", "select_input", "ADQS")
-        )
-      ),
-      "Visit Variable' field is not selected"
-    )
+  app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", character(0L))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text(
+      sprintf(
+        "%s .shiny-validation-message",
+        ns_dataset("visit_var", "select_input", "ADQS")
+      )
+    ),
+    "Visit Variable' field is not selected"
+  )
 
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_dataset("arm_var", "select_input", "ADSL")
-        )
-      ),
-      "Treatment variable must be selected"
-    )
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0L))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text(
+      sprintf(
+        "%s .shiny-validation-message",
+        ns_dataset("arm_var", "select_input", "ADSL")
+      )
+    ),
+    "Treatment variable must be selected"
+  )
 
-    app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_dataset("id_var", "select_input", "ADQS")
-        )
-      ),
-      "Subject Identifier' field is not selected"
-    )
+  app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", character(0L))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text(
+      sprintf(
+        "%s .shiny-validation-message",
+        ns_dataset("id_var", "select_input", "ADQS")
+      )
+    ),
+    "Subject Identifier' field is not selected"
+  )
 
-    app_driver$set_active_module_input("conf_level", numeric(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          "conf_level_input"
-        )
-      ),
-      "Confidence Level' field is not selected"
-    )
+  app_driver$set_active_module_input("conf_level", numeric(0L))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text(
+      sprintf(
+        "%s .shiny-validation-message",
+        "conf_level_input"
+      )
+    ),
+    "Confidence Level' field is not selected"
+  )
 
-    app_driver$stop()
-  })
+  app_driver$stop()
+})
