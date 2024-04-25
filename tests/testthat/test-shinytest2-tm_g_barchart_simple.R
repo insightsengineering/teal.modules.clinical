@@ -228,21 +228,21 @@ testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws valid
 
 # Test pairs of dataset selection ---------------------------------------------
 
-test_dataset_selection <- function(id, new_dataset, new_value) {
+test_dataset_selection <- function(input_id, new_dataset, new_value) {
   testthat::test_that(
     sprintf(
       "e2e - tm_g_barchart_simple: Selection of '%s' dataset changes the element and does not throw validation errors",
-      id
+      input_id
     ),
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(sprintf("%s-dataset", id), new_dataset)
+      app_driver$set_active_module_input(sprintf("%s-dataset", input_id), new_dataset)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-      testthat::expect_null(app_driver$get_active_module_input(ns_dataset(id, "select", new_dataset)))
-      app_driver$set_active_module_input(ns_dataset(id, "select", new_dataset), new_value)
-      testthat::expect_identical(app_driver$get_active_module_input(ns_dataset(id, "select", new_dataset)), new_value)
+      testthat::expect_null(app_driver$get_active_module_input(ns_dataset(input_id, "select", new_dataset)))
+      app_driver$set_active_module_input(ns_dataset(input_id, "select", new_dataset), new_value)
+      testthat::expect_identical(app_driver$get_active_module_input(ns_dataset(input_id, "select", new_dataset)), new_value)
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }
@@ -252,15 +252,15 @@ test_dataset_selection <- function(id, new_dataset, new_value) {
     sprintf(
       "%s: De-selection of '%s' dataset changes the element and does not throw validation errors",
       "e2e - tm_g_barchart_simple",
-      id
+      input_id
     ),
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(sprintf("%s-dataset", id), character(0L))
-      testthat::expect_null(app_driver$get_active_module_input(id))
-
+      app_driver$set_active_module_input(sprintf("%s-dataset", input_id), character(0L))
+      testthat::expect_null(app_driver$get_active_module_input(input_id))
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }
