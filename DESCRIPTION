@@ -71,6 +71,7 @@ Suggests:
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
     pkgload,
+    rvest,
     shinytest2,
     styler,
     testthat (>= 3.1.5),
@@ -90,6 +91,7 @@ Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/tern.gee, insightsengineering/tern.mmrm,
     tidyverse/tidyr, shosaco/vistime, tidyverse/forcats, yihui/knitr,
     tidyverse/lubridate, insightsengineering/nestcolor, r-lib/pkgload,
+    tidyverse/rvest,
     rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
