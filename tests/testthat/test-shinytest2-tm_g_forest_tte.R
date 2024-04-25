@@ -228,7 +228,6 @@ test_that_plot_settings <- function(input_id, new_value) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_forest_tte()
-      setup_fun(app_driver)
       plot_before <- app_driver$get_active_module_pws_output("myplot")
       app_driver$set_active_module_input(input_id, new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
