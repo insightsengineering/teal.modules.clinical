@@ -43,16 +43,6 @@ test_object_no_changes <- function(app_driver, input_id, value, ws, fun) {
   testthat::expect_false(identical(object, app_driver[[fun]]()(ws)))
 }
 
-test_plot_validation_error <- function(app_driver, input_id, value = character(0), message = NULL, validation = NULL) {
-  test_validation_error(app_driver, input_id, value, message, validation)
-}
-
-test_table_validation_error <- function(app_driver, input_id, value = character(0), message = NULL, validation = NULL,
-                                        tws = "table") {
-  test_validation_error(app_driver, input_id, value, message, validation)
-  testthat::expect_identical(app_driver$get_active_module_tws_output(tws), data.frame())
-}
-
 test_validation_error <- function(app_driver, input_id, value = character(0), message = NULL, validation = NULL) {
   app_driver$set_active_module_input(input_id, value)
   app_driver$expect_validation_error()
