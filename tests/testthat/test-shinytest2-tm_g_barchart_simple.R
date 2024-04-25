@@ -242,7 +242,10 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
       testthat::expect_null(app_driver$get_active_module_input(ns_dataset(input_id, "select", new_dataset)))
       app_driver$set_active_module_input(ns_dataset(input_id, "select", new_dataset), new_value)
-      testthat::expect_identical(app_driver$get_active_module_input(ns_dataset(input_id, "select", new_dataset)), new_value)
+      testthat::expect_identical(
+        app_driver$get_active_module_input(ns_dataset(input_id, "select", new_dataset)),
+        new_value
+      )
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }
