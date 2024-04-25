@@ -76,7 +76,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without e
 testthat::test_that(
   paste0(
     "e2e - tm_g_forest_tte: Starts with specified ",
-    "label, id_var, arm_var, visit_var, paramcd, cov_var, conf_level and conf_struct."
+    "label, paramcd, arm_var, buckets, paramcd, subgroup_var, strata_var and plot settings"
   ),
   {
     skip_if_too_deep(5)
