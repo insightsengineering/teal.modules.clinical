@@ -112,10 +112,6 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
   )
 }
 
-ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
-  sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
-}
-
 # Initialization --------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal without errors and produces output.", {

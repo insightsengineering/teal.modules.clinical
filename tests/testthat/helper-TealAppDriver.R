@@ -24,16 +24,16 @@ init_teal_app_driver <- function(...) {
   )
 }
 
-ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
-  sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
+ns_dataset <- function(prefix, suffix, dataset) {
+  sprintf("%s-dataset_%s_singleextract-%s", prefix, dataset, suffix)
 }
 
 test_plot_changes_no_errors <- function(app_driver, input_id, value, ws) {
-  test_object_no_changes(app_driver, input_id, value, ws, 'get_active_module_pws_output')
+  test_object_no_changes(app_driver, input_id, value, ws, "get_active_module_pws_output")
 }
 
 test_table_changes_no_errors <- function(app_driver, input_id, value, ws) {
-  test_object_no_changes(app_driver, input_id, value, ws, 'get_active_module_tws_output')
+  test_object_no_changes(app_driver, input_id, value, ws, "get_active_module_tws_output")
 }
 
 test_object_no_changes <- function(app_driver, input_id, value, ws, fun) {
