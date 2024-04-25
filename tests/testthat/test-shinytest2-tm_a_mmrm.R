@@ -308,7 +308,7 @@ testthat::test_that(
 })
 
 testthat::test_that("e2e - tm_a_mmrm: Validate output on different selection.", {
-  #skip_if_too_deep(5)
+  skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
 
   test_no_validation_error(app_driver, "aval_var-dataset_ADQS_singleextract-select", "CHG")
