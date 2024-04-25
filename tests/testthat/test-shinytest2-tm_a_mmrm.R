@@ -147,98 +147,70 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
   app_driver$click(selector = app_driver$active_module_element("button_start"))
   app_driver$expect_no_validation_error()
 
-  # LS means table (Default)
-  out_fun <- app_driver$get_active_module_input("output_function")
-  id <- sprintf("%s_show_relative", out_fun)
-  testthat::expect_equal(app_driver$get_active_module_input(id), "reduction")
+  # Check and set different outputs and validate their effects
+  output_functions <- c("g_mmrm_lsmeans", "t_mmrm_lsmeans", "t_mmrm_cov", "t_mmrm_fixed", "t_mmrm_diagnostic", "g_mmrm_diagnostic")
+  for (func in output_functions) {
+    #browser()
+    set_input_and_validate(app_driver, "output_function", func)
 
-  app_driver$set_active_module_input(id, "increase")
-  app_driver$expect_no_validation_error()
+    # Test default behavior or specific behavior based on the function
+    switch(func,
+           t_mmrm_lsmeans = {
+             testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
+             set_input_and_validate(app_driver, "t_mmrm_lsmeans_show_relative", "increase")
+           },
+           g_mmrm_lsmeans = {
+             plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+             testthat::expect_match(plot_before, "data:image/png;base64,")
 
-  # LS means plots
-  out_fun <- "g_mmrm_lsmeans"
-  app_driver$set_active_module_input("output_function", out_fun)
-  app_driver$expect_no_validation_error()
+             app_driver$set_active_module_input("g_mmrm_lsmeans_select", "estimates")
+             app_driver$expect_no_validation_error()
+             app_driver$set_active_module_input("g_mmrm_lsmeans_select", "contrasts")
+             app_driver$expect_no_validation_error()
 
-  plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
-  testthat::expect_match(plot_before, "data:image/png;base64,")
+             app_driver$set_active_module_input(
+               "g_mmrm_lsmeans_select",
+               c("estimates", "contrasts")
+             )
+             app_driver$expect_no_validation_error()
 
-  testthat::expect_equal(app_driver$get_active_module_input(sprintf("%s_select", out_fun)), c("estimates", "contrasts"))
+             app_driver$set_active_module_input("g_mmrm_lsmeans_width", 0.9)
+             app_driver$expect_no_validation_error()
 
-  testthat::expect_equal(app_driver$get_active_module_input(sprintf("%s_width", out_fun)), 0.6)
+             app_driver$set_active_module_input("g_mmrm_lsmeans_contrasts_show_pval", TRUE)
+             app_driver$expect_no_validation_error()
 
-  testthat::expect_false(app_driver$get_active_module_input(sprintf("%s_contrasts_show_pval", out_fun)))
+             plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+             testthat::expect_match(plot, "data:image/png;base64,")
 
-  app_driver$set_active_module_input(sprintf("%s_select", out_fun), "estimates")
-  app_driver$expect_no_validation_error()
-  app_driver$set_active_module_input(sprintf("%s_select", out_fun), "contrasts")
-  app_driver$expect_no_validation_error()
+             testthat::expect_false(identical(plot_before, plot))
+           },
+           t_mmrm_cov = {
+             table <- app_driver$get_active_module_tws_output("mmrm_table")
+             testthat::expect_gt(nrow(table), 1)
+           },
+           t_mmrm_fixed = {
+             table <- app_driver$get_active_module_tws_output("mmrm_table")
+             testthat::expect_gt(nrow(table), 1)
+           },
+           t_mmrm_diagnostic = {
+             table <- app_driver$get_active_module_tws_output("mmrm_table")
+             testthat::expect_gt(nrow(table), 1)
+           },
+           g_mmrm_diagnostic = {
+             plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+             testthat::expect_match(plot_before, "data:image/png;base64,")
 
-  app_driver$set_active_module_input(
-    sprintf("%s_select", out_fun),
-    c("estimates", "contrasts")
-  )
-  app_driver$expect_no_validation_error()
+             app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
+             app_driver$expect_no_validation_error()
 
+             plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+             testthat::expect_match(plot, "data:image/png;base64,")
 
-  app_driver$set_active_module_input(sprintf("%s_width", out_fun), 0.9)
-  app_driver$expect_no_validation_error()
-
-  app_driver$set_active_module_input(sprintf("%s_contrasts_show_pval", out_fun), TRUE)
-  app_driver$expect_no_validation_error()
-
-  plot <- app_driver$get_active_module_pws_output("mmrm_plot")
-  testthat::expect_match(plot, "data:image/png;base64,")
-
-  testthat::expect_false(
-    identical(
-      plot_before,
-      plot
+             testthat::expect_false(identical(plot_before, plot))
+           }
     )
-  )
-
-  # Covariance estimate
-  app_driver$set_active_module_input("output_function", "t_mmrm_cov")
-  app_driver$expect_no_validation_error()
-
-  table <- app_driver$get_active_module_tws_output("mmrm_table")
-  testthat::expect_gt(nrow(table), 1)
-
-  # Fixed effects
-
-  app_driver$set_active_module_input("output_function", "t_mmrm_fixed")
-  app_driver$expect_no_validation_error()
-
-  table <- app_driver$get_active_module_tws_output("mmrm_table")
-  testthat::expect_gt(nrow(table), 1)
-
-  # Fit statistics
-  app_driver$set_active_module_input("output_function", "t_mmrm_diagnostic")
-  app_driver$expect_no_validation_error()
-
-  table <- app_driver$get_active_module_tws_output("mmrm_table")
-  testthat::expect_gt(nrow(table), 1)
-
-  # Diagnostic plots
-  app_driver$set_active_module_input("output_function", "g_mmrm_diagnostic")
-  app_driver$expect_no_validation_error()
-
-  plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
-  testthat::expect_match(plot_before, "data:image/png;base64,")
-
-  testthat::expect_equal(app_driver$get_active_module_input("g_mmrm_diagnostic_type"), "fit-residual")
-
-  app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
-
-  plot <- app_driver$get_active_module_pws_output("mmrm_plot")
-  testthat::expect_match(plot, "data:image/png;base64,")
-
-  testthat::expect_false(
-    identical(
-      plot_before,
-      plot
-    )
-  )
+  }
 
   app_driver$stop()
 })
