@@ -310,14 +310,14 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional p
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
 
-  app_driver$is_visible(app_driver$active_module_element("xticks"))
-  app_driver$is_visible(app_driver$active_module_element("yval"))
-  app_driver$is_visible(app_driver$active_module_element("font_size"))
-  app_driver$is_visible(app_driver$active_module_element("rel_height_plot"))
-  app_driver$is_visible(app_driver$active_module_element("show_ci_ribbon"))
-  app_driver$is_visible(app_driver$active_module_element("show_km_table"))
-  app_driver$is_visible(app_driver$active_module_element("conf_level"))
-  app_driver$is_visible(app_driver$active_module_element("xlab"))
+  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("xticks")))
+  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("yval")))
+  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("font_size")))
+  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("rel_height_plot")))
+  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("show_ci_ribbon")))
+  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("show_km_table")))
+  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("conf_level")))
+  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("xlab")))
 
   testthat::expect_equal(app_driver$get_active_module_input("xticks"), "")
   testthat::expect_equal(app_driver$get_active_module_input("yval"), "Survival probability")
@@ -340,5 +340,85 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional p
   app_driver$stop()
 })
 
-# TODO - selection/changing
+testthat::test_that("e2e - tm_g_km: Changing {xticks} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("xticks", 50)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {yval} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("yval", "Failure probability")
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {font_size} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("font_size", 12)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {rel_height_plot} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("rel_height_plot", 70)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {show_ci_ribbon} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("show_ci_ribbon", TRUE)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {show_km_table} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("show_km_table", FALSE)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {conf_level} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("conf_level", 0.8)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_km: Changing {xlab} changes the plot without errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("xlab", "Time2")
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  app_driver$stop()
+})
+
+
 # TODO - deselection + validation
