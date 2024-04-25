@@ -24,7 +24,12 @@ init_teal_app_driver <- function(...) {
   )
 }
 
-set_input_and_validate <- function(app_driver, input_id, value) {
+test_no_validation_error <- function(app_driver, input_id, value) {
   app_driver$set_active_module_input(input_id, value)
   app_driver$expect_no_validation_error()
+}
+
+
+ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
+  sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
 }

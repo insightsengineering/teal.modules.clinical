@@ -1,4 +1,4 @@
-app_driver_tm_a_mmrm <- function() {
+app_driver_tm_a_mmrm <- function() { # nolint: object_length.
   arm_ref_comp <- list(
     ARMCD = list(
       ref = "ARM B",
@@ -79,8 +79,12 @@ testthat::test_that("e2e - tm_a_mmrm: Module initializes in teal without errors.
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_a_mmrm:
-  Module initializes with specified label, x_var, y_var, ADQS filters, color, conf_level and stat.", {
+testthat::test_that(
+  paste0(
+    "e2e - tm_a_mmrm: Module initializes with specified label,analysis variable, select endpoint,",
+    "visit variable, covariates,select treatment variable, subject identifier, weights for ls means,",
+    "correlation structure, adjustment method and confidence level"
+  ), {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
 
@@ -148,14 +152,20 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
   app_driver$expect_no_validation_error()
 
   # Check and set different outputs and validate their effects
-  output_functions <- c("g_mmrm_lsmeans", "t_mmrm_lsmeans", "t_mmrm_cov", "t_mmrm_fixed", "t_mmrm_diagnostic", "g_mmrm_diagnostic")
+  output_functions <- c("g_mmrm_lsmeans",
+                        "t_mmrm_lsmeans",
+                        "t_mmrm_cov",
+                        "t_mmrm_fixed",
+                        "t_mmrm_diagnostic",
+                        "g_mmrm_diagnostic")
+
   for (func in output_functions) {
-    set_input_and_validate(app_driver, "output_function", func)
+    test_no_validation_error(app_driver, "output_function", func)
 
     switch(func,
       t_mmrm_lsmeans = {
         testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
-        set_input_and_validate(app_driver, "t_mmrm_lsmeans_show_relative", "increase")
+        test_no_validation_error(app_driver, "t_mmrm_lsmeans_show_relative", "increase")
       },
       g_mmrm_lsmeans = {
         plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
@@ -213,8 +223,11 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_a_mmrm:
-  Deselection of x_var, y_var, ADQS filters, color, conf_level and stat throws validation error.", {
+testthat::test_that(
+  paste0(
+    "e2e - tm_a_mmrm: Deselection of analysis variable, select endpoint,",
+    "visit variable, select treatment variable, subject identifier and confidence level"
+  ), {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
 
