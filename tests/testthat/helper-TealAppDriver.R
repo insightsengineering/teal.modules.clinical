@@ -58,3 +58,8 @@ test_validation_error <- function(app_driver, input, value = character(0), table
     )
   }
 }
+
+test_no_validation_error <- function(app_driver, input_id, value) {
+  app_driver$set_active_module_input(input_id, value)
+  app_driver$expect_no_validation_error()
+}
