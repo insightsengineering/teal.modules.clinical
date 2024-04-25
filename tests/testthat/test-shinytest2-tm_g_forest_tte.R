@@ -25,21 +25,21 @@ app_driver_tm_g_forest_tte <- function() { # nolint: object_length.
     modules = tm_g_forest_tte(
       label = "Forest Survival (e2e)",
       dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
+      arm_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
         "ARMCD"
       ),
       arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
+      paramcd = teal.transform::choices_selected(
+        teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
         "OS"
       ),
-      subgroup_var = choices_selected(
-        variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
+      subgroup_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
         c("BMRKR2", "SEX")
       ),
-      strata_var = choices_selected(
-        variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
+      strata_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
         "STRATA2"
       ),
       fixed_symbol_size = FALSE,
