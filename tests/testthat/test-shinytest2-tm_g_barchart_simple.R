@@ -309,7 +309,7 @@ for (id in c("fill", "x_facet", "y_facet")) {
 
 # Plot settings ---------------------------------------------------------------
 
-test_that_plot_settings <- function(id, new_value, setup_fun = function(app_driver) NULL) {
+test_that_plot_settings <- function(input_id, new_value, setup_fun = function(app_driver) NULL) {
   testthat::test_that(
     sprintf(
       "e2e - tm_g_barchart_simple: Changing '%s' changes the plot and does not throw validation errors.",
@@ -320,7 +320,7 @@ test_that_plot_settings <- function(id, new_value, setup_fun = function(app_driv
       app_driver <- app_driver_tm_g_barchart_simple()
       setup_fun(app_driver)
       plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(id, new_value)
+      app_driver$set_active_module_input(input_id, new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
