@@ -28,32 +28,40 @@ ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
   sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
 }
 
-test_plot_changes_no_errors <- function(app_driver, input, value, pws) {
-  plot_before <- app_driver$get_active_module_pws_output(pws)
-  app_driver$set_active_module_input(input, value)
-  app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output(pws)))
+test_plot_changes_no_errors <- function(app_driver, input, value, ws) {
+  test_object_no_changes(app_driver, input, value, ws, 'get_active_module_pws_output')
 }
 
-test_table_changes_no_errors <- function(app_driver, input, value, tws) {
-  table_before <- app_driver$get_active_module_tws_output(tws)
-  app_driver$set_active_module_input(input, value)
-  app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output(tws)))
+test_table_changes_no_errors <- function(app_driver, input, value, ws) {
+  test_object_no_changes(app_driver, input, value, ws, 'get_active_module_tws_output')
 }
 
-test_validation_error <- function(app_driver, input, value = character(0), table = FALSE, message = NULL) {
+test_object_no_changes <- function(app_driver, input, value, ws, fun) {
+  object <- app_driver[[fun]]()(ws)
   app_driver$set_active_module_input(input, value)
+  app_driver$expect_no_validation_error()
+  testthat::expect_false(identical(object, app_driver[[fun]]()(ws)))
+}
 
-  if (table) {
-    testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
-  }
+test_plot_validation_error <- function(app_driver, input, value = character(0), message = NULL, validation = NULL) {
+  test_validation_error(app_driver, input, value, message, validation)
+}
 
+test_table_validation_error <- function(app_driver, input, value = character(0), message = NULL, validation = NULL,
+                                        tws = "table") {
+  test_validation_error(app_driver, input, value, message, validation)
+  testthat::expect_identical(app_driver$get_active_module_tws_output(tws), data.frame())
+}
+
+test_validation_error <- function(app_driver, input, value = character(0), message = NULL, validation = NULL) {
+  app_driver$set_active_module_input(input, value)
   app_driver$expect_validation_error()
+
+  element <- ifelse(!is.null(input), sprintf("%s .shiny-validation-message", input), validation)
 
   if (!is.null(message)) {
     testthat::expect_match(
-      app_driver$active_module_element_text(sprintf("%s .shiny-validation-message", input)),
+      app_driver$active_module_element_text(element),
       message
     )
   }
