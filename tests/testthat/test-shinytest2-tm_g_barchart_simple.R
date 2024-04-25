@@ -282,9 +282,8 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
-
-      app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "ACTARM")
-      app_driver$set_active_module_input(sprintf("%s-dataset", input_id), "ADSL")
+      app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "ACTARM", wait_ = FALSE)
+      app_driver$set_active_module_input(sprintf("%s-dataset", input_id), "ADSL", wait_ = FALSE)
       app_driver$set_active_module_input(ns_dataset(input_id, "select", "ADSL"), "ACTARM")
 
       app_driver$expect_validation_error()
