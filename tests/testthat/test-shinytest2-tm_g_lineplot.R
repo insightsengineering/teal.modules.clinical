@@ -1,19 +1,17 @@
 app_driver_tm_g_lineplot <- function() {
-  library(nestcolor)
-  library(dplyr)
-  library(forcats)
+  data <- within(teal.data::teal_data(), {
+    require(nestcolor)
+    ADSL <- teal.modules.clinical::tmc_ex_adsl
 
-  ADSL <- tmc_ex_adsl
-  ADLB <- tmc_ex_adlb %>% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
+    ADLB <- dplyr::mutate(
+      teal.modules.clinical::tmc_ex_adlb,
+      AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min)
+    )
+  })
 
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADLB = ADLB,
-    code = "
-        ADSL <- tmc_ex_adsl
-        ADLB <- tmc_ex_adlb %>% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
-      "
-  )
+  datanames <- c("ADSL", "ADLB")
+  teal.data::datanames(data) <- datanames
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
 
   init_teal_app_driver(
     data = data,
@@ -21,32 +19,32 @@ app_driver_tm_g_lineplot <- function() {
       label = "Line Plot",
       dataname = "ADLB",
       strata = teal.transform::choices_selected(
-        teal.transform::variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+        teal.transform::variable_choices("ADSL", c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
       ),
       x = teal.transform::choices_selected(teal.transform::variable_choices(
-        ADLB,
+        "ADLB",
         "AVISIT"
       ), "AVISIT", fixed = TRUE),
       y = teal.transform::choices_selected(
-        teal.transform::variable_choices(ADLB, c("AVAL", "BASE", "CHG", "PCHG")),
+        teal.transform::variable_choices("ADLB", c("AVAL", "BASE", "CHG", "PCHG")),
         "AVAL"
       ),
       y_unit = teal.transform::choices_selected(teal.transform::variable_choices(
-        ADLB,
+        "ADLB",
         "AVALU"
       ), "AVALU", fixed = TRUE),
       paramcd = teal.transform::choices_selected(teal.transform::variable_choices(
-        ADLB,
+        "ADLB",
         "PARAMCD"
       ), "PARAMCD", fixed = TRUE),
       param = teal.transform::choices_selected(
-        teal.transform::value_choices(ADLB, "PARAMCD", "PARAM"),
+        teal.transform::value_choices("ADLB", "PARAMCD", "PARAM"),
         "ALT"
       ),
       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
-        keep_order =
-          TRUE
+                                                    keep_order =
+                                                      TRUE
       ),
       interval = "mean_ci",
       mid = "mean",
