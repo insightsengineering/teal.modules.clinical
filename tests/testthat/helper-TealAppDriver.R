@@ -28,36 +28,3 @@ ns_des_input <- function(id, dataname, type) {
   sprintf("%s-dataset_singleextract_%s-%s", id, dataname, type)
 }
 
-test_plot_changes_no_errors <- function(app_driver, input_id, value, ws) {
-  test_object_no_changes(app_driver, input_id, value, ws, "get_active_module_pws_output")
-}
-
-test_table_changes_no_errors <- function(app_driver, input_id, value, ws) {
-  test_object_no_changes(app_driver, input_id, value, ws, "get_active_module_tws_output")
-}
-
-test_object_no_changes <- function(app_driver, input_id, value, ws, fun) {
-  object <- app_driver[[fun]]()(ws)
-  app_driver$set_active_module_input(input_id, value)
-  app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(object, app_driver[[fun]]()(ws)))
-}
-
-test_validation_error <- function(app_driver, input_id, value = character(0), message = NULL, validation = NULL) {
-  app_driver$set_active_module_input(input_id, value)
-  app_driver$expect_validation_error()
-
-  element <- ifelse(!is.null(input), sprintf("%s .shiny-validation-message", input), validation)
-
-  if (!is.null(message)) {
-    testthat::expect_match(
-      app_driver$active_module_element_text(element),
-      message
-    )
-  }
-}
-
-test_no_validation_error <- function(app_driver, input_id, value) {
-  app_driver$set_active_module_input(input_id, value)
-  app_driver$expect_no_validation_error()
-}
