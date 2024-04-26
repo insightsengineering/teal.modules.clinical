@@ -212,7 +212,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {compare_arms} sets it to FALSE.
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("compare_arms", NULL)
-  app_driver$expect_validation_error()
+  app_driver$expect_no_validation_error()
   testthat::expect_false(app_driver$get_active_module_input("compare_arms"))
   app_driver$stop()
 })
@@ -224,7 +224,6 @@ testthat::test_that("e2e - tm_g_km: Deselecting {strata_var} does not throw erro
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
-
 
 # groups ----------------------------------------------------------------------------------------------------------
 
