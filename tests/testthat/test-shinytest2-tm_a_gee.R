@@ -114,6 +114,7 @@ testthat::test_that(
   app_driver$stop()
 })
 
+
 testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
