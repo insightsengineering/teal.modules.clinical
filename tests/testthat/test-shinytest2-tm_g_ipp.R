@@ -2,6 +2,7 @@ app_driver_tm_g_ipp <- function() {
   data <- teal.data::teal_data() %>%
     within({
       library(dplyr)
+      library(tern)
       ADSL <- teal.data::rADSL %>%
         slice(1:20) %>%
         df_explicit_na()
@@ -89,7 +90,7 @@ testthat::test_that(
       "ARM A"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("dataset_ADLB_singleextract-filter1-col"),
+      app_driver$get_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-col"),
       "PARAMCD"
     )
     testthat::expect_equal(
