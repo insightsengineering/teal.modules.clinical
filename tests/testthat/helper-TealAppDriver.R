@@ -24,6 +24,10 @@ init_teal_app_driver <- function(...) {
   )
 }
 
+ns_des_input <- function(id, dataname, type) {
+  sprintf("%s-dataset_%s_singleextract-%s", id, dataname, type)
+}
+
 # returns base 64 encoded image
 active_module_pws_output <- function(app_driver) {
   app_driver$get_attr(
