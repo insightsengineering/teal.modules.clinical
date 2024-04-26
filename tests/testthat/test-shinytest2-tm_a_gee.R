@@ -61,31 +61,31 @@ testthat::test_that(
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input("aval_var-dataset_ADQS_singleextract-select"),
+      app_driver$get_active_module_input(ns_des_input("aval_var", "ADQS", "select")),
       "AVALBIN"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input("id_var-dataset_ADQS_singleextract-select"),
+      app_driver$get_active_module_input(ns_des_input("id_var", "ADQS", "select")),
       "USUBJID"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      app_driver$get_active_module_input(ns_des_input("arm_var", "ADSL", "select")),
       "ARM"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input("visit_var-dataset_ADQS_singleextract-select"),
+      app_driver$get_active_module_input(ns_des_input("visit_var", "ADQS", "select")),
       "AVISIT"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals"),
+      app_driver$get_active_module_input(ns_des_input("paramcd", "ADQS", "filter1-vals")),
       "FKSI-FWB"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select"),
+      app_driver$get_active_module_input(ns_des_input("cov_var", "ADQS", "select")),
       NULL
     )
 
@@ -107,7 +107,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of id_var changes the table and d
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", "SUBJID")
+  app_driver$set_active_module_input(ns_des_input("id_var", "ADQS", "select"), "SUBJID")
   testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
@@ -116,7 +116,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of id_var changes the table and d
 testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", character(0))
+  app_driver$set_active_module_input(ns_des_input("id_var", "ADQS", "select"), character(0))
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
@@ -131,7 +131,7 @@ testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and doe
   app_driver <- app_driver_tm_a_gee()
 
   table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+  app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ARMCD")
   testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
@@ -140,7 +140,7 @@ testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and doe
 testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0))
+  app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), character(0))
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
@@ -155,7 +155,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of visit_var changes the table an
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", "AVISITN")
+  app_driver$set_active_module_input(ns_des_input("visit_var", "ADQS", "select"), "AVISITN")
   testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
@@ -164,7 +164,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of visit_var changes the table an
 testthat::test_that("e2e - tm_a_gee: Deselection of visit_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", character(0))
+  app_driver$set_active_module_input(ns_des_input("visit_var", "ADQS", "select"), character(0))
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
@@ -178,7 +178,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", "BFIALL")
+  app_driver$set_active_module_input(ns_des_input("paramcd", "ADQS", "filter1-vals"), "BFIALL")
   testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
@@ -187,7 +187,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and 
 testthat::test_that("e2e - tm_a_gee: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0))
+  app_driver$set_active_module_input(ns_des_input("paramcd", "ADQS", "filter1-vals"), character(0))
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
@@ -201,7 +201,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("cov_var-dataset_ADQS_singleextract-select", "BASE")
+  app_driver$set_active_module_input(ns_des_input("cov_var", "ADQS", "select"), "BASE")
   testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
@@ -210,7 +210,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and 
 testthat::test_that("e2e - tm_a_gee: Deselection of cov_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input("cov_var-dataset_ADQS_singleextract-select", character(0))
+  app_driver$set_active_module_input(ns_des_input("cov_var", "ADQS", "select"), character(0))
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
