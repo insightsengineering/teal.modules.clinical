@@ -232,6 +232,6 @@ test_that_input_changes_pws <- function(input_id, new_value) {
   )
 }
 
-test_that_plot_settings("conf_level", "0.9")
-test_that_plot_settings("font_size", 15)
-test_that_plot_settings("fixed_symbol_size", FALSE)
+test_that_input_changes_pws("conf_level", "0.9")
+test_that_input_changes_pws("font_size", 15)
+test_that_input_changes_pws("fixed_symbol_size", FALSE)
