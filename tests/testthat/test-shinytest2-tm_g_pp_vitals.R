@@ -11,27 +11,24 @@ app_driver_tm_g_pp_vitals <- function() {
 
   init_teal_app_driver(
     data = data,
-    modules = modules(
-      tm_g_pp_vitals(
-        label = "Vitals",
-        dataname = "ADVS",
-        parentname = "ADSL",
-        patient_col = "USUBJID",
-        plot_height = c(600L, 200L, 2000L),
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADVS"]], c("PARAMCD", "PARAM")),
-          selected = "PARAMCD"
-        ),
-        xaxis = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADVS"]], c("ADY", "BMRKR1")),
-          selected = "ADY"
-        ),
-        aval_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADVS"]], c("AVAL", "BASE2")),
-          selected = "AVAL"
-        )
+    modules = tm_g_pp_vitals(
+      label = "Vitals",
+      dataname = "ADVS",
+      parentname = "ADSL",
+      patient_col = "USUBJID",
+      plot_height = c(600L, 200L, 2000L),
+      paramcd = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADVS"]], c("PARAMCD", "PARAM")),
+        selected = "PARAMCD"
       ),
-      teal.modules.general::tm_data_table()
+      xaxis = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADVS"]], c("ADY", "BMRKR1")),
+        selected = "ADY"
+      ),
+      aval_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADVS"]], c("AVAL", "BASE2")),
+        selected = "AVAL"
+      )
     )
   )
 }
