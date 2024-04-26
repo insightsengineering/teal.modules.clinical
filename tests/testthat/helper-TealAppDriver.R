@@ -23,3 +23,7 @@ init_teal_app_driver <- function(...) {
     .package = "teal"
   )
 }
+
+ns_des_input <- function(id, dataname, type) {
+  sprintf("%s-dataset_%s_singleextract-%s", id, dataname, type)
+}
