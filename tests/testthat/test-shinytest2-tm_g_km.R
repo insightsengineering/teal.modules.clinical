@@ -107,9 +107,8 @@ testthat::test_that(
       "CENSORING"
     )
 
-    testthat::expect_equal(
-      app_driver$get_active_module_input("facet_var-dataset_ADSL_singleextract-select"),
-      NULL
+    testthat::expect_null(
+      app_driver$get_active_module_input("facet_var-dataset_ADSL_singleextract-select")
     )
 
     testthat::expect_equal(
