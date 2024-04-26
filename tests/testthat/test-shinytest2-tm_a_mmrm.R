@@ -65,10 +65,6 @@ app_driver_tm_a_mmrm <- function() { # nolint: object_length.
   )
 }
 
-ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
-  sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
-}
-
 testthat::test_that("e2e - tm_a_mmrm: Module initializes in teal without errors.", {
   skip_if_too_deep(5)
 
@@ -169,11 +165,13 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
 
   for (func in output_functions) {
     app_driver$set_active_module_input("output_function", func)
+    app_driver$expect_no_validation_error()
 
     switch(func,
       t_mmrm_lsmeans = {
         testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
         app_driver$set_active_module_input("t_mmrm_lsmeans_show_relative", "increase")
+        app_driver$expect_no_validation_error()
       },
       g_mmrm_lsmeans = {
         plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
@@ -247,7 +245,7 @@ testthat::test_that(
       app_driver$active_module_element_text(
         sprintf(
           "%s .shiny-validation-message",
-          ns_dataset("aval_var", "select_input", "ADQS")
+          ns_des_input("aval_var", "ADQS", "select_input")
         )
       ),
       "Analysis Variable' field is not selected"
@@ -259,7 +257,7 @@ testthat::test_that(
       app_driver$active_module_element_text(
         sprintf(
           "%s .shiny-validation-message",
-          ns_dataset("paramcd", "filter1-vals_input", "ADQS")
+          ns_des_input("paramcd", "ADQS", "filter1-vals_input")
         )
       ),
       "Select Endpoint' field is not selected"
@@ -271,7 +269,7 @@ testthat::test_that(
       app_driver$active_module_element_text(
         sprintf(
           "%s .shiny-validation-message",
-          ns_dataset("visit_var", "select_input", "ADQS")
+          ns_des_input("visit_var", "ADQS", "select_input")
         )
       ),
       "Visit Variable' field is not selected"
@@ -283,7 +281,7 @@ testthat::test_that(
       app_driver$active_module_element_text(
         sprintf(
           "%s .shiny-validation-message",
-          ns_dataset("arm_var", "select_input", "ADSL")
+          ns_des_input("arm_var", "ADSL", "select_input")
         )
       ),
       "Treatment variable must be selected"
@@ -295,7 +293,7 @@ testthat::test_that(
       app_driver$active_module_element_text(
         sprintf(
           "%s .shiny-validation-message",
-          ns_dataset("id_var", "select_input", "ADQS")
+          ns_des_input("id_var", "ADQS", "select_input")
         )
       ),
       "Subject Identifier' field is not selected"
