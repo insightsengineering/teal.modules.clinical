@@ -70,6 +70,42 @@ testthat::test_that("e2e - tm_g_lineplot: Module initializes in teal without err
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
 
+  testthat::expect_true(
+    app_driver$is_visible(app_driver$active_module_element("myplot-plot_main"))
+  )
+
   app_driver$stop()
 })
+
+testthat::test_that(
+  paste0(
+    "e2e - tm_g_lineplot: Starts with specified",
+    "label, param, strata, y-dataset, mid, interval, incl_screen",
+    "plot settings and table settings"
+  ),
+  {
+    skip_if_too_deep(5)
+
+    app_driver <- app_driver_tm_g_lineplot()
+
+    testthat::expect_equal(trimws(app_driver$get_text("#teal-main_ui-root-active_tab > li.active")), "Line Plot")
+    testthat::expect_equal(app_driver$get_active_module_input("param-dataset_ADLB_singleextract-filter1-vals"), "ALT")
+    testthat::expect_equal(app_driver$get_active_module_input("strata-dataset_ADSL_singleextract-select"), "ARM")
+    testthat::expect_equal(app_driver$get_active_module_input("y-dataset_ADLB_singleextract-select"), "AVAL")
+    testthat::expect_equal(app_driver$get_active_module_input("mid"), "mean")
+    testthat::expect_equal(app_driver$get_active_module_input("interval"), "mean_ci")
+    testthat::expect_true(app_driver$get_active_module_input("incl_screen"))
+
+    # addtional plot settings
+    testthat::expect_equal(app_driver$get_active_module_input("conf_level"), "0.95")
+    testthat::expect_equal(app_driver$get_active_module_input("mid_point_size"), 2)
+    testthat::expect_equal(app_driver$get_active_module_input("whiskers"), c("Upper", "Lower"))
+    testthat::expect_equal(app_driver$get_active_module_input("mid_type"), "pl")
+
+    # addtional table settings
+    testthat::expect_equal(app_driver$get_active_module_input("table_font_size"), 4)
+    testthat::expect_equal(app_driver$get_active_module_input("table"), c("n", "mean_sd", "median", "range" ))
+
+    app_driver$stop()
+  })
 
