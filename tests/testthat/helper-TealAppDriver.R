@@ -28,3 +28,10 @@ ns_des_input <- function(id, dataname, type) {
   sprintf("%s-dataset_singleextract-%s-%s", id, dataname, type)
 }
 
+# returns base 64 encoded image
+active_module_pws_output <- function(app_driver) {
+  app_driver$get_attr(
+    app_driver$active_module_element("myplot-plot_main > img"),
+    "src"
+  )
+}
