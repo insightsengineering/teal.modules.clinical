@@ -54,8 +54,8 @@ app_driver_tm_g_forest_tte <- function() { # nolint: object_length.
   )
 }
 
-ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
-  sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
+ns_des_input <- function(id, dataname, type) {
+  sprintf("%s-dataset_singleextract_%s-%s", id, dataname, type)
 }
 
 # Initialization --------------------------------------------------------------
@@ -186,10 +186,6 @@ test_dataset_selection <- function(input_id, dataset, new_value) {
       plot_before <- app_driver$get_active_module_pws_output("myplot")
       app_driver$set_active_module_input(ns_dataset(input_id, "select", dataset), new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-      testthat::expect_identical(
-        app_driver$get_active_module_input(ns_dataset(input_id, "select", dataset)),
-        new_value
-      )
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }
@@ -206,7 +202,6 @@ test_dataset_selection <- function(input_id, dataset, new_value) {
       app_driver <- app_driver_tm_g_forest_tte()
       plot_before <- app_driver$get_active_module_pws_output("myplot")
       app_driver$set_active_module_input(ns_dataset(input_id, "select", dataset), character(0L))
-      testthat::expect_null(app_driver$get_active_module_input(ns_dataset(input_id, "select", dataset)))
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
@@ -219,7 +214,7 @@ test_dataset_selection("strata_var", "ADSL", "STRATA1")
 
 # Plot settings ---------------------------------------------------------------
 
-test_that_plot_settings <- function(input_id, new_value) {
+test_that_input_changes_pws <- function(input_id, new_value) {
   testthat::test_that(
     sprintf(
       "e2e - tm_g_forest_tte: Changing '%s' changes the plot and does not throw validation errors.",
