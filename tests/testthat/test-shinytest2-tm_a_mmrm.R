@@ -65,6 +65,10 @@ app_driver_tm_a_mmrm <- function() { # nolint: object_length.
   )
 }
 
+ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
+  sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
+}
+
 testthat::test_that("e2e - tm_a_mmrm: Module initializes in teal without errors.", {
   skip_if_too_deep(5)
 
@@ -164,12 +168,12 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
   )
 
   for (func in output_functions) {
-    test_no_validation_error(app_driver, "output_function", func)
+    app_driver$set_active_module_input("output_function", func)
 
     switch(func,
       t_mmrm_lsmeans = {
         testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
-        test_no_validation_error(app_driver, "t_mmrm_lsmeans_show_relative", "increase")
+        app_driver$set_active_module_input("t_mmrm_lsmeans_show_relative", "increase")
       },
       g_mmrm_lsmeans = {
         plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
@@ -317,17 +321,28 @@ testthat::test_that("e2e - tm_a_mmrm: Validate output on different selection.", 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
 
-  test_no_validation_error(app_driver, "aval_var-dataset_ADQS_singleextract-select", "CHG")
-  test_no_validation_error(app_driver, "paramcd-dataset_ADQS_singleextract-filter1-vals", "BFIALL")
-  test_no_validation_error(app_driver, "visit_var-dataset_ADQS_singleextract-select", "AVISITN")
-  test_no_validation_error(app_driver, "cov_var-dataset_ADQS_singleextract-select", "AGE")
-  test_no_validation_error(app_driver, "arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-  test_no_validation_error(app_driver, "combine_comp_arms", TRUE)
-  test_no_validation_error(app_driver, "id_var-dataset_ADQS_singleextract-select", "SUBJID")
-  test_no_validation_error(app_driver, "weights_emmeans", "equal")
-  test_no_validation_error(app_driver, "cor_struct", "ante-dependence")
-  test_no_validation_error(app_driver, "conf_level", "0.8")
-  test_no_validation_error(app_driver, "method", "Kenward-Roger")
+  app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", "CHG")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", "BFIALL")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", "AVISITN")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("cov_var-dataset_ADQS_singleextract-select", "AGE")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("combine_comp_arms", TRUE)
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", "SUBJID")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("weights_emmeans", "equal")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("cor_struct", "ante-dependence")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("conf_level", "0.8")
+  app_driver$expect_no_validation_error()
+  app_driver$set_active_module_input("method", "Kenward-Roger")
+  app_driver$expect_no_validation_error()
 
   app_driver$click(selector = app_driver$active_module_element("button_start"))
   app_driver$expect_no_validation_error()
@@ -343,7 +358,7 @@ testthat::test_that("e2e - tm_a_mmrm: Validate output on different selection.", 
   )
 
   for (func in output_functions) {
-    test_no_validation_error(app_driver, "output_function", func)
+    app_driver$set_active_module_input("output_function", func)
 
     switch(func,
       t_mmrm_lsmeans = {
