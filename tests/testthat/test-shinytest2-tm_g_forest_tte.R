@@ -54,10 +54,6 @@ app_driver_tm_g_forest_tte <- function() { # nolint: object_length.
   )
 }
 
-ns_des_input <- function(id, dataname, type) {
-  sprintf("%s-dataset_%s_singleextract-%s", id, dataname, type)
-}
-
 # Initialization --------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without errors and produces output.", {
