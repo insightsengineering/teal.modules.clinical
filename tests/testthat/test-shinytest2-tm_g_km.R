@@ -182,7 +182,13 @@ testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation erro
   app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("paramcd-dataset_ADTTE_singleextract-filter1-vals .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "paramcd-dataset_ADTTE_singleextract-filter1-vals_input .shiny-validation-message"
+    ),
+    "An endpoint is required"
+  )
+  testthat::expect_match(
+    app_driver$active_module_element_text("myplot-plot-with-settings"),
     "An endpoint is required"
   )
   app_driver$stop()
@@ -194,7 +200,9 @@ testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation erro
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
+    ),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -237,9 +245,7 @@ testthat::test_that("e2e - tm_g_km: Starts with specified groups.", {
   app_driver$stop()
 })
 
-
 # comparison settings ---------------------------------------------------------------------------------------------
-
 
 testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison settings.", {
   skip_if_too_deep(5)
@@ -283,33 +289,20 @@ testthat::test_that("e2e - tm_g_km: Changing {ties_coxph} changes the plot witho
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {pval_method_coxph} gives no validation error.", {
-  # TODO - verify if the module should be validating this
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("pval_method_coxph", character(0))
   app_driver$expect_no_validation_error()
-  # app_driver$expect_validation_error()
-  # testthat::expect_match(
-  #   app_driver$active_module_element_text("pval_method_coxph .shiny-validation-message"),
-  #   ""
-  # )
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {ties_coxph} gives no validation error.", {
-  # TODO - verify if the module should be validating this
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("ties_coxph", character(0))
   app_driver$expect_no_validation_error()
-  # app_driver$expect_validation_error()
-  # testthat::expect_match(
-  #   app_driver$active_module_element_text("ties_coxph .shiny-validation-message"),
-  #   ""
-  # )
   app_driver$stop()
 })
-
 
 # plot settings ---------------------------------------------------------------------------------------------------
 
@@ -356,7 +349,6 @@ test_that_plot_settings <- function(input_id, new_value) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_km()
-      setup_fun(app_driver)
       plot_before <- app_driver$get_active_module_pws_output("myplot")
       app_driver$set_active_module_input(input_id, new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
@@ -388,7 +380,6 @@ testthat::test_that("e2e - tm_g_km: Deselecting {yval} throws validation error."
   app_driver$stop()
 })
 
-
 testthat::test_that("e2e - tm_g_km: Deselecting {font_size} throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
@@ -414,13 +405,12 @@ testthat::test_that("e2e - tm_g_km: Deselecting {rel_height_plot} throws validat
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_km: Deselecting {show_ci_ribbon} changes it to TRUE.", {
+testthat::test_that("e2e - tm_g_km: Deselecting {show_ci_ribbon} changes it to FALSE.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("show_ci_ribbon", NULL)
   app_driver$expect_no_validation_error()
-
-  testthat::expect_true(app_driver$get_active_module_input("show_ci_ribbon"))
+  testthat::expect_false(app_driver$get_active_module_input("show_ci_ribbon"))
   app_driver$stop()
 })
 
@@ -429,13 +419,11 @@ testthat::test_that("e2e - tm_g_km: Deselecting {show_km_table} changes it to FA
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("show_km_table", NULL)
   app_driver$expect_no_validation_error()
-
   testthat::expect_false(app_driver$get_active_module_input("show_km_table"))
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation error.", {
-  # TODO: Poor module validation message
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("conf_level", -1)
@@ -446,4 +434,3 @@ testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation e
   )
   app_driver$stop()
 })
-
