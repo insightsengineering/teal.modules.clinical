@@ -25,7 +25,7 @@ init_teal_app_driver <- function(...) {
 }
 
 ns_des_input <- function(id, dataname, type) {
-  sprintf("%s-dataset_singleextract-%s-%s", id, dataname, type)
+  sprintf("%s-dataset_singleextract_%s-%s", id, dataname, type)
 }
 
 # returns base 64 encoded image
