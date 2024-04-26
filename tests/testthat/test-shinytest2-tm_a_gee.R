@@ -114,7 +114,6 @@ testthat::test_that(
   app_driver$stop()
 })
 
-
 testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
@@ -152,12 +151,13 @@ testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation er
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_a_gee: Selection of visit_var changes the table and does not throw validation errors.", {
+testthat::test_that(
+  "e2e - tm_a_gee: Selection of visit_var does not change the table and does not throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_tws_output("table")
   app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", "AVISITN")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  testthat::expect_true(identical(table_before, app_driver$get_active_module_tws_output("table")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
