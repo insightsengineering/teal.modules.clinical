@@ -31,7 +31,7 @@ test_no_validation_error <- function(app_driver, input_id, value) {
 
 ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
   sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
-  
+}
 # returns base 64 encoded image
 active_module_pws_output <- function(app_driver) {
   app_driver$get_attr(
