@@ -144,14 +144,14 @@ testthat::test_that(
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_dataset("x", "select", "ADSL")),
+      app_driver$get_active_module_input(ns_des_input("x", "select", "ADSL")),
       "ACTARM"
     )
 
     testthat::expect_equal(app_driver$get_active_module_input("fill-dataset"), "ADSL")
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_dataset("fill", "select", "ADSL")),
+      app_driver$get_active_module_input(ns_des_input("fill", "select", "ADSL")),
       "SEX"
     )
 
@@ -161,7 +161,7 @@ testthat::test_that(
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_dataset("x_facet", "select", "ADAE")),
+      app_driver$get_active_module_input(ns_des_input("x_facet", "select", "ADAE")),
       "AETOXGR"
     )
 
@@ -171,7 +171,7 @@ testthat::test_that(
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_dataset("y_facet", "select", "ADAE")),
+      app_driver$get_active_module_input(ns_des_input("y_facet", "select", "ADAE")),
       "AESEV"
     )
 
@@ -198,7 +198,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
     plot_before <- app_driver$get_active_module_pws_output("myplot")
-    app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "RACE")
+    app_driver$set_active_module_input(ns_des_input("x", "select", "ADSL"), "RACE")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
@@ -208,13 +208,13 @@ testthat::test_that(
 testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_barchart_simple()
-  app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), character(0L))
+  app_driver$set_active_module_input(ns_des_input("x", "select", "ADSL"), character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$active_module_element_text(
       sprintf(
         "%s .shiny-validation-message",
-        ns_dataset("x", "select_input", "ADSL")
+        ns_des_input("x", "select_input", "ADSL")
       )
     ),
     "^Please select an x-variable$"
@@ -236,10 +236,10 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       plot_before <- app_driver$get_active_module_pws_output("myplot")
       app_driver$set_active_module_input(sprintf("%s-dataset", input_id), new_dataset)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-      testthat::expect_null(app_driver$get_active_module_input(ns_dataset(input_id, "select", new_dataset)))
-      app_driver$set_active_module_input(ns_dataset(input_id, "select", new_dataset), new_value)
+      testthat::expect_null(app_driver$get_active_module_input(ns_des_input(input_id, "select", new_dataset)))
+      app_driver$set_active_module_input(ns_des_input(input_id, "select", new_dataset), new_value)
       testthat::expect_identical(
-        app_driver$get_active_module_input(ns_dataset(input_id, "select", new_dataset)),
+        app_driver$get_active_module_input(ns_des_input(input_id, "select", new_dataset)),
         new_value
       )
       app_driver$expect_no_validation_error()
@@ -281,9 +281,9 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
-      app_driver$set_active_module_input(ns_dataset("x", "select", "ADSL"), "ACTARM", wait_ = FALSE)
+      app_driver$set_active_module_input(ns_des_input("x", "select", "ADSL"), "ACTARM", wait_ = FALSE)
       app_driver$set_active_module_input(sprintf("%s-dataset", input_id), "ADSL", wait_ = FALSE)
-      app_driver$set_active_module_input(ns_dataset(input_id, "select", "ADSL"), "ACTARM")
+      app_driver$set_active_module_input(ns_des_input(input_id, "select", "ADSL"), "ACTARM")
 
       app_driver$expect_validation_error()
 
@@ -291,7 +291,7 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
         app_driver$active_module_element_text(
           sprintf(
             "%s .shiny-validation-message",
-            ns_dataset("x", "select_input", "ADSL")
+            ns_des_input("x", "select_input", "ADSL")
           )
         ),
         "^Duplicated value: ACTARM$"
@@ -301,7 +301,7 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
         app_driver$active_module_element_text(
           sprintf(
             "%s .shiny-validation-message",
-            ns_dataset(input_id, "select_input", "ADSL")
+            ns_des_input(input_id, "select_input", "ADSL")
           )
         ),
         "^Duplicated value: ACTARM$"
