@@ -102,7 +102,7 @@ testthat::test_that("e2e - tm_t_abnormality: Selecting arm_var changes the table
   app_driver$stop()
 })
 
-testthat::test_that("e2e - arm_var: Deselection of XXXXX throws validation error.", {
+testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
