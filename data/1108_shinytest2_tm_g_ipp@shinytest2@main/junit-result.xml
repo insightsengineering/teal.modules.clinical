@@ -1,0 +1,1274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="examples" timestamp="2024-04-26T09:52:22Z" hostname="3d12242c9cff" tests="110" skipped="110" failures="0" errors="0" time="1.477">
+    <testcase time="0.0089999999999999" classname="examples" name="example_add_expr.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0539999999999998" classname="examples" name="example_arm_ref_comp_observer.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0329999999999999" classname="examples" name="example_as_num.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_bracket_expr.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.016" classname="examples" name="example_call_concatenate.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_check_arm_ref_comp.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_clean_description.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0149999999999997" classname="examples" name="example_color_lab_values.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_column_annotation_label.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_control_tte.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0149999999999997" classname="examples" name="example_cs_to_des_filter.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_cs_to_des_select.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_cs_to_filter_spec.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_cs_to_select_spec.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0149999999999997" classname="examples" name="example_default_total_label.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_ex_data.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0150000000000001" classname="examples" name="example_extract_input.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0149999999999997" classname="examples" name="example_facet_grid_formula.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0290000000000004" classname="examples" name="example_get_g_forest_obj_var_name.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_get_paramcd_label.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_get_var_labels.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_h_concat_expr.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_is.cs_or_des.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_make_barchart_simple_call.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_module_arguments.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_pipe_expr.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_prepare_arm.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_prepare_arm_levels.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_split_choices.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_split_col_expr.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_split_interactions.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_substitute_names.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_substitute_q.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_teal.modules.clinical_package.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_template_a_gee.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_abnormality.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_abnormality_by_worst_grade.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_adverse_events.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_ancova.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_arguments.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_template_basic_info.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.016" classname="examples" name="example_template_binary_outcome.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_coxreg_m.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_coxreg_u.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_events.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_events_by_grade.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_events_col_by_grade.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_events_patyear.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_events_summary.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_exposure.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_fit_mmrm.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_forest_rsp.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_forest_tte.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_g_ci.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_g_ipp.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_g_km.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_g_lineplot.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_template_laboratory.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_logistic.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_medical_history.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_mult_events.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_patient_timeline.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_prior_medication.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_shift_by_arm.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.016" classname="examples" name="example_template_shift_by_arm_by_worst.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_shift_by_grade.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_smq.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_template_summary.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_summary_by.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_therapy.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_tte.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_template_vitals.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_a_gee.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_a_mmrm.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_g_barchart_simple.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_g_ci.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_g_forest_rsp.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_g_forest_tte.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_tm_g_ipp.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_g_km.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_g_lineplot.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_g_pp_adverse_events.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_tm_g_pp_patient_timeline.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_g_pp_therapy.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_g_pp_vitals.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_abnormality.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.016" classname="examples" name="example_tm_t_abnormality_by_worst_grade.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_ancova.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_tm_t_binary_outcome.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_coxreg.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_events.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_events_by_grade.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_events_patyear.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_tm_t_events_summary.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_exposure.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_logistic.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0130000000000003" classname="examples" name="example_tm_t_mult_events.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0169999999999999" classname="examples" name="example_tm_t_pp_basic_info.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_pp_laboratory.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_pp_medical_history.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_pp_prior_medication.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_shift_by_arm.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_shift_by_arm_by_worst.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0129999999999999" classname="examples" name="example_tm_t_shift_by_grade.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_smq.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_summary.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_summary_by.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_tm_t_tte.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.012" classname="examples" name="example_validate_arm.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+    <testcase time="0.0169999999999999" classname="examples" name="example_validate_standard_inputs.Rd">
+      <skipped message="Reason: On CRAN ('test-examples.R:120:7')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="facet_grid_formula" timestamp="2024-04-26T09:52:24Z" hostname="3d12242c9cff" tests="4" skipped="0" failures="0" errors="0" time="0.031">
+    <testcase time="0.0230000000000001" classname="facet_grid_formula" name="facet_grid_formula_works"/>
+    <testcase time="0.00299999999999967" classname="facet_grid_formula" name="facet_grid_formula_works"/>
+    <testcase time="0.00200000000000022" classname="facet_grid_formula" name="facet_grid_formula_works"/>
+    <testcase time="0.00300000000000011" classname="facet_grid_formula" name="facet_grid_formula_works"/>
+  </testsuite>
+  <testsuite name="shinytest2-tm_a_gee" timestamp="2024-04-26T09:52:24Z" hostname="3d12242c9cff" tests="53" skipped="0" failures="8" errors="0" time="170.349">
+    <testcase time="7.184" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Module_initializes_in_teal_without_errors_and_produces_table_output."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Module_initializes_in_teal_without_errors_and_produces_table_output."/>
+    <testcase time="0.0080000000000009" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Module_initializes_in_teal_without_errors_and_produces_table_output."/>
+    <testcase time="6.218" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.117000000000001" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.135000000000002" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0779999999999994" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0760000000000005" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0760000000000005" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.075999999999997" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0760000000000005" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0760000000000005" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.00499999999999901" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="7.922" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_id_var_changes_the_table_and_does_not_throw_validation_errors.">
+      <failure type="failure" message="identical(table_before, app_driver$get_active_module_tws_output(&quot;table&quot;)) is not FALSE ('test-shinytest2-tm_a_gee.R:111:3')">identical(table_before, app_driver$get_active_module_tws_output("table")) is not FALSE
+
+`actual`:   TRUE 
+`expected`: FALSE</failure>
+    </testcase>
+    <testcase time="0.0150000000000006" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_id_var_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="6.95" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_id_var_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_id_var_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_id_var_throws_validation_error."/>
+    <testcase time="7.503" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Change_in_arm_var_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.0069999999999979" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Change_in_arm_var_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="6.95500000000001" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_arm_var_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_arm_var_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_arm_var_throws_validation_error."/>
+    <testcase time="7.47" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_visit_var_changes_the_table_and_does_not_throw_validation_errors.">
+      <failure type="failure" message="identical(table_before, app_driver$get_active_module_tws_output(&quot;table&quot;)) is not FALSE ('test-shinytest2-tm_a_gee.R:159:3')">identical(table_before, app_driver$get_active_module_tws_output("table")) is not FALSE
+
+`actual`:   TRUE 
+`expected`: FALSE</failure>
+    </testcase>
+    <testcase time="0.0150000000000006" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_visit_var_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="6.876" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_visit_var_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_visit_var_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_visit_var_throws_validation_error."/>
+    <testcase time="7.413" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_paramcd_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_paramcd_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="6.87100000000001" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_paramcd_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_paramcd_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_paramcd_throws_validation_error."/>
+    <testcase time="7.95899999999999" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_cov_var_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_cov_var_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="26.795" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_cov_var_throws_validation_error.">
+      <failure type="failure" message="app_driver$get_active_module_tws_output(&quot;table&quot;) (`actual`) not identical to data.frame() (`expected`). ('test-shinytest2-tm_a_gee.R:214:3')">app_driver$get_active_module_tws_output("table") (`actual`) not identical to data.frame() (`expected`).
+
+`actual` is length 4
+`expected` is length 0
+
+`class(actual)`:   "tbl_df" "tbl" "data.frame"
+`class(expected)`:                "data.frame"
+
+`names(actual)`:   "" "A: Drug X" "B: Placebo" "C: Combination"
+`names(expected)`:                                             
+
+  `attr(actual, 'row.names')`: 1 2 3 4 5 6 7 8
+`attr(expected, 'row.names')`:                
+
+`actual[[1]]` is a character vector ('', 'n', 'Adjusted Mean Proportion (SE)', '95% CI', 'Odds Ratio', ...)
+`expected[[1]]` is absent
+
+`actual[[2]]` is a character vector ('(N=69)', '345', '0.12 (0.02)', '(0.09, 0.16)', '', ...)
+`expected[[2]]` is absent
+
+`actual[[3]]` is a character vector ('(N=73)', '365', '0.13 (0.02)', '(0.10, 0.16)', '1.04', ...)
+`expected[[3]]` is absent
+
+`actual[[4]]` is a character vector ('(N=58)', '290', '0.10 (0.02)', '(0.07, 0.14)', '0.79', ...)
+`expected[[4]]` is absent</failure>
+    </testcase>
+    <testcase time="0.0240000000000009" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_cov_var_throws_validation_error.">
+      <failure type="failure" message="is.null(self$get_html(&quot;.shiny-output-error-validation&quot;)) is not FALSE ('test-shinytest2-tm_a_gee.R:215:3')">is.null(self$get_html(".shiny-output-error-validation")) is not FALSE
+
+`actual`:   TRUE 
+`expected`: FALSE
+Validation error is not observed
+Backtrace:
+    x
+ 1. \-app_driver$expect_validation_error() at test-shinytest2-tm_a_gee.R:215:3
+ 2.   \-testthat::expect_false(...)</failure>
+    </testcase>
+    <testcase time="0.0220000000000056" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_cov_var_throws_validation_error.">
+      <failure type="failure" message="app_driver$active_module_element_text(&quot;cov_var-dataset_ADQS_singleextract-select_input &gt; div &gt; span&quot;) (`actual`) not equal to &quot;An endpoint is required&quot; (`expected`). ('test-shinytest2-tm_a_gee.R:216:3')">app_driver$active_module_element_text("cov_var-dataset_ADQS_singleextract-select_input &gt; div &gt; span") (`actual`) not equal to "An endpoint is required" (`expected`).
+
+`actual` is NULL
+`expected` is a character vector ('An endpoint is required')</failure>
+    </testcase>
+    <testcase time="7.622" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_conf_level_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_conf_level_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="6.88799999999999" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_conf_level_out_of_0_1_range_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_conf_level_out_of_0_1_range_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_conf_level_out_of_0_1_range_throws_validation_error."/>
+    <testcase time="6.88800000000002" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_conf_level_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_conf_level_throws_validation_error."/>
+    <testcase time="0.00699999999997658" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_conf_level_throws_validation_error."/>
+    <testcase time="7.46100000000001" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_cor_struct_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_cor_struct_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="26.882" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_cor_struct_throws_validation_error.">
+      <failure type="failure" message="app_driver$get_active_module_tws_output(&quot;table&quot;) (`actual`) not identical to data.frame() (`expected`). ('test-shinytest2-tm_a_gee.R:275:3')">app_driver$get_active_module_tws_output("table") (`actual`) not identical to data.frame() (`expected`).
+
+`actual` is length 4
+`expected` is length 0
+
+`class(actual)`:   "tbl_df" "tbl" "data.frame"
+`class(expected)`:                "data.frame"
+
+`names(actual)`:   "" "A: Drug X" "B: Placebo" "C: Combination"
+`names(expected)`:                                             
+
+  `attr(actual, 'row.names')`: 1 2 3 4 5 6 7 8
+`attr(expected, 'row.names')`:                
+
+`actual[[1]]` is a character vector ('', 'n', 'Adjusted Mean Proportion (SE)', '95% CI', 'Odds Ratio', ...)
+`expected[[1]]` is absent
+
+`actual[[2]]` is a character vector ('(N=69)', '345', '0.12 (0.02)', '(0.09, 0.16)', '', ...)
+`expected[[2]]` is absent
+
+`actual[[3]]` is a character vector ('(N=73)', '365', '0.13 (0.02)', '(0.10, 0.16)', '1.04', ...)
+`expected[[3]]` is absent
+
+`actual[[4]]` is a character vector ('(N=58)', '290', '0.10 (0.02)', '(0.07, 0.14)', '0.79', ...)
+`expected[[4]]` is absent</failure>
+    </testcase>
+    <testcase time="0.0240000000000009" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_cor_struct_throws_validation_error.">
+      <failure type="failure" message="is.null(self$get_html(&quot;.shiny-output-error-validation&quot;)) is not FALSE ('test-shinytest2-tm_a_gee.R:277:3')">is.null(self$get_html(".shiny-output-error-validation")) is not FALSE
+
+`actual`:   TRUE 
+`expected`: FALSE
+Validation error is not observed
+Backtrace:
+    x
+ 1. \-app_driver$expect_validation_error() at test-shinytest2-tm_a_gee.R:277:3
+ 2.   \-testthat::expect_false(...)</failure>
+    </testcase>
+    <testcase time="0.0240000000000009" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Deselection_of_cor_struct_throws_validation_error.">
+      <failure type="failure" message="app_driver$active_module_element_text(&quot;cov_struct_input &gt; div &gt; span&quot;) (`actual`) not equal to &quot;Please choose a correlation structure&quot; (`expected`). ('test-shinytest2-tm_a_gee.R:278:3')">app_driver$active_module_element_text("cov_struct_input &gt; div &gt; span") (`actual`) not equal to "Please choose a correlation structure" (`expected`).
+
+`actual` is NULL
+`expected` is a character vector ('Please choose a correlation structure')</failure>
+    </testcase>
+    <testcase time="7.52799999999999" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_output_table_changes_the_table_and_doesn_t_throw_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_a_gee" name="e2e_tm_a_gee_Selection_of_output_table_changes_the_table_and_doesn_t_throw_validation_error."/>
+  </testsuite>
+  <testsuite name="shinytest2-tm_g_barchart_simple" timestamp="2024-04-26T09:55:14Z" hostname="3d12242c9cff" tests="73" skipped="0" failures="0" errors="0" time="225.478">
+    <testcase time="7.18799999999999" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Module_initializes_in_teal_without_errors_and_produces_output."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Module_initializes_in_teal_without_errors_and_produces_output."/>
+    <testcase time="0.00800000000000978" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Module_initializes_in_teal_without_errors_and_produces_output."/>
+    <testcase time="0.00899999999998613" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Module_initializes_in_teal_without_errors_and_produces_output."/>
+    <testcase time="7.30800000000002" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.12299999999999" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0749999999999886" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0760000000000218" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0759999999999934" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0840000000000032" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0759999999999934" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0759999999999934" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0759999999999934" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0760000000000218" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0789999999999793" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.12700000000001" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0449999999999875" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0730000000000075" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="0.0840000000000032" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Starts_with_specified_label_id_var_arm_var_visit_var_paramcd_cov_var_conf_level_and_conf_struct."/>
+    <testcase time="9.64500000000001" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_x_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_x_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="7.94199999999998" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Deselection_of_x_throws_validation_error."/>
+    <testcase time="0.00800000000000978" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Deselection_of_x_throws_validation_error."/>
+    <testcase time="9.584" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_fill_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.123999999999995" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_fill_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="2.13500000000002" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_fill_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_fill_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="9.82799999999997" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_De_selection_of_fill_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.0290000000000248" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_De_selection_of_fill_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_De_selection_of_fill_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="8.99799999999999" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_x_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.219999999999999" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_x_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="2.29300000000001" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_x_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_x_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="9.06799999999998" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_De_selection_of_x_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.0229999999999961" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_De_selection_of_x_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_De_selection_of_x_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="9.036" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_y_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.115999999999985" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_y_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="2.00200000000001" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_y_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Selection_of_y_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="9.61399999999998" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_De_selection_of_y_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.0250000000000341" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_De_selection_of_y_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_De_selection_of_y_facet_dataset_changes_the_element_and_does_not_throw_validation_errors"/>
+    <testcase time="8.98000000000002" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Duplicate_between_x_and_fill_selection_throws_validation_error"/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Duplicate_between_x_and_fill_selection_throws_validation_error"/>
+    <testcase time="0.00799999999998136" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Duplicate_between_x_and_fill_selection_throws_validation_error"/>
+    <testcase time="9.82299999999998" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Duplicate_between_x_and_x_facet_selection_throws_validation_error"/>
+    <testcase time="0.0080000000000382" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Duplicate_between_x_and_x_facet_selection_throws_validation_error"/>
+    <testcase time="0.00799999999998136" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Duplicate_between_x_and_x_facet_selection_throws_validation_error"/>
+    <testcase time="10.023" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Duplicate_between_x_and_y_facet_selection_throws_validation_error"/>
+    <testcase time="0.00799999999998136" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Duplicate_between_x_and_y_facet_selection_throws_validation_error"/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Duplicate_between_x_and_y_facet_selection_throws_validation_error"/>
+    <testcase time="9.67699999999996" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_barlayout_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_barlayout_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="9.61599999999999" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_expand_y_range_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_expand_y_range_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="9.66699999999997" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_facet_scale_x_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_facet_scale_x_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="9.71899999999999" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_facet_scale_y_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_facet_scale_y_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="10.123" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_label_bars_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_label_bars_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="9.66899999999998" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_rotate_x_label_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_rotate_x_label_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="9.565" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_rotate_y_label_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_rotate_y_label_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="9.61599999999999" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_flip_axis_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_flip_axis_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="9.75299999999999" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_show_n_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_show_n_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="12.742" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_rotate_bar_labels_changes_the_plot_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_barchart_simple" name="e2e_tm_g_barchart_simple_Changing_rotate_bar_labels_changes_the_plot_and_does_not_throw_validation_errors."/>
+  </testsuite>
+  <testsuite name="shinytest2-tm_g_ci" timestamp="2024-04-26T09:58:59Z" hostname="3d12242c9cff" tests="41" skipped="0" failures="0" errors="0" time="100.09">
+    <testcase time="6.29199999999997" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_example_ci_module_initializes_in_teal_without_errors_and_produces_plot_output."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_example_ci_module_initializes_in_teal_without_errors_and_produces_plot_output."/>
+    <testcase time="0.0389999999999873" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_example_ci_module_initializes_in_teal_without_errors_and_produces_plot_output."/>
+    <testcase time="6.33100000000002" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="0.116999999999962" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="0.0769999999999982" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="0.0769999999999982" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="0.04200000000003" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="0.0729999999999791" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="0.0769999999999982" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="0.0819999999999936" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="0.0769999999999982" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="0.0769999999999982" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Module_initializes_with_specified_label_x_var_y_var_ADLB_filters_color_conf_level_and_stat."/>
+    <testcase time="7.43600000000004" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_x_var_column_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_x_var_column_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="6.87700000000001" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_x_var_column_throws_validation_error."/>
+    <testcase time="0.00699999999994816" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_x_var_column_throws_validation_error."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_x_var_column_throws_validation_error."/>
+    <testcase time="7.38200000000001" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_y_var_column_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_y_var_column_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="6.90500000000003" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_y_var_column_throws_validation_error."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_y_var_column_throws_validation_error."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_y_var_column_throws_validation_error."/>
+    <testcase time="7.43000000000001" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_PARAMCD_filter_value_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_PARAMCD_filter_value_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="7.05500000000001" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_PARAMCD_filter_value_throws_validation_error."/>
+    <testcase time="0.0130000000000337" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_PARAMCD_filter_value_throws_validation_error."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_PARAMCD_filter_value_throws_validation_error."/>
+    <testcase time="7.37400000000002" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_AVISIT_filter_value_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_AVISIT_filter_value_doesn_t_throw_validation_errors."/>
+    <testcase time="6.88499999999999" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_AVISIT_filter_value_throws_validation_error."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_AVISIT_filter_value_throws_validation_error."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_AVISIT_filter_value_throws_validation_error."/>
+    <testcase time="7.267" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_color_column_changes_plot_output_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_color_column_changes_plot_output_and_doesn_t_throw_validation_errors."/>
+    <testcase time="7.39799999999997" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_color_column_changes_plot_output_and_doesn_t_throw_validation_error."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Deselecting_color_column_changes_plot_output_and_doesn_t_throw_validation_error."/>
+    <testcase time="7.37299999999999" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_confidence_interval_value_changes_plot_and_doesn_t_throw_any_errors."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_confidence_interval_value_changes_plot_and_doesn_t_throw_any_errors."/>
+    <testcase time="7.23500000000001" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_statistic_to_use_changes_a_plot_and_doesn_t_throw_any_errors."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_ci" name="e2e_tm_g_ci_Selecting_statistic_to_use_changes_a_plot_and_doesn_t_throw_any_errors."/>
+  </testsuite>
+  <testsuite name="shinytest2-tm_g_forest_rsp" timestamp="2024-04-26T10:00:40Z" hostname="3d12242c9cff" tests="48" skipped="0" failures="0" errors="0" time="166.339">
+    <testcase time="7.94599999999997" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_in_teal_without_errors_and_produces_plot_output."/>
+    <testcase time="0.00600000000002865" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_in_teal_without_errors_and_produces_plot_output."/>
+    <testcase time="0.00799999999998136" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_in_teal_without_errors_and_produces_plot_output."/>
+    <testcase time="7.863" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.115000000000009" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.0729999999999791" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.0760000000000218" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.0760000000000218" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.0760000000000218" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.0759999999999081" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.0810000000000173" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.0750000000000455" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.0779999999999745" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="0.0750000000000455" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Module_initializes_with_specified_label_arm_var_paramcd_aval_var_responders_subgroup_var_strata_var_conf_level_fixed_symbol_size_rel_width_forest_font_size."/>
+    <testcase time="9.83600000000001" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_arm_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_arm_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="8.35299999999995" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_arm_var_throws_validation_error."/>
+    <testcase time="0.0080000000000382" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_arm_var_throws_validation_error."/>
+    <testcase time="11.071" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_paramcd_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_paramcd_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="8.56100000000004" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_paramcd_throws_validation_error."/>
+    <testcase time="0.00699999999994816" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_paramcd_throws_validation_error."/>
+    <testcase time="9.59500000000003" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_responders_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_responders_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="8.274" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_responders_throws_validation_error."/>
+    <testcase time="0.00699999999994816" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_responders_throws_validation_error."/>
+    <testcase time="9.71800000000007" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_subgroup_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_subgroup_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="8.35299999999995" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_a_non_factors_column_in_subgroup_var_throws_validation_error."/>
+    <testcase time="0.00700000000006185" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_a_non_factors_column_in_subgroup_var_throws_validation_error."/>
+    <testcase time="9.23799999999994" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_subgroup_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00600000000008549" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_subgroup_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="9.56599999999992" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_strata_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00600000000008549" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_strata_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="9.60399999999993" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_strata_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00600000000008549" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_strata_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="9.702" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_conf_level_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Selecting_conf_level_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="8.45899999999995" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_conf_level_or_selecting_outside_the_range_of_0_1_throws_validation_error."/>
+    <testcase time="0.00700000000006185" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_conf_level_or_selecting_outside_the_range_of_0_1_throws_validation_error."/>
+    <testcase time="0.56899999999996" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_conf_level_or_selecting_outside_the_range_of_0_1_throws_validation_error."/>
+    <testcase time="0.0080000000000382" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Deselecting_conf_level_or_selecting_outside_the_range_of_0_1_throws_validation_error."/>
+    <testcase time="9.67499999999995" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Unsetting_fixed_symbol_size_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Unsetting_fixed_symbol_size_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="9.553" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Changing_rel_width_forest_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00600000000008549" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Changing_rel_width_forest_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="9.47799999999995" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Changing_font_size_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_forest_rsp" name="e2e_tm_g_forest_rsp_Changing_font_size_changes_plot_and_doesn_t_throw_validation_errors."/>
+  </testsuite>
+  <testsuite name="shinytest2-tm_g_ipp" timestamp="2024-04-26T10:03:26Z" hostname="3d12242c9cff" tests="45" skipped="0" failures="1" errors="0" time="116.163">
+    <testcase time="7.07600000000002" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Module_initializes_in_teal_without_errors_and_produces_plot_output."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Module_initializes_in_teal_without_errors_and_produces_plot_output."/>
+    <testcase time="0.0529999999999973" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Module_initializes_in_teal_without_errors_and_produces_plot_output."/>
+    <testcase time="6.86400000000003" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.127000000000066" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0739999999999554" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0800000000000409" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu.">
+      <failure type="failure" message="app_driver$get_active_module_input(&quot;dataset_ADLB_singleextract-filter1-col&quot;) (`actual`) not equal to &quot;PARAMCD&quot; (`expected`). ('test-shinytest2-tm_g_ipp.R:91:5')">app_driver$get_active_module_input("dataset_ADLB_singleextract-filter1-col") (`actual`) not equal to "PARAMCD" (`expected`).
+
+`actual` is NULL
+`expected` is a character vector ('PARAMCD')</failure>
+    </testcase>
+    <testcase time="0.0489999999999782" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0749999999999318" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0760000000000218" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0750000000000455" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0769999999999982" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0750000000000455" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0759999999999081" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0760000000000218" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0760000000000218" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="0.0760000000000218" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Starts_with_specified_label_parentname_arm_var_paramcd_id_var_visit_var_aval_var_avalu_var_baseline_var_add_baseline_hline_separate_by_obs_suppress_legend_add_avalu."/>
+    <testcase time="8.654" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Selecting_arm_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Selecting_arm_var_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="7.73199999999997" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_arm_var_column_throws_validation_error."/>
+    <testcase time="0.00600000000008549" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_arm_var_column_throws_validation_error."/>
+    <testcase time="0.00499999999999545" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_arm_var_column_throws_validation_error."/>
+    <testcase time="8.79999999999995" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Selecting_paramcd_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Selecting_paramcd_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="7.73400000000004" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_paramcd_throws_validation_error."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_paramcd_throws_validation_error."/>
+    <testcase time="0.00600000000008549" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_paramcd_throws_validation_error."/>
+    <testcase time="8.70099999999991" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Selecting_paramcd_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00600000000008549" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Selecting_paramcd_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="7.58799999999997" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_visit_var_throws_validation_error."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_visit_var_throws_validation_error."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_visit_var_throws_validation_error."/>
+    <testcase time="8.78700000000003" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Selecting_paramcd_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Selecting_paramcd_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="7.64600000000007" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_aval_var_throws_validation_error."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_aval_var_throws_validation_error."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Deselecting_aval_var_throws_validation_error."/>
+    <testcase time="9.11099999999999" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Changing_add_baseline_hline_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00600000000008549" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Changing_add_baseline_hline_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="9.07399999999996" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Changing_separate_by_obs_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Changing_separate_by_obs_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="8.63099999999997" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Changing_suppress_legend_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00600000000008549" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Changing_suppress_legend_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="8.59899999999993" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Changing_add_avalu_changes_plot_and_doesn_t_throw_validation_errors."/>
+    <testcase time="0.00599999999997181" classname="shinytest2_tm_g_ipp" name="e2e_tm_g_ipp_Changing_add_avalu_changes_plot_and_doesn_t_throw_validation_errors."/>
+  </testsuite>
+  <testsuite name="string_ops" timestamp="2024-04-26T10:05:22Z" hostname="3d12242c9cff" tests="1" skipped="0" failures="0" errors="0" time="0.083">
+    <testcase time="0.0830000000000837" classname="string_ops" name="_as_num_as_a_wide_interpretation_of_input_to_extract_numerics."/>
+  </testsuite>
+  <testsuite name="substitute_names" timestamp="2024-04-26T10:05:22Z" hostname="3d12242c9cff" tests="9" skipped="0" failures="0" errors="0" time="0.057">
+    <testcase time="0.00799999999992451" classname="substitute_names" name="substitute_q_works_as_expected"/>
+    <testcase time="0.00900000000001455" classname="substitute_names" name="substitute_q_fails_on_unquoted_call"/>
+    <testcase time="0.00499999999999545" classname="substitute_names" name="h_subst_lhs_names_works_as_expected"/>
+    <testcase time="0.00600000000008549" classname="substitute_names" name="substitute_lhs_names_works_as_expected_with_nested_expressions"/>
+    <testcase time="0.00599999999997181" classname="substitute_names" name="substitute_lhs_names_does_not_lead_to_infinite_recursion"/>
+    <testcase time="0.00499999999999545" classname="substitute_names" name="substitute_rhs_works_as_expected"/>
+    <testcase time="0.00599999999997181" classname="substitute_names" name="substitute_names_works_as_expected"/>
+    <testcase time="0.00599999999997181" classname="substitute_names" name="substitute_names_can_also_substitute_other_expressions_if_requested"/>
+    <testcase time="0.00600000000008549" classname="substitute_names" name="substitute_names_works_as_expected_with_nested_expressions"/>
+  </testsuite>
+  <testsuite name="tm_a_gee" timestamp="2024-04-26T10:05:22Z" hostname="3d12242c9cff" tests="8" skipped="4" failures="0" errors="0" time="0.082">
+    <testcase time="0.00899999999990087" classname="tm_a_gee" name="template_a_gee_t_gee_cov_table_works_as_expected_with_default_input"/>
+    <testcase time="0.0110000000000809" classname="tm_a_gee" name="template_a_gee_t_gee_cov_table_works_as_expected_with_default_input">
+      <skipped message="Reason: On CRAN ('test-tm_a_gee.R:13:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_a_gee" name="template_a_gee_t_gee_coef_table_works_as_expected_with_default_input"/>
+    <testcase time="0.0040000000000191" classname="tm_a_gee" name="template_a_gee_t_gee_coef_table_works_as_expected_with_default_input">
+      <skipped message="Reason: On CRAN ('test-tm_a_gee.R:28:3')"/>
+    </testcase>
+    <testcase time="0.0139999999998963" classname="tm_a_gee" name="template_a_gee_works_as_expected_with_non_default_reference_arm"/>
+    <testcase time="0.0040000000000191" classname="tm_a_gee" name="template_a_gee_works_as_expected_with_non_default_reference_arm">
+      <skipped message="Reason: On CRAN ('test-tm_a_gee.R:44:3')"/>
+    </testcase>
+    <testcase time="0.0220000000000482" classname="tm_a_gee" name="template_a_gee_works_as_expected_when_arm_is_not_considered_in_the_model"/>
+    <testcase time="0.0040000000000191" classname="tm_a_gee" name="template_a_gee_works_as_expected_when_arm_is_not_considered_in_the_model">
+      <skipped message="Reason: On CRAN ('test-tm_a_gee.R:60:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_a_mmrm" timestamp="2024-04-26T10:05:22Z" hostname="3d12242c9cff" tests="10" skipped="5" failures="0" errors="0" time="0.092">
+    <testcase time="0.0169999999999391" classname="tm_a_mmrm" name="template_fit_mmrm_works_as_expected_when_not_combining_comparison_arms"/>
+    <testcase time="0.00499999999999545" classname="tm_a_mmrm" name="template_fit_mmrm_works_as_expected_when_not_combining_comparison_arms">
+      <skipped message="Reason: On CRAN ('test-tm_a_mmrm.R:16:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_a_mmrm" name="template_fit_mmrm_works_as_expected_when_combining_combination_arms"/>
+    <testcase time="0.0040000000000191" classname="tm_a_mmrm" name="template_fit_mmrm_works_as_expected_when_combining_combination_arms">
+      <skipped message="Reason: On CRAN ('test-tm_a_mmrm.R:35:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="tm_a_mmrm" name="template_mmrm_tables_works_as_expected"/>
+    <testcase time="0.0040000000000191" classname="tm_a_mmrm" name="template_mmrm_tables_works_as_expected">
+      <skipped message="Reason: On CRAN ('test-tm_a_mmrm.R:51:3')"/>
+    </testcase>
+    <testcase time="0.01299999999992" classname="tm_a_mmrm" name="template_mmrm_tables_works_as_expected_when_arm_is_not_considered_in_the_model"/>
+    <testcase time="0.0040000000000191" classname="tm_a_mmrm" name="template_mmrm_tables_works_as_expected_when_arm_is_not_considered_in_the_model">
+      <skipped message="Reason: On CRAN ('test-tm_a_mmrm.R:67:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_a_mmrm" name="template_mmrm_plots_works_as_expected"/>
+    <testcase time="0.0040000000000191" classname="tm_a_mmrm" name="template_mmrm_plots_works_as_expected">
+      <skipped message="Reason: On CRAN ('test-tm_a_mmrm.R:85:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_g_ci" timestamp="2024-04-26T10:05:22Z" hostname="3d12242c9cff" tests="8" skipped="4" failures="0" errors="0" time="0.073">
+    <testcase time="0.0169999999999391" classname="tm_g_ci" name="1._and_2._Mean_and_95_CIs_for_mean"/>
+    <testcase time="0.0040000000000191" classname="tm_g_ci" name="1._and_2._Mean_and_95_CIs_for_mean">
+      <skipped message="Reason: On CRAN ('test-tm_g_ci.R:12:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="tm_g_ci" name="3._Confidence_Interval_Plot_using_different_stratification_variable_"/>
+    <testcase time="0.0040000000000191" classname="tm_g_ci" name="3._Confidence_Interval_Plot_using_different_stratification_variable_">
+      <skipped message="Reason: On CRAN ('test-tm_g_ci.R:27:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_g_ci" name="4._Median_and_95_CIs_for_median"/>
+    <testcase time="0.00399999999990541" classname="tm_g_ci" name="4._Median_and_95_CIs_for_median">
+      <skipped message="Reason: On CRAN ('test-tm_g_ci.R:42:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="tm_g_ci" name="5._Using_different_alpha_level"/>
+    <testcase time="0.0040000000000191" classname="tm_g_ci" name="5._Using_different_alpha_level">
+      <skipped message="Reason: On CRAN ('test-tm_g_ci.R:58:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_g_forest_rsp" timestamp="2024-04-26T10:05:22Z" hostname="3d12242c9cff" tests="2" skipped="1" failures="0" errors="0" time="0.031">
+    <testcase time="0.0270000000000437" classname="tm_g_forest_rsp" name="template_forest_rsp_generates_correct_expressions"/>
+    <testcase time="0.00399999999990541" classname="tm_g_forest_rsp" name="template_forest_rsp_generates_correct_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_g_forest_rsp.R:16:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_g_forest_tte" timestamp="2024-04-26T10:05:22Z" hostname="3d12242c9cff" tests="2" skipped="1" failures="0" errors="0" time="0.024">
+    <testcase time="0.0190000000000055" classname="tm_g_forest_tte" name="template_forest_tte_generates_correct_expressions"/>
+    <testcase time="0.00499999999999545" classname="tm_g_forest_tte" name="template_forest_tte_generates_correct_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_g_forest_tte.R:14:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_g_ipp" timestamp="2024-04-26T10:05:22Z" hostname="3d12242c9cff" tests="4" skipped="2" failures="0" errors="0" time="0.039">
+    <testcase time="0.0170000000000528" classname="tm_g_ipp" name="template_g_ipp_works_as_expected_with_default_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_g_ipp" name="template_g_ipp_works_as_expected_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_g_ipp.R:8:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_g_ipp" name="template_g_ipp_works_as_expected_with_non_default_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_g_ipp" name="template_g_ipp_works_as_expected_with_non_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_g_ipp.R:30:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_g_km" timestamp="2024-04-26T10:05:22Z" hostname="3d12242c9cff" tests="6" skipped="3" failures="0" errors="0" time="0.061">
+    <testcase time="0.0179999999999154" classname="tm_g_km" name="template_g_km_works_as_expected_with_default_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_g_km" name="template_g_km_works_as_expected_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_g_km.R:5:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_g_km" name="template_g_km_gives_correct_data_expression_when_we_want_to_compare_versus_reference_arms"/>
+    <testcase time="0.0040000000000191" classname="tm_g_km" name="template_g_km_gives_correct_data_expression_when_we_want_to_compare_versus_reference_arms">
+      <skipped message="Reason: On CRAN ('test-tm_g_km.R:16:3')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_g_km" name="template_g_km_gives_correct_data_expression_when_we_want_to_combine_comparison_arms"/>
+    <testcase time="0.0040000000000191" classname="tm_g_km" name="template_g_km_gives_correct_data_expression_when_we_want_to_combine_comparison_arms">
+      <skipped message="Reason: On CRAN ('test-tm_g_km.R:28:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_g_lineplot" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="4" skipped="2" failures="0" errors="0" time="0.04">
+    <testcase time="0.0170000000000528" classname="tm_g_lineplot" name="template_g_lineplot_works_as_expected_with_default_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_g_lineplot" name="template_g_lineplot_works_as_expected_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_g_lineplot.R:5:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_g_lineplot" name="template_g_lineplot_gives_correct_data_expression_with_custom_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_g_lineplot" name="template_g_lineplot_gives_correct_data_expression_with_custom_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_g_lineplot.R:23:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_abnormality" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="6" skipped="3" failures="0" errors="0" time="0.066">
+    <testcase time="0.0240000000000009" classname="tm_t_abnormality" name="template_abnormality_generates_correct_expressions_with_default_arguments"/>
+    <testcase time="0.00499999999999545" classname="tm_t_abnormality" name="template_abnormality_generates_correct_expressions_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_abnormality.R:17:3')"/>
+    </testcase>
+    <testcase time="0.0139999999998963" classname="tm_t_abnormality" name="template_abnormality_generates_correct_expressions_with_custom_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_t_abnormality" name="template_abnormality_generates_correct_expressions_with_custom_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_abnormality.R:39:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_abnormality" name="template_abnormality_generates_correct_expressions_with_customized_na_level"/>
+    <testcase time="0.0040000000000191" classname="tm_t_abnormality" name="template_abnormality_generates_correct_expressions_with_customized_na_level">
+      <skipped message="Reason: On CRAN ('test-tm_t_abnormality.R:59:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_abnormality_by_worst_grade" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="5" skipped="2" failures="0" errors="0" time="0.068">
+    <testcase time="0.0180000000000291" classname="tm_t_abnormality_by_worst_grade" name="template_abnormality_by_worst_grade_generates_correct_expressions_with_default_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_t_abnormality_by_worst_grade" name="template_abnormality_by_worst_grade_generates_correct_expressions_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_abnormality_by_worst_grade.R:17:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_abnormality_by_worst_grade" name="template_abnormality_by_worst_grade_generates_correct_expressions_with_custom_arguments"/>
+    <testcase time="0.00499999999999545" classname="tm_t_abnormality_by_worst_grade" name="template_abnormality_by_worst_grade_generates_correct_expressions_with_custom_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_abnormality_by_worst_grade.R:36:3')"/>
+    </testcase>
+    <testcase time="0.0259999999999536" classname="tm_t_abnormality_by_worst_grade" name="template_abnormality_by_worst_grade_throws_an_error_when_ATOXGR_contains_NA_values"/>
+  </testsuite>
+  <testsuite name="tm_t_ancova" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="14" skipped="7" failures="0" errors="0" time="0.137">
+    <testcase time="0.0110000000000809" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_multiple_endpoints"/>
+    <testcase time="0.00499999999999545" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_multiple_endpoints">
+      <skipped message="Reason: On CRAN ('test-tm_t_ancova.R:20:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_multiple_endpoints_with_combined_comparison_arms"/>
+    <testcase time="0.0040000000000191" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_multiple_endpoints_with_combined_comparison_arms">
+      <skipped message="Reason: On CRAN ('test-tm_t_ancova.R:42:3')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_multiple_endpoints_with_combined_reference_arms"/>
+    <testcase time="0.0040000000000191" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_multiple_endpoints_with_combined_reference_arms">
+      <skipped message="Reason: On CRAN ('test-tm_t_ancova.R:64:3')"/>
+    </testcase>
+    <testcase time="0.0209999999999582" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_single_endpoint"/>
+    <testcase time="0.0040000000000191" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_single_endpoint">
+      <skipped message="Reason: On CRAN ('test-tm_t_ancova.R:86:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_multiple_endpoints"/>
+    <testcase time="0.0040000000000191" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_multiple_endpoints">
+      <skipped message="Reason: On CRAN ('test-tm_t_ancova.R:111:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_discrete_interaction_variable"/>
+    <testcase time="0.0040000000000191" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_discrete_interaction_variable">
+      <skipped message="Reason: On CRAN ('test-tm_t_ancova.R:136:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_continuous_interaction_variable"/>
+    <testcase time="0.0040000000000191" classname="tm_t_ancova" name="template_ancova_generates_expressions_with_continuous_interaction_variable">
+      <skipped message="Reason: On CRAN ('test-tm_t_ancova.R:160:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_binary_outcome" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="16" skipped="8" failures="0" errors="0" time="0.161">
+    <testcase time="0.0199999999999818" classname="tm_t_binary_outcome" name="template_binary_outcome_generates_standard_expressions"/>
+    <testcase time="0.0040000000000191" classname="tm_t_binary_outcome" name="template_binary_outcome_generates_standard_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_binary_outcome.R:16:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_binary_outcome" name="template_binary_outcome_generates_right_expressions_with_non_default"/>
+    <testcase time="0.0040000000000191" classname="tm_t_binary_outcome" name="template_binary_outcome_generates_right_expressions_with_non_default">
+      <skipped message="Reason: On CRAN ('test-tm_t_binary_outcome.R:35:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_binary_outcome" name="template_binary_outcome_generates_expression_without_arm_comparison"/>
+    <testcase time="0.0040000000000191" classname="tm_t_binary_outcome" name="template_binary_outcome_generates_expression_without_arm_comparison">
+      <skipped message="Reason: On CRAN ('test-tm_t_binary_outcome.R:52:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_binary_outcome" name="template_binary_outcome_generates_expression_with_non_default_controls_and_strata."/>
+    <testcase time="0.00499999999999545" classname="tm_t_binary_outcome" name="template_binary_outcome_generates_expression_with_non_default_controls_and_strata.">
+      <skipped message="Reason: On CRAN ('test-tm_t_binary_outcome.R:76:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_binary_outcome" name="template_binary_outcome_can_combine_comparison_arms"/>
+    <testcase time="0.0040000000000191" classname="tm_t_binary_outcome" name="template_binary_outcome_can_combine_comparison_arms">
+      <skipped message="Reason: On CRAN ('test-tm_t_binary_outcome.R:94:3')"/>
+    </testcase>
+    <testcase time="0.0199999999999818" classname="tm_t_binary_outcome" name="template_binary_outcome_can_combine_comparison_arms_when_compare_arms_is_FALSE"/>
+    <testcase time="0.0040000000000191" classname="tm_t_binary_outcome" name="template_binary_outcome_can_combine_comparison_arms_when_compare_arms_is_FALSE">
+      <skipped message="Reason: On CRAN ('test-tm_t_binary_outcome.R:112:3')"/>
+    </testcase>
+    <testcase time="0.0119999999999436" classname="tm_t_binary_outcome" name="split_col_expr_prepare_the_right_four_possible_expressions"/>
+    <testcase time="0.0040000000000191" classname="tm_t_binary_outcome" name="split_col_expr_prepare_the_right_four_possible_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_binary_outcome.R:124:3')"/>
+    </testcase>
+    <testcase time="0.0160000000000764" classname="tm_t_binary_outcome" name="template_binary_outcome_can_combine_refs"/>
+    <testcase time="0.00399999999990541" classname="tm_t_binary_outcome" name="template_binary_outcome_can_combine_refs">
+      <skipped message="Reason: On CRAN ('test-tm_t_binary_outcome.R:141:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_coxreg" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="6" skipped="3" failures="0" errors="0" time="0.06">
+    <testcase time="0.0180000000000291" classname="tm_t_coxreg" name="template_coxreg_generates_correct_univariate_cox_regression_expressions"/>
+    <testcase time="0.0040000000000191" classname="tm_t_coxreg" name="template_coxreg_generates_correct_univariate_cox_regression_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_coxreg.R:21:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_t_coxreg" name="template_coxreg_generates_correct_univariate_cox_regression_expressions_with_interactions"/>
+    <testcase time="0.0040000000000191" classname="tm_t_coxreg" name="template_coxreg_generates_correct_univariate_cox_regression_expressions_with_interactions">
+      <skipped message="Reason: On CRAN ('test-tm_t_coxreg.R:45:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_coxreg" name="template_coxreg_generates_correct_multivariate_cox_regression_expressions"/>
+    <testcase time="0.00499999999999545" classname="tm_t_coxreg" name="template_coxreg_generates_correct_multivariate_cox_regression_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_coxreg.R:63:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_events" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="12" skipped="6" failures="0" errors="0" time="0.13">
+    <testcase time="0.0190000000000055" classname="tm_t_events" name="template_events_generates_correct_expressions"/>
+    <testcase time="0.00499999999999545" classname="tm_t_events" name="template_events_generates_correct_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_events.R:15:3')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_t_events" name="template_events_generates_correct_expressions_for_nested_columns"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events" name="template_events_generates_correct_expressions_for_nested_columns">
+      <skipped message="Reason: On CRAN ('test-tm_t_events.R:32:3')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_t_events" name="template_events_can_generate_customized_table"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events" name="template_events_can_generate_customized_table">
+      <skipped message="Reason: On CRAN ('test-tm_t_events.R:50:3')"/>
+    </testcase>
+    <testcase time="0.0210000000000719" classname="tm_t_events" name="template_events_can_generate_customized_table_with_alphabetical_sorting"/>
+    <testcase time="0.00399999999990541" classname="tm_t_events" name="template_events_can_generate_customized_table_with_alphabetical_sorting">
+      <skipped message="Reason: On CRAN ('test-tm_t_events.R:69:3')"/>
+    </testcase>
+    <testcase time="0.0160000000000764" classname="tm_t_events" name="template_events_can_generate_customized_table_with_pruning"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events" name="template_events_can_generate_customized_table_with_pruning">
+      <skipped message="Reason: On CRAN ('test-tm_t_events.R:89:3')"/>
+    </testcase>
+    <testcase time="0.0169999999999391" classname="tm_t_events" name="template_events_can_generate_customized_table_with_pruning_for_nested_column"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events" name="template_events_can_generate_customized_table_with_pruning_for_nested_column">
+      <skipped message="Reason: On CRAN ('test-tm_t_events.R:109:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_events_by_grade" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="16" skipped="8" failures="0" errors="0" time="0.171">
+    <testcase time="0.0199999999999818" classname="tm_t_events_by_grade" name="template_events_by_grade_generates_standard_expressions"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events_by_grade" name="template_events_by_grade_generates_standard_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_by_grade.R:17:3')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_t_events_by_grade" name="template_events_by_grade_generates_standard_expressions_with_pruning_conditions"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events_by_grade" name="template_events_by_grade_generates_standard_expressions_with_pruning_conditions">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_by_grade.R:38:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_events_by_grade" name="template_events_by_grade_without_adding_total_column_option_works_as_expected"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events_by_grade" name="template_events_by_grade_without_adding_total_column_option_works_as_expected">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_by_grade.R:57:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_events_by_grade" name="template_events_by_grade_with_hlt_only_works"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events_by_grade" name="template_events_by_grade_with_hlt_only_works">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_by_grade.R:76:3')"/>
+    </testcase>
+    <testcase time="0.0170000000000528" classname="tm_t_events_by_grade" name="template_events_col_by_grade_generates_standard_expressions"/>
+    <testcase time="0.00499999999999545" classname="tm_t_events_by_grade" name="template_events_col_by_grade_generates_standard_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_by_grade.R:95:3')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_t_events_by_grade" name="template_events_col_by_grade_works_with_custom_values"/>
+    <testcase time="0.00499999999999545" classname="tm_t_events_by_grade" name="template_events_col_by_grade_works_with_custom_values">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_by_grade.R:114:3')"/>
+    </testcase>
+    <testcase time="0.0210000000000719" classname="tm_t_events_by_grade" name="template_events_col_by_grade_without_adding_total_column_option_works_as_expected"/>
+    <testcase time="0.00499999999999545" classname="tm_t_events_by_grade" name="template_events_col_by_grade_without_adding_total_column_option_works_as_expected">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_by_grade.R:133:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_events_by_grade" name="template_events_col_by_grade_without_dropping_arm_levels_option_works_as_expected"/>
+    <testcase time="0.00499999999999545" classname="tm_t_events_by_grade" name="template_events_col_by_grade_without_dropping_arm_levels_option_works_as_expected">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_by_grade.R:152:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_events_patyear" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="6" skipped="3" failures="0" errors="0" time="0.06">
+    <testcase time="0.0190000000000055" classname="tm_t_events_patyear" name="template_events_patyear_generates_standard_expressions"/>
+    <testcase time="0.00399999999990541" classname="tm_t_events_patyear" name="template_events_patyear_generates_standard_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_patyear.R:15:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_t_events_patyear" name="template_events_patyear_generates_right_expressions_with_non_default"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events_patyear" name="template_events_patyear_generates_right_expressions_with_non_default">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_patyear.R:32:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_events_patyear" name="template_events_patyear_generates_right_expressions_with_non_default_controls"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events_patyear" name="template_events_patyear_generates_right_expressions_with_non_default_controls">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_patyear.R:54:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_events_summary" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="4" skipped="2" failures="0" errors="0" time="0.047">
+    <testcase time="0.0210000000000719" classname="tm_t_events_summary" name="template_events_summary_generates_minimal_table"/>
+    <testcase time="0.00399999999990541" classname="tm_t_events_summary" name="template_events_summary_generates_minimal_table">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_summary.R:9:3')"/>
+    </testcase>
+    <testcase time="0.0180000000000291" classname="tm_t_events_summary" name="template_events_summary_generates_table_with_multiple_flags"/>
+    <testcase time="0.0040000000000191" classname="tm_t_events_summary" name="template_events_summary_generates_table_with_multiple_flags">
+      <skipped message="Reason: On CRAN ('test-tm_t_events_summary.R:26:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_exposure" timestamp="2024-04-26T10:05:23Z" hostname="3d12242c9cff" tests="6" skipped="3" failures="0" errors="0" time="0.063">
+    <testcase time="0.0180000000000291" classname="tm_t_exposure" name="template_exposure_generates_correct_expressions_with_default_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_t_exposure" name="template_exposure_generates_correct_expressions_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_exposure.R:17:3')"/>
+    </testcase>
+    <testcase time="0.0199999999999818" classname="tm_t_exposure" name="template_exposure_generates_correct_expressions_with_custom_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_t_exposure" name="template_exposure_generates_correct_expressions_with_custom_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_exposure.R:36:3')"/>
+    </testcase>
+    <testcase time="0.01299999999992" classname="tm_t_exposure" name="template_exposure_generates_correct_expressions_with_paramcd_label"/>
+    <testcase time="0.0040000000000191" classname="tm_t_exposure" name="template_exposure_generates_correct_expressions_with_paramcd_label">
+      <skipped message="Reason: On CRAN ('test-tm_t_exposure.R:56:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_logisitic" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="6" skipped="3" failures="0" errors="0" time="0.058">
+    <testcase time="0.0180000000000291" classname="tm_t_logisitic" name="template_logistic_generates_correct_expressions"/>
+    <testcase time="0.0040000000000191" classname="tm_t_logisitic" name="template_logistic_generates_correct_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_logisitic.R:19:3')"/>
+    </testcase>
+    <testcase time="0.01299999999992" classname="tm_t_logisitic" name="template_logistic_generates_correct_expressions_for_no_arm_variable"/>
+    <testcase time="0.0040000000000191" classname="tm_t_logisitic" name="template_logistic_generates_correct_expressions_for_no_arm_variable">
+      <skipped message="Reason: On CRAN ('test-tm_t_logisitic.R:38:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_logisitic" name="template_logistic_generates_correct_expressions"/>
+    <testcase time="0.0040000000000191" classname="tm_t_logisitic" name="template_logistic_generates_correct_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_logisitic.R:59:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_mult_events" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="12" skipped="6" failures="0" errors="0" time="0.128">
+    <testcase time="0.0190000000000055" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_1_HLT_parameter"/>
+    <testcase time="0.0040000000000191" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_1_HLT_parameter">
+      <skipped message="Reason: On CRAN ('test-tm_t_mult_events.R:15:3')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_2_HLT_parameters_and_drop_arm_levels_FALSE"/>
+    <testcase time="0.0040000000000191" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_2_HLT_parameters_and_drop_arm_levels_FALSE">
+      <skipped message="Reason: On CRAN ('test-tm_t_mult_events.R:34:5')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_3_HLT_parameters"/>
+    <testcase time="0.0040000000000191" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_3_HLT_parameters">
+      <skipped message="Reason: On CRAN ('test-tm_t_mult_events.R:52:3')"/>
+    </testcase>
+    <testcase time="0.0160000000000764" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_4_HLT_parameters"/>
+    <testcase time="0.00399999999990541" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_4_HLT_parameters">
+      <skipped message="Reason: On CRAN ('test-tm_t_mult_events.R:69:3')"/>
+    </testcase>
+    <testcase time="0.0210000000000719" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_no_HLT_parameters"/>
+    <testcase time="0.00499999999999545" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_no_HLT_parameters">
+      <skipped message="Reason: On CRAN ('test-tm_t_mult_events.R:86:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_1_HLT_parameter_and_without_All_Patients_column"/>
+    <testcase time="0.0040000000000191" classname="tm_t_mult_events" name="template_mult_events_generates_correct_expressions_with_1_HLT_parameter_and_without_All_Patients_column">
+      <skipped message="Reason: On CRAN ('test-tm_t_mult_events.R:105:5')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_pp_medical_history" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="9" skipped="1" failures="0" errors="0" time="0.043">
+    <testcase time="0.0169999999999391" classname="tm_t_pp_medical_history" name="template_medical_history_outputs_a_list_with_one_named_element"/>
+    <testcase time="0.00200000000006639" classname="tm_t_pp_medical_history" name="template_medical_history_outputs_a_list_with_one_named_element"/>
+    <testcase time="0.00199999999995271" classname="tm_t_pp_medical_history" name="template_medical_history_outputs_a_list_with_one_named_element"/>
+    <testcase time="0.00200000000006639" classname="tm_t_pp_medical_history" name="template_medical_history_outputs_a_list_with_one_named_element"/>
+    <testcase time="0.00599999999997181" classname="tm_t_pp_medical_history" name="template_medical_history_s_output_has_element_table_which_is_of_class_call"/>
+    <testcase time="0.00199999999995271" classname="tm_t_pp_medical_history" name="template_medical_history_s_output_has_element_table_which_is_of_class_call"/>
+    <testcase time="0.00599999999997181" classname="tm_t_pp_medical_history" name="template_medical_history_non_default_parameters"/>
+    <testcase time="0.00100000000009004" classname="tm_t_pp_medical_history" name="template_medical_history_non_default_parameters"/>
+    <testcase time="0.00499999999999545" classname="tm_t_pp_medical_history" name="template_medical_history_non_default_parameters">
+      <skipped message="Reason: On CRAN ('test-tm_t_pp_medical_history.R:17:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_shift_by_arm" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="6" skipped="3" failures="0" errors="0" time="0.055">
+    <testcase time="0.0159999999999627" classname="tm_t_shift_by_arm" name="template_shift_by_arm_generates_correct_expressions_with_default_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_t_shift_by_arm" name="template_shift_by_arm_generates_correct_expressions_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_shift_by_arm.R:14:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_t_shift_by_arm" name="template_shift_by_arm_generates_correct_expressions_with_add_total_being_TRUE"/>
+    <testcase time="0.0040000000000191" classname="tm_t_shift_by_arm" name="template_shift_by_arm_generates_correct_expressions_with_add_total_being_TRUE">
+      <skipped message="Reason: On CRAN ('test-tm_t_shift_by_arm.R:31:3')"/>
+    </testcase>
+    <testcase time="0.01299999999992" classname="tm_t_shift_by_arm" name="template_shift_by_arm_generates_correct_expressions_with_na.rm_being_TRUE"/>
+    <testcase time="0.0040000000000191" classname="tm_t_shift_by_arm" name="template_shift_by_arm_generates_correct_expressions_with_na.rm_being_TRUE">
+      <skipped message="Reason: On CRAN ('test-tm_t_shift_by_arm.R:48:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_shift_by_arm_by_worst" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="6" skipped="3" failures="0" errors="0" time="0.056">
+    <testcase time="0.0170000000000528" classname="tm_t_shift_by_arm_by_worst" name="template_shift_by_arm_generates_correct_expressions_with_default_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_t_shift_by_arm_by_worst" name="template_shift_by_arm_generates_correct_expressions_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_shift_by_arm_by_worst.R:15:3')"/>
+    </testcase>
+    <testcase time="0.0139999999998963" classname="tm_t_shift_by_arm_by_worst" name="template_shift_by_arm_generates_correct_expressions_with_add_total_being_TRUE"/>
+    <testcase time="0.0040000000000191" classname="tm_t_shift_by_arm_by_worst" name="template_shift_by_arm_generates_correct_expressions_with_add_total_being_TRUE">
+      <skipped message="Reason: On CRAN ('test-tm_t_shift_by_arm_by_worst.R:33:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="tm_t_shift_by_arm_by_worst" name="template_shift_by_arm_generates_correct_expressions_with_na.rm_being_TRUE"/>
+    <testcase time="0.0040000000000191" classname="tm_t_shift_by_arm_by_worst" name="template_shift_by_arm_generates_correct_expressions_with_na.rm_being_TRUE">
+      <skipped message="Reason: On CRAN ('test-tm_t_shift_by_arm_by_worst.R:51:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_shift_by_grade" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="6" skipped="2" failures="0" errors="0" time="0.132">
+    <testcase time="0.0259999999999536" classname="tm_t_shift_by_grade" name="template_shift_by_grade_generates_correct_expressions_with_default_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_t_shift_by_grade" name="template_shift_by_grade_generates_correct_expressions_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_shift_by_grade.R:20:3')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_t_shift_by_grade" name="template_shift_by_grade_generates_correct_expressions_with_custom_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_t_shift_by_grade" name="template_shift_by_grade_generates_correct_expressions_with_custom_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_shift_by_grade.R:42:3')"/>
+    </testcase>
+    <testcase time="0.0160000000000764" classname="tm_t_shift_by_grade" name="template_shift_by_grade_throws_an_error_when_worst_flag_var_is_not_one_of_WGRLOVFL_WGRLOFL_WGRHIVFL_WGRHIFL"/>
+    <testcase time="0.0659999999999172" classname="tm_t_shift_by_grade" name="template_shift_by_grade_keeps_the_same_number_of_missing_data_Missing_after_preprocessing"/>
+  </testsuite>
+  <testsuite name="tm_t_smq" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="4" skipped="2" failures="0" errors="0" time="0.036">
+    <testcase time="0.0120000000000573" classname="tm_t_smq" name="template_smq_generates_correct_expressions_with_default_arguments"/>
+    <testcase time="0.00499999999999545" classname="tm_t_smq" name="template_smq_generates_correct_expressions_with_default_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_smq.R:17:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_smq" name="template_smq_generates_correct_expressions_with_custom_arguments"/>
+    <testcase time="0.0040000000000191" classname="tm_t_smq" name="template_smq_generates_correct_expressions_with_custom_arguments">
+      <skipped message="Reason: On CRAN ('test-tm_t_smq.R:36:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_summary" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="10" skipped="5" failures="0" errors="0" time="0.108">
+    <testcase time="0.0190000000000055" classname="tm_t_summary" name="template_summary_generates_correct_expressions"/>
+    <testcase time="0.0040000000000191" classname="tm_t_summary" name="template_summary_generates_correct_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary.R:16:3')"/>
+    </testcase>
+    <testcase time="0.0209999999999582" classname="tm_t_summary" name="template_summary_can_generate_customized_table"/>
+    <testcase time="0.0040000000000191" classname="tm_t_summary" name="template_summary_can_generate_customized_table">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary.R:34:3')"/>
+    </testcase>
+    <testcase time="0.0159999999999627" classname="tm_t_summary" name="template_summary_generates_correct_expressions_for_multiple_grouping_variables"/>
+    <testcase time="0.0040000000000191" classname="tm_t_summary" name="template_summary_generates_correct_expressions_for_multiple_grouping_variables">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary.R:52:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_summary" name="template_summary_generates_correct_expressions_for_multiple_grouping_variables_and_all_patients"/>
+    <testcase time="0.00499999999999545" classname="tm_t_summary" name="template_summary_generates_correct_expressions_for_multiple_grouping_variables_and_all_patients">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary.R:72:5')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_summary" name="template_summary_generates_correct_expressions_for_customized_numeric_statistics"/>
+    <testcase time="0.00499999999999545" classname="tm_t_summary" name="template_summary_generates_correct_expressions_for_customized_numeric_statistics">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary.R:92:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_summary_by" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="10" skipped="5" failures="0" errors="0" time="0.099">
+    <testcase time="0.0180000000000291" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions"/>
+    <testcase time="0.00499999999999545" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary_by.R:17:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions_when_parallel_vars_is_true"/>
+    <testcase time="0.0040000000000191" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions_when_parallel_vars_is_true">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary_by.R:37:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions_when_row_groups_is_true"/>
+    <testcase time="0.00499999999999545" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions_when_row_groups_is_true">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary_by.R:58:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions_for_customized_numeric_statistics"/>
+    <testcase time="0.0040000000000191" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions_for_customized_numeric_statistics">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary_by.R:78:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions_for_drop_zero_levels_is_true"/>
+    <testcase time="0.0040000000000191" classname="tm_t_summary_by" name="template_summary_by_generates_correct_expressions_for_drop_zero_levels_is_true">
+      <skipped message="Reason: On CRAN ('test-tm_t_summary_by.R:97:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tm_t_tte" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="8" skipped="4" failures="0" errors="0" time="0.086">
+    <testcase time="0.0240000000000009" classname="tm_t_tte" name="template_tte_produces_healthy_standard_output"/>
+    <testcase time="0.00499999999999545" classname="tm_t_tte" name="template_tte_produces_healthy_standard_output">
+      <skipped message="Reason: On CRAN ('test-tm_t_tte.R:25:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="tm_t_tte" name="template_tte_produces_correct_data_expression_when_not_comparing_arms"/>
+    <testcase time="0.00499999999999545" classname="tm_t_tte" name="template_tte_produces_correct_data_expression_when_not_comparing_arms">
+      <skipped message="Reason: On CRAN ('test-tm_t_tte.R:52:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_tte" name="template_tte_produces_correct_data_expression_when_comparing_and_combining_arms"/>
+    <testcase time="0.0040000000000191" classname="tm_t_tte" name="template_tte_produces_correct_data_expression_when_comparing_and_combining_arms">
+      <skipped message="Reason: On CRAN ('test-tm_t_tte.R:79:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="tm_t_tte" name="template_tte_produces_correct_data_expression_when_comparing_arms"/>
+    <testcase time="0.0040000000000191" classname="tm_t_tte" name="template_tte_produces_correct_data_expression_when_comparing_arms">
+      <skipped message="Reason: On CRAN ('test-tm_t_tte.R:106:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="utils" timestamp="2024-04-26T10:05:24Z" hostname="3d12242c9cff" tests="50" skipped="11" failures="0" errors="0" time="0.38">
+    <testcase time="0.0169999999999391" classname="utils" name="h_concat_expr_returns_a_string_for_long_expression"/>
+    <testcase time="0.0040000000000191" classname="utils" name="h_concat_expr_returns_a_string_for_long_expression">
+      <skipped message="Reason: On CRAN ('test-utils.R:13:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="utils" name="pipe_expr_concatenate_expressions_into_a_single_pipeline_"/>
+    <testcase time="0.0040000000000191" classname="utils" name="add_expr_adds_expressions_to_expression_list"/>
+    <testcase time="0.0040000000000191" classname="utils" name="add_expr_adds_expressions_to_expression_list">
+      <skipped message="Reason: On CRAN ('test-utils.R:44:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="utils" name="add_expr_manages_expression_list_which_can_be_used_by_pipe_expr"/>
+    <testcase time="0.00399999999990541" classname="utils" name="add_expr_manages_expression_list_which_can_be_used_by_pipe_expr">
+      <skipped message="Reason: On CRAN ('test-utils.R:65:3')"/>
+    </testcase>
+    <testcase time="0.0149999999999864" classname="utils" name="bracket_expr_concatenates_expressions_into_a_single_expression"/>
+    <testcase time="0.0040000000000191" classname="utils" name="bracket_expr_concatenates_expressions_into_a_single_expression">
+      <skipped message="Reason: On CRAN ('test-utils.R:83:3')"/>
+    </testcase>
+    <testcase time="0.01400000000001" classname="utils" name="bracket_expr_returns_a_single_evaluable_expression"/>
+    <testcase time="0.00999999999999091" classname="utils" name="bracket_expr_returns_a_single_evaluable_expression">
+      <skipped message="Reason: On CRAN ('test-utils.R:91:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="utils" name="prepare_arm_with_standard_inputs"/>
+    <testcase time="0.0040000000000191" classname="utils" name="prepare_arm_with_standard_inputs">
+      <skipped message="Reason: On CRAN ('test-utils.R:104:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="utils" name="prepare_arm_combine_ref_arms"/>
+    <testcase time="0.00599999999997181" classname="utils" name="prepare_arm_combine_ref_arms">
+      <skipped message="Reason: On CRAN ('test-utils.R:116:3')"/>
+    </testcase>
+    <testcase time="0.01299999999992" classname="utils" name="prepare_arm_combine_ref_arms_and_use_new_level"/>
+    <testcase time="0.0040000000000191" classname="utils" name="prepare_arm_combine_ref_arms_and_use_new_level">
+      <skipped message="Reason: On CRAN ('test-utils.R:129:3')"/>
+    </testcase>
+    <testcase time="0.0139999999998963" classname="utils" name="prepare_arm_does_not_do_anything_when_we_don_t_want_to_compare_or_drop_arms"/>
+    <testcase time="0.00200000000006639" classname="utils" name="prepare_arm_does_not_do_anything_when_we_don_t_want_to_compare_or_drop_arms"/>
+    <testcase time="0.00599999999997181" classname="utils" name="prepare_arm_levels_with_standard_inputs"/>
+    <testcase time="0.0040000000000191" classname="utils" name="prepare_arm_levels_with_standard_inputs">
+      <skipped message="Reason: On CRAN ('test-utils.R:168:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="utils" name="prepare_arm_levels_can_use_parentname_arm_levels"/>
+    <testcase time="0.00399999999990541" classname="utils" name="prepare_arm_levels_can_use_parentname_arm_levels">
+      <skipped message="Reason: On CRAN ('test-utils.R:180:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="utils" name="color_lab_values_main"/>
+    <testcase time="0.00499999999999545" classname="utils" name="color_lab_values_main">
+      <skipped message="Reason: On CRAN ('test-utils.R:188:3')"/>
+    </testcase>
+    <testcase time="0.0130000000000337" classname="utils" name="color_lab_values_neutral_for_none_characters"/>
+    <testcase time="0.00300000000004275" classname="utils" name="color_lab_values_neutral_for_none_characters"/>
+    <testcase time="0.00599999999997181" classname="utils" name="clean_description"/>
+    <testcase time="0.00299999999992906" classname="utils" name="clean_description"/>
+    <testcase time="0.00700000000006185" classname="utils" name="get_g_forest_obj_var_name"/>
+    <testcase time="0.00599999999997181" classname="utils" name="cs_to_select_spec_single_choices_selected_is_converted_to_select_spec"/>
+    <testcase time="0.00700000000006185" classname="utils" name="cs_to_select_spec_single_choices_selected_is_converted_to_select_spec_with_multiple_TRUE"/>
+    <testcase time="0.00699999999994816" classname="utils" name="cs_to_select_spec_single_choices_selected_is_converted_to_select_spec_with_ordered_TRUE"/>
+    <testcase time="0.0080000000000382" classname="utils" name="cs_to_select_spec_accepts_choices_selected_only"/>
+    <testcase time="0.01400000000001" classname="utils" name="cs_to_select_spec_accepts_multiple_as_flag_only"/>
+    <testcase time="0.00799999999992451" classname="utils" name="cs_to_select_spec_accepts_ordered_as_flag_only"/>
+    <testcase time="0.0080000000000382" classname="utils" name="cs_to_filter_spec_fails_if_doesn_t_have_var_choices"/>
+    <testcase time="0.0130000000000337" classname="utils" name="cs_to_filter_spec_creates_filter_spec_from_choices_selected"/>
+    <testcase time="0.00699999999994816" classname="utils" name="cs_to_des_select_creates_data_extract_spec_with_single_select_and_no_filter"/>
+    <testcase time="0.00599999999997181" classname="utils" name="cs_to_des_select_returns_the_input_if_data_extract_spec_is_provided"/>
+    <testcase time="0.00700000000006185" classname="utils" name="cs_to_des_select_creates_data_extract_spec_with_multiple_TRUE"/>
+    <testcase time="0.00699999999994816" classname="utils" name="cs_to_des_select_creates_data_extract_spec_with_ordered_TRUE"/>
+    <testcase time="0.00600000000008549" classname="utils" name="as_numeric_from_comma_sep_str_returns_NULL_if_blank_string_or_NULL_entered"/>
+    <testcase time="0.00299999999992906" classname="utils" name="as_numeric_from_comma_sep_str_returns_NULL_if_blank_string_or_NULL_entered"/>
+    <testcase time="0.00499999999999545" classname="utils" name="as_numeric_from_comma_sep_str_returns_numeric_vector_of_numbers"/>
+    <testcase time="0.00200000000006639" classname="utils" name="as_numeric_from_comma_sep_str_returns_numeric_vector_of_numbers"/>
+    <testcase time="0.00599999999997181" classname="utils" name="as_numeric_from_comma_sep_str_respects_sep_argument"/>
+    <testcase time="0.00300000000004275" classname="utils" name="as_numeric_from_comma_sep_str_respects_sep_argument"/>
+    <testcase time="0.00499999999999545" classname="utils" name="default_total_label_works_properly"/>
+    <testcase time="0.00299999999992906" classname="utils" name="default_total_label_works_properly"/>
+  </testsuite>
+  <testsuite name="validate_standard_inputs" timestamp="2024-04-26T10:05:25Z" hostname="3d12242c9cff" tests="6" skipped="0" failures="0" errors="0" time="0.035">
+    <testcase time="0.0110000000000809" classname="validate_standard_inputs" name="validate_arm_throws_shiny_error_if_arm_vec_is_not_a_factor"/>
+    <testcase time="0.00499999999999545" classname="validate_standard_inputs" name="validate_arm_throws_shiny_error_if_arm_vec_is_not_a_factor"/>
+    <testcase time="0.00799999999992451" classname="validate_standard_inputs" name="validate_arm_throws_specific_shiny_error_if_arm_vec_has_just_whitespace_strings"/>
+    <testcase time="0.0040000000000191" classname="validate_standard_inputs" name="validate_arm_throws_specific_shiny_error_if_arm_vec_has_just_whitespace_strings"/>
+    <testcase time="0.00499999999999545" classname="validate_standard_inputs" name="validate_arm_throws_no_error_if_arm_vec_is_a_factor"/>
+    <testcase time="0.00200000000006639" classname="validate_standard_inputs" name="validate_arm_throws_no_error_if_arm_vec_is_a_factor"/>
+  </testsuite>
+</testsuites>
