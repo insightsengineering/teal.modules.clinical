@@ -150,12 +150,12 @@ testthat::test_that(
 
 # Test changing selection and de-selecting ------------------------------------
 
-test_that_change_inputs <- function(input_id, new_value) {
+test_that_change_inputs <- function(name, input_id, new_value, deselect_message) {
   if (!missing(new_value)) {
     testthat::test_that(
       sprintf(
         "e2e - tm_g_pp_therapy: Selection of {%s} changes the element and does not throw validation errors",
-        input_id
+        name
       ),
       {
         skip_if_too_deep(5)
@@ -164,7 +164,7 @@ test_that_change_inputs <- function(input_id, new_value) {
           app_driver$get_active_module_pws_output("therapy_plot"),
           app_driver$active_module_element_text("therapy_table")
         )
-        app_driver$set_active_module_input(ns_des_input(input_id, "ADCM", "select"), new_value)
+        app_driver$set_active_module_input(input_id, new_value)
         testthat::expect_false(
           identical(
             plot_before,
@@ -180,35 +180,43 @@ test_that_change_inputs <- function(input_id, new_value) {
     )
   }
 
+  if (missing(deselect_message)) {
+    deselect_message <- sprintf("Please select %s variable.", toupper(name))
+  }
+
   testthat::test_that(sprintf("e2e - tm_g_pp_therapy: Deselection of '%s' throws validation error.", input_id), {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
-    app_driver$set_active_module_input(ns_des_input(input_id, "ADCM", "select"), character(0L))
+    app_driver$set_active_module_input(input_id, character(0L))
     app_driver$expect_validation_error()
     testthat::expect_equal(
       app_driver$active_module_element_text(
         sprintf(
           "%s_input .shiny-validation-message",
-          ns_des_input(input_id, "ADCM", "select")
+          input_id
         )
       ),
-      sprintf("Please select %s variable.", toupper(input_id))
+      deselect_message
     )
     app_driver$stop()
   })
 }
 
-test_that_change_inputs("cmtrt") # Could not change this variable and observe a difference in output
-test_that_change_inputs("cmdecod") # Variable selected needs to be CMDECOD as it's hardcoded in module
+test_that_change_inputs("patient_id", "patient_id", "AB12345-RUS-1-id-4", "Please select a patient.")
 
-test_that_change_inputs("atirel", "ATIREL")
-test_that_change_inputs("cmindc", "CMINDC")
-test_that_change_inputs("cmdose", "CMDOSE")
-test_that_change_inputs("cmdosu", "CMDOSU")
-test_that_change_inputs("cmroute", "CMROUTE")
-test_that_change_inputs("cmdosfrq", "CMDOSFRQ")
-test_that_change_inputs("cmstdy", "ASTDY")
-test_that_change_inputs("cmendy", "AENDY")
+# Could not change this variable and observe a difference in output
+test_that_change_inputs("cmtrt", ns_des_input("cmtrt", "ADCM", "select"))
+# Variable selected needs to be CMDECOD as it's hardcoded in module
+test_that_change_inputs("cmdecod", ns_des_input("cmdecod", "ADCM", "select"))
+
+test_that_change_inputs("atirel", ns_des_input("atirel", "ADCM", "select"), "ATIREL")
+test_that_change_inputs("cmindc", ns_des_input("cmindc", "ADCM", "select"), "CMINDC")
+test_that_change_inputs("cmdose", ns_des_input("cmdose", "ADCM", "select"), "CMDOSE")
+test_that_change_inputs("cmdosu", ns_des_input("cmdosu", "ADCM", "select"), "CMDOSU")
+test_that_change_inputs("cmroute", ns_des_input("cmroute", "ADCM", "select"), "CMROUTE")
+test_that_change_inputs("cmdosfrq", ns_des_input("cmdosfrq", "ADCM", "select"), "CMDOSFRQ")
+test_that_change_inputs("cmstdy", ns_des_input("cmstdy", "ADCM", "select"), "ASTDY")
+test_that_change_inputs("cmendy", ns_des_input("cmendy", "ADCM", "select"), "AENDY")
 
 # Plot settings ---------------------------------------------------------------
 
