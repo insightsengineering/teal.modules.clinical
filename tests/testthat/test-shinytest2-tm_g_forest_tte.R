@@ -55,7 +55,7 @@ app_driver_tm_g_forest_tte <- function() { # nolint: object_length.
 }
 
 ns_des_input <- function(id, dataname, type) {
-  sprintf("%s-dataset_singleextract_%s-%s", id, dataname, type)
+  sprintf("%s-dataset_%s_singleextract-%s", id, dataname, type)
 }
 
 # Initialization --------------------------------------------------------------
@@ -88,12 +88,12 @@ testthat::test_that(
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("paramcd", "filter1-vals", "ADTTE")),
+      app_driver$get_active_module_input(ns_des_input("paramcd", "ADTTE", "filter1-vals")),
       "OS"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("arm_var", "select", "ADSL")),
+      app_driver$get_active_module_input(ns_des_input("arm_var", "ADSL", "select")),
       "ARMCD"
     )
 
@@ -103,12 +103,12 @@ testthat::test_that(
     )
 
     testthat::expect_setequal(
-      app_driver$get_active_module_input(ns_des_input("subgroup_var", "select", "ADSL")),
+      app_driver$get_active_module_input(ns_des_input("subgroup_var", "ADSL", "select")),
       c("SEX", "BMRKR2")
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("strata_var", "select", "ADSL")),
+      app_driver$get_active_module_input(ns_des_input("strata_var", "ADSL", "select")),
       "STRATA2"
     )
 
@@ -132,7 +132,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
     plot_before <- app_driver$get_active_module_pws_output("myplot")
-    app_driver$set_active_module_input(ns_des_input("paramcd", "filter1-vals", "ADTTE"), "CRSD")
+    app_driver$set_active_module_input(ns_des_input("paramcd", "ADTTE", "filter1-vals"), "CRSD")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
@@ -145,14 +145,14 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
     plot_before <- app_driver$get_active_module_pws_output("myplot")
-    app_driver$set_active_module_input(ns_des_input("arm_var", "select", "ADSL"), "ARM")
+    app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ARM")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
-for (input_id in c(ns_des_input("paramcd", "filter1-vals", "ADTTE"), ns_des_input("arm_var", "select", "ADSL"))) {
+for (input_id in c(ns_des_input("paramcd", "ADTTE", "filter1-vals"), ns_des_input("arm_var", "ADSL", "select"))) {
   testthat::test_that(sprintf("e2e - tm_g_forest_tte: Deselection of '%s' throws validation error.", input_id), {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
@@ -184,7 +184,7 @@ test_dataset_selection <- function(input_id, dataset, new_value) {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_forest_tte()
       plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(ns_des_input(input_id, "select", dataset), new_value)
+      app_driver$set_active_module_input(ns_des_input(input_id, dataset, "select"), new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
@@ -201,7 +201,7 @@ test_dataset_selection <- function(input_id, dataset, new_value) {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_forest_tte()
       plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(ns_des_input(input_id, "select", dataset), character(0L))
+      app_driver$set_active_module_input(ns_des_input(input_id, dataset, "select"), character(0L))
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
