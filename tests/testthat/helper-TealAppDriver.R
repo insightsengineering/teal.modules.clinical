@@ -24,8 +24,8 @@ init_teal_app_driver <- function(...) {
   )
 }
 
-ns_dataset <- function(prefix, suffix, dataset) {
-  sprintf("%s-dataset_%s_singleextract-%s", prefix, dataset, suffix)
+ns_des_input <- function(id, dataname, type) {
+  sprintf("%s-dataset_singleextract_%s-%s", id, dataname, type)
 }
 
 test_plot_changes_no_errors <- function(app_driver, input_id, value, ws) {
