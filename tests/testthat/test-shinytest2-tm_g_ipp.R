@@ -181,7 +181,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting paramcd throws validation error
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ipp: Selecting paramcd changes plot and doesn't throw validation errors.", {
+testthat::test_that("e2e - tm_g_ipp: Selecting visit_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
@@ -209,7 +209,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting visit_var throws validation err
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_ipp: Selecting paramcd changes plot and doesn't throw validation errors.", {
+testthat::test_that("e2e - tm_g_ipp: Selecting aval_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
