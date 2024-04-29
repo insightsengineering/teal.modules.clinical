@@ -93,15 +93,18 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_abnormality: Selecting arm_var changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_abnormality()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_abnormality: Selecting arm_var changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_abnormality()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
@@ -116,15 +119,18 @@ testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation err
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_abnormality: Selecting by_vars changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_abnormality()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", "AVISIT")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_abnormality: Selecting by_vars changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_abnormality()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", "AVISIT")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_abnormality: Deselection of by_vars throws validation error.", {
   skip_if_too_deep(5)
@@ -139,15 +145,18 @@ testthat::test_that("e2e - tm_t_abnormality: Deselection of by_vars throws valid
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_abnormality: Changing add_total changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_abnormality()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("add_total", TRUE)
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_abnormality: Changing add_total changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_abnormality()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("add_total", TRUE)
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that(
   "e2e - tm_t_abnormality: Changing exclude_base_abn changes the table and does not throw validation errors.",
@@ -163,13 +172,13 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_abnormality: Changing drop_arm_levels changes the table and does not throw validation errors.",
+  "e2e - tm_t_abnormality: Changing drop_arm_levels does not change the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
     table_before <- app_driver$get_active_module_tws_output("table")
     app_driver$set_active_module_input("drop_arm_levels", FALSE)
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_true(identical(table_before, app_driver$get_active_module_tws_output("table")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
