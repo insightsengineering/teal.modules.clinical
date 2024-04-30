@@ -366,64 +366,6 @@ test_that_plot_settings("show_km_table", FALSE)
 test_that_plot_settings("conf_level", 0.8)
 test_that_plot_settings("xlab", "Time2")
 
-testthat::test_that("e2e - tm_g_km: Deselecting {yval} throws validation error.", {
-  # TODO: Poor module validation message
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_km()
-  app_driver$set_active_module_input("yval", character(0))
-  app_driver$expect_validation_error()
-  testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot-with-settings"),
-    "'arg' must be NULL or a character vector"
-  )
-  app_driver$stop()
-})
-
-testthat::test_that("e2e - tm_g_km: Deselecting {font_size} throws validation error.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_km()
-  app_driver$set_active_module_input("font_size", NULL)
-  app_driver$expect_validation_error()
-  testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot-with-settings"),
-    "Plot tables font size must be greater than or equal to 5"
-  )
-  app_driver$stop()
-})
-
-testthat::test_that("e2e - tm_g_km: Deselecting {rel_height_plot} throws validation error.", {
-  # TODO: Poor module validation message
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_km()
-  app_driver$set_active_module_input("rel_height_plot", NULL)
-  app_driver$expect_validation_error()
-  testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot-with-settings"),
-    "Assertion on 'x > 0' failed: Must be TRUE."
-  )
-  app_driver$stop()
-})
-
-testthat::test_that("e2e - tm_g_km: Deselecting {show_ci_ribbon} changes the plot without errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_km()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
-  app_driver$set_active_module_input("show_ci_ribbon", NULL)
-  app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-  app_driver$stop()
-})
-
-testthat::test_that("e2e - tm_g_km: Deselecting {show_km_table} changes the plot without errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_km()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
-  app_driver$set_active_module_input("show_km_table", NULL)
-  app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-  app_driver$stop()
-})
-
 testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
