@@ -65,7 +65,7 @@ app_driver_tm_a_mmrm <- function() { # nolint: object_length.
   )
 }
 
-testthat::test_that("e2e - tm_a_mmrm: Module initializes in teal without errors.", {
+testthat::test_that("e2e - tm_a_mmrm: Module initializes in teal without errors and displays a message to click 'Fit Model'", {
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_a_mmrm()
@@ -81,9 +81,9 @@ testthat::test_that("e2e - tm_a_mmrm: Module initializes in teal without errors.
 
 testthat::test_that(
   paste0(
-    "e2e - tm_a_mmrm: Module initializes with specified label,analysis variable, select endpoint,",
-    "visit variable, covariates,select treatment variable, subject identifier, weights for ls means,",
-    "correlation structure, adjustment method and confidence level"
+    "e2e - tm_a_mmrm: Module initializes with specified label, aval_var, paramcd,",
+    "visit_var, cov_var, arm_var, buckets, combine_comp_arms, id_var,",
+    "cor_struct, weights_emmeans, conf_level, method, parallel and output_function"
   ),
   {
     skip_if_too_deep(5)
@@ -155,8 +155,8 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
 
   # Check and set different outputs and validate their effects
   output_functions <- c(
-    "g_mmrm_lsmeans",
     "t_mmrm_lsmeans",
+    "g_mmrm_lsmeans",
     "t_mmrm_cov",
     "t_mmrm_fixed",
     "t_mmrm_diagnostic",
@@ -164,7 +164,7 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
   )
 
   for (func in output_functions) {
-    app_driver$set_active_module_input("output_function", func)
+    app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
     app_driver$expect_no_validation_error()
 
     switch(func,
@@ -231,8 +231,8 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
 
 testthat::test_that(
   paste0(
-    "e2e - tm_a_mmrm: Deselection of analysis variable, select endpoint,",
-    "visit variable, select treatment variable, subject identifier and confidence level"
+    "e2e - tm_a_mmrm: Deselection of aval_var, paramcd,",
+    "visit_var, arm_var, id_var and conf_level"
   ),
   {
     skip_if_too_deep(5)
@@ -347,8 +347,8 @@ testthat::test_that("e2e - tm_a_mmrm: Validate output on different selection.", 
 
   # Check and set different outputs and validate their effects
   output_functions <- c(
-    "g_mmrm_lsmeans",
     "t_mmrm_lsmeans",
+    "g_mmrm_lsmeans",
     "t_mmrm_cov",
     "t_mmrm_fixed",
     "t_mmrm_diagnostic",
@@ -356,7 +356,7 @@ testthat::test_that("e2e - tm_a_mmrm: Validate output on different selection.", 
   )
 
   for (func in output_functions) {
-    app_driver$set_active_module_input("output_function", func)
+    app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
 
     switch(func,
       t_mmrm_lsmeans = {
