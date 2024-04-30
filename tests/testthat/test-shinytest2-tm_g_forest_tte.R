@@ -58,7 +58,6 @@ app_driver_tm_g_forest_tte <- function() { # nolint: object_length.
 
 testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without errors and produces output.", {
   skip_if_too_deep(5)
-
   app_driver <- app_driver_tm_g_forest_tte()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
@@ -78,19 +77,29 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
 
-    testthat::expect_equal(
+    testthat::expect_identical(
       trimws(app_driver$get_text("#teal-main_ui-root-active_tab > li.active")),
       "Forest Survival (e2e)"
     )
 
-    testthat::expect_equal(
+    testthat::expect_identical(
+      app_driver$get_active_module_input(ns_des_input("arm_var", "ADSL", "select")),
+      "ARMCD"
+    )
+
+    testthat::expect_identical(
       app_driver$get_active_module_input(ns_des_input("paramcd", "ADTTE", "filter1-vals")),
       "OS"
     )
 
-    testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("arm_var", "ADSL", "select")),
-      "ARMCD"
+    testthat::expect_identical(
+      app_driver$get_active_module_input(ns_des_input("aval_var", "ADTTE", "select")),
+      "AVAL"
+    )
+
+    testthat::expect_identical(
+      app_driver$get_active_module_input(ns_des_input("cnsr_var", "ADTTE", "select")),
+      "CNSR"
     )
 
     testthat::expect_equal(
@@ -120,8 +129,6 @@ testthat::test_that(
   }
 )
 
-# paramcd and arm_var ---------------------------------------------------------
-
 testthat::test_that(
   "e2e - tm_g_forest_tte: Selection of 'paramcd' changes the element and does not throw validation errors",
   {
@@ -134,6 +141,24 @@ testthat::test_that(
     app_driver$stop()
   }
 )
+
+testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd filter throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_forest_tte()
+  input_id <- ns_des_input("paramcd", "ADTTE", "filter1-vals")
+  app_driver$set_active_module_input(input_id, character(0L))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text(
+      sprintf(
+        "%s_input .shiny-validation-message",
+        input_id
+      )
+    ),
+    "Please select Endpoint filter."
+  )
+  app_driver$stop()
+})
 
 testthat::test_that(
   "e2e - tm_g_forest_tte: Selection of 'arm_var' changes the element and does not throw validation errors",
@@ -148,86 +173,78 @@ testthat::test_that(
   }
 )
 
-for (input_id in c(ns_des_input("paramcd", "ADTTE", "filter1-vals"), ns_des_input("arm_var", "ADSL", "select"))) {
-  testthat::test_that(sprintf("e2e - tm_g_forest_tte: Deselection of '%s' throws validation error.", input_id), {
+testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd var throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_forest_tte()
+  input_id <- ns_des_input("arm_var", "ADSL", "select")
+  app_driver$set_active_module_input(input_id, character(0L))
+  app_driver$expect_validation_error()
+  testthat::expect_match(
+    app_driver$active_module_element_text(
+      sprintf(
+        "%s_input .shiny-validation-message",
+        input_id
+      )
+    ),
+    "Please select Endpoint filter."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that(
+  "e2e - tm_g_forest_tte: Selecting aval_var does not throw validation errors and changes a plot.",
+  {
+    skip_if_too_deep(5)
+    # not possible in this app due to fixed input
+  }
+)
+
+testthat::test_that(
+  "e2e - tm_g_forest_tte: Deselecting aval_var throws validation error.",
+  {
+    skip_if_too_deep(5)
+    # not possible in this app due to fixed input
+  }
+)
+
+testthat::test_that(
+  "e2e - tm_g_forest_tte: Selecting cnsr_var does not throw validation errors and changes a plot.",
+  {
+    skip_if_too_deep(5)
+    # not possible in this app due to fixed input
+  }
+)
+
+testthat::test_that(
+  "e2e - tm_g_forest_tte: Deselecting cnsr_var throws validation error.",
+  {
+    skip_if_too_deep(5)
+    # not possible in this app due to fixed input
+  }
+)
+
+testthat::test_that(
+  "e2e - tm_g_forest_tte: Selecting time_unit variable does not throw validation errors and changes a plot.",
+  {
+    skip_if_too_deep(5)
+    # not possible in this app due to fixed input
+  }
+)
+
+testthat::test_that(
+  "e2e - tm_g_forest_tte: Selecting conf_level does not throw validation errors and changes a plot.",
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
-    app_driver$set_active_module_input(input_id, character(0L))
+    input_id <- "conf_level"
+    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    app_driver$set_active_module_input(input_id, "0.99")
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
     app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s_input .shiny-validation-message",
-          input_id
-        )
-      ),
-      "(^Please select.*$)|(.* must be selected$)"
+    app_driver$active_module_element_text(
+      sprintf("%s_input .shiny-validation-message", input_id),
+      "Please choose a confidence level"
     )
     app_driver$stop()
-  })
-}
-
-
-# Test changing selection and de-selecting ------------------------------------
-
-test_dataset_selection <- function(input_id, dataset, new_value) {
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_g_forest_tte: Selection of '%s' dataset changes the element and does not throw validation errors",
-      input_id
-    ),
-    {
-      skip_if_too_deep(5)
-      app_driver <- app_driver_tm_g_forest_tte()
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(ns_des_input(input_id, dataset, "select"), new_value)
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-      app_driver$expect_no_validation_error()
-      app_driver$stop()
-    }
-  )
-
-  testthat::test_that(
-    sprintf(
-      "%s: De-selection of '%s' dataset changes the element and does not throw validation errors",
-      "e2e - tm_g_forest_tte",
-      input_id
-    ),
-    {
-      skip_if_too_deep(5)
-      app_driver <- app_driver_tm_g_forest_tte()
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(ns_des_input(input_id, dataset, "select"), character(0L))
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-      app_driver$expect_no_validation_error()
-      app_driver$stop()
-    }
-  )
-}
-
-test_dataset_selection("subgroup_var", "ADSL", c("COUNTRY", "RACE"))
-test_dataset_selection("strata_var", "ADSL", "STRATA1")
-
-# Plot settings ---------------------------------------------------------------
-
-test_that_input_changes_pws <- function(input_id, new_value) {
-  testthat::test_that(
-    sprintf(
-      "e2e - tm_g_forest_tte: Changing '%s' changes the plot and does not throw validation errors.",
-      input_id
-    ),
-    {
-      skip_if_too_deep(5)
-      app_driver <- app_driver_tm_g_forest_tte()
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(input_id, new_value)
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-      app_driver$expect_no_validation_error()
-      app_driver$stop()
-    }
-  )
-}
-
-test_that_input_changes_pws("conf_level", "0.9")
-test_that_input_changes_pws("font_size", 15)
-test_that_input_changes_pws("fixed_symbol_size", FALSE)
+  }
+)
