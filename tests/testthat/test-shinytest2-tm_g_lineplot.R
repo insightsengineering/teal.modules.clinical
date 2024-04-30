@@ -197,7 +197,7 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting confidence level changes plo
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   plot_before <- app_driver$get_active_module_pws_output("myplot")
-  testthat::expect_equal(app_driver$get_active_module_input("conf_level"), "0.8")
+  app_driver$set_active_module_input("conf_level", "0.8")
   testthat::expect_false(
     identical(
       plot_before,
