@@ -404,21 +404,23 @@ testthat::test_that("e2e - tm_g_km: Deselecting {rel_height_plot} throws validat
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_km: Deselecting {show_ci_ribbon} changes it to FALSE.", {
+testthat::test_that("e2e - tm_g_km: Deselecting {show_ci_ribbon} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("show_ci_ribbon", NULL)
   app_driver$expect_no_validation_error()
-  testthat::expect_false(app_driver$get_active_module_input("show_ci_ribbon"))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_km: Deselecting {show_km_table} changes it to FALSE.", {
+testthat::test_that("e2e - tm_g_km: Deselecting {show_km_table} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
   app_driver$set_active_module_input("show_km_table", NULL)
   app_driver$expect_no_validation_error()
-  testthat::expect_false(app_driver$get_active_module_input("show_km_table"))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
   app_driver$stop()
 })
 
