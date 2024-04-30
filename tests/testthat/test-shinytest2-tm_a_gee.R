@@ -263,7 +263,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of cor_struct changes the table a
 testthat::test_that("e2e - tm_a_gee: Deselection of cor_struct does not throw validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
-  app_driver$set_active_module_input("cor_struct", character(0)) # shows enourmous warning message
+  app_driver$set_active_module_input("cor_struct", character(0), wait_ = FALSE) # not waiting because of a warning
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
