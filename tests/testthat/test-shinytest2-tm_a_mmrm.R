@@ -146,7 +146,11 @@ testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output settings.", {
+testthat::test_that(
+  paste0(
+    "e2e - tm_a_mmrm: Output type selection shows dynamic output settings; changing",
+    "settings throws no validation errors and verify visibility of generated plots or tables."
+         ), {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
 
@@ -199,14 +203,8 @@ testthat::test_that("e2e - tm_a_mmrm: Output type selection shows dynamic output
 
         testthat::expect_false(identical(plot_before, plot))
       },
-      t_mmrm_cov = {
-        table <- app_driver$get_active_module_tws_output("mmrm_table")
-        testthat::expect_gt(nrow(table), 1)
-      },
-      t_mmrm_fixed = {
-        table <- app_driver$get_active_module_tws_output("mmrm_table")
-        testthat::expect_gt(nrow(table), 1)
-      },
+      t_mmrm_cov = ,
+      t_mmrm_fixed = ,
       t_mmrm_diagnostic = {
         table <- app_driver$get_active_module_tws_output("mmrm_table")
         testthat::expect_gt(nrow(table), 1)
@@ -367,14 +365,8 @@ testthat::test_that("e2e - tm_a_mmrm: Validate output on different selection.", 
         plot <- app_driver$get_active_module_pws_output("mmrm_plot")
         testthat::expect_match(plot, "data:image/png;base64,")
       },
-      t_mmrm_cov = {
-        table <- app_driver$get_active_module_tws_output("mmrm_table")
-        testthat::expect_gt(nrow(table), 1)
-      },
-      t_mmrm_fixed = {
-        table <- app_driver$get_active_module_tws_output("mmrm_table")
-        testthat::expect_gt(nrow(table), 1)
-      },
+      t_mmrm_cov = ,
+      t_mmrm_fixed = ,
       t_mmrm_diagnostic = {
         table <- app_driver$get_active_module_tws_output("mmrm_table")
         testthat::expect_gt(nrow(table), 1)
