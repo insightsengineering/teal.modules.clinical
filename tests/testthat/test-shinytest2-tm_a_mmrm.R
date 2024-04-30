@@ -65,6 +65,15 @@ app_driver_tm_a_mmrm <- function() { # nolint: object_length.
   )
 }
 
+output_functions <- c(
+  "t_mmrm_lsmeans",
+  "g_mmrm_lsmeans",
+  "t_mmrm_cov",
+  "t_mmrm_fixed",
+  "t_mmrm_diagnostic",
+  "g_mmrm_diagnostic"
+)
+
 testthat::test_that(
   paste0(
     "e2e - tm_a_mmrm: Module initializes in teal without errors ",
@@ -164,16 +173,6 @@ testthat::test_that(
     app_driver$click(selector = app_driver$active_module_element("button_start"))
     app_driver$expect_no_validation_error()
 
-    # Check and set different outputs and validate their effects
-    output_functions <- c(
-      "t_mmrm_lsmeans",
-      "g_mmrm_lsmeans",
-      "t_mmrm_cov",
-      "t_mmrm_fixed",
-      "t_mmrm_diagnostic",
-      "g_mmrm_diagnostic"
-    )
-
     for (func in output_functions) {
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -235,91 +234,219 @@ testthat::test_that(
   }
 )
 
-testthat::test_that(
-  paste0(
-    "e2e - tm_a_mmrm: Deselection of aval_var, paramcd,",
-    "visit_var, arm_var, id_var and conf_level"
-  ),
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_a_mmrm()
+for (func in output_functions) {
+  testthat::test_that(
+    paste0(
+      "e2e - tm_a_mmrm: Deselection of aval_var in method ",
+      func
+    ),
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_a_mmrm()
+
+      app_driver$click(selector = app_driver$active_module_element("button_start"))
+      # Set initial output function
+      app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
+      app_driver$expect_no_validation_error()
 
 
-    app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_des_input("aval_var", "ADQS", "select_input")
-        )
-      ),
-      "Analysis Variable' field is not selected"
-    )
 
-    app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_des_input("paramcd", "ADQS", "filter1-vals_input")
-        )
-      ),
-      "Select Endpoint' field is not selected"
-    )
+      app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", character(0L))
+      if (grepl("^g_", func)) {
+        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+      } else {
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+      }
 
-    app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_des_input("visit_var", "ADQS", "select_input")
-        )
-      ),
-      "Visit Variable' field is not selected"
-    )
+      testthat::expect_match(
+        app_driver$active_module_element_text(
+          sprintf(
+            "%s .shiny-validation-message",
+            ns_des_input("aval_var", "ADQS", "select_input")
+          )
+        ),
+        "Analysis Variable' field is not selected"
+      )
+      app_driver$expect_validation_error()
+      app_driver$stop()
 
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_des_input("arm_var", "ADSL", "select_input")
-        )
-      ),
-      "Treatment variable must be selected"
-    )
+    })
 
-    app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", character(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          ns_des_input("id_var", "ADQS", "select_input")
-        )
-      ),
-      "Subject Identifier' field is not selected"
-    )
+  testthat::test_that(
+    paste0(
+      "e2e - tm_a_mmrm: Deselection paramcd in method ",
+      func
+    ),
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_a_mmrm()
 
-    app_driver$set_active_module_input("conf_level", numeric(0L))
-    app_driver$expect_validation_error()
-    testthat::expect_match(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s .shiny-validation-message",
-          "conf_level_input"
-        )
-      ),
-      "Confidence Level' field is not selected"
-    )
+      app_driver$click(selector = app_driver$active_module_element("button_start"))
+      # Set initial output function
+      app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
+      app_driver$expect_no_validation_error()
 
-    app_driver$stop()
-  }
-)
+      app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0L))
+      if (grepl("^g_", func)) {
+        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+      } else {
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+      }
+
+      testthat::expect_match(
+        app_driver$active_module_element_text(
+          sprintf(
+            "%s .shiny-validation-message",
+            ns_des_input("paramcd", "ADQS", "filter1-vals_input")
+          )
+        ),
+        "Select Endpoint' field is not selected"
+      )
+      app_driver$expect_validation_error()
+      app_driver$stop()
+
+    })
+
+  testthat::test_that(
+    paste0(
+      "e2e - tm_a_mmrm: Deselection of visit_var in method ",
+      func
+    ),
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_a_mmrm()
+
+      app_driver$click(selector = app_driver$active_module_element("button_start"))
+      # Set initial output function
+      app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
+      app_driver$expect_no_validation_error()
+
+      app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", character(0L))
+      if (grepl("^g_", func)) {
+        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+      } else {
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+      }
+
+      testthat::expect_match(
+        app_driver$active_module_element_text(
+          sprintf(
+            "%s .shiny-validation-message",
+            ns_des_input("visit_var", "ADQS", "select_input")
+          )
+        ),
+        "Visit Variable' field is not selected"
+      )
+      app_driver$expect_validation_error()
+      app_driver$stop()
+
+    })
+
+  testthat::test_that(
+    paste0(
+      "e2e - tm_a_mmrm: Deselection of arm_var in method ",
+      func
+    ),
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_a_mmrm()
+
+      app_driver$click(selector = app_driver$active_module_element("button_start"))
+      # Set initial output function
+      app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
+      app_driver$expect_no_validation_error()
+
+      app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0L))
+      if (grepl("^g_", func)) {
+        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+      } else {
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+      }
+
+      testthat::expect_match(
+        app_driver$active_module_element_text(
+          sprintf(
+            "%s .shiny-validation-message",
+            ns_des_input("arm_var", "ADSL", "select_input")
+          )
+        ),
+        "Treatment variable must be selected"
+      )
+      app_driver$expect_validation_error()
+      app_driver$stop()
+
+    })
+
+  testthat::test_that(
+    paste0(
+      "e2e - tm_a_mmrm: Deselection of id_var in method ",
+      func
+    ),
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_a_mmrm()
+
+      app_driver$click(selector = app_driver$active_module_element("button_start"))
+      # Set initial output function
+      app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
+      app_driver$expect_no_validation_error()
+
+      app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", character(0L))
+      if (grepl("^g_", func)) {
+        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+      } else {
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+      }
+
+      testthat::expect_match(
+        app_driver$active_module_element_text(
+          sprintf(
+            "%s .shiny-validation-message",
+            ns_des_input("id_var", "ADQS", "select_input")
+          )
+        ),
+        "Subject Identifier' field is not selected"
+      )
+      app_driver$expect_validation_error()
+      app_driver$stop()
+
+    })
+
+  testthat::test_that(
+    paste0(
+      "e2e - tm_a_mmrm: Deselection of conf_level in method ",
+      func
+    ),
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_a_mmrm()
+
+      app_driver$click(selector = app_driver$active_module_element("button_start"))
+      # Set initial output function
+      app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
+      app_driver$expect_no_validation_error()
+
+      app_driver$set_active_module_input("conf_level", numeric(0L))
+      if (grepl("^g_", func)) {
+        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+      } else {
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+      }
+
+      testthat::expect_match(
+        app_driver$active_module_element_text(
+          sprintf(
+            "%s .shiny-validation-message",
+            "conf_level_input"
+          )
+        ),
+        "Confidence Level' field is not selected"
+      )
+      app_driver$expect_validation_error()
+      app_driver$stop()
+
+    })
+}
 
 input_list <- list(
   "aval_var-dataset_ADQS_singleextract-select" = "CHG",
@@ -333,15 +460,6 @@ input_list <- list(
   "cor_struct" = "ante-dependence",
   "conf_level" = "0.8",
   "method" = "Kenward-Roger"
-)
-
-output_functions <- c(
-  "t_mmrm_lsmeans",
-  "g_mmrm_lsmeans",
-  "t_mmrm_cov",
-  "t_mmrm_fixed",
-  "t_mmrm_diagnostic",
-  "g_mmrm_diagnostic"
 )
 
 non_responsive_conditions <- list(
