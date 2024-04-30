@@ -75,7 +75,7 @@ testthat::test_that(
 
     testthat::expect_equal(
       app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
-      "ANCOVA table"
+      "ANCOVA Table"
     )
     testthat::expect_equal(
       app_driver$get_active_module_input("avisit-dataset_ADQS_singleextract-filter1-vals"),
