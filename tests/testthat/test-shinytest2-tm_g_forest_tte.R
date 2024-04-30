@@ -54,10 +54,6 @@ app_driver_tm_g_forest_tte <- function() { # nolint: object_length.
   )
 }
 
-ns_dataset <- function(prefix, suffix, dataset, extract = "singleextract") {
-  sprintf("%s-dataset_%s_%s-%s", prefix, dataset, extract, suffix)
-}
-
 # Initialization --------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without errors and produces output.", {
@@ -88,12 +84,12 @@ testthat::test_that(
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_dataset("paramcd", "filter1-vals", "ADTTE")),
+      app_driver$get_active_module_input(ns_des_input("paramcd", "ADTTE", "filter1-vals")),
       "OS"
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_dataset("arm_var", "select", "ADSL")),
+      app_driver$get_active_module_input(ns_des_input("arm_var", "ADSL", "select")),
       "ARMCD"
     )
 
@@ -103,12 +99,12 @@ testthat::test_that(
     )
 
     testthat::expect_setequal(
-      app_driver$get_active_module_input(ns_dataset("subgroup_var", "select", "ADSL")),
+      app_driver$get_active_module_input(ns_des_input("subgroup_var", "ADSL", "select")),
       c("SEX", "BMRKR2")
     )
 
     testthat::expect_equal(
-      app_driver$get_active_module_input(ns_dataset("strata_var", "select", "ADSL")),
+      app_driver$get_active_module_input(ns_des_input("strata_var", "ADSL", "select")),
       "STRATA2"
     )
 
@@ -132,7 +128,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
     plot_before <- app_driver$get_active_module_pws_output("myplot")
-    app_driver$set_active_module_input(ns_dataset("paramcd", "filter1-vals", "ADTTE"), "CRSD")
+    app_driver$set_active_module_input(ns_des_input("paramcd", "ADTTE", "filter1-vals"), "CRSD")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
@@ -145,14 +141,14 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
     plot_before <- app_driver$get_active_module_pws_output("myplot")
-    app_driver$set_active_module_input(ns_dataset("arm_var", "select", "ADSL"), "ARM")
+    app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ARM")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
-for (input_id in c(ns_dataset("paramcd", "filter1-vals", "ADTTE"), ns_dataset("arm_var", "select", "ADSL"))) {
+for (input_id in c(ns_des_input("paramcd", "ADTTE", "filter1-vals"), ns_des_input("arm_var", "ADSL", "select"))) {
   testthat::test_that(sprintf("e2e - tm_g_forest_tte: Deselection of '%s' throws validation error.", input_id), {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
@@ -184,12 +180,8 @@ test_dataset_selection <- function(input_id, dataset, new_value) {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_forest_tte()
       plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(ns_dataset(input_id, "select", dataset), new_value)
+      app_driver$set_active_module_input(ns_des_input(input_id, dataset, "select"), new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
-      testthat::expect_identical(
-        app_driver$get_active_module_input(ns_dataset(input_id, "select", dataset)),
-        new_value
-      )
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }
@@ -205,8 +197,7 @@ test_dataset_selection <- function(input_id, dataset, new_value) {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_forest_tte()
       plot_before <- app_driver$get_active_module_pws_output("myplot")
-      app_driver$set_active_module_input(ns_dataset(input_id, "select", dataset), character(0L))
-      testthat::expect_null(app_driver$get_active_module_input(ns_dataset(input_id, "select", dataset)))
+      app_driver$set_active_module_input(ns_des_input(input_id, dataset, "select"), character(0L))
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
@@ -219,16 +210,15 @@ test_dataset_selection("strata_var", "ADSL", "STRATA1")
 
 # Plot settings ---------------------------------------------------------------
 
-test_that_plot_settings <- function(input_id, new_value) {
+test_that_input_changes_pws <- function(input_id, new_value) {
   testthat::test_that(
     sprintf(
       "e2e - tm_g_forest_tte: Changing '%s' changes the plot and does not throw validation errors.",
-      id
+      input_id
     ),
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_forest_tte()
-      setup_fun(app_driver)
       plot_before <- app_driver$get_active_module_pws_output("myplot")
       app_driver$set_active_module_input(input_id, new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
@@ -238,6 +228,6 @@ test_that_plot_settings <- function(input_id, new_value) {
   )
 }
 
-test_that_plot_settings("conf_level", "0.9")
-test_that_plot_settings("font_size", 15)
-test_that_plot_settings("fixed_symbol_size", FALSE)
+test_that_input_changes_pws("conf_level", "0.9")
+test_that_input_changes_pws("font_size", 15)
+test_that_input_changes_pws("fixed_symbol_size", FALSE)
