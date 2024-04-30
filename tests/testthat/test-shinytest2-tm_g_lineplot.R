@@ -109,3 +109,114 @@ testthat::test_that(
     app_driver$stop()
   })
 
+testthat::test_that("e2e - tm_g_lineplot: Selecting biomarker changes plot and doesn't throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_lineplot()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("param-dataset_ADLB_singleextract-filter1-vals", "CRP")
+  testthat::expect_false(
+    identical(
+      plot_before,
+      app_driver$get_active_module_pws_output("myplot")
+    )
+  )
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_lineplot: Deselecting biomarker throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_lineplot()
+  app_driver$set_active_module_input("param-dataset_ADLB_singleextract-filter1-vals", NULL)
+  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
+  testthat::expect_identical(
+    app_driver$active_module_element_text("param-dataset_ADLB_singleextract-filter1-vals_input > div > span"),
+    "Please select Biomarker filter."
+  )
+  app_driver$expect_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_lineplot: Selecting treatment variable changes plot and doesn't throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_lineplot()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("strata-dataset_ADSL_singleextract-select", "ARMCD")
+  testthat::expect_false(
+    identical(
+      plot_before,
+      app_driver$get_active_module_pws_output("myplot")
+    )
+  )
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_lineplot: Deselecting treatment variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_lineplot()
+  app_driver$set_active_module_input("strata-dataset_ADSL_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
+  testthat::expect_identical(
+    app_driver$active_module_element_text("strata-dataset_ADSL_singleextract-select_input > div > span"),
+    "Please select a treatment variable"
+  )
+  app_driver$expect_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_lineplot: Selecting analysis variable changes plot and doesn't throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_lineplot()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  app_driver$set_active_module_input("y-dataset_ADLB_singleextract-select", "BASE")
+  testthat::expect_false(
+    identical(
+      plot_before,
+      app_driver$get_active_module_pws_output("myplot")
+    )
+  )
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_lineplot: Deselecting analysis variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_lineplot()
+  app_driver$set_active_module_input("y-dataset_ADLB_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
+  testthat::expect_identical(
+    app_driver$active_module_element_text("y-dataset_ADLB_singleextract-select_input > div > span"),
+    "Please select an analysis variable"
+  )
+  app_driver$expect_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_lineplot: Selecting confidence level changes plot and doesn't throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_lineplot()
+  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  testthat::expect_equal(app_driver$get_active_module_input("conf_level"), "0.8")
+  testthat::expect_false(
+    identical(
+      plot_before,
+      app_driver$get_active_module_pws_output("myplot")
+    )
+  )
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_g_lineplot: Deselecting confidence level validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_g_lineplot()
+  app_driver$set_active_module_input("conf_level", NULL)
+  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
+  testthat::expect_identical(
+    app_driver$active_module_element_text("conf_level_input > div > span"),
+    "Please choose a confidence level"
+  )
+  app_driver$expect_validation_error()
+  app_driver$stop()
+})
