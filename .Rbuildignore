@@ -45,3 +45,6 @@ SECURITY.md
 LICENSE
 coverage.*
 ^pkgdown$
+^.revdeprefs\.yaml$
+^revdep$
+^\.covrignore$
