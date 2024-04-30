@@ -63,7 +63,7 @@ testthat::test_that(
 
     testthat::expect_equal(
       app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
-      "Module tab label"
+      "Vitals"
     )
     testthat::expect_equal(
       app_driver$get_active_module_input("patient_id"),
