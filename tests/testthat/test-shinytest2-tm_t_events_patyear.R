@@ -1,0 +1,92 @@
+app_driver_tm_t_events_patyear <- function() {
+  data <- teal_data()
+  data <- within(data, {
+    library(dplyr)
+    ADSL <- tmc_ex_adsl
+    ADAETTE <- tmc_ex_adaette %>% # nolint object_name
+      filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
+      mutate(is_event = CNSR == 0) %>%
+      mutate(n_events = as.integer(is_event))
+  })
+
+  datanames <- c("ADSL", "ADAETTE")
+  teal.data::datanames(data) <- datanames
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+
+  init_teal_app_driver(
+    data = data,
+    modules = tm_t_events_patyear(
+      label = "AE Rate Adjusted for Patient-Years At Risk Table",
+      dataname = "ADAETTE",
+      arm_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
+        selected = "ARMCD"
+      ),
+      add_total = TRUE,
+      events_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADAETTE"]], "n_events"),
+        selected = "n_events",
+        fixed = TRUE
+      ),
+      paramcd = teal.transform::choices_selected(
+        choices = teal.transform::value_choices(data[["ADAETTE"]], "PARAMCD", "PARAM"),
+        selected = "AETTE1"
+      ),
+      conf_level = teal.transform::choices_selected(
+        c(2, 0.95, 0.9, 0.8), 0.95,
+        keep_order = TRUE
+      )
+    )
+  )
+}
+
+testthat::test_that("e2e - tm_t_events_patyear: Module initializes in teal without errors and produces table output.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_events_patyear()
+  app_driver$expect_no_shiny_error()
+  app_driver$expect_no_validation_error()
+  testthat::expect_true(
+    app_driver$is_visible(app_driver$active_module_element("patyear_table-table-with-settings"))
+  )
+  app_driver$stop()
+})
+
+testthat::test_that(
+  "e2e - tm_t_events_patyear: Starts with specified label, arm_var, paramcd, conf_level,
+  conf_method, num_pt_year, input_time_unit, add_total, drop_arm_levels.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events_patyear()
+    testthat::expect_equal(
+      app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
+      "AE Rate Adjusted for Patient-Years At Risk Table"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      "ARMCD"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals"),
+      "AETTE1"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("conf_level"),
+      "0.95"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("conf_method"),
+      "Normal (rate)"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("num_pt_year"),
+      "100"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("input_time_unit"),
+      "year"
+    )
+    testthat::expect_true(app_driver$get_active_module_input("add_total"))
+    testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
+    app_driver$stop()
+  }
+)
