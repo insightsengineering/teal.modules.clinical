@@ -237,7 +237,7 @@ testthat::test_that(
 for (func in output_functions) {
   testthat::test_that(
     paste0(
-      "e2e - tm_a_mmrm: Deselection of aval_var in method ",
+      "e2e - tm_a_mmrm: Deselection of aval_var throws validation error in method",
       func
     ),
     {
@@ -249,13 +249,11 @@ for (func in output_functions) {
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-
-
       app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -269,12 +267,12 @@ for (func in output_functions) {
       )
       app_driver$expect_validation_error()
       app_driver$stop()
-
-    })
+    }
+  )
 
   testthat::test_that(
     paste0(
-      "e2e - tm_a_mmrm: Deselection paramcd in method ",
+      "e2e - tm_a_mmrm: Deselection paramcd throws validation error in method",
       func
     ),
     {
@@ -290,7 +288,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -304,12 +302,12 @@ for (func in output_functions) {
       )
       app_driver$expect_validation_error()
       app_driver$stop()
-
-    })
+    }
+  )
 
   testthat::test_that(
     paste0(
-      "e2e - tm_a_mmrm: Deselection of visit_var in method ",
+      "e2e - tm_a_mmrm: Deselection of visit_var throws validation error in method",
       func
     ),
     {
@@ -325,7 +323,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -339,12 +337,12 @@ for (func in output_functions) {
       )
       app_driver$expect_validation_error()
       app_driver$stop()
-
-    })
+    }
+  )
 
   testthat::test_that(
     paste0(
-      "e2e - tm_a_mmrm: Deselection of arm_var in method ",
+      "e2e - tm_a_mmrm: Deselection of arm_var throws validation error in method",
       func
     ),
     {
@@ -360,7 +358,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -374,12 +372,12 @@ for (func in output_functions) {
       )
       app_driver$expect_validation_error()
       app_driver$stop()
-
-    })
+    }
+  )
 
   testthat::test_that(
     paste0(
-      "e2e - tm_a_mmrm: Deselection of id_var in method ",
+      "e2e - tm_a_mmrm: Deselection of id_var throws validation error in method",
       func
     ),
     {
@@ -395,7 +393,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -409,12 +407,12 @@ for (func in output_functions) {
       )
       app_driver$expect_validation_error()
       app_driver$stop()
-
-    })
+    }
+  )
 
   testthat::test_that(
     paste0(
-      "e2e - tm_a_mmrm: Deselection of conf_level in method ",
+      "e2e - tm_a_mmrm: Deselection of conf_level throws validation error in method",
       func
     ),
     {
@@ -430,7 +428,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -444,8 +442,8 @@ for (func in output_functions) {
       )
       app_driver$expect_validation_error()
       app_driver$stop()
-
-    })
+    }
+  )
 }
 
 input_list <- list(
