@@ -1,0 +1,112 @@
+app_driver_tm_t_events_summary <- function() {
+  data <- teal_data()
+  data <- within(data, {
+    library(dplyr)
+    library(formatters)
+    ADSL <- teal.data::rADSL %>%
+      mutate(
+        DTHFL = case_when(
+          !is.na(DTHDT) ~ "Y",
+          TRUE ~ ""
+        ) %>% with_label("Subject Death Flag")
+      )
+    ADAE <- teal.data::rADAE
+
+    add_event_flags <- function(dat) {
+      dat <- dat %>%
+        dplyr::mutate(
+          TMPFL_SER = AESER == "Y",
+          TMPFL_REL = AEREL == "Y",
+          TMPFL_GR5 = AETOXGR == "5",
+          TMP_SMQ01 = !is.na(SMQ01NAM),
+          TMP_SMQ02 = !is.na(SMQ02NAM),
+          TMP_CQ01 = !is.na(CQ01NAM)
+        )
+      column_labels <- list(
+        TMPFL_SER = "Serious AE",
+        TMPFL_REL = "Related AE",
+        TMPFL_GR5 = "Grade 5 AE",
+        TMP_SMQ01 = tern::aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
+        TMP_SMQ02 = tern::aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
+        TMP_CQ01 = tern::aesi_label(dat[["CQ01NAM"]])
+      )
+      col_labels(dat)[names(column_labels)] <- as.character(column_labels)
+      dat
+    }
+
+    ADAE <- ADAE %>% add_event_flags()
+
+    ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
+    aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
+  })
+
+  datanames <- c("ADSL", "ADAE")
+  teal.data::datanames(data) <- datanames
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+
+  init_teal_app_driver(
+    data = data,
+    modules = tm_t_events_summary(
+      label = "Adverse Events Summary",
+      dataname = "ADAE",
+      arm_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices("ADSL", c("ARM", "ARMCD")),
+        selected = "ARM"
+      ),
+      flag_var_anl = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices("ADAE", data[["ae_anl_vars"]]),
+        selected = data[["ae_anl_vars"]][1],
+        keep_order = TRUE,
+        fixed = FALSE
+      ),
+      flag_var_aesi = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices("ADAE", data[["aesi_vars"]]),
+        selected = data[["aesi_vars"]][1],
+        keep_order = TRUE,
+        fixed = FALSE
+      ),
+      add_total = TRUE
+    )
+  )
+}
+
+testthat::test_that("e2e - tm_t_events_summary: Module initializes in teal without errors and produces table output.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_events_summary()
+  app_driver$expect_no_shiny_error()
+  app_driver$expect_no_validation_error()
+  testthat::expect_true(
+    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+  )
+  app_driver$stop()
+})
+
+testthat::test_that(
+  "e2e - tm_t_events_summary: Starts with specified label, arm_var, flag_var_anl, flag_var_aesi,
+  add_total, count_subj, count_pt, count_events",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events_summary()
+    testthat::expect_equal(
+      app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
+      "Adverse Events Summary"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      "ARM"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("flag_var_anl-dataset_ADAE_singleextract-select"),
+      "TMPFL_SER"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("flag_var_aesi-dataset_ADAE_singleextract-select"),
+      "TMP_SMQ01"
+    )
+    testthat::expect_true(app_driver$get_active_module_input("add_total"))
+    testthat::expect_true(app_driver$get_active_module_input("count_subj"))
+    testthat::expect_true(app_driver$get_active_module_input("count_pt"))
+    testthat::expect_true(app_driver$get_active_module_input("count_events"))
+    app_driver$stop()
+  }
+)
