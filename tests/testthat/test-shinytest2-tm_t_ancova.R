@@ -219,7 +219,7 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of arm_var-variable throws v
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
-    "`Select Endpoint` is not selected."
+    "Treatment variable must be selected"
   )
   app_driver$stop()
 })
