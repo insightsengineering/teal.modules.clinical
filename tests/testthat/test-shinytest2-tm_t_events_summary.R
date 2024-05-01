@@ -1,5 +1,5 @@
 app_driver_tm_t_events_summary <- function() {
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
     library(formatters)
@@ -110,3 +110,67 @@ testthat::test_that(
     app_driver$stop()
   }
 )
+
+testthat::test_that("e2e - tm_t_events_summary: Selecting arm_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_events_summary()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_events_summary: Deselection of arm_var-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_events_summary()
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    "Please select exactly 1 or 2 treatment variables"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_events_summary: Selecting flag_var_anl-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_events_summary()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("flag_var_anl-dataset_ADAE_singleextract-select", c("TMPFL_REL", "TMPFL_GR5"))
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_events_summary: Deselection of flag_var_anl-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_events_summary()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("flag_var_anl-dataset_ADAE_singleextract-select", NULL)
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+
+testthat::test_that("e2e - tm_t_events_summary: Selecting flag_var_aesi-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_events_summary()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("flag_var_aesi-dataset_ADAE_singleextract-select", c("TMP_SMQ02", "TMP_CQ01"))
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_events_summary: Deselection of flag_var_aesi-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_events_summary()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("flag_var_aesi-dataset_ADAE_singleextract-select", NULL)
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
