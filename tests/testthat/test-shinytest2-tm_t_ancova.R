@@ -20,19 +20,23 @@ app_driver_tm_t_ancova <- function() {
     )
   )
 
+  arm_var <- teal.transform::choices_selected(
+    choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ACTARMCD", "ARMCD")),
+    selected = "ARMCD"
+  )
+
   init_teal_app_driver(
     data = data,
     modules = tm_t_ancova(
       label = "ANCOVA Table",
       dataname = "ADQS",
+      parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+                          teal.transform::datanames_input(arm_var), "ADSL"),
       avisit = teal.transform::choices_selected(
         choices = teal.transform::value_choices(data[["ADQS"]], "AVISIT"),
         selected = "WEEK 1 DAY 8"
       ),
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ACTARMCD", "ARMCD")),
-        selected = "ARMCD"
-      ),
+      arm_var = arm_var,
       arm_ref_comp = arm_ref_comp,
       aval_var = teal.transform::choices_selected(
         choices = teal.transform::variable_choices(data[["ADQS"]], c("CHG", "AVAL")),
@@ -50,7 +54,13 @@ app_driver_tm_t_ancova <- function() {
         choices = teal.transform::variable_choices(data[["ADQS"]], c("BASE", "STRATA1", "SEX")),
         selected = "STRATA1"
       ),
-      conf_level = teal.transform::choices_selected(c(2, 0.95, 0.9, 0.8), 0.95, keep_order = TRUE)
+      conf_level = teal.transform::choices_selected(c(2, 0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+      include_interact = FALSE,
+      interact_y = FALSE,
+      pre_output = NULL,
+      post_output = NULL,
+      basic_table_args = teal.widgets::basic_table_args()
+
     )
   )
 }
@@ -80,6 +90,10 @@ testthat::test_that(
     testthat::expect_equal(
       app_driver$get_active_module_input("avisit-dataset_ADQS_singleextract-filter1-vals"),
       "WEEK 1 DAY 8"
+    )
+    testthat::expect_equal(
+      app_driver$get_active_module_input("avisit-dataset_ADQS_singleextract-select"),
+      "AVISIT"
     )
     testthat::expect_equal(
       app_driver$get_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals"),
@@ -117,3 +131,115 @@ testthat::test_that(
     app_driver$stop()
   }
 )
+
+testthat::test_that("e2e - tm_t_ancova: Selecting avisit-level changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("avisit-dataset_ADQS_singleextract-filter1-vals", c( "WEEK 1 DAY 8",  "WEEK 2 DAY 15"))
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_ancova: Deselection of avisit-level throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  app_driver$set_active_module_input("avisit-dataset_ADQS_singleextract-filter1-vals", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("avisit-dataset_ADQS_singleextract-filter1-vals_input .shiny-validation-message"),
+    "`Analysis Visit` field cannot be empty."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_ancova: Selecting paramcd-level changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", c( "BFIALL", "FATIGI"))
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_ancova: Deselection of paramcd-level throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("paramcd-dataset_ADQS_singleextract-filter1-vals_input .shiny-validation-message"),
+    "`Select Endpoint` is not selected."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_ancova: Selecting aval_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", "AVAL")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_ancova: Deselection of aval_var-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("aval_var-dataset_ADQS_singleextract-select_input .shiny-validation-message"),
+    "Analysis variable cannot be empty."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_ancova: Selecting arm_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", c( "BFIALL", "FATIGI"))
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_ancova: Deselection of arm_var-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    "`Select Endpoint` is not selected."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_ancova: Selecting cov_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("cov_var-dataset_ADQS_singleextract-select", "BASE")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_ancova: Deselection of cov_var-variable changes table and doesn't throw validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_ancova()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("cov_var-dataset_ADQS_singleextract-select", NULL)
+  testthat::expect_identical(table_before, app_driver$get_active_module_tws_output("table"))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
