@@ -203,7 +203,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of responders throws
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("responders_input .shiny-validation-message"),
+    app_driver$get_text("#teal-main_ui-root-responders .shiny-validation-message"),
     "`Responders` field is empty"
   )
   app_driver$stop()
