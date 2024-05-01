@@ -105,3 +105,90 @@ testthat::test_that(
     app_driver$stop()
   }
 )
+
+testthat::test_that("e2e - tm_t_coxreg: Selecting paramcd-level changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", "CRSD")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_coxreg: Deselection of paramcd-level throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("paramcd-dataset_ADTTE_singleextract-filter1-vals_input .shiny-validation-message"),
+    "An endpoint is required"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_coxreg: Selecting arm_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_coxreg: Deselection of arm_var-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    "Treatment variable must be selected"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_coxreg: Selecting cov_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("cov_var-dataset_ADSL_singleextract-select", c("BMRKR1", "BMRKR2"))
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_coxreg: Deselection of cov_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("cov_var-dataset_ADSL_singleextract-select", NULL)
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_coxreg: Selecting strata_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", c("STRATA2", "COUNTRY"))
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_coxreg: Deselection of strata_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_coxreg()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
