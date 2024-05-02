@@ -78,7 +78,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Selecting patient_id changes
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_medical_history()
   table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
+  app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-45")
   testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
