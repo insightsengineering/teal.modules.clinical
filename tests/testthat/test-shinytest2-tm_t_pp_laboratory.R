@@ -100,3 +100,97 @@ testthat::test_that(
     app_driver$stop()
   }
 )
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Selecting patient_id changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]
+  app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
+  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  app_driver$set_active_module_input("patient_id", NULL)
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("patient_id_input .shiny-validation-message"),
+    "Please select a patient"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd-level throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", NULL)
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("paramcd-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    "Please select PARAMCD variable."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of param-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  app_driver$set_active_module_input("param-dataset_ADLB_singleextract-select", NULL)
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("param-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    "Please select PARAM variable."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", NULL)
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("timepoints-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    "Please select timepoints variable."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", NULL)
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("avalu_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    "Please select AVALU variable."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", NULL)
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("aval_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    "Please select AVAL variable."
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of arind-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  app_driver$set_active_module_input("anrind-dataset_ADLB_singleextract-select", NULL)
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("anrind-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    "Please select ANRIND variable."
+  )
+  app_driver$stop()
+})
