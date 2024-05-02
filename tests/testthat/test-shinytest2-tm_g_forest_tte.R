@@ -186,7 +186,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd var throws va
         input_id
       )
     ),
-    "Please select Endpoint filter."
+    "Treatment variable must be selected"
   )
   app_driver$stop()
 })
