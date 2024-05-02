@@ -241,8 +241,10 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "0.99")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
     app_driver$expect_validation_error()
-    app_driver$active_module_element_text(
-      sprintf("%s_input .shiny-validation-message", input_id),
+    testthat::expect_match(
+      app_driver$active_module_element_text(
+        sprintf("%s_input .shiny-validation-message", input_id)
+      ),
       "Please choose a confidence level"
     )
     app_driver$stop()
