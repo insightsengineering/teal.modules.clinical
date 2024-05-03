@@ -2,7 +2,6 @@ app_driver_tm_t_abnormality <- function() {
   data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
-    library(formatters)
 
     ADSL <- teal.data::rADSL
     ADLB <- teal.data::rADLB %>%
