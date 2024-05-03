@@ -59,7 +59,7 @@ app_driver_tm_t_shift_by_grade <- function() {
       code_missing_baseline = FALSE,
       basic_table_args = teal.widgets::basic_table_args()
     ),
-    filter = teal::teal_slices(teal.slice::teal_slice("ADSL", "SAFFL", selected = "Y"))
+    filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
   )
 }
 
