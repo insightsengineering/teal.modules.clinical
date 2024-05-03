@@ -1,4 +1,4 @@
-app_driver_tm_a_mmrm <- function() { # nolint: object_length.
+app_driver_tm_a_mmrm <- function(fit_model = TRUE) { # nolint: object_length.
   arm_ref_comp <- list(
     ARMCD = list(
       ref = "ARM B",
@@ -27,7 +27,7 @@ app_driver_tm_a_mmrm <- function() { # nolint: object_length.
 
   arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
 
-  init_teal_app_driver(
+  app_driver <- init_teal_app_driver(
     data = data,
     modules = tm_a_mmrm(
       label = "MMRM",
@@ -63,6 +63,10 @@ app_driver_tm_a_mmrm <- function() { # nolint: object_length.
     ),
     timeout = 30000
   )
+  if (fit_model) {
+    app_driver$click(selector = app_driver$active_module_element("button_start"))
+  }
+  app_driver
 }
 
 output_functions <- c(
@@ -82,7 +86,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
 
-    app_driver <- app_driver_tm_a_mmrm()
+    app_driver <- app_driver_tm_a_mmrm(FALSE)
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
 
@@ -102,7 +106,7 @@ testthat::test_that(
   ),
   {
     skip_if_too_deep(5)
-    app_driver <- app_driver_tm_a_mmrm()
+    app_driver <- app_driver_tm_a_mmrm(FALSE)
 
     testthat::expect_equal(app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"), "MMRM")
 
@@ -150,7 +154,6 @@ testthat::test_that(
 testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default selection.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
-  app_driver$click(selector = app_driver$active_module_element("button_start"))
   app_driver$expect_no_validation_error()
 
   table <- app_driver$get_active_module_tws_output("mmrm_table")
@@ -169,8 +172,6 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
-
-    app_driver$click(selector = app_driver$active_module_element("button_start"))
     app_driver$expect_no_validation_error()
 
     for (func in output_functions) {
@@ -243,8 +244,6 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
-
-      app_driver$click(selector = app_driver$active_module_element("button_start"))
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -278,8 +277,6 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
-
-      app_driver$click(selector = app_driver$active_module_element("button_start"))
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -313,8 +310,6 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
-
-      app_driver$click(selector = app_driver$active_module_element("button_start"))
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -348,8 +343,6 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
-
-      app_driver$click(selector = app_driver$active_module_element("button_start"))
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -383,8 +376,6 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
-
-      app_driver$click(selector = app_driver$active_module_element("button_start"))
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -418,8 +409,6 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
-
-      app_driver$click(selector = app_driver$active_module_element("button_start"))
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -480,7 +469,6 @@ for (func in output_functions) {
   testthat::test_that(paste0("e2e - tm_a_mmrm: Validate output on different selection on method ", func), {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
-    app_driver$click(selector = app_driver$active_module_element("button_start"))
     # Set initial output function
     app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
     app_driver$expect_no_validation_error()
