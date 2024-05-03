@@ -70,15 +70,18 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_mult_events: Selecting arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_mult_events()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_mult_events: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_mult_events()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_mult_events: Deselection of arm_var-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -93,25 +96,31 @@ testthat::test_that("e2e - tm_t_mult_events: Deselection of arm_var-variable thr
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_mult_events: Selecting hlt-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_mult_events()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("hlt-dataset_ADCM_singleextract-select", c("ATC1", "ATC2"))
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_mult_events: Selecting hlt-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_mult_events()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("hlt-dataset_ADCM_singleextract-select", c("ATC1", "ATC2"))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_t_mult_events: Deselection of hlt-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_mult_events()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("hlt-dataset_ADCM_singleextract-select", NULL)
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_mult_events: Deselection of hlt-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_mult_events()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("hlt-dataset_ADCM_singleextract-select", NULL)
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_mult_events: Deselection of llt-variable throws validation error.", {
   skip_if_too_deep(5)
