@@ -80,15 +80,18 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_events: Selecting arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_events()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_events: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_events: Deselection of arm_var-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -103,42 +106,54 @@ testthat::test_that("e2e - tm_t_events: Deselection of arm_var-variable throws v
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_events: Selecting hlt-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_events()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("hlt-dataset_ADAE_singleextract-select", "AESOC")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_events: Selecting hlt-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("hlt-dataset_ADAE_singleextract-select", "AESOC")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_t_events: Deselection of hlt-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_events()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("hlt-dataset_ADAE_singleextract-select", NULL)
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_events: Deselection of hlt-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("hlt-dataset_ADAE_singleextract-select", NULL)
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_t_events: Selecting llt-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_events()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", "AETERM")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_events: Selecting llt-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", "AETERM")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_t_events: Deselection of llt-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_events()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", NULL)
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_events: Deselection of llt-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", NULL)
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
