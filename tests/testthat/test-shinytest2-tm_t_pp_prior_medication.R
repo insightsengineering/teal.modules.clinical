@@ -89,24 +89,34 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_prior_medication: Selecting patient_id changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_pp_prior_medication()
-  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table")))[[1]]
-  app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
-  testthat::expect_false(identical(nrow(table_before), nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_pp_prior_medication: Selecting patient_id changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_prior_medication()
+    table_before <- rvest::html_table(
+      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
+    )[[1]]
+    app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
+    testthat::expect_false(
+      identical(
+        nrow(table_before),
+        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of patient_id throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("patient_id", NULL)
-   app_driver$expect_validation_error()
+  app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("patient_id_input .shiny-validation-message"),
-    "Please select a patient"
+    "Please select patient id"
   )
   app_driver$stop()
 })
