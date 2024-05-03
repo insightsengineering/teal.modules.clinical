@@ -35,14 +35,16 @@ app_driver_tm_t_summary_by <- function() {
       ),
       id_var = teal.transform::choices_selected(
         teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
-        selected = "USUBJID", fixed = TRUE),
+        selected = "USUBJID", fixed = TRUE
+      ),
       total_label = default_total_label(),
       parallel_vars = FALSE,
       row_groups = FALSE,
       na_level = default_na_str(),
       numeric_stats = c("n", "mean_sd", "median", "range"),
       denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit",
-                                                     fixed = TRUE),
+        fixed = TRUE
+      ),
       drop_arm_levels = TRUE,
       drop_zero_levels = TRUE,
       pre_output = NULL,
@@ -105,15 +107,18 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_summary_by: Selecting arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_summary_by()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_summary_by: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_summary_by()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_summary_by: Deselection of arm_var-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -128,15 +133,18 @@ testthat::test_that("e2e - tm_t_summary_by: Deselection of arm_var-variable thro
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_summary_by: Selecting arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_summary_by()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", "CRP")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_summary_by: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_summary_by()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", "CRP")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_summary_by: Deselection of arm_var-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -145,41 +153,52 @@ testthat::test_that("e2e - tm_t_summary_by: Deselection of arm_var-variable thro
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("paramcd-dataset_ADLB_singleextract-filter1-vals_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "paramcd-dataset_ADLB_singleextract-filter1-vals_input .shiny-validation-message"
+    ),
     "Please select a filter."
   )
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_summary_by: Selecting arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_summary_by()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", "PARAM")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_summary_by: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_summary_by()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", "PARAM")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_t_summary_by: Deselection of arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_summary_by()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_summary_by: Deselection of arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_summary_by()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", NULL)
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_t_summary_by: Selecting summarize_vars-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_summary_by()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("summarize_vars-dataset_ADLB_singleextract-select", "CHG")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_summary_by: Selecting summarize_vars-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_summary_by()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("summarize_vars-dataset_ADLB_singleextract-select", "CHG")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_summary_by: Deselection of summarize_vars-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -188,10 +207,10 @@ testthat::test_that("e2e - tm_t_summary_by: Deselection of summarize_vars-variab
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("summarize_vars-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "summarize_vars-dataset_ADLB_singleextract-select_input .shiny-validation-message"
+    ),
     "Please select a summarize variable."
   )
   app_driver$stop()
 })
-
-
