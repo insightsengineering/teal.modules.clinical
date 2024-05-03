@@ -2,7 +2,6 @@ app_driver_tm_t_events_summary <- function() {
   data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
-    library(formatters)
     ADSL <- teal.data::rADSL %>%
       mutate(
         DTHFL = case_when(
