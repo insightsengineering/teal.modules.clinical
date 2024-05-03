@@ -22,8 +22,10 @@ app_driver_tm_t_summary <- function() {
       parentname = "ADSL",
       total_label = default_total_label(),
       na_level = default_na_str(),
-      numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
-                        "range", "geom_mean"),
+      numeric_stats = c(
+        "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
+        "range", "geom_mean"
+      ),
       denominator = c("N", "n", "omit"),
       drop_arm_levels = TRUE,
       pre_output = NULL,
@@ -70,15 +72,18 @@ testthat::test_that("e2e - tm_t_summary: Starts with specified label, arm_var, s
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_summary: Selecting arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_summary()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_summary: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_summary()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_summary: Deselection of arm_var-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -93,15 +98,18 @@ testthat::test_that("e2e - tm_t_summary: Deselection of arm_var-variable throws 
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_summary: Selecting summarize_vars-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_summary()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("summarize_vars-dataset_ADSL_singleextract-select", c("SEX", "AGE"))
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_summary: Selecting summarize_vars-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_summary()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("summarize_vars-dataset_ADSL_singleextract-select", c("SEX", "AGE"))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_summary: Deselection of summarize_vars-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -110,10 +118,10 @@ testthat::test_that("e2e - tm_t_summary: Deselection of summarize_vars-variable 
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("summarize_vars-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "summarize_vars-dataset_ADSL_singleextract-select_input .shiny-validation-message"
+    ),
     "Please select a summarize variable"
   )
   app_driver$stop()
 })
-
-
