@@ -51,44 +51,101 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Starts with specified label, pati
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_pp_basic_info: Selecting patient_id changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_pp_basic_info()
-  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("basic_info_table")))[[1]]
-  app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
-  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("basic_info_table")))[[1]]))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  paste0(
+    "e2e - tm_t_pp_basic_info: Selecting patient_id",
+    "changes the table and does not throw validation errors."
+  ),
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_basic_info()
+    table_before <- rvest::html_table(
+      app_driver$get_html_rvest(
+        app_driver$active_module_element("basic_info_table")
+      )
+    )[[1]]
+    app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
+    testthat::expect_false(
+      identical(
+        table_before,
+        rvest::html_table(
+          app_driver$get_html_rvest(
+            app_driver$active_module_element("basic_info_table")
+          )
+        )[[1]]
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of patient_id throws validation error and table is not visible", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_pp_basic_info()
-  app_driver$set_active_module_input("patient_id", NULL)
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("basic_info_table"), visibility_property = TRUE))
-  app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$active_module_element_text("patient_id_input .shiny-validation-message"),
-    "Please select a patient"
-  )
-  app_driver$stop()
-})
+testthat::test_that(
+  paste0(
+    "e2e - tm_t_pp_basic_info: Deselection of patient_id",
+    "throws validation error and table is not visible"
+  ),
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_basic_info()
+    app_driver$set_active_module_input("patient_id", NULL)
+    testthat::expect_false(
+      app_driver$is_visible(
+        app_driver$active_module_element("basic_info_table"),
+        visibility_property = TRUE
+      )
+    )
+    app_driver$expect_validation_error()
+    testthat::expect_equal(
+      app_driver$active_module_element_text("patient_id_input .shiny-validation-message"),
+      "Please select a patient"
+    )
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_t_pp_basic_info: Selecting cov_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_pp_basic_info()
-  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("basic_info_table")))[[1]]
-  app_driver$set_active_module_input("vars-dataset_ADSL_singleextract-select", c("AGE", "BMRKR1"))
-  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("basic_info_table")))[[1]]))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  paste0(
+    "e2e - tm_t_pp_basic_info: Selecting cov_var-variable changes",
+    "the table and does not throw validation errors."
+  ),
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_basic_info()
+    table_before <- rvest::html_table(
+      app_driver$get_html_rvest(
+        app_driver$active_module_element("basic_info_table")
+      )
+    )[[1]]
+    app_driver$set_active_module_input(
+      "vars-dataset_ADSL_singleextract-select",
+      c("AGE", "BMRKR1")
+    )
+    testthat::expect_false(
+      identical(
+        table_before,
+        rvest::html_table(
+          app_driver$get_html_rvest(
+            app_driver$active_module_element("basic_info_table")
+          )
+        )[[1]]
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of cov_var-variable throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
   app_driver$set_active_module_input("vars-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("basic_info_table"), visibility_property = TRUE))
+  testthat::expect_false(
+    app_driver$is_visible(
+      app_driver$active_module_element("basic_info_table"),
+      visibility_property = TRUE
+    )
+  )
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("vars-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
@@ -96,4 +153,3 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of cov_var-variable t
   )
   app_driver$stop()
 })
-
