@@ -85,15 +85,18 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_arm: Selecting arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_shift_by_arm()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_shift_by_arm: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_shift_by_arm()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of arm_var-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -108,15 +111,18 @@ testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of arm_var-variable th
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_shift_by_arm: Selecting paramcd-level changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_shift_by_arm()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals", "QT")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_shift_by_arm: Selecting paramcd-level changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_shift_by_arm()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals", "QT")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of paramcd-level throws validation error.", {
   skip_if_too_deep(5)
@@ -125,21 +131,26 @@ testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of paramcd-level throw
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("paramcd-dataset_ADEG_singleextract-filter1-vals_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "paramcd-dataset_ADEG_singleextract-filter1-vals_input .shiny-validation-message"
+    ),
     "An endpoint is required"
   )
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_shift_by_arm: Selecting visit_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_shift_by_arm()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("visit_var-dataset_ADEG_singleextract-filter1-vals", "SCREEENING")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_shift_by_arm: Selecting visit_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_shift_by_arm()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("visit_var-dataset_ADEG_singleextract-filter1-vals", "SCREENING")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of visit_var-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -148,7 +159,9 @@ testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of visit_var-variable 
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("visit_var-dataset_ADEG_singleextract-filter1-vals_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "visit_var-dataset_ADEG_singleextract-filter1-vals_input .shiny-validation-message"
+    ),
     "A visit is required"
   )
   app_driver$stop()
