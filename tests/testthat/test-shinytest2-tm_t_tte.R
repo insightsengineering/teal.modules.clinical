@@ -46,15 +46,25 @@ app_driver_tm_t_tte <- function() {
         fixed = TRUE
       ),
       aval_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "AVAL"), "AVAL", fixed = TRUE),
+        teal.transform::variable_choices(data[["ADTTE"]], "AVAL"), "AVAL",
+        fixed = TRUE
+      ),
       cnsr_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "CNSR"), "CNSR", fixed = TRUE),
+        teal.transform::variable_choices(data[["ADTTE"]], "CNSR"), "CNSR",
+        fixed = TRUE
+      ),
       conf_level_coxph = teal.transform::choices_selected(
-        c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+        c(0.95, 0.9, 0.8), 0.95,
+        keep_order = TRUE
+      ),
       conf_level_survfit = teal.transform::choices_selected(
-        c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+        c(0.95, 0.9, 0.8), 0.95,
+        keep_order = TRUE
+      ),
       time_unit_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "AVALU"), "AVALU", fixed = TRUE),
+        teal.transform::variable_choices(data[["ADTTE"]], "AVALU"), "AVALU",
+        fixed = TRUE
+      ),
       add_total = FALSE,
       total_label = default_total_label(),
       na_level = default_na_str(),
@@ -144,15 +154,18 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_tte: Selecting paramcd-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_tte()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", "CRSD")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_tte: Selecting paramcd-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_tte()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", "CRSD")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_tte: Deselection of paramcd-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -161,21 +174,26 @@ testthat::test_that("e2e - tm_t_tte: Deselection of paramcd-variable throws vali
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("paramcd-dataset_ADTTE_singleextract-filter1-vals_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "paramcd-dataset_ADTTE_singleextract-filter1-vals_input .shiny-validation-message"
+    ),
     "An endpoint is required"
   )
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_tte: Selecting arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_tte()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_tte: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_tte()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_tte: Deselection of arm_var-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -184,29 +202,37 @@ testthat::test_that("e2e - tm_t_tte: Deselection of arm_var-variable throws vali
   testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select-vals_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
+    ),
     "Treatment variable must be selected"
   )
   app_driver$stop()
 })
 
 
-testthat::test_that("e2e - tm_t_tte: Selecting strata_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_tte()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "BMRKR2")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_tte: Selecting strata_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_tte()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "BMRKR2")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-testthat::test_that("e2e - tm_t_tte: Deselection of strata_var-variable changes the table and throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_tte()
-  table_before <- app_driver$get_active_module_tws_output("table")
-  app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_tte: Deselection of strata_var-variable changes the table and throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_tte()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
