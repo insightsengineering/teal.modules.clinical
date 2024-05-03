@@ -46,7 +46,7 @@ app_driver_tm_t_exposure <- function() {
       ),
       add_total = FALSE
     ),
-    filter = teal::teal_slices(teal.slice::teal_slice("ADSL", "SAFFL", selected = "Y"))
+    filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
   )
 }
 
