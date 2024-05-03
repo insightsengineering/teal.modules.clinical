@@ -1,5 +1,5 @@
 app_driver_tm_t_pp_laboratory <- function() {
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- teal.data::rADSL
     ADLB <- teal.data::rADLB
@@ -14,31 +14,34 @@ app_driver_tm_t_pp_laboratory <- function() {
     modules = tm_t_pp_laboratory(
       label = "Vitals",
       dataname = "ADLB",
+      parentname = "ADSL",
       patient_col = "USUBJID",
       paramcd = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], "PARAMCD"),
+        choices = teal.transform::variable_choices(data[["ADLB"]], c("PARAMCD", "STUDYID")),
         selected = "PARAMCD"
       ),
       param = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], "PARAM"),
+        choices = teal.transform::variable_choices(data[["ADLB"]], c("PARAM", "SEX")),
         selected = "PARAM"
       ),
       timepoints = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], "ADY"),
+        choices = teal.transform::variable_choices(data[["ADLB"]], c("ADY", "AGE")),
         selected = "ADY"
       ),
       anrind = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], "ANRIND"),
+        choices = teal.transform::variable_choices(data[["ADLB"]], c("ANRIND", "AGEU")),
         selected = "ANRIND"
       ),
       aval_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], "AVAL"),
+        choices = teal.transform::variable_choices(data[["ADLB"]], c("AVAL", "AGE")),
         selected = "AVAL"
       ),
       avalu_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], "AVALU"),
+        choices = teal.transform::variable_choices(data[["ADLB"]], c("AVALU", "SEX")),
         selected = "AVALU"
-      )
+      ),
+      pre_output = NULL,
+      post_output = NULL
     )
   )
 }
@@ -123,6 +126,16 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws 
   app_driver$stop()
 })
 
+testthat::test_that("e2e - tm_t_pp_laboratory: Selecting paramcd-level changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]
+  app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", "STUDYID")
+  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd-level throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
@@ -132,6 +145,16 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd-level thro
     app_driver$active_module_element_text("paramcd-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
     "Please select PARAMCD variable."
   )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Selecting param-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]
+  app_driver$set_active_module_input("param-dataset_ADLB_singleextract-select", "SEX")
+  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]))
+  app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
@@ -147,6 +170,16 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of param-variable thr
   app_driver$stop()
 })
 
+testthat::test_that("e2e - tm_t_pp_laboratory: Selecting timepoints-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]
+  app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", "AGE")
+  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints-variable throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
@@ -156,6 +189,16 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints-variabl
     app_driver$active_module_element_text("timepoints-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
     "Please select timepoints variable."
   )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Selecting avalu-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]
+  app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", "SEX")
+  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]))
+  app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
@@ -171,6 +214,16 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu-variable thr
   app_driver$stop()
 })
 
+testthat::test_that("e2e - tm_t_pp_laboratory: Selecting aval_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]
+  app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", "AGE")
+  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var-variable throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
@@ -180,6 +233,16 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var-variable 
     app_driver$active_module_element_text("aval_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
     "Please select AVAL variable."
   )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_pp_laboratory: Selecting arind-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_pp_laboratory()
+  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]
+  app_driver$set_active_module_input("anrind-dataset_ADLB_singleextract-select", "AGEU")
+  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]))
+  app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
