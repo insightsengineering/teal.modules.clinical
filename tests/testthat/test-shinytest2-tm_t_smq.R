@@ -1,5 +1,5 @@
 app_driver_tm_t_smq <- function() {
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- teal.data::rADSL
     ADAE <- teal.data::rADAE
@@ -36,7 +36,7 @@ app_driver_tm_t_smq <- function() {
       baskets = data[["cs_baskets"]],
       scopes = data[["cs_scopes"]],
       llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], subset = c("AEDECOD")),
+        choices = teal.transform::variable_choices(data[["ADAE"]], subset = c("AEDECOD", "SEX")),
         selected = "AEDECOD"
       )
     )
@@ -84,3 +84,73 @@ testthat::test_that(
     app_driver$stop()
   }
 )
+
+testthat::test_that("e2e - tm_t_smq: Selecting arm_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_smq()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "SEX")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_smq: Deselection of arm_var-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_smq()
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    "At least one treatment variable is required"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_smq: Selecting paramcd-level changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_smq()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", "SEX")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_smq: Deselection of paramcd-level throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_smq()
+  app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("llt-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
+    "A low level term variable is required"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_smq: Selecting worst_flag-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_smq()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("baskets-dataset_ADAE_singleextract-select", "CQ01NAM")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_smq: Deselection of worst_flag-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_smq()
+  app_driver$set_active_module_input("baskets-dataset_ADAE_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("baskets-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
+    "At least one basket is required"
+  )
+  app_driver$stop()
+})
+
