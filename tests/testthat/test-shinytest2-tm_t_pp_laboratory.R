@@ -101,15 +101,25 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_laboratory: Selecting patient_id changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_pp_laboratory()
-  table_before <- rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]
-  app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
-  testthat::expect_false(identical(table_before, rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_pp_laboratory: Selecting patient_id changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_laboratory()
+    table_before <- rvest::html_table(
+      app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table"))
+    )[[2]]
+    app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
+    testthat::expect_false(
+      identical(
+        table_before,
+        rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("lab_values_table")))[[2]]
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws validation error.", {
   skip_if_too_deep(5)
@@ -153,7 +163,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints-variabl
   app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", NULL)
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("timepoints-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "timepoints-dataset_ADLB_singleextract-select_input .shiny-validation-message"
+    ),
     "Please select timepoints variable."
   )
   app_driver$stop()
@@ -165,7 +177,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu-variable thr
   app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", NULL)
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("avalu_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "avalu_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"
+    ),
     "Please select AVALU variable."
   )
   app_driver$stop()
