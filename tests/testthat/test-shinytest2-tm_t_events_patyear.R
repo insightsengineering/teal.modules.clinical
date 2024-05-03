@@ -91,15 +91,18 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_events_patyear: Selecting paramcd-level changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_events_patyear()
-  table_before <- app_driver$get_active_module_tws_output("patyear_table")
-  app_driver$set_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals", "AETTE2")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("patyear_table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_events_patyear: Selecting paramcd-level changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events_patyear()
+    table_before <- app_driver$get_active_module_tws_output("patyear_table")
+    app_driver$set_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals", "AETTE2")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("patyear_table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd-level throws validation error.", {
   skip_if_too_deep(5)
@@ -108,21 +111,26 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd-level thr
   testthat::expect_identical(app_driver$get_active_module_tws_output("patyear_table"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("paramcd-dataset_ADAETTE_singleextract-filter1-vals_input .shiny-validation-message"),
+    app_driver$active_module_element_text(
+      "paramcd-dataset_ADAETTE_singleextract-filter1-vals_input .shiny-validation-message"
+    ),
     "A Event Type Parameter is required"
   )
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_events_patyear: Selecting arm_var-variable changes the table and does not throw validation errors.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_events_patyear()
-  table_before <- app_driver$get_active_module_tws_output("patyear_table")
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARM")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("patyear_table")))
-  app_driver$expect_no_validation_error()
-  app_driver$stop()
-})
+testthat::test_that(
+  "e2e - tm_t_events_patyear: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events_patyear()
+    table_before <- app_driver$get_active_module_tws_output("patyear_table")
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARM")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("patyear_table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -136,4 +144,3 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var-variable 
   )
   app_driver$stop()
 })
-
