@@ -1,5 +1,5 @@
 app_driver_tm_t_shift_by_grade <- function() {
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- teal.data::rADSL
     ADLB <- teal.data::rADLB
@@ -14,8 +14,12 @@ app_driver_tm_t_shift_by_grade <- function() {
     modules = tm_t_shift_by_grade(
       label = "Grade Laboratory Abnormality Table",
       dataname = "ADLB",
+      parentname = "ADSL",
+      visit_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADSL"]], subset = "AVISIT"),
+        selected = "AVISIT", fixed = TRUE),
       arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
+        choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       paramcd = teal.transform::choices_selected(
@@ -43,7 +47,17 @@ app_driver_tm_t_shift_by_grade <- function() {
         selected = c("BTOXGR"),
         fixed = TRUE
       ),
-      add_total = FALSE
+      id_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
+        selected = "USUBJID", fixed = TRUE),
+      add_total = FALSE,
+      total_label = default_total_label(),
+      drop_arm_levels = TRUE,
+      pre_output = NULL,
+      post_output = NULL,
+      na_level = default_na_str(),
+      code_missing_baseline = FALSE,
+      basic_table_args = teal.widgets::basic_table_args()
     ),
     filter = teal::teal_slices(teal.slice::teal_slice("ADSL", "SAFFL", selected = "Y"))
   )
@@ -103,3 +117,72 @@ testthat::test_that(
     app_driver$stop()
   }
 )
+
+testthat::test_that("e2e - tm_t_shift_by_grade: Selecting arm_var-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_shift_by_grade()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of arm_var-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_shift_by_grade()
+  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    "A treatment variable is required"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_shift_by_grade: Selecting paramcd-level changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_shift_by_grade()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", "CRP")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of paramcd-level throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_shift_by_grade()
+  app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("paramcd-dataset_ADLB_singleextract-filter1-vals_input .shiny-validation-message"),
+    "A laboratory parameter is required"
+  )
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_shift_by_grade: Selecting worst_flag-variable changes the table and does not throw validation errors.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_shift_by_grade()
+  table_before <- app_driver$get_active_module_tws_output("table")
+  app_driver$set_active_module_input("worst_flag_var-dataset_ADLB_singleextract-select", "WGRLOFL")
+  testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+  app_driver$expect_no_validation_error()
+  app_driver$stop()
+})
+
+testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag-variable throws validation error.", {
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_shift_by_grade()
+  app_driver$set_active_module_input("worst_flag_var-dataset_ADLB_singleextract-select", NULL)
+  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  app_driver$expect_validation_error()
+  testthat::expect_equal(
+    app_driver$active_module_element_text("worst_flag_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    "A worst treatment flag is required"
+  )
+  app_driver$stop()
+})
