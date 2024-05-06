@@ -166,74 +166,94 @@ testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default
 
 testthat::test_that(
   paste0(
-    "e2e - tm_a_mmrm: Output type selection shows dynamic output settings; changing",
-    "settings throws no validation errors and verify visibility of generated plots or tables."
+    "e2e - tm_a_mmrm: function t_mmrm_lsmeans selection shows output settings; changing",
+    "settings throws no validation errors and verify visibility of generated tables."
   ),
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
+
+    app_driver$click(selector = app_driver$active_module_element("button_start"))
     app_driver$expect_no_validation_error()
 
-    for (func in output_functions) {
-      app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
-      app_driver$expect_no_validation_error()
+    app_driver$set_active_module_input("output_function", "t_mmrm_lsmeans", wait_ = FALSE)
+    app_driver$expect_no_validation_error()
 
-      switch(func,
-        t_mmrm_lsmeans = {
-          testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
-          app_driver$set_active_module_input("t_mmrm_lsmeans_show_relative", "increase")
-          app_driver$expect_no_validation_error()
-        },
-        g_mmrm_lsmeans = {
-          plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
-          testthat::expect_match(plot_before, "data:image/png;base64,")
-
-          app_driver$set_active_module_input("g_mmrm_lsmeans_select", "estimates")
-          app_driver$expect_no_validation_error()
-          app_driver$set_active_module_input("g_mmrm_lsmeans_select", "contrasts")
-          app_driver$expect_no_validation_error()
-
-          app_driver$set_active_module_input(
-            "g_mmrm_lsmeans_select",
-            c("estimates", "contrasts")
-          )
-          app_driver$expect_no_validation_error()
-
-          app_driver$set_active_module_input("g_mmrm_lsmeans_width", 0.9)
-          app_driver$expect_no_validation_error()
-
-          app_driver$set_active_module_input("g_mmrm_lsmeans_contrasts_show_pval", TRUE)
-          app_driver$expect_no_validation_error()
-
-          plot <- app_driver$get_active_module_pws_output("mmrm_plot")
-          testthat::expect_match(plot, "data:image/png;base64,")
-
-          testthat::expect_false(identical(plot_before, plot))
-        },
-        t_mmrm_cov = ,
-        t_mmrm_fixed = ,
-        t_mmrm_diagnostic = {
-          table <- app_driver$get_active_module_tws_output("mmrm_table")
-          testthat::expect_gt(nrow(table), 1)
-        },
-        g_mmrm_diagnostic = {
-          plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
-          testthat::expect_match(plot_before, "data:image/png;base64,")
-
-          app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
-          app_driver$expect_no_validation_error()
-
-          plot <- app_driver$get_active_module_pws_output("mmrm_plot")
-          testthat::expect_match(plot, "data:image/png;base64,")
-
-          testthat::expect_false(identical(plot_before, plot))
-        }
-      )
-    }
-
+    testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
+    app_driver$set_active_module_input("t_mmrm_lsmeans_show_relative", "increase")
+    app_driver$expect_no_validation_error()
     app_driver$stop()
-  }
-)
+  })
+
+testthat::test_that(
+  paste0(
+    "e2e - tm_a_mmrm: function g_mmrm_lsmeans selection shows output settings; changing",
+    "settings throws no validation errors and verify visibility of generated plots."
+  ),
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_a_mmrm()
+
+    app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$expect_no_validation_error()
+
+    app_driver$set_active_module_input("output_function", "g_mmrm_lsmeans", wait_ = FALSE)
+    app_driver$expect_no_validation_error()
+
+    plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+    testthat::expect_match(plot_before, "data:image/png;base64,")
+
+    app_driver$set_active_module_input("g_mmrm_lsmeans_select", "estimates")
+    app_driver$expect_no_validation_error()
+    app_driver$set_active_module_input("g_mmrm_lsmeans_select", "contrasts")
+    app_driver$expect_no_validation_error()
+
+    app_driver$set_active_module_input(
+      "g_mmrm_lsmeans_select",
+      c("estimates", "contrasts")
+    )
+    app_driver$expect_no_validation_error()
+
+    app_driver$set_active_module_input("g_mmrm_lsmeans_width", 0.9)
+    app_driver$expect_no_validation_error()
+
+    app_driver$set_active_module_input("g_mmrm_lsmeans_contrasts_show_pval", TRUE)
+    app_driver$expect_no_validation_error()
+
+    plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+    testthat::expect_match(plot, "data:image/png;base64,")
+
+    testthat::expect_false(identical(plot_before, plot))
+    app_driver$stop()
+  })
+
+testthat::test_that(
+  paste0(
+    "e2e - tm_a_mmrm: function g_mmrm_diagnostic selection shows output settings; changing",
+    "settings throws no validation errors and verify visibility of generated plots."
+  ),
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_a_mmrm()
+
+    app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$expect_no_validation_error()
+
+    app_driver$set_active_module_input("output_function", "g_mmrm_diagnostic", wait_ = FALSE)
+    app_driver$expect_no_validation_error()
+
+    plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+    testthat::expect_match(plot_before, "data:image/png;base64,")
+
+    app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
+    app_driver$expect_no_validation_error()
+
+    plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+    testthat::expect_match(plot, "data:image/png;base64,")
+
+    testthat::expect_false(identical(plot_before, plot))
+    app_driver$stop()
+  })
 
 for (func in output_functions) {
   testthat::test_that(
