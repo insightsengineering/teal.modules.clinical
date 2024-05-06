@@ -1,5 +1,5 @@
 app_driver_tm_t_summary_by <- function() {
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- teal.data::rADSL
     ADLB <- teal.data::rADLB
