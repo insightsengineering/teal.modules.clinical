@@ -183,7 +183,8 @@ testthat::test_that(
     app_driver$set_active_module_input("t_mmrm_lsmeans_show_relative", "increase")
     app_driver$expect_no_validation_error()
     app_driver$stop()
-  })
+  }
+)
 
 testthat::test_that(
   paste0(
@@ -225,7 +226,8 @@ testthat::test_that(
 
     testthat::expect_false(identical(plot_before, plot))
     app_driver$stop()
-  })
+  }
+)
 
 testthat::test_that(
   paste0(
@@ -253,7 +255,8 @@ testthat::test_that(
 
     testthat::expect_false(identical(plot_before, plot))
     app_driver$stop()
-  })
+  }
+)
 
 for (func in output_functions) {
   testthat::test_that(
