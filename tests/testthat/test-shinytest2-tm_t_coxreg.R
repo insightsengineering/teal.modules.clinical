@@ -1,6 +1,6 @@
 app_driver_tm_t_coxreg <- function() {
   # TODO: Check if data fabrication is needed for Cox regression
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- teal.data::rADSL
     ADTTE <- teal.data::rADTTE
@@ -25,6 +25,7 @@ app_driver_tm_t_coxreg <- function() {
     modules = tm_t_coxreg(
       label = "Cox Reg.",
       dataname = "ADTTE",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
       arm_ref_comp = arm_ref_comp,
       paramcd = teal.transform::choices_selected(
@@ -36,7 +37,17 @@ app_driver_tm_t_coxreg <- function() {
       cov_var = teal.transform::choices_selected(
         c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
       ),
-      multivariate = TRUE
+      multivariate = TRUE,
+      aval_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADTTE"]], "AVAL"), "AVAL", fixed = TRUE),
+      cnsr_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADTTE"]], "CNSR"), "CNSR", fixed = TRUE),
+      na_level = default_na_str(),
+      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+          TRUE),
+      pre_output = NULL,
+      post_output = NULL,
+      basic_table_args = teal.widgets::basic_table_args()
     )
   )
 }
