@@ -28,7 +28,7 @@ app_driver_tm_t_events <- function() {
       total_label = default_total_label(),
       na_level = default_na_str(),
       sort_criteria = c("freq_desc", "alpha"),
-      sort_freq_col = total_label,
+      sort_freq_col = default_total_label(),
       prune_freq = 0,
       prune_diff = 0,
       drop_arm_levels = TRUE,
