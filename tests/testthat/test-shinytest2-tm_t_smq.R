@@ -35,7 +35,8 @@ app_driver_tm_t_smq <- function() {
       ),
       id_var = teal.transform::choices_selected(
         teal.transform::variable_choices(data[["ADSL"]], subset = "USUBJID"),
-        selected = "USUBJID", fixed = TRUE),
+        selected = "USUBJID", fixed = TRUE
+      ),
       add_total = FALSE,
       total_label = default_total_label(),
       sort_criteria = c("freq_desc", "alpha"),
