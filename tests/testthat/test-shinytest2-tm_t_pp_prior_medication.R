@@ -1,5 +1,5 @@
 app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
     ADCM <- teal.data::rADCM
@@ -23,21 +23,23 @@ app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length
       parentname = "ADSL",
       patient_col = "USUBJID",
       atirel = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], "ATIREL"),
+        choices = teal.transform::variable_choices(data[["ADCM"]], c("ATIREL", "SEX")),
         selected = "ATIREL"
       ),
       cmdecod = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], "CMDECOD"),
+        choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD", "RACE")),
         selected = "CMDECOD"
       ),
       cmindc = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], "CMINDC"),
+        choices = teal.transform::variable_choices(data[["ADCM"]], c("CMINDC", "SEX")),
         selected = "CMINDC"
       ),
       cmstdy = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], "ASTDY"),
+        choices = teal.transform::variable_choices(data[["ADCM"]], c("ASTDY", "AGE")),
         selected = "ASTDY"
-      )
+      ),
+      pre_output = NULL,
+      post_output = NULL
     )
   )
 }
@@ -121,6 +123,26 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of patient_id t
   app_driver$stop()
 })
 
+testthat::test_that(
+  "e2e - tm_t_pp_prior_medication: Selecting cmdecod-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_prior_medication()
+    table_before <- rvest::html_table(
+      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
+    )[[1]]
+    app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", "SEX")
+    testthat::expect_false(
+      identical(
+        nrow(table_before),
+        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
+
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmdecod-variable throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
@@ -132,6 +154,26 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmdecod-vari
   )
   app_driver$stop()
 })
+
+testthat::test_that(
+  "e2e - tm_t_pp_prior_medication: Selecting atirel-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_prior_medication()
+    table_before <- rvest::html_table(
+      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
+    )[[1]]
+    app_driver$set_active_module_input("atirel-dataset_ADCM_singleextract-select", "RACE")
+    testthat::expect_false(
+      identical(
+        nrow(table_before),
+        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel-variable throws validation error.", {
   skip_if_too_deep(5)
@@ -145,6 +187,26 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel-varia
   app_driver$stop()
 })
 
+testthat::test_that(
+  "e2e - tm_t_pp_prior_medication: Selecting cmdecod-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_prior_medication()
+    table_before <- rvest::html_table(
+      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
+    )[[1]]
+    app_driver$set_active_module_input("cmindc-dataset_ADCM_singleextract-select", "SEX")
+    testthat::expect_false(
+      identical(
+        nrow(table_before),
+        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
+
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc-variable throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
@@ -156,6 +218,26 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc-varia
   )
   app_driver$stop()
 })
+
+testthat::test_that(
+  "e2e - tm_t_pp_prior_medication: Selecting cmdecod-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_prior_medication()
+    table_before <- rvest::html_table(
+      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
+    )[[1]]
+    app_driver$set_active_module_input("cmstdy-dataset_ADCM_singleextract-select", "AGE")
+    testthat::expect_false(
+      identical(
+        nrow(table_before),
+        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmstdy-variable throws validation error.", {
   skip_if_too_deep(5)
