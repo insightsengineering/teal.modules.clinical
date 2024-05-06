@@ -131,7 +131,7 @@ testthat::test_that(
     table_before <- rvest::html_table(
       app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
     )[[1]]
-    app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", "SEX")
+    app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", "RACE")
     testthat::expect_false(
       identical(
         nrow(table_before),
@@ -163,7 +163,7 @@ testthat::test_that(
     table_before <- rvest::html_table(
       app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
     )[[1]]
-    app_driver$set_active_module_input("atirel-dataset_ADCM_singleextract-select", "RACE")
+    app_driver$set_active_module_input("atirel-dataset_ADCM_singleextract-select", "SEX")
     testthat::expect_false(
       identical(
         nrow(table_before),
