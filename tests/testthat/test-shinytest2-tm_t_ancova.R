@@ -20,24 +20,20 @@ app_driver_tm_t_ancova <- function() {
     )
   )
 
-  arm_var <- teal.transform::choices_selected(
-    choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ACTARMCD", "ARMCD")),
-    selected = "ARMCD"
-  )
-
   init_teal_app_driver(
     data = data,
     modules = tm_t_ancova(
       label = "ANCOVA Table",
       dataname = "ADQS",
-      parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-        teal.transform::datanames_input(arm_var), "ADSL"
-      ),
+      parentname = "ADSL",
       avisit = teal.transform::choices_selected(
         choices = teal.transform::value_choices(data[["ADQS"]], "AVISIT"),
         selected = "WEEK 1 DAY 8"
       ),
-      arm_var = arm_var,
+      arm_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ACTARMCD", "ARMCD")),
+        selected = "ARMCD"
+      ),
       arm_ref_comp = arm_ref_comp,
       aval_var = teal.transform::choices_selected(
         choices = teal.transform::variable_choices(data[["ADQS"]], c("CHG", "AVAL")),
