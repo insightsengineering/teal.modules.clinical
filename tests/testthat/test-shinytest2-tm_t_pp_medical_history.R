@@ -1,5 +1,5 @@
 app_driver_tm_t_pp_medical_history <- function() { # nolint: object_length
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
     ADMH <- tmc_ex_admh
@@ -15,17 +15,19 @@ app_driver_tm_t_pp_medical_history <- function() { # nolint: object_length
       parentname = "ADSL",
       patient_col = "USUBJID",
       mhterm = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADMH"]], c("MHTERM")),
+        choices = teal.transform::variable_choices(data[["ADMH"]], c("MHTERM", "STUDYID")),
         selected = "MHTERM"
       ),
       mhbodsys = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADMH"]], "MHBODSYS"),
+        choices = teal.transform::variable_choices(data[["ADMH"]], c("MHBODSYS", "EOSSTT")),
         selected = "MHBODSYS"
       ),
       mhdistat = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADMH"]], "MHDISTAT"),
+        choices = teal.transform::variable_choices(data[["ADMH"]], c("MHDISTAT", "STUDYID")),
         selected = "MHDISTAT"
-      )
+      ),
+      pre_output = NULL,
+      post_output = NULL
     )
   )
 }
@@ -100,6 +102,19 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of patient_id th
   app_driver$stop()
 })
 
+testthat::test_that(
+  "e2e - tm_t_pp_medical_history: Selecting mhterm-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_medical_history()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("mhterm-dataset_ADMH_singleextract-select", "STUDYID")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
+
 testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhterm-variable throws validation error.", {
   app_driver <- app_driver_tm_t_pp_medical_history()
   app_driver$set_active_module_input("mhterm-dataset_ADMH_singleextract-select", NULL)
@@ -112,6 +127,19 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhterm-variab
   app_driver$stop()
 })
 
+testthat::test_that(
+  "e2e - tm_t_pp_medical_history: Selecting mhbodsys-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_medical_history()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("mhbodsys-dataset_ADMH_singleextract-select", "EOSSTT")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
+
 testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhbodsys-variable throws validation error.", {
   app_driver <- app_driver_tm_t_pp_medical_history()
   app_driver$set_active_module_input("mhbodsys-dataset_ADMH_singleextract-select", NULL)
@@ -123,6 +151,19 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhbodsys-vari
   )
   app_driver$stop()
 })
+
+testthat::test_that(
+  "e2e - tm_t_pp_medical_history: Selecting mhbodsys-variable changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_pp_medical_history()
+    table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$set_active_module_input("mhdistat-dataset_ADMH_singleextract-select", "STUDYID")
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
 testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhdistat-variable throws validation error.", {
   app_driver <- app_driver_tm_t_pp_medical_history()
