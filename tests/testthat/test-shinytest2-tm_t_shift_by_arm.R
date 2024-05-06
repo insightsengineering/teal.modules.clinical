@@ -1,5 +1,5 @@
 app_driver_tm_t_shift_by_arm <- function() {
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
     ADEG <- tmc_ex_adeg
@@ -14,6 +14,7 @@ app_driver_tm_t_shift_by_arm <- function() {
     modules = tm_t_shift_by_arm(
       label = "Shift by Arm Table",
       dataname = "ADEG",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(
         teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
         selected = "ARM"
@@ -34,7 +35,17 @@ app_driver_tm_t_shift_by_arm <- function() {
         teal.transform::variable_choices(data[["ADEG"]], subset = "BNRIND"),
         selected = "BNRIND", fixed = TRUE
       ),
-      useNA = "ifany"
+      useNA = "ifany",
+      treatment_flag_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADEG"]], subset = "ONTRTFL"),
+        selected = "ONTRTFL"),
+      treatment_flag = teal.transform::choices_selected("Y"),
+      na_level = default_na_str(),
+      add_total = FALSE,
+      total_label = default_total_label(),
+      pre_output = NULL,
+      post_output = NULL,
+      basic_table_args = teal.widgets::basic_table_args()
     )
   )
 }
