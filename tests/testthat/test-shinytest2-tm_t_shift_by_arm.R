@@ -38,7 +38,8 @@ app_driver_tm_t_shift_by_arm <- function() {
       useNA = "ifany",
       treatment_flag_var = teal.transform::choices_selected(
         teal.transform::variable_choices(data[["ADEG"]], subset = "ONTRTFL"),
-        selected = "ONTRTFL"),
+        selected = "ONTRTFL"
+      ),
       treatment_flag = teal.transform::choices_selected("Y"),
       na_level = default_na_str(),
       add_total = FALSE,
