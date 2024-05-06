@@ -1,5 +1,5 @@
 app_driver_tm_t_events <- function() {
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- teal.data::rADSL
     ADAE <- teal.data::rADAE
@@ -13,6 +13,7 @@ app_driver_tm_t_events <- function() {
     modules = tm_t_events(
       label = "Adverse Event Table",
       dataname = "ADAE",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
       llt = teal.transform::choices_selected(
         choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
@@ -23,7 +24,18 @@ app_driver_tm_t_events <- function() {
         selected = "AEBODSYS"
       ),
       add_total = TRUE,
-      event_type = "adverse event"
+      event_type = "adverse event",
+      total_label = default_total_label(),
+      na_level = default_na_str(),
+      sort_criteria = c("freq_desc", "alpha"),
+      sort_freq_col = total_label,
+      prune_freq = 0,
+      prune_diff = 0,
+      drop_arm_levels = TRUE,
+      incl_overall_sum = TRUE,
+      pre_output = NULL,
+      post_output = NULL,
+      basic_table_args = teal.widgets::basic_table_args()
     )
   )
 }
