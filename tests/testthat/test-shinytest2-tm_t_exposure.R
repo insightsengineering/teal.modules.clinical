@@ -45,29 +45,29 @@ app_driver_tm_t_exposure <- function() {
         choices = teal.transform::value_choices(data[["ADEX"]], "PARCAT2"),
         selected = "Drug A"
       ),
-      add_total = FALSE
+      add_total = FALSE,
+      paramcd_label = "PARAM",
+      id_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADEX"]], subset = "USUBJID"),
+        selected = "USUBJID", fixed = TRUE
+      ),
+      aval_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADEX"]], subset = "AVAL"),
+        selected = "AVAL", fixed = TRUE
+      ),
+      avalu_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADEX"]], subset = "AVALU"),
+        selected = "AVALU", fixed = TRUE
+      ),
+      total_label = default_total_label(),
+      add_total_row = TRUE,
+      total_row_label = "Total number of patients and patient time*",
+      na_level = default_na_str(),
+      pre_output = NULL,
+      post_output = NULL,
+      basic_table_args = teal.widgets::basic_table_args()
     ),
     filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y")),
-    paramcd_label = "PARAM",
-    id_var = teal.transform::choices_selected(
-      teal.transform::variable_choices(data[["ADEX"]], subset = "USUBJID"),
-      selected = "USUBJID", fixed = TRUE
-    ),
-    aval_var = teal.transform::choices_selected(
-      teal.transform::variable_choices(data[["ADEX"]], subset = "AVAL"),
-      selected = "AVAL", fixed = TRUE
-    ),
-    avalu_var = teal.transform::choices_selected(
-      teal.transform::variable_choices(data[["ADEX"]], subset = "AVALU"),
-      selected = "AVALU", fixed = TRUE
-    ),
-    total_label = default_total_label(),
-    add_total_row = TRUE,
-    total_row_label = "Total number of patients and patient time*",
-    na_level = default_na_str(),
-    pre_output = NULL,
-    post_output = NULL,
-    basic_table_args = teal.widgets::basic_table_args()
   )
 }
 
