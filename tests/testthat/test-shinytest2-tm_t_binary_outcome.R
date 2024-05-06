@@ -20,19 +20,16 @@ app_driver_tm_t_binary_outcome <- function() {
     ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
   )
 
-  arm_var = teal.transform::choices_selected(
-    choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD", "ACTARMCD")),
-    selected = "ARM"
-  )
-
   init_teal_app_driver(
     data = data,
     modules = tm_t_binary_outcome(
       label = "Responders",
       dataname = "ADRS",
-      parentname = ifelse(test = inherits(arm_var, "data_extract_spec"), yes =
-                            teal.transform::datanames_input(arm_var), no = "ADSL"),
-      arm_var = arm_var,
+      parentname = "ADSL",
+      arm_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD", "ACTARMCD")),
+        selected = "ARM"
+      ),
       arm_ref_comp = arm_ref_comp,
       paramcd = teal.transform::choices_selected(
         choices = teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
