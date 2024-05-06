@@ -43,7 +43,7 @@ app_driver_tm_t_logistic <- function() {
       ),
       conf_level = teal.transform::choices_selected(c(2, 0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
       avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(
-        dataname,
+        data[["ADRS"]],
         "AVALC"
       ), "AVALC", fixed = TRUE),
       pre_output = NULL,
