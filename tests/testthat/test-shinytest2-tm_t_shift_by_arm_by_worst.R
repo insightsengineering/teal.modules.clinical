@@ -1,5 +1,5 @@
 app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
     ADEG <- tmc_ex_adeg
