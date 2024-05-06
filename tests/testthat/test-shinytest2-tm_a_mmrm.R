@@ -159,7 +159,7 @@ testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default
   table <- app_driver$get_active_module_tws_output("mmrm_table")
   col_val <- app_driver$get_active_module_input("buckets")
   testthat::expect_true(all(unlist(col_val, use.names = FALSE) %in% colnames(table)))
-  testthat::expect_gte(nrow(table), 25)
+  testthat::expect_equal(nrow(table), 25)
 
   app_driver$stop()
 })
