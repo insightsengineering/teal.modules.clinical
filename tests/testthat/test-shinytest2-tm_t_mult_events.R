@@ -1,5 +1,5 @@
 app_driver_tm_t_mult_events <- function() {
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- teal.data::rADSL
     ADCM <- teal.data::rADCM
@@ -16,6 +16,7 @@ app_driver_tm_t_mult_events <- function() {
     modules = tm_t_mult_events(
       label = "Concomitant Medications by Medication Class and Preferred Name",
       dataname = "ADCM",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
       seq_var = teal.transform::choices_selected("CMSEQ", selected = "CMSEQ", fixed = TRUE),
       hlt = teal.transform::choices_selected(
@@ -27,7 +28,13 @@ app_driver_tm_t_mult_events <- function() {
         selected = c("CMDECOD")
       ),
       add_total = TRUE,
-      event_type = "treatment"
+      event_type = "treatment",
+      total_label = default_total_label(),
+      na_level = default_na_str(),
+      drop_arm_levels = TRUE,
+      pre_output = NULL,
+      post_output = NULL,
+      basic_table_args = teal.widgets::basic_table_args()
     )
   )
 }
