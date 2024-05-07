@@ -143,56 +143,6 @@ testthat::test_that(
 
 # Test changing selection ------------------------------------
 
-# Check if the delection throws the expected validation error
-# When `deselect_message` is not provided, the test will check for a standard message "Please select %s variable."
-test_delection_validation <- function(input_name, input_id, deselect_message) {
-  if (missing(deselect_message)) {
-    deselect_message <- sprintf("Please select %s variable.", toupper(input_name))
-  }
-  testthat::test_that(sprintf("e2e - tm_g_pp_therapy: Deselection of %s throws validation error.", input_name), {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_g_pp_therapy()
-    app_driver$set_active_module_input(input_id, NULL)
-    app_driver$expect_validation_error()
-    testthat::expect_equal(
-      app_driver$active_module_element_text(
-        sprintf(
-          "%s_input .shiny-validation-message",
-          input_id
-        )
-      ),
-      deselect_message
-    )
-    app_driver$stop()
-  })
-}
-
-test_different_selection("patient_id", "patient_id", "AB12345-RUS-1-id-4")
-test_different_selection("cmdecod", ns_des_input("cmdecod", "ADCM", "select"), "CMDECOD")
-test_different_selection("atirel", ns_des_input("atirel", "ADCM", "select"), "ATIREL")
-test_different_selection("cmindc", ns_des_input("cmindc", "ADCM", "select"), "CMINDC")
-test_different_selection("cmdose", ns_des_input("cmdose", "ADCM", "select"), "CMDOSE")
-test_different_selection("cmdosu", ns_des_input("cmdosu", "ADCM", "select"), "CMDOSU")
-test_different_selection("cmroute", ns_des_input("cmroute", "ADCM", "select"), "CMROUTE")
-test_different_selection("cmdosfrq", ns_des_input("cmdosfrq", "ADCM", "select"), "CMDOSFRQ")
-test_different_selection("cmstdy", ns_des_input("cmstdy", "ADCM", "select"), "ASTDY")
-test_different_selection("cmendy", ns_des_input("cmendy", "ADCM", "select"), "AENDY")
-
-testthat::test_that(
-  "e2e - tm_g_pp_therapy: Changing font_size changes the plot and does not throw validation errors.",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_g_pp_therapy()
-    plot_before <- app_driver$get_active_module_pws_output("therapy_plot")
-    app_driver$set_active_module_input("font_size", 15)
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("therapy_plot")))
-    app_driver$expect_no_validation_error()
-    app_driver$stop()
-  }
-)
-
-# Test de-selecting inputs ------------------------------------
-
 # Check if a new selection of input changes the plot and table without any validation errors.
 test_different_selection <- function(input_name, input_id, new_value) { # nolint object_length
   testthat::test_that(
@@ -221,6 +171,56 @@ test_different_selection <- function(input_name, input_id, new_value) { # nolint
       app_driver$stop()
     }
   )
+}
+
+test_different_selection("patient_id", "patient_id", "AB12345-RUS-1-id-4")
+test_different_selection("cmdecod", ns_des_input("cmdecod", "ADCM", "select"), "CMDECOD")
+test_different_selection("atirel", ns_des_input("atirel", "ADCM", "select"), "ATIREL")
+test_different_selection("cmindc", ns_des_input("cmindc", "ADCM", "select"), "CMINDC")
+test_different_selection("cmdose", ns_des_input("cmdose", "ADCM", "select"), "CMDOSE")
+test_different_selection("cmdosu", ns_des_input("cmdosu", "ADCM", "select"), "CMDOSU")
+test_different_selection("cmroute", ns_des_input("cmroute", "ADCM", "select"), "CMROUTE")
+test_different_selection("cmdosfrq", ns_des_input("cmdosfrq", "ADCM", "select"), "CMDOSFRQ")
+test_different_selection("cmstdy", ns_des_input("cmstdy", "ADCM", "select"), "ASTDY")
+test_different_selection("cmendy", ns_des_input("cmendy", "ADCM", "select"), "AENDY")
+
+testthat::test_that(
+  "e2e - tm_g_pp_therapy: Changing font_size changes the plot and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_g_pp_therapy()
+    plot_before <- app_driver$get_active_module_pws_output("therapy_plot")
+    app_driver$set_active_module_input("font_size", 15)
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("therapy_plot")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
+
+# Test de-selecting inputs ------------------------------------
+
+# Check if the delection throws the expected validation error
+# When `deselect_message` is not provided, the test will check for a standard message "Please select %s variable."
+test_delection_validation <- function(input_name, input_id, deselect_message) {
+  if (missing(deselect_message)) {
+    deselect_message <- sprintf("Please select %s variable.", toupper(input_name))
+  }
+  testthat::test_that(sprintf("e2e - tm_g_pp_therapy: Deselection of %s throws validation error.", input_name), {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_g_pp_therapy()
+    app_driver$set_active_module_input(input_id, NULL)
+    app_driver$expect_validation_error()
+    testthat::expect_equal(
+      app_driver$active_module_element_text(
+        sprintf(
+          "%s_input .shiny-validation-message",
+          input_id
+        )
+      ),
+      deselect_message
+    )
+    app_driver$stop()
+  })
 }
 
 test_delection_validation("patient_id", "patient_id", "Please select a patient.")
