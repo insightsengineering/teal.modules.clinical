@@ -27,7 +27,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1.9001</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,17 +52,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a> </div></li>
-<!-- end dropdown for versions -->
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-reports">Reports</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-reports">
@@ -422,7 +411,7 @@ analysis visit in rows.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">rtables_expr</span><span class="op">)</span></span>
 <span><span class="co">##                        A: Drug X                    B: Placebo        </span></span>
 <span><span class="co">##                   Value         Change         Value         Change   </span></span>
-<span><span class="co">## ——————————————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## ----------------------------------------------------------------------</span></span>
 <span><span class="co">## WEEK 1 DAY 8                                                          </span></span>
 <span><span class="co">##   n                69             69            73             73     </span></span>
 <span><span class="co">##   Mean (SD)    20.8 (4.1)     1.6 (6.1)     20.2 (4.1)     -0.2 (5.6) </span></span>
@@ -507,7 +496,7 @@ function, this way the <code>rtables</code> pipelines are
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="co">##                        A: Drug X                    B: Placebo        </span></span>
 <span><span class="co">##                   Value         Change         Value         Change   </span></span>
-<span><span class="co">## ——————————————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## ----------------------------------------------------------------------</span></span>
 <span><span class="co">## WEEK 1 DAY 8                                                          </span></span>
 <span><span class="co">##   n                69             69            73             73     </span></span>
 <span><span class="co">##   Mean (SD)    20.8 (4.1)     1.6 (6.1)     20.2 (4.1)     -0.2 (5.6) </span></span>
@@ -526,7 +515,7 @@ encoding panel.</li>
 <span><span class="co">## Split var [AVISITN] was not character or factor. Converting to factor</span></span>
 <span><span class="co">##                         ARM A                        ARM B           </span></span>
 <span><span class="co">##                  Value         Change         Value         Change   </span></span>
-<span><span class="co">## —————————————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## ---------------------------------------------------------------------</span></span>
 <span><span class="co">## 1                                                                    </span></span>
 <span><span class="co">##   n               69             69            73             73     </span></span>
 <span><span class="co">##   Mean (SD)   20.8 (4.1)     1.6 (6.1)     20.2 (4.1)     -0.2 (5.6) </span></span>
@@ -645,7 +634,7 @@ rendering the code with <code>Show R Code</code>:</li>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="co">##                        A: Drug X                    B: Placebo        </span></span>
 <span><span class="co">##                   Value         Change         Value         Change   </span></span>
-<span><span class="co">## ——————————————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## ----------------------------------------------------------------------</span></span>
 <span><span class="co">## WEEK 1 DAY 8                                                          </span></span>
 <span><span class="co">##   n                69             69            73             73     </span></span>
 <span><span class="co">##   Mean (SD)    20.8 (4.1)     1.6 (6.1)     20.2 (4.1)     -0.2 (5.6) </span></span>
@@ -672,7 +661,7 @@ rendering the code with <code>Show R Code</code>:</li>
 <span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="co">##                      A: Drug X                B: Placebo       </span></span>
 <span><span class="co">##                  Value       Change       Value        Change  </span></span>
-<span><span class="co">## ———————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## ---------------------------------------------------------------</span></span>
 <span><span class="co">## WEEK 1 DAY 8                                                   </span></span>
 <span><span class="co">##   n                69          69           73           73    </span></span>
 <span><span class="co">##   Mean (SD)    20.8 (4.1)   1.6 (6.1)   20.2 (4.1)   -0.2 (5.6)</span></span></code></pre></div>
@@ -774,7 +763,7 @@ names.</p>
 <span><span class="va">result_exec</span><span class="op">$</span><span class="va">rtables</span></span>
 <span><span class="co">##                      A: Drug X              B: Placebo      </span></span>
 <span><span class="co">##                  Value      Change       Value      Change  </span></span>
-<span><span class="co">## ————————————————————————————————————————————————————————————</span></span>
+<span><span class="co">## ------------------------------------------------------------</span></span>
 <span><span class="co">## WEEK 1 DAY 8                                                </span></span>
 <span><span class="co">##   n               69          69          73          73    </span></span>
 <span><span class="co">##   Mean (SD)    1.0 (0.2)   0.0 (0.3)   1.0 (0.2)   0.0 (0.3)</span></span></code></pre></div>
