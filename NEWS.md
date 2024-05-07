@@ -2,7 +2,7 @@
 
 ### Enhancements
 
-* Introduced `ylim` parameter for `tm_g_km` module that controls widht of Y-axis.
+* Introduced `ylim` parameter for `tm_g_km` module that controls width of y-axis.
 
 # teal.modules.clinical 0.9.1
 
