@@ -169,7 +169,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_tws_output("table")
     app_driver$set_active_module_input("drop_arm_levels", FALSE)
-    testthat::identical(table_before, app_driver$get_active_module_tws_output("table"))
+    testthat::expect_identical(table_before, app_driver$get_active_module_tws_output("table"))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
