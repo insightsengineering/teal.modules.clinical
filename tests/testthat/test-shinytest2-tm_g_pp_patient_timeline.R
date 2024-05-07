@@ -1,5 +1,5 @@
 app_driver_tm_g_pp_patient_timeline <- function() { # nolint object_length
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
     ADAE <- tmc_ex_adae
