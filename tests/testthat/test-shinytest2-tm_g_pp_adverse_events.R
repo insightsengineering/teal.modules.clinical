@@ -54,7 +54,7 @@ app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length
 }
 
 testthat::test_that(
-  "e2e tm_g_pp_adverse_events - Module initializes in teal without any errors and produces a plot and table.",
+  "e2e tm_g_pp_adverse_events - Module initializes in teal without any errors and produces the plot and table.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
@@ -123,16 +123,31 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e tm_g_pp_adverse_events - Selecting patient_id doesn't throw errors and changes a plot",
+  "e2e tm_g_pp_adverse_events - Selecting patient_id doesn't throw errors and changes the plot and table.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_pws_output("chart")
+    table_before <- rvest::html_table(
+      app_driver$get_html_rvest(
+        app_driver$active_module_element("table")
+      )
+    )[[1]]
     app_driver$set_active_module_input("patient_id", "AB12345-CHN-15-id-262")
     testthat::expect_false(
       identical(
         plot_before,
         app_driver$get_active_module_pws_output("chart")
+      )
+    )
+    testthat::expect_false(
+      identical(
+        table_before,
+        rvest::html_table(
+          app_driver$get_html_rvest(
+            app_driver$active_module_element("table")
+          )
+        )[[1]]
       )
     )
     app_driver$expect_no_shiny_error()
@@ -157,7 +172,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e tm_g_pp_adverse_events - Selecting aeterm column doesn't throw errors and changes a plot",
+  "e2e tm_g_pp_adverse_events - Selecting aeterm column doesn't throw errors and changes the plot and table.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
@@ -207,7 +222,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e tm_g_pp_adverse_events - Selecting tox_grade column doesn't throw errors and changes a plot",
+  "e2e tm_g_pp_adverse_events - Selecting tox_grade column doesn't throw errors and changes the plot and table.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
@@ -257,7 +272,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e tm_g_pp_adverse_events - Selecting causality column doesn't throw errors and changes a plot",
+  "e2e tm_g_pp_adverse_events - Selecting causality column doesn't throw errors and changes the plot and table.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
@@ -307,7 +322,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e tm_g_pp_adverse_events - Selecting outcome column doesn't throw errors and changes a plot",
+  "e2e tm_g_pp_adverse_events - Selecting outcome column doesn't throw errors and changes the plot and table.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
@@ -357,7 +372,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e tm_g_pp_adverse_events - Selecting action column doesn't throw errors and changes a plot",
+  "e2e tm_g_pp_adverse_events - Selecting action column doesn't throw errors and changes the plot and table.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
@@ -407,7 +422,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e tm_g_pp_adverse_events - Selecting time column doesn't throw errors and changes a plot",
+  "e2e tm_g_pp_adverse_events - Selecting time column doesn't throw errors and changes the plot and table.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
