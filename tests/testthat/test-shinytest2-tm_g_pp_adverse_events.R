@@ -21,27 +21,27 @@ app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length
         patient_col = "USUBJID",
         plot_height = c(600L, 200L, 2000L),
         aeterm = choices_selected(
-          choices = variable_choices(data[["ADAE"]], "AETERM"),
+          choices = variable_choices(data[["ADAE"]], c("AETERM", "AGEU")),
           selected = "AETERM"
         ),
         tox_grade = choices_selected(
-          choices = variable_choices(data[["ADAE"]], "AETOXGR"),
+          choices = variable_choices(data[["ADAE"]], c("AETOXGR", "COUNTRY")),
           selected = "AETOXGR"
         ),
         causality = choices_selected(
-          choices = variable_choices(data[["ADAE"]], "AEREL"),
+          choices = variable_choices(data[["ADAE"]], c("AEREL", "ACTARM")),
           selected = "AEREL"
         ),
         outcome = choices_selected(
-          choices = variable_choices(data[["ADAE"]], "AEOUT"),
+          choices = variable_choices(data[["ADAE"]], c("AEOUT", "SITEID")),
           selected = "AEOUT"
         ),
         action = choices_selected(
-          choices = variable_choices(data[["ADAE"]], "AEACN"),
+          choices = variable_choices(data[["ADAE"]], c("AEACN", "SMQ01NAM")),
           selected = "AEACN"
         ),
         time = choices_selected(
-          choices = variable_choices(data[["ADAE"]], "ASTDY"),
+          choices = variable_choices(data[["ADAE"]], c("ASTDY", "AGE")),
           selected = "ASTDY"
         ),
         decod = NULL
