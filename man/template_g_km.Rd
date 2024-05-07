@@ -23,6 +23,7 @@ template_g_km(
   xlab = "Survival time",
   time_unit_var = "AVALU",
   yval = "Survival",
+  ylim = NULL,
   pval_method = "log-rank",
   annot_surv_med = TRUE,
   annot_coxph = TRUE,
@@ -76,6 +77,9 @@ see \code{\link[survival:coxph]{survival::coxph()}}. Note: there is no equivalen
 
 \item{yval}{(\code{string})\cr type of plot, to be plotted on the y-axis. Options are \code{Survival} (default) and \code{Failure}
 probability.}
+
+\item{ylim}{(\code{numeric(2)})\cr vector containing lower and upper limits for the y-axis, respectively.
+If \code{NULL} (default), the minimum and maximum y-values displayed are used as limits.}
 
 \item{pval_method}{(\code{string})\cr the method used for estimation of p.values; \code{wald} (default) or \code{likelihood}.}
 

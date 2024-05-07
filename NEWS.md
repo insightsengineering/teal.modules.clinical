@@ -1,5 +1,9 @@
 # teal.modules.clinical 0.9.1.9001
 
+### Enhancements
+
+* Introduced `ylim` parameter for `tm_g_km` module that controls widht of Y-axis.
+
 # teal.modules.clinical 0.9.1
 
 ### Enhancements
