@@ -19,6 +19,7 @@ app_driver_tm_g_pp_therapy <- function() { # nolint: object_length.
     ADCM$CMDOSFRQ2 <- sample(ADCM$CMDOSFRQ, size = length(ADCM$CMDOSFRQ))
     ADCM$ASTDY2 <- sample(ADCM$ASTDY, size = length(ADCM$ASTDY))
     ADCM$AENDY2 <- sample(ADCM$AENDY, size = length(ADCM$AENDY))
+    ADCM$CMTRT2 <- sample(ADCM$CMTRT, size = length(ADCM$CMTRT))
   })
 
   adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
@@ -37,11 +38,11 @@ app_driver_tm_g_pp_therapy <- function() { # nolint: object_length.
       patient_col = "USUBJID",
       atirel = choices_selected(
         choices = variable_choices("ADCM", c("ATIREL", "ATIREL2")),
-        selected = c("ATIREL2")
+        selected = "ATIREL2"
       ),
       cmdecod = choices_selected(
-        choices = variable_choices("ADCM", "CMDECOD"), # Bug with module doesn't allow to change name
-        selected = "CMDECOD"
+        choices = variable_choices("ADCM", c("CMDECOD", "CMDECOD2")),
+        selected = "CMDECOD2"
       ),
       cmindc = choices_selected(
         choices = variable_choices("ADCM", c("CMINDC", "CMINDC2")),
@@ -53,11 +54,11 @@ app_driver_tm_g_pp_therapy <- function() { # nolint: object_length.
       ),
       cmtrt = choices_selected(
         choices = variable_choices("ADCM", c("CMTRT", "CMTRT2")),
-        selected = "CMTRT2"
+        selected = "CMTRT"
       ),
       cmdosu = choices_selected(
         choices = variable_choices("ADCM", c("CMDOSU", "CMDOSU2")),
-        selected = c("CMDOSU2")
+        selected = "CMDOSU2"
       ),
       cmroute = choices_selected(
         choices = variable_choices("ADCM", c("CMROUTE", "CMROUTE2")),
@@ -105,10 +106,8 @@ testthat::test_that("e2e - tm_g_pp_therapy: Module initializes in teal without e
 })
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_g_pp_therapy: Starts with specified ",
-    "label, paramcd, arm_var, buckets, paramcd, subgroup_var, strata_var and plot settings"
-  ),
+  "e2e - tm_g_pp_therapy: Starts with specified label, paramcd, arm_var, buckets,
+  paramcd, subgroup_var, strata_var and plot settings.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
@@ -120,14 +119,9 @@ testthat::test_that(
 
     testthat::expect_equal(app_driver$get_active_module_input("patient_id"), "AB12345-CHN-11-id-2")
 
-    testthat::expect_equal(
-      app_driver$get_active_module_input(ns_des_input("cmdecod", "ADCM", "select")),
-      "CMDECOD"
-    )
-
     select_inputs <- c(
-      "atirel" = "ATIREL2", "cmdecod" = "CMDECOD", "cmindc" = "CMINDC2",
-      "cmdose" = "CMDOSE2", "cmtrt" = "CMTRT2", "cmdosu" = "CMDOSU2",
+      "atirel" = "ATIREL2", "cmdecod" = "CMDECOD2", "cmindc" = "CMINDC2",
+      "cmdose" = "CMDOSE2", "cmtrt" = "CMTRT", "cmdosu" = "CMDOSU2",
       "cmroute" = "CMROUTE2", "cmdosfrq" = "CMDOSFRQ2", "cmstdy" = "ASTDY2",
       "cmendy" = "AENDY2"
     )
@@ -141,53 +135,24 @@ testthat::test_that(
 
     # Plot settings -----------------------------------------------------------
     # only tests the options that are customizable
-
     testthat::expect_equal(app_driver$get_active_module_input("font_size"), 12)
 
     app_driver$stop()
   }
 )
 
-# Test changing selection and de-selecting ------------------------------------
+# Test changing selection ------------------------------------
 
-test_that_change_inputs <- function(name, input_id, new_value, deselect_message) {
-  if (!missing(new_value)) {
-    testthat::test_that(
-      sprintf(
-        "e2e - tm_g_pp_therapy: Selection of {%s} changes the element and does not throw validation errors",
-        name
-      ),
-      {
-        skip_if_too_deep(5)
-        app_driver <- app_driver_tm_g_pp_therapy()
-        plot_before <- list(
-          app_driver$get_active_module_pws_output("therapy_plot"),
-          app_driver$active_module_element_text("therapy_table")
-        )
-        app_driver$set_active_module_input(input_id, new_value)
-        testthat::expect_false(
-          identical(
-            plot_before,
-            list(
-              app_driver$get_active_module_pws_output("therapy_plot"),
-              app_driver$active_module_element_text("therapy_table")
-            )
-          )
-        )
-        app_driver$expect_no_validation_error()
-        app_driver$stop()
-      }
-    )
-  }
-
+# Check if the delection throws the expected validation error
+# When `deselect_message` is not provided, the test will check for a standard message "Please select %s variable."
+test_delection_validation <- function(input_name, input_id, deselect_message) {
   if (missing(deselect_message)) {
-    deselect_message <- sprintf("Please select %s variable.", toupper(name))
+    deselect_message <- sprintf("Please select %s variable.", toupper(input_name))
   }
-
-  testthat::test_that(sprintf("e2e - tm_g_pp_therapy: Deselection of '%s' throws validation error.", input_id), {
+  testthat::test_that(sprintf("e2e - tm_g_pp_therapy: Deselection of %s throws validation error.", input_name), {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
-    app_driver$set_active_module_input(input_id, character(0L))
+    app_driver$set_active_module_input(input_id, NULL)
     app_driver$expect_validation_error()
     testthat::expect_equal(
       app_driver$active_module_element_text(
@@ -202,40 +167,69 @@ test_that_change_inputs <- function(name, input_id, new_value, deselect_message)
   })
 }
 
-test_that_change_inputs("patient_id", "patient_id", "AB12345-RUS-1-id-4", "Please select a patient.")
+test_different_selection("patient_id", "patient_id", "AB12345-RUS-1-id-4")
+test_different_selection("cmdecod", ns_des_input("cmdecod", "ADCM", "select"), "CMDECOD")
+test_different_selection("atirel", ns_des_input("atirel", "ADCM", "select"), "ATIREL")
+test_different_selection("cmindc", ns_des_input("cmindc", "ADCM", "select"), "CMINDC")
+test_different_selection("cmdose", ns_des_input("cmdose", "ADCM", "select"), "CMDOSE")
+test_different_selection("cmdosu", ns_des_input("cmdosu", "ADCM", "select"), "CMDOSU")
+test_different_selection("cmroute", ns_des_input("cmroute", "ADCM", "select"), "CMROUTE")
+test_different_selection("cmdosfrq", ns_des_input("cmdosfrq", "ADCM", "select"), "CMDOSFRQ")
+test_different_selection("cmstdy", ns_des_input("cmstdy", "ADCM", "select"), "ASTDY")
+test_different_selection("cmendy", ns_des_input("cmendy", "ADCM", "select"), "AENDY")
 
-# Could not change this variable and observe a difference in output
-test_that_change_inputs("cmtrt", ns_des_input("cmtrt", "ADCM", "select"))
-# Variable selected needs to be CMDECOD as it's hardcoded in module
-test_that_change_inputs("cmdecod", ns_des_input("cmdecod", "ADCM", "select"))
+testthat::test_that(
+  "e2e - tm_g_pp_therapy: Changing font_size changes the plot and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_g_pp_therapy()
+    plot_before <- app_driver$get_active_module_pws_output("therapy_plot")
+    app_driver$set_active_module_input("font_size", 15)
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("therapy_plot")))
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
 
-test_that_change_inputs("atirel", ns_des_input("atirel", "ADCM", "select"), "ATIREL")
-test_that_change_inputs("cmindc", ns_des_input("cmindc", "ADCM", "select"), "CMINDC")
-test_that_change_inputs("cmdose", ns_des_input("cmdose", "ADCM", "select"), "CMDOSE")
-test_that_change_inputs("cmdosu", ns_des_input("cmdosu", "ADCM", "select"), "CMDOSU")
-test_that_change_inputs("cmroute", ns_des_input("cmroute", "ADCM", "select"), "CMROUTE")
-test_that_change_inputs("cmdosfrq", ns_des_input("cmdosfrq", "ADCM", "select"), "CMDOSFRQ")
-test_that_change_inputs("cmstdy", ns_des_input("cmstdy", "ADCM", "select"), "ASTDY")
-test_that_change_inputs("cmendy", ns_des_input("cmendy", "ADCM", "select"), "AENDY")
+# Test de-selecting inputs ------------------------------------
 
-# Plot settings ---------------------------------------------------------------
-
-test_that_input_changes_pws <- function(input_id, new_value) {
+# Check if a new selection of input changes the plot and table without any validation errors.
+test_different_selection <- function(input_name, input_id, new_value) { # nolint object_length
   testthat::test_that(
     sprintf(
-      "e2e - tm_g_pp_therapy: Changing '%s' changes the plot and does not throw validation errors.",
-      input_id
+      "e2e - tm_g_pp_therapy: Selection of %s changes the plot and table without any validation errors.",
+      input_name
     ),
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_pp_therapy()
-      plot_before <- app_driver$get_active_module_pws_output("therapy_plot")
+      plot_before <- list(
+        app_driver$get_active_module_pws_output("therapy_plot"),
+        app_driver$active_module_element_text("therapy_table")
+      )
       app_driver$set_active_module_input(input_id, new_value)
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("therapy_plot")))
+      testthat::expect_false(
+        identical(
+          plot_before,
+          list(
+            app_driver$get_active_module_pws_output("therapy_plot"),
+            app_driver$active_module_element_text("therapy_table")
+          )
+        )
+      )
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }
   )
 }
 
-test_that_input_changes_pws("font_size", 15)
+test_delection_validation("patient_id", "patient_id", "Please select a patient.")
+test_delection_validation("cmdecod", ns_des_input("cmdecod", "ADCM", "select"), "Please select medication decoding variable.") # nolint line_length_linter
+test_delection_validation("atirel", ns_des_input("atirel", "ADCM", "select"))
+test_delection_validation("cmindc", ns_des_input("cmindc", "ADCM", "select"))
+test_delection_validation("cmdose", ns_des_input("cmdose", "ADCM", "select"))
+test_delection_validation("cmdosu", ns_des_input("cmdosu", "ADCM", "select"))
+test_delection_validation("cmroute", ns_des_input("cmroute", "ADCM", "select"))
+test_delection_validation("cmdosfrq", ns_des_input("cmdosfrq", "ADCM", "select"))
+test_delection_validation("cmstdy", ns_des_input("cmstdy", "ADCM", "select"))
+test_delection_validation("cmendy", ns_des_input("cmendy", "ADCM", "select"))
