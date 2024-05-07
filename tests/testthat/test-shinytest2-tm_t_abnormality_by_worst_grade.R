@@ -28,8 +28,8 @@ app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_leng
       add_total = FALSE
     ),
     filter = teal::teal_slices(
-      teal.slice::teal_slice("ADSL", "SAFFL", selected = "Y"),
-      teal.slice::teal_slice("ADLB", "ONTRTFL", selected = "Y")
+      teal_slice("ADSL", "SAFFL", selected = "Y"),
+      teal_slice("ADLB", "ONTRTFL", selected = "Y")
     )
   )
 }
