@@ -45,7 +45,6 @@ app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length
       ),
       decod = NULL,
       font_size = c(12L, 12L, 25L),
-      plot_height = c(700L, 200L, 2000L),
       plot_width = NULL,
       pre_output = NULL,
       post_output = NULL,
