@@ -189,7 +189,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_tws_output("table")
-    app_driver$set_active_module_input("col_by_var-dataset_ADSL_singleextract-select", NULL)
+    app_driver$set_active_module_input("col_by_var-dataset_ADSL_singleextract-select", NULL, wait_ = FALSE)
     testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
