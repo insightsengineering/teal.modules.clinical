@@ -11,7 +11,7 @@ template_exposure(
   paramcd,
   paramcd_label = NULL,
   row_by_var,
-  col_by_var,
+  col_by_var = NULL,
   add_total = FALSE,
   total_label = "Total",
   add_total_row = TRUE,
