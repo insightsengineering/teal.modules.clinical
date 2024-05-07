@@ -201,7 +201,7 @@ testthat::test_that(
     app_driver$set_active_module_input("output_function", "g_mmrm_lsmeans", wait_ = FALSE)
     app_driver$expect_no_validation_error()
 
-    plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+    plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot_before, "data:image/png;base64,")
 
     app_driver$set_active_module_input("g_mmrm_lsmeans_select", "estimates")
@@ -221,7 +221,7 @@ testthat::test_that(
     app_driver$set_active_module_input("g_mmrm_lsmeans_contrasts_show_pval", TRUE)
     app_driver$expect_no_validation_error()
 
-    plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+    plot <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
@@ -244,13 +244,13 @@ testthat::test_that(
     app_driver$set_active_module_input("output_function", "g_mmrm_diagnostic", wait_ = FALSE)
     app_driver$expect_no_validation_error()
 
-    plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+    plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot_before, "data:image/png;base64,")
 
     app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
     app_driver$expect_no_validation_error()
 
-    plot <- app_driver$get_active_module_pws_output("mmrm_plot")
+    plot <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
@@ -273,7 +273,7 @@ for (func in output_functions) {
 
       app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", character(0L))
       if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
         testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
@@ -306,7 +306,7 @@ for (func in output_functions) {
 
       app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0L))
       if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
         testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
@@ -339,7 +339,7 @@ for (func in output_functions) {
 
       app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", character(0L))
       if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
         testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
@@ -372,7 +372,7 @@ for (func in output_functions) {
 
       app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0L))
       if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
         testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
@@ -405,7 +405,7 @@ for (func in output_functions) {
 
       app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", character(0L))
       if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
         testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
@@ -438,7 +438,7 @@ for (func in output_functions) {
 
       app_driver$set_active_module_input("conf_level", numeric(0L))
       if (grepl("^g_", func)) {
-        testthat::expect_identical(app_driver$get_active_module_pws_output("mmrm_plot"), character(0))
+        testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
         testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
       }
@@ -498,7 +498,7 @@ for (func in output_functions) {
 
 
     if (grepl("^g_", func)) {
-      plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+      plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
     } else {
       table_before <- app_driver$get_active_module_tws_output("mmrm_table")
     }
@@ -518,11 +518,11 @@ for (func in output_functions) {
         testthat::expect_false(
           identical(
             plot_before,
-            app_driver$get_active_module_pws_output("mmrm_plot")
+            app_driver$get_active_module_plot_output("mmrm_plot")
           ),
           info = print(paste(func, "===", input_name))
         )
-        plot_before <- app_driver$get_active_module_pws_output("mmrm_plot")
+        plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
       } else {
         testthat::expect_false(
           identical(

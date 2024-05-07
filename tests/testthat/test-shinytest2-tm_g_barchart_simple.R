@@ -197,9 +197,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), "RACE")
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -233,9 +233,9 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(sprintf("%s-dataset", input_id), new_dataset)
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       testthat::expect_null(app_driver$get_active_module_input(ns_des_input(input_id, new_dataset, "select")))
       app_driver$set_active_module_input(ns_des_input(input_id, new_dataset, "select"), new_value)
       testthat::expect_identical(
@@ -256,10 +256,10 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(sprintf("%s-dataset", input_id), character(0L))
       testthat::expect_null(app_driver$get_active_module_input(input_id))
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }
@@ -322,9 +322,9 @@ test_that_plot_settings <- function(input_id, new_value, setup_fun = function(ap
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       setup_fun(app_driver)
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(input_id, new_value)
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }

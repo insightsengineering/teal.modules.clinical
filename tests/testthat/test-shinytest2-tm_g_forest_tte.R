@@ -134,9 +134,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input(ns_des_input("paramcd", "ADTTE", "filter1-vals"), "CRSD")
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -165,9 +165,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ARM")
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -237,9 +237,9 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
     input_id <- "conf_level"
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input(input_id, "0.99")
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_validation_error()
     testthat::expect_match(
       app_driver$active_module_element_text(

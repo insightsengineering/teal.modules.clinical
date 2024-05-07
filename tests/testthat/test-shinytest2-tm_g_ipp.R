@@ -64,7 +64,7 @@ testthat::test_that("e2e - tm_g_ipp: Module initializes in teal without errors a
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_match(
-    app_driver$get_active_module_pws_output("myplot"),
+    app_driver$get_active_module_plot_output("myplot"),
     "data:image/png;base64,"
   )
   app_driver$stop()
@@ -128,12 +128,12 @@ testthat::test_that(
 testthat::test_that("e2e - tm_g_ipp: Selecting arm_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-filter1-vals", "ARM B")
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_pws_output("myplot")
+      app_driver$get_active_module_plot_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -144,7 +144,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting arm_var column throws validatio
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-filter1-vals_input > div > span"),
     "Please select Arm filter."
@@ -156,12 +156,12 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting arm_var column throws validatio
 testthat::test_that("e2e - tm_g_ipp: Selecting paramcd changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", "CRP")
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_pws_output("myplot")
+      app_driver$get_active_module_plot_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -172,7 +172,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting paramcd throws validation error
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("paramcd-dataset_ADLB_singleextract-filter1-vals_input > div > span"),
     "Please select Parameter filter."
@@ -184,12 +184,12 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting paramcd throws validation error
 testthat::test_that("e2e - tm_g_ipp: Selecting visit_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("visit_var-dataset_ADLB_singleextract-select", "ATOXGR")
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_pws_output("myplot")
+      app_driver$get_active_module_plot_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -200,7 +200,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting visit_var throws validation err
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$set_active_module_input("visit_var-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("visit_var-dataset_ADLB_singleextract-select_input > div > span"),
     "A Timepoint Variable must be selected"
@@ -212,12 +212,12 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting visit_var throws validation err
 testthat::test_that("e2e - tm_g_ipp: Selecting aval_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", "CHG")
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_pws_output("myplot")
+      app_driver$get_active_module_plot_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -228,7 +228,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting aval_var throws validation erro
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_pws_output("myplot"), character(0))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("aval_var-dataset_ADLB_singleextract-select_input > div > span"),
     "A Parameter values over Time must be selected"
@@ -240,12 +240,12 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting aval_var throws validation erro
 testthat::test_that("e2e - tm_g_ipp: Changing add_baseline_hline changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("add_baseline_hline", TRUE)
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_pws_output("myplot")
+      app_driver$get_active_module_plot_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -254,12 +254,12 @@ testthat::test_that("e2e - tm_g_ipp: Changing add_baseline_hline changes plot an
 testthat::test_that("e2e - tm_g_ipp: Changing separate_by_obs changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("separate_by_obs", TRUE)
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_pws_output("myplot")
+      app_driver$get_active_module_plot_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -269,12 +269,12 @@ testthat::test_that("e2e - tm_g_ipp: Changing separate_by_obs changes plot and d
 testthat::test_that("e2e - tm_g_ipp: Changing suppress_legend changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("suppress_legend", TRUE)
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_pws_output("myplot")
+      app_driver$get_active_module_plot_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -284,12 +284,12 @@ testthat::test_that("e2e - tm_g_ipp: Changing suppress_legend changes plot and d
 testthat::test_that("e2e - tm_g_ipp: Changing add_avalu changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("add_avalu", FALSE)
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_pws_output("myplot")
+      app_driver$get_active_module_plot_output("myplot")
     )
   )
   app_driver$expect_no_validation_error()
