@@ -33,7 +33,7 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Module initializes in teal withou
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_t_pp_basic_info: Starts with specified label, patient_id, vars", {
+testthat::test_that("e2e - tm_t_pp_basic_info: Starts with specified label, patient_id, vars.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
   testthat::expect_equal(
@@ -83,7 +83,7 @@ testthat::test_that(
 testthat::test_that(
   paste0(
     "e2e - tm_t_pp_basic_info: Deselection of patient_id",
-    "throws validation error and table is not visible"
+    "throws validation error and table is not visible."
   ),
   {
     skip_if_too_deep(5)

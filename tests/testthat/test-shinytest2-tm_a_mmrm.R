@@ -81,7 +81,7 @@ output_functions <- c(
 testthat::test_that(
   paste0(
     "e2e - tm_a_mmrm: Module initializes in teal without errors ",
-    "and displays a message to click 'Fit Model'"
+    "and displays a message to click 'Fit Model'."
   ),
   {
     skip_if_too_deep(5)
@@ -102,7 +102,7 @@ testthat::test_that(
   paste0(
     "e2e - tm_a_mmrm: Module initializes with specified label, aval_var, paramcd,",
     "visit_var, cov_var, arm_var, buckets, combine_comp_arms, id_var,",
-    "cor_struct, weights_emmeans, conf_level, method, parallel and output_function"
+    "cor_struct, weights_emmeans, conf_level, method, parallel and output_function."
   ),
   {
     skip_if_too_deep(5)
@@ -166,7 +166,7 @@ testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default
 
 testthat::test_that(
   paste0(
-    "e2e - tm_a_mmrm: function t_mmrm_lsmeans selection shows output settings; changing",
+    "e2e - tm_a_mmrm: Function t_mmrm_lsmeans selection shows output settings; changing",
     "settings throws no validation errors and verify visibility of generated tables."
   ),
   {
@@ -188,7 +188,7 @@ testthat::test_that(
 
 testthat::test_that(
   paste0(
-    "e2e - tm_a_mmrm: function g_mmrm_lsmeans selection shows output settings; changing",
+    "e2e - tm_a_mmrm: Function g_mmrm_lsmeans selection shows output settings; changing",
     "settings throws no validation errors and verify visibility of generated plots."
   ),
   {
@@ -231,7 +231,7 @@ testthat::test_that(
 
 testthat::test_that(
   paste0(
-    "e2e - tm_a_mmrm: function g_mmrm_diagnostic selection shows output settings; changing",
+    "e2e - tm_a_mmrm: Function g_mmrm_diagnostic selection shows output settings; changing",
     "settings throws no validation errors and verify visibility of generated plots."
   ),
   {
@@ -260,8 +260,8 @@ testthat::test_that(
 
 for (func in output_functions) {
   testthat::test_that(
-    paste0(
-      "e2e - tm_a_mmrm: Deselection of aval_var throws validation error in method",
+    sprintf(
+      "e2e - tm_a_mmrm: Deselection of aval_var throws validation error in method %s.",
       func
     ),
     {
@@ -293,8 +293,8 @@ for (func in output_functions) {
   )
 
   testthat::test_that(
-    paste0(
-      "e2e - tm_a_mmrm: Deselection paramcd throws validation error in method",
+    sprintf(
+      "e2e - tm_a_mmrm: Deselection paramcd throws validation error in method %s.",
       func
     ),
     {
@@ -326,8 +326,8 @@ for (func in output_functions) {
   )
 
   testthat::test_that(
-    paste0(
-      "e2e - tm_a_mmrm: Deselection of visit_var throws validation error in method",
+    sprintf(
+      "e2e - tm_a_mmrm: Deselection of visit_var throws validation error in method %s.",
       func
     ),
     {
@@ -359,8 +359,8 @@ for (func in output_functions) {
   )
 
   testthat::test_that(
-    paste0(
-      "e2e - tm_a_mmrm: Deselection of arm_var throws validation error in method",
+    sprintf(
+      "e2e - tm_a_mmrm: Deselection of arm_var throws validation error in method %s.",
       func
     ),
     {
@@ -392,8 +392,8 @@ for (func in output_functions) {
   )
 
   testthat::test_that(
-    paste0(
-      "e2e - tm_a_mmrm: Deselection of id_var throws validation error in method",
+    sprintf(
+      "e2e - tm_a_mmrm: Deselection of id_var throws validation error in method %s.",
       func
     ),
     {
@@ -425,8 +425,8 @@ for (func in output_functions) {
   )
 
   testthat::test_that(
-    paste0(
-      "e2e - tm_a_mmrm: Deselection of conf_level throws validation error in method",
+    sprintf(
+      "e2e - tm_a_mmrm: Deselection of conf_level throws validation error in method %s.",
       func
     ),
     {
@@ -489,49 +489,54 @@ non_responsive_conditions <- list(
 
 # Iterate over each output function
 for (func in output_functions) {
-  testthat::test_that(paste0("e2e - tm_a_mmrm: Validate output on different selection on method ", func), {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_a_mmrm()
-    # Set initial output function
-    app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
-    app_driver$expect_no_validation_error()
-
-
-    if (grepl("^g_", func)) {
-      plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
-    } else {
-      table_before <- app_driver$get_active_module_tws_output("mmrm_table")
-    }
-
-    # Iterate over each input and test changes
-    for (input_name in names(input_list)) {
-      if (input_name %in% non_responsive_conditions[[func]]) {
-        next
-      }
-
-      app_driver$set_active_module_input(input_name, input_list[[input_name]])
-      app_driver$click(selector = app_driver$active_module_element("button_start"))
+  testthat::test_that(
+    sprintf(
+      "e2e - tm_a_mmrm: Validate output on different selection on method %s.",
+      func
+    ),
+    {
+      skip_if_too_deep(5)
+      app_driver <- app_driver_tm_a_mmrm()
+      # Set initial output function
+      app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      # Check output based on function type (plot or table)
+
       if (grepl("^g_", func)) {
-        testthat::expect_false(
-          identical(
-            plot_before,
-            app_driver$get_active_module_plot_output("mmrm_plot")
-          ),
-          info = print(paste(func, "===", input_name))
-        )
         plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
       } else {
-        testthat::expect_false(
-          identical(
-            table_before,
-            app_driver$get_active_module_tws_output("mmrm_table")
-          )
-        )
+        table_before <- app_driver$get_active_module_tws_output("mmrm_table")
       }
+
+      # Iterate over each input and test changes
+      for (input_name in names(input_list)) {
+        if (input_name %in% non_responsive_conditions[[func]]) {
+          next
+        }
+
+        app_driver$set_active_module_input(input_name, input_list[[input_name]])
+        app_driver$click(selector = app_driver$active_module_element("button_start"))
+        app_driver$expect_no_validation_error()
+
+        # Check output based on function type (plot or table)
+        if (grepl("^g_", func)) {
+          testthat::expect_false(
+            identical(
+              plot_before,
+              app_driver$get_active_module_plot_output("mmrm_plot")
+            )
+          )
+          plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
+        } else {
+          testthat::expect_false(
+            identical(
+              table_before,
+              app_driver$get_active_module_tws_output("mmrm_table")
+            )
+          )
+        }
+      }
+      app_driver$stop()
     }
-    app_driver$stop()
-  })
+  )
 }

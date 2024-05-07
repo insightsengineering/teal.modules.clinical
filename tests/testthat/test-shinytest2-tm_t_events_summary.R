@@ -107,7 +107,7 @@ testthat::test_that("e2e - tm_t_events_summary: Module initializes in teal witho
 
 testthat::test_that(
   "e2e - tm_t_events_summary: Starts with specified label, arm_var, flag_var_anl, flag_var_aesi,
-  add_total, count_subj, count_pt, count_events",
+  add_total, count_subj, count_pt, count_events.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()

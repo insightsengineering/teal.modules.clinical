@@ -81,7 +81,7 @@ testthat::test_that(
   paste0(
     "e2e - tm_g_lineplot: Starts with specified",
     "label, param, strata, y-variable, x-variable, mid, interval, incl_screen",
-    "plot_settings and table_settings"
+    "plot_settings and table_settings."
   ),
   {
     skip_if_too_deep(5)

@@ -163,7 +163,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: aerelday_start, aerelday_end, dsrelday_start, dsrelday_end
+  "e2e - tm_g_pp_patient_timeline: Encodings aerelday_start, aerelday_end, dsrelday_start, dsrelday_end
   are shown only when relday_x_axis is checked.",
   {
     skip_if_too_deep(5)
@@ -194,7 +194,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_g_pp_patient_timeline: aetime_start, aetime_end, dstime_start, dstime_end
+  "e2e - tm_g_pp_patient_timeline: Encodings aetime_start, aetime_end, dstime_start, dstime_end
   are shown only when relday_x_axis is unchecked.",
   {
     skip_if_too_deep(5)

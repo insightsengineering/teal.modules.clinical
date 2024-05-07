@@ -193,7 +193,7 @@ testthat::test_that(
 # X-variable ------------------------------------------------------------------
 
 testthat::test_that(
-  "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors",
+  "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
@@ -227,7 +227,7 @@ testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws valid
 test_dataset_selection <- function(input_id, new_dataset, new_value) {
   testthat::test_that(
     sprintf(
-      "e2e - tm_g_barchart_simple: Selection of '%s' dataset changes the element and does not throw validation errors",
+      "e2e - tm_g_barchart_simple: Selection of '%s' dataset changes the element and does not throw validation errors.",
       input_id
     ),
     {
@@ -249,7 +249,7 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
 
   testthat::test_that(
     sprintf(
-      "%s: De-selection of '%s' dataset changes the element and does not throw validation errors",
+      "%s: Deselection of '%s' dataset changes the element and does not throw validation errors",
       "e2e - tm_g_barchart_simple",
       input_id
     ),

@@ -51,7 +51,7 @@ testthat::test_that("e2e - tm_t_mult_events: Module initializes in teal without 
 })
 
 testthat::test_that(
-  "e2e - tm_t_mult_events: Starts with specified label, arm_var, hlt, llt, add_total, drop_arm_levels",
+  "e2e - tm_t_mult_events: Starts with specified label, arm_var, hlt, llt, add_total, drop_arm_levels.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_mult_events()

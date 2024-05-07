@@ -62,7 +62,7 @@ app_driver_tm_g_ci <- function() {
   )
 }
 
-testthat::test_that("e2e - tm_g_ci: example ci module initializes in teal without errors and produces plot output.", {
+testthat::test_that("e2e - tm_g_ci: Module initializes in teal without errors and produces plot output.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$expect_no_shiny_error()

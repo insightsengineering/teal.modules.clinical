@@ -68,7 +68,7 @@ testthat::test_that("e2e - tm_t_smq: Module initializes in teal without errors a
 })
 
 testthat::test_that(
-  "e2e - tm_t_smq: Starts with specified label, arm_var, llt, baskets, sort_criteria, add_total, drop_arm_levels",
+  "e2e - tm_t_smq: Starts with specified label, arm_var, llt, baskets, sort_criteria, add_total, drop_arm_levels.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()

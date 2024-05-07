@@ -66,7 +66,7 @@ testthat::test_that("e2e - tm_t_logistic: Module initializes in teal without err
 
 testthat::test_that(
   "e2e - tm_t_logistic: Starts with specified label, paramcd, responders, arm_var, buckets,
-  cov_var, interaction_var, conf_level, combine_comp_arms",
+  cov_var, interaction_var, conf_level, combine_comp_arms.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_logistic()

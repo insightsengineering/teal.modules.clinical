@@ -59,7 +59,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Module initializes in teal withou
 
 testthat::test_that(
   "e2e - tm_t_pp_laboratory: Starts with specified label, patient_id, paramcd, param,
-  timepoints, aval_var, avalu_var, anrind, round_value",
+  timepoints, aval_var, avalu_var, anrind, round_value.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
