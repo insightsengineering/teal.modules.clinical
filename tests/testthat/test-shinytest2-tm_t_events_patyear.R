@@ -1,5 +1,5 @@
 app_driver_tm_t_events_patyear <- function() {
-  data <- teal_data()
+  data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
     ADSL <- tmc_ex_adsl
@@ -18,6 +18,7 @@ app_driver_tm_t_events_patyear <- function() {
     modules = tm_t_events_patyear(
       label = "AE Rate Adjusted for Patient-Years At Risk Table",
       dataname = "ADAETTE",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(
         choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
         selected = "ARMCD"
@@ -35,7 +36,21 @@ app_driver_tm_t_events_patyear <- function() {
       conf_level = teal.transform::choices_selected(
         c(2, 0.95, 0.9, 0.8), 0.95,
         keep_order = TRUE
-      )
+      ),
+      aval_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVAL"),
+        selected = "AVAL", fixed = TRUE
+      ),
+      avalu_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVALU"),
+        selected = "AVALU", fixed = TRUE
+      ),
+      total_label = default_total_label(),
+      na_level = default_na_str(),
+      drop_arm_levels = TRUE,
+      pre_output = NULL,
+      post_output = NULL,
+      basic_table_args = teal.widgets::basic_table_args()
     )
   )
 }
