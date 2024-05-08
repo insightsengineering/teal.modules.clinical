@@ -141,7 +141,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws 
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting paramcd-level changes the table
+  "e2e - tm_t_pp_laboratory: Selecting paramcd changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
@@ -159,7 +159,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd-level throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", NULL)
@@ -178,7 +178,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd-level thro
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting param-variable changes the table
+  "e2e - tm_t_pp_laboratory: Selecting param changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
@@ -197,7 +197,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Deselection of param-variable throws validation error.",
+  "e2e - tm_t_pp_laboratory: Deselection of param throws validation error.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
@@ -218,7 +218,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting timepoints-variable changes the table
+  "e2e - tm_t_pp_laboratory: Selecting timepoints changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
@@ -236,7 +236,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", NULL)
@@ -257,7 +257,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints-variabl
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting avalu-variable changes the table
+  "e2e - tm_t_pp_laboratory: Selecting avalu changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
@@ -275,7 +275,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", NULL)
@@ -296,7 +296,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu-variable thr
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting aval_var-variable changes the table
+  "e2e - tm_t_pp_laboratory: Selecting aval_var changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
@@ -314,7 +314,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", NULL)
@@ -333,7 +333,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var-variable 
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting arind-variable changes the table
+  "e2e - tm_t_pp_laboratory: Selecting arind changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
@@ -351,7 +351,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of arind-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of arind throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("anrind-dataset_ADLB_singleextract-select", NULL)

@@ -79,10 +79,7 @@ output_functions <- c(
 )
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_a_mmrm: Module initializes in teal without errors ",
-    "and displays a message to click 'Fit Model'"
-  ),
+  "e2e - tm_a_mmrm: Module initializes in teal without errors and displays a message to click 'Fit Model'.",
   {
     skip_if_too_deep(5)
 
@@ -99,11 +96,9 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_a_mmrm: Module initializes with specified label, aval_var, paramcd,",
-    "visit_var, cov_var, arm_var, buckets, combine_comp_arms, id_var,",
-    "cor_struct, weights_emmeans, conf_level, method, parallel and output_function"
-  ),
+  "e2e - tm_a_mmrm: Module initializes with specified label, aval_var, paramcd,
+  visit_var, cov_var, arm_var, buckets, combine_comp_arms, id_var, cor_struct,
+  weights_emmeans, conf_level, method, parallel and output_function.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm(FALSE)
@@ -156,7 +151,7 @@ testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default
   app_driver <- app_driver_tm_a_mmrm()
   app_driver$expect_no_validation_error()
 
-  table <- app_driver$get_active_module_tws_output("mmrm_table")
+  table <- app_driver$get_active_module_table_output("mmrm_table")
   col_val <- app_driver$get_active_module_input("buckets")
   testthat::expect_true(all(unlist(col_val, use.names = FALSE) %in% colnames(table)))
   testthat::expect_equal(nrow(table), 25)
@@ -165,10 +160,8 @@ testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default
 })
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_a_mmrm: function t_mmrm_lsmeans selection shows output settings; changing",
-    "settings throws no validation errors and verify visibility of generated tables."
-  ),
+  "e2e - tm_a_mmrm: Function t_mmrm_lsmeans selection shows output settings; changing
+  settings throws no validation errors and verify visibility of generated tables.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
@@ -187,10 +180,8 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_a_mmrm: function g_mmrm_lsmeans selection shows output settings; changing",
-    "settings throws no validation errors and verify visibility of generated plots."
-  ),
+  "e2e - tm_a_mmrm: Function g_mmrm_lsmeans selection shows output settings; changing
+  settings throws no validation errors and verify visibility of generated plots.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
@@ -230,10 +221,8 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_a_mmrm: function g_mmrm_diagnostic selection shows output settings; changing",
-    "settings throws no validation errors and verify visibility of generated plots."
-  ),
+  "e2e - tm_a_mmrm: Function g_mmrm_diagnostic selection shows output settings; changing
+  settings throws no validation errors and verify visibility of generated plots.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
@@ -275,7 +264,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
+        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -308,7 +297,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
+        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -341,7 +330,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
+        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -374,7 +363,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
+        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -407,7 +396,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
+        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -440,7 +429,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_tws_output("mmrm_table"), data.frame())
+        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table"), data.frame())
       }
 
       testthat::expect_match(
@@ -524,12 +513,36 @@ for (func in output_functions) {
         )
         plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
       } else {
-        testthat::expect_false(
-          identical(
-            table_before,
-            app_driver$get_active_module_tws_output("mmrm_table")
+        table_before <- app_driver$get_active_module_table_output("mmrm_table")
+      }
+
+      # Iterate over each input and test changes
+      for (input_name in names(input_list)) {
+        if (input_name %in% non_responsive_conditions[[func]]) {
+          next
+        }
+
+        app_driver$set_active_module_input(input_name, input_list[[input_name]])
+        app_driver$click(selector = app_driver$active_module_element("button_start"))
+        app_driver$expect_no_validation_error()
+
+        # Check output based on function type (plot or table)
+        if (grepl("^g_", func)) {
+          testthat::expect_false(
+            identical(
+              plot_before,
+              app_driver$get_active_module_plot_output("mmrm_plot")
+            )
           )
-        )
+          plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
+        } else {
+          testthat::expect_false(
+            identical(
+              table_before,
+              app_driver$get_active_module_table_output("mmrm_table")
+            )
+          )
+        }
       }
     }
     app_driver$stop()
