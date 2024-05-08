@@ -24,7 +24,7 @@ template_exposure <- function(parentname,
                               paramcd,
                               paramcd_label = NULL,
                               row_by_var,
-                              col_by_var,
+                              col_by_var = NULL,
                               add_total = FALSE,
                               total_label = "Total",
                               add_total_row = TRUE,
@@ -37,7 +37,7 @@ template_exposure <- function(parentname,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(row_by_var)
-  checkmate::assert_string(col_by_var, null.ok = TRUE)
+  checkmate::assert_character(col_by_var, null.ok = TRUE)
   checkmate::assert_string(paramcd)
   checkmate::assert_string(id_var)
   checkmate::assert_flag(add_total)
@@ -51,6 +51,10 @@ template_exposure <- function(parentname,
 
   y <- list()
   data_list <- list()
+
+  if (length(col_by_var) == 0) {
+    col_by_var <- NULL
+  }
 
   data_list <- add_expr(
     data_list,
