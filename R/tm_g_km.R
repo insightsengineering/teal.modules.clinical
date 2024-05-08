@@ -30,6 +30,7 @@ template_g_km <- function(dataname = "ANL",
                           xlab = "Survival time",
                           time_unit_var = "AVALU",
                           yval = "Survival",
+                          ylim = NULL,
                           pval_method = "log-rank",
                           annot_surv_med = TRUE,
                           annot_coxph = TRUE,
@@ -181,6 +182,7 @@ template_g_km <- function(dataname = "ANL",
                 gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(x$time_unit_var[1]), perl = TRUE)
               ),
               yval = yval,
+              ylim = ylim,
               title = sprintf(
                 "%s%s",
                 sprintf(
@@ -238,6 +240,7 @@ template_g_km <- function(dataname = "ANL",
         xlab = xlab,
         time_unit_var = as.name(time_unit_var),
         yval = yval,
+        ylim = ylim,
         conf_level = conf_level,
         pval_method = pval_method,
         annot_surv_med = annot_surv_med,
@@ -551,6 +554,12 @@ ui_g_km <- function(id, ...) {
             choices = c("Survival probability", "Failure probability"),
             selected = c("Survival probability"),
           ),
+          teal.widgets::optionalSliderInput(
+            ns("ylim"),
+            tags$label("y-axis limits", class = "text-primary"),
+            value = c(0, 1),
+            min = 0, max = 1
+          ),
           teal.widgets::optionalSliderInputValMinMax(
             ns("font_size"),
             "Table Font Size",
@@ -672,6 +681,7 @@ srv_g_km <- function(id,
 
       iv$add_rule("font_size", shinyvalidate::sv_required("Plot tables font size must be greater than or equal to 5"))
       iv$add_rule("font_size", shinyvalidate::sv_gte(5, "Plot tables font size must be greater than or equal to 5"))
+      iv$add_rule("ylim", shinyvalidate::sv_required("Please choose a range for y-axis limits"))
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
         "conf_level",
@@ -786,6 +796,7 @@ srv_g_km <- function(id,
         ties = input$ties_coxph,
         xlab = input$xlab,
         yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
+        ylim = input$ylim,
         rel_height_plot = input$rel_height_plot / 100,
         ci_ribbon = input$show_ci_ribbon,
         title = title

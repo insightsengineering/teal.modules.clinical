@@ -24,8 +24,8 @@
                       xticks = NULL, xlab = sprintf("%s (%s)", "Survival time", 
                         gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", 
                           tolower(x$AVALU[1]), perl = TRUE)), yval = "Survival", 
-                      title = sprintf("%s%s", sprintf("%s%s", "KM Plot", 
-                        if (!is.null(facets)) {
+                      ylim = NULL, title = sprintf("%s%s", sprintf("%s%s", 
+                        "KM Plot", if (!is.null(facets)) {
                           sprintf(", %s = %s", as.character(quote(SEX)), 
                             unique(x[[as.character(quote(SEX))]]))
                         }
@@ -86,8 +86,8 @@
                       xticks = NULL, xlab = sprintf("%s (%s)", "Survival time", 
                         gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", 
                           tolower(x$AVALU[1]), perl = TRUE)), yval = "Survival", 
-                      title = sprintf("%s%s", sprintf("%s%s", "KM Plot", 
-                        if (!is.null(facets)) {
+                      ylim = NULL, title = sprintf("%s%s", sprintf("%s%s", 
+                        "KM Plot", if (!is.null(facets)) {
                           sprintf(", %s = %s", as.character(quote(SEX)), 
                             unique(x[[as.character(quote(SEX))]]))
                         }
@@ -149,8 +149,8 @@
                       xticks = NULL, xlab = sprintf("%s (%s)", "Survival time", 
                         gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", 
                           tolower(x$AVALU[1]), perl = TRUE)), yval = "Survival", 
-                      title = sprintf("%s%s", sprintf("%s%s", "KM Plot", 
-                        if (!is.null(facets)) {
+                      ylim = NULL, title = sprintf("%s%s", sprintf("%s%s", 
+                        "KM Plot", if (!is.null(facets)) {
                           sprintf(", %s = %s", as.character(quote(SEX)), 
                             unique(x[[as.character(quote(SEX))]]))
                         }
