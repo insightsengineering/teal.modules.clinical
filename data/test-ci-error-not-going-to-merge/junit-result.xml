@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="shinytest2-tm_t_exposure" timestamp="2024-05-08T22:04:45Z" hostname="de05b3616a8b" tests="1" skipped="0" failures="0" errors="1" time="27.121">
-    <testcase time="27.121" classname="shinytest2_tm_t_exposure" name="e2e_tm_t_exposure_Deselection_of_col_by_var_variable_changes_the_table_and_does_not_throw_validation_errors.">
+  <testsuite name="shinytest2-tm_t_exposure" timestamp="2024-05-08T22:19:14Z" hostname="9cb643540140" tests="1" skipped="0" failures="0" errors="1" time="28.034">
+    <testcase time="28.034" classname="shinytest2_tm_t_exposure" name="e2e_tm_t_exposure_Deselection_of_col_by_var_variable_changes_the_table_and_does_not_throw_validation_errors.">
       <error type="error" message="Error in `app_wait_for_idle(self, private, duration = duration, timeout = timeout)`: An error occurred while waiting for Shiny to be stable ('test-shinytest2-tm_t_exposure.R:82:5')">Error in `app_wait_for_idle(self, private, duration = duration, timeout = timeout)`: An error occurred while waiting for Shiny to be stable
 Backtrace:
     x
