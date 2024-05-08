@@ -122,7 +122,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of patient_id t
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_prior_medication: Selecting cmdecod-variable changes the table and does not throw validation errors.",
+  "e2e - tm_t_pp_prior_medication: Selecting cmdecod changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
@@ -139,7 +139,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmdecod-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmdecod throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", NULL)
@@ -152,7 +152,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmdecod-vari
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_prior_medication: Selecting atirel-variable changes the table and does not throw validation errors.",
+  "e2e - tm_t_pp_prior_medication: Selecting atirel changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
@@ -169,7 +169,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("atirel-dataset_ADCM_singleextract-select", NULL)
@@ -182,7 +182,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel-varia
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_prior_medication: Selecting cmdecod-variable changes the table and does not throw validation errors.",
+  "e2e - tm_t_pp_prior_medication: Selecting cmdecod changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
@@ -199,7 +199,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("cmindc-dataset_ADCM_singleextract-select", NULL)
@@ -212,7 +212,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc-varia
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_prior_medication: Selecting cmdecod-variable changes the table and does not throw validation errors.",
+  "e2e - tm_t_pp_prior_medication: Selecting cmdecod changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
@@ -229,7 +229,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmstdy-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmstdy throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("cmstdy-dataset_ADCM_singleextract-select", NULL)
