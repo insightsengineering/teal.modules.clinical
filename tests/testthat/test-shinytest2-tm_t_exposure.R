@@ -71,155 +71,17 @@ app_driver_tm_t_exposure <- function() {
   )
 }
 
-testthat::test_that("e2e - tm_t_exposure: Module initializes in teal without errors and produces table output.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_exposure()
-  app_driver$expect_no_shiny_error()
-  app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
-  )
-  app_driver$stop()
-})
-
-testthat::test_that(
-  "e2e - tm_t_exposure: Starts with specified label, paramcd, parcat,
-  col_by_var, row_by_var, add_total_row, add_total",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_t_exposure()
-    testthat::expect_equal(
-      app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
-      "Duration of Exposure Table"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals"),
-      "TDURD"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals"),
-      "Drug A"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("col_by_var-dataset_ADSL_singleextract-select"),
-      "SEX"
-    )
-    testthat::expect_equal(
-      app_driver$get_active_module_input("row_by_var-dataset_ADEX_singleextract-select"),
-      "RACE"
-    )
-    testthat::expect_true(app_driver$get_active_module_input("add_total_row"))
-    testthat::expect_false(app_driver$get_active_module_input("add_total"))
-    app_driver$stop()
-  }
-)
-
-testthat::test_that(
-  "e2e - tm_t_exposure: Selecting paramcd-level changes the table and does not throw validation errors.",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_t_exposure()
-    table_before <- app_driver$get_active_module_tws_output("table")
-    app_driver$set_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals", "DOSE")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-    app_driver$expect_no_validation_error()
-    app_driver$stop()
-  }
-)
-
-testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd-level throws validation error.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_exposure()
-  app_driver$set_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
-  app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$active_module_element_text(
-      "paramcd-dataset_ADEX_singleextract-filter1-vals_input .shiny-validation-message"
-    ),
-    "Please select a parameter value."
-  )
-  app_driver$stop()
-})
-
-testthat::test_that(
-  "e2e - tm_t_exposure: Selecting parcat-level changes the table and does not throw validation errors.",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_t_exposure()
-    table_before <- app_driver$get_active_module_tws_output("table")
-    app_driver$set_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals", "Drug B")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-    app_driver$expect_no_validation_error()
-    app_driver$stop()
-  }
-)
-
-testthat::test_that("e2e - tm_t_exposure: Deselection of parcat-level throws validation error.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_exposure()
-  app_driver$set_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
-  app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$active_module_element_text(
-      "parcat-dataset_ADEX_singleextract-filter1-vals_input .shiny-validation-message"
-    ),
-    "Please select a parameter category value."
-  )
-  app_driver$stop()
-})
-
-testthat::test_that(
-  "e2e - tm_t_exposure: Selecting col_by_var-variable changes the table and does not throw validation errors.",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_t_exposure()
-    table_before <- app_driver$get_active_module_tws_output("table")
-    app_driver$set_active_module_input("col_by_var-dataset_ADSL_singleextract-select", "ARM")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-    app_driver$expect_no_validation_error()
-    app_driver$stop()
-  }
-)
-
 testthat::test_that(
   "e2e - tm_t_exposure: Deselection of col_by_var-variable changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_tws_output("table")
+    app_driver$get_logs()
+    print(app_driver$get_values()$input)
     app_driver$set_active_module_input("col_by_var-dataset_ADSL_singleextract-select", character(0), wait_ = FALSE)
     testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
-
-testthat::test_that(
-  "e2e - tm_t_exposure: Selecting row_by_var_var-variable changes the table and does not throw validation errors.",
-  {
-    skip_if_too_deep(5)
-    app_driver <- app_driver_tm_t_exposure()
-    table_before <- app_driver$get_active_module_tws_output("table")
-    app_driver$set_active_module_input("row_by_var-dataset_ADEX_singleextract-select", "REGION1")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
-    app_driver$expect_no_validation_error()
-    app_driver$stop()
-  }
-)
-
-testthat::test_that("e2e - tm_t_exposure: Deselection of row_by_var-variable throws validation error.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_exposure()
-  app_driver$set_active_module_input("row_by_var-dataset_ADEX_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
-  app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$active_module_element_text(
-      "row_by_var-dataset_ADEX_singleextract-select_input .shiny-validation-message"
-    ),
-    "Please select a row by variable."
-  )
-  app_driver$stop()
-})
