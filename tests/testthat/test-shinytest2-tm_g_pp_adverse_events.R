@@ -128,11 +128,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(
-        app_driver$active_module_element("table")
-      )
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("table")
     app_driver$set_active_module_input("patient_id", "AB12345-CHN-15-id-262")
     testthat::expect_false(
       identical(
@@ -143,11 +139,7 @@ testthat::test_that(
     testthat::expect_false(
       identical(
         table_before,
-        rvest::html_table(
-          app_driver$get_html_rvest(
-            app_driver$active_module_element("table")
-          )
-        )[[1]]
+        app_driver$get_active_module_table_output("table")
       )
     )
     app_driver$expect_no_shiny_error()
@@ -177,11 +169,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(
-        app_driver$active_module_element("table")
-      )
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("table")
     app_driver$set_active_module_input("aeterm-dataset_ADAE_singleextract-select", "AGEU")
     testthat::expect_false(
       identical(
@@ -193,11 +181,7 @@ testthat::test_that(
     testthat::expect_false(
       identical(
         table_before,
-        rvest::html_table(
-          app_driver$get_html_rvest(
-            app_driver$active_module_element("table")
-          )
-        )[[1]]
+        app_driver$get_active_module_table_output("table")
       )
     )
     app_driver$expect_no_shiny_error()
@@ -227,11 +211,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(
-        app_driver$active_module_element("table")
-      )
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("table")
     app_driver$set_active_module_input("tox_grade-dataset_ADAE_singleextract-select", "COUNTRY")
     testthat::expect_false(
       identical(
@@ -243,11 +223,7 @@ testthat::test_that(
     testthat::expect_false(
       identical(
         table_before,
-        rvest::html_table(
-          app_driver$get_html_rvest(
-            app_driver$active_module_element("table")
-          )
-        )[[1]]
+        app_driver$get_active_module_table_output("table")
       )
     )
     app_driver$expect_no_shiny_error()
@@ -277,11 +253,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(
-        app_driver$active_module_element("table")
-      )
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("table")
     app_driver$set_active_module_input("causality-dataset_ADAE_singleextract-select", "ACTARM")
     testthat::expect_false(
       identical(
@@ -293,11 +265,7 @@ testthat::test_that(
     testthat::expect_false(
       identical(
         table_before,
-        rvest::html_table(
-          app_driver$get_html_rvest(
-            app_driver$active_module_element("table")
-          )
-        )[[1]]
+        app_driver$get_active_module_table_output("table")
       )
     )
     app_driver$expect_no_shiny_error()
@@ -327,11 +295,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(
-        app_driver$active_module_element("table")
-      )
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("table")
     app_driver$set_active_module_input("outcome-dataset_ADAE_singleextract-select", "SITEID")
     testthat::expect_false(
       identical(
@@ -343,11 +307,7 @@ testthat::test_that(
     testthat::expect_false(
       identical(
         table_before,
-        rvest::html_table(
-          app_driver$get_html_rvest(
-            app_driver$active_module_element("table")
-          )
-        )[[1]]
+        app_driver$get_active_module_table_output("table")
       )
     )
     app_driver$expect_no_shiny_error()
@@ -377,11 +337,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(
-        app_driver$active_module_element("table")
-      )
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("table")
     app_driver$set_active_module_input("action-dataset_ADAE_singleextract-select", "SMQ01NAM")
     testthat::expect_false(
       identical(
@@ -393,11 +349,7 @@ testthat::test_that(
     testthat::expect_false(
       identical(
         table_before,
-        rvest::html_table(
-          app_driver$get_html_rvest(
-            app_driver$active_module_element("table")
-          )
-        )[[1]]
+        app_driver$get_active_module_table_output("table")
       )
     )
     app_driver$expect_no_shiny_error()
@@ -427,11 +379,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(
-        app_driver$active_module_element("table")
-      )
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("table")
     app_driver$set_active_module_input("time-dataset_ADAE_singleextract-select", "AGE")
     testthat::expect_false(
       identical(
@@ -443,11 +391,7 @@ testthat::test_that(
     testthat::expect_false(
       identical(
         table_before,
-        rvest::html_table(
-          app_driver$get_html_rvest(
-            app_driver$active_module_element("table")
-          )
-        )[[1]]
+        app_driver$get_active_module_table_output("table")
       )
     )
     app_driver$expect_no_shiny_error()

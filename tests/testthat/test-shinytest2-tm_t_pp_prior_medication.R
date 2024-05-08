@@ -96,14 +96,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("prior_medication_table")
     app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
     testthat::expect_false(
       identical(
         nrow(table_before),
-        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+        nrow(app_driver$get_active_module_table_output("prior_medication_table"))
       )
     )
     app_driver$expect_no_validation_error()
@@ -128,14 +126,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("prior_medication_table")
     app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", "RACE")
     testthat::expect_false(
       identical(
         nrow(table_before),
-        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+        nrow(app_driver$get_active_module_table_output("prior_medication_table"))
       )
     )
     app_driver$expect_no_validation_error()
@@ -160,14 +156,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("prior_medication_table")
     app_driver$set_active_module_input("atirel-dataset_ADCM_singleextract-select", "SEX")
     testthat::expect_false(
       identical(
         nrow(table_before),
-        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+        nrow(app_driver$get_active_module_table_output("prior_medication_table"))
       )
     )
     app_driver$expect_no_validation_error()
@@ -192,14 +186,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("prior_medication_table")
     app_driver$set_active_module_input("cmindc-dataset_ADCM_singleextract-select", "SEX")
     testthat::expect_false(
       identical(
         nrow(table_before),
-        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+        nrow(app_driver$get_active_module_table_output("prior_medication_table"))
       )
     )
     app_driver$expect_no_validation_error()
@@ -224,14 +216,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
-    table_before <- rvest::html_table(
-      app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))
-    )[[1]]
+    table_before <- app_driver$get_active_module_table_output("prior_medication_table")
     app_driver$set_active_module_input("cmstdy-dataset_ADCM_singleextract-select", "AGE")
     testthat::expect_false(
       identical(
         nrow(table_before),
-        nrow(rvest::html_table(app_driver$get_html_rvest(app_driver$active_module_element("prior_medication_table"))))
+        nrow(app_driver$get_active_module_table_output("prior_medication_table"))
       )
     )
     app_driver$expect_no_validation_error()
