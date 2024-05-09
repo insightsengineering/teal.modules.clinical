@@ -638,6 +638,7 @@ srv_g_km <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+logger::log_shiny_input_changes(input, namespace = "teal.modules.general")
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(

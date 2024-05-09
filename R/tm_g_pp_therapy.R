@@ -559,6 +559,7 @@ srv_g_therapy <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+logger::log_shiny_input_changes(input, namespace = "teal.modules.general")
     patient_id <- reactive(input$patient_id)
 
     # Init
