@@ -24,16 +24,20 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
   files-diff:
     name: Determine modified files 📋
-    run: |
-      MODIFIED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '^R/')
-      if [ -z "$MODIFIED_FILES" ]; then
-        echo "No R files changed"
-      else
-        echo "::set-output name=MODIFIED_FILES::$MODIFIED_FILES"
-      fi
+    steps:
+      - name: Determine modified files
+        run: |
+          MODIFIED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep '^R/')
+          if [ -z "$MODIFIED_FILES" ]; then
+            echo "No R files changed"
+          else
+            echo "::set-output name=MODIFIED_FILES::$MODIFIED_FILES"
+          fi
   echo-in-r:
     name: Echo the modified files in R 📢
-    run: Rscript -e 'print(Sys.getenv("MODIFIED_FILES"))'
+    steps:
+      - name: Echo modified files in R
+        run: Rscript -e 'print(Sys.getenv("MODIFIED_FILES"))'
 
   # r-cmd:
   #   name: R CMD Check 🧬
