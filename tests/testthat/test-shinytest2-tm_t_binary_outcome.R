@@ -170,23 +170,23 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_binary_outcome: Selecting paramcd-level changes the table and does not throw validation errors.",
+  "e2e - tm_t_binary_outcome: Selecting paramcd changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", "INVET")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
-testthat::test_that("e2e - tm_t_binary_outcome: Deselection of paramcd-level throws validation error.", {
+testthat::test_that("e2e - tm_t_binary_outcome: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
   app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text(
@@ -202,9 +202,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("responders", c("Stable Disease (SD)", "Progressive Disease (PD)"))
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -214,7 +214,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of responders throws
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
   app_driver$set_active_module_input("responders", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$get_text("#teal-main_ui-root-responders .shiny-validation-message"),
@@ -224,23 +224,23 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of responders throws
 })
 
 testthat::test_that(
-  "e2e - tm_t_binary_outcome: Selecting arm_var-variable changes the table and does not throw validation errors.",
+  "e2e - tm_t_binary_outcome: Selecting arm_var changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
-testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
@@ -250,27 +250,27 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var-variable 
 })
 
 testthat::test_that(
-  "e2e - tm_t_binary_outcome: Selecting strata_var-variable changes the table and does not throw validation errors.",
+  "e2e - tm_t_binary_outcome: Selecting strata_var changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "SEX")
 
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_t_binary_outcome: Deselection of strata_var-variable changes the table and does not throw validation errors.", # nolint line_length_linter
+  "e2e - tm_t_binary_outcome: Deselection of strata_var changes the table and does not throw validation errors.", # nolint line_length_linter
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

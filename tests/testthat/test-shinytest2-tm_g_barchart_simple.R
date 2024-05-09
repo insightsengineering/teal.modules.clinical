@@ -130,10 +130,8 @@ testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal with
 })
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_g_barchart_simple: Starts with specified ",
-    "label, id_var, arm_var, visit_var, paramcd, cov_var, conf_level and conf_struct."
-  ),
+  "e2e - tm_g_barchart_simple: Starts with specified label, id_var, arm_var, visit_var,
+  paramcd, cov_var, conf_level and conf_struct.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
@@ -193,13 +191,13 @@ testthat::test_that(
 # X-variable ------------------------------------------------------------------
 
 testthat::test_that(
-  "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors",
+  "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), "RACE")
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -227,15 +225,15 @@ testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws valid
 test_dataset_selection <- function(input_id, new_dataset, new_value) {
   testthat::test_that(
     sprintf(
-      "e2e - tm_g_barchart_simple: Selection of '%s' dataset changes the element and does not throw validation errors",
+      "e2e - tm_g_barchart_simple: Selection of '%s' dataset changes the element and does not throw validation errors.",
       input_id
     ),
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(sprintf("%s-dataset", input_id), new_dataset)
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       testthat::expect_null(app_driver$get_active_module_input(ns_des_input(input_id, new_dataset, "select")))
       app_driver$set_active_module_input(ns_des_input(input_id, new_dataset, "select"), new_value)
       testthat::expect_identical(
@@ -249,17 +247,17 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
 
   testthat::test_that(
     sprintf(
-      "%s: De-selection of '%s' dataset changes the element and does not throw validation errors",
+      "%s: Deselection of '%s' dataset changes the element and does not throw validation errors.",
       "e2e - tm_g_barchart_simple",
       input_id
     ),
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(sprintf("%s-dataset", input_id), character(0L))
       testthat::expect_null(app_driver$get_active_module_input(input_id))
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }
@@ -275,7 +273,7 @@ test_dataset_selection("y_facet", "ADSL", "ARM")
 for (input_id in c("fill", "x_facet", "y_facet")) {
   testthat::test_that(
     sprintf(
-      "e2e - tm_g_barchart_simple: Duplicate between 'x' and '%s' selection throws validation error",
+      "e2e - tm_g_barchart_simple: Duplicate between 'x' and '%s' selection throws validation error.",
       input_id
     ),
     {
@@ -306,6 +304,7 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
         ),
         "^Duplicated value: ACTARM$"
       )
+      app_driver$stop()
     }
   )
 }
@@ -322,9 +321,9 @@ test_that_plot_settings <- function(input_id, new_value, setup_fun = function(ap
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       setup_fun(app_driver)
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(input_id, new_value)
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }
