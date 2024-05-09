@@ -24,7 +24,7 @@ template_exposure <- function(parentname,
                               paramcd,
                               paramcd_label = NULL,
                               row_by_var,
-                              col_by_var,
+                              col_by_var = NULL,
                               add_total = FALSE,
                               total_label = "Total",
                               add_total_row = TRUE,
@@ -51,6 +51,10 @@ template_exposure <- function(parentname,
 
   y <- list()
   data_list <- list()
+
+  if (length(col_by_var) == 0) {
+    col_by_var <- NULL
+  }
 
   data_list <- add_expr(
     data_list,
@@ -548,7 +552,6 @@ srv_t_exposure <- function(id,
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
-
     merged <- list(
       anl_input_r = anl_inputs,
       adsl_input_r = adsl_inputs,
@@ -629,7 +632,7 @@ srv_t_exposure <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
     })
 
-    # # Outputs to render.
+    # Outputs to render.
     table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
@@ -647,10 +650,30 @@ srv_t_exposure <- function(id,
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive({
-        teal.code::get_code(all_q())
-      }),
+      verbatim_content = reactive(teal.code::get_code(all_q())),
       title = label
     )
+
+    ### REPORTER
+    if (with_reporter) {
+      card_fun <- function(comment, label) {
+        card <- teal::report_card_template(
+          title = "Exposure for Risk Management Plan Table",
+          label = label,
+          with_filter = with_filter,
+          filter_panel_api = filter_panel_api
+        )
+        card$append_text("Table", "header3")
+        card$append_table(table_r())
+        if (!comment == "") {
+          card$append_text("Comment", "header3")
+          card$append_text(comment)
+        }
+        card$append_src(teal.code::get_code(all_q()))
+        card
+      }
+      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
+    }
+    ###
   })
 }
