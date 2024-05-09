@@ -105,7 +105,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_smq()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "SEX")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -129,7 +134,12 @@ testthat::test_that("e2e - tm_t_smq: Selecting paramcd changes the table and doe
   app_driver <- app_driver_tm_t_smq()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", "SEX")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+  testthat::expect_false(
+    identical(
+      table_before,
+      app_driver$get_active_module_table_output("table-table-with-settings")
+    )
+  )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -154,7 +164,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_smq()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("baskets-dataset_ADAE_singleextract-select", "CQ01NAM")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

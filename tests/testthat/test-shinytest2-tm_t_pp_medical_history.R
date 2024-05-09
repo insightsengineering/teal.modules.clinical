@@ -83,7 +83,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_pp_medical_history()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-45")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -109,7 +114,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_pp_medical_history()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("mhterm-dataset_ADMH_singleextract-select", "STUDYID")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -135,7 +145,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_pp_medical_history()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("mhbodsys-dataset_ADMH_singleextract-select", "EOSSTT")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -161,7 +176,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_pp_medical_history()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("mhdistat-dataset_ADMH_singleextract-select", "STUDYID")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

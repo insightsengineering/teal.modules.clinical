@@ -117,7 +117,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -143,7 +148,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals", "HR")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -172,7 +182,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("worst_flag_var-dataset_ADEG_singleextract-select", "WORS01FL")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -201,7 +216,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("aval_var-dataset_ADEG_singleextract-select", "AVALC")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -228,7 +248,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("baseline_var-dataset_ADEG_singleextract-select", "BASEC")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

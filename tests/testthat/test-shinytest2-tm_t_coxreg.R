@@ -130,7 +130,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", "CRSD")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -158,7 +163,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -184,7 +194,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("cov_var-dataset_ADSL_singleextract-select", c("BMRKR1", "BMRKR2"))
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -197,7 +212,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("cov_var-dataset_ADSL_singleextract-select", NULL)
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -210,7 +230,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", c("STRATA2", "COUNTRY"))
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -223,7 +248,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

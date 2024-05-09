@@ -142,7 +142,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -168,7 +173,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("flag_var_anl-dataset_ADAE_singleextract-select", c("TMPFL_REL", "TMPFL_GR5"))
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -182,7 +192,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("flag_var_anl-dataset_ADAE_singleextract-select", NULL)
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -196,7 +211,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("flag_var_aesi-dataset_ADAE_singleextract-select", c("TMP_SMQ02", "TMP_CQ01"))
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -210,7 +230,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("flag_var_aesi-dataset_ADAE_singleextract-select", NULL)
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

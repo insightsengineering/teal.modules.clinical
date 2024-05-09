@@ -115,7 +115,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_a_gee()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input(ns_des_input("id_var", "ADQS", "select"), "SUBJID")
-    testthat::expect_true(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -140,7 +145,12 @@ testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and doe
 
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ARMCD")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+  testthat::expect_false(
+    identical(
+      table_before,
+      app_driver$get_active_module_table_output("table-table-with-settings")
+    )
+  )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -165,7 +175,12 @@ testthat::test_that(
     app_driver <- app_driver_tm_a_gee()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input(ns_des_input("visit_var", "ADQS", "select"), "AVISITN")
-    testthat::expect_true(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -190,7 +205,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and 
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input(ns_des_input("paramcd", "ADQS", "filter1-vals"), "BFIALL")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+  testthat::expect_false(
+    identical(
+      table_before,
+      app_driver$get_active_module_table_output("table-table-with-settings")
+    )
+  )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -213,7 +233,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and 
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input("cov_var-dataset_ADQS_singleextract-select", "BASE")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+  testthat::expect_false(
+    identical(
+      table_before,
+      app_driver$get_active_module_table_output("table-table-with-settings")
+    )
+  )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -223,7 +248,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of conf_level changes the table a
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input("conf_level", 0.90)
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+  testthat::expect_false(
+    identical(
+      table_before,
+      app_driver$get_active_module_table_output("table-table-with-settings")
+    )
+  )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -260,7 +290,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of cor_struct changes the table a
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input("cor_struct", "auto-regressive")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+  testthat::expect_false(
+    identical(
+      table_before,
+      app_driver$get_active_module_table_output("table-table-with-settings")
+    )
+  )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -278,7 +313,12 @@ testthat::test_that("e2e - tm_a_gee: Selection of output_table changes the table
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
   app_driver$set_active_module_input("output_table", "t_gee_cov")
-  testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
+  testthat::expect_false(
+    identical(
+      table_before,
+      app_driver$get_active_module_table_output("table-table-with-settings")
+    )
+  )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })

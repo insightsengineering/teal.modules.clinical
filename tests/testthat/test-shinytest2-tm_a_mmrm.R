@@ -264,7 +264,9 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame())
+        testthat::expect_identical(
+          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+        )
       }
 
       testthat::expect_match(
@@ -297,7 +299,9 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame())
+        testthat::expect_identical(
+          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+        )
       }
 
       testthat::expect_match(
@@ -330,7 +334,9 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame())
+        testthat::expect_identical(
+          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+        )
       }
 
       testthat::expect_match(
@@ -363,7 +369,9 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame())
+        testthat::expect_identical(
+          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+        )
       }
 
       testthat::expect_match(
@@ -396,7 +404,9 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame())
+        testthat::expect_identical(
+          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+        )
       }
 
       testthat::expect_match(
@@ -429,7 +439,9 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
-        testthat::expect_identical(app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame())
+        testthat::expect_identical(
+          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+        )
       }
 
       testthat::expect_match(
