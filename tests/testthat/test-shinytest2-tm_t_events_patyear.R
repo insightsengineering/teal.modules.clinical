@@ -113,9 +113,11 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
     app_driver$set_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals", "AETTE2")
-    testthat::expect_identical(
-      app_driver$get_active_module_table_output("patyear_table-table-with-settings"),
-      data.frame()
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("patyear_table-table-with-settings")
+      )
     )
     app_driver$expect_no_validation_error()
     app_driver$stop()
@@ -147,9 +149,11 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARM")
-    testthat::expect_identical(
-      app_driver$get_active_module_table_output("patyear_table-table-with-settings"),
-      data.frame()
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("patyear_table-table-with-settings")
+      )
     )
     app_driver$expect_no_validation_error()
     app_driver$stop()
