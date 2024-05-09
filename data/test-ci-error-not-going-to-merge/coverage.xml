@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0" branch-rate="0" lines-covered="0" lines-valid="19295" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-05-09 03:01:04.787819">
+<coverage line-rate="0" branch-rate="0" lines-covered="0" lines-valid="19319" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-05-09 03:12:44.371276">
   <sources>
     <source>/__w/teal.modules.clinical/teal.modules.clinical/teal.modules.clinical</source>
   </sources>
@@ -26666,6 +26666,30 @@
                 <line number="554" hits="0" branch="false"/>
                 <line number="555" hits="0" branch="false"/>
                 <line number="556" hits="0" branch="false"/>
+                <line number="558" hits="0" branch="false"/>
+                <line number="559" hits="0" branch="false"/>
+                <line number="560" hits="0" branch="false"/>
+                <line number="562" hits="0" branch="false"/>
+                <line number="564" hits="0" branch="false"/>
+                <line number="565" hits="0" branch="false"/>
+                <line number="566" hits="0" branch="false"/>
+                <line number="567" hits="0" branch="false"/>
+                <line number="568" hits="0" branch="false"/>
+                <line number="569" hits="0" branch="false"/>
+                <line number="570" hits="0" branch="false"/>
+                <line number="573" hits="0" branch="false"/>
+                <line number="574" hits="0" branch="false"/>
+                <line number="575" hits="0" branch="false"/>
+                <line number="576" hits="0" branch="false"/>
+                <line number="577" hits="0" branch="false"/>
+                <line number="578" hits="0" branch="false"/>
+                <line number="579" hits="0" branch="false"/>
+                <line number="580" hits="0" branch="false"/>
+                <line number="581" hits="0" branch="false"/>
+                <line number="582" hits="0" branch="false"/>
+                <line number="583" hits="0" branch="false"/>
+                <line number="584" hits="0" branch="false"/>
+                <line number="585" hits="0" branch="false"/>
                 <line number="587" hits="0" branch="false"/>
                 <line number="590" hits="0" branch="false"/>
                 <line number="591" hits="0" branch="false"/>
@@ -27056,6 +27080,30 @@
             <line number="554" hits="0" branch="false"/>
             <line number="555" hits="0" branch="false"/>
             <line number="556" hits="0" branch="false"/>
+            <line number="558" hits="0" branch="false"/>
+            <line number="559" hits="0" branch="false"/>
+            <line number="560" hits="0" branch="false"/>
+            <line number="562" hits="0" branch="false"/>
+            <line number="564" hits="0" branch="false"/>
+            <line number="565" hits="0" branch="false"/>
+            <line number="566" hits="0" branch="false"/>
+            <line number="567" hits="0" branch="false"/>
+            <line number="568" hits="0" branch="false"/>
+            <line number="569" hits="0" branch="false"/>
+            <line number="570" hits="0" branch="false"/>
+            <line number="573" hits="0" branch="false"/>
+            <line number="574" hits="0" branch="false"/>
+            <line number="575" hits="0" branch="false"/>
+            <line number="576" hits="0" branch="false"/>
+            <line number="577" hits="0" branch="false"/>
+            <line number="578" hits="0" branch="false"/>
+            <line number="579" hits="0" branch="false"/>
+            <line number="580" hits="0" branch="false"/>
+            <line number="581" hits="0" branch="false"/>
+            <line number="582" hits="0" branch="false"/>
+            <line number="583" hits="0" branch="false"/>
+            <line number="584" hits="0" branch="false"/>
+            <line number="585" hits="0" branch="false"/>
             <line number="587" hits="0" branch="false"/>
             <line number="590" hits="0" branch="false"/>
             <line number="591" hits="0" branch="false"/>
