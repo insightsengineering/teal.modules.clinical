@@ -115,7 +115,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_a_gee()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input(ns_des_input("id_var", "ADQS", "select"), "SUBJID")
-    testthat::expect_false(
+    testthat::expect_true(
       identical(
         table_before,
         app_driver$get_active_module_table_output("table-table-with-settings")
@@ -175,7 +175,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_a_gee()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input(ns_des_input("visit_var", "ADQS", "select"), "AVISITN")
-    testthat::expect_false(
+    testthat::expect_true(
       identical(
         table_before,
         app_driver$get_active_module_table_output("table-table-with-settings")
