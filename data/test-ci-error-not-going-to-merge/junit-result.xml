@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="shinytest2-tm_t_exposure" timestamp="2024-05-09T03:44:55Z" hostname="3893ab9194c7" tests="1" skipped="0" failures="0" errors="1" time="7.652">
-    <testcase time="7.652" classname="shinytest2_tm_t_exposure" name="e2e_tm_t_exposure_Deselection_of_col_by_var_variable_changes_the_table_and_does_not_throw_validation_errors.">
+  <testsuite name="shinytest2-tm_t_exposure" timestamp="2024-05-09T04:00:14Z" hostname="a294819876e3" tests="1" skipped="0" failures="0" errors="1" time="7.546">
+    <testcase time="7.546" classname="shinytest2_tm_t_exposure" name="e2e_tm_t_exposure_Deselection_of_col_by_var_variable_changes_the_table_and_does_not_throw_validation_errors.">
       <error type="error" message="Error in `app_get_values(self, private, input = input, output = output,  ('test-shinytest2-tm_t_exposure.R:90:5')">Error in `app_get_values(self, private, input = input, output = output, 
-    export = export, ..., hash_images = hash_images)`: Shiny server returned 404 for values URL: http://127.0.0.1:7712/session/6cacd50daa7d39a1ede2b26f456f3c92/dataobj/shinytest?w=&amp;nonce=2ade2ef6f&amp;input=teal-main_ui-root-duration_of_exposure_table-module-col_by_var-dataset_ADSL_singleextract-select&amp;&amp;&amp;format=rds&amp;sortC=1
+    export = export, ..., hash_images = hash_images)`: Shiny server returned 404 for values URL: http://127.0.0.1:3651/session/57a75c6f58cc2170f59948096fe3584b/dataobj/shinytest?w=&amp;nonce=c234f9353&amp;input=teal-main_ui-root-duration_of_exposure_table-module-col_by_var-dataset_ADSL_singleextract-select&amp;&amp;&amp;format=rds&amp;sortC=1
 i Is `shiny::runApp(test.mode = TRUE)` enabled?
 Backtrace:
      x
