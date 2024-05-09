@@ -15,6 +15,7 @@ on:
     branches:
       - main
       - shinytest2@main
+      - test-ci-error-not-going-to-merge
   workflow_dispatch:
 
 jobs:
