@@ -57,7 +57,16 @@ app_driver_tm_g_ci <- function() {
           multiple = FALSE,
           fixed = FALSE
         )
-      )
+      ),
+      stat = c("mean", "median"),
+      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
+        keep_order = TRUE
+      ),
+      plot_height = c(700L, 200L, 2000L),
+      plot_width = NULL,
+      pre_output = NULL,
+      post_output = NULL,
+      ggplot2_args = teal.widgets::ggplot2_args()
     )
   )
 }
