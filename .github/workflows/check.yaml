@@ -14,7 +14,6 @@ on:
     branches:
       - main
       - shinytest2@main
-      - test-ci-error-not-going-to-merge
   workflow_dispatch:
 
 jobs:
@@ -24,6 +23,11 @@ jobs:
     container:
       image: ghcr.io/insightsengineering/rstudio:2024.05.05
     steps:
+      - name: Checkout repo 🛎
+        uses: actions/checkout@v4
+        with:
+          ref: "${{ env.BRANCH_NAME }}"
+          token: "${{ steps.github-token.outputs.token }}"
       - name: Determine modified files 📋
         run: |
           MODIFIED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.sha }} | grep '^R/')
@@ -35,5 +39,12 @@ jobs:
           fi
       - name: Echo the modified files in R 📢
         run: |
-          echo "Echoing modified files in R..."
-          Rscript -e 'print(Sys.getenv("MODIFIED_FILES"))'
+          base_branch="${{ github.event.pull_request.base.ref }}"
+          git fetch origin $base_branch:$base_branch
+          MODIFIED_FILES=$(git diff --name-only $base_branch ${{ github.event.pull_request.head.sha }} | grep '^R/' | sed 's/^R\///')
+          if [ -z "$MODIFIED_FILES" ]; then
+            echo "No R files changed"
+          else
+            echo "Modified R files:"
+            echo "$MODIFIED_FILES"
+          fi
