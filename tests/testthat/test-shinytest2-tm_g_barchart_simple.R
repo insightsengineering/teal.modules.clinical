@@ -304,6 +304,7 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
         ),
         "^Duplicated value: ACTARM$"
       )
+      app_driver$stop()
     }
   )
 }
