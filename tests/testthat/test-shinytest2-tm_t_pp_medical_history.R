@@ -81,9 +81,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_medical_history()
-    table_before <- app_driver$get_active_module_table_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-45")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table")))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -93,7 +93,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of patient_id th
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_medical_history()
   app_driver$set_active_module_input("patient_id", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("patient_id_input .shiny-validation-message"),
@@ -107,9 +107,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_medical_history()
-    table_before <- app_driver$get_active_module_table_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("mhterm-dataset_ADMH_singleextract-select", "STUDYID")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table")))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -119,7 +119,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhterm throws
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_medical_history()
   app_driver$set_active_module_input("mhterm-dataset_ADMH_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("mhterm-dataset_ADMH_singleextract-select_input .shiny-validation-message"),
@@ -133,9 +133,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_medical_history()
-    table_before <- app_driver$get_active_module_table_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("mhbodsys-dataset_ADMH_singleextract-select", "EOSSTT")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table")))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -145,7 +145,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhbodsys thro
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_medical_history()
   app_driver$set_active_module_input("mhbodsys-dataset_ADMH_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("mhbodsys-dataset_ADMH_singleextract-select_input .shiny-validation-message"),
@@ -159,9 +159,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_medical_history()
-    table_before <- app_driver$get_active_module_table_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("mhdistat-dataset_ADMH_singleextract-select", "STUDYID")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table")))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_table_output("table-table-with-settings")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -171,7 +171,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhdistat thro
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_medical_history()
   app_driver$set_active_module_input("mhdistat-dataset_ADMH_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("mhdistat-dataset_ADMH_singleextract-select_input .shiny-validation-message"),
