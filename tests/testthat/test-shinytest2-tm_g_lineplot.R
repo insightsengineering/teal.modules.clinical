@@ -18,6 +18,7 @@ app_driver_tm_g_lineplot <- function() {
     modules = tm_g_lineplot(
       label = "Line Plot",
       dataname = "ADLB",
+      parentname = "ADSL",
       strata = teal.transform::choices_selected(
         teal.transform::variable_choices("ADSL", c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
