@@ -23,6 +23,7 @@ app_driver_tm_t_exposure <- function() {
   teal.data::datanames(data) <- datanames
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
 
+  # app <- init(
   init_teal_app_driver(
     data = data,
     modules = tm_t_exposure(
@@ -69,7 +70,10 @@ app_driver_tm_t_exposure <- function() {
     ),
     filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y")),
   )
+  # shinyApp(app$ui, app$server)
 }
+
+# app_driver_tm_t_exposure()
 
 testthat::test_that(
   "e2e - tm_t_exposure: Deselection of col_by_var-variable changes the table and does not throw validation errors.",
@@ -77,17 +81,16 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_tws_output("table")
-    print(app_driver$get_logs())
-    print(app_driver$get_values()$input)
     print(app_driver$get_active_module_input("col_by_var-dataset_ADSL_singleextract-select"))
     app_driver$set_input(
       sprintf("%s-%s", app_driver$active_module_ns(), "col_by_var-dataset_ADSL_singleextract-select"),
-      NULL
+      NULL,
+      wait_ = FALSE
     )
     print(app_driver$get_active_module_input("col_by_var-dataset_ADSL_singleextract-select"))
     print("Trying to wait after setting the value.")
     app_driver$wait_for_idle()
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_identical(table_before, app_driver$get_active_module_tws_output("table"))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

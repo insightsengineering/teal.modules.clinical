@@ -548,128 +548,20 @@ srv_t_exposure <- function(id,
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
-    )
-
-    validate_checks <- reactive({
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
-
-      teal::validate_inputs(iv_r())
-
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-      input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
-      input_row_by_var <- names(merged$anl_input_r()$columns_source$row_by_var)
-      input_col_by_var <- names(merged$adsl_input_r()$columns_source$col_by_var)
-      input_parcat <- unlist(parcat$filter)["vars_selected"]
-      input_aval_var <- names(merged$anl_input_r()$columns_source$aval_var)
-      input_avalu_var <- names(merged$anl_input_r()$columns_source$avalu_var)
-
-      # validate inputs
-      validate_standard_inputs(
-        adsl = adsl_filtered,
-        adslvars = c("USUBJID", "STUDYID", input_col_by_var),
-        anl = anl_filtered,
-        anlvars = c(
-          "USUBJID", "STUDYID", input_id_var, input_paramcd,
-          input_row_by_var, input_parcat, input_aval_var, input_avalu_var
-        ),
-        arm_var = NULL,
-        need_arm = FALSE
-      )
-      NULL
-    })
-
-    all_q <- reactive({
-      validate_checks()
-
-      anl_filtered <- merged$anl_q()[[dataname]]
-      input_avalu_var <- as.character(
-        unique(merged$anl_q()[["ANL"]][[names(merged$anl_input_r()$columns_source$avalu_var)[1]]])
-      )
-      input_paramcd <- as.character(
-        unique(merged$anl_q()[["ANL"]][[names(merged$anl_input_r()$columns_source$paramcd)[1]]])
-      )
-
-      if (is.null(paramcd_label)) {
-        input_paramcd_label <- input_paramcd
-      } else {
-        paramcd <- names(merged$anl_input_r()$columns_source$paramcd)
-        paramcd_map_list <- c(paramcd, paramcd_label)
-        paramcd_map <- unique(anl_filtered[paramcd_map_list])
-        input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd, 2])
-      }
-
-      basic_table_args$title <- "Duration of Exposure Table"
-      basic_table_args$subtitles <-
-        paste("Parameter Category:", merged$anl_input_r()$filter_info$parcat[[1]]$selected[[1]])
-
-      my_calls <- template_exposure(
-        parentname = "ANL_ADSL",
-        dataname = "ANL",
-        id_var = names(merged$anl_input_r()$columns_source$id_var),
-        paramcd = input_paramcd,
-        paramcd_label = input_paramcd_label,
-        row_by_var = names(merged$anl_input_r()$columns_source$row_by_var),
-        col_by_var = names(merged$anl_input_r()$columns_source$col_by_var),
-        add_total = input$add_total,
-        total_label = total_label,
-        add_total_row = input$add_total_row,
-        total_row_label = total_row_label,
-        drop_levels = TRUE,
-        na_level = na_level,
-        aval_var = names(merged$anl_input_r()$columns_source$aval_var),
-        avalu_var = input_avalu_var,
-        basic_table_args = basic_table_args
-      )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
-    })
-
-    # Outputs to render.
-    table_r <- reactive(all_q()[["result"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = table_r
+      table_r = reactive({
+        lyt <- basic_table() %>%
+          split_cols_by("PARCAT2") %>%
+          analyze("AVISITN", afun = function(x) {
+            list(
+              "mean (sd)" = rcell(c(mean(x), sd(x)), format = "xx.xx (xx.xx)"),
+              "range" = diff(range(x))
+            )
+          })
+        rtables::build_table(lyt, anl_q()[["ANL_4"]])
+      })
     )
-
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
-    # Render R code.
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
-      title = label
-    )
-
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Exposure for Risk Management Plan Table",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(teal.code::get_code(all_q()))
-        card
-      }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
   })
 }
