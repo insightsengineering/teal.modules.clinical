@@ -53,7 +53,6 @@ app_driver_tm_t_abnormality <- function() {
       ),
       treatment_flag = teal.transform::choices_selected("Y"),
       total_label = default_total_label(),
-      exclude_base_abn = FALSE,
       drop_arm_levels = TRUE,
       pre_output = NULL,
       post_output = NULL,
