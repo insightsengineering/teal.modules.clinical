@@ -130,8 +130,8 @@ testthat::test_that(
     app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", "RACE")
     testthat::expect_false(
       identical(
-        nrow(table_before),
-        nrow(app_driver$get_active_module_table_output("prior_medication_table"))
+        table_before,
+        app_driver$get_active_module_table_output("prior_medication_table")
       )
     )
     app_driver$expect_no_validation_error()
@@ -160,8 +160,8 @@ testthat::test_that(
     app_driver$set_active_module_input("atirel-dataset_ADCM_singleextract-select", "SEX")
     testthat::expect_false(
       identical(
-        nrow(table_before),
-        nrow(app_driver$get_active_module_table_output("prior_medication_table"))
+        table_before,
+        app_driver$get_active_module_table_output("prior_medication_table")
       )
     )
     app_driver$expect_no_validation_error()
@@ -182,7 +182,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel throw
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_prior_medication: Selecting cmdecod changes the table and does not throw validation errors.",
+  "e2e - tm_t_pp_prior_medication: Selecting cmindc changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
@@ -190,8 +190,8 @@ testthat::test_that(
     app_driver$set_active_module_input("cmindc-dataset_ADCM_singleextract-select", "SEX")
     testthat::expect_false(
       identical(
-        nrow(table_before),
-        nrow(app_driver$get_active_module_table_output("prior_medication_table"))
+        table_before,
+        app_driver$get_active_module_table_output("prior_medication_table")
       )
     )
     app_driver$expect_no_validation_error()
@@ -212,7 +212,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc throw
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_prior_medication: Selecting cmdecod changes the table and does not throw validation errors.",
+  "e2e - tm_t_pp_prior_medication: Selecting cmstdy changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
@@ -220,8 +220,8 @@ testthat::test_that(
     app_driver$set_active_module_input("cmstdy-dataset_ADCM_singleextract-select", "AGE")
     testthat::expect_false(
       identical(
-        nrow(table_before),
-        nrow(app_driver$get_active_module_table_output("prior_medication_table"))
+        table_before,
+        app_driver$get_active_module_table_output("prior_medication_table")
       )
     )
     app_driver$expect_no_validation_error()
