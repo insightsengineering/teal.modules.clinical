@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="shinytest2-tm_t_exposure" timestamp="2024-05-09T04:00:14Z" hostname="a294819876e3" tests="1" skipped="0" failures="0" errors="1" time="7.546">
-    <testcase time="7.546" classname="shinytest2_tm_t_exposure" name="e2e_tm_t_exposure_Deselection_of_col_by_var_variable_changes_the_table_and_does_not_throw_validation_errors.">
-      <error type="error" message="Error in `app_get_values(self, private, input = input, output = output,  ('test-shinytest2-tm_t_exposure.R:90:5')">Error in `app_get_values(self, private, input = input, output = output, 
-    export = export, ..., hash_images = hash_images)`: Shiny server returned 404 for values URL: http://127.0.0.1:3651/session/57a75c6f58cc2170f59948096fe3584b/dataobj/shinytest?w=&amp;nonce=c234f9353&amp;input=teal-main_ui-root-duration_of_exposure_table-module-col_by_var-dataset_ADSL_singleextract-select&amp;&amp;&amp;format=rds&amp;sortC=1
-i Is `shiny::runApp(test.mode = TRUE)` enabled?
-Backtrace:
-     x
-  1. +-base::print(app_driver$get_active_module_input("col_by_var-dataset_ADSL_singleextract-select")) at test-shinytest2-tm_t_exposure.R:90:5
-  2. \-app_driver$get_active_module_input("col_by_var-dataset_ADSL_singleextract-select")
-  3.   \-self$get_value(...)
-  4.     \-shinytest2:::app_get_value(...)
-  5.       \-self$get_values(...)
-  6.         \-shinytest2:::app_get_values(...)
-  7.           \-shinytest2:::app_httr_get(...)
-  8.             \-shinytest2 (local) fn_404(req)
-  9.               \-shinytest2:::app_abort(...)
- 10.                 \-rlang::abort(..., app = self, call = call)</error>
-    </testcase>
+  <testsuite name="shinytest2-tm_t_exposure" timestamp="2024-05-09T04:25:54Z" hostname="a26f763ac8eb" tests="2" skipped="0" failures="0" errors="0" time="7.706">
+    <testcase time="7.682" classname="shinytest2_tm_t_exposure" name="e2e_tm_t_exposure_Deselection_of_col_by_var_variable_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.0239999999999991" classname="shinytest2_tm_t_exposure" name="e2e_tm_t_exposure_Deselection_of_col_by_var_variable_changes_the_table_and_does_not_throw_validation_errors."/>
   </testsuite>
 </testsuites>
