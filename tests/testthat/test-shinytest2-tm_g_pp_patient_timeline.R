@@ -105,7 +105,7 @@ testthat::test_that(
 
 testthat::test_that(
   "e2e - tm_g_pp_patient_timeline: Starts with specified label, patient_id, cmdecod, aeterm, aetime_start,
-  aetime_end, dstime_start, dstime_end, aerelday_start, aerelday_end, dsrelday_start, dsrelday_en",
+  aetime_end, dstime_start, dstime_end, aerelday_start, aerelday_end, dsrelday_start, dsrelday_en.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()

@@ -130,10 +130,8 @@ testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal with
 })
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_g_barchart_simple: Starts with specified ",
-    "label, id_var, arm_var, visit_var, paramcd, cov_var, conf_level and conf_struct."
-  ),
+  "e2e - tm_g_barchart_simple: Starts with specified label, id_var, arm_var, visit_var,
+  paramcd, cov_var, conf_level and conf_struct.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
@@ -249,7 +247,7 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
 
   testthat::test_that(
     sprintf(
-      "%s: Deselection of '%s' dataset changes the element and does not throw validation errors",
+      "%s: Deselection of '%s' dataset changes the element and does not throw validation errors.",
       "e2e - tm_g_barchart_simple",
       input_id
     ),
@@ -275,7 +273,7 @@ test_dataset_selection("y_facet", "ADSL", "ARM")
 for (input_id in c("fill", "x_facet", "y_facet")) {
   testthat::test_that(
     sprintf(
-      "e2e - tm_g_barchart_simple: Duplicate between 'x' and '%s' selection throws validation error",
+      "e2e - tm_g_barchart_simple: Duplicate between 'x' and '%s' selection throws validation error.",
       input_id
     ),
     {

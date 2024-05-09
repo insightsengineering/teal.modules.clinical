@@ -78,11 +78,8 @@ testthat::test_that("e2e - tm_g_lineplot: Module initializes in teal without err
 })
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_g_lineplot: Starts with specified",
-    "label, param, strata, y-variable, x-variable, mid, interval, incl_screen",
-    "plot_settings and table_settings."
-  ),
+  "e2e - tm_g_lineplot: Starts with specified label, param, strata, y, x, mid, interval, incl_screen,
+    plot_settings and table_settings.",
   {
     skip_if_too_deep(5)
 
@@ -113,7 +110,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_g_lineplot: Selecting param-level changes plot and doesn't throw validation errors.", {
+testthat::test_that("e2e - tm_g_lineplot: Selecting param changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -128,7 +125,7 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting param-level changes plot and
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_lineplot: Deselecting param-level throws validation error.", {
+testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("param-dataset_ADLB_singleextract-filter1-vals", NULL)
@@ -142,10 +139,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting param-level throws validat
 })
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_g_lineplot: Selecting strata-variable changes plot",
-    "and doesn't throw validation errors."
-  ),
+  "e2e - tm_g_lineplot: Selecting strata changes plot and doesn't throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_lineplot()
@@ -162,7 +156,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_g_lineplot: Deselecting strata-variable throws validation error.", {
+testthat::test_that("e2e - tm_g_lineplot: Deselecting strata throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("strata-dataset_ADSL_singleextract-select", NULL)
@@ -177,7 +171,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting strata-variable throws val
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_lineplot: Selecting y-variable changes plot and doesn't throw validation errors.", {
+testthat::test_that("e2e - tm_g_lineplot: Selecting y changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -192,7 +186,7 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting y-variable changes plot and 
   app_driver$stop()
 })
 
-testthat::test_that("e2e - tm_g_lineplot: Deselecting y-variable throws validation error.", {
+testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("y-dataset_ADLB_singleextract-select", NULL)

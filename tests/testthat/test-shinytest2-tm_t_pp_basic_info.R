@@ -52,10 +52,7 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Starts with specified label, pati
 })
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_t_pp_basic_info: Selecting patient_id",
-    "changes the table and does not throw validation errors."
-  ),
+  "e2e - tm_t_pp_basic_info: Selecting patient_id changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_basic_info()
@@ -73,10 +70,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_t_pp_basic_info: Deselection of patient_id",
-    "throws validation error and table is not visible."
-  ),
+  "e2e - tm_t_pp_basic_info: Deselection of patient_id throws validation error and table is not visible.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_basic_info()
@@ -97,10 +91,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_t_pp_basic_info: Selecting cov_var-variable changes",
-    "the table and does not throw validation errors."
-  ),
+  "e2e - tm_t_pp_basic_info: Selecting cov_var changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_basic_info()
@@ -120,7 +111,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of cov_var-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of cov_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
   app_driver$set_active_module_input("vars-dataset_ADSL_singleextract-select", NULL)
