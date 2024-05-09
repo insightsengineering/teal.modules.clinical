@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0" branch-rate="0" lines-covered="0" lines-valid="19320" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-05-09 03:22:47.777998">
+<coverage line-rate="0" branch-rate="0" lines-covered="0" lines-valid="19331" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-05-09 03:46:44.574279">
   <sources>
     <source>/__w/teal.modules.clinical/teal.modules.clinical/teal.modules.clinical</source>
   </sources>
@@ -26735,7 +26735,18 @@
                 <line number="636" hits="0" branch="false"/>
                 <line number="637" hits="0" branch="false"/>
                 <line number="638" hits="0" branch="false"/>
-                <line number="639" hits="0" branch="false"/>
+                <line number="640" hits="0" branch="false"/>
+                <line number="641" hits="0" branch="false"/>
+                <line number="642" hits="0" branch="false"/>
+                <line number="643" hits="0" branch="false"/>
+                <line number="644" hits="0" branch="false"/>
+                <line number="645" hits="0" branch="false"/>
+                <line number="648" hits="0" branch="false"/>
+                <line number="649" hits="0" branch="false"/>
+                <line number="650" hits="0" branch="false"/>
+                <line number="651" hits="0" branch="false"/>
+                <line number="652" hits="0" branch="false"/>
+                <line number="653" hits="0" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -27150,7 +27161,18 @@
             <line number="636" hits="0" branch="false"/>
             <line number="637" hits="0" branch="false"/>
             <line number="638" hits="0" branch="false"/>
-            <line number="639" hits="0" branch="false"/>
+            <line number="640" hits="0" branch="false"/>
+            <line number="641" hits="0" branch="false"/>
+            <line number="642" hits="0" branch="false"/>
+            <line number="643" hits="0" branch="false"/>
+            <line number="644" hits="0" branch="false"/>
+            <line number="645" hits="0" branch="false"/>
+            <line number="648" hits="0" branch="false"/>
+            <line number="649" hits="0" branch="false"/>
+            <line number="650" hits="0" branch="false"/>
+            <line number="651" hits="0" branch="false"/>
+            <line number="652" hits="0" branch="false"/>
+            <line number="653" hits="0" branch="false"/>
           </lines>
         </class>
         <class name="tm_t_logistic.R" filename="R/tm_t_logistic.R" line-rate="0" branch-rate="0" complexity="0">
