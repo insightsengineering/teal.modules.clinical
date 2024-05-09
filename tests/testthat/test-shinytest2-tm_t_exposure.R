@@ -23,7 +23,7 @@ app_driver_tm_t_exposure <- function() {
   teal.data::datanames(data) <- datanames
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
 
-  # app <- init(
+  # app <- init( # nolint
   init_teal_app_driver(
     data = data,
     modules = tm_t_exposure(
@@ -70,10 +70,10 @@ app_driver_tm_t_exposure <- function() {
     ),
     filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y")),
   )
-  # shinyApp(app$ui, app$server)
+  # shinyApp(app$ui, app$server) # nolint
 }
 
-# app_driver_tm_t_exposure()
+# app_driver_tm_t_exposure() # nolint
 
 testthat::test_that(
   "e2e - tm_t_exposure: Deselection of col_by_var-variable changes the table and does not throw validation errors.",
