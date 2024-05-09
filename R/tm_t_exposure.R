@@ -555,37 +555,37 @@ srv_t_exposure <- function(id,
       anl_q = anl_q
     )
 
-    # validate_checks <- reactive({
-    #   adsl_filtered <- merged$anl_q()[[parentname]]
-    #   anl_filtered <- merged$anl_q()[[dataname]]
+    validate_checks <- reactive({
+      adsl_filtered <- merged$anl_q()[[parentname]]
+      anl_filtered <- merged$anl_q()[[dataname]]
 
-    #   teal::validate_inputs(iv_r())
+      teal::validate_inputs(iv_r())
 
-    #   input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-    #   input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
-    #   input_row_by_var <- names(merged$anl_input_r()$columns_source$row_by_var)
-    #   input_col_by_var <- names(merged$adsl_input_r()$columns_source$col_by_var)
-    #   input_parcat <- unlist(parcat$filter)["vars_selected"]
-    #   input_aval_var <- names(merged$anl_input_r()$columns_source$aval_var)
-    #   input_avalu_var <- names(merged$anl_input_r()$columns_source$avalu_var)
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
+      input_row_by_var <- names(merged$anl_input_r()$columns_source$row_by_var)
+      input_col_by_var <- names(merged$adsl_input_r()$columns_source$col_by_var)
+      input_parcat <- unlist(parcat$filter)["vars_selected"]
+      input_aval_var <- names(merged$anl_input_r()$columns_source$aval_var)
+      input_avalu_var <- names(merged$anl_input_r()$columns_source$avalu_var)
 
-    #   # validate inputs
-    #   validate_standard_inputs(
-    #     adsl = adsl_filtered,
-    #     adslvars = c("USUBJID", "STUDYID", input_col_by_var),
-    #     anl = anl_filtered,
-    #     anlvars = c(
-    #       "USUBJID", "STUDYID", input_id_var, input_paramcd,
-    #       input_row_by_var, input_parcat, input_aval_var, input_avalu_var
-    #     ),
-    #     arm_var = NULL,
-    #     need_arm = FALSE
-    #   )
-    #   NULL
-    # })
+      # validate inputs
+      validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = c("USUBJID", "STUDYID", input_col_by_var),
+        anl = anl_filtered,
+        anlvars = c(
+          "USUBJID", "STUDYID", input_id_var, input_paramcd,
+          input_row_by_var, input_parcat, input_aval_var, input_avalu_var
+        ),
+        arm_var = NULL,
+        need_arm = FALSE
+      )
+      NULL
+    })
 
     all_q <- reactive({
-      # validate_checks()
+      validate_checks()
 
       anl_filtered <- merged$anl_q()[[dataname]]
       input_avalu_var <- as.character(
