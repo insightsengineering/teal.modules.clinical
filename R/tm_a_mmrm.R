@@ -846,7 +846,7 @@ srv_mmrm <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-logger::log_shiny_input_changes(input, namespace = "teal.modules.general")
+logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Reactive responsible for sending a disable/enable signal
     # to show R code and debug info buttons
     disable_r_code <- reactiveVal(FALSE)

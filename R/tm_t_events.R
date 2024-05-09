@@ -678,7 +678,7 @@ srv_t_events_byterm <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-logger::log_shiny_input_changes(input, namespace = "teal.modules.general")
+logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt),
       datasets = data,
