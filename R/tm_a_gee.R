@@ -390,7 +390,7 @@ srv_gee <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+    logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     ## split_covariates ----
     observeEvent(input[[extract_input("cov_var", dataname)]],
       ignoreNULL = FALSE,

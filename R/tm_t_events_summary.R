@@ -810,7 +810,7 @@ srv_t_events_summary <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+    logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     data_extract_vars <- list(
       arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
       aeseq_var = aeseq_var, llt = llt
