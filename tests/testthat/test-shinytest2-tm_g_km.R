@@ -31,6 +31,7 @@ app_driver_tm_g_km <- function() {
     modules = tm_g_km(
       label = "Kaplan-Meier Plot",
       dataname = "ADTTE",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(
         teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
@@ -63,7 +64,16 @@ app_driver_tm_g_km <- function() {
         "CENSORING",
         fixed = TRUE
       ),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE)
+      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
+      font_size = c(11L, 1L, 30),
+      control_annot_surv_med = control_surv_med_annot(),
+      control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+      legend_pos = c(0.9, 0.5),
+      rel_height_plot = c(80L, 0L, 100L),
+      plot_height = c(800L, 400L, 5000L),
+      plot_width = NULL,
+      pre_output = NULL,
+      post_output = NULL
     )
   )
 }
