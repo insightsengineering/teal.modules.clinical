@@ -37,7 +37,7 @@ template_exposure <- function(parentname,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(row_by_var)
-  checkmate::assert_string(col_by_var, null.ok = TRUE)
+  checkmate::assert_character(col_by_var, null.ok = TRUE)
   checkmate::assert_string(paramcd)
   checkmate::assert_string(id_var)
   checkmate::assert_flag(add_total)
@@ -642,6 +642,15 @@ srv_t_exposure <- function(id,
       verbatim_content = reactive(teal.code::get_warnings(all_q())),
       title = "Warning",
       disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+    )
+
+    # Render R code.
+    teal.widgets::verbatim_popup_srv(
+      id = "rcode",
+      verbatim_content = reactive({
+        teal.code::get_code(all_q())
+      }),
+      title = label
     )
   })
 }
