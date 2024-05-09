@@ -33,7 +33,7 @@ jobs:
       fi
   echo-in-r:
     name: Echo the modified files in R 📢
-        run: Rscript -e 'print(Sys.getenv("MODIFIED_FILES"))'
+    run: Rscript -e 'print(Sys.getenv("MODIFIED_FILES"))'
 
   # r-cmd:
   #   name: R CMD Check 🧬
