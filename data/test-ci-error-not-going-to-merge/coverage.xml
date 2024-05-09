@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0" branch-rate="0" lines-covered="0" lines-valid="19319" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-05-09 03:12:44.371276">
+<coverage line-rate="0" branch-rate="0" lines-covered="0" lines-valid="19320" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2024-05-09 03:22:47.777998">
   <sources>
     <source>/__w/teal.modules.clinical/teal.modules.clinical/teal.modules.clinical</source>
   </sources>
@@ -26691,6 +26691,7 @@
                 <line number="584" hits="0" branch="false"/>
                 <line number="585" hits="0" branch="false"/>
                 <line number="587" hits="0" branch="false"/>
+                <line number="588" hits="0" branch="false"/>
                 <line number="590" hits="0" branch="false"/>
                 <line number="591" hits="0" branch="false"/>
                 <line number="592" hits="0" branch="false"/>
@@ -27105,6 +27106,7 @@
             <line number="584" hits="0" branch="false"/>
             <line number="585" hits="0" branch="false"/>
             <line number="587" hits="0" branch="false"/>
+            <line number="588" hits="0" branch="false"/>
             <line number="590" hits="0" branch="false"/>
             <line number="591" hits="0" branch="false"/>
             <line number="592" hits="0" branch="false"/>
