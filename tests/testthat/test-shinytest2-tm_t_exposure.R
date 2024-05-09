@@ -88,9 +88,7 @@ testthat::test_that(
       wait_ = FALSE
     )
     print(app_driver$get_active_module_input("col_by_var-dataset_ADSL_singleextract-select"))
-    print("Trying to wait after setting the value.")
-    app_driver$wait_for_idle()
-    testthat::expect_identical(table_before, app_driver$get_active_module_tws_output("table"))
+    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
