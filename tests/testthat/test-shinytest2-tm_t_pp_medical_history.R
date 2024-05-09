@@ -116,6 +116,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhterm throws validation error.", {
+  skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_medical_history()
   app_driver$set_active_module_input("mhterm-dataset_ADMH_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table"), data.frame())
@@ -141,6 +142,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhbodsys throws validation error.", {
+  skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_medical_history()
   app_driver$set_active_module_input("mhbodsys-dataset_ADMH_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table"), data.frame())
@@ -166,6 +168,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhdistat throws validation error.", {
+  skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_medical_history()
   app_driver$set_active_module_input("mhdistat-dataset_ADMH_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table"), data.frame())
