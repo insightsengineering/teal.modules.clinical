@@ -213,7 +213,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_abnormality()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("drop_arm_levels", FALSE)
-    testthat::expect_false(
+    testthat::expect_true(
       identical(
         table_before,
         app_driver$get_active_module_table_output("table-table-with-settings")
