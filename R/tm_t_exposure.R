@@ -643,12 +643,5 @@ srv_t_exposure <- function(id,
       title = "Warning",
       disabled = reactive(is.null(teal.code::get_warnings(all_q())))
     )
-
-    # Render R code.
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
-      title = label
-    )
   })
 }
