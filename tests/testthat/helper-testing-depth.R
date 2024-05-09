@@ -47,3 +47,41 @@ skip_if_too_deep <- function(depth) { # nolintr
     testthat::skip(paste("testing depth", testing_depth, "is below current testing specification", depth))
   }
 }
+
+#' Returns a character vector of the files that are affected by the commit.
+#'
+#' @details Looks for the session option `AFFECTED_FILES`.
+#' If unset, then returns all the .R files in the R directory.
+#' When any R file other than `R/tm_xxxx.R` is modified, then it will return all the .R files in the R directory
+#'
+#' @return `character` the name of files that are modified.
+#'
+get_affected_files <- function() {
+  r_path <- testthat::test_path("..", "..", "R")
+  r_files <- list.files(r_path, pattern = "\\.R$", full.names = FALSE)
+  module_files <- grep("^tm_", r_files, value = TRUE)
+  non_module_files <- r_files[!r_files %in% module_files]
+  affected_files <- getOption("AFFECTED_FILES", r_files)
+
+  # When non-module files are modified, it has a potential to modify the modules. Treating it as changing all R files.
+  if (any(affected_files %in% non_module_files)) {
+    affected_files <- r_files
+  }
+  affected_files
+}
+
+#' Skipping e2e-tests in the testthat pipeline when the related module file is not modified.
+#' @description This function should be used per each `testthat::test_that` call.
+#'   Each of the call should specify the module file name should change to trigger the testthat scope.
+#'   The affected files are set using the system option `AFFECTED_FILES`.
+#' @param file `character` the file name which should affect the test.
+#' @return `NULL` or invoke an error produced by `testthat::skip`
+#' @note By default `AFFECTED_FILES` lists all the R files, so it will not skip any tests unless explicity specified.
+#' Additionally, any change made to the non-module files will make the affected files to be all files.
+ship_if_file_not_modified <- function(file) {
+  checkmate::assert_character(file)
+  affected_files <- get_affected_files()
+  if (!file %in% affected_files) {
+    testthat::skip(sprintf("The file `%s` is not modified in the commit. So, skipping the test.", file))
+  }
+}
