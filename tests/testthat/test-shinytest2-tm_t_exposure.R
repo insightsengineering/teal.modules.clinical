@@ -115,7 +115,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_exposure: Selecting paramcd-level changes the table and does not throw validation errors.",
+  "e2e - tm_t_exposure: Selecting paramcd changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
@@ -127,7 +127,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd-level throws validation error.", {
+testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$set_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals", NULL)
@@ -143,7 +143,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd-level throws va
 })
 
 testthat::test_that(
-  "e2e - tm_t_exposure: Selecting parcat-level changes the table and does not throw validation errors.",
+  "e2e - tm_t_exposure: Selecting parcat changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
@@ -155,7 +155,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_exposure: Deselection of parcat-level throws validation error.", {
+testthat::test_that("e2e - tm_t_exposure: Deselection of parcat throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$set_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals", NULL)
@@ -171,7 +171,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of parcat-level throws val
 })
 
 testthat::test_that(
-  "e2e - tm_t_exposure: Selecting col_by_var-variable changes the table and does not throw validation errors.",
+  "e2e - tm_t_exposure: Selecting col_by_var changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
@@ -184,7 +184,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_exposure: Deselection of col_by_var-variable changes the table and does not throw validation errors.",
+  "e2e - tm_t_exposure: Deselection of col_by_var changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
@@ -197,7 +197,7 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_exposure: Selecting row_by_var_var-variable changes the table and does not throw validation errors.",
+  "e2e - tm_t_exposure: Selecting row_by_var_var changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
@@ -209,7 +209,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_exposure: Deselection of row_by_var-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_exposure: Deselection of row_by_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$set_active_module_input("row_by_var-dataset_ADEX_singleextract-select", NULL)
