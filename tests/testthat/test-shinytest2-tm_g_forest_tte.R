@@ -213,7 +213,7 @@ testthat::test_that(
   "e2e - tm_g_forest_tte: Selecting aval_var does not throw validation errors and changes a plot.",
   {
     skip_if_too_deep(5)
-    # not possible in this app due to fixed input
+    testthat::skip("Not possible in this app due to fixed input.")
   }
 )
 
@@ -221,7 +221,7 @@ testthat::test_that(
   "e2e - tm_g_forest_tte: Deselecting aval_var throws validation error.",
   {
     skip_if_too_deep(5)
-    # not possible in this app due to fixed input
+    testthat::skip("Not possible in this app due to fixed input.")
   }
 )
 
@@ -229,7 +229,7 @@ testthat::test_that(
   "e2e - tm_g_forest_tte: Selecting cnsr_var does not throw validation errors and changes a plot.",
   {
     skip_if_too_deep(5)
-    # not possible in this app due to fixed input
+    testthat::skip("Not possible in this app due to fixed input.")
   }
 )
 
@@ -237,7 +237,7 @@ testthat::test_that(
   "e2e - tm_g_forest_tte: Deselecting cnsr_var throws validation error.",
   {
     skip_if_too_deep(5)
-    # not possible in this app due to fixed input
+    testthat::skip("Not possible in this app due to fixed input.")
   }
 )
 
@@ -245,7 +245,7 @@ testthat::test_that(
   "e2e - tm_g_forest_tte: Selecting time_unit variable does not throw validation errors and changes a plot.",
   {
     skip_if_too_deep(5)
-    # not possible in this app due to fixed input
+    testthat::skip("Not possible in this app due to fixed input.")
   }
 )
 
