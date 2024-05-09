@@ -28,7 +28,11 @@ app_driver_tm_g_pp_vitals <- function() {
       aval_var = teal.transform::choices_selected(
         choices = teal.transform::variable_choices(data[["ADVS"]], c("AVAL", "BASE2")),
         selected = "AVAL"
-      )
+      ),
+      plot_width = NULL,
+      pre_output = NULL,
+      post_output = NULL,
+      ggplot2_args = teal.widgets::ggplot2_args()
     )
   )
 }

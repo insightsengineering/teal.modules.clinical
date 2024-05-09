@@ -21,6 +21,7 @@ app_driver_tm_t_abnormality <- function() {
     modules = tm_t_abnormality(
       label = "Abnormality Table",
       dataname = "ADLB",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(
         choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
         selected = "ARM"
@@ -41,7 +42,23 @@ app_driver_tm_t_abnormality <- function() {
         fixed = TRUE
       ),
       abnormal = list(low = "LOW", high = "HIGH"),
-      exclude_base_abn = FALSE
+      id_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
+        selected = "USUBJID", fixed = TRUE
+      ),
+      exclude_base_abn = FALSE,
+      treatment_flag_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADLB"]], subset = "ONTRTFL"),
+        selected = "ONTRTFL", fixed = TRUE
+      ),
+      treatment_flag = teal.transform::choices_selected("Y"),
+      total_label = default_total_label(),
+      exclude_base_abn = FALSE,
+      drop_arm_levels = TRUE,
+      pre_output = NULL,
+      post_output = NULL,
+      na_level = default_na_str(),
+      basic_table_args = teal.widgets::basic_table_args()
     )
   )
 }
