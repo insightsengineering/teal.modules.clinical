@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9003
-Date: 2024-05-08
+Version: 0.9.1.9004
+Date: 2024-05-10
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -71,6 +71,7 @@ Suggests:
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
     pkgload,
+    rvest,
     shinytest2,
     styler,
     testthat (>= 3.1.5),
@@ -80,17 +81,17 @@ VignetteBuilder:
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.transform, insightsengineering/tern,
     tidymodels/broom, mllg/checkmate, tidyverse/dplyr, rstudio/DT,
-    insightsengineering/formatters, tidyverse/ggplot2, slowkow/ggrepel,
-    r-lib/lifecycle, daroczig/logger, insightsengineering/rlistings,
-    rstudio/rmarkdown, insightsengineering/rtables, r-lib/scales,
-    rstudio/shiny, daattali/shinyjs, rstudio/shinyvalidate,
-    dreamRs/shinyWidgets, insightsengineering/teal.code,
-    insightsengineering/teal.data, insightsengineering/teal.logger,
-    insightsengineering/teal.reporter, insightsengineering/teal.widgets,
-    insightsengineering/tern.gee, insightsengineering/tern.mmrm,
-    tidyverse/tidyr, shosaco/vistime, tidyverse/forcats, yihui/knitr,
-    tidyverse/lubridate, insightsengineering/nestcolor, r-lib/pkgload,
-    rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/withr
+    tidyverse/ggplot2, slowkow/ggrepel, r-lib/lifecycle, daroczig/logger,
+    insightsengineering/rlistings, rstudio/rmarkdown,
+    insightsengineering/rtables, r-lib/scales, rstudio/shiny,
+    daattali/shinyjs, rstudio/shinyvalidate, dreamRs/shinyWidgets,
+    insightsengineering/teal.code, insightsengineering/teal.data,
+    insightsengineering/teal.logger, insightsengineering/teal.reporter,
+    insightsengineering/teal.widgets, insightsengineering/tern.gee,
+    insightsengineering/tern.mmrm, shosaco/vistime, tidyverse/forcats,
+    yihui/knitr, tidyverse/lubridate, insightsengineering/nestcolor,
+    r-lib/pkgload, tidyverse/rvest, rstudio/shinytest2, r-lib/styler,
+    r-lib/testthat, r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
