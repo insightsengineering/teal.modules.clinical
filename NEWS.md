@@ -1,5 +1,7 @@
 # teal.modules.clinical 0.9.1.9004
 
+* Removed `Show Warnings` modals from modules.
+
 ### Enhancements
 
 * Introduced `ylim` parameter for `tm_g_km` module that controls width of y-axis.
