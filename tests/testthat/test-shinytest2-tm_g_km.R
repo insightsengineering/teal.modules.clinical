@@ -31,6 +31,7 @@ app_driver_tm_g_km <- function() {
     modules = tm_g_km(
       label = "Kaplan-Meier Plot",
       dataname = "ADTTE",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(
         teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
@@ -63,7 +64,16 @@ app_driver_tm_g_km <- function() {
         "CENSORING",
         fixed = TRUE
       ),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE)
+      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
+      font_size = c(11L, 1L, 30),
+      control_annot_surv_med = control_surv_med_annot(),
+      control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+      legend_pos = c(0.9, 0.5),
+      rel_height_plot = c(80L, 0L, 100L),
+      plot_height = c(800L, 400L, 5000L),
+      plot_width = NULL,
+      pre_output = NULL,
+      post_output = NULL
     )
   )
 }
@@ -75,7 +85,7 @@ testthat::test_that("e2e - tm_g_km: Module initializes in teal without errors an
   app_driver$expect_no_validation_error()
 
   testthat::expect_match(
-    app_driver$get_active_module_pws_output("myplot"),
+    app_driver$get_active_module_plot_output("myplot"),
     "data:image/png;base64,"
   )
   app_driver$stop()
@@ -129,50 +139,50 @@ testthat::test_that(
 testthat::test_that("e2e - tm_g_km: Changing {paramcd} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", "EFS")
   app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {facet_var} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input(ns_des_input("facet_var", "ADSL", "select"), "SEX")
   app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {arm_var} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ACTARMCD")
   app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {compare_arms} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("compare_arms", FALSE)
   app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {strata_var} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input(ns_des_input("strata_var", "ADSL", "select"), "BMRKR2")
   app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$stop()
 })
 
@@ -270,20 +280,20 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison s
 testthat::test_that("e2e - tm_g_km: Changing {pval_method_coxph} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("pval_method_coxph", "wald")
   app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {ties_coxph} changes the plot without errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
-  plot_before <- app_driver$get_active_module_pws_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("ties_coxph", "breslow")
   app_driver$expect_no_validation_error()
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$stop()
 })
 
@@ -348,9 +358,9 @@ test_that_plot_settings <- function(input_id, new_value) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_km()
-      plot_before <- app_driver$get_active_module_pws_output("myplot")
+      plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(input_id, new_value)
-      testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+      testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
     }

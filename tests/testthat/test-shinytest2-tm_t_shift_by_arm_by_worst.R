@@ -110,24 +110,29 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_shift_by_arm_by_worst: Selecting arm_var-variable changes the table
+  "e2e - tm_t_shift_by_arm_by_worst: Selecting arm_var changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of arm_var-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
@@ -137,23 +142,28 @@ testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of arm_var-va
 })
 
 testthat::test_that(
-  "e2e - tm_t_shift_by_arm_by_worst: Selecting paramcd-level changes the table and does not throw validation errors.",
+  "e2e - tm_t_shift_by_arm_by_worst: Selecting paramcd changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals", "HR")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of paramcd-level throws validation error.", {
+testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text(
@@ -165,24 +175,29 @@ testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of paramcd-le
 })
 
 testthat::test_that(
-  "e2e - tm_t_shift_by_arm_by_worst: Selecting worst_flag-variable changes the table
+  "e2e - tm_t_shift_by_arm_by_worst: Selecting worst_flag changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("worst_flag_var-dataset_ADEG_singleextract-select", "WORS01FL")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of worst_flag-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of worst_flag throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("worst_flag_var-dataset_ADEG_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text(
@@ -194,24 +209,29 @@ testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of worst_flag
 })
 
 testthat::test_that(
-  "e2e - tm_t_shift_by_arm_by_worst: Selecting aval_var-variable changes the table
+  "e2e - tm_t_shift_by_arm_by_worst: Selecting aval_var changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("aval_var-dataset_ADEG_singleextract-select", "AVALC")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of aval_var-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of aval_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("aval_var-dataset_ADEG_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("aval_var-dataset_ADEG_singleextract-select_input .shiny-validation-message"),
@@ -221,24 +241,29 @@ testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of aval_var-v
 })
 
 testthat::test_that(
-  "e2e - tm_t_shift_by_arm_by_worst: Selecting baseline_var-variable changes the table
+  "e2e - tm_t_shift_by_arm_by_worst: Selecting baseline_var changes the table
   and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("baseline_var-dataset_ADEG_singleextract-select", "BASEC")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of baseline_var-variable throws validation error.", {
+testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of baseline_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("baseline_var-dataset_ADEG_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text(

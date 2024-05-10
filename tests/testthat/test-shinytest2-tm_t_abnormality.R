@@ -21,6 +21,7 @@ app_driver_tm_t_abnormality <- function() {
     modules = tm_t_abnormality(
       label = "Abnormality Table",
       dataname = "ADLB",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(
         choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
         selected = "ARM"
@@ -41,7 +42,22 @@ app_driver_tm_t_abnormality <- function() {
         fixed = TRUE
       ),
       abnormal = list(low = "LOW", high = "HIGH"),
-      exclude_base_abn = FALSE
+      id_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
+        selected = "USUBJID", fixed = TRUE
+      ),
+      exclude_base_abn = FALSE,
+      treatment_flag_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADLB"]], subset = "ONTRTFL"),
+        selected = "ONTRTFL", fixed = TRUE
+      ),
+      treatment_flag = teal.transform::choices_selected("Y"),
+      total_label = default_total_label(),
+      drop_arm_levels = TRUE,
+      pre_output = NULL,
+      post_output = NULL,
+      na_level = default_na_str(),
+      basic_table_args = teal.widgets::basic_table_args()
     )
   )
 }
@@ -97,9 +113,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -109,7 +130,7 @@ testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation err
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
@@ -123,9 +144,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", "AVISIT")
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -135,7 +161,7 @@ testthat::test_that("e2e - tm_t_abnormality: Deselection of by_vars throws valid
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
   app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_tws_output("table"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("by_vars-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
@@ -149,9 +175,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("add_total", TRUE)
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -162,9 +193,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("exclude_base_abn", TRUE)
-    testthat::expect_false(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -175,9 +211,14 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_tws_output("table")
+    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     app_driver$set_active_module_input("drop_arm_levels", FALSE)
-    testthat::expect_true(identical(table_before, app_driver$get_active_module_tws_output("table")))
+    testthat::expect_true(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("table-table-with-settings")
+      )
+    )
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

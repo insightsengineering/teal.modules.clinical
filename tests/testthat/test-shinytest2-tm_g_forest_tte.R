@@ -25,6 +25,7 @@ app_driver_tm_g_forest_tte <- function() { # nolint: object_length.
     modules = tm_g_forest_tte(
       label = "Forest Survival (e2e)",
       dataname = "ADTTE",
+      parentname = "ADSL",
       arm_var = teal.transform::choices_selected(
         teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
         "ARMCD"
@@ -41,6 +42,25 @@ app_driver_tm_g_forest_tte <- function() { # nolint: object_length.
       strata_var = teal.transform::choices_selected(
         teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
         "STRATA2"
+      ),
+      aval_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADTTE"]], "AVAL"),
+        "AVAL",
+        fixed = TRUE
+      ),
+      cnsr_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADTTE"]], "CNSR"),
+        "CNSR",
+        fixed = TRUE
+      ),
+      conf_level = teal.transform::choices_selected(
+        c(0.95, 0.9, 0.8), 0.95,
+        keep_order = TRUE
+      ),
+      time_unit_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADTTE"]], "AVALU"),
+        "AVALU",
+        fixed = TRUE
       ),
       fixed_symbol_size = FALSE,
       plot_height = c(500L, 300L, 2000L),
@@ -69,10 +89,8 @@ testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without e
 })
 
 testthat::test_that(
-  paste0(
-    "e2e - tm_g_forest_tte: Starts with specified ",
-    "label, paramcd, arm_var, buckets, paramcd, subgroup_var, strata_var and plot settings"
-  ),
+  "e2e - tm_g_forest_tte: Starts with specified label, paramcd, arm_var, buckets,
+    paramcd, subgroup_var, strata_var and plot settings.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
@@ -130,13 +148,13 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_g_forest_tte: Selection of 'paramcd' changes the element and does not throw validation errors",
+  "e2e - tm_g_forest_tte: Selection of 'paramcd' changes the element and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input(ns_des_input("paramcd", "ADTTE", "filter1-vals"), "CRSD")
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -161,13 +179,13 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd filter throws
 })
 
 testthat::test_that(
-  "e2e - tm_g_forest_tte: Selection of 'arm_var' changes the element and does not throw validation errors",
+  "e2e - tm_g_forest_tte: Selection of 'arm_var' changes the element and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ARM")
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }
@@ -192,54 +210,14 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd var throws va
 })
 
 testthat::test_that(
-  "e2e - tm_g_forest_tte: Selecting aval_var does not throw validation errors and changes a plot.",
-  {
-    skip_if_too_deep(5)
-    # not possible in this app due to fixed input
-  }
-)
-
-testthat::test_that(
-  "e2e - tm_g_forest_tte: Deselecting aval_var throws validation error.",
-  {
-    skip_if_too_deep(5)
-    # not possible in this app due to fixed input
-  }
-)
-
-testthat::test_that(
-  "e2e - tm_g_forest_tte: Selecting cnsr_var does not throw validation errors and changes a plot.",
-  {
-    skip_if_too_deep(5)
-    # not possible in this app due to fixed input
-  }
-)
-
-testthat::test_that(
-  "e2e - tm_g_forest_tte: Deselecting cnsr_var throws validation error.",
-  {
-    skip_if_too_deep(5)
-    # not possible in this app due to fixed input
-  }
-)
-
-testthat::test_that(
-  "e2e - tm_g_forest_tte: Selecting time_unit variable does not throw validation errors and changes a plot.",
-  {
-    skip_if_too_deep(5)
-    # not possible in this app due to fixed input
-  }
-)
-
-testthat::test_that(
   "e2e - tm_g_forest_tte: Selecting conf_level does not throw validation errors and changes a plot.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
     input_id <- "conf_level"
-    plot_before <- app_driver$get_active_module_pws_output("myplot")
+    plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input(input_id, "0.99")
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_pws_output("myplot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_validation_error()
     testthat::expect_match(
       app_driver$active_module_element_text(
