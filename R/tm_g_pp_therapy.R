@@ -65,15 +65,14 @@ template_therapy <- function(dataname = "ANL",
 
       dataname[setdiff(cols_to_include, names(dataname))] <- NA
 
-      therapy_table <-
-        dataname %>%
+      therapy_table <- dataname %>%
         dplyr::filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # removed PRIOR_CONCOMITANT
         dplyr::select(dplyr::all_of(cols_to_include)) %>%
         dplyr::filter(!is.na(cmdecod)) %>%
         dplyr::mutate(Dosage = paste(cmdose, cmdosu, cmdosfrq, cmroute)) %>%
         dplyr::select(-cmdose, -cmdosu, -cmdosfrq, -cmroute) %>%
         dplyr::select(cmindc, cmdecod, Dosage, dplyr::everything()) %>%
-        dplyr::mutate(CMDECOD = dplyr::case_when(
+        dplyr::mutate(!!cmdecod_char := dplyr::case_when(
           nchar(as.character(cmdecod)) > 20 ~ as.character(cmtrt),
           TRUE ~ as.character(cmdecod)
         )) %>%
