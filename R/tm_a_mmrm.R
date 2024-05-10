@@ -811,7 +811,6 @@ ui_mmrm <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
     pre_output = a$pre_output,
@@ -1433,13 +1432,6 @@ srv_mmrm <- function(id,
       id = "mmrm_table",
       table_r = table_r,
       show_hide_signal = reactive(!show_plot_rv())
-    )
-
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(disable_r_code() || is.null(teal.code::get_warnings(all_q())))
     )
 
     # Show R code once button is pressed.

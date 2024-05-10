@@ -377,7 +377,6 @@ ui_summary <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -538,13 +537,6 @@ srv_summary <- function(id,
     # Outputs to render.
     table_r <- reactive(all_q()[["result"]])
     teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
-
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
