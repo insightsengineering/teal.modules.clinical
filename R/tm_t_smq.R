@@ -543,7 +543,7 @@ srv_t_smq <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
-    logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         scopes = scopes,

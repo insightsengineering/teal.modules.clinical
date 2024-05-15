@@ -489,7 +489,7 @@ srv_t_exposure <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
-    logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     rule_intersection <- function(other) {
       function(value) {
         others <- selector_list()[[other]]()$select
