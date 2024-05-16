@@ -1,9 +1,9 @@
-# teal.modules.clinical 0.9.1.9005
+# teal.modules.clinical 0.9.1.9006
 
 * Removed `Show Warnings` modals from modules.
 
 ### Enhancements
-
+* Added `logger` functionality for logging changes in shiny inputs in all modules. `logger` was added to Imports.
 * Introduced `ylim` parameter for `tm_g_km` module that controls width of y-axis.
 
 # teal.modules.clinical 0.9.1

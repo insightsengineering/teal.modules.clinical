@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9005
-Date: 2024-05-10
+Version: 0.9.1.9006
+Date: 2024-05-16
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -45,6 +45,7 @@ Imports:
     ggrepel,
     grid,
     lifecycle (>= 0.2.0),
+    logger (>= 0.3.0),
     methods,
     rlistings (>= 0.2.8),
     rmarkdown (>= 2.23),
@@ -67,7 +68,6 @@ Imports:
 Suggests:
     forcats,
     knitr (>= 1.42),
-    logger (>= 0.2.0),
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
     pkgload,
