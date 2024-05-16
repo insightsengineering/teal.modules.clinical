@@ -13,6 +13,7 @@ on:
   push:
     branches:
       - main
+      - test
   workflow_dispatch:
 
 jobs:
@@ -27,7 +28,6 @@ jobs:
     with:
       additional-env-vars: |
         _R_CHECK_CRAN_INCOMING_REMOTE_=false
-        TESTING_DEPTH=5
       additional-r-cmd-check-params: --as-cran
       enforce-note-blocklist: true
       note-blocklist: |
@@ -47,10 +47,12 @@ jobs:
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
+      additional-env-vars: |
+        _R_CHECK_CRAN_INCOMING_REMOTE_=false
+        TESTING_DEPTH=4
       enforce-note-blocklist: true
       publish-unit-test-report-gh-pages: false
       junit-xml-comparison: false
-      concurrency-group: non-cran
       disable-unit-test-reports: true
       skip-r-cmd-install: true
       note-blocklist: |
@@ -62,55 +64,3 @@ jobs:
         checking Rd .usage sections .* NOTE
         checking for unstated dependencies in vignettes .* NOTE
         checking top-level files .* NOTE
-  coverage:
-    name: Coverage 📔
-    uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-  linter:
-    if: github.event_name != 'push'
-    name: SuperLinter 🦸‍♀️
-    uses: insightsengineering/r.pkg.template/.github/workflows/linter.yaml@main
-  roxygen:
-    name: Roxygen 🅾
-    uses: insightsengineering/r.pkg.template/.github/workflows/roxygen.yaml@main
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-    with:
-      auto-update: true
-  gitleaks:
-    name: gitleaks 💧
-    uses: insightsengineering/r.pkg.template/.github/workflows/gitleaks.yaml@main
-  spelling:
-    name: Spell Check 🆎
-    uses: insightsengineering/r.pkg.template/.github/workflows/spelling.yaml@main
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-  links:
-    if: github.event_name != 'push'
-    name: Check URLs 🌐
-    uses: insightsengineering/r.pkg.template/.github/workflows/links.yaml@main
-  vbump:
-    name: Version Bump 🤜🤛
-    if: github.event_name == 'push'
-    uses: insightsengineering/r.pkg.template/.github/workflows/version-bump.yaml@main
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-  version:
-    name: Version Check 🏁
-    uses: insightsengineering/r.pkg.template/.github/workflows/version.yaml@main
-  licenses:
-    name: License Check 🃏
-    uses: insightsengineering/r.pkg.template/.github/workflows/licenses.yaml@main
-  style:
-    if: github.event_name != 'push'
-    name: Style Check 👗
-    uses: insightsengineering/r.pkg.template/.github/workflows/style.yaml@main
-    with:
-      auto-update: false
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-  grammar:
-    if: github.event_name != 'push'
-    name: Grammar Check 🔤
-    uses: insightsengineering/r.pkg.template/.github/workflows/grammar.yaml@main

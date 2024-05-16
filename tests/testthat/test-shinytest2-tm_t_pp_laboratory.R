@@ -122,8 +122,9 @@ testthat::test_that(
   }
 )
 
+# failed
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws validation error.", {
-  skip_if_too_deep(5)
+  skip_if_too_deep(4)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("patient_id", NULL)
   testthat::expect_false(
@@ -159,8 +160,9 @@ testthat::test_that(
   }
 )
 
+# failed
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd throws validation error.", {
-  skip_if_too_deep(5)
+  skip_if_too_deep(4)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", NULL)
   testthat::expect_false(
@@ -196,10 +198,11 @@ testthat::test_that(
   }
 )
 
+# failed
 testthat::test_that(
   "e2e - tm_t_pp_laboratory: Deselection of param throws validation error.",
   {
-    skip_if_too_deep(5)
+    skip_if_too_deep(4)
     app_driver <- app_driver_tm_t_pp_laboratory()
     app_driver$set_active_module_input("param-dataset_ADLB_singleextract-select", NULL)
     testthat::expect_false(
@@ -236,8 +239,9 @@ testthat::test_that(
   }
 )
 
+# failed
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints throws validation error.", {
-  skip_if_too_deep(5)
+  skip_if_too_deep(4)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", NULL)
   testthat::expect_false(
@@ -275,8 +279,9 @@ testthat::test_that(
   }
 )
 
+# failed
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu throws validation error.", {
-  skip_if_too_deep(5)
+  skip_if_too_deep(4)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", NULL)
   testthat::expect_false(
@@ -314,8 +319,9 @@ testthat::test_that(
   }
 )
 
+# failed
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var throws validation error.", {
-  skip_if_too_deep(5)
+  skip_if_too_deep(4)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", NULL)
   testthat::expect_false(
@@ -351,8 +357,9 @@ testthat::test_that(
   }
 )
 
+# failed
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of arind throws validation error.", {
-  skip_if_too_deep(5)
+  skip_if_too_deep(4)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("anrind-dataset_ADLB_singleextract-select", NULL)
   testthat::expect_false(

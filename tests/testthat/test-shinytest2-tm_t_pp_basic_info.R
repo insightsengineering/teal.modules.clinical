@@ -69,10 +69,11 @@ testthat::test_that(
   }
 )
 
+# failed
 testthat::test_that(
   "e2e - tm_t_pp_basic_info: Deselection of patient_id throws validation error and table is not visible.",
   {
-    skip_if_too_deep(5)
+    skip_if_too_deep(4)
     app_driver <- app_driver_tm_t_pp_basic_info()
     app_driver$set_active_module_input("patient_id", NULL)
     testthat::expect_false(
@@ -111,8 +112,9 @@ testthat::test_that(
   }
 )
 
+# failed
 testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of cov_var throws validation error.", {
-  skip_if_too_deep(5)
+  skip_if_too_deep(4)
   app_driver <- app_driver_tm_t_pp_basic_info()
   app_driver$set_active_module_input("vars-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_false(
