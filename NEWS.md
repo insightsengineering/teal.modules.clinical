@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.9.1.9005
+# teal.modules.clinical 0.9.1.9006
 
 * Removed `Show Warnings` modals from modules.
 
