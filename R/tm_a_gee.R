@@ -358,7 +358,6 @@ ui_gee <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -390,6 +389,7 @@ srv_gee <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     ## split_covariates ----
     observeEvent(input[[extract_input("cov_var", dataname)]],
       ignoreNULL = FALSE,
@@ -448,7 +448,7 @@ srv_gee <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
         "conf_level",
         shinyvalidate::sv_between(
@@ -550,13 +550,6 @@ srv_gee <- function(id,
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
-    )
-
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
     )
 
     # Render R code
