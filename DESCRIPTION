@@ -49,7 +49,7 @@ Imports:
     methods,
     rlistings (>= 0.2.8),
     rmarkdown (>= 2.19),
-    rtables (>= 0.6.7.9003),
+    rtables (>= 0.6.7.9004),
     scales,
     shiny (>= 1.6.0),
     shinyjs,
