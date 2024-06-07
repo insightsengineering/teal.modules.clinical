@@ -339,7 +339,8 @@ srv_g_barchart_simple <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+
+    track_shiny_input_changes(input)
     rule_dupl <- function(others) {
       function(value) {
         othervals <- lapply(

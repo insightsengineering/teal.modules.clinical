@@ -244,7 +244,7 @@ srv_t_medical_history <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+    track_shiny_input_changes(input)
     patient_id <- reactive(input$patient_id)
 
     # Init

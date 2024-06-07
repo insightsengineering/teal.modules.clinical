@@ -696,7 +696,7 @@ srv_ancova <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+    track_shiny_input_changes(input)
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
     iv_arco <- arm_ref_comp_observer(
