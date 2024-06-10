@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9006
-Date: 2024-05-16
+Version: 0.9.1.9007
+Date: 2024-06-04
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -49,7 +49,7 @@ Imports:
     methods,
     rlistings (>= 0.2.8),
     rmarkdown (>= 2.23),
-    rtables (>= 0.6.7),
+    rtables (>= 0.6.7.9003),
     scales,
     shiny (>= 1.6.0),
     shinyjs,
