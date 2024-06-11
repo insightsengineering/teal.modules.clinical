@@ -48,7 +48,7 @@ Imports:
     logger (>= 0.3.0),
     methods,
     rlistings (>= 0.2.8),
-    rmarkdown (>= 2.19),
+    rmarkdown (>= 2.23),
     rtables (>= 0.6.7.9003),
     scales,
     shiny (>= 1.6.0),
@@ -67,7 +67,7 @@ Imports:
     vistime (>= 1.2.3)
 Suggests:
     forcats,
-    knitr (>= 1.34),
+    knitr (>= 1.42),
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
     pkgload,
