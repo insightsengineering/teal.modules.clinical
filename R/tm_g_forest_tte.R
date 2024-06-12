@@ -502,7 +502,7 @@ srv_g_forest_tte <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
+    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(

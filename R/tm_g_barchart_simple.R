@@ -340,7 +340,7 @@ srv_g_barchart_simple <- function(id,
 
   moduleServer(id, function(input, output, session) {
 
-    track_shiny_input_changes(input)
+    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     rule_dupl <- function(others) {
       function(value) {
         othervals <- lapply(
