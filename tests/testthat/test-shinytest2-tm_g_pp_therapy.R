@@ -154,7 +154,7 @@ test_different_selection <- function(input_name, input_id, new_value) { # nolint
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_pp_therapy()
       plot_before <- list(
-        app_driver$get_active_module_plot_output("therapy_plot"),
+        app_driver$get_active_module_plot_output("tmcplot"),
         app_driver$active_module_element_text("therapy_table")
       )
       app_driver$set_active_module_input(input_id, new_value)
@@ -162,7 +162,7 @@ test_different_selection <- function(input_name, input_id, new_value) { # nolint
         identical(
           plot_before,
           list(
-            app_driver$get_active_module_plot_output("therapy_plot"),
+            app_driver$get_active_module_plot_output("tmcplot"),
             app_driver$active_module_element_text("therapy_table")
           )
         )
@@ -189,9 +189,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
-    plot_before <- app_driver$get_active_module_plot_output("therapy_plot")
+    plot_before <- app_driver$get_active_module_plot_output("tmcplot")
     app_driver$set_active_module_input("font_size", 15)
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("therapy_plot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

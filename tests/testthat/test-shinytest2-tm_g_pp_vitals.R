@@ -95,12 +95,12 @@ testthat::test_that(
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting patient_id changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
-  plot_before <- app_driver$get_active_module_plot_output("vitals_plot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("patient_id", "AB12345-CHN-15-id-262")
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_plot_output("vitals_plot")
+      app_driver$get_active_module_plot_output("tmcplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -111,7 +111,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting patient_id column throws 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   app_driver$set_active_module_input("patient_id", NULL)
-  testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("patient_id_input > div > span"),
     "Please select a patient."
@@ -126,7 +126,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_vitals()
-    plot_before <- app_driver$get_active_module_plot_output("vitals_plot")
+    plot_before <- app_driver$get_active_module_plot_output("tmcplot")
 
     # Changing the PARAMCD variable
     app_driver$set_active_module_input("paramcd-dataset_ADVS_singleextract-select", "PARAM")
@@ -151,7 +151,7 @@ testthat::test_that(
     testthat::expect_false(
       identical(
         plot_before,
-        app_driver$get_active_module_plot_output("vitals_plot")
+        app_driver$get_active_module_plot_output("tmcplot")
       )
     )
     app_driver$expect_no_validation_error()
@@ -163,7 +163,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting paramcd throws validation
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   app_driver$set_active_module_input("paramcd-dataset_ADVS_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("paramcd-dataset_ADVS_singleextract-select_input > div > span"),
     "Please select PARAMCD variable."
@@ -175,12 +175,12 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting paramcd throws validation
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting xaxis changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
-  plot_before <- app_driver$get_active_module_plot_output("vitals_plot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("xaxis-dataset_ADVS_singleextract-select", "BMRKR1")
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_plot_output("vitals_plot")
+      app_driver$get_active_module_plot_output("tmcplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -191,7 +191,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting xaxis column throws valid
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   app_driver$set_active_module_input("xaxis-dataset_ADVS_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("xaxis-dataset_ADVS_singleextract-select_input > div > span"),
     "Please select Vitals x-axis variable."
@@ -203,12 +203,12 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting xaxis column throws valid
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting aval_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
-  plot_before <- app_driver$get_active_module_plot_output("vitals_plot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("aval_var-dataset_ADVS_singleextract-select", "BASE2")
   testthat::expect_false(
     identical(
       plot_before,
-      app_driver$get_active_module_plot_output("vitals_plot")
+      app_driver$get_active_module_plot_output("tmcplot")
     )
   )
   app_driver$expect_no_validation_error()
@@ -219,7 +219,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting aval_var column throws va
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   app_driver$set_active_module_input("aval_var-dataset_ADVS_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
+  testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text("aval_var-dataset_ADVS_singleextract-select_input > div > span"),
     "Please select AVAL variable."
@@ -231,9 +231,9 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting aval_var column throws va
 testthat::test_that("e2e - tm_g_pp_vitals: Changing font_size changes plot and doesn't throw validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
-  plot_before <- app_driver$get_active_module_plot_output("vitals_plot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("font_size", 20)
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("vitals_plot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })

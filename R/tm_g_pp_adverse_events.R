@@ -335,7 +335,7 @@ ui_g_adverse_events <- function(id, ...) {
       htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("table"), ns("table_rows")),
       DT::DTOutput(outputId = ns("table")),
-      teal.widgets::plot_with_settings_ui(id = ns("chart"))
+      teal.widgets::plot_with_settings_ui(id = ns("tmcplot"))
     ),
     encoding = tags$div(
       ### Reporter
@@ -565,7 +565,7 @@ srv_g_adverse_events <- function(id,
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "chart",
+      id = "tmcplot",
       plot_r = plot_r,
       height = plot_height,
       width = plot_width

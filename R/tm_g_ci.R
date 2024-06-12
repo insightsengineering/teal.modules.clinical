@@ -319,7 +319,7 @@ ui_g_ci <- function(id, ...) {
   args <- list(...)
 
   teal.widgets::standard_layout(
-    output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
+    output = teal.widgets::plot_with_settings_ui(id = ns("tmcplot")),
     encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
@@ -474,7 +474,7 @@ srv_g_ci <- function(id,
     )
 
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "myplot",
+      id = "tmcplot",
       plot_r = plot_r,
       height = plot_height,
       width = plot_width

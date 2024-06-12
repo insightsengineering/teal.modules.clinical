@@ -341,7 +341,7 @@ ui_g_vitals <- function(id, ...) {
 
   ns <- NS(id)
   teal.widgets::standard_layout(
-    output = teal.widgets::plot_with_settings_ui(id = ns("vitals_plot")),
+    output = teal.widgets::plot_with_settings_ui(id = ns("tmcplot")),
     encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
@@ -551,7 +551,7 @@ srv_g_vitals <- function(id,
     plot_r <- reactive(all_q()[["result_plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "vitals_plot",
+      id = "tmcplot",
       plot_r = plot_r,
       height = plot_height,
       width = plot_width

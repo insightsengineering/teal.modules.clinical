@@ -354,7 +354,7 @@ ui_g_lineplot <- function(id, ...) {
     output = teal.widgets::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
       teal.widgets::plot_with_settings_ui(
-        id = ns("myplot")
+        id = ns("tmcplot")
       )
     ),
     encoding = tags$div(
@@ -628,7 +628,7 @@ srv_g_lineplot <- function(id,
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "myplot",
+      id = "tmcplot",
       plot_r = plot_r,
       height = plot_height,
       width = plot_width

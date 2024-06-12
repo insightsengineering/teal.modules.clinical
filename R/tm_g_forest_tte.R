@@ -387,7 +387,7 @@ ui_g_forest_tte <- function(id, ...) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
-    output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
+    output = teal.widgets::plot_with_settings_ui(id = ns("tmcplot")),
     encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
@@ -659,7 +659,7 @@ srv_g_forest_tte <- function(id,
     plot_r <- reactive(all_q()[["p"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "myplot",
+      id = "tmcplot",
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
