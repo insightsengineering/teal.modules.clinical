@@ -514,7 +514,7 @@ srv_g_lineplot <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    tmc_track_shiny_input_changes()
+    tmc_track_shiny_input_changes(input)
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
       datasets = data,
