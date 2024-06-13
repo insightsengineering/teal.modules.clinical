@@ -432,7 +432,7 @@ ui_g_therapy <- function(id, ...) {
       htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
-      tmcplot_with_settings()
+      tmcplot_with_settings_ui()
     ),
     encoding = tags$div(
       ### Reporter
@@ -684,8 +684,7 @@ srv_g_therapy <- function(id,
       all_q()[["tmcplot"]]
     })
 
-    pws <- teal.widgets::plot_with_settings_srv(
-      id = "tmcplot",
+    pws <- tmcplot_with_settings_srv(
       plot_r = plot_r,
       height = plot_height,
       width = plot_width

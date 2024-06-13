@@ -435,7 +435,7 @@ ui_g_km <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
-      tmcplot_with_settings()
+      tmcplot_with_settings_ui()
     ),
     encoding = tags$div(
       ### Reporter
@@ -805,8 +805,7 @@ srv_g_km <- function(id,
     plot_r <- reactive(all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
-    pws <- teal.widgets::plot_with_settings_srv(
-      id = "tmcplot",
+    pws <- tmcplot_with_settings_srv(
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
