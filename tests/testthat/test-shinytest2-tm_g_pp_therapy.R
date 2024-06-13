@@ -96,7 +96,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Module initializes in teal without e
   app_driver$expect_no_validation_error()
 
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("therapy_plot-plot_out_main"))
+    app_driver$is_visible(app_driver$active_module_element("tmcplot-plot_out_main"))
   )
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("therapy_table"))
