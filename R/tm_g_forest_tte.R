@@ -387,7 +387,7 @@ ui_g_forest_tte <- function(id, ...) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
-    output = teal.widgets::plot_with_settings_ui(id = ns("tmcplot")),
+    output = tmcplot_with_settings(),
     encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),

@@ -335,7 +335,7 @@ ui_g_adverse_events <- function(id, ...) {
       htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("table"), ns("table_rows")),
       DT::DTOutput(outputId = ns("table")),
-      teal.widgets::plot_with_settings_ui(id = ns("tmcplot"))
+      tmcplot_with_settings()
     ),
     encoding = tags$div(
       ### Reporter

@@ -204,7 +204,7 @@ ui_g_barchart_simple <- function(id, ...) {
     ),
     teal.widgets::standard_layout(
       output = teal.widgets::white_small_well(
-        teal.widgets::plot_with_settings_ui(id = ns("tmcplot")),
+        tmcplot_with_settings(),
         uiOutput(ns("table"), class = "overflow-y-scroll max-h-250")
       ),
       encoding = tags$div(

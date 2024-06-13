@@ -432,7 +432,7 @@ ui_g_therapy <- function(id, ...) {
       htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
-      teal.widgets::plot_with_settings_ui(id = ns("tmcplot"))
+      tmcplot_with_settings()
     ),
     encoding = tags$div(
       ### Reporter

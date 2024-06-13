@@ -624,7 +624,7 @@ ui_mmrm <- function(id, ...) {
         textOutput(ns("null_input_msg")),
         tags$h3(textOutput(ns("mmrm_title"))),
         teal.widgets::table_with_settings_ui(ns("mmrm_table")),
-        teal.widgets::plot_with_settings_ui(id = ns("tmcplot"))
+        tmcplot_with_settings()
       ),
       encoding = tags$div(
         ### Reporter

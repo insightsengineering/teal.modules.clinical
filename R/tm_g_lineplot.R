@@ -353,9 +353,7 @@ ui_g_lineplot <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
-      teal.widgets::plot_with_settings_ui(
-        id = ns("tmcplot")
-      )
+      tmcplot_with_settings()
     ),
     encoding = tags$div(
       ### Reporter
