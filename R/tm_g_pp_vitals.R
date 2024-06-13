@@ -411,7 +411,7 @@ srv_g_vitals <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
+    tmc_track_shiny_input_changes()
     patient_id <- reactive(input$patient_id)
 
     # Init

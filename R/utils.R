@@ -948,19 +948,19 @@ set_default_total_label <- function(total_label) {
 interactive <- NULL
 
 
-track_shiny_input_changes <- function(input){
+tmc_track_shiny_input_changes <- function(input){
   if (shiny::isRunning()) {
 
     plot_nss <- c("mmrm_plot", "myplot", "chart", "patient_timeline_plot", "therapy_plot", "vitals_plot")
 
     elements <- c("plot_modal_width", "flex_width", "plot_modal_height", "flex_height")
 
-    exclude_inputs <- unlist(lapply(plot_nss, paste, elements, sep = "-"))
+    excluded_inputs <- unlist(lapply(plot_nss, paste, elements, sep = "-"))
     logger::log_shiny_input_changes(
       input,
       level = logger::TRACE,
       namespace = "teal.modules.clinical",
-      exclude = exclude_inputs
+      excluded_inputs = excluded_inputs
     )
   }
 }
