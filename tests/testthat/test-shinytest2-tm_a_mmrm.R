@@ -151,7 +151,7 @@ testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default
   app_driver <- app_driver_tm_a_mmrm()
   app_driver$expect_no_validation_error()
 
-  table <- app_driver$get_active_module_table_output("mmrm_table-table-with-settings")
+  table <- app_driver$get_active_module_table_output("table-table-with-settings")
   col_val <- app_driver$get_active_module_input("buckets")
   testthat::expect_true(all(unlist(col_val, use.names = FALSE) %in% colnames(table)))
   testthat::expect_equal(nrow(table), 25)
@@ -265,7 +265,7 @@ for (func in output_functions) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
       } else {
         testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+          app_driver$get_active_module_table_output("table-table-with-settings"), data.frame()
         )
       }
 
@@ -300,7 +300,7 @@ for (func in output_functions) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
       } else {
         testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+          app_driver$get_active_module_table_output("table-table-with-settings"), data.frame()
         )
       }
 
@@ -335,7 +335,7 @@ for (func in output_functions) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
       } else {
         testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+          app_driver$get_active_module_table_output("table-table-with-settings"), data.frame()
         )
       }
 
@@ -370,7 +370,7 @@ for (func in output_functions) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
       } else {
         testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+          app_driver$get_active_module_table_output("table-table-with-settings"), data.frame()
         )
       }
 
@@ -405,7 +405,7 @@ for (func in output_functions) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
       } else {
         testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+          app_driver$get_active_module_table_output("table-table-with-settings"), data.frame()
         )
       }
 
@@ -440,7 +440,7 @@ for (func in output_functions) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("tmcplot"), character(0))
       } else {
         testthat::expect_identical(
-          app_driver$get_active_module_table_output("mmrm_table-table-with-settings"), data.frame()
+          app_driver$get_active_module_table_output("table-table-with-settings"), data.frame()
         )
       }
 
@@ -506,7 +506,7 @@ for (func in output_functions) {
       if (grepl("^g_", func)) {
         plot_before <- app_driver$get_active_module_plot_output("tmcplot")
       } else {
-        table_before <- app_driver$get_active_module_table_output("mmrm_table-table-with-settings")
+        table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
       }
 
       # Iterate over each input and test changes
@@ -532,7 +532,7 @@ for (func in output_functions) {
           testthat::expect_false(
             identical(
               table_before,
-              app_driver$get_active_module_table_output("mmrm_table-table-with-settings")
+              app_driver$get_active_module_table_output("table-table-with-settings")
             )
           )
         }

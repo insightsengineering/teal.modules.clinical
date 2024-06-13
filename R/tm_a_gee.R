@@ -263,7 +263,7 @@ ui_gee <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       tags$h3(textOutput(ns("gee_title"))),
-      teal.widgets::table_with_settings_ui(ns("table"))
+      tmctable_with_settings_ui()
     ),
     encoding = tags$div(
       ### Reporter
@@ -547,10 +547,7 @@ srv_gee <- function(id,
       table_q()[["result_table"]]
     })
 
-    teal.widgets::table_with_settings_srv(
-      id = "table",
-      table_r = table_r
-    )
+    tmctable_with_settings_srv(table_r = table_r)
 
     # Render R code
     teal.widgets::verbatim_popup_srv(

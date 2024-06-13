@@ -623,7 +623,7 @@ ui_mmrm <- function(id, ...) {
       output = teal.widgets::white_small_well(
         textOutput(ns("null_input_msg")),
         tags$h3(textOutput(ns("mmrm_title"))),
-        teal.widgets::table_with_settings_ui(ns("mmrm_table")),
+        tmctable_with_settings_ui(),
         tmcplot_with_settings_ui()
       ),
       encoding = tags$div(
@@ -1004,9 +1004,9 @@ srv_mmrm <- function(id,
       output_function <- input$output_function
       if (isTRUE(grepl("^t_", output_function))) {
         show_plot_rv(FALSE)
-        shinyjs::show("mmrm_table")
+        shinyjs::show("table")
       } else if (isTRUE(grepl("^g_", output_function))) {
-        shinyjs::hide("mmrm_table")
+        shinyjs::hide("table")
         show_plot_rv(TRUE)
       } else {
         stop("unknown output type")
@@ -1427,8 +1427,7 @@ srv_mmrm <- function(id,
       show_hide_signal = reactive(show_plot_rv())
     )
 
-    teal.widgets::table_with_settings_srv(
-      id = "mmrm_table",
+    tmctable_with_settings_srv(
       table_r = table_r,
       show_hide_signal = reactive(!show_plot_rv())
     )

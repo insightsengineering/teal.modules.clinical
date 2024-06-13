@@ -947,7 +947,11 @@ set_default_total_label <- function(total_label) {
 # for mocking in tests
 interactive <- NULL
 
-tmcplot_with_settings <- function() teal.widgets::plot_with_settings_ui(id = ns("tmcplot"))
+tmcplot_with_settings_ui <- function() teal.widgets::plot_with_settings_ui(id = ns("tmcplot"))
+tmcplot_with_settings_srv <- function(...) teal.widgets::plot_with_settings_srv(id = "tmcplot", ...)
+
+tmctable_with_settings_ui <- function() teal.widgets::table_with_settings_ui(id = ns("tmctable"))
+tmctable_with_settings_srv <- function(...) teal.widgets::table_with_settings_srv(id = "tmctable", ...)
 
 track_shiny_input_changes <- function(input){
   if (shiny::isRunning()) {
