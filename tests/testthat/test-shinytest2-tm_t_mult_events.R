@@ -45,7 +45,7 @@ testthat::test_that("e2e - tm_t_mult_events: Module initializes in teal without 
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$active_module_element("tmctable-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -82,12 +82,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_mult_events()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -99,7 +99,7 @@ testthat::test_that("e2e - tm_t_mult_events: Deselection of arm_var throws valid
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_mult_events()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
@@ -113,12 +113,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_mult_events()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("hlt-dataset_ADCM_singleextract-select", c("ATC1", "ATC2"))
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -131,12 +131,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_mult_events()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("hlt-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()

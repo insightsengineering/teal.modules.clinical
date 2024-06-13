@@ -62,7 +62,7 @@ testthat::test_that("e2e - tm_t_smq: Module initializes in teal without errors a
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$active_module_element("tmctable-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -103,12 +103,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "SEX")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -120,7 +120,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation er
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
@@ -132,12 +132,12 @@ testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation er
 testthat::test_that("e2e - tm_t_smq: Selecting paramcd changes the table and does not throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
-  table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+  table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
   app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", "SEX")
   testthat::expect_false(
     identical(
       table_before,
-      app_driver$get_active_module_table_output("table-table-with-settings")
+      app_driver$get_active_module_table_output("tmctable-table-with-settings")
     )
   )
   app_driver$expect_no_validation_error()
@@ -148,7 +148,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of paramcd throws validation er
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("llt-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
@@ -162,12 +162,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("baskets-dataset_ADAE_singleextract-select", "CQ01NAM")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -179,7 +179,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of worst_flag throws validation
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$set_active_module_input("baskets-dataset_ADAE_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("baskets-dataset_ADAE_singleextract-select_input .shiny-validation-message"),

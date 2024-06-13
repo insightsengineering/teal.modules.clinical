@@ -69,7 +69,7 @@ testthat::test_that("e2e - tm_t_abnormality: Module initializes in teal without 
   app_driver$expect_no_validation_error()
 
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$active_module_element("tmctable-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -113,12 +113,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -130,7 +130,7 @@ testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation err
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
@@ -144,12 +144,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", "AVISIT")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -161,7 +161,7 @@ testthat::test_that("e2e - tm_t_abnormality: Deselection of by_vars throws valid
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
   app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text("by_vars-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
@@ -175,12 +175,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("add_total", TRUE)
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -193,12 +193,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("exclude_base_abn", TRUE)
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -211,12 +211,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("drop_arm_levels", FALSE)
     testthat::expect_true(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()

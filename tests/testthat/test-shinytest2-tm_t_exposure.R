@@ -77,7 +77,7 @@ testthat::test_that("e2e - tm_t_exposure: Module initializes in teal without err
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$active_module_element("tmctable-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -119,12 +119,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals", "DOSE")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -136,7 +136,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd throws validati
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$set_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text(
@@ -152,12 +152,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals", "Drug B")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -169,7 +169,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of parcat throws validatio
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$set_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text(
@@ -185,12 +185,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("col_by_var-dataset_ADSL_singleextract-select", "ARM")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -203,12 +203,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("col_by_var-dataset_ADSL_singleextract-select", character(0), wait_ = FALSE)
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -221,12 +221,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("row_by_var-dataset_ADEX_singleextract-select", "REGION1")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -238,7 +238,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of row_by_var throws valid
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$set_active_module_input("row_by_var-dataset_ADEX_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text(
