@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9007
-Date: 2024-06-04
+Version: 0.9.1.9009
+Date: 2024-06-13
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -48,8 +48,8 @@ Imports:
     logger (>= 0.3.0),
     methods,
     rlistings (>= 0.2.8),
-    rmarkdown (>= 2.19),
-    rtables (>= 0.6.7.9003),
+    rmarkdown (>= 2.23),
+    rtables (>= 0.6.7.9006),
     scales,
     shiny (>= 1.6.0),
     shinyjs,
@@ -67,7 +67,7 @@ Imports:
     vistime (>= 1.2.3)
 Suggests:
     forcats,
-    knitr (>= 1.34),
+    knitr (>= 1.42),
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
     pkgload,
