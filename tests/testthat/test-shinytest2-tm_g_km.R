@@ -198,7 +198,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation erro
     "An endpoint is required"
   )
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot-with-settings"),
+    app_driver$active_module_element_text("tmcplot-plot-with-settings"),
     "An endpoint is required"
   )
   app_driver$stop()
@@ -382,7 +382,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation e
   app_driver$set_active_module_input("conf_level", -1)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot-with-settings"),
+    app_driver$active_module_element_text("tmcplot-plot-with-settings"),
     "Confidence level must be between 0 and 1."
   )
   app_driver$stop()
