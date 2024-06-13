@@ -448,7 +448,7 @@ srv_t_logistic <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+    tmc_track_shiny_input_changes()
     # Observer to update reference and comparison arm input options.
     iv_arco <- arm_ref_comp_observer(
       session,

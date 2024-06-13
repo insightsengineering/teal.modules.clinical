@@ -180,7 +180,7 @@ srv_t_basic_info <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    if (shiny::isRunning()) logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+    tmc_track_shiny_input_changes()
     patient_id <- reactive(input$patient_id)
 
     # Init
