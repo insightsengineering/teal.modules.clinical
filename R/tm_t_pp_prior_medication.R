@@ -242,7 +242,7 @@ srv_t_prior_medication <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    tmc_track_shiny_input_changes()
+    tmc_track_shiny_input_changes(input)
     patient_id <- reactive(input$patient_id)
 
     selector_list <- teal.transform::data_extract_multiple_srv(

@@ -340,7 +340,7 @@ srv_g_barchart_simple <- function(id,
 
   moduleServer(id, function(input, output, session) {
 
-    tmc_track_shiny_input_changes()
+    tmc_track_shiny_input_changes(input)
     rule_dupl <- function(others) {
       function(value) {
         othervals <- lapply(

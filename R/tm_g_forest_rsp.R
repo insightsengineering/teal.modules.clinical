@@ -508,7 +508,7 @@ srv_g_forest_rsp <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    tmc_track_shiny_input_changes()
+    tmc_track_shiny_input_changes(input)
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
