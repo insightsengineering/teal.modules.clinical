@@ -953,7 +953,7 @@ tmcplot_with_settings_srv <- function(...) teal.widgets::plot_with_settings_srv(
 tmctable_with_settings_ui <- function() teal.widgets::table_with_settings_ui(id = ns("tmctable"))
 tmctable_with_settings_srv <- function(...) teal.widgets::table_with_settings_srv(id = "tmctable", ...)
 
-tmc_track_shiny_input_changes <- function(input){
+tmc_track_shiny_input_changes <- function(input) {
   if (shiny::isRunning()) {
 
     elements <- c("plot_modal_width", "flex_width", "plot_modal_height", "flex_height")
