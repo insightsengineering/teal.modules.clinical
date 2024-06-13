@@ -81,7 +81,7 @@ testthat::test_that("e2e - tm_t_tte: Module initializes in teal without errors a
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$active_module_element("tmctable-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -159,12 +159,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", "CRSD")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -176,7 +176,7 @@ testthat::test_that("e2e - tm_t_tte: Deselection of paramcd throws validation er
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
   app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text(
@@ -192,12 +192,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -209,7 +209,7 @@ testthat::test_that("e2e - tm_t_tte: Deselection of arm_var throws validation er
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
+  testthat::expect_identical(app_driver$get_active_module_table_output("tmctable-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
     app_driver$active_module_element_text(
@@ -225,12 +225,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "BMRKR2")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -243,12 +243,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("tmctable-table-with-settings")
     app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
+        app_driver$get_active_module_table_output("tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()

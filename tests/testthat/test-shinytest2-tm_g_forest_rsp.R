@@ -94,7 +94,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Module initializes in teal without e
   app_driver <- app_driver_tm_g_forest_rsp()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(app_driver$is_visible(app_driver$active_module_element("myplot-plot_main")))
+  testthat::expect_true(app_driver$is_visible(app_driver$active_module_element("tmcplot-plot_main")))
 
   app_driver$stop()
 })
@@ -162,9 +162,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting arm_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARM")
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -175,7 +175,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting arm_var throws validatio
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$active_module_element_text("tmcplot-plot_out_main"),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -184,9 +184,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting arm_var throws validatio
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting paramcd changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", "OVRINV")
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -197,7 +197,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting paramcd throws validatio
   app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$active_module_element_text("tmcplot-plot_out_main"),
     "Please select Endpoint filter"
   )
   app_driver$stop()
@@ -206,9 +206,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting paramcd throws validatio
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting responders changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("responders", "Complete Response (CR)")
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -219,7 +219,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting responders throws valida
   app_driver$set_active_module_input("responders", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$active_module_element_text("tmcplot-plot_out_main"),
     "`Responders` field is empty"
   )
   app_driver$stop()
@@ -228,9 +228,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting responders throws valida
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting subgroup_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", c("SEX", "BMRKR2", "AGEU"))
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -241,7 +241,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting a non-factors column in su
   app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", c("SEX", "AGE"))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$active_module_element_text("tmcplot-plot_out_main"),
     "Not all subgroup variables are factors"
   )
   app_driver$stop()
@@ -250,9 +250,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting a non-factors column in su
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting subgroup_var changes plot and doesn't throw validation errors.", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -260,9 +260,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting subgroup_var changes plo
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting strata_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "STRATA1")
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -270,9 +270,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting strata_var changes plot an
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting strata_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -280,9 +280,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting strata_var changes plot 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting conf_level changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("conf_level", "0.9")
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -293,13 +293,13 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting 
   app_driver$set_active_module_input("conf_level", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$active_module_element_text("tmcplot-plot_out_main"),
     "Please choose a confidence level between 0 and 1"
   )
   app_driver$set_active_module_input("conf_level", 2)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$active_module_element_text("tmcplot-plot_out_main"),
     "Please choose a confidence level between 0 and 1"
   )
   app_driver$stop()
@@ -308,9 +308,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting 
 testthat::test_that("e2e - tm_g_forest_rsp: Unsetting fixed_symbol_size changes plot and doesn't throw validation errors.", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("fixed_symbol_size", FALSE)
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -318,9 +318,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Unsetting fixed_symbol_size changes 
 testthat::test_that("e2e - tm_g_forest_rsp: Changing rel_width_forest changes plot and doesn't throw validation errors.", { # nolint: line_length
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("rel_width_forest", 30)
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
@@ -328,9 +328,9 @@ testthat::test_that("e2e - tm_g_forest_rsp: Changing rel_width_forest changes pl
 testthat::test_that("e2e - tm_g_forest_rsp: Changing font_size changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
-  plot_before <- app_driver$get_active_module_plot_output("myplot")
+  plot_before <- app_driver$get_active_module_plot_output("tmcplot")
   app_driver$set_active_module_input("font_size", 25)
-  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
+  testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })

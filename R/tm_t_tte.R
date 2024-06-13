@@ -558,7 +558,7 @@ ui_t_tte <- function(id, ...) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
-    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
+    output = teal.widgets::white_small_well(tmctable_with_settings_ui()),
     encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
@@ -944,7 +944,7 @@ srv_t_tte <- function(id,
 
     table_r <- reactive(all_q()[["table"]])
 
-    teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
+    tmctable_with_settings_srv(table_r = table_r)
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",

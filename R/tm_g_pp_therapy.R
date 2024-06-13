@@ -432,7 +432,7 @@ ui_g_therapy <- function(id, ...) {
       htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("therapy_table"), ns("therapy_table_rows")),
       DT::DTOutput(outputId = ns("therapy_table")),
-      teal.widgets::plot_with_settings_ui(id = ns("therapy_plot"))
+      tmcplot_with_settings_ui()
     ),
     encoding = tags$div(
       ### Reporter
@@ -681,11 +681,10 @@ srv_g_therapy <- function(id,
 
     plot_r <- reactive({
       req(iv_r()$is_valid())
-      all_q()[["therapy_plot"]]
+      all_q()[["tmcplot"]]
     })
 
-    pws <- teal.widgets::plot_with_settings_srv(
-      id = "therapy_plot",
+    pws <- tmcplot_with_settings_srv(
       plot_r = plot_r,
       height = plot_height,
       width = plot_width

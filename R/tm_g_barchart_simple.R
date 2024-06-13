@@ -204,7 +204,7 @@ ui_g_barchart_simple <- function(id, ...) {
     ),
     teal.widgets::standard_layout(
       output = teal.widgets::white_small_well(
-        teal.widgets::plot_with_settings_ui(id = ns("myplot")),
+        tmcplot_with_settings_ui(),
         uiOutput(ns("table"), class = "overflow-y-scroll max-h-250")
       ),
       encoding = tags$div(
@@ -536,8 +536,7 @@ srv_g_barchart_simple <- function(id,
     }
 
     # Insert the plot into a plot with settings module from teal.widgets
-    pws <- teal.widgets::plot_with_settings_srv(
-      id = "myplot",
+    pws <- tmcplot_with_settings_srv(
       plot_r = plot_r,
       height = plot_height,
       width = plot_width

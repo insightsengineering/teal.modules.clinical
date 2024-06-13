@@ -947,15 +947,18 @@ set_default_total_label <- function(total_label) {
 # for mocking in tests
 interactive <- NULL
 
+tmcplot_with_settings_ui <- function() teal.widgets::plot_with_settings_ui(id = ns("tmcplot"))
+tmcplot_with_settings_srv <- function(...) teal.widgets::plot_with_settings_srv(id = "tmcplot", ...)
+
+tmctable_with_settings_ui <- function() teal.widgets::table_with_settings_ui(id = ns("tmctable"))
+tmctable_with_settings_srv <- function(...) teal.widgets::table_with_settings_srv(id = "tmctable", ...)
 
 tmc_track_shiny_input_changes <- function(input) {
   if (shiny::isRunning()) {
 
-    plot_nss <- c("mmrm_plot", "myplot", "chart", "patient_timeline_plot", "therapy_plot", "vitals_plot")
-
     elements <- c("plot_modal_width", "flex_width", "plot_modal_height", "flex_height")
+    excludes_inputs <- paste("tmcplot", elements, sep = "-")
 
-    excluded_inputs <- unlist(lapply(plot_nss, paste, elements, sep = "-"))
     logger::log_shiny_input_changes(
       input,
       level = logger::TRACE,

@@ -340,7 +340,7 @@ ui_shift_by_arm <- function(id, ...) {
   )
 
   teal.widgets::standard_layout(
-    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
+    output = teal.widgets::white_small_well(tmctable_with_settings_ui()),
     encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
@@ -559,10 +559,7 @@ srv_shift_by_arm <- function(id,
     # Outputs to render.
     table_r <- reactive(all_q()[["result"]])
 
-    teal.widgets::table_with_settings_srv(
-      id = "table",
-      table_r = table_r
-    )
+    tmctable_with_settings_srv(table_r = table_r)
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(

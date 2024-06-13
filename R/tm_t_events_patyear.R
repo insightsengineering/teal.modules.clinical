@@ -289,7 +289,7 @@ ui_events_patyear <- function(id, ...) {
   )
 
   teal.widgets::standard_layout(
-    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("patyear_table"))),
+    output = teal.widgets::white_small_well(tmctable_with_settings_ui()),
     encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
@@ -553,10 +553,7 @@ srv_events_patyear <- function(id,
       table_q()[["result"]]
     })
 
-    teal.widgets::table_with_settings_srv(
-      id = "patyear_table",
-      table_r = table_r
-    )
+    tmctable_with_settings_srv(table_r = table_r)
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(

@@ -184,9 +184,7 @@ ui_t_medical_history <- function(id, ...) {
 
   ns <- NS(id)
   teal.widgets::standard_layout(
-    output = tags$div(
-      teal.widgets::table_with_settings_ui(ns("table"))
-    ),
+    output = tags$div(tmctable_with_settings_ui()),
     encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
@@ -332,10 +330,7 @@ srv_t_medical_history <- function(id,
 
     table_r <- reactive(all_q()[["result"]])
 
-    teal.widgets::table_with_settings_srv(
-      id = "table",
-      table_r = table_r
-    )
+    tmctable_with_settings_srv(table_r = table_r)
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",

@@ -96,7 +96,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Module initializes in teal without e
   app_driver$expect_no_validation_error()
 
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("therapy_plot-plot_out_main"))
+    app_driver$is_visible(app_driver$active_module_element("tmcplot-plot_out_main"))
   )
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("therapy_table"))
@@ -154,7 +154,7 @@ test_different_selection <- function(input_name, input_id, new_value) { # nolint
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_pp_therapy()
       plot_before <- list(
-        app_driver$get_active_module_plot_output("therapy_plot"),
+        app_driver$get_active_module_plot_output("tmcplot"),
         app_driver$active_module_element_text("therapy_table")
       )
       app_driver$set_active_module_input(input_id, new_value)
@@ -162,7 +162,7 @@ test_different_selection <- function(input_name, input_id, new_value) { # nolint
         identical(
           plot_before,
           list(
-            app_driver$get_active_module_plot_output("therapy_plot"),
+            app_driver$get_active_module_plot_output("tmcplot"),
             app_driver$active_module_element_text("therapy_table")
           )
         )
@@ -189,9 +189,9 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
-    plot_before <- app_driver$get_active_module_plot_output("therapy_plot")
+    plot_before <- app_driver$get_active_module_plot_output("tmcplot")
     app_driver$set_active_module_input("font_size", 15)
-    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("therapy_plot")))
+    testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("tmcplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
   }

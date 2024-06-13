@@ -61,7 +61,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Module initializes in teal witho
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("patyear_table-table-with-settings"))
+    app_driver$is_visible(app_driver$active_module_element("patyear_tmctable-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -111,12 +111,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
-    table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("patyear_tmctable-table-with-settings")
     app_driver$set_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals", "AETTE2")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("patyear_table-table-with-settings")
+        app_driver$get_active_module_table_output("patyear_tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -129,7 +129,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd throws va
   app_driver <- app_driver_tm_t_events_patyear()
   app_driver$set_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals", NULL)
   testthat::expect_identical(
-    app_driver$get_active_module_table_output("patyear_table-table-with-settings"),
+    app_driver$get_active_module_table_output("patyear_tmctable-table-with-settings"),
     data.frame()
   )
   app_driver$expect_validation_error()
@@ -147,12 +147,12 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
-    table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
+    table_before <- app_driver$get_active_module_table_output("patyear_tmctable-table-with-settings")
     app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARM")
     testthat::expect_false(
       identical(
         table_before,
-        app_driver$get_active_module_table_output("patyear_table-table-with-settings")
+        app_driver$get_active_module_table_output("patyear_tmctable-table-with-settings")
       )
     )
     app_driver$expect_no_validation_error()
@@ -165,7 +165,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws va
   app_driver <- app_driver_tm_t_events_patyear()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(
-    app_driver$get_active_module_table_output("patyear_table-table-with-settings"),
+    app_driver$get_active_module_table_output("patyear_tmctable-table-with-settings"),
     data.frame()
   )
   app_driver$expect_validation_error()
