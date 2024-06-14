@@ -948,7 +948,7 @@ set_default_total_label <- function(total_label) {
 interactive <- NULL
 
 
-tmc_track_shiny_input_changes <- function(input) {
+track_shiny_input_changes <- function(input) {
   if (shiny::isRunning()) {
     plot_nss <- c("mmrm_plot", "myplot", "chart", "patient_timeline_plot", "therapy_plot", "vitals_plot")
 
