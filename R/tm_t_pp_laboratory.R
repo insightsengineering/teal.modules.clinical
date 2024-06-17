@@ -376,7 +376,6 @@ srv_g_laboratory <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
     patient_id <- reactive(input$patient_id)
 
     # Init
@@ -531,5 +530,6 @@ srv_g_laboratory <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
+    track_shiny_input_changes(input)
   })
 }

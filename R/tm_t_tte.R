@@ -754,7 +754,6 @@ srv_t_tte <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -973,5 +972,6 @@ srv_t_tte <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
+    track_shiny_input_changes(input)
   })
 }

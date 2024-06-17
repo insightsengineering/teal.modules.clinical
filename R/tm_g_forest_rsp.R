@@ -508,7 +508,6 @@ srv_g_forest_rsp <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -733,8 +732,9 @@ srv_g_forest_rsp <- function(id,
 
     plot_r <- reactive(all_q()[["p"]])
 
+    plot_id <- "myplot"
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "myplot",
+      id = plot_id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
@@ -767,5 +767,6 @@ srv_g_forest_rsp <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
+    track_shiny_input_changes(input, plot_id)
   })
 }

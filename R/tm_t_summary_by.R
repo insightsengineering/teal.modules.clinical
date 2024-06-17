@@ -598,7 +598,6 @@ srv_summary_by <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
     vars <- list(arm_var = arm_var, id_var = id_var, summarize_vars = summarize_vars, by_vars = by_vars)
 
     if (!is.null(paramcd)) {
@@ -746,5 +745,6 @@ srv_summary_by <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
+    track_shiny_input_changes(input)
   })
 }

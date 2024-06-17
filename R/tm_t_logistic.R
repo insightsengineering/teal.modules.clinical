@@ -450,7 +450,6 @@ srv_t_logistic <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
     # Observer to update reference and comparison arm input options.
     iv_arco <- arm_ref_comp_observer(
       session,
@@ -726,5 +725,6 @@ srv_t_logistic <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
+    track_shiny_input_changes(input)
   })
 }

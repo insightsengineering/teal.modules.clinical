@@ -947,14 +947,14 @@ set_default_total_label <- function(total_label) {
 # for mocking in tests
 interactive <- NULL
 
-
-track_shiny_input_changes <- function(input) {
+track_shiny_input_changes <- function(input, plot_id = NULL) {
   if (shiny::isRunning()) {
-    plot_nss <- c("mmrm_plot", "myplot", "chart", "patient_timeline_plot", "therapy_plot", "vitals_plot")
+    excluded_inputs <- if (!is.null(plot_id)) {
+      paste(plot_id, c("plot_modal_width", "flex_width"), sep = "-")
+    } else {
+      character()
+    }
 
-    elements <- c("plot_modal_width", "flex_width", "plot_modal_height", "flex_height")
-
-    excluded_inputs <- unlist(lapply(plot_nss, paste, elements, sep = "-"))
     logger::log_shiny_input_changes(
       input,
       level = logger::TRACE,

@@ -339,7 +339,6 @@ srv_g_barchart_simple <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
     rule_dupl <- function(others) {
       function(value) {
         othervals <- lapply(
@@ -535,8 +534,9 @@ srv_g_barchart_simple <- function(id,
     }
 
     # Insert the plot into a plot with settings module from teal.widgets
+    plot_id <- "myplot"
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "myplot",
+      id = plot_id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
@@ -569,6 +569,7 @@ srv_g_barchart_simple <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
+    track_shiny_input_changes(input, plot_id)
   })
 }
 

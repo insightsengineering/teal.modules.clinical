@@ -442,7 +442,6 @@ srv_g_adverse_events <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    track_shiny_input_changes(input)
     patient_id <- reactive(input$patient_id)
 
     # Init
@@ -564,8 +563,9 @@ srv_g_adverse_events <- function(id,
       all_q()[["plot"]]
     })
 
+    plot_id <- "chart"
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "chart",
+      id = plot_id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
@@ -600,5 +600,6 @@ srv_g_adverse_events <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
+    track_shiny_input_changes(input, plot_id)
   })
 }
