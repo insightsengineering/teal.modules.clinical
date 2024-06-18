@@ -947,19 +947,11 @@ set_default_total_label <- function(total_label) {
 # for mocking in tests
 interactive <- NULL
 
-track_shiny_input_changes <- function(input, plot_id = NULL) {
-  if (shiny::isRunning()) {
-    excluded_inputs <- if (!is.null(plot_id)) {
-      paste(plot_id, c("plot_modal_width", "flex_width"), sep = "-")
-    } else {
-      character()
-    }
-
-    logger::log_shiny_input_changes(
-      input,
-      level = logger::TRACE,
-      namespace = "teal.modules.clinical",
-      excluded_inputs = excluded_inputs
-    )
-  }
+track_shiny_input_changes <- function(input) {
+  teal.logger::log_shiny_input_changes(
+    input,
+    level = logger::TRACE,
+    namespace = "teal.modules.clinical",
+    excluded_patterns = "_width$"
+  )
 }
