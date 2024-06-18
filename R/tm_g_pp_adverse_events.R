@@ -563,9 +563,8 @@ srv_g_adverse_events <- function(id,
       all_q()[["plot"]]
     })
 
-    plot_id <- "chart"
     pws <- teal.widgets::plot_with_settings_srv(
-      id = plot_id,
+      id = "chart",
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
@@ -600,6 +599,6 @@ srv_g_adverse_events <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
-    track_shiny_input_changes(input, plot_id)
+    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical", excluded_patterns = "_width$")
   })
 }

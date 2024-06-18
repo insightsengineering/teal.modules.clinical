@@ -296,6 +296,6 @@ srv_t_basic_info <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
-    track_shiny_input_changes(input)
+    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical")
   })
 }
