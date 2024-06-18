@@ -696,6 +696,7 @@ srv_ancova <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical")
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
     iv_arco <- arm_ref_comp_observer(
@@ -974,6 +975,5 @@ srv_ancova <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
-    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical")
   })
 }

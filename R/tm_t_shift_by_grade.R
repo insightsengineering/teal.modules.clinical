@@ -754,6 +754,7 @@ srv_t_shift_by_grade <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical")
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
@@ -896,6 +897,5 @@ srv_t_shift_by_grade <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
-    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical")
   })
 }

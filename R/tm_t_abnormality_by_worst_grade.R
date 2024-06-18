@@ -503,6 +503,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical")
     isolate({
       resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env))
       teal.widgets::updateOptionalSelectInput(
@@ -695,6 +696,5 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
-    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical")
   })
 }

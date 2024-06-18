@@ -180,6 +180,7 @@ srv_t_basic_info <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
     # Init
@@ -296,6 +297,5 @@ srv_t_basic_info <- function(id,
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
-    log_shiny_input_changes(input, level = logger::TRACE, namespace = "teal.modules.clinical")
   })
 }
