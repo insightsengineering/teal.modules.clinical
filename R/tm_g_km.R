@@ -638,7 +638,8 @@ srv_g_km <- function(id,
 
   moduleServer(id, function(input, output, session) {
     log_shiny_input_changes(
-      input, level = logger::TRACE, namespace = "teal.modules.clinical", excluded_patterns = "_width$"
+      input,
+      level = logger::TRACE, namespace = "teal.modules.clinical", excluded_patterns = "_width$"
     )
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
