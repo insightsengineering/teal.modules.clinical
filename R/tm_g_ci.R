@@ -382,10 +382,7 @@ srv_g_ci <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    log_shiny_input_changes(
-      input,
-      level = logger::TRACE, namespace = "teal.modules.clinical", excluded_patterns = "_width$"
-    )
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(x_var = x_var, y_var = y_var, color = color),
       datasets = data,

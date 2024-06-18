@@ -713,10 +713,7 @@ srv_g_patient_timeline <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    log_shiny_input_changes(
-      input,
-      level = logger::TRACE, namespace = "teal.modules.clinical", excluded_patterns = "_width$"
-    )
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
     # Init
