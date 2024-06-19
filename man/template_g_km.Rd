@@ -79,7 +79,7 @@ see \code{\link[survival:coxph]{survival::coxph()}}. Note: there is no equivalen
 probability.}
 
 \item{ylim}{(\code{numeric(2)})\cr vector containing lower and upper limits for the y-axis, respectively.
-If \code{NULL} (default), the default scale range is used.}
+If \code{NULL} (default), the minimum and maximum y-values displayed are used as limits.}
 
 \item{pval_method}{(\code{string})\cr the method used for estimation of p.values; \code{wald} (default) or \code{likelihood}.}
 
