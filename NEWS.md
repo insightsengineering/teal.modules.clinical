@@ -6,6 +6,9 @@
 * Added `teal.logger` functionality for logging changes in shiny inputs in all modules.
 * Introduced `ylim` parameter for `tm_g_km` module that controls width of y-axis.
 
+### Miscellaneous
+* Clarified the documentation specifying whether multiple values can be selected in the `arm_var` argument for each module.
+
 # teal.modules.clinical 0.9.1
 
 ### Enhancements
