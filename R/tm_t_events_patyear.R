@@ -39,10 +39,21 @@ template_events_patyear <- function(dataname,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
+      arm_var = arm_var[[1]],
       drop_arm_levels = drop_arm_levels
     )
   )
+  if (length(arm_var) == 2) {
+    data_list <- add_expr(
+      data_list,
+      prepare_arm_levels(
+        dataname = "anl",
+        parentname = parentname,
+        arm_var = arm_var[[2]],
+        drop_arm_levels = drop_arm_levels
+      )
+    )
+  }
 
   data_list <- add_expr(
     data_list,
@@ -94,9 +105,27 @@ template_events_patyear <- function(dataname,
       expr = expr_basic_table_args %>%
         rtables::split_cols_by(var = arm_var) %>%
         rtables::add_colcounts(),
-      env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
+      env = list(arm_var = arm_var[[1]], expr_basic_table_args = parsed_basic_table_args)
     )
   )
+
+  if (length(arm_var) == 2) {
+    layout_list <- add_expr(
+      layout_list,
+      if (drop_arm_levels) {
+        substitute(
+          expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+          env = list(nested_col = arm_var[[2]])
+        )
+      } else {
+        substitute(
+          expr = rtables::split_cols_by(nested_col),
+          env = list(nested_col = arm_var[[2]])
+        )
+      }
+    )
+  }
+
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
@@ -152,6 +181,11 @@ template_events_patyear <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_patyear
+#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for variable names that can be used as `arm_var`.
+#'   It defines the grouping variable(s) in the results table.
+#'   If there are two elements selected for `arm_var`,
+#'   second variable will be nested under the first variable.
 #' @param events_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the variable with all event counts.
 #'
@@ -253,7 +287,7 @@ tm_t_events_patyear <- function(label,
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname),
@@ -495,7 +529,7 @@ srv_events_patyear <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_events_var, input_aval_var, input_avalu_var),
-        arm_var = input_arm_var
+        arm_var = input_arm_var[[1]]
       )
 
       validate(
