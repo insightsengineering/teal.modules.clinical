@@ -89,6 +89,7 @@ This module produces a table of event rates adjusted for patient-years.
 }
 \examples{
 library(dplyr)
+
 ADSL <- tmc_ex_adsl
 ADAETTE <- tmc_ex_adaette \%>\%
   filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
