@@ -195,11 +195,14 @@ template_events_patyear <- function(dataname,
 #'
 #' @examples
 #' library(dplyr)
+#'
 #' ADSL <- tmc_ex_adsl
 #' ADAETTE <- tmc_ex_adaette %>%
 #'   filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
 #'   mutate(is_event = CNSR == 0) %>%
 #'   mutate(n_events = as.integer(is_event))
+#'
+#' # 1. Basic Example
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -220,6 +223,45 @@ template_events_patyear <- function(dataname,
 #'       arm_var = choices_selected(
 #'         choices = variable_choices(ADSL, c("ARM", "ARMCD")),
 #'         selected = "ARMCD"
+#'       ),
+#'       add_total = TRUE,
+#'       events_var = choices_selected(
+#'         choices = variable_choices(ADAETTE, "n_events"),
+#'         selected = "n_events",
+#'         fixed = TRUE
+#'       ),
+#'       paramcd = choices_selected(
+#'         choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
+#'         selected = "AETTE1"
+#'       )
+#'     )
+#'   )
+#' )
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
+#' }
+#'
+#' # 2. Example with table split on 2 arm_var variables
+#'
+#' app <- init(
+#'   data = cdisc_data(
+#'     ADSL = ADSL,
+#'     ADAETTE = ADAETTE,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADAETTE <- tmc_ex_adaette %>%
+#'         filter(PARAMCD %in% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) %>%
+#'         mutate(is_event = CNSR == 0) %>%
+#'         mutate(n_events = as.integer(is_event))
+#'     "
+#'   ),
+#'   modules = modules(
+#'     tm_t_events_patyear(
+#'       label = "AE Rate Adjusted for Patient-Years At Risk Table",
+#'       dataname = "ADAETTE",
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(ADSL, c("ARM", "ARMCD", "SEX")),
+#'         selected = c("ARM", "SEX")
 #'       ),
 #'       add_total = TRUE,
 #'       events_var = choices_selected(
