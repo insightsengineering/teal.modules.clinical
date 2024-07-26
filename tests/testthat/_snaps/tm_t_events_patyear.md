@@ -66,6 +66,10 @@
       $data
       {
           anl <- adaette
+          anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
+          arm_levels <- levels(anl[["ARM"]])
+          adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+          adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
           anl <- anl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
           arm_levels <- levels(anl[["ARMCD"]])
           adsl <- adsl %>% dplyr::filter(ARMCD %in% arm_levels)
@@ -76,8 +80,9 @@
       
       $layout
       lyt <- rtables::basic_table(title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event", 
-          main_footer = "CI Method: Exact") %>% rtables::split_cols_by(var = "ARMCD") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
+          main_footer = "CI Method: Exact") %>% rtables::split_cols_by(var = "ARM") %>% 
+          rtables::add_colcounts() %>% rtables::split_cols_by("ARMCD", 
+          split_fun = drop_split_levels) %>% rtables::add_overall_col(label = "All Patients") %>% 
           estimate_incidence_rate(vars = "AVAL", n_events = "n_events", 
               control = control_incidence_rate(conf_level = 0.9, conf_type = "exact", 
                   input_time_unit = "month", num_pt_year = 80))

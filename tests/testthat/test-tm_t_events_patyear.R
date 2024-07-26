@@ -36,7 +36,7 @@ testthat::test_that("template_events_patyear generates right expressions with no
   result <- template_events_patyear(
     dataname = "adaette",
     parentname = "adsl",
-    arm_var = "ARMCD",
+    arm_var = c("ARM", "ARMCD"),
     aval_var = "AVAL",
     events_var = "n_events",
     label_paramcd = "Time to first occurrence of any adverse event",

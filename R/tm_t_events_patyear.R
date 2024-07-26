@@ -23,6 +23,8 @@ template_events_patyear <- function(dataname,
                                     control = control_incidence_rate(),
                                     drop_arm_levels = TRUE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+
   # initialize
   y <- list()
   # data

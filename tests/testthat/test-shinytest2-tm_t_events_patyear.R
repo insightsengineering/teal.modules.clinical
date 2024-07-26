@@ -175,3 +175,21 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws va
   )
   app_driver$stop()
 })
+
+testthat::test_that(
+  "e2e - tm_t_events_patyear: Selecting 2 variables as arm_var changes the table and does not throw validation errors.",
+  {
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_events_patyear()
+    table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", c("ARM", "ARMCD"))
+    testthat::expect_false(
+      identical(
+        table_before,
+        app_driver$get_active_module_table_output("patyear_table-table-with-settings")
+      )
+    )
+    app_driver$expect_no_validation_error()
+    app_driver$stop()
+  }
+)
