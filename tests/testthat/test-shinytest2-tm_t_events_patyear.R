@@ -20,7 +20,7 @@ app_driver_tm_t_events_patyear <- function() {
       dataname = "ADAETTE",
       parentname = "ADSL",
       arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
+        choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "SEX")),
         selected = "ARMCD"
       ),
       add_total = TRUE,
@@ -182,7 +182,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", c("ARM", "ARMCD"))
+    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", c("ARM", "SEX"))
     testthat::expect_false(
       identical(
         table_before,
