@@ -23,6 +23,8 @@ template_events_patyear <- function(dataname,
                                     control = control_incidence_rate(),
                                     drop_arm_levels = TRUE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+
   # initialize
   y <- list()
   # data
@@ -39,10 +41,21 @@ template_events_patyear <- function(dataname,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
+      arm_var = arm_var[[1]],
       drop_arm_levels = drop_arm_levels
     )
   )
+  if (length(arm_var) == 2) {
+    data_list <- add_expr(
+      data_list,
+      prepare_arm_levels(
+        dataname = "anl",
+        parentname = parentname,
+        arm_var = arm_var[[2]],
+        drop_arm_levels = drop_arm_levels
+      )
+    )
+  }
 
   data_list <- add_expr(
     data_list,
@@ -94,9 +107,27 @@ template_events_patyear <- function(dataname,
       expr = expr_basic_table_args %>%
         rtables::split_cols_by(var = arm_var) %>%
         rtables::add_colcounts(),
-      env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
+      env = list(arm_var = arm_var[[1]], expr_basic_table_args = parsed_basic_table_args)
     )
   )
+
+  if (length(arm_var) == 2) {
+    layout_list <- add_expr(
+      layout_list,
+      if (drop_arm_levels) {
+        substitute(
+          expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+          env = list(nested_col = arm_var[[2]])
+        )
+      } else {
+        substitute(
+          expr = rtables::split_cols_by(nested_col),
+          env = list(nested_col = arm_var[[2]])
+        )
+      }
+    )
+  }
+
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
@@ -152,6 +183,11 @@ template_events_patyear <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_events_patyear
+#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for variable names that can be used as `arm_var`.
+#'   It defines the grouping variable(s) in the results table.
+#'   If there are two elements selected for `arm_var`,
+#'   second variable will be nested under the first variable.
 #' @param events_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the variable with all event counts.
 #'
@@ -159,11 +195,14 @@ template_events_patyear <- function(dataname,
 #'
 #' @examples
 #' library(dplyr)
+#'
 #' ADSL <- tmc_ex_adsl
 #' ADAETTE <- tmc_ex_adaette %>%
 #'   filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
 #'   mutate(is_event = CNSR == 0) %>%
 #'   mutate(n_events = as.integer(is_event))
+#'
+#' # 1. Basic Example
 #'
 #' app <- init(
 #'   data = cdisc_data(
@@ -184,6 +223,45 @@ template_events_patyear <- function(dataname,
 #'       arm_var = choices_selected(
 #'         choices = variable_choices(ADSL, c("ARM", "ARMCD")),
 #'         selected = "ARMCD"
+#'       ),
+#'       add_total = TRUE,
+#'       events_var = choices_selected(
+#'         choices = variable_choices(ADAETTE, "n_events"),
+#'         selected = "n_events",
+#'         fixed = TRUE
+#'       ),
+#'       paramcd = choices_selected(
+#'         choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
+#'         selected = "AETTE1"
+#'       )
+#'     )
+#'   )
+#' )
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
+#' }
+#'
+#' # 2. Example with table split on 2 arm_var variables
+#'
+#' app <- init(
+#'   data = cdisc_data(
+#'     ADSL = ADSL,
+#'     ADAETTE = ADAETTE,
+#'     code = "
+#'       ADSL <- tmc_ex_adsl
+#'       ADAETTE <- tmc_ex_adaette %>%
+#'         filter(PARAMCD %in% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) %>%
+#'         mutate(is_event = CNSR == 0) %>%
+#'         mutate(n_events = as.integer(is_event))
+#'     "
+#'   ),
+#'   modules = modules(
+#'     tm_t_events_patyear(
+#'       label = "AE Rate Adjusted for Patient-Years At Risk Table",
+#'       dataname = "ADAETTE",
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(ADSL, c("ARM", "ARMCD", "SEX")),
+#'         selected = c("ARM", "SEX")
 #'       ),
 #'       add_total = TRUE,
 #'       events_var = choices_selected(
@@ -253,7 +331,7 @@ tm_t_events_patyear <- function(label,
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname),
@@ -495,7 +573,7 @@ srv_events_patyear <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_events_var, input_aval_var, input_avalu_var),
-        arm_var = input_arm_var
+        arm_var = input_arm_var[[1]]
       )
 
       validate(
