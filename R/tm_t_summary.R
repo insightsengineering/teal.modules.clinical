@@ -179,12 +179,10 @@ template_summary <- function(dataname,
   )
 
   if (!is.null(arm_var_labels)) {
-    if (length(arm_var_labels) > 1) {
-      arm_var_labels <- sapply(
-        seq_along(arm_var_labels),
-        \(x) paste(strrep("  ", x - 1), arm_var_labels[x], sep = "")
-      )
-    }
+    arm_var_labels <- sapply(
+      seq_along(arm_var_labels),
+      \(x) paste(strrep("  ", x - 1), arm_var_labels[x], sep = "")
+    )
     layout_list <- add_expr(
       layout_list,
       substitute(
@@ -545,7 +543,7 @@ srv_summary <- function(id,
 
       if (show_arm_var_labels) {
         arm_vars <- merged$anl_input_r()$columns_source$arm_var
-        arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE])
+        arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
       } else {
         arm_var_labels = NULL
       }
