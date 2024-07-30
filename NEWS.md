@@ -4,10 +4,12 @@
 * Added `teal.logger` functionality for logging changes in shiny inputs in all modules.
 * Introduced `ylim` parameter for `tm_g_km` module that controls width of y-axis.
 * Added functionality to `tm_t_events_patyear` to split columns by multiple (nested) variables via the `arm_var` argument.
+* Added arguments `arm_var_labels` to `template_summary` and `show_arm_var_labels` to `tm_t_summary` to allow user to display arm variable (`arm_var`) labels in table header.
 
 ### Miscellaneous
 * Removed `Show Warnings` modals from modules.
 * Clarified the documentation specifying whether multiple values can be selected in the `arm_var` argument for each module.
+* Began deprecation cycle for the `show_labels` argument of `template_summary` which has no effect on the `tm_t_summary` module.
 
 # teal.modules.clinical 0.9.1
 
