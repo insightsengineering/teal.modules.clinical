@@ -123,7 +123,7 @@ template_events_by_grade <- function(dataname,
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(title = basic_title)
+      module_table = teal.widgets::basic_table_args(show_colcounts = TRUE, title = basic_title)
     )
   )
 
@@ -157,8 +157,7 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = rtables::add_colcounts() %>%
-          summarize_occurrences_by_grade(
+        expr = summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups,
             na_str = na_str
@@ -194,8 +193,7 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = rtables::add_colcounts() %>%
-          summarize_occurrences_by_grade(
+        expr = summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups,
             na_str = na_str

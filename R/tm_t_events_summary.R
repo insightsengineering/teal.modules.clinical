@@ -164,7 +164,7 @@ template_events_summary <- function(anl_name,
   layout_parent_list <- list()
   layout_parent_list <- add_expr(
     layout_parent_list,
-    quote(rtables::basic_table())
+    quote(rtables::basic_table(show_colcounts = TRUE))
   )
 
   layout_parent_list <- add_expr(
@@ -183,11 +183,6 @@ template_events_summary <- function(anl_name,
       )
     )
   }
-
-  layout_parent_list <- add_expr(
-    layout_parent_list,
-    quote(rtables::add_colcounts())
-  )
 
   if (add_total) {
     layout_parent_list <- add_expr(
@@ -240,7 +235,7 @@ template_events_summary <- function(anl_name,
   layout_anl_list <- list()
   layout_anl_list <- add_expr(
     layout_anl_list,
-    quote(rtables::basic_table())
+    quote(rtables::basic_table(show_colcounts = TRUE))
   )
 
   layout_anl_list <- add_expr(
@@ -259,11 +254,6 @@ template_events_summary <- function(anl_name,
       )
     )
   }
-
-  layout_anl_list <- add_expr(
-    layout_anl_list,
-    quote(rtables::add_colcounts())
-  )
 
   if (add_total) {
     layout_anl_list <- add_expr(

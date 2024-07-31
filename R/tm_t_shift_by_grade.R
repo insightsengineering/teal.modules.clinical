@@ -294,7 +294,8 @@ template_shift_by_grade <- function(parentname,
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
-      user_table = basic_table_args
+      user_table = basic_table_args,
+      module_table = teal.widgets::basic_table_args(show_colcounts = TRUE)
     )
   )
 
@@ -307,8 +308,7 @@ template_shift_by_grade <- function(parentname,
           rtables::split_cols_by(
             var = arm_var,
             split_fun = add_overall_level(total_label, first = FALSE)
-          ) %>%
-          rtables::add_colcounts(),
+          ),
         env = list(
           arm_var = arm_var,
           total_label = total_label,
@@ -318,8 +318,7 @@ template_shift_by_grade <- function(parentname,
     } else {
       substitute(
         expr = expr_basic_table_args %>%
-          rtables::split_cols_by(var = arm_var) %>%
-          rtables::add_colcounts(),
+          rtables::split_cols_by(var = arm_var),
         env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     }

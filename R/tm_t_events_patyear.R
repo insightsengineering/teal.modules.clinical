@@ -95,6 +95,7 @@ template_events_patyear <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         title = basic_title,
         main_footer = basic_footer
       )
@@ -105,8 +106,7 @@ template_events_patyear <- function(dataname,
     layout_list,
     substitute(
       expr = expr_basic_table_args %>%
-        rtables::split_cols_by(var = arm_var) %>%
-        rtables::add_colcounts(),
+        rtables::split_cols_by(var = arm_var),
       env = list(arm_var = arm_var[[1]], expr_basic_table_args = parsed_basic_table_args)
     )
   )

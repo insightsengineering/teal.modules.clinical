@@ -159,6 +159,7 @@ template_tte <- function(dataname = "ANL",
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         title = paste("Time-To-Event Table for", paramcd),
         main_footer = if (compare_arm) {
           c(
@@ -207,8 +208,7 @@ template_tte <- function(dataname = "ANL",
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = rtables::add_colcounts() %>%
-        analyze_vars(
+      expr = analyze_vars(
           "is_event",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Patients with event (%)"),

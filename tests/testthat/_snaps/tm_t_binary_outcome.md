@@ -18,9 +18,9 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
           subtitles = "") %>% rtables::split_cols_by(var = "ARMCD", 
-          ref_group = "ARM A") %>% rtables::add_colcounts() %>% estimate_proportion(vars = "is_rsp", 
+          ref_group = "ARM A") %>% estimate_proportion(vars = "is_rsp", 
           conf_level = 0.95, method = "waldcc", table_names = "prop_est") %>% 
           estimate_proportion_diff(vars = "is_rsp", show_labels = "visible", 
               var_labels = "Unstratified Analysis", conf_level = 0.95, 
@@ -56,14 +56,14 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Table of BESRSPI for PR and SD Responders", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for PR and SD Responders", 
           subtitles = "") %>% rtables::split_cols_by(var = "ARM", ref_group = "B: Placebo") %>% 
-          rtables::add_colcounts() %>% estimate_proportion(vars = "is_rsp", 
-          conf_level = 0.95, method = "waldcc", table_names = "prop_est") %>% 
-          estimate_proportion_diff(vars = "is_rsp", show_labels = "visible", 
-              var_labels = "Unstratified Analysis", conf_level = 0.95, 
-              method = "waldcc", table_names = "u_prop_diff") %>% test_proportion_diff(vars = "is_rsp", 
-          method = "schouten", table_names = "u_test_diff") %>% estimate_odds_ratio(vars = "is_rsp", 
+          estimate_proportion(vars = "is_rsp", conf_level = 0.95, method = "waldcc", 
+              table_names = "prop_est") %>% estimate_proportion_diff(vars = "is_rsp", 
+          show_labels = "visible", var_labels = "Unstratified Analysis", 
+          conf_level = 0.95, method = "waldcc", table_names = "u_prop_diff") %>% 
+          test_proportion_diff(vars = "is_rsp", method = "schouten", 
+              table_names = "u_test_diff") %>% estimate_odds_ratio(vars = "is_rsp", 
           conf_level = 0.95, table_names = "u_est_or")
       
       $table
@@ -89,10 +89,10 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
           subtitles = "") %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% estimate_proportion(vars = "is_rsp", 
-          conf_level = 0.95, method = "waldcc", table_names = "prop_est")
+          estimate_proportion(vars = "is_rsp", conf_level = 0.95, method = "waldcc", 
+              table_names = "prop_est")
       
       $table
       {
@@ -121,23 +121,23 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
           subtitles = "Stratified by SEX") %>% rtables::split_cols_by(var = "ARM", 
-          ref_group = "B: Placebo") %>% rtables::add_colcounts() %>% 
-          estimate_proportion(vars = "is_rsp", conf_level = 0.8, method = "jeffreys", 
-              table_names = "prop_est") %>% estimate_proportion_diff(vars = "is_rsp", 
-          show_labels = "visible", var_labels = "Unstratified Analysis", 
-          conf_level = 0.8, method = "ha", table_names = "u_prop_diff") %>% 
-          test_proportion_diff(vars = "is_rsp", method = "chisq", table_names = "u_test_diff") %>% 
-          estimate_odds_ratio(vars = "is_rsp", conf_level = 0.8, table_names = "u_est_or") %>% 
+          ref_group = "B: Placebo") %>% estimate_proportion(vars = "is_rsp", 
+          conf_level = 0.8, method = "jeffreys", table_names = "prop_est") %>% 
           estimate_proportion_diff(vars = "is_rsp", show_labels = "visible", 
-              var_labels = "Stratified Analysis", variables = list(strata = "SEX"), 
-              conf_level = 0.8, method = "cmh", table_names = "s_prop_diff") %>% 
-          test_proportion_diff(vars = "is_rsp", method = "cmh", variables = list(strata = "SEX"), 
-              table_names = "s_test_diff") %>% estimate_odds_ratio(vars = "is_rsp", 
-          variables = list(arm = "ARM", strata = "SEX"), conf_level = 0.8, 
-          table_names = "s_est_or") %>% estimate_multinomial_response(var = "AVALC", 
-          conf_level = 0.8, method = "jeffreys")
+              var_labels = "Unstratified Analysis", conf_level = 0.8, 
+              method = "ha", table_names = "u_prop_diff") %>% test_proportion_diff(vars = "is_rsp", 
+          method = "chisq", table_names = "u_test_diff") %>% estimate_odds_ratio(vars = "is_rsp", 
+          conf_level = 0.8, table_names = "u_est_or") %>% estimate_proportion_diff(vars = "is_rsp", 
+          show_labels = "visible", var_labels = "Stratified Analysis", 
+          variables = list(strata = "SEX"), conf_level = 0.8, method = "cmh", 
+          table_names = "s_prop_diff") %>% test_proportion_diff(vars = "is_rsp", 
+          method = "cmh", variables = list(strata = "SEX"), table_names = "s_test_diff") %>% 
+          estimate_odds_ratio(vars = "is_rsp", variables = list(arm = "ARM", 
+              strata = "SEX"), conf_level = 0.8, table_names = "s_est_or") %>% 
+          estimate_multinomial_response(var = "AVALC", conf_level = 0.8, 
+              method = "jeffreys")
       
       $table
       {
@@ -169,15 +169,14 @@
       groups <- combine_groups(fct = ADSL[["ARMCD"]], ref = "ARM A")
       
       $layout
-      lyt <- rtables::basic_table(title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
           subtitles = "") %>% split_cols_by_groups(var = "ARMCD", groups_list = groups, 
-          ref_group = names(groups)[1]) %>% rtables::add_colcounts() %>% 
-          estimate_proportion(vars = "is_rsp", conf_level = 0.95, method = "waldcc", 
-              table_names = "prop_est") %>% estimate_proportion_diff(vars = "is_rsp", 
-          show_labels = "visible", var_labels = "Unstratified Analysis", 
-          conf_level = 0.95, method = "waldcc", table_names = "u_prop_diff") %>% 
-          test_proportion_diff(vars = "is_rsp", method = "schouten", 
-              table_names = "u_test_diff") %>% estimate_odds_ratio(vars = "is_rsp", 
+          ref_group = names(groups)[1]) %>% estimate_proportion(vars = "is_rsp", 
+          conf_level = 0.95, method = "waldcc", table_names = "prop_est") %>% 
+          estimate_proportion_diff(vars = "is_rsp", show_labels = "visible", 
+              var_labels = "Unstratified Analysis", conf_level = 0.95, 
+              method = "waldcc", table_names = "u_prop_diff") %>% test_proportion_diff(vars = "is_rsp", 
+          method = "schouten", table_names = "u_test_diff") %>% estimate_odds_ratio(vars = "is_rsp", 
           conf_level = 0.95, table_names = "u_est_or") %>% estimate_multinomial_response(var = "AVALC", 
           conf_level = 0.95, method = "waldcc")
       
@@ -204,12 +203,11 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
           subtitles = "") %>% rtables::split_cols_by(var = "ARMCD") %>% 
-          rtables::add_colcounts() %>% estimate_proportion(vars = "is_rsp", 
-          conf_level = 0.95, method = "waldcc", table_names = "prop_est") %>% 
-          estimate_multinomial_response(var = "AVALC", conf_level = 0.95, 
-              method = "waldcc")
+          estimate_proportion(vars = "is_rsp", conf_level = 0.95, method = "waldcc", 
+              table_names = "prop_est") %>% estimate_multinomial_response(var = "AVALC", 
+          conf_level = 0.95, method = "waldcc")
       
       $table
       {
@@ -259,15 +257,14 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
           subtitles = "") %>% rtables::split_cols_by(var = "ARMCD", 
-          ref_group = "ARM A/ARM B") %>% rtables::add_colcounts() %>% 
-          estimate_proportion(vars = "is_rsp", conf_level = 0.95, method = "waldcc", 
-              table_names = "prop_est") %>% estimate_proportion_diff(vars = "is_rsp", 
-          show_labels = "visible", var_labels = "Unstratified Analysis", 
-          conf_level = 0.95, method = "waldcc", table_names = "u_prop_diff") %>% 
-          test_proportion_diff(vars = "is_rsp", method = "schouten", 
-              table_names = "u_test_diff") %>% estimate_odds_ratio(vars = "is_rsp", 
+          ref_group = "ARM A/ARM B") %>% estimate_proportion(vars = "is_rsp", 
+          conf_level = 0.95, method = "waldcc", table_names = "prop_est") %>% 
+          estimate_proportion_diff(vars = "is_rsp", show_labels = "visible", 
+              var_labels = "Unstratified Analysis", conf_level = 0.95, 
+              method = "waldcc", table_names = "u_prop_diff") %>% test_proportion_diff(vars = "is_rsp", 
+          method = "schouten", table_names = "u_test_diff") %>% estimate_odds_ratio(vars = "is_rsp", 
           conf_level = 0.95, table_names = "u_est_or") %>% estimate_multinomial_response(var = "AVALC", 
           conf_level = 0.95, method = "waldcc")
       

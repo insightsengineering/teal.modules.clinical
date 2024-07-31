@@ -110,7 +110,7 @@ template_summary_by <- function(parentname,
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(title = table_title)
+      module_table = teal.widgets::basic_table_args(show_colcounts = TRUE, title = table_title)
     )
   )
 
@@ -144,11 +144,6 @@ template_summary_by <- function(parentname,
       )
     )
   }
-
-  layout_list <- add_expr(
-    layout_list,
-    quote(rtables::add_colcounts())
-  )
 
   env_vars <- list(
     sum_vars = sum_vars,

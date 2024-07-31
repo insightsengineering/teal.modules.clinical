@@ -56,8 +56,8 @@
       $table
       {
           lsmeans_fit_model <- tern.gee::lsmeans(model_fit, 0.95)
-          result_table <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM", 
-              ref_group = model_fit$ref_level) %>% rtables::add_colcounts() %>% 
+          result_table <- rtables::basic_table(show_colcounts = TRUE) %>% 
+              rtables::split_cols_by(var = "ARM", ref_group = model_fit$ref_level) %>% 
               tern.gee::summarize_gee_logistic() %>% rtables::build_table(df = lsmeans_fit_model, 
               alt_counts_df = ANL_ADSL)
           subtitles(result_table) <- NULL
@@ -82,8 +82,8 @@
       $table
       {
           lsmeans_fit_model <- tern.gee::lsmeans(model_fit, 0.95)
-          result_table <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM", 
-              ref_group = model_fit$ref_level) %>% rtables::add_colcounts() %>% 
+          result_table <- rtables::basic_table(show_colcounts = TRUE) %>% 
+              rtables::split_cols_by(var = "ARM", ref_group = model_fit$ref_level) %>% 
               tern.gee::summarize_gee_logistic() %>% rtables::build_table(df = lsmeans_fit_model, 
               alt_counts_df = ANL_ADSL)
           subtitles(result_table) <- NULL
