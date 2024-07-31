@@ -170,3 +170,41 @@
       }
       
 
+# template_summary generates correct expressions when arm variable labels are added
+
+    Code
+      res
+    Output
+      $data
+      {
+          anl <- adrs %>% df_explicit_na(omit_columns = setdiff(names(adrs), 
+              c(c("RACE", "COUNTRY", "AGE"))), na_level = "<Missing>")
+          anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
+          arm_levels <- levels(anl[["ARM"]])
+          adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
+          adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+          anl <- anl %>% dplyr::mutate(SEX = droplevels(SEX))
+          arm_levels <- levels(anl[["SEX"]])
+          adsl <- adsl %>% dplyr::filter(SEX %in% arm_levels)
+          adsl <- adsl %>% dplyr::mutate(SEX = droplevels(SEX))
+          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+      }
+      
+      $layout
+      lyt <- rtables::basic_table(main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
+          rtables::split_cols_by("ARM", split_fun = drop_split_levels) %>% 
+          rtables::split_cols_by("SEX", split_fun = drop_split_levels) %>% 
+          rtables::add_overall_col("All Patients") %>% rtables::add_colcounts() %>% 
+          analyze_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
+              na.rm = FALSE, na_str = "<Missing>", denom = "N_col", 
+              .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", 
+                  "quantiles", "range", "geom_mean", "count_fraction")) %>% 
+          append_topleft(c("Arm", "  Sex", ""))
+      
+      $table
+      {
+          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+          result
+      }
+      
+

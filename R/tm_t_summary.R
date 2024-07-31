@@ -115,10 +115,17 @@ template_summary <- function(dataname,
 
   # Build layout
   split_cols_call <- lapply(arm_var, function(x) {
-    substitute(
-      expr = rtables::split_cols_by(x, split_fun = if (drop_arm_levels) drop_split_levels else NULL),
-      env = list(x = x, drop_arm_levels = drop_arm_levels)
-    )
+    if (drop_arm_levels) {
+      substitute(
+        expr = rtables::split_cols_by(x, split_fun = drop_split_levels),
+        env = list(x = x)
+      )
+    } else {
+      substitute(
+        expr = rtables::split_cols_by(x),
+        env = list(x = x)
+      )
+    }
   })
   layout_list <- Reduce(add_expr, split_cols_call, init = layout_list)
 
