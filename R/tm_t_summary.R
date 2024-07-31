@@ -186,10 +186,6 @@ template_summary <- function(dataname,
   )
 
   if (!is.null(arm_var_labels)) {
-    arm_var_labels <- sapply(
-      seq_along(arm_var_labels),
-      \(x) paste(strrep("  ", x - 1), arm_var_labels[x], sep = "")
-    )
     layout_list <- add_expr(
       layout_list,
       substitute(
