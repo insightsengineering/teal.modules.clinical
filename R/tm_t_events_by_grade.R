@@ -158,10 +158,10 @@ template_events_by_grade <- function(dataname,
       layout_list,
       substitute(
         expr = summarize_occurrences_by_grade(
-            var = grade,
-            grade_groups = grade_groups,
-            na_str = na_str
-          ) %>%
+          var = grade,
+          grade_groups = grade_groups,
+          na_str = na_str
+        ) %>%
           rtables::split_rows_by(
             term_var,
             child_labels = "visible",
@@ -194,10 +194,10 @@ template_events_by_grade <- function(dataname,
       layout_list,
       substitute(
         expr = summarize_occurrences_by_grade(
-            var = grade,
-            grade_groups = grade_groups,
-            na_str = na_str
-          ) %>%
+          var = grade,
+          grade_groups = grade_groups,
+          na_str = na_str
+        ) %>%
           rtables::split_rows_by(
             hlt,
             child_labels = "visible",

@@ -209,11 +209,11 @@ template_tte <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = analyze_vars(
-          "is_event",
-          .stats = "count_fraction",
-          .labels = c(count_fraction = "Patients with event (%)"),
-          na_str = na_str
-        ) %>%
+        "is_event",
+        .stats = "count_fraction",
+        .labels = c(count_fraction = "Patients with event (%)"),
+        na_str = na_str
+      ) %>%
         rtables::split_rows_by(
           "EVNT1",
           split_label = "Earliest contributing event",
