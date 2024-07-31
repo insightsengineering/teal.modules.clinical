@@ -548,12 +548,12 @@ srv_summary <- function(id,
       summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
       var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
 
+      arm_var_labels <- NULL
       if (show_arm_var_labels) {
         arm_vars <- merged$anl_input_r()$columns_source$arm_var
         arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
-      } else {
-        arm_var_labels = NULL
       }
+
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
