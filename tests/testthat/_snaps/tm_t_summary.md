@@ -199,7 +199,7 @@
               na.rm = FALSE, na_str = "<Missing>", denom = "N_col", 
               .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", 
                   "quantiles", "range", "geom_mean", "count_fraction")) %>% 
-          append_topleft(c("Arm", "  Sex", ""))
+          append_topleft(c("Arm", "Sex", ""))
       
       $table
       {
