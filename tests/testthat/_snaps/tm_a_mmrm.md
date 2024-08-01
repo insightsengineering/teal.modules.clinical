@@ -55,8 +55,8 @@
       res
     Output
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARMCD", 
-          ref_group = "ARM A") %>% rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARMCD", 
+          ref_group = "ARM A") %>% rtables::split_rows_by("AVISIT") %>% 
           append_varlabels(ANL, "AVISIT") %>% tern.mmrm::summarize_lsmeans(show_relative = "increase") %>% 
           rtables::append_topleft(paste0("  ", "ALBUMIN"))
       
@@ -74,7 +74,7 @@
       res
     Output
       $layout
-      lyt <- rtables::basic_table() %>% rtables::add_overall_col("All Patients") %>% 
+      lyt <- rtables::basic_table(show_colcounts = FALSE) %>% rtables::add_overall_col("All Patients") %>% 
           rtables::split_rows_by("AVISIT") %>% tern.mmrm::summarize_lsmeans(arms = FALSE) %>% 
           rtables::append_topleft(paste0("  ", "ALBUMIN"))
       

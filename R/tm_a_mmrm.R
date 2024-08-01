@@ -178,7 +178,10 @@ template_mmrm_tables <- function(parentname,
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
 
-  all_basic_table_args <- teal.widgets::resolve_basic_table_args(basic_table_args)
+  all_basic_table_args <- teal.widgets::resolve_basic_table_args(
+    basic_table_args,
+    module_table = teal.widgets::basic_table_args(show_colcounts = !is.null(arm_var))
+  )
 
   # Build layout.
   layout_list <- list()
@@ -202,8 +205,7 @@ template_mmrm_tables <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = rtables::add_colcounts() %>%
-            rtables::split_rows_by(visit_var) %>%
+          expr = rtables::split_rows_by(visit_var) %>%
             append_varlabels(dataname, visit_var) %>%
             tern.mmrm::summarize_lsmeans(
               .stats = c(
@@ -227,8 +229,7 @@ template_mmrm_tables <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = rtables::add_colcounts() %>%
-            rtables::split_rows_by(visit_var) %>%
+          expr = rtables::split_rows_by(visit_var) %>%
             append_varlabels(dataname, visit_var) %>%
             tern.mmrm::summarize_lsmeans(show_relative = show_relative) %>%
             rtables::append_topleft(paste0("  ", paramcd)),

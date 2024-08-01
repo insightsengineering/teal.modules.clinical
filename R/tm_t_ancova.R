@@ -167,7 +167,7 @@ template_ancova <- function(dataname = "ANL",
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(title = table_title)
+      module_table = teal.widgets::basic_table_args(show_colcounts = TRUE, title = table_title)
     )
   )
 
@@ -182,7 +182,6 @@ template_ancova <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = rtables::split_cols_by(var = arm_var, ref_group = ref_group) %>%
-        rtables::add_colcounts() %>%
         rtables::split_rows_by(
           visit_var,
           split_fun = split_fun,

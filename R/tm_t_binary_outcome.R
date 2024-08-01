@@ -127,6 +127,7 @@ template_binary_outcome <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         title = table_title,
         subtitles = subtitle
       )
@@ -168,13 +169,12 @@ template_binary_outcome <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      rtables::add_colcounts() %>%
-        estimate_proportion(
-          vars = "is_rsp",
-          conf_level = conf_level,
-          method = method,
-          table_names = "prop_est"
-        ),
+      estimate_proportion(
+        vars = "is_rsp",
+        conf_level = conf_level,
+        method = method,
+        table_names = "prop_est"
+      ),
       env = list(
         conf_level = control$global$conf_level,
         method = control$global$method

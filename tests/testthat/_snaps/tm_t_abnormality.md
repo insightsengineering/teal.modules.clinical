@@ -24,10 +24,11 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "my_title", main_footer = "Variables without observed abnormalities are excluded.") %>% 
-          rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
-          rtables::split_rows_by("AVISIT", split_label = teal.data::col_labels(adlb, 
-              fill = FALSE)[["AVISIT"]], label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "my_title", 
+          main_footer = "Variables without observed abnormalities are excluded.") %>% 
+          rtables::split_cols_by(var = "ARM") %>% rtables::split_rows_by("AVISIT", 
+          split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
+          label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
           rtables::split_rows_by("PARAM", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["PARAM"]], label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
           count_abnormal(var = "ANRIND", abnormal = list(low = c("LOW", 
@@ -67,9 +68,10 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "my_title", main_footer = "Variables without observed abnormalities are excluded.") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "my_title", 
+          main_footer = "Variables without observed abnormalities are excluded.") %>% 
           rtables::split_cols_by(var = "ARM", split_fun = add_overall_level("All Patients", 
-              first = FALSE)) %>% rtables::add_colcounts() %>% rtables::split_rows_by("AVISIT", 
+              first = FALSE)) %>% rtables::split_rows_by("AVISIT", 
           split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
           label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
           rtables::split_rows_by("PARAMCD", split_label = teal.data::col_labels(adlb, 
@@ -113,10 +115,11 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "my_title", main_footer = "Variables without observed abnormalities are excluded.") %>% 
-          rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
-          rtables::split_rows_by("AVISIT", split_label = teal.data::col_labels(adlb, 
-              fill = FALSE)[["AVISIT"]], label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "my_title", 
+          main_footer = "Variables without observed abnormalities are excluded.") %>% 
+          rtables::split_cols_by(var = "ARM") %>% rtables::split_rows_by("AVISIT", 
+          split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
+          label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
           rtables::split_rows_by("PARAM", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["PARAM"]], label_pos = "topleft", split_fun = trim_levels_to_map(map = map)) %>% 
           count_abnormal(var = "ANRIND", abnormal = list(low = c("LOW", 

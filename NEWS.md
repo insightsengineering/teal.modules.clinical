@@ -8,6 +8,7 @@
 ### Miscellaneous
 * Removed `Show Warnings` modals from modules.
 * Clarified the documentation specifying whether multiple values can be selected in the `arm_var` argument for each module.
+* Replaced use of the `rtables::add_colcounts()` function with the `show_colcounts` argument to `basic_table()`.
 
 # teal.modules.clinical 0.9.1
 

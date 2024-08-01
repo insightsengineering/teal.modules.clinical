@@ -20,11 +20,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
-              .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
+          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
+              nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
@@ -70,11 +69,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
-              .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
+          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
+              nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           rtables::split_rows_by("ATC2", child_labels = "visible", 
@@ -124,11 +122,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
-              .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
+          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
+              nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           rtables::split_rows_by("ATC2", child_labels = "visible", 
@@ -181,11 +178,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
-              .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
+          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
+              nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           rtables::split_rows_by("ATC2", child_labels = "visible", 
@@ -242,11 +238,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
-              .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
+          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
+              nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
           .indent_mods = -1L) %>% append_varlabels(adcm, "CMDECOD", 
           indent = 0L)
       
@@ -288,10 +283,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% summarize_num_patients(var = "USUBJID", 
-          count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-              nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
+          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
+              .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
+                  nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
           summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 

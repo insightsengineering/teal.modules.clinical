@@ -142,7 +142,7 @@ template_events <- function(dataname,
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(title = basic_title)
+      module_table = teal.widgets::basic_table_args(show_colcounts = TRUE, title = basic_title)
     )
   )
 
@@ -170,11 +170,6 @@ template_events <- function(dataname,
       }
     )
   }
-
-  layout_list <- add_expr(
-    layout_list,
-    quote(rtables::add_colcounts())
-  )
 
   if (add_total) {
     layout_list <- add_expr(
