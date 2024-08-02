@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1.9015</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,17 +24,6 @@
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
 <li class="nav-item dropdown">
-<!-- start dropdown for versions --> <li class="nav-item dropdown">
-        <a href="#" class="nav-link dropdown-toggle"
-          data-bs-toggle="dropdown" role="button"
-          aria-expanded="false" aria-haspopup="true"
-          id="dropdown-versions">Versions</a> <div class="dropdown-menu" aria-labelledby="dropdown-versions"> <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.16">v0.8.16</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.15">v0.8.15</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.8.14">v0.8.14</a>
-<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a> </div></li>
-<!-- end dropdown for versions -->
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-reports" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Reports</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports"><li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
     <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
@@ -66,10 +55,11 @@
 <span>  <span class="va">parentname</span>,</span>
 <span>  <span class="va">arm_var</span>,</span>
 <span>  <span class="va">sum_vars</span>,</span>
-<span>  show_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"visible"</span>, <span class="st">"hidden"</span><span class="op">)</span>,</span>
+<span>  show_labels <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  add_total <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  total_label <span class="op">=</span> <span class="fu"><a href="default_total_label.html">default_total_label</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  var_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  arm_var_labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  na_level <span class="op">=</span> <span class="fu">default_na_str</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  numeric_stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean_sd"</span>, <span class="st">"mean_ci"</span>, <span class="st">"median"</span>, <span class="st">"median_ci"</span>, <span class="st">"quantiles"</span>,</span>
@@ -101,8 +91,7 @@
 
 
 <dt id="arg-show-labels">show_labels<a class="anchor" aria-label="anchor" href="#arg-show-labels"></a></dt>
-<dd><p>(<code>character</code>)<br> defines whether variable labels should be displayed. Options are
-<code>"default"</code>, <code>"visible"</code>, and <code>"hidden"</code>.</p></dd>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a></p></dd>
 
 
 <dt id="arg-add-total">add_total<a class="anchor" aria-label="anchor" href="#arg-add-total"></a></dt>
@@ -117,6 +106,11 @@ apply in all modules, run <code>set_default_total_label("new_default")</code>.</
 
 <dt id="arg-var-labels">var_labels<a class="anchor" aria-label="anchor" href="#arg-var-labels"></a></dt>
 <dd><p>(named <code>character</code>) optional<br> variable labels for relabeling the analysis variables.</p></dd>
+
+
+<dt id="arg-arm-var-labels">arm_var_labels<a class="anchor" aria-label="anchor" href="#arg-arm-var-labels"></a></dt>
+<dd><p>(<code>character</code> or <code>NULL</code>)<br> vector of column variable labels to display, of the same length as
+<code>arm_var</code>. If <code>NULL</code>, no labels will be displayed.</p></dd>
 
 
 <dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
