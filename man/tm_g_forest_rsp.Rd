@@ -16,6 +16,8 @@ tm_g_forest_rsp(
     "AVALC"), "AVALC", fixed = TRUE),
   subgroup_var,
   strata_var,
+  stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
+  riskdiff = NULL,
   fixed_symbol_size = TRUE,
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
@@ -58,6 +60,21 @@ all available choices and preselected option for variable names that can be used
 
 \item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
 the variables for stratified analysis.}
+
+\item{stats}{(\code{character})\cr the names of statistics to be reported among:
+\itemize{
+\item \code{n}: Total number of observations per group.
+\item \code{n_rsp}: Number of responders per group.
+\item \code{prop}: Proportion of responders.
+\item \code{n_tot}: Total number of observations.
+\item \code{or}: Odds ratio.
+\item \code{ci} : Confidence interval of odds ratio.
+\item \code{pval}: p-value of the effect.
+Note, the statistics \code{n_tot}, \code{or}, and \code{ci} are required.
+}}
+
+\item{riskdiff}{(\code{list})\cr if a risk (proportion) difference column should be added, a list of settings to apply
+within the column. See \code{\link[=control_riskdiff]{control_riskdiff()}} for details. If \code{NULL}, no risk difference column will be added.}
 
 \item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}

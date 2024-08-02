@@ -18,6 +18,8 @@ tm_g_forest_tte(
     "AVAL"), "AVAL", fixed = TRUE),
   cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
     "CNSR"), "CNSR", fixed = TRUE),
+  stats = c("n_tot_events", "n_events", "median", "hr", "ci"),
+  riskdiff = NULL,
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
   time_unit_var =
@@ -64,6 +66,23 @@ all available choices and pre-selected option for the analysis variable.}
 
 \item{cnsr_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the censoring variable.}
+
+\item{stats}{(\code{character})\cr the names of statistics to be reported among:
+\itemize{
+\item \code{n_tot_events}: Total number of events per group.
+\item \code{n_events}: Number of events per group.
+\item \code{n_tot}: Total number of observations per group.
+\item \code{n}: Number of observations per group.
+\item \code{median}: Median survival time.
+\item \code{hr}: Hazard ratio.
+\item \code{ci}: Confidence interval of hazard ratio.
+\item \code{pval}: p-value of the effect.
+Note, one of the statistics \code{n_tot} and \code{n_tot_events}, as well as both \code{hr} and \code{ci}
+are required.
+}}
+
+\item{riskdiff}{(\code{list})\cr if a risk (proportion) difference column should be added, a list of settings to apply
+within the column. See \code{\link[=control_riskdiff]{control_riskdiff()}} for details. If \code{NULL}, no risk difference column will be added.}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the confidence level, each within range of (0, 1).}

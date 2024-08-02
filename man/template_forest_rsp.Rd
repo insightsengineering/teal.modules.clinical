@@ -15,6 +15,8 @@ template_forest_rsp(
   responders = c("CR", "PR"),
   subgroup_var,
   strata_var = NULL,
+  stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
+  riskdiff = NULL,
   conf_level = 0.95,
   col_symbol_size = NULL,
   rel_width_forest = 0.25,
@@ -42,6 +44,21 @@ template_forest_rsp(
 \item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
+
+\item{stats}{(\code{character})\cr the names of statistics to be reported among:
+\itemize{
+\item \code{n}: Total number of observations per group.
+\item \code{n_rsp}: Number of responders per group.
+\item \code{prop}: Proportion of responders.
+\item \code{n_tot}: Total number of observations.
+\item \code{or}: Odds ratio.
+\item \code{ci} : Confidence interval of odds ratio.
+\item \code{pval}: p-value of the effect.
+Note, the statistics \code{n_tot}, \code{or}, and \code{ci} are required.
+}}
+
+\item{riskdiff}{(\code{list})\cr if a risk (proportion) difference column should be added, a list of settings to apply
+within the column. See \code{\link[=control_riskdiff]{control_riskdiff()}} for details. If \code{NULL}, no risk difference column will be added.}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
