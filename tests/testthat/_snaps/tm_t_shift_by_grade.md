@@ -38,8 +38,8 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL") %>% 
-          rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
+      lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL", 
+          show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
           rtables::split_rows_by(var = "PARAMCD", split_fun = split_fun, 
               label_pos = "topleft", split_label = teal.data::col_labels(anl, 
                   fill = FALSE)[["PARAMCD"]]) %>% rtables::split_rows_by("AVISIT", 
@@ -99,8 +99,8 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL") %>% 
-          rtables::split_cols_by(var = "ARM") %>% rtables::add_colcounts() %>% 
+      lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL", 
+          show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
           rtables::split_rows_by(var = "PARAMCD", split_fun = split_fun, 
               label_pos = "topleft", split_label = teal.data::col_labels(anl, 
                   fill = FALSE)[["PARAMCD"]]) %>% rtables::split_rows_by("AVISIT", 

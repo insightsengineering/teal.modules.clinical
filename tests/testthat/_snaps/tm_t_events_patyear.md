@@ -15,12 +15,11 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event", 
           main_footer = "CI Method: Normal (rate)") %>% rtables::split_cols_by(var = "ARMCD") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
-          estimate_incidence_rate(vars = "AVAL", n_events = "n_events", 
-              control = control_incidence_rate(conf_level = 0.95, conf_type = "normal", 
-                  input_time_unit = "year", num_pt_year = 100))
+          rtables::add_overall_col(label = "All Patients") %>% estimate_incidence_rate(vars = "AVAL", 
+          n_events = "n_events", control = control_incidence_rate(conf_level = 0.95, 
+              conf_type = "normal", input_time_unit = "year", num_pt_year = 100))
       
       $table
       {
@@ -45,11 +44,11 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event", 
           main_footer = "CI Method: Normal (rate)") %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% estimate_incidence_rate(vars = "AVAL", 
-          n_events = "n_events", control = control_incidence_rate(conf_level = 0.95, 
-              conf_type = "normal", input_time_unit = "year", num_pt_year = 100))
+          estimate_incidence_rate(vars = "AVAL", n_events = "n_events", 
+              control = control_incidence_rate(conf_level = 0.95, conf_type = "normal", 
+                  input_time_unit = "year", num_pt_year = 100))
       
       $table
       {
@@ -79,13 +78,12 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Rates Adjusted for Patient-Years by Time to First Occurrence of any Adverse Event", 
           main_footer = "CI Method: Exact") %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::split_cols_by("SEX", 
-          split_fun = drop_split_levels) %>% rtables::add_overall_col(label = "All Patients") %>% 
-          estimate_incidence_rate(vars = "AVAL", n_events = "n_events", 
-              control = control_incidence_rate(conf_level = 0.9, conf_type = "exact", 
-                  input_time_unit = "month", num_pt_year = 80))
+          rtables::split_cols_by("SEX", split_fun = drop_split_levels) %>% 
+          rtables::add_overall_col(label = "All Patients") %>% estimate_incidence_rate(vars = "AVAL", 
+          n_events = "n_events", control = control_incidence_rate(conf_level = 0.9, 
+              conf_type = "exact", input_time_unit = "month", num_pt_year = 80))
       
       $table
       {

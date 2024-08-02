@@ -29,11 +29,10 @@
       }
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARMCD") %>% 
-          rtables::add_colcounts() %>% rtables::split_rows_by("PARAMCD", 
-          label_pos = "topleft", split_label = obj_label(anl[["PARAMCD"]])) %>% 
-          summarize_num_patients(var = "USUBJID", required = "GRADE_ANL", 
-              .stats = "unique_count") %>% rtables::split_rows_by("GRADE_DIR", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARMCD") %>% 
+          rtables::split_rows_by("PARAMCD", label_pos = "topleft", 
+              split_label = obj_label(anl[["PARAMCD"]])) %>% summarize_num_patients(var = "USUBJID", 
+          required = "GRADE_ANL", .stats = "unique_count") %>% rtables::split_rows_by("GRADE_DIR", 
           label_pos = "topleft", split_fun = trim_levels_to_map(map = map), 
           split_label = obj_label(anl$GRADE_DIR)) %>% count_abnormal_by_worst_grade(var = "GRADE_ANL", 
           variables = list(id = "USUBJID", param = "PARAMCD", grade_dir = "GRADE_DIR"), 
@@ -77,11 +76,10 @@
       }
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARMCD") %>% 
-          rtables::add_colcounts() %>% rtables::split_rows_by("myPARAMCD", 
-          label_pos = "topleft", split_label = obj_label(anl[["myPARAMCD"]])) %>% 
-          summarize_num_patients(var = "USUBJID", required = "GRADE_ANL", 
-              .stats = "unique_count") %>% rtables::split_rows_by("GRADE_DIR", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARMCD") %>% 
+          rtables::split_rows_by("myPARAMCD", label_pos = "topleft", 
+              split_label = obj_label(anl[["myPARAMCD"]])) %>% summarize_num_patients(var = "USUBJID", 
+          required = "GRADE_ANL", .stats = "unique_count") %>% rtables::split_rows_by("GRADE_DIR", 
           label_pos = "topleft", split_fun = trim_levels_to_map(map = map), 
           split_label = obj_label(anl$GRADE_DIR)) %>% count_abnormal_by_worst_grade(var = "GRADE_ANL", 
           variables = list(id = "USUBJID", param = "myPARAMCD", grade_dir = "GRADE_DIR"), 

@@ -101,6 +101,7 @@ template_summary <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         main_footer =
           "n represents the number of unique subject IDs such that the variable has non-NA values."
       )
@@ -138,10 +139,6 @@ template_summary <- function(dataname,
       )
     )
   }
-  layout_list <- add_expr(
-    layout_list,
-    quote(rtables::add_colcounts())
-  )
 
   env_sum_vars <- list(
     sum_vars = sum_vars,

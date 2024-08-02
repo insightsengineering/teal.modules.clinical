@@ -89,6 +89,7 @@ template_exposure <- function(parentname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         main_footer = paste0("* Patient time is the sum of ", paramcd_label)
       )
     )
@@ -124,11 +125,6 @@ template_exposure <- function(parentname,
       )
     }
   }
-
-  layout_list <- add_expr(
-    layout_list,
-    quote(rtables::add_colcounts())
-  )
 
   layout_list <- add_expr(
     layout_list,
