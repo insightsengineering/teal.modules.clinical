@@ -4,6 +4,17 @@
 #'
 #' @inheritParams template_arguments
 #' @inheritParams template_forest_rsp
+#' @param stats (`character`)\cr the names of statistics to be reported among:
+#'   * `n_tot_events`: Total number of events per group.
+#'   * `n_events`: Number of events per group.
+#'   * `n_tot`: Total number of observations per group.
+#'   * `n`: Number of observations per group.
+#'   * `median`: Median survival time.
+#'   * `hr`: Hazard ratio.
+#'   * `ci`: Confidence interval of hazard ratio.
+#'   * `pval`: p-value of the effect.
+#'   Note, one of the statistics `n_tot` and `n_tot_events`, as well as both `hr` and `ci`
+#'   are required.
 #'
 #' @inherit template_arguments return
 #'
@@ -20,6 +31,8 @@ template_forest_tte <- function(dataname = "ANL",
                                 cnsr_var = "CNSR",
                                 subgroup_var,
                                 strata_var = NULL,
+                                stats = c("n_tot_events", "n_events", "median", "hr", "ci"),
+                                riskdiff = NULL,
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 time_unit_var = "AVALU",
@@ -30,6 +43,10 @@ template_forest_tte <- function(dataname = "ANL",
   checkmate::assert_string(arm_var)
   checkmate::assert_string(obj_var_name)
   checkmate::assert_character(subgroup_var, null.ok = TRUE)
+  checkmate::assert_character(stats, min.len = 3)
+  checkmate::assert_true(any(c("n_tot", "n_tot_events") %in% stats))
+  checkmate::assert_true(all(c("hr", "ci") %in% stats))
+  checkmate::assert_list(riskdiff, null.ok = TRUE)
   checkmate::assert_number(rel_width_forest, lower = 0, upper = 1)
   checkmate::assert_number(font_size)
 
@@ -147,11 +164,12 @@ template_forest_tte <- function(dataname = "ANL",
       result <- rtables::basic_table() %>%
         tabulate_survival_subgroups(
           df,
-          vars = c("n_tot", "n_tot_events", "n", "n_events", "median", "hr", "ci"),
-          time_unit = as.character(anl$time_unit_var[1])
+          vars = stats,
+          time_unit = as.character(anl$time_unit_var[1]),
+          riskdiff = riskdiff
         )
     },
-    env = list(time_unit_var = as.name(time_unit_var))
+    env = list(stats = stats, time_unit_var = as.name(time_unit_var), riskdiff = riskdiff)
   )
 
   all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
@@ -302,6 +320,8 @@ tm_g_forest_tte <- function(label,
                               teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
                               fixed = TRUE
                             ),
+                            stats = c("n_tot_events", "n_events", "median", "hr", "ci"),
+                            riskdiff = NULL,
                             conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             time_unit_var = teal.transform::choices_selected(
                               teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
@@ -327,6 +347,10 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(cnsr_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(time_unit_var, "choices_selected")
+  checkmate::assert_character(stats, min.len = 3)
+  checkmate::assert_true(any(c("n_tot", "n_tot_events") %in% stats))
+  checkmate::assert_true(all(c("hr", "ci") %in% stats))
+  checkmate::assert_list(riskdiff, null.ok = TRUE)
   checkmate::assert_flag(fixed_symbol_size)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -362,6 +386,8 @@ tm_g_forest_tte <- function(label,
         dataname = dataname,
         arm_ref_comp = arm_ref_comp,
         parentname = parentname,
+        stats = stats,
+        riskdiff = riskdiff,
         plot_height = plot_height,
         plot_width = plot_width,
         ggplot2_args = ggplot2_args
@@ -493,6 +519,8 @@ srv_g_forest_tte <- function(id,
                              aval_var,
                              cnsr_var,
                              time_unit_var,
+                             stats,
+                             riskdiff,
                              plot_height,
                              plot_width,
                              ggplot2_args) {
@@ -645,6 +673,8 @@ srv_g_forest_tte <- function(id,
         cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
         subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
         strata_var = if (length(strata_var) != 0) strata_var else NULL,
+        stats = stats,
+        riskdiff = riskdiff,
         conf_level = as.numeric(input$conf_level),
         col_symbol_size = if (!input$fixed_symbol_size) 1,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
