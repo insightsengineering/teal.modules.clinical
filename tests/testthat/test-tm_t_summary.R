@@ -4,7 +4,6 @@ testthat::test_that("template_summary generates correct expressions", {
     parentname = "adsl",
     arm_var = "ARM",
     sum_vars = c("RACE", "COUNTRY", "AGE"),
-    show_labels = "visible",
     add_total = FALSE,
     var_labels = character(),
     na.rm = FALSE,
@@ -22,7 +21,6 @@ testthat::test_that("template_summary can generate customized table", {
     parentname = "adsl",
     arm_var = "ARMCD",
     sum_vars = "RACE",
-    show_labels = "visible",
     add_total = TRUE,
     var_labels = c(RACE = "Race"),
     na.rm = TRUE,
@@ -40,7 +38,6 @@ testthat::test_that("template_summary generates correct expressions for multiple
     parentname = "adsl",
     arm_var = c("ARM", "STRATA1"),
     sum_vars = c("RACE", "COUNTRY", "AGE"),
-    show_labels = "visible",
     add_total = FALSE,
     var_labels = character(),
     na.rm = FALSE,
@@ -60,7 +57,6 @@ testthat::test_that(
       parentname = "adsl",
       arm_var = c("ARM", "STRATA1"),
       sum_vars = c("RACE", "COUNTRY", "AGE"),
-      show_labels = "visible",
       add_total = TRUE,
       var_labels = character(),
       na.rm = FALSE,
@@ -79,13 +75,25 @@ testthat::test_that("template_summary generates correct expressions for customiz
     parentname = "adsl",
     arm_var = c("ARM", "STRATA1"),
     sum_vars = c("RACE", "COUNTRY", "AGE"),
-    show_labels = "visible",
     add_total = FALSE,
     var_labels = character(),
     na.rm = FALSE,
     numeric_stats = c("n"),
     denominator = "N",
     drop_arm_levels = TRUE
+  )
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
+})
+
+testthat::test_that("template_summary generates correct expressions when arm variable labels are added", {
+  result <- template_summary(
+    dataname = "adrs",
+    parentname = "adsl",
+    arm_var = c("ARM", "SEX"),
+    sum_vars = c("RACE", "COUNTRY", "AGE"),
+    arm_var_labels = c("Arm", "Sex")
   )
 
   res <- testthat::expect_silent(result)

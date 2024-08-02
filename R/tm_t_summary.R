@@ -3,8 +3,9 @@
 #' Creates a valid expression to generate a table to summarize variables.
 #'
 #' @inheritParams template_arguments
-#' @param show_labels (`character`)\cr defines whether variable labels should be displayed. Options are
-#'   `"default"`, `"visible"`, and `"hidden"`.
+#' @param show_labels `r lifecycle::badge("deprecated")`
+#' @param arm_var_labels (`character` or `NULL`)\cr vector of column variable labels to display, of the same length as
+#'   `arm_var`. If `NULL`, no labels will be displayed.
 #'
 #' @inherit template_arguments return
 #'
@@ -15,10 +16,11 @@ template_summary <- function(dataname,
                              parentname,
                              arm_var,
                              sum_vars,
-                             show_labels = c("default", "visible", "hidden"),
+                             show_labels = lifecycle::deprecated(),
                              add_total = TRUE,
                              total_label = default_total_label(),
                              var_labels = character(),
+                             arm_var_labels = NULL,
                              na.rm = FALSE, # nolint: object_name.
                              na_level = default_na_str(),
                              numeric_stats = c(
@@ -27,16 +29,25 @@ template_summary <- function(dataname,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
+  if (lifecycle::is_present(show_labels)) {
+    warning(
+      "The `show_labels` argument of `template_summary` is deprecated as of teal.modules.clinical 0.9.1.9013 ",
+      "as it is has no effect on the module.",
+      call. = FALSE
+    )
+  }
+
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   checkmate::assert_character(sum_vars)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_character(var_labels)
+  checkmate::assert_character(arm_var_labels, len = length(arm_var), null.ok = TRUE)
   checkmate::assert_flag(na.rm)
   checkmate::assert_string(na_level)
   checkmate::assert_flag(drop_arm_levels)
-  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
     numeric_stats,
@@ -44,7 +55,6 @@ template_summary <- function(dataname,
   )
 
   denominator <- match.arg(denominator)
-  show_labels <- match.arg(show_labels)
 
   y <- list()
 
@@ -133,7 +143,6 @@ template_summary <- function(dataname,
   env_sum_vars <- list(
     sum_vars = sum_vars,
     sum_var_labels = var_labels[sum_vars],
-    show_labels = show_labels,
     na.rm = na.rm,
     na_level = na_level,
     denom = ifelse(denominator == "n", "n", "N_col"),
@@ -150,7 +159,7 @@ template_summary <- function(dataname,
         expr = analyze_vars(
           vars = sum_vars,
           var_labels = sum_var_labels,
-          show_labels = show_labels,
+          show_labels = "visible",
           na.rm = na.rm,
           na_str = na_level,
           denom = denom,
@@ -162,7 +171,7 @@ template_summary <- function(dataname,
       substitute(
         expr = analyze_vars(
           vars = sum_vars,
-          show_labels = show_labels,
+          show_labels = "visible",
           na.rm = na.rm,
           na_str = na_level,
           denom = denom,
@@ -172,6 +181,16 @@ template_summary <- function(dataname,
       )
     }
   )
+
+  if (!is.null(arm_var_labels)) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = append_topleft(arm_var_labels),
+        env = list(arm_var_labels = c(arm_var_labels, ""))
+      )
+    )
+  }
 
   y$layout <- substitute(
     expr = lyt <- layout_pipe,
@@ -200,6 +219,7 @@ template_summary <- function(dataname,
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
+#' @param show_arm_var_labels (`flag`)\cr whether arm variable label(s) should be displayed. Defaults to `TRUE`.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -246,6 +266,7 @@ tm_t_summary <- function(label,
                          summarize_vars,
                          add_total = TRUE,
                          total_label = default_total_label(),
+                         show_arm_var_labels = TRUE,
                          useNA = c("ifany", "no"), # nolint: object_name.
                          na_level = default_na_str(),
                          numeric_stats = c(
@@ -264,15 +285,16 @@ tm_t_summary <- function(label,
   checkmate::assert_class(summarize_vars, "choices_selected")
   checkmate::assert_string(na_level)
   checkmate::assert_character(numeric_stats, min.len = 1)
-  useNA <- match.arg(useNA) # nolint: object_name.
-  denominator <- match.arg(denominator)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  checkmate::assertFlag(add_total)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(show_arm_var_labels)
   checkmate::assert_string(total_label)
 
+  useNA <- match.arg(useNA) # nolint: object_name.
+  denominator <- match.arg(denominator)
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
   args <- as.list(environment())
@@ -293,6 +315,7 @@ tm_t_summary <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        show_arm_var_labels = show_arm_var_labels,
         total_label = total_label,
         na_level = na_level,
         basic_table_args = basic_table_args
@@ -396,6 +419,7 @@ srv_summary <- function(id,
                         arm_var,
                         summarize_vars,
                         add_total,
+                        show_arm_var_labels,
                         total_label,
                         na_level,
                         drop_arm_levels,
@@ -516,15 +540,22 @@ srv_summary <- function(id,
 
       summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
       var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
+
+      arm_var_labels <- NULL
+      if (show_arm_var_labels) {
+        arm_vars <- merged$anl_input_r()$columns_source$arm_var
+        arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
+      }
+
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = merged$anl_input_r()$columns_source$arm_var,
         sum_vars = summarize_vars,
-        show_labels = "visible",
         add_total = input$add_total,
         total_label = total_label,
         var_labels = var_labels,
+        arm_var_labels = arm_var_labels,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         numeric_stats = input$numeric_stats,
