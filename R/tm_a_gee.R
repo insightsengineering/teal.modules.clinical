@@ -95,9 +95,8 @@ template_a_gee <- function(output_table,
         substitute(
           expr = {
             lsmeans_fit_model <- tern.gee::lsmeans(model_fit, conf_level)
-            result_table <- rtables::basic_table() %>%
+            result_table <- rtables::basic_table(show_colcounts = TRUE) %>%
               rtables::split_cols_by(var = input_arm_var, ref_group = model_fit$ref_level) %>%
-              rtables::add_colcounts() %>%
               tern.gee::summarize_gee_logistic() %>%
               rtables::build_table(
                 df = lsmeans_fit_model,

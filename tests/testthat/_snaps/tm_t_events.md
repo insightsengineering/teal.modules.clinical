@@ -19,10 +19,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
-          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
@@ -78,11 +78,11 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
           rtables::split_cols_by(var = "ACTARM") %>% rtables::split_cols_by("ACTARMCD", 
-          split_fun = drop_split_levels) %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+          split_fun = drop_split_levels) %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
@@ -130,10 +130,9 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Con Med Code") %>% 
-          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
-          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
-              "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Con Med Code") %>% 
+          rtables::split_cols_by(var = "ACTARM") %>% summarize_num_patients(var = "USUBJID", 
+          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
               nonunique = "Overall total number of treatments"), na_str = "<Missing>") %>% 
           count_occurrences(vars = "CMDECOD", .indent_mods = -1L) %>% 
           append_varlabels(adcm, "CMDECOD")
@@ -179,10 +178,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
-          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
@@ -229,10 +228,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
-          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
@@ -297,11 +296,11 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
           rtables::split_cols_by(var = "ACTARM") %>% rtables::split_cols_by("ACTARMCD", 
-          split_fun = drop_split_levels) %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+          split_fun = drop_split_levels) %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 

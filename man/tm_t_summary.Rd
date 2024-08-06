@@ -13,6 +13,7 @@ tm_t_summary(
   summarize_vars,
   add_total = TRUE,
   total_label = default_total_label(),
+  show_arm_var_labels = TRUE,
   useNA = c("ifany", "no"),
   na_level = default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
@@ -45,6 +46,8 @@ the variables that should be summarized.}
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
 enabled (see \code{add_total}). Defaults to \code{"All Patients"}. To set a new default \code{total_label} to
 apply in all modules, run \code{set_default_total_label("new_default")}.}
+
+\item{show_arm_var_labels}{(\code{flag})\cr whether arm variable label(s) should be displayed. Defaults to \code{TRUE}.}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 

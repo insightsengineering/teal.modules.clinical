@@ -24,10 +24,9 @@
       }
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARMCD") %>% 
-          rtables::split_cols_by(var = "SEX") %>% rtables::add_colcounts() %>% 
-          summarize_num_patients(var = "USUBJID", .stats = c("unique"), 
-              .labels = c(unique = "Total number of patients with at least one adverse event")) %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARMCD") %>% 
+          rtables::split_cols_by(var = "SEX") %>% summarize_num_patients(var = "USUBJID", 
+          .stats = c("unique"), .labels = c(unique = "Total number of patients with at least one adverse event")) %>% 
           rtables::split_rows_by("SMQ", child_labels = "visible", nested = FALSE, 
               split_fun = trim_levels_in_group("AEDECOD", drop_outlevs = FALSE), 
               indent_mod = -1L, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
@@ -80,9 +79,9 @@
       }
       
       $layout
-      lyt <- rtables::basic_table() %>% rtables::split_cols_by(var = "myARMCD") %>% 
-          rtables::add_colcounts() %>% summarize_num_patients(var = "myUSUBJID", 
-          .stats = c("unique"), .labels = c(unique = "Total number of patients with at least one adverse event")) %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "myARMCD") %>% 
+          summarize_num_patients(var = "myUSUBJID", .stats = c("unique"), 
+              .labels = c(unique = "Total number of patients with at least one adverse event")) %>% 
           rtables::split_rows_by("SMQ", child_labels = "visible", nested = FALSE, 
               split_fun = trim_levels_in_group("myAEDECOD", drop_outlevs = FALSE), 
               indent_mod = -1L, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
