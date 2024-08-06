@@ -4,6 +4,17 @@
 #'
 #' @inheritParams tern::g_forest
 #' @inheritParams template_arguments
+#' @param stats (`character`)\cr the names of statistics to be reported among:
+#'   * `n`: Total number of observations per group.
+#'   * `n_rsp`: Number of responders per group.
+#'   * `prop`: Proportion of responders.
+#'   * `n_tot`: Total number of observations.
+#'   * `or`: Odds ratio.
+#'   * `ci` : Confidence interval of odds ratio.
+#'   * `pval`: p-value of the effect.
+#'   Note, the statistics `n_tot`, `or`, and `ci` are required.
+#' @param riskdiff (`list`)\cr if a risk (proportion) difference column should be added, a list of settings to apply
+#'   within the column. See [control_riskdiff()] for details. If `NULL`, no risk difference column will be added.
 #' @param obj_var_name (`character`)\cr additional text to append to the table title.
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
 #' @param col_symbol_size (`integer` or `NULL`)\cr column index to be used to determine relative size for
@@ -33,6 +44,8 @@ template_forest_rsp <- function(dataname = "ANL",
                                 responders = c("CR", "PR"),
                                 subgroup_var,
                                 strata_var = NULL,
+                                stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
+                                riskdiff = NULL,
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 rel_width_forest = 0.25,
@@ -44,6 +57,9 @@ template_forest_rsp <- function(dataname = "ANL",
   checkmate::assert_string(aval_var)
   checkmate::assert_string(obj_var_name)
   checkmate::assert_character(subgroup_var, null.ok = TRUE)
+  checkmate::assert_character(stats, min.len = 3)
+  checkmate::assert_true(all(c("n_tot", "or", "ci") %in% stats))
+  checkmate::assert_list(riskdiff, null.ok = TRUE)
   checkmate::assert_number(rel_width_forest, lower = 0, upper = 1)
   checkmate::assert_number(font_size)
 
@@ -155,9 +171,10 @@ template_forest_rsp <- function(dataname = "ANL",
   y$summary <- bracket_expr(summary_list)
 
   # Table output.
-  y$table <- quote(
-    result <- rtables::basic_table() %>%
-      tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
+  y$table <- substitute(
+    expr = result <- rtables::basic_table() %>%
+      tabulate_rsp_subgroups(df, vars = stats, riskdiff = riskdiff),
+    env = list(stats = stats, riskdiff = riskdiff)
   )
 
   all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
@@ -325,6 +342,8 @@ tm_g_forest_rsp <- function(label,
                             ),
                             subgroup_var,
                             strata_var,
+                            stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
+                            riskdiff = NULL,
                             fixed_symbol_size = TRUE,
                             conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
@@ -346,6 +365,9 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_class(subgroup_var, "choices_selected")
   checkmate::assert_class(strata_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
+  checkmate::assert_character(stats, min.len = 3)
+  checkmate::assert_true(all(c("n_tot", "or", "ci") %in% stats))
+  checkmate::assert_list(riskdiff, null.ok = TRUE)
   checkmate::assert_multi_class(default_responses, c("list", "character", "numeric"), null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -380,6 +402,8 @@ tm_g_forest_rsp <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
+        stats = stats,
+        riskdiff = riskdiff,
         default_responses = default_responses,
         plot_height = plot_height,
         plot_width = plot_width,
@@ -497,6 +521,8 @@ srv_g_forest_rsp <- function(id,
                              aval_var,
                              subgroup_var,
                              strata_var,
+                             stats,
+                             riskdiff,
                              plot_height,
                              plot_width,
                              label,
@@ -721,6 +747,8 @@ srv_g_forest_rsp <- function(id,
         responders = input$responders,
         subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
         strata_var = if (length(strata_var) != 0) strata_var else NULL,
+        stats = stats,
+        riskdiff = riskdiff,
         conf_level = as.numeric(input$conf_level),
         col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
         rel_width_forest = input$rel_width_forest / 100,

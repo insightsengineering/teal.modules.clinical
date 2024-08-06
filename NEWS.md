@@ -5,6 +5,8 @@
 * Introduced `ylim` parameter for `tm_g_km` module that controls width of y-axis.
 * Added functionality to `tm_t_events_patyear` to split columns by multiple (nested) variables via the `arm_var` argument.
 * Added arguments `arm_var_labels` to `template_summary` and `show_arm_var_labels` to `tm_t_summary` to allow user to display arm variable (`arm_var`) labels in table header.
+* Added argument `stats` to modules `tm_g_forest_rsp` and `tm_g_forest_tte` to allow users to specify statistics to include in the table.
+* Added argument `riskdiff` to modules `tm_g_forest_rsp` and `tm_g_forest_tte` to allow users to add a risk difference table column.
 
 ### Miscellaneous
 * Removed `Show Warnings` modals from modules.
