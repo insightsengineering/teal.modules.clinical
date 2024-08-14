@@ -86,7 +86,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_ipp()
     testthat::expect_equal(
-      app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
+      app_driver$get_text("#teal-teal_modules-active_tab > li.active > a"),
       "Individual Patient Plot"
     )
     testthat::expect_equal(

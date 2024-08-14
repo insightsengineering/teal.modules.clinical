@@ -86,7 +86,7 @@ testthat::test_that(
 
     app_driver <- app_driver_tm_g_lineplot()
 
-    testthat::expect_equal(trimws(app_driver$get_text("#teal-main_ui-root-active_tab > li.active")), "Line Plot")
+    testthat::expect_equal(trimws(app_driver$get_text("#teal-teal_modules-active_tab > li.active")), "Line Plot")
     testthat::expect_equal(app_driver$get_active_module_input("param-dataset_ADLB_singleextract-filter1-vals"), "ALT")
     testthat::expect_equal(app_driver$get_active_module_input("strata-dataset_ADSL_singleextract-select"), "ARM")
     testthat::expect_equal(app_driver$get_active_module_input("y-dataset_ADLB_singleextract-select"), "AVAL")

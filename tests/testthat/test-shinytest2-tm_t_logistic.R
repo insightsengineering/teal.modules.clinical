@@ -71,7 +71,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_logistic()
     testthat::expect_equal(
-      app_driver$get_text("#teal-main_ui-root-active_tab > li.active > a"),
+      app_driver$get_text("#teal-teal_modules-active_tab > li.active > a"),
       "Logistic Regression"
     )
     testthat::expect_equal(
