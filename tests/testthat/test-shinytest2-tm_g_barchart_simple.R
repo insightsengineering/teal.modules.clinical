@@ -137,7 +137,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_g_barchart_simple()
 
     testthat::expect_equal(
-      trimws(app_driver$get_text("#teal-main_ui-root-active_tab > li.active")),
+      trimws(app_driver$get_text("#teal-teal_modules-active_tab > li.active")),
       "ADAE Analysis (e2e)"
     )
 
