@@ -457,7 +457,7 @@ template_events_summary <- function(anl_name,
     condition6
   )
 
-  if (any(all_conditions) && (count_dth | count_wd)) {
+  if (any(all_conditions) && (count_dth || count_wd)) {
     table_list <- add_expr(
       table_list,
       quote(
