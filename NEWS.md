@@ -7,6 +7,7 @@
 * Added arguments `arm_var_labels` to `template_summary` and `show_arm_var_labels` to `tm_t_summary` to allow user to display arm variable (`arm_var`) labels in table header.
 * Added argument `stats` to modules `tm_g_forest_rsp` and `tm_g_forest_tte` to allow users to specify statistics to include in the table.
 * Added argument `riskdiff` to modules `tm_g_forest_rsp` and `tm_g_forest_tte` to allow users to add a risk difference table column.
+* Added the `count_dth` and `count_wd` parameters to `tm_t_events_summary` to select/deselect the "Total number of deaths" and "Total number of patients withdrawn from study due to an AE" rows, respectively. These options correspond to the "Count deaths" and "Count withdrawals due to AE" checkboxes available when the module is run.
 
 ### Miscellaneous
 * Removed `Show Warnings` modals from modules.
