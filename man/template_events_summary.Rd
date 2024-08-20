@@ -60,10 +60,10 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
 
-\item{count_dth}{(\code{logical})\cr whether to show count of total deaths (based on \code{dthfl_var}).}
+\item{count_dth}{(\code{logical})\cr whether to show count of total deaths (based on \code{dthfl_var}). Defaults to \code{TRUE}.}
 
 \item{count_wd}{(\code{logical})\cr whether to show count of patients withdrawn from study due to an adverse event
-(based on \code{dcsreas_var}).}
+(based on \code{dcsreas_var}). Defaults to \code{TRUE}.}
 
 \item{count_subj}{(\code{logical})\cr whether to show count of unique subjects (based on \code{USUBJID}). Only applies if
 event flag variables are provided.}

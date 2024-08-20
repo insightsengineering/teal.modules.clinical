@@ -15,9 +15,9 @@
 #'   they exist.
 #' @param aeseq_var (`character`)\cr name of variable for adverse events sequence number from `dataset`. Used for
 #'   counting total number of events.
-#' @param count_dth (`logical`)\cr whether to show count of total deaths (based on `dthfl_var`).
+#' @param count_dth (`logical`)\cr whether to show count of total deaths (based on `dthfl_var`). Defaults to `TRUE`.
 #' @param count_wd (`logical`)\cr whether to show count of patients withdrawn from study due to an adverse event
-#'   (based on `dcsreas_var`).
+#'   (based on `dcsreas_var`). Defaults to `TRUE`.
 #' @param count_subj (`logical`)\cr whether to show count of unique subjects (based on `USUBJID`). Only applies if
 #'   event flag variables are provided.
 #' @param count_pt (`logical`)\cr whether to show count of unique preferred terms (based on `llt`). Only applies if
