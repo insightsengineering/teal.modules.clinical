@@ -80,7 +80,7 @@ VignetteBuilder:
     knitr
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.transform, insightsengineering/tern,
-    tidymodels/broom, mllg/checkmate, tidyverse/dplyr, rstudio/DT,
+    tidymodels/broom, mllg/checkmate, wilkelab/cowplot, tidyverse/dplyr, rstudio/DT,
     tidyverse/ggplot2, slowkow/ggrepel, r-lib/lifecycle, daroczig/logger,
     insightsengineering/rlistings, rstudio/rmarkdown,
     insightsengineering/rtables, r-lib/scales, rstudio/shiny,
