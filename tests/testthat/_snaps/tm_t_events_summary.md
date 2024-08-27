@@ -76,12 +76,7 @@
       
       $layout_parent
       lyt_parent <- rtables::basic_table(show_colcounts = TRUE) %>% 
-          rtables::split_cols_by(var = "ARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
-          count_values("DTHFL", values = "Y", .labels = c(count_fraction = "Total number of deaths"), 
-              .formats = c(count_fraction = format_count_fraction), 
-              denom = "N_col") %>% count_values("DCSREAS", values = "ADVERSE EVENT", 
-          .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"), 
-          .formats = c(count_fraction = format_count_fraction), denom = "N_col")
+          rtables::split_cols_by(var = "ARM") %>% rtables::add_overall_col(label = "All Patients")
       
       $table_parent
       result_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, 
@@ -124,8 +119,8 @@
       $table
       {
           rtables::col_info(result_parent) <- rtables::col_info(result_anl)
-          result <- rtables::rbind(result_anl[1:2, ], result_parent, 
-              result_anl[3:nrow(result_anl), ])
+          result <- rtables::rbind(result_anl[1:2, ], result_anl[3:nrow(result_anl), 
+              ])
       }
       
 

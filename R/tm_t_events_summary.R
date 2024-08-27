@@ -15,6 +15,9 @@
 #'   they exist.
 #' @param aeseq_var (`character`)\cr name of variable for adverse events sequence number from `dataset`. Used for
 #'   counting total number of events.
+#' @param count_dth (`logical`)\cr whether to show count of total deaths (based on `dthfl_var`). Defaults to `TRUE`.
+#' @param count_wd (`logical`)\cr whether to show count of patients withdrawn from study due to an adverse event
+#'   (based on `dcsreas_var`). Defaults to `TRUE`.
 #' @param count_subj (`logical`)\cr whether to show count of unique subjects (based on `USUBJID`). Only applies if
 #'   event flag variables are provided.
 #' @param count_pt (`logical`)\cr whether to show count of unique preferred terms (based on `llt`). Only applies if
@@ -39,6 +42,8 @@ template_events_summary <- function(anl_name,
                                     add_total = TRUE,
                                     total_label = default_total_label(),
                                     na_level = default_na_str(),
+                                    count_dth = TRUE,
+                                    count_wd = TRUE,
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
@@ -54,6 +59,8 @@ template_events_summary <- function(anl_name,
   checkmate::assert_character(flag_var_aesi, null.ok = TRUE)
   checkmate::assert_string(aeseq_var)
   checkmate::assert_string(llt)
+  checkmate::assert_flag(count_dth)
+  checkmate::assert_flag(count_wd)
   checkmate::assert_flag(count_subj)
   checkmate::assert_flag(count_pt)
   checkmate::assert_flag(count_events)
@@ -194,26 +201,37 @@ template_events_summary <- function(anl_name,
     )
   }
 
-  layout_parent_list <- add_expr(
-    layout_parent_list,
-    substitute(
-      expr = count_values(
-        dthfl_var,
-        values = "Y",
-        .labels = c(count_fraction = "Total number of deaths"),
-        .formats = c(count_fraction = format_count_fraction),
-        denom = "N_col"
-      ) %>%
-        count_values(
+  if (count_dth) {
+    layout_parent_list <- add_expr(
+      layout_parent_list,
+      substitute(
+        expr = count_values(
+          dthfl_var,
+          values = "Y",
+          .labels = c(count_fraction = "Total number of deaths"),
+          .formats = c(count_fraction = format_count_fraction),
+          denom = "N_col"
+        ),
+        env = list(dthfl_var = dthfl_var)
+      )
+    )
+  }
+
+  if (count_wd) {
+    layout_parent_list <- add_expr(
+      layout_parent_list,
+      substitute(
+        expr = count_values(
           dcsreas_var,
           values = "ADVERSE EVENT",
           .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
           .formats = c(count_fraction = format_count_fraction),
           denom = "N_col"
         ),
-      env = list(dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)
+        env = list(dcsreas_var = dcsreas_var)
+      )
     )
-  )
+  }
 
   y$layout_parent <- substitute(
     expr = lyt_parent <- layout_parent_pipe,
@@ -296,8 +314,6 @@ template_events_summary <- function(anl_name,
       env = list(df_parent = as.name(parentname))
     )
   )
-
-  count_flags <- c(count_subj, count_pt, count_events)
 
   condition1 <- count_subj && is.character(flag_var_anl)
   if (condition1) {
@@ -441,13 +457,23 @@ template_events_summary <- function(anl_name,
     condition6
   )
 
-  if (any(all_conditions)) {
+  if (any(all_conditions) && (count_dth || count_wd)) {
     table_list <- add_expr(
       table_list,
       quote(
         expr = result <- rtables::rbind(
           result_anl[1:2, ],
           result_parent,
+          result_anl[3:nrow(result_anl), ]
+        )
+      )
+    )
+  } else if (any(all_conditions)) {
+    table_list <- add_expr(
+      table_list,
+      quote(
+        expr = result <- rtables::rbind(
+          result_anl[1:2, ],
           result_anl[3:nrow(result_anl), ]
         )
       )
@@ -603,6 +629,8 @@ tm_t_events_summary <- function(label,
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = default_na_str(),
+                                count_dth = TRUE,
+                                count_wd = TRUE,
                                 count_subj = TRUE,
                                 count_pt = TRUE,
                                 count_events = TRUE,
@@ -623,6 +651,8 @@ tm_t_events_summary <- function(label,
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
+  checkmate::assert_flag(count_dth)
+  checkmate::assert_flag(count_wd)
   checkmate::assert_flag(count_subj)
   checkmate::assert_flag(count_pt)
   checkmate::assert_flag(count_events)
@@ -726,21 +756,33 @@ ui_t_events_summary <- function(id, ...) {
         "Add All Patients column",
         value = a$add_total
       ),
-      tags$label("Table Settings"),
-      checkboxInput(
-        ns("count_subj"),
-        "Count patients",
-        value = a$count_subj
-      ),
-      checkboxInput(
-        ns("count_pt"),
-        "Count preferred terms",
-        value = a$count_pt
-      ),
-      checkboxInput(
-        ns("count_events"),
-        "Count events",
-        value = a$count_events
+      teal.widgets::panel_item(
+        "Table Settings",
+        checkboxInput(
+          ns("count_dth"),
+          "Count deaths",
+          value = a$count_dth
+        ),
+        checkboxInput(
+          ns("count_wd"),
+          "Count withdrawals due to AE",
+          value = a$count_wd
+        ),
+        checkboxInput(
+          ns("count_subj"),
+          "Count patients",
+          value = a$count_subj
+        ),
+        checkboxInput(
+          ns("count_pt"),
+          "Count preferred terms",
+          value = a$count_pt
+        ),
+        checkboxInput(
+          ns("count_events"),
+          "Count events",
+          value = a$count_events
+        )
       ),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
@@ -931,6 +973,8 @@ srv_t_events_summary <- function(id,
         add_total = input$add_total,
         total_label = total_label,
         na_level = na_level,
+        count_dth = input$count_dth,
+        count_wd = input$count_wd,
         count_subj = input$count_subj,
         count_pt = input$count_pt,
         count_events = input$count_events
