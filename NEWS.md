@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.9.1.9019
+# teal.modules.clinical 0.9.1.9020
 
 ### Enhancements
 * Added `teal.logger` functionality for logging changes in shiny inputs in all modules.
