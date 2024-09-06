@@ -44,7 +44,7 @@ tm_g_lineplot(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{strata}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} use the \code{group_var} parameter instead.}
+\item{strata}{(\code{string} or \code{NA})\cr group variable name.}
 
 \item{x}{(\code{string})\cr x-variable name.}
 
