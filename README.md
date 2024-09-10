@@ -57,26 +57,19 @@ Please see the [Teal Gallery](https://insightsengineering.github.io/teal.gallery
 ## Installation
 
 ```r
-# stable versions
 install.packages('teal.modules.clinical')
-
-# install.packages("pak")
-pak::pak("insightsengineering/teal.modules.clinical@*release")
 ```
 
-Alternatively, you might want to use the development version available on [r-universe](https://r-universe.dev/search).
+Alternatively, you might want to use the development version.
 
 ```r
-# beta versions
-install.packages('teal.modules.clinical', repos = c('https://pharmaverse.r-universe.dev', getOption('repos')))
-
 # install.packages("pak")
 pak::pak("insightsengineering/teal.modules.clinical")
 ```
 
 ## Usage
 
-To understand how to use this package, please refer to the [Package Website](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/).
+To understand how to use this package, please refer to the [Getting Started](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/articles/teal-modules-clinical.html) article, which provides multiple examples of code implementation.
 
 ## Getting help
 
