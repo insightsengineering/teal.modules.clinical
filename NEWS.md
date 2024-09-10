@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.9.1.9021
+# teal.modules.clinical 0.9.1.9022
 
 ### Enhancements
 * Added `teal.logger` functionality for logging changes in shiny inputs in all modules.
@@ -14,6 +14,7 @@
 * Clarified the documentation specifying whether multiple values can be selected in the `arm_var` argument for each module.
 * Replaced use of the `rtables::add_colcounts()` function with the `show_colcounts` argument to `basic_table()`.
 * Began deprecation cycle for the `show_labels` argument of `template_summary` which has no effect on the `tm_t_summary` module.
+* Replaced instances of deprecated `strata` argument to `tern::control_lineplot_vars()` with `group_var`.
 
 # teal.modules.clinical 0.9.1
 

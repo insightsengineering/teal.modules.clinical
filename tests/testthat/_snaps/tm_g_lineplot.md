@@ -10,7 +10,7 @@
       
       $variables
       variables <- control_lineplot_vars(x = "AVISIT", y = "AVAL", 
-          strata = "ARM", paramcd = "PARAMCD", y_unit = "AVALU")
+          group_var = "ARM", paramcd = "PARAMCD", y_unit = "AVALU")
       
       $graph
       {
@@ -40,7 +40,7 @@
       }
       
       $variables
-      variables <- control_lineplot_vars(x = "AVISIT", y = "CHG", strata = "ARMCD", 
+      variables <- control_lineplot_vars(x = "AVISIT", y = "CHG", group_var = "ARMCD", 
           paramcd = "PARAMCD", y_unit = "AVALU")
       
       $graph
