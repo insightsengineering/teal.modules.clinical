@@ -3,7 +3,7 @@
     Code
       res
     Output
-      [1] "rtables::basic_table() %>% rtables::split_cols_by(var = \"ARMCD\") %>%      tern::test_proportion_diff(vars = \"rsp\", method = \"cmh\",          variables = list(strata = \"strata\")) %>% rtables::build_table(df = dta)"
+      [1] "rtables::basic_table() %>% rtables::split_cols_by(var = \"ARMCD\") %>% \n    tern::test_proportion_diff(vars = \"rsp\", method = \"cmh\", \n        variables = list(strata = \"strata\")) %>% rtables::build_table(df = dta)"
 
 # add_expr adds expressions to expression list
 
