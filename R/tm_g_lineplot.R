@@ -5,6 +5,7 @@
 #' @inheritParams tern::g_lineplot
 #' @inheritParams tern::control_lineplot_vars
 #' @inheritParams template_arguments
+#' @param strata (`string` or `NA`)\cr group variable name.
 #' @param param (`character`)\cr parameter to filter the data by.
 #' @param incl_screen (`logical`)\cr whether the screening visit should be included.
 #' @param ggplot2_args (`ggplot2_args`) optional\cr object created by [teal.widgets::ggplot2_args()] with settings
@@ -94,7 +95,7 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   z$variables <- substitute(
-    expr = variables <- control_lineplot_vars(x = x, y = y, strata = arm, paramcd = paramcd, y_unit = y_unit),
+    expr = variables <- control_lineplot_vars(x = x, y = y, group_var = arm, paramcd = paramcd, y_unit = y_unit),
     env = list(x = x, y = y, arm = strata, paramcd = paramcd, y_unit = y_unit)
   )
 

@@ -97,7 +97,7 @@ get_var_labels <- function(datasets, dataname, vars) {
 #' h_concat_expr(expr)
 h_concat_expr <- function(expr) {
   expr <- deparse(expr)
-  paste(expr, collapse = " ")
+  paste(expr, collapse = "\n")
 }
 
 

@@ -908,7 +908,8 @@ srv_t_binary_outcome <- function(id,
               vapply(
                 anl[input_strata_var],
                 FUN = function(strata) {
-                  tab <- base::table(strata, anl[[input_arm_var]])
+                  anl_arm <- factor(anl[[input_arm_var]])
+                  tab <- base::table(strata, anl_arm)
                   tab_logic <- tab != 0L
                   sum(apply(tab_logic, 1, sum) == ncol(tab_logic)) >= 2
                 },
