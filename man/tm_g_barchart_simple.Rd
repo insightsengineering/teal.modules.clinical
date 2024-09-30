@@ -62,22 +62,22 @@ Categories can be defined up to four levels deep and are defined through the \co
 library(nestcolor)
 library(dplyr)
 
-ADSL <- tmc_ex_adsl \%>\%
-  mutate(ITTFL = factor("Y") \%>\%
-    with_label("Intent-To-Treat Population Flag"))
-ADAE <- tmc_ex_adae \%>\%
-  filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl \%>\%
+    mutate(ITTFL = factor("Y") \%>\%
+      with_label("Intent-To-Treat Population Flag"))
+  ADAE <- tmc_ex_adae \%>\%
+    filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+})
+datanames(data) <- c("ADSL", "ADAE")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADAE <- data[["ADAE"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADAE = ADAE,
-    code = "ADSL <- tmc_ex_adsl \%>\%
-              mutate(ITTFL = factor(\"Y\") \%>\%
-              with_label(\"Intent-To-Treat Population Flag\"))
-            ADAE <- tmc_ex_adae \%>\%
-              filter(!((AETOXGR == 1) & (AESEV == \"MILD\") & (ARM == \"A: Drug X\")))"
-  ),
+  data = data,
   modules = modules(
     tm_g_barchart_simple(
       label = "ADAE Analysis",
@@ -179,3 +179,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otQ6AKQAfBP1DTowgonk7ACStrYAYp0AvCZQ6gHsCmAAmic207MQ8-NFpWnUUPRw1MdgqypkBrZEP4xwBI6AAKRFQwgSlhumyeAHMLkEGi1Gk4uj0+oNhvFdFc5g1jLRqORGOwAITsdgo2wAeQAGgBxLA6HZ7ACMNgAZDpKU5Wk4AGrMvYnACyq3azQuOi5lKwIqFOhOjUQOmajEEsJ0tIRQQAvkFctB4KJKokbPkCO8Wh0TjUlc0URclAArIjlNIAazgrBNuXNRn4cGMUGEpDSBH4tFEfVd7q9PuAhtgYlNUDkAF1YtbOvlcsBgPabWB05mIMjUbmqvn7Y7i6WlGhUF1ysVjjcdLlmR2qrg5nwhCJRF3+8IU3jujA0rC0vQWAQSiww6JaDBInA27cGk8XuNhWBy01oFFl6JbeOGgMu7l+gNSGol6g4Jbz-Mk-Au4X2mf25udKJXk+pBdv+IjqGkoiPs+P6-jo85ugQYhdpoLC0M8IjhiU8FjtBMFNG07S9jhMFQbhv5KnKtqKvuADCtiNBReBUXy2p4C+uEnFgjTUS4jEnOsWxfrxYCtI0mzbJRJytPYjR0QATCcbGboipFyIRpF-gB6hwPwH40XRDFqaRixErQa5dpsjTtHyinKbcqkvgS1C7jodCiKQG4wdegx3gcD5Ph5uFvroe7Zt+6kgYBwGaX5JHqbBmEyIhezIYwqH0OhcGJSaim-tmhlxbBAUFVR9EihJemleVzFhcVDQcVxPF2h8GziUJIliYJTVSZxckKURuG2Sp+WkRFWk6Xu1Wsf1m7GRoZl7BZVkuNNDSDXZw23F5t73uBkFFb+QW6eWNW4aNQF7Gdu3+Tl8yZQhQ7JShaFwBhWEmuWNTPvuTg0gyWDlSifL8gDvJOP9YByPZK3zGd2ldgAcg47QETdDSzaZIjmZZ1nQ2t8x41Dv5DMGCHnS5UbuYpW0+WBEHXdDh0hQ6jU3WdUWgTF+3EQl91IU96UvXdKYfYVSo-XSjIg0DUtgwiG0wbD40leLf0nUZoYY8FOiLTj6l46t8sNNTO107FgVVEaWufmrv5sxd0VXWbpFCw9OgpWlGU89htV5ajt1c+p5FlUJXH6cHXVOCxhukfV3HlfxrVdaJidMdJvVgH7q1+4TcWKwjSMo9DaMa-N2vY8tes2S+Oe3KwaQk3AZOuZT03G75jsB6+FvJkdzM25udsaRzHd+y7fOpc9r1ZZSzOfVaKuSyHoPA0vfLg5D0e3HnIXL-3v7o6XOsVypNnR23tN7TdjMlfhe8w9F7OASPRfxW948e4LXvZS-SL4Zvm5OwKkHAGtFKptUjnfdiYBOJxyEgnTqTFk4IMkmnRo8kM4-x0PrJS-8Gjbx0IjZGuCFgl0xgtcuN1sEE3HMpIIQRaDGG5OUYkvktDrkhrUOYogygQFYI0dA7BGwABJBC0BqMI-8jBtAxAgLqJQYBdTpiAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otQ6AKQAfBP1DTowgonk7ACStrYAYp0AvCZQ6gHsCmAAmic207MQ8-NFpWnUUPRw1MdgqypkBrZEP4xwBI6AAKRFQwgSlhumyeAHMLkEGi1Gk4uj0+oNhvFdFc5g1jLRqORGOwAITsdgo2wAeQAGgBxLA6HZ7ACMNgAZDpKU5Wk4AGrMvYnACyq3azQuOi5lKwIqFOhOjUQOmajEEsJ0tIRQQAvkFctB4KJKokbPkCO8Wh0TjUlc0URclAArIjlNIAazgrBNuXNRn4cGMUGEpDSBH4tFEfVd7q9PuAhtgYlNUDkAF1YtbOvlcsBgPabWB05mIMjUbmqvn7Y7i6WlGhUF1ysVjjcdLlmR2qrg5nwhCJRF3+8IU3jujA0rC0vQWAQSiww6JaDBInA27cGk8XuNhWBy01oFFl6JbeOGgMu7l+gNSGol6g4Jbz-Mk-Au4X2mf25udKJXk+pBdv+IjqGkoiPs+P6-jo85ugQYhdpoLC0M8IjhiU8FjtBMFNG07S9jhMFQbhv5KnKtqKvuADCtiNBReBUXy2p4C+uEnFgjTUS4jEnOsWxfrxYCtI0mzbJRJytPYjR0QATCcbGboipFyIRpF-gB6hwPwH40XRDFqaRixErQa5dpsjTtHyinKbcqkvgS1C7jodCiKQG4wdegx3gcD5Ph5uFvroe7Zt+6kgYBwGaX5JHqbBmEyIhezIYwqH0OhcGJSaim-tmhlxbBAUFVR9EihJemleVzFhcVDQcVxPF2h8GziUJIliYJTVSZxckKURuG2Sp+WkRFWk6Xu1Wsf1m7GRoZl7BZVkuNNDSDXZw23F5t73uBkFFb+QW6eWNW4aNQF7Gdu3+Tl8yZQhQ7JShaFwBhWEmuWNTPvuTg0gyWDlSifL8gDvJOP9YByPZK3zGd2ldgAcg47QETdDSzaZIjmZZ1nQ2t8x41Dv5DMGCHnS5UbuYpW0+WBEHXdDh0hQ6jU3WdUWgTF+3EQl91IU96UvXdKYfYVSo-XSjIg0DUtgwiG0wbD40leLf0nUZoYY8FOiLTj6l46t8sNNTO107FgVVEaWufmrv5sxd0VXWbpFCw9OgpWlGU89htV5ajt1c+p5FlUJXH6cHXVOCxhukfV3HlfxrVdaJidMdJvVgH7q1+4TcWKwjSMo9DaMa-N2vY8tes2S+Oe3KwaQk3AZOuZT03G75jsB6+FvJkdzM25udsaRzHd+y7fOpc9r1ZZSzOfVaKuSyHoPA0vfLg5D0e3HnIXL-3v7o6XOsVypNnR23tN7TdjMlfhe8w9F7OASPRfxW948e4LXvZS-SL4Zvm5OwKkHAGtFKptUjnfdiYBOJxyEgnTqTFk4IMkmnRo8kM4-x0PrJS-8Gjbx0IjZGuCFgl0xgtcuN1sEE3HMpIIQRaDGG5OUYkvktDrkhrUOYogygQFYI0dA7BGwABJBC0BqMI-8jBtAxAgLqJQYBdTpiAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

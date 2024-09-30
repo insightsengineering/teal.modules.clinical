@@ -251,23 +251,28 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #'
 #' @export
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADLB <- tmc_ex_adlb %>%
-#'   filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADLB <- tmc_ex_adlb %>%
+#'     filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+#' })
+#' datanames(data) <- c("ADSL", "ADLB")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADLB <- data[["ADLB"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADLB = ADLB,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADLB <- tmc_ex_adlb %>%
-#'         filter(!AVISIT %in% c(\"SCREENING\", \"BASELINE\"))
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_abnormality_by_worst_grade(
 #'       label = "Laboratory Test Results with Highest Grade Post-Baseline",

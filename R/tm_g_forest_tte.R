@@ -243,12 +243,26 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADTTE <- tmc_ex_adtte
-#' ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADTTE <- tmc_ex_adtte
+#'   ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
+#' })
+#' datanames(data) <- c("ADSL", "ADTTE")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADTTE <- data[["ADTTE"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -262,15 +276,7 @@ template_forest_tte <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADTTE = ADTTE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADTTE <- tmc_ex_adtte
-#'       ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label(\"Race\")
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_forest_tte(
 #'       label = "Forest Survival",

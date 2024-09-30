@@ -71,6 +71,13 @@ pak::pak("insightsengineering/teal.modules.clinical")
 
 To understand how to use this package, please refer to the [Getting Started](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/articles/teal-modules-clinical.html) article, which provides multiple examples of code implementation.
 
+## Playground
+
+You can try out the package without installing it in the Shinylive:
+
+* [stable](https://shinylive.io/r/editor/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA6EMAF8AukA)
+* [development](https://shinylive.io/r/editor/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMI1UgSxIGcAKAdzgCMAnAfVQGsA5jy5xURRgAIAvJILMAOmC4BaAK4Q6ANzhdGcJTMlKAFqVKpGiAPTXUJqFxhQdeuBlUbtu-RgAmcFpKuJKCcKQA8rQMEIpg7Nx8QiJiEkoAlJkKEAA2dNyOAJ7M5FA5GDBEfmo5cIwYBHmaBGXp2WAAvgC6QA)
+
 ## Getting help
 
 If you encounter a bug or have a feature request, please file an issue. For questions, discussions, and staying up to date, please use the `teal` channel in the [`pharmaverse` slack workspace](https://pharmaverse.slack.com).

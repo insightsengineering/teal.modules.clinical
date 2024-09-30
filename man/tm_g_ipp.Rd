@@ -104,24 +104,24 @@ values over time for each patient, using data with ADaM structure.
 library(nestcolor)
 library(dplyr)
 
-ADSL <- tmc_ex_adsl \%>\%
-  slice(1:20) \%>\%
-  df_explicit_na()
-ADLB <- tmc_ex_adlb \%>\%
-  filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
-  df_explicit_na() \%>\%
-  filter(AVISIT != "SCREENING")
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl \%>\%
+    slice(1:20) \%>\%
+    df_explicit_na()
+  ADLB <- tmc_ex_adlb \%>\%
+    filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
+    df_explicit_na() \%>\%
+    filter(AVISIT != "SCREENING")
+})
+datanames(data) <- c("ADSL", "ADLB")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADLB <- data[["ADLB"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADLB = ADLB,
-    code = "
-      ADSL <- tmc_ex_adsl \%>\% slice(1:20) \%>\% df_explicit_na()
-      ADLB <- tmc_ex_adlb \%>\% filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
-        df_explicit_na() \%>\% filter(AVISIT != \"SCREENING\")
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_ipp(
       label = "Individual Patient Plot",
@@ -171,3 +171,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otQ6AKQAfBP1DTpjMnDsAIyIAEwADDbTsxDzOvzG-QORMsVp0Nn7Tc3tAEJdPX2Dw-zU9JMzcw3GtNTkRjsBytBz3ABSAElmpNyhNbh0ACQgsFQ5o7b43BpHE5nAgXK4YvYHP4A1TsRoANUhrUhth0AEIALw6BRgVoAYSwTicADlIbyAOJsoIAXyCuWg8FElUSNnyBHYbJaHTZNWVd3uIqUACsiOU0gBrOCsGW5eVGfhwYxQYSkNIEfi0UR9PUG42m4CS2BiWVQOQAXViKs6+VywGAGtVYADQYgLQeXXDkbACa1MbjSjQqC65WKSpuuR0LNyuDmfCEIlExZ0FeEvp+3RgaQA5mlaOgCwcGtQoPQ4OMWWzIXEtLQhNwdAAFBK0Cikaf+UhqxvYqpS3RD1OaldY+YsZuaFg1gglfUEMRpUQDuDqOD8LvdhpH6iCOAOs9LGVp9WprAAWQ5ZoRTLPcDmVACmjZVcdDkUCn1QFhYEdE9PwvUQrxvO8Hxg59uDfD9z19H9WTAKdGiwRpAOAsA4Nw0jGnaWxoLA2D4O7KAXzSI9GFQoiMOvERsMfJ8eNoPsREIr8KU1GpFWVSlGLVUiOQACWFWi6NYhoFKUsAYK0p9OPw7jjxZU9+MwoTyBw7SdDEiT3ws6SSPk1NFPaBwRUMp8GI8ry8Hov4BnvGt7GcAz2IOcdTN48y0MvQTbxskTuwc+hJOc9CZIeOSlTAFEIWhbyou7NlCrRXdfJMWgQv4MLHBcVifIOTRnQuHi+K-KzkvvVLWpYcSMqchLv1knQ3KpGk6RK+iFOm5j9Oa0qGnoKBBPKd9OviyykuE+j0sy0acvuPK2XuRpWhcTSVvmc7Luu27flq0KWXCpqnxa-d+H4NI1o27w0hKKRNx0AAxRirtu69EOYcg-tYNIiHoasWQh9orsbIIGiCIJaGMHR2HKQEoAsbRrBsOoblEMoIFYRpO2zRFBFoGomevRhtBiCBRSUMBRQDIA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otQ6AKQAfBP1DTpjMnDsAIyIAEwADDbTsxDzOvzG-QORMsVp0Nn7Tc3tAEJdPX2Dw-zU9JMzcw3GtNTkRjsBytBz3ABSAElmpNyhNbh0ACQgsFQ5o7b43BpHE5nAgXK4YvYHP4A1TsRoANUhrUhth0AEIALw6BRgVoAYSwTicADlIbyAOJsoIAXyCuWg8FElUSNnyBHYbJaHTZNWVd3uIqUACsiOU0gBrOCsGW5eVGfhwYxQYSkNIEfi0UR9PUG42m4CS2BiWVQOQAXViKs6+VywGAGtVYADQYgLQeXXDkbACa1MbjSjQqC65WKSpuuR0LNyuDmfCEIlExZ0FeEvp+3RgaQA5mlaOgCwcGtQoPQ4OMWWzIXEtLQhNwdAAFBK0Cikaf+UhqxvYqpS3RD1OaldY+YsZuaFg1gglfUEMRpUQDuDqOD8LvdhpH6iCOAOs9LGVp9WprAAWQ5ZoRTLPcDmVACmjZVcdDkUCn1QFhYEdE9PwvUQrxvO8Hxg59uDfD9z19H9WTAKdGiwRpAOAsA4Nw0jGnaWxoLA2D4O7KAXzSI9GFQoiMOvERsMfJ8eNoPsREIr8KU1GpFWVSlGLVUiOQACWFWi6NYhoFKUsAYK0p9OPw7jjxZU9+MwoTyBw7SdDEiT3ws6SSPk1NFPaBwRUMp8GI8ry8Hov4BnvGt7GcAz2IOcdTN48y0MvQTbxskTuwc+hJOc9CZIeOSlTAFEIWhbyou7NlCrRXdfJMWgQv4MLHBcVifIOTRnQuHi+K-KzkvvVLWpYcSMqchLv1knQ3KpGk6RK+iFOm5j9Oa0qGnoKBBPKd9OviyykuE+j0sy0acvuPK2XuRpWhcTSVvmc7Luu27flq0KWXCpqnxa-d+H4NI1o27w0hKKRNx0AAxRirtu69EOYcg-tYNIiHoasWQh9orsbIIGiCIJaGMHR2HKQEoAsbRrBsOoblEMoIFYRpO2zRFBFoGomevRhtBiCBRSUMBRQDIA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

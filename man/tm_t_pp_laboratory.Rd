@@ -66,18 +66,19 @@ a \code{teal_module} object.
 This module produces a patient profile laboratory table using ADaM datasets.
 }
 \examples{
-ADSL <- tmc_ex_adsl
-ADLB <- tmc_ex_adlb
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADLB <- tmc_ex_adlb
+})
+datanames(data) <- c("ADSL", "ADLB")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADLB <- data[["ADLB"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADLB = ADLB,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADLB <- tmc_ex_adlb
-    "
-  ),
+  data = data,
   modules = modules(
     tm_t_pp_laboratory(
       label = "Vitals",
@@ -115,3 +116,13 @@ if (interactive()) {
 }
 
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIJOh4UUTQm3CCdgUwHILZlNmcltnBgCsieL8AazhWMaTJo344YyhhUj8CflpRMs3tvYPgYdgxcc85AF1XCHnCuEksBgMs8vlZt9fv8mq0gaEQWDVmAoX80KgivFojMIBkkjoALw6JK4Bp8IQiUSEnTk4QfBoZEp+K7oPzUKD0IjMUhcjgMjI6dn0ODUamzABq0W4okW-LxoRGuiJSOastxAoyqA8tAoV2IouVYAcuQczQAUgBJbJqjWaliwG7UggxLYEMR+UQiuDqOD8HG2gXO11iamaFi0Dkia4umQfFbNJZgAAKmSwmQAsgBha1gOSk9UBz0iH38MXJ1MZ7OzOU6PM1rXMGBOmNu0Qer0l-0BnRB2NUolhxgR+hR3ut9jxxMptPptb57s6Ive8ilw3TjPVgsCutbxm0eCoLZkfs9lvupedmsZMchgfhyNwaPBsaTnRggCac6vi47K7LOU-MAax3AMoAgIchmbZ922LFcuwDG8T0HYdRzPF9YUTTIADksAtLCcxA7sLz-Q1sNw-DNwDQiNSgMN-EHKC+xg5dfXg21ENDe8R0fRCJwwt85nFTIIVzeciN-X1-yEkTgLEmi6MEPwGKJRDmMvXdAzQzihwfJ8+z4lpMOkhwvw0jJiMk0jjMo21Bg1OzayUQZaGMHR2Hicg1A0bRrBsNJ1VEOIIFYTJ0HYdEABJBFoFJIs9RhtEYQY+iUMA+m+IA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIJOh4UUTQm3CCdgUwHILZlNmcltnBgCsieL8AazhWMaTJo344YyhhUj8CflpRMs3tvYPgYdgxcc85AF1XCHnCuEksBgMs8vlZt9fv8mq0gaEQWDVmAoX80KgivFojMIBkkjoALw6JK4Bp8IQiUSEnTk4QfBoZEp+K7oPzUKD0IjMUhcjgMjI6dn0ODUamzABq0W4okW-LxoRGuiJSOastxAoyqA8tAoV2IouVYAcuQczQAUgBJbJqjWaliwG7UggxLYEMR+UQiuDqOD8HG2gXO11iamaFi0Dkia4umQfFbNJZgAAKmSwmQAsgBha1gOSk9UBz0iH38MXJ1MZ7OzOU6PM1rXMGBOmNu0Qer0l-0BnRB2NUolhxgR+hR3ut9jxxMptPptb57s6Ive8ilw3TjPVgsCutbxm0eCoLZkfs9lvupedmsZMchgfhyNwaPBsaTnRggCac6vi47K7LOU-MAax3AMoAgIchmbZ922LFcuwDG8T0HYdRzPF9YUTTIADksAtLCcxA7sLz-Q1sNw-DNwDQiNSgMN-EHKC+xg5dfXg21ENDe8R0fRCJwwt85nFTIIVzeciN-X1-yEkTgLEmi6MEPwGKJRDmMvXdAzQzihwfJ8+z4lpMOkhwvw0jJiMk0jjMo21Bg1OzayUQZaGMHR2Hicg1A0bRrBsNJ1VEOIIFYTJ0HYdEABJBFoFJIs9RhtEYQY+iUMA+m+IA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

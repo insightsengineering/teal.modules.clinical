@@ -135,9 +135,11 @@ data <- within(data, {
   ADSL <- tmc_ex_adsl
   ADTTE <- tmc_ex_adtte
 })
-datanames <- c("ADSL", "ADTTE")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
+datanames(data) <- c("ADSL", "ADTTE")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADTTE <- data[["ADTTE"]]
 
 app <- init(
   data = data,
@@ -148,7 +150,7 @@ app <- init(
       arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(
-        value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"), "OS"
+        value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
       ),
       strata_var = choices_selected(
         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
@@ -168,13 +170,10 @@ if (interactive()) {
 ## ==============
 ## This time, a synthetic pair of ADTTE/ADSL data is fabricated for Cox regression
 ## where ties and pval_method matter.
-
-## Dataset fabrication
-## -------------------
+library(dplyr)
 
 data <- teal_data()
 data <- within(data, {
-  library(dplyr)
   ADTTE <- data.frame(
     STUDYID = "LUNG",
     AVAL = c(4, 3, 1, 1, 2, 2, 3, 1, 2),
@@ -203,9 +202,11 @@ data <- within(data, {
   )
 })
 
-datanames <- c("ADSL", "ADTTE")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
+datanames(data) <- c("ADSL", "ADTTE")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADTTE <- data[["ADTTE"]]
 
 ## `teal` application
 ## ----------------
@@ -214,6 +215,7 @@ join_keys(data) <- default_cdisc_join_keys[datanames]
 ## running the exported R code.
 
 arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
+
 app <- init(
   data = data,
   modules = modules(
@@ -223,7 +225,7 @@ app <- init(
       arm_var = choices_selected(c("ARMCD"), "ARMCD"),
       arm_ref_comp = arm_ref_comp,
       paramcd = choices_selected(
-        value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"), "OS"
+        value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
       ),
       strata_var = choices_selected(c("INST"), NULL),
       cov_var = choices_selected(c("SEX", "AGE"), "SEX"),
@@ -240,3 +242,18 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGI3OgGK1Go0jpwAB6wqCLungC80TGxMRF2ABa6waEiOvRw1EQA7jq0ohlQonD8OiQ6pMk6gqKC3DpoqIxEUASJ+RCaRNSatBAA5joEjHBQGhVExglQOswQ-EQwOgDCACIAkgDKKzr848VwAVALlckQc2bKQ1W6TXSyExAYrtCMMAD6o8YfxDCo+iMdH87CUOh0AEEVrYIVgALLrHSRHTA0igi7guZwYxInQKMCwuE6ABC+NwYMxfwByIIoIJ8MhZLx9KJK3xigxcnJGMJuNR6MxWJxyPxxMQOgACtQ2nB6EQyRTwVTcbT8RDxWtGIIhgANJn4lbilZLej9caWCDsikcjlKfakWaGSpjagfe1Qax2g6AnQ5WhVfrsd24HQgCkQtZbAAyPtIMAIH2CHyg-FE1HDa1sticsfjiaCyf4pHISgAvhz3dB4KIgwcbE7VQTI1H9U2sy4wByAFZEfofADWcFYNfd9aM-GxUGEpF+-AKCZ7fcHw+AldgYlrDrkAF1XhHoz73cBgGrm-jt7uIBH24eDsfT+3z5elE0ff1-QK9t7kcGKXwhCIhTIv+wgboqlSfDOxBBKMAyfoK0qZNQuIGkQQQ6FgcADC8eDgeCa7wChbbZgqGKCiwnyaCwKqJL2BBiB8JQiOopTsI2hKtoS6ycdCXFrOyIZqvCAl4Y07xfNivxLNSYmfN8Un-NygrgqgLCwAQZQ0rRMgMUxcAsfw8HKVR1CCHAvzafRNbXtmglgBKsIQgi-F4MyDlYE5AnMgA8ls+KiVyon+MwDofFRjA0XRulZPp5CGaJSp0is3kOAAcvYACarZbPYEIwgAjNluUwgATF5+I5R5BX+WRmKBbVSpEJoYXUVpUWiIxMUGUZgrsQA4h2dnEnCWAANJYIVrmiiN41lVNYBYE4fUbN5qWTVyzIQgNNXKTo9W7TA05aCwtDjLoyL2M44EcuCNpKLQOLsP05BqBo2jWDYYYYqIiT9KwELoOwTQACSCLQIYgyUjDaIwHKlkoYCltuQA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGI3OgGK1Go0jpwAB6wqCLungC80TGxMRF2ABa6waEiOvRw1EQA7jq0ohlQonD8OiQ6pMk6gqKC3DpoqIxEUASJ+RCaRNSatBAA5joEjHBQGhVExglQOswQ-EQwOgDCACIAkgDKKzr848VwAVALlckQc2bKQ1W6TXSyExAYrtCMMAD6o8YfxDCo+iMdH87CUOh0AEEVrYIVgALLrHSRHTA0igi7guZwYxInQKMCwuE6ABC+NwYMxfwByIIoIJ8MhZLx9KJK3xigxcnJGMJuNR6MxWJxyPxxMQOgACtQ2nB6EQyRTwVTcbT8RDxWtGIIhgANJn4lbilZLej9caWCDsikcjlKfakWaGSpjagfe1Qax2g6AnQ5WhVfrsd24HQgCkQtZbAAyPtIMAIH2CHyg-FE1HDa1sticsfjiaCyf4pHISgAvhz3dB4KIgwcbE7VQTI1H9U2sy4wByAFZEfofADWcFYNfd9aM-GxUGEpF+-AKCZ7fcHw+AldgYlrDrkAF1XhHoz73cBgGrm-jt7uIBH24eDsfT+3z5elE0ff1-QK9t7kcGKXwhCIhTIv+wgboqlSfDOxBBKMAyfoK0qZNQuIGkQQQ6FgcADC8eDgeCa7wChbbZgqGKCiwnyaCwKqJL2BBiB8JQiOopTsI2hKtoS6ycdCXFrOyIZqvCAl4Y07xfNivxLNSYmfN8Un-NygrgqgLCwAQZQ0rRMgMUxcAsfw8HKVR1CCHAvzafRNbXtmglgBKsIQgi-F4MyDlYE5AnMgA8ls+KiVyon+MwDofFRjA0XRulZPp5CGaJSp0is3kOAAcvYACarZbPYEIwgAjNluUwgATF5+I5R5BX+WRmKBbVSpEJoYXUVpUWiIxMUGUZgrsQA4h2dnEnCWAANJYIVrmiiN41lVNYBYE4fUbN5qWTVyzIQgNNXKTo9W7TA05aCwtDjLoyL2M44EcuCNpKLQOLsP05BqBo2jWDYYYYqIiT9KwELoOwTQACSCLQIYgyUjDaIwHKlkoYCltuQA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+  \item{example-2}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGI3OgMpxiEfjpwAB6wqCLungC80TGxsRF2ABa0ojoa8Lg6UDqirGSJcBoEOqhQtIw6RMY6AIIAIra2TgD09V4AMjr8UKTZKSZQTDI9cAHGRBUAwkRBOoxwAObzoqKWEAkA7gXzabRiWf4lmtwA+vCkiQI6MD3kjBhKdEwsHPxhrIyK6-492YZpcFO3V61iUwL+Rg2tAutAg7HBmRASh0tQaTX0RnBGGMzHg7GRKO8tgcdQAmgBJOo6SI6BRgdoOAByAHE6bgCSiagA1GqdGkEdgAFkyAGZMgBGCWZABMMtFUp00rk7IghJ0k0ZXiw1J0AslOn1+oADArjZkTTojcqObUsABZSZUmnGKDqCb41Vq3XsC2G03mgOW83Wz1q6iDODUVL8-FgGr22ps2lxhMAITpXzVIbVXicAA0dS63YwPV7vRaK4G-QbTdmveH6JHo966QAxJN0u0Zm11lHkzW2Quu0jugV0moduOT9N4ZMzzLj6eTiezunz5MruS9nKkRiwhaiGqiVvDibN1u83MEzOoxpODFzeiw-jsep3zJvpoftFOb93m+fve-xQKIJwaPQ9AiK+P43qIhQYHBozsOKAE-gAJP2XiDv8oihFBgEYQOqF3mhNTMkBRi4TAYRwOwcEAI7sAArJkADsLE6Exyo5LQABeug0hAjBEBs0H-pk8xhK6Al2I4TjEU0aEOF4DipgAUpSD6lKI5CxqIgj0Em4qIEJIliU03EEZhtiZHBqA6nSBjdp6BEAArxjUdoPm5HkOlS-x0gA8l4dIEm0nQ4QZcGkKWhKASqapwSI6g6mOYDKapGl1JOWEkhS2Wrimfk5fmk7Wcu5HOSiXwAL5fGCvzQPAojwr8Nj-Gl4XLj+zkAFZELCJwANZwKwLXgu1mJwC6wikCcBD8CkBAnP1g0jWNwDgk1Yitb0cgALquBA4UPuCwDAOOdQdHS+2HcdP6nb852XXeN13QkAAGXDUB9WToHQsgaCQCQGKDYPgxDTkQB4OiMkQ5BpIkPSI7o2rEPwujBKgEzkAE9CsDoH1eJcGw6Nq0wY79-BEPsEDwzosKSIIGMo10vwJKg8wGJzRAEGIqwQAsGA6KSRCCDoULUNQOgQHAoxpEQurzCMrPgtFWSpIMRDaDojbjPMCSMGYygLKzWM4-LaMCHADzfCwMAnPMxjzUQ1EPnQOmvvajo6h7MVOw5RWJrOxBuzG45phmW5HWg9n-LC0KxeCOoIgSfBCCIzbp8IO02qQDtzcQQTzAssVhhG0s0nS0yzFgiwPHgNooltsAyS9TRsk3WSMA7xwVPylwyGIJxJb4uPsJ13sFdxEfFWA24ovbjvTS7Yfdw7Tur6gCVeqUuILalg986Bo-qEhXcosc1CCHA81Hzt8XJu5WCeY6k7P55GYLmAwWhaGhILx3MwXoJw+6HwGsfEekYx5ITSuVeemRGQOHaO0QBxBNCgJYOAoeJ9oFnxfGlXMeYKouAQcmIhX8u4wFmloFgtAVY0nsM4Hs14lBfFoNUdgsI7jDi0LRLcOgkSelEMkCArAajoHYLHNCghaCZGkXBRg2hPhKBqkoMANV9pAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGI3OgMpxiEfjpwAB6wqCLungC80TGxsRF2ABa0ojoa8Lg6UDqirGSJcBoEOqhQtIw6RMY6AIIAIra2TgD09V4AMjr8UKTZKSZQTDI9cAHGRBUAwkRBOoxwAObzoqKWEAkA7gXzabRiWf4lmtwA+vCkiQI6MD3kjBhKdEwsHPxhrIyK6-492YZpcFO3V61iUwL+Rg2tAutAg7HBmRASh0tQaTX0RnBGGMzHg7GRKO8tgcdQAmgBJOo6SI6BRgdoOAByAHE6bgCSiagA1GqdGkEdgAFkyAGZMgBGCWZABMMtFUp00rk7IghJ0k0ZXiw1J0AslOn1+oADArjZkTTojcqObUsABZSZUmnGKDqCb41Vq3XsC2G03mgOW83Wz1q6iDODUVL8-FgGr22ps2lxhMAITpXzVIbVXicAA0dS63YwPV7vRaK4G-QbTdmveH6JHo966QAxJN0u0Zm11lHkzW2Quu0jugV0moduOT9N4ZMzzLj6eTiezunz5MruS9nKkRiwhaiGqiVvDibN1u83MEzOoxpODFzeiw-jsep3zJvpoftFOb93m+fve-xQKIJwaPQ9AiK+P43qIhQYHBozsOKAE-gAJP2XiDv8oihFBgEYQOqF3mhNTMkBRi4TAYRwOwcEAI7sAArJkADsLE6Exyo5LQABeug0hAjBEBs0H-pk8xhK6Al2I4TjEU0aEOF4DipgAUpSD6lKI5CxqIgj0Em4qIEJIliU03EEZhtiZHBqA6nSBjdp6BEAArxjUdoPm5HkOlS-x0gA8l4dIEm0nQ4QZcGkKWhKASqapwSI6g6mOYDKapGl1JOWEkhS2Wrimfk5fmk7Wcu5HOSiXwAL5fGCvzQPAojwr8Nj-Gl4XLj+zkAFZELCJwANZwKwLXgu1mJwC6wikCcBD8CkBAnP1g0jWNwDgk1Yitb0cgALquBA4UPuCwDAOOdQdHS+2HcdP6nb852XXeN13QkAAGXDUB9WToHQsgaCQCQGKDYPgxDTkQB4OiMkQ5BpIkPSI7o2rEPwujBKgEzkAE9CsDoH1eJcGw6Nq0wY79-BEPsEDwzosKSIIGMo10vwJKg8wGJzRAEGIqwQAsGA6KSRCCDoULUNQOgQHAoxpEQurzCMrPgtFWSpIMRDaDojbjPMCSMGYygLKzWM4-LaMCHADzfCwMAnPMxjzUQ1EPnQOmvvajo6h7MVOw5RWJrOxBuzG45phmW5HWg9n-LC0KxeCOoIgSfBCCIzbp8IO02qQDtzcQQTzAssVhhG0s0nS0yzFgiwPHgNooltsAyS9TRsk3WSMA7xwVPylwyGIJxJb4uPsJ13sFdxEfFWA24ovbjvTS7Yfdw7Tur6gCVeqUuILalg986Bo-qEhXcosc1CCHA81Hzt8XJu5WCeY6k7P55GYLmAwWhaGhILx3MwXoJw+6HwGsfEekYx5ITSuVeemRGQOHaO0QBxBNCgJYOAoeJ9oFnxfGlXMeYKouAQcmIhX8u4wFmloFgtAVY0nsM4Hs14lBfFoNUdgsI7jDi0LRLcOgkSelEMkCArAajoHYLHNCghaCZGkXBRg2hPhKBqkoMANV9pAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

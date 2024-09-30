@@ -186,22 +186,29 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
 #'
-#' ADAE <- tmc_ex_adae
-#' ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADAE$USUBJID)
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADAE <- tmc_ex_adae
+#'   ADSL <- tmc_ex_adsl %>%
+#'     filter(USUBJID %in% ADAE$USUBJID)
+#' })
+#' datanames(data) <- c("ADSL", "ADAE")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADAE <- data[["ADAE"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADAE = ADAE,
-#'     code = "
-#'       ADAE <- tmc_ex_adae
-#'       ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADAE$USUBJID)
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_pp_adverse_events(
 #'       label = "Adverse Events",

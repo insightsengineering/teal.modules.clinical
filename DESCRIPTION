@@ -71,6 +71,7 @@ Suggests:
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
     pkgload,
+    roxy.shinylive,
     rvest,
     shinytest2,
     styler,
@@ -90,12 +91,12 @@ Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.widgets, insightsengineering/tern.gee,
     insightsengineering/tern.mmrm, shosaco/vistime, tidyverse/forcats,
     yihui/knitr, tidyverse/lubridate, insightsengineering/nestcolor,
-    r-lib/pkgload, tidyverse/rvest, rstudio/shinytest2, r-lib/styler,
+    r-lib/pkgload, insightsengineering/roxy.shinylive, tidyverse/rvest, rstudio/shinytest2, r-lib/styler,
     r-lib/testthat, r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-Roxygen: list(markdown = TRUE)
+Roxygen: list(markdown = TRUE, packages = c("roxy.shinylive"))
 RoxygenNote: 7.3.2

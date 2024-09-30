@@ -121,8 +121,16 @@ filtering for \code{PARAMCD} one observation per patient is expected
 }
 }
 \examples{
-ADSL <- tmc_ex_adsl
-ADTTE <- tmc_ex_adtte
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADTTE <- tmc_ex_adtte
+})
+datanames(data) <- c("ADSL", "ADTTE")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADTTE <- data[["ADTTE"]]
 
 arm_ref_comp <- list(
   ACTARMCD = list(
@@ -136,14 +144,7 @@ arm_ref_comp <- list(
 )
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADTTE = ADTTE,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADTTE <- tmc_ex_adtte
-    "
-  ),
+  data = data,
   modules = modules(
     tm_t_tte(
       label = "Time To Event Table",
@@ -179,3 +180,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIJOh4UUTQm3CCdgUwHILZlNmc5pcwQYArIni-AGs4VjGkyaN+OGMoYVI-An5aUTKtnf3D4GHYMXHPOQBdVwh5oVwklgMBlnl8rMfn8AU0WkUQWC5nC1tD-iwYH5GOcbkQYKginRRKQZhAMpkAMK2TJYACyFOyOgAvDoiSSGhlscZmTplnSdAAhRYcnTEfE86Z82lZRa8ub8imzQYZOS4Bo06UstmkjKc8482YCxA6AAK1CgBDg9CIwrJurFBJZkrmxuyjEEAHMdAANWWzCnGil4+jxDyWCBKhqDQZKNAE8LxaI6nRJHlJNV2vhCESiHlZ4SfEUlPzXHpwZO61lQehwagGsC2WjwOxEHRObRkOzVkS2ysZd7Nlng1a9vsYvyaFgSmLbS2iPyiWtwdRwfgVvuTxi0btwG4zmSfQEpZ0av3y+nZM+U6l0hlK1UiytS2aPnQPu2V8dc3HillfnEOhmfY6KgLCwLc06zmIC5Liua6vhkk7UIIu4EPuc7sCsLRLGAJo0pkF5nnhWAEUqQHAXKADyuQvh+urvsBxLMJ4E5Tk66HQYuIhweulabtu9AiHuUFjEeoozGAuROL6eBygKtJYAA0lgABM97kcBsxSTJr4MX2GjwH4qDbGQubsSJMHceQa7TAAjAAHCpKQqQALAAzKqOgOSpemVnAHbXGcDysYwkEHvOXHLtZvG6vxO7CeFmEojhTgAGoAHK2NkTi5Iq6waX2sxpZl2W5aOwHGLQFSrjy9jOLpIrKm+SiDLQ3LsPE5BqBo2jWDYaR2qIcQQKwmToOwcYACSCLQKRTYujDaIwgx9EoYB9D8QA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIJOh4UUTQm3CCdgUwHILZlNmc5pcwQYArIni-AGs4VjGkyaN+OGMoYVI-An5aUTKtnf3D4GHYMXHPOQBdVwh5oVwklgMBlnl8rMfn8AU0WkUQWC5nC1tD-iwYH5GOcbkQYKginRRKQZhAMpkAMK2TJYACyFOyOgAvDoiSSGhlscZmTplnSdAAhRYcnTEfE86Z82lZRa8ub8imzQYZOS4Bo06UstmkjKc8482YCxA6AAK1CgBDg9CIwrJurFBJZkrmxuyjEEAHMdAANWWzCnGil4+jxDyWCBKhqDQZKNAE8LxaI6nRJHlJNV2vhCESiHlZ4SfEUlPzXHpwZO61lQehwagGsC2WjwOxEHRObRkOzVkS2ysZd7Nlng1a9vsYvyaFgSmLbS2iPyiWtwdRwfgVvuTxi0btwG4zmSfQEpZ0av3y+nZM+U6l0hlK1UiytS2aPnQPu2V8dc3HillfnEOhmfY6KgLCwLc06zmIC5Liua6vhkk7UIIu4EPuc7sCsLRLGAJo0pkF5nnhWAEUqQHAXKADyuQvh+urvsBxLMJ4E5Tk66HQYuIhweulabtu9AiHuUFjEeoozGAuROL6eBygKtJYAA0lgABM97kcBsxSTJr4MX2GjwH4qDbGQubsSJMHceQa7TAAjAAHCpKQqQALAAzKqOgOSpemVnAHbXGcDysYwkEHvOXHLtZvG6vxO7CeFmEojhTgAGoAHK2NkTi5Iq6waX2sxpZl2W5aOwHGLQFSrjy9jOLpIrKm+SiDLQ3LsPE5BqBo2jWDYaR2qIcQQKwmToOwcYACSCLQKRTYujDaIwgx9EoYB9D8QA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

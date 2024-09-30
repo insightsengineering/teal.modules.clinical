@@ -83,18 +83,20 @@ This module produces an adverse events table and \code{\link[ggplot2:ggplot]{ggp
 library(nestcolor)
 library(dplyr)
 
-ADAE <- tmc_ex_adae
-ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADAE$USUBJID)
+data <- teal_data()
+data <- within(data, {
+  ADAE <- tmc_ex_adae
+  ADSL <- tmc_ex_adsl \%>\%
+    filter(USUBJID \%in\% ADAE$USUBJID)
+})
+datanames(data) <- c("ADSL", "ADAE")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADAE <- data[["ADAE"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADAE = ADAE,
-    code = "
-      ADAE <- tmc_ex_adae
-      ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADAE$USUBJID)
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_pp_adverse_events(
       label = "Adverse Events",
@@ -135,3 +137,13 @@ if (interactive()) {
 }
 
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACKNTsk6pDAEaXAAHmlQ8XD1Tc0AygAyHV09-YP8otQ6AKQAfCujDca01OSM7A7jDgBCAFIAks2r5StjbQAkR6eXzUEAvkG50PCilYk2fIEdgKMAtKagmqglptUFBABWRHKaQA1nBWH9coCjPw4MYoMJSGkCPxaKIeojkWiMcBvrAxP8oHIALqxcHTfK5YDAaETSag5msiAw9qcqrc3mwsCC2JoVAdcrFEEQBq5HQAXh0uVwoz4QhEog1Oj1wgZW06MDSAHM0ugFtpGKI4L1tGQ-uaGtQoPQ4MtNdD+A6nTonK7SKJIR6tVUfrp-WDWi48FHUCwKKRY0beRDkyqGvnUxp08SiH6dKDnucrpG8-mdJEiESSnBaFaSqQjcCAGwABh7kxqACY+wOdMOR3IdbX81A4PsYJ2SkiCGI0k6ROo4PxlXW6wQlzIxEbNCxaN6RMSDyu-iKoWCnLYnFgALJwqe7-PruCb-hZ++Pl9QSjSco1IIgBitZhcUXZdVy-H8dw-HR91gw1NRPRgz3oC8UMPG9EzvNpbAAeQADQAcSwN8owaeDyF-eMiLIyigOnBoQLY5CCVEbhilYGC8LXX1v3oxCP1w69j1Pc9nQkhlb3Le8sCcfkwA4pCdDorc-zaZTVOA99dyIQRfCIeABOvISN1EmjkKvI90Ok7DZPs-C2kIpxiIcWxqM42jhJ-HTPO81iP3U3coAsEgLLggKbL8uzUKkzCZMvVD2AU6EnEaABhAA5XyNK0hjFLaXKCrAAzQNoczNTk0QrJErcxN3erkqwnDXIygjSvGWxmgATUKpDip0vrBtC3dwrrXFiBKvKHEmflpyCdilCCWhjB0dhyn2SKNG0awbDqPNRDKCBWEadB2DlB5BFoGpbqdRgHQ+JQwHeZkgA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACKNTsk6pDAEaXAAHmlQ8XD1Tc0AygAyHV09-YP8otQ6AKQAfCujDca01OSM7A7jDgBCAFIAks2r5StjbQAkR6eXzUEAvkG50PCilYk2fIEdgKMAtKagmqglptUFBABWRHKaQA1nBWH9coCjPw4MYoMJSGkCPxaKIeojkWiMcBvrAxP8oHIALqxcHTfK5YDAaETSag5msiAw9qcqrc3mwsCC2JoVAdcrFEEQBq5HQAXh0uVwoz4QhEog1Oj1wgZW06MDSAHM0ugFtpGKI4L1tGQ-uaGtQoPQ4MtNdD+A6nTonK7SKJIR6tVUfrp-WDWi48FHUCwKKRY0beRDkyqGvnUxp08SiH6dKDnucrpG8-mdJEiESSnBaFaSqQjcCAGwABh7kxqACY+wOdMOR3IdbX81A4PsYJ2SkiCGI0k6ROo4PxlXW6wQlzIxEbNCxaN6RMSDyu-iKoWCnLYnFgALJwqe7-PruCb-hZ++Pl9QSjSco1IIgBitZhcUXZdVy-H8dw-HR91gw1NRPRgz3oC8UMPG9EzvNpbAAeQADQAcSwN8owaeDyF-eMiLIyigOnBoQLY5CCVEbhilYGC8LXX1v3oxCP1w69j1Pc9nQkhlb3Le8sCcfkwA4pCdDorc-zaZTVOA99dyIQRfCIeABOvISN1EmjkKvI90Ok7DZPs-C2kIpxiIcWxqM42jhJ-HTPO81iP3U3coAsEgLLggKbL8uzUKkzCZMvVD2AU6EnEaABhAA5XyNK0hjFLaXKCrAAzQNoczNTk0QrJErcxN3erkqwnDXIygjSvGWxmgATUKpDip0vrBtC3dwrrXFiBKvKHEmflpyCdilCCWhjB0dhyn2SKNG0awbDqPNRDKCBWEadB2DlB5BFoGpbqdRgHQ+JQwHeZkgA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

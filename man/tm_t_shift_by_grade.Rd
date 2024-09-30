@@ -105,18 +105,19 @@ a \code{teal_module} object.
 This module produces a summary table of worst grades per subject by visit and parameter.
 }
 \examples{
-ADSL <- tmc_ex_adsl
-ADLB <- tmc_ex_adlb
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADLB <- tmc_ex_adlb
+})
+datanames(data) <- c("ADSL", "ADLB")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADLB <- data[["ADLB"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADLB = ADLB,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADLB <- tmc_ex_adlb
-    "
-  ),
+  data = data,
   modules = modules(
     tm_t_shift_by_grade(
       label = "Grade Laboratory Abnormality Table",
@@ -161,3 +162,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIJOh4UUTQm3CCdgUwHILZlNmcltnBgCsieL8AazhWMaTJo344YyhhUj8CflpRMs3tvYPgYdgxcc85AF1XCHnCuEksBgMs8vlZt9fv8mq0gaEQWDVmAoX80KgivFojMIBkkjoALw6JK4Bp8IQiUSEnTk4QfBoZEp+K6iOLGK70Vh+ADmzFOOIygp01Cg9Dg1GpswA4nzdPlRURmKRFawsvQIIqYNxoqrbKKRIsGYK3vBJXNYYbcUKdCwYH5NCxqQQYlsCGI-KJxXB1HB+ALrRlna6xNSHYxaPq4NcXTIPgCUqJBPRPaQnTM5lgALKLHTLLMAYWyazkpKtAc9Ih9-DNmSzsyNGRLDZ0qBYsBuTpjbtEHq9Vf9AaDsapRId1EEUaH3fYK2aSzAAAVa5lM4Wc7Ml1gV2tSwGMhXveRq0TlvlbPWy4Km5eMhFFaIrsYRdz7Y6iVP3Qf+83A12Q6OWAjegRGjYMxlnBMkxTNNZgAdSlLB8gAeQANQAMQhPBczAeDEKQjD1xwhCAAkAEl0Mw+dcLIgiwDka89x0L8jxgoi8IotZmwY6070YB8-CfKAX3iW5ZGVRhOzA3tKyPAdrTHCdQOHGdYSohDkI4ujdz3ZjfTNABNHNjFoCo9KJexnC47ShSgCB-GVCpeRqKMw0k4dpMPX05KFD8Rx0MMgJA3yVJaSDkzgVN33TTJbCQgANBDi2s61dOPHRpmWWKEqwHcfxMEyzLsRwXBvHRuKFegoE9ZkiEc2VXwk98-x7VLvMFXzQ0AyMlOnCCmKgiLWOaLLEro8qUr7FiotmYb4tG8ahWM0y0oskqAwWm1+H4GrPAlIk0MyfJcjWq8Gm44zqHIRrijgbgPToadfHu2NovBQjckyNDaITSbCtmQyxqUQZaGMHR2HiK6oAsbRrBsNIrVZeJWEydB2HRAASQRaBSDHPUYbRGEGPolDAPpviAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIJOh4UUTQm3CCdgUwHILZlNmcltnBgCsieL8AazhWMaTJo344YyhhUj8CflpRMs3tvYPgYdgxcc85AF1XCHnCuEksBgMs8vlZt9fv8mq0gaEQWDVmAoX80KgivFojMIBkkjoALw6JK4Bp8IQiUSEnTk4QfBoZEp+K6iOLGK70Vh+ADmzFOOIygp01Cg9Dg1GpswA4nzdPlRURmKRFawsvQIIqYNxoqrbKKRIsGYK3vBJXNYYbcUKdCwYH5NCxqQQYlsCGI-KJxXB1HB+ALrRlna6xNSHYxaPq4NcXTIPgCUqJBPRPaQnTM5lgALKLHTLLMAYWyazkpKtAc9Ih9-DNmSzsyNGRLDZ0qBYsBuTpjbtEHq9Vf9AaDsapRId1EEUaH3fYK2aSzAAAVa5lM4Wc7Ml1gV2tSwGMhXveRq0TlvlbPWy4Km5eMhFFaIrsYRdz7Y6iVP3Qf+83A12Q6OWAjegRGjYMxlnBMkxTNNZgAdSlLB8gAeQANQAMQhPBczAeDEKQjD1xwhCAAkAEl0Mw+dcLIgiwDka89x0L8jxgoi8IotZmwY6070YB8-CfKAX3iW5ZGVRhOzA3tKyPAdrTHCdQOHGdYSohDkI4ujdz3ZjfTNABNHNjFoCo9KJexnC47ShSgCB-GVCpeRqKMw0k4dpMPX05KFD8Rx0MMgJA3yVJaSDkzgVN33TTJbCQgANBDi2s61dOPHRpmWWKEqwHcfxMEyzLsRwXBvHRuKFegoE9ZkiEc2VXwk98-x7VLvMFXzQ0AyMlOnCCmKgiLWOaLLEro8qUr7FiotmYb4tG8ahWM0y0oskqAwWm1+H4GrPAlIk0MyfJcjWq8Gm44zqHIRrijgbgPToadfHu2NovBQjckyNDaITSbCtmQyxqUQZaGMHR2HiK6oAsbRrBsNIrVZeJWEydB2HRAASQRaBSDHPUYbRGEGPolDAPpviAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

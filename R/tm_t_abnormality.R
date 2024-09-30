@@ -240,12 +240,16 @@ template_abnormality <- function(parentname,
 #' @note Patients with the same abnormality at baseline as on the treatment visit can be
 #'   excluded in accordance with GDSR specifications by using `exclude_base_abn`.
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
+#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   library(dplyr)
-#'
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb %>%
 #'     mutate(
@@ -255,9 +259,11 @@ template_abnormality <- function(parentname,
 #'       ) %>% with_label("On Treatment Record Flag")
 #'     )
 #' })
-#' datanames <- c("ADSL", "ADLB")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' datanames(data) <- c("ADSL", "ADLB")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADLB <- data[["ADLB"]]
 #'
 #' app <- init(
 #'   data = data,
@@ -266,21 +272,21 @@ template_abnormality <- function(parentname,
 #'       label = "Abnormality Table",
 #'       dataname = "ADLB",
 #'       arm_var = choices_selected(
-#'         choices = variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
+#'         choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
 #'         selected = "ARM"
 #'       ),
 #'       add_total = FALSE,
 #'       by_vars = choices_selected(
-#'         choices = variable_choices(data[["ADLB"]], subset = c("LBCAT", "PARAM", "AVISIT")),
+#'         choices = variable_choices(ADLB, subset = c("LBCAT", "PARAM", "AVISIT")),
 #'         selected = c("LBCAT", "PARAM"),
 #'         keep_order = TRUE
 #'       ),
 #'       baseline_var = choices_selected(
-#'         variable_choices(data[["ADLB"]], subset = "BNRIND"),
+#'         variable_choices(ADLB, subset = "BNRIND"),
 #'         selected = "BNRIND", fixed = TRUE
 #'       ),
 #'       grade = choices_selected(
-#'         choices = variable_choices(data[["ADLB"]], subset = "ANRIND"),
+#'         choices = variable_choices(ADLB, subset = "ANRIND"),
 #'         selected = "ANRIND",
 #'         fixed = TRUE
 #'       ),

@@ -361,6 +361,11 @@ template_coxreg_m <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' ## First example
 #' ## =============
@@ -383,9 +388,11 @@ template_coxreg_m <- function(dataname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADTTE <- tmc_ex_adtte
 #' })
-#' datanames <- c("ADSL", "ADTTE")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' datanames(data) <- c("ADSL", "ADTTE")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADTTE <- data[["ADTTE"]]
 #'
 #' app <- init(
 #'   data = data,
@@ -396,7 +403,7 @@ template_coxreg_m <- function(dataname,
 #'       arm_var = choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
-#'         value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"), "OS"
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
 #'       ),
 #'       strata_var = choices_selected(
 #'         c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
@@ -412,17 +419,20 @@ template_coxreg_m <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
+#' @examples
 #' ## Second example
 #' ## ==============
 #' ## This time, a synthetic pair of ADTTE/ADSL data is fabricated for Cox regression
 #' ## where ties and pval_method matter.
-#'
-#' ## Dataset fabrication
-#' ## -------------------
+#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   library(dplyr)
 #'   ADTTE <- data.frame(
 #'     STUDYID = "LUNG",
 #'     AVAL = c(4, 3, 1, 1, 2, 2, 3, 1, 2),
@@ -451,9 +461,11 @@ template_coxreg_m <- function(dataname,
 #'   )
 #' })
 #'
-#' datanames <- c("ADSL", "ADTTE")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' datanames(data) <- c("ADSL", "ADTTE")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADTTE <- data[["ADTTE"]]
 #'
 #' ## `teal` application
 #' ## ----------------
@@ -462,6 +474,7 @@ template_coxreg_m <- function(dataname,
 #' ## running the exported R code.
 #'
 #' arm_ref_comp <- list(ARMCD = list(ref = "ARM A", comp = c("ARM B")))
+#'
 #' app <- init(
 #'   data = data,
 #'   modules = modules(
@@ -471,7 +484,7 @@ template_coxreg_m <- function(dataname,
 #'       arm_var = choices_selected(c("ARMCD"), "ARMCD"),
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd = choices_selected(
-#'         value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"), "OS"
+#'         value_choices(ADTTE, "PARAMCD", "PARAM"), "OS"
 #'       ),
 #'       strata_var = choices_selected(c("INST"), NULL),
 #'       cov_var = choices_selected(c("SEX", "AGE"), "SEX"),

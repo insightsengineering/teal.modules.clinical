@@ -124,11 +124,19 @@ This module produces a grid-style forest plot for response data with ADaM struct
 library(nestcolor)
 library(dplyr)
 
-ADSL <- tmc_ex_adsl
-ADRS <- tmc_ex_adrs \%>\%
-  mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
-    with_label("Character Result/Finding")) \%>\%
-  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADRS <- tmc_ex_adrs \%>\%
+    mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
+      with_label("Character Result/Finding")) \%>\%
+    filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+})
+datanames(data) <- c("ADSL", "ADRS")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADRS <- data[["ADRS"]]
 
 arm_ref_comp <- list(
   ARM = list(
@@ -142,17 +150,7 @@ arm_ref_comp <- list(
 )
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADRS = ADRS,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADRS <- tmc_ex_adrs \%>\%
-        mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
-        with_label(\"Character Result/Finding\")) \%>\%
-        filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_forest_rsp(
       label = "Forest Response",
@@ -207,3 +205,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otT1Tc1YrV09fYPD-IyiOgCkAHyrEw0wgonk7I0Aao3tAMI6ALw6-GkkxGnLqGnUUPRw1Icn5zYbWxANQGFYolF5vD7sBRgM4lFhQdSqHRYMTCUgAegAYuV+OUAOZQuS-TbbEy0ajkRjsAAKjSwjQAsmdmjoAITXKEAeSOWAAkgA5I5QnQAHyaRx5rR5tiu7LAGI57XaHIA6joHFSCUoAL5BXLQeCiSqJGz5AiQsAtDpQmpQlrTTUQABWRHKaQA1nBWIbciajPw4MYoKi0gQcaI+s7XR6vcA9bAxEaoHIALqxS2dfK5YDAW1tdpQ5OpiB2maZqrZ3P2sCF2IsGCPAMhogwVBdOiiUiQgFNLD0q46dudkmMAP9qEAIUQOiprwIcHoRGtJOILf7ZttU+ajEEuJ0AA1rTooWcp2dm-RyglLBAHQ05LgJrTGczroOu0CR8Yxxbezpx0vuwaFdW2udcfz7RpD1tX8zlvHQgiCJQ0FbfJymKd8biqftcgfbs+CEEQVmufDhATEkejSXE0mMAIfEeURUAwoFXneahvwxWiOyRMRUBIUQ4AAoEGjjeBvxLQShLrNJNBYNcShdOdRDSfiRARfgmKEmTGFoN4RBDeSZATdMajAp8oPApkCXvEkgWg58oRs+DcKEnQpM-JtV2uNzG2A5yhNQOFen4OSFLEZSPjgNSNKBGTqEEOB9NCw0SxtMAaTpey8CPNLaQZAk-JcqF+SOJxbAcwDAWsiqGlEQR6FxRgiEEZ4tJCwylJUyLyHUxyGi0nT6D0ggDMUw48xqfUjLzQkCqEsDx3pLAAGksAAJnM1onAPMAghcqqXI7ZhEmk2TQJGsLOqi3qdH63SEuGpKxo6EzzVaexGlsRoAEYNvez71p2-aXOyt66X+8q9tmhpIiIUg0hKOBaFxEpSDXdgADYAAZMfaGpVux3GdHxgmgaBf1A2DEcGL4sR+zfa7xycVppipHk6doDtoqEp40ahVpEkG3Rmg5uAoH4nR2FaZpFCyqE+VhnQnFiwQ7olvknBl0ngZEbRqCInR12q4Hj2bSI4HIbjqYgcX2DOLAZdSqkWA0bhLd463dGpe2NoFkQdGF-ixc9qWHeu2y0sahqxFELQhZFoOJapaXzPl1Gle4FXBbVjWIeBu9rq1oFitK9nObDnQedA80zxbEQLeRK2bbth3sqdxgXbYhv3ZtqlvZ2qGhJ1j59cNvPw5rs3654mmJeblOFfTuLVfYdWW6hNuO7dmevdDo3Cojogo9EGPtH9+Oe+T2WwH51WA9Fm2Q9zvPduBwvAS5XkBVLoc98BSuDfNFSSOVMT5x0DhfNe19fZgPvsHS+b9mJwF1iPQBwDo6xzPuAz2SdIE3yznfBOktL6pVTorZWy9V5wT2o5F++duwISULQL87BygUnhBobQ1gbB1G7KIMoEBWCNHQOwZCAASQQtAahiP4owbQMQIBaiUGALUyYgA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otT1Tc1YrV09fYPD-IyiOgCkAHyrEw0wgonk7I0Aao3tAMI6ALw6-GkkxGnLqGnUUPRw1Icn5zYbWxANQGFYolF5vD7sBRgM4lFhQdSqHRYMTCUgAegAYuV+OUAOZQuS-TbbEy0ajkRjsAAKjSwjQAsmdmjoAITXKEAeSOWAAkgA5I5QnQAHyaRx5rR5tiu7LAGI57XaHIA6joHFSCUoAL5BXLQeCiSqJGz5AiQsAtDpQmpQlrTTUQABWRHKaQA1nBWIbciajPw4MYoKi0gQcaI+s7XR6vcA9bAxEaoHIALqxS2dfK5YDAW1tdpQ5OpiB2maZqrZ3P2sCF2IsGCPAMhogwVBdOiiUiQgFNLD0q46dudkmMAP9qEAIUQOiprwIcHoRGtJOILf7ZttU+ajEEuJ0AA1rTooWcp2dm-RyglLBAHQ05LgJrTGczroOu0CR8Yxxbezpx0vuwaFdW2udcfz7RpD1tX8zlvHQgiCJQ0FbfJymKd8biqftcgfbs+CEEQVmufDhATEkejSXE0mMAIfEeURUAwoFXneahvwxWiOyRMRUBIUQ4AAoEGjjeBvxLQShLrNJNBYNcShdOdRDSfiRARfgmKEmTGFoN4RBDeSZATdMajAp8oPApkCXvEkgWg58oRs+DcKEnQpM-JtV2uNzG2A5yhNQOFen4OSFLEZSPjgNSNKBGTqEEOB9NCw0SxtMAaTpey8CPNLaQZAk-JcqF+SOJxbAcwDAWsiqGlEQR6FxRgiEEZ4tJCwylJUyLyHUxyGi0nT6D0ggDMUw48xqfUjLzQkCqEsDx3pLAAGksAAJnM1onAPMAghcqqXI7ZhEmk2TQJGsLOqi3qdH63SEuGpKxo6EzzVaexGlsRoAEYNvez71p2-aXOyt66X+8q9tmhpIiIUg0hKOBaFxEpSDXdgADYAAZMfaGpVux3GdHxgmgaBf1A2DEcGL4sR+zfa7xycVppipHk6doDtoqEp40ahVpEkG3Rmg5uAoH4nR2FaZpFCyqE+VhnQnFiwQ7olvknBl0ngZEbRqCInR12q4Hj2bSI4HIbjqYgcX2DOLAZdSqkWA0bhLd463dGpe2NoFkQdGF-ixc9qWHeu2y0sahqxFELQhZFoOJapaXzPl1Gle4FXBbVjWIeBu9rq1oFitK9nObDnQedA80zxbEQLeRK2bbth3sqdxgXbYhv3ZtqlvZ2qGhJ1j59cNvPw5rs3654mmJeblOFfTuLVfYdWW6hNuO7dmevdDo3Cojogo9EGPtH9+Oe+T2WwH51WA9Fm2Q9zvPduBwvAS5XkBVLoc98BSuDfNFSSOVMT5x0DhfNe19fZgPvsHS+b9mJwF1iPQBwDo6xzPuAz2SdIE3yznfBOktL6pVTorZWy9V5wT2o5F++duwISULQL87BygUnhBobQ1gbB1G7KIMoEBWCNHQOwZCAASQQtAahiP4owbQMQIBaiUGALUyYgA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

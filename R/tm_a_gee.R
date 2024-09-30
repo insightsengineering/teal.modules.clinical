@@ -135,8 +135,14 @@ template_a_gee <- function(output_table,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
+#'
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
@@ -152,9 +158,8 @@ template_a_gee <- function(output_table,
 #'     ) %>%
 #'     droplevels()
 #' })
-#' datanames <- c("ADSL", "ADQS")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' datanames(data) <- c("ADSL", "ADQS")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
 #'
 #' app <- init(
 #'   data = data,

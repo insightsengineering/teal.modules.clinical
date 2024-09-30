@@ -60,18 +60,19 @@ This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type conf
 \examples{
 library(nestcolor)
 
-ADSL <- tmc_ex_adsl
-ADLB <- tmc_ex_adlb
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADLB <- tmc_ex_adlb
+})
+datanames(data) <- c("ADSL", "ADLB")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADLB <- data[["ADLB"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADLB = ADLB,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADLB <- tmc_ex_adlb
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_ci(
       label = "Confidence Interval Plot",
@@ -121,10 +122,6 @@ app <- init(
         )
       )
     )
-  ),
-  header = "Example of Confidence Interval Plot",
-  footer = tags$p(
-    class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
   )
 )
 if (interactive()) {
@@ -136,3 +133,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlbUAQg1NLe2d-NT0SgC+QQXQ8KL5yTapBOwKYFV1W0VbVUNbQQBWRLkxANZwrMsFa0b8cMZQwqQxBPy0oi1nF9e3YALWBiFbhOQAXVcEB29VSBWAwAONVqWwhUJhA2G8OSiORRzA6OhaFQDVymU2EDKBR0AF4dAVcH0+EIRKI6ToWcJQX0yk0YgBzD60SllMU6ahQehwagcrYAYRIxloT3MugAkipGJpuDoAAr+Uh7Xlijo6xgcgqtNqkNTvUSoOAbE3i4HwOXbFHGqnisWiGVO0gc-0idQxB1O0W+8UELLnAhiDnO7ZYACy8sqex0W0GqawAGksAAmY5Mn3RsohwNwfhJzYp9OZsByMsVsUwN60VAiDkAMXKtWqTlbbZMtDaNb7A6HLrFQWjLdnrBi5styWttqgYYjzvLvrdunp+MG3rbyuo5At9LoolIUbPtAvqnDjt3o7F5vZR7AevKWHKjanu+OixvGibXnA2jUMshyDAAJL+-6Noue5tlW6iThBUEwViCF-gBGZyMAACMEIju+HYXl2Pb0v2g7DrO0aStKsrftUAbqBKUqIFsjFzuRFbnpeL6Rnx4qfh65QAGrqtU6q2EB76gTI4ESpBMo4UMcHSbJ8kocBOjoeQtZYRp7CwdpMlybYRGkQJbaURo3aHjodFDvZFbMTKHrsaGQaaN8mQ8WAYk6POFb6RWRnBhx9qvvenlSt537lNA1CsAAXpOUncIIcCKRWykJl+IH1tJA5ZgqAASADipahUZmHZtsUkVXgoWOdRLluQxqG+sqE4ma504uH1ZTheKkUxkQ-hXgy67tJu27xXxB6SV67VjYZsUxX5IlvqOXmsc1iqzTo9CsDo5q0FKIgFdGRWqcmQ4ABqVWA1T2OUtjlMR72ff+P0ls2Hnio1Q3PV9P1-SDHWds5U70aDYoDU1PV8RNc4muFQRBLQxg6OwuSXluGjaNYNglD6og5BArDlOg7AknBgi0EUzP+tqqhBDMShgDMEJAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlbUAQg1NLe2d-NT0SgC+QQXQ8KL5yTapBOwKYFV1W0VbVUNbQQBWRLkxANZwrMsFa0b8cMZQwqQxBPy0oi1nF9e3YALWBiFbhOQAXVcEB29VSBWAwAONVqWwhUJhA2G8OSiORRzA6OhaFQDVymU2EDKBR0AF4dAVcH0+EIRKI6ToWcJQX0yk0YgBzD60SllMU6ahQehwagcrYAYRIxloT3MugAkipGJpuDoAAr+Uh7Xlijo6xgcgqtNqkNTvUSoOAbE3i4HwOXbFHGqnisWiGVO0gc-0idQxB1O0W+8UELLnAhiDnO7ZYACy8sqex0W0GqawAGksAAmY5Mn3RsohwNwfhJzYp9OZsByMsVsUwN60VAiDkAMXKtWqTlbbZMtDaNb7A6HLrFQWjLdnrBi5styWttqgYYjzvLvrdunp+MG3rbyuo5At9LoolIUbPtAvqnDjt3o7F5vZR7AevKWHKjanu+OixvGibXnA2jUMshyDAAJL+-6Noue5tlW6iThBUEwViCF-gBGZyMAACMEIju+HYXl2Pb0v2g7DrO0aStKsrftUAbqBKUqIFsjFzuRFbnpeL6Rnx4qfh65QAGrqtU6q2EB76gTI4ESpBMo4UMcHSbJ8kocBOjoeQtZYRp7CwdpMlybYRGkQJbaURo3aHjodFDvZFbMTKHrsaGQaaN8mQ8WAYk6POFb6RWRnBhx9qvvenlSt537lNA1CsAAXpOUncIIcCKRWykJl+IH1tJA5ZgqAASADipahUZmHZtsUkVXgoWOdRLluQxqG+sqE4ma504uH1ZTheKkUxkQ-hXgy67tJu27xXxB6SV67VjYZsUxX5IlvqOXmsc1iqzTo9CsDo5q0FKIgFdGRWqcmQ4ABqVWA1T2OUtjlMR72ff+P0ls2Hnio1Q3PV9P1-SDHWds5U70aDYoDU1PV8RNc4muFQRBLQxg6OwuSXluGjaNYNglD6og5BArDlOg7AknBgi0EUzP+tqqhBDMShgDMEJAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

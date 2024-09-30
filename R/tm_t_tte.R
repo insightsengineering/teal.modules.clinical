@@ -401,9 +401,22 @@ template_tte <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADTTE <- tmc_ex_adtte
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADTTE <- tmc_ex_adtte
+#' })
+#' datanames(data) <- c("ADSL", "ADTTE")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADTTE <- data[["ADTTE"]]
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -417,14 +430,7 @@ template_tte <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADTTE = ADTTE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADTTE <- tmc_ex_adtte
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_tte(
 #'       label = "Time To Event Table",

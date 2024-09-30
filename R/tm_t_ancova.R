@@ -435,9 +435,22 @@ template_ancova <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADQS <- tmc_ex_adqs
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADQS <- tmc_ex_adqs
+#' })
+#' datanames(data) <- c("ADSL", "ADQS")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADQS <- data[["ADQS"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -451,14 +464,7 @@ template_ancova <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADQS = ADQS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADQS <- tmc_ex_adqs
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_ancova(
 #'       label = "ANCOVA Table",

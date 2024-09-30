@@ -41,4 +41,7 @@ upstream_repos:
   insightsengineering/nestcolor:
     repo: insightsengineering/nestcolor
     host: https://github.com
+  insightsengineering/roxy.shinylive:
+    repo: insightsengineering/roxy.shinylive
+    host: https://github.com
 downstream_repos:

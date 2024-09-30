@@ -91,18 +91,19 @@ a \code{teal_module} object.
 This module produces a summary table of worst analysis indicator variable level per subject by arm.
 }
 \examples{
-ADSL <- tmc_ex_adsl
-ADEG <- tmc_ex_adeg
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADEG <- tmc_ex_adeg
+})
+datanames(data) <- c("ADSL", "ADEG")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADEG <- data[["ADEG"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADEG = ADEG,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADEG <- tmc_ex_adeg
-    "
-  ),
+  data = data,
   modules = modules(
     tm_t_shift_by_arm_by_worst(
       label = "Shift by Arm Table",
@@ -121,7 +122,8 @@ app <- init(
       ),
       worst_flag = choices_selected(
         value_choices(ADEG, "WORS02FL"),
-        selected = "Y", fixed = TRUE
+        selected = "Y",
+        fixed = TRUE
       ),
       aval_var = choices_selected(
         variable_choices(ADEG, c("AVALC", "ANRIND")),
@@ -140,3 +142,13 @@ if (interactive()) {
 }
 
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCCToeFFE0JtwgnYFMByCuZS5nJa5oYArIni-AGs4VnGkqaNu4yhhUj8CflpRMq2d-cPgEdgxCc85AF1XCAXCuEksBgCs8vk5t9fv8mq0gaEQWC1mAoX80KgivForMIBkkjoALw6JK4Bp8IQiUSEnTk4QfBoZEp+K6iOLGK70VjVRgwPycvwRIiMUSkHEZcU6ahQehwajUua5NmkHScrI8uzSkRLBnit7weXzWHa3ESnQsXmaFjUggxbYEMR+USyuDqOD8MWmjKWxi0TVwa62mQfAEpUSCehO5VEmYrLAAWSWOljcYAwtl1nJSSbPU6RK7+AbMvG5jqMpnSzpUCxYDdrYH7aJHc78x7PZbqIJ-Ta7cHYcswAAFIuZVPpsDl7Om3Mu8gFolzJwp5oASQAcrYByXJ2Ws57BcKrsYpT0-N66z3G9OWxWvSxffQRAGL+xVs0UjGwAB1ADyWFyAAYACYADEITwJMv1-ACAEZQIzXdPR0K9ZwNH8-yAuCwArCc9yFEU-CPKAenPINL2bWdW1NdtOyfUiXz7CC0IAkCwJwxDkLdA0AE1jUQkxaAqTiiXsZxsIQiUoHbU8rWjesHQ490bx0b170fbs6Nfd9ZnmAA1TJ8hTRMVlXLA1zHOQ2JzcihIgzI9IMrdPUs8V6CgXN4n9M9ZIvJs8wopSVL9WiG3olotLmAAhTJckXIywAikyzPgpSFINKKYsMrDtx0ZyMkEJ1V0yA1aHOCBWEc8UhjLJQhhKnR2Hicg1A0bRrBsNITVZeJWEydB2HRAASQRaBSQanUYbRGCGfolDAfpviAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCCToeFFE0JtwgnYFMByCuZS5nJa5oYArIni-AGs4VnGkqaNu4yhhUj8CflpRMq2d-cPgEdgxCc85AF1XCAXCuEksBgCs8vk5t9fv8mq0gaEQWC1mAoX80KgivForMIBkkjoALw6JK4Bp8IQiUSEnTk4QfBoZEp+K6iOLGK70VjVRgwPycvwRIiMUSkHEZcU6ahQehwajUua5NmkHScrI8uzSkRLBnit7weXzWHa3ESnQsXmaFjUggxbYEMR+USyuDqOD8MWmjKWxi0TVwa62mQfAEpUSCehO5VEmYrLAAWSWOljcYAwtl1nJSSbPU6RK7+AbMvG5jqMpnSzpUCxYDdrYH7aJHc78x7PZbqIJ-Ta7cHYcswAAFIuZVPpsDl7Om3Mu8gFolzJwp5oASQAcrYByXJ2Ws57BcKrsYpT0-N66z3G9OWxWvSxffQRAGL+xVs0UjGwAB1ADyWFyAAYACYADEITwJMv1-ACAEZQIzXdPR0K9ZwNH8-yAuCwArCc9yFEU-CPKAenPINL2bWdW1NdtOyfUiXz7CC0IAkCwJwxDkLdA0AE1jUQkxaAqTiiXsZxsIQiUoHbU8rWjesHQ490bx0b170fbs6Nfd9ZnmAA1TJ8hTRMVlXLA1zHOQ2JzcihIgzI9IMrdPUs8V6CgXN4n9M9ZIvJs8wopSVL9WiG3olotLmAAhTJckXIywAikyzPgpSFINKKYsMrDtx0ZyMkEJ1V0yA1aHOCBWEc8UhjLJQhhKnR2Hicg1A0bRrBsNITVZeJWEydB2HRAASQRaBSQanUYbRGCGfolDAfpviAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

@@ -90,18 +90,19 @@ a \code{teal_module} object.
 This module produces a summary table of analysis indicator levels by arm.
 }
 \examples{
-ADSL <- tmc_ex_adsl
-ADEG <- tmc_ex_adeg
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADEG <- tmc_ex_adeg
+})
+datanames(data) <- c("ADSL", "ADEG")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADEG <- data[["ADEG"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADEG = ADEG,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADEG <- tmc_ex_adeg
-    "
-  ),
+  data = data,
   modules = modules(
     tm_t_shift_by_arm(
       label = "Shift by Arm Table",
@@ -120,11 +121,13 @@ app <- init(
       ),
       aval_var = choices_selected(
         variable_choices(ADEG, subset = "ANRIND"),
-        selected = "ANRIND", fixed = TRUE
+        selected = "ANRIND",
+        fixed = TRUE
       ),
       baseline_var = choices_selected(
         variable_choices(ADEG, subset = "BNRIND"),
-        selected = "BNRIND", fixed = TRUE
+        selected = "BNRIND",
+        fixed = TRUE
       ),
       useNA = "ifany"
     )
@@ -139,3 +142,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCCToeFFE0JtwgnYFMByCuZS5nJa5oYArIni-AGs4VnGkqaNu4yhhUj8CflpRMq2d-cPgEdgxCc85AF1XCAXCuEksBgCs8vk5t9fv8mq0gaEQWC1mAoX80KgivForMIBkkjoALw6JK4Bp8IQiUSEnTk4QfBoZEp+K6iOLGK70VjVRgwHEZfk6ahQehwajUua5NmkHScrI8uzCkRLBn8t7wcXzWHK3ECnQsGB+TQsakEGLbAhiPyiUVwdRwfh83UZI2MWiKuDXM0yD4AlKiQT0a3SokzFZYACySx0YfDAGFsus5KSdU7rSI7fwNZkI3MVRkk3mdKgWLAbiavRbRFabRnHU6jdRBB7TeafbDlmAAArZzJxhNgAsp3Vp23kTNEuYACSwuaH+eT9bu0UNxpDFctI9rhed3Cbntb41WzQ7mQAagBJXLn2zrBdOnSbscazsAeVytgMACFMrknPlzwAck4OjhoB57hg4kZgIWg5OlADYrow5YHtW6ZjnWuoum69AiPu3qHu2D4BkGWYAVggH9rB96PvapHkQB-Z3k6xi0BUtFEvYzgwUx-L0FAabxB6LrIfhqGjvaGEClh7p4ZW7BHn6xFwMG0ZgJ+ZEUbe24PjWT4TmpGkMdq94mKx7F2I4LhzjoVECoI1oAZkGq0OcECsLOApDPmShDC5OjsPE5BqBo2jWDYaQ6qy8SsJk6DsOiAAkgi0CkiXWow2iMEM-RKGA-TfEAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCCToeFFE0JtwgnYFMByCuZS5nJa5oYArIni-AGs4VnGkqaNu4yhhUj8CflpRMq2d-cPgEdgxCc85AF1XCAXCuEksBgCs8vk5t9fv8mq0gaEQWC1mAoX80KgivForMIBkkjoALw6JK4Bp8IQiUSEnTk4QfBoZEp+K6iOLGK70VjVRgwHEZfk6ahQehwajUua5NmkHScrI8uzCkRLBn8t7wcXzWHK3ECnQsGB+TQsakEGLbAhiPyiUVwdRwfh83UZI2MWiKuDXM0yD4AlKiQT0a3SokzFZYACySx0YfDAGFsus5KSdU7rSI7fwNZkI3MVRkk3mdKgWLAbiavRbRFabRnHU6jdRBB7TeafbDlmAAArZzJxhNgAsp3Vp23kTNEuYACSwuaH+eT9bu0UNxpDFctI9rhed3Cbntb41WzQ7mQAagBJXLn2zrBdOnSbscazsAeVytgMACFMrknPlzwAck4OjhoB57hg4kZgIWg5OlADYrow5YHtW6ZjnWuoum69AiPu3qHu2D4BkGWYAVggH9rB96PvapHkQB-Z3k6xi0BUtFEvYzgwUx-L0FAabxB6LrIfhqGjvaGEClh7p4ZW7BHn6xFwMG0ZgJ+ZEUbe24PjWT4TmpGkMdq94mKx7F2I4LhzjoVECoI1oAZkGq0OcECsLOApDPmShDC5OjsPE5BqBo2jWDYaQ6qy8SsJk6DsOiAAkgi0CkiXWow2iMEM-RKGA-TfEAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+
