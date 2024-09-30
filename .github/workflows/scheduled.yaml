@@ -75,6 +75,7 @@ jobs:
         insightsengineering/teal.data
         insightsengineering/teal.logger
         insightsengineering/teal.reporter
+        insightsengineering/teal.slice
         insightsengineering/teal.widgets
         insightsengineering/tern.gee
         insightsengineering/tern.mmrm
