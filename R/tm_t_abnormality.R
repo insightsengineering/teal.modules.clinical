@@ -429,9 +429,9 @@ ui_t_abnormality <- function(id, ...) {
         "Exclude subjects whose baseline grade is the same as abnormal grade",
         value = a$exclude_base_abn
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional table settings",
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
@@ -439,9 +439,9 @@ ui_t_abnormality <- function(id, ...) {
           )
         )
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

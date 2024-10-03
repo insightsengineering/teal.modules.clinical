@@ -642,9 +642,9 @@ ui_t_coxreg <- function(id, ...) {
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional table settings",
           conditionalPanel(
             condition = paste0("input['", ns("strata_var"), "'] != ''"),
             radioButtons(

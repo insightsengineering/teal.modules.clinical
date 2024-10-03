@@ -509,9 +509,9 @@ ui_g_km <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
-            "Comparison settings",
+        bslib::accordion(
+          bslib::accordion_panel(
+            title = "Comparison settings",
             radioButtons(
               ns("pval_method_coxph"),
               label = HTML(
@@ -541,9 +541,9 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional plot settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional plot settings",
           textInput(
             inputId = ns("xticks"),
             label = "Specify break intervals for x-axis e.g. 0 ; 500"

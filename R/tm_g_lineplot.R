@@ -413,9 +413,9 @@ ui_g_lineplot <- function(id, ...) {
         "Include screening visit",
         value = TRUE
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional plot settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional plot settings",
           teal.widgets::optionalSelectInput(
             ns("conf_level"),
             "Level of Confidence",
@@ -460,9 +460,9 @@ ui_g_lineplot <- function(id, ...) {
           )
         )
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional table settings",
           teal.widgets::optionalSliderInputValMinMax(
             ns("table_font_size"),
             "Table Font Size",

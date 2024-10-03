@@ -480,9 +480,9 @@ ui_t_smq <- function(id, ...) {
         data_extract_spec = a$baskets,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           checkboxInput(
             ns(
               "drop_arm_levels"

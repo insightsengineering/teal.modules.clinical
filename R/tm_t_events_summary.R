@@ -784,9 +784,9 @@ ui_t_events_summary <- function(id, ...) {
           value = a$count_events
         )
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("dthfl_var"),
             label = "Death Flag Variable",

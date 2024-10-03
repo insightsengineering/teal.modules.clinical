@@ -504,9 +504,9 @@ ui_summary_by <- function(id, ...) {
       ),
       checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
       checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = a$row_groups),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional table settings",
           checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
           radioButtons(
             ns("useNA"),
@@ -553,9 +553,9 @@ ui_summary_by <- function(id, ...) {
           }
         )
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

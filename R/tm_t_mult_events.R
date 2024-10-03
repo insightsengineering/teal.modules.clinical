@@ -396,7 +396,6 @@ ui_t_mult_events_byterm <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$seq_var, a$hlt, a$llt)
-
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       teal.widgets::table_with_settings_ui(ns("table"))
@@ -426,9 +425,9 @@ ui_t_mult_events_byterm <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional table settings",
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
@@ -436,9 +435,9 @@ ui_t_mult_events_byterm <- function(id, ...) {
           )
         )
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("seq_var"),
             label = "Analysis Sequence Number",

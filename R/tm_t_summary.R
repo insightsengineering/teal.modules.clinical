@@ -353,9 +353,9 @@ ui_summary <- function(id, ...) {
         data_extract_spec = a$summarize_vars,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional table settings",
           radioButtons(
             ns("useNA"),
             label = "Display NA counts",

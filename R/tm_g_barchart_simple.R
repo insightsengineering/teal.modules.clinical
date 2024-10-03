@@ -245,9 +245,9 @@ ui_g_barchart_simple <- function(id, ...) {
             is_single_dataset = is_single_dataset_value
           )
         },
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
-            "Additional plot settings",
+        bslib::accordion(
+          bslib::accordion_panel(
+            title = "Additional plot settings",
             if (!is.null(args$fill)) {
               radioButtons(
                 inputId = ns("barlayout"),

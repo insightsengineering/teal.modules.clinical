@@ -421,9 +421,9 @@ ui_events_patyear <- function(id, ...) {
         multiple = FALSE,
         fixed = FALSE
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional table settings",
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",

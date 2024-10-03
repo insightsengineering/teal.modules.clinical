@@ -605,9 +605,9 @@ ui_t_binary_outcome <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
-            "Unstratified analysis settings",
+        bslib::accordion(
+          bslib::accordion_panel(
+            title = "Unstratified analysis settings",
             teal.widgets::optionalSelectInput(
               ns("u_diff_ci"),
               label = "Method for Difference of Proportions CI",
@@ -640,9 +640,9 @@ ui_t_binary_outcome <- function(id, ...) {
             )
           )
         ),
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
-            "Stratified analysis settings",
+        bslib::accordion(
+          bslib::accordion_panel(
+            title = "Stratified analysis settings",
             teal.transform::data_extract_ui(
               id = ns("strata_var"),
               label = "Stratification Factors",

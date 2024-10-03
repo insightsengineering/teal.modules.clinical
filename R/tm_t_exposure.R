@@ -428,9 +428,9 @@ ui_t_exposure <- function(id, ...) {
       ),
       checkboxInput(ns("add_total_row"), "Add Total row", value = a$add_total_row),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

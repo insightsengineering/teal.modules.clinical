@@ -448,9 +448,9 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
         data_extract_spec = a$worst_high_flag_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional table settings",
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

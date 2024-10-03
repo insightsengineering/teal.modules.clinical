@@ -406,9 +406,9 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
         choices = c("ifany", "no"),
         selected = a$useNA
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("treatment_flag_var"),
             label = "On Treatment Flag Variable",
