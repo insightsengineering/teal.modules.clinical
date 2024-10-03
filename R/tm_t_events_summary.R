@@ -787,6 +787,7 @@ ui_t_events_summary <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional Variables Info",
+          open = FALSE,
           teal.transform::data_extract_ui(
             id = ns("dthfl_var"),
             label = "Death Flag Variable",

@@ -431,6 +431,7 @@ ui_t_exposure <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional Variables Info",
+          open = FALSE,
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

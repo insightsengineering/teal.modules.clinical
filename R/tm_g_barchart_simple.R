@@ -248,6 +248,7 @@ ui_g_barchart_simple <- function(id, ...) {
         bslib::accordion(
           bslib::accordion_panel(
             title = "Additional plot settings",
+            open = FALSE,
             if (!is.null(args$fill)) {
               radioButtons(
                 inputId = ns("barlayout"),

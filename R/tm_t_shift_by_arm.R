@@ -389,6 +389,7 @@ ui_shift_by_arm <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional Variables Info",
+          open = FALSE,
           teal.transform::data_extract_ui(
             id = ns("treatment_flag_var"),
             label = "On Treatment Flag Variable",

@@ -512,6 +512,7 @@ ui_g_km <- function(id, ...) {
         bslib::accordion(
           bslib::accordion_panel(
             title = "Comparison settings",
+            open = FALSE,
             radioButtons(
               ns("pval_method_coxph"),
               label = HTML(
@@ -544,6 +545,7 @@ ui_g_km <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional plot settings",
+          open = FALSE,
           textInput(
             inputId = ns("xticks"),
             label = "Specify break intervals for x-axis e.g. 0 ; 500"

@@ -416,6 +416,7 @@ ui_g_lineplot <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional plot settings",
+          open = FALSE,
           teal.widgets::optionalSelectInput(
             ns("conf_level"),
             "Level of Confidence",
@@ -463,6 +464,7 @@ ui_g_lineplot <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional table settings",
+          open = FALSE,
           teal.widgets::optionalSliderInputValMinMax(
             ns("table_font_size"),
             "Table Font Size",

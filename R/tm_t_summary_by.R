@@ -507,6 +507,7 @@ ui_summary_by <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional table settings",
+          open = FALSE,
           checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
           radioButtons(
             ns("useNA"),
@@ -556,6 +557,7 @@ ui_summary_by <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional Variables Info",
+          open = FALSE,
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

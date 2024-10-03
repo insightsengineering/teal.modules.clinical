@@ -476,6 +476,7 @@ ui_g_forest_rsp <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional plot settings",
+            open = FALSE,
           teal.widgets::optionalSelectInput(
             inputId = ns("conf_level"),
             label = "Confidence Level",

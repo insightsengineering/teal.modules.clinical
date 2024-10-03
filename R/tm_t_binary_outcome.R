@@ -608,6 +608,7 @@ ui_t_binary_outcome <- function(id, ...) {
         bslib::accordion(
           bslib::accordion_panel(
             title = "Unstratified analysis settings",
+            open = FALSE,
             teal.widgets::optionalSelectInput(
               ns("u_diff_ci"),
               label = "Method for Difference of Proportions CI",
@@ -643,6 +644,7 @@ ui_t_binary_outcome <- function(id, ...) {
         bslib::accordion(
           bslib::accordion_panel(
             title = "Stratified analysis settings",
+            open = FALSE,
             teal.transform::data_extract_ui(
               id = ns("strata_var"),
               label = "Stratification Factors",

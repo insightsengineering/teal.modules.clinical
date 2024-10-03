@@ -451,6 +451,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional table settings",
+          open = FALSE,
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

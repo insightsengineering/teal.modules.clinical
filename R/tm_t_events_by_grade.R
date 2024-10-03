@@ -960,6 +960,7 @@ ui_t_events_by_grade <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional table settings",
+          open = FALSE,
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",

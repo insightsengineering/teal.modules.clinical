@@ -356,6 +356,7 @@ ui_summary <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional table settings",
+          open = FALSE,
           radioButtons(
             ns("useNA"),
             label = "Display NA counts",

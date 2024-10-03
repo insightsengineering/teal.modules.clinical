@@ -427,6 +427,7 @@ ui_g_ipp <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional plot settings",
+            open = FALSE,
           checkboxInput(
             ns("add_baseline_hline"),
             "Add reference lines at baseline value",

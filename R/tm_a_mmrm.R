@@ -636,6 +636,7 @@ ui_mmrm <- function(id, ...) {
         bslib::accordion(
           bslib::accordion_panel(
             title = "Model Settings",
+            open = FALSE,
             teal.transform::data_extract_ui(
               id = ns("aval_var"),
               label = "Analysis Variable",
@@ -759,6 +760,7 @@ ui_mmrm <- function(id, ...) {
           bslib::accordion(
             bslib::accordion_panel(
               title = "Output Settings",
+              open = FALSE,
               # Additional option for LS means table.
               selectInput(
                 ns("t_mmrm_lsmeans_show_relative"),

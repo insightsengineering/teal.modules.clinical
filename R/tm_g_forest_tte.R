@@ -466,6 +466,7 @@ ui_g_forest_tte <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional plot settings",
+            open = FALSE,
           teal.widgets::optionalSelectInput(
             ns("conf_level"),
             "Level of Confidence",

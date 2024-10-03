@@ -645,6 +645,7 @@ ui_t_coxreg <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional table settings",
+          open = FALSE,
           conditionalPanel(
             condition = paste0("input['", ns("strata_var"), "'] != ''"),
             radioButtons(

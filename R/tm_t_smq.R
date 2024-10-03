@@ -483,6 +483,7 @@ ui_t_smq <- function(id, ...) {
       bslib::accordion(
         bslib::accordion_panel(
           title = "Additional Variables Info",
+          open = FALSE,
           checkboxInput(
             ns(
               "drop_arm_levels"
