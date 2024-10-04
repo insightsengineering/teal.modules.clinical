@@ -95,27 +95,25 @@ This module produces a patient profile therapy table and \code{\link[ggplot2:ggp
 library(nestcolor)
 library(dplyr)
 
-ADCM <- tmc_ex_adcm
-ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADCM$USUBJID)
-ADCM$CMASTDTM <- ADCM$ASTDTM
-ADCM$CMAENDTM <- ADCM$AENDTM
-adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+data <- teal_data()
+data <- within(data, {
+  ADCM <- tmc_ex_adcm
+  ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADCM$USUBJID)
+  ADCM$CMASTDTM <- ADCM$ASTDTM
+  ADCM$CMAENDTM <- ADCM$AENDTM
+})
 
-join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
-join_keys["ADCM", "ADCM"] <- adcm_keys
+datanames(data) <- c("ADSL", "ADCM")
+
+join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADCM")]
+adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+join_keys(data)["ADCM", "ADCM"] <- adcm_keys
+
+ADSL <- data[["ADSL"]]
+ADCM <- data[["ADCM"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADCM = ADCM,
-    code = "
-      ADCM <- tmc_ex_adcm
-      ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADCM$USUBJID)
-      ADCM$CMASTDTM <- ADCM$ASTDTM
-      ADCM$CMAENDTM <- ADCM$AENDTM
-    ",
-    join_keys = join_keys
-  ),
+  data = data,
   modules = modules(
     tm_g_pp_therapy(
       label = "Therapy",
@@ -171,3 +169,13 @@ if (interactive()) {
 }
 
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAwgCyyTqkMARpcAAeaVD8BDD1Tc0AygAyXT19g8P8otQ6AKQAfOsmtNTkjOwOUw4AQgBSAJLNG+U7LR0AJMdnV81BDQ-tjx2NU7bNWydfJfR5-AFAiag35OABygOBRlBjThCKUAF8gjkqtB4KJKokbPkCOwFGAWrMyTUyV8yViIAArIjlNIAazgrHxuSJRn4cGMUGEpDSBH4tFEfSZLPZnOAJJp0xmVJ0Co6dIAukoRmM2RzRF15WB-g5mgBNa7KskvC4WvAq8n-NF2skdKZOACKlvJtlaAEYvY0fQAmAM+gDModaABY6UopRBdZyCVA5MBVe0A20M2B1V1tTBE6JYhS5vlcsA0+TFWT1ZqIF8uuXK7Sc3WteguuViqSIA1cjoALw6XK4CZ8IQifVD8fCMQ9hoNHppADmaXQaVKqjQHAmC501Cg9DgayHZNsJS3qFYVN3C9yuN0p6rarwt4aqBYFFID8H9pLN97PcdA-DQvxFIgT3ta03gAoDgP8YUL1oZcSlIX8SQANgABiwmYaiDHC8J0AjCLkUdAL3BJaEYY90JKZkCDENJRGPOB1Dgfh5zgnQCHomQxF-TQWFoQ8RBFPjGPxL5qW9S4sCcJUwDIt8FxYkR2P4dDSVk+TFI+IDlIohcxj5YhNKHXiGKYtS2PITiVIaSz+KnHQhMYET6DEpzJPYaT7Q6ZonFaAB5Zo6XI7idBsjTfxddpApCsKwBUwy4LGcpRjoqzRGY1iNK4tKJIEoc3I8ryiqkrMZI6S54VacKHKivK7NisAarqskUoioCTKIFisuc3L1LsgqeoqwThNEuBxOy3yqv8+LgrdBqjL3aKWqfAKlpcZLVp0VKepgUhGDQiyKqG2yONGvdvOK1zJs86bbsqjpqvaexbBWyL1o41qOg+zq9oOm6YH4PrBAGySLvyxrnom9yppm5y5tehbmiWhwvu4n7zJ47StpOWMge6kHGCIQRyEh6zmqu2HxpKh7ytmvy4qwYKHFsHbgaAnG-vaNmOZ2rqVN60RjEYABHKmcpx67jPp+6EcepGfJZtrFqmAAxLBPSUkmeZp3G4vRrWdcBuDuccmBRFIfhWGl6GRrp7L4bKp6KpR9oZPBM0sbg3mnx901zYM-WrYoO2Hdl53nNdxHns973UWDvXGoDv9k5Dvd9IafSgiCWhjB0dhygOKALG0awbDqQDRDKCBWEadB2DQVBHkEWgalbx4WMYbQYggdElDAdF1SAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAwgCyyTqkMARpcAAeaVD8BDD1Tc0AygAyXT19g8P8otQ6AKQAfOsmtNTkjOwOUw4AQgBSAJLNG+U7LR0AJMdnV81BDQ-tjx2NU7bNWydfJfR5-AFAiag35OABygOBRlBjThCKUAF8gjkqtB4KJKokbPkCOwFGAWrMyTUyV8yViIAArIjlNIAazgrHxuSJRn4cGMUGEpDSBH4tFEfSZLPZnOAJJp0xmVJ0Co6dIAukoRmM2RzRF15WB-g5mgBNa7KskvC4WvAq8n-NF2skdKZOACKlvJtlaAEYvY0fQAmAM+gDModaABY6UopRBdZyCVA5MBVe0A20M2B1V1tTBE6JYhS5vlcsA0+TFWT1ZqIF8uuXK7Sc3WteguuViqSIA1cjoALw6XK4CZ8IQifVD8fCMQ9hoNHppADmaXQaVKqjQHAmC501Cg9DgayHZNsJS3qFYVN3C9yuN0p6rarwt4aqBYFFID8H9pLN97PcdA-DQvxFIgT3ta03gAoDgP8YUL1oZcSlIX8SQANgABiwmYaiDHC8J0AjCLkUdAL3BJaEYY90JKZkCDENJRGPOB1Dgfh5zgnQCHomQxF-TQWFoQ8RBFPjGPxL5qW9S4sCcJUwDIt8FxYkR2P4dDSVk+TFI+IDlIohcxj5YhNKHXiGKYtS2PITiVIaSz+KnHQhMYET6DEpzJPYaT7Q6ZonFaAB5Zo6XI7idBsjTfxddpApCsKwBUwy4LGcpRjoqzRGY1iNK4tKJIEoc3I8ryiqkrMZI6S54VacKHKivK7NisAarqskUoioCTKIFisuc3L1LsgqeoqwThNEuBxOy3yqv8+LgrdBqjL3aKWqfAKlpcZLVp0VKepgUhGDQiyKqG2yONGvdvOK1zJs86bbsqjpqvaexbBWyL1o41qOg+zq9oOm6YH4PrBAGySLvyxrnom9yppm5y5tehbmiWhwvu4n7zJ47StpOWMge6kHGCIQRyEh6zmqu2HxpKh7ytmvy4qwYKHFsHbgaAnG-vaNmOZ2rqVN60RjEYABHKmcpx67jPp+6EcepGfJZtrFqmAAxLBPSUkmeZp3G4vRrWdcBuDuccmBRFIfhWGl6GRrp7L4bKp6KpR9oZPBM0sbg3mnx901zYM-WrYoO2Hdl53nNdxHns973UWDvXGoDv9k5Dvd9IafSgiCWhjB0dhygOKALG0awbDqQDRDKCBWEadB2DQVBHkEWgalbx4WMYbQYggdElDAdF1SAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

@@ -15,26 +15,31 @@
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl %>%
-#'   mutate(ITTFL = factor("Y") %>%
-#'     with_label("Intent-To-Treat Population Flag"))
-#' ADAE <- tmc_ex_adae %>%
-#'   filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl %>%
+#'     mutate(ITTFL = factor("Y") %>%
+#'       with_label("Intent-To-Treat Population Flag"))
+#'   ADAE <- tmc_ex_adae %>%
+#'     filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
+#' })
+#' datanames(data) <- c("ADSL", "ADAE")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADAE <- data[["ADAE"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADAE = ADAE,
-#'     code = "ADSL <- tmc_ex_adsl %>%
-#'               mutate(ITTFL = factor(\"Y\") %>%
-#'               with_label(\"Intent-To-Treat Population Flag\"))
-#'             ADAE <- tmc_ex_adae %>%
-#'               filter(!((AETOXGR == 1) & (AESEV == \"MILD\") & (ARM == \"A: Drug X\")))"
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_barchart_simple(
 #'       label = "ADAE Analysis",

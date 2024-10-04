@@ -211,21 +211,27 @@ template_vitals <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADVS <- tmc_ex_advs
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADVS <- tmc_ex_advs
+#' })
+#' datanames(data) <- c("ADSL", "ADVS")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADVS <- data[["ADVS"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADVS = ADVS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADVS <- tmc_ex_advs
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_pp_vitals(
 #'       label = "Vitals",

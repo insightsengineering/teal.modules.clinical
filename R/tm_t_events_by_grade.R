@@ -792,21 +792,27 @@ template_events_col_by_grade <- function(dataname,
 #' @inherit module_arguments return seealso
 #'
 #' @export
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
+#' library(dplyr)
 #' data <- teal_data()
 #' data <- within(data, {
-#'   library(dplyr)
-#'
 #'   ADSL <- tmc_ex_adsl
 #'   lbls_adae <- col_labels(tmc_ex_adae)
 #'   ADAE <- tmc_ex_adae %>%
 #'     mutate_if(is.character, as.factor) #' be certain of having factors
 #'   col_labels(ADAE) <- lbls_adae
 #' })
+#' datanames(data) <- c("ADSL", "ADAE")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
 #'
-#' datanames <- c("ADSL", "ADAE")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' ADSL <- data[["ADSL"]]
+#' ADAE <- data[["ADAE"]]
 #'
 #' app <- init(
 #'   data = data,
@@ -816,15 +822,15 @@ template_events_col_by_grade <- function(dataname,
 #'       dataname = "ADAE",
 #'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
 #'       llt = choices_selected(
-#'         choices = variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
+#'         choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
 #'         selected = c("AEDECOD")
 #'       ),
 #'       hlt = choices_selected(
-#'         choices = variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
+#'         choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
 #'         selected = "AEBODSYS"
 #'       ),
 #'       grade = choices_selected(
-#'         choices = variable_choices(data[["ADAE"]], c("AETOXGR", "AESEV")),
+#'         choices = variable_choices(ADAE, c("AETOXGR", "AESEV")),
 #'         selected = "AETOXGR"
 #'       )
 #'     )

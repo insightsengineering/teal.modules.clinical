@@ -80,23 +80,21 @@ a \code{teal_module} object.
 This module produces a table of multiple events by term.
 }
 \examples{
-ADSL <- tmc_ex_adsl
-ADCM <- tmc_ex_adcm
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADCM <- tmc_ex_adcm
+})
+datanames(data) <- c("ADSL", "ADCM")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
 adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+join_keys(data)["ADCM", "ADCM"] <- adcm_keys
 
-join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
-join_keys["ADCM", "ADCM"] <- adcm_keys
+ADSL <- data[["ADSL"]]
+ADCM <- data[["ADCM"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADCM = ADCM,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADCM <- tmc_ex_adcm
-    ",
-    join_keys = join_keys
-  ),
+  data = data,
   modules = modules(
     tm_t_mult_events(
       label = "Concomitant Medications by Medication Class and Preferred Name",
@@ -125,3 +123,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCCToeFFE0JtwgnYFMByCuZS5nNa5oYArIni-AGs4VnGkqaN+OGMoYVI-An5aUTKtnf3D4BHYMQnPOQBdJRrensDqIijM5rlbA5sgBNACS2SWOjmDlyDgAQgApeGIlYQ7K2Fo4sCtXJOACKRMytiaAEZKdSAEz0poAZmZABZ1konhAgYcvlA5MAVs1CXgkfNRXMfkUATA+aJXBAFoVwklgMLJYswD8-srRUV1ZrVmLdUq0KgivForMIBkkjoALw6JK4Bp8IQiEHOj3CT4NDIlPzXGBXcraMjjAMZHTUKD0ODUJ0SpokYgwaJQMg6FpwO6yDQkEH0Vg5vMyDyWO1NOOiEFZ-g6AAKjHOqlbjYAch8ltH7aFRrpnSK1ng+zoWPLNCxkwQYtsCGI-KJE3B1Hn2GD5lgxctty0mgiwHI95kd+s3XaYxkVwBHPzTxiz+cyJcrkTr-izYktUkU8Xvmu5CNsOP5-oixi0BUebJvYzgnuOMTUKQz4Lm+q6fra17XnOaHejoj60PGIg3C+i7jCaKRblStLMky4orNSbIMfM1KcseCFXthOiAZ+s7fjRdIsTR9GnkxHJclxMacdx1DIahr6iMuGHAVh3E6LhinJoRxFwKReHsJRGnfq02ROE0ADyR5yDJ6m8cB-FzKZ5lWZJ3G2deNT8MGRCeEmzpwU4l7cXAEbXKQrCoEOEqkK2HjwGQczRkMGRDEMtDGDo7DxOQagaNo1g2GkV6iHEECsJk6DsBaAAkgi0CktUrow2iMEM-RKGA-Q-EAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCCToeFFE0JtwgnYFMByCuZS5nNa5oYArIni-AGs4VnGkqaN+OGMoYVI-An5aUTKtnf3D4BHYMQnPOQBdJRrensDqIijM5rlbA5sgBNACS2SWOjmDlyDgAQgApeGIlYQ7K2Fo4sCtXJOACKRMytiaAEZKdSAEz0poAZmZABZ1konhAgYcvlA5MAVs1CXgkfNRXMfkUATA+aJXBAFoVwklgMLJYswD8-srRUV1ZrVmLdUq0KgivForMIBkkjoALw6JK4Bp8IQiEHOj3CT4NDIlPzXGBXcraMjjAMZHTUKD0ODUJ0SpokYgwaJQMg6FpwO6yDQkEH0Vg5vMyDyWO1NOOiEFZ-g6AAKjHOqlbjYAch8ltH7aFRrpnSK1ng+zoWPLNCxkwQYtsCGI-KJE3B1Hn2GD5lgxctty0mgiwHI95kd+s3XaYxkVwBHPzTxiz+cyJcrkTr-izYktUkU8Xvmu5CNsOP5-oixi0BUebJvYzgnuOMTUKQz4Lm+q6fra17XnOaHejoj60PGIg3C+i7jCaKRblStLMky4orNSbIMfM1KcseCFXthOiAZ+s7fjRdIsTR9GnkxHJclxMacdx1DIahr6iMuGHAVh3E6LhinJoRxFwKReHsJRGnfq02ROE0ADyR5yDJ6m8cB-FzKZ5lWZJ3G2deNT8MGRCeEmzpwU4l7cXAEbXKQrCoEOEqkK2HjwGQczRkMGRDEMtDGDo7DxOQagaNo1g2GkV6iHEECsJk6DsBaAAkgi0CktUrow2iMEM-RKGA-Q-EAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

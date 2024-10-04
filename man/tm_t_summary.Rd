@@ -87,17 +87,18 @@ This module produces a table to summarize variables.
 }
 \examples{
 # Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.
-ADSL <- tmc_ex_adsl
-ADSL$EOSDY[1] <- NA_integer_
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADSL$EOSDY[1] <- NA_integer_
+})
+datanames(data) <- c("ADSL")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADSL$EOSDY[1] <- NA_integer_
-    "
-  ),
+  data = data,
   modules = modules(
     tm_t_summary(
       label = "Demographic Table",
@@ -121,3 +122,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQlGbQeCiU4zGx7AjsBRgO6PcnYgBWRHGqwA1nBWASzsSjN1jFBhKRVgR+CM3nSGczWcAznixITNnJoa4IJSnnszsBgOSleTofKIEo0KhnuMjmSIDczjoALzTTa4AF8IRtS1DATCaUAm6kGCrPmiQQwGAsDjum46agtODUJ3knI9IgTZiocIyOwtETk22mkNm3GwXRWjVA9PBm4sL2NRhOgjhekEMSrBIidRwfjsUkarAAWXTOnbHfKOWpF17g+LRX4-G9RE2kat9mcGazN19-qaAC84Kty+0rVWa3WG3Amy3Rzc22Ask4ABrd8lYGrlFx4HtgABCHawAGksAAmG9gMH5H+FRVLUWR-jUADij5yAui6nmS55Xn+d4PtSo4waOyRwAiUZgLQ3IQKw5LBtiNzYti+E6OwyKqFAFjaNYNhXJmohJoRNToOw+rAoItAXNxCSMNojDYhiShgBi0JAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQlGbQeCiU4zGx7AjsBRgO6PcnYgBWRHGqwA1nBWASzsSjN1jFBhKRVgR+CM3nSGczWcAznixITNnJoa4IJSnnszsBgOSleTofKIEo0KhnuMjmSIDczjoALzTTa4AF8IRtS1DATCaUAm6kGCrPmiQQwGAsDjum46agtODUJ3knI9IgTZiocIyOwtETk22mkNm3GwXRWjVA9PBm4sL2NRhOgjhekEMSrBIidRwfjsUkarAAWXTOnbHfKOWpF17g+LRX4-G9RE2kat9mcGazN19-qaAC84Kty+0rVWa3WG3Amy3Rzc22Ask4ABrd8lYGrlFx4HtgABCHawAGksAAmG9gMH5H+FRVLUWR-jUADij5yAui6nmS55Xn+d4PtSo4waOyRwAiUZgLQ3IQKw5LBtiNzYti+E6OwyKqFAFjaNYNhXJmohJoRNToOw+rAoItAXNxCSMNojDYhiShgBi0JAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

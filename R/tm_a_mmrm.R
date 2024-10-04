@@ -462,8 +462,14 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
+#'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(
 #'     ref = "ARM B",
@@ -485,10 +491,9 @@ template_mmrm_plots <- function(fit_name,
 #'         as.factor() #' making consecutive numeric factor
 #'     )
 #' })
+#' datanames(data) <- c("ADSL", "ADQS")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
 #'
-#' datanames <- c("ADSL", "ADQS")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
 #' app <- init(
 #'   data = data,
 #'   modules = modules(

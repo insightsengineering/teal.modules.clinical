@@ -283,24 +283,27 @@ template_mult_events <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADCM <- tmc_ex_adcm
-#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
 #'
-#' join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
-#' join_keys["ADCM", "ADCM"] <- adcm_keys
+#' @examples
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADCM <- tmc_ex_adcm
+#' })
+#' datanames(data) <- c("ADSL", "ADCM")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+#' join_keys(data)["ADCM", "ADCM"] <- adcm_keys
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADCM <- data[["ADCM"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADCM = ADCM,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADCM <- tmc_ex_adcm
-#'     ",
-#'     join_keys = join_keys
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_mult_events(
 #'       label = "Concomitant Medications by Medication Class and Preferred Name",

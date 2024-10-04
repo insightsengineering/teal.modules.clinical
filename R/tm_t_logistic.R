@@ -222,12 +222,25 @@ template_logistic <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADRS <- tmc_ex_adrs %>%
-#'   filter(PARAMCD %in% c("BESRSPI", "INVET"))
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADRS <- tmc_ex_adrs %>%
+#'     filter(PARAMCD %in% c("BESRSPI", "INVET"))
+#' })
+#' datanames(data) <- c("ADSL", "ADRS")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADRS <- data[["ADRS"]]
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -241,15 +254,7 @@ template_logistic <- function(dataname,
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADRS = ADRS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADRS <- tmc_ex_adrs %>%
-#'         filter(PARAMCD %in% c(\"BESRSPI\", \"INVET\"))
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_logistic(
 #'       label = "Logistic Regression",

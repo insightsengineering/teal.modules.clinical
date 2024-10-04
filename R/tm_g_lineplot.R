@@ -206,23 +206,30 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
 #' library(forcats)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADLB <- tmc_ex_adlb %>% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADLB <- tmc_ex_adlb %>%
+#'     mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
+#' })
+#' datanames(data) <- c("ADSL", "ADLB")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADLB <- data[["ADLB"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADLB = ADLB,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADLB <- tmc_ex_adlb %>% mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_lineplot(
 #'       label = "Line Plot",

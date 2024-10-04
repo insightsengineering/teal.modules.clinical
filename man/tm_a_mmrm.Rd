@@ -109,6 +109,7 @@ numerical precision.
 }
 \examples{
 library(dplyr)
+
 arm_ref_comp <- list(
   ARMCD = list(
     ref = "ARM B",
@@ -130,10 +131,9 @@ data <- within(data, {
         as.factor() #' making consecutive numeric factor
     )
 })
+datanames(data) <- c("ADSL", "ADQS")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
 
-datanames <- c("ADSL", "ADQS")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
 app <- init(
   data = data,
   modules = modules(
@@ -162,3 +162,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEosMAD6jHDGIcQwqPpGdKKk7Eo6OgCCWACyAMIAIjoAvDoJSSmpOuHGhToKYBmZOgBCtbhlqdGxRQTJdVnpLTW9Ddm1AakBAUr8UKRQcTpc1CHTs9ZTM3OGOgDutKQAFrQQ7CtQuDogZWm5AMoAMvOkMAQhcAAeIVD8otRXuQCKN0ez1eHy+AEdRDoAKQAPmhbRMtGo5EY7DSjTuADEHgBCIq1ACatR0ADJ0picQAmHT4wbEsA2OEIiDlJEo1TogBqAEkbjzbDCjtCdN1agB1JxOADSOgAjDpcmlCToABwDCVS2U0pUquUAVg1YElMp0AGZFcqdFSqaMmfDETBBLNyMlWWz0rz+YKilBxMYoOoiGi0l6BXJWu62aG+QKAHLVZgQADW3Njtjj9pZHvKfowAaDaKziLZeYggngjBk1hhDqjHrzBdIwZrAGIAOQ6GBQZNHADmopIojgBGdWl05crMhMgebjERAQAvgFTtB4KIThsbFsxXVbncjddAaMlAArIhHELJuCsDenbdGfgRKDCUhRfi0UQvc+X6+34CrrAYibrMcgALquNA6DzEcexuqkpzVKckapHwQgiFCRRocIwGIk8nwhDAMCMDA8EetQUD0HA1DVLUmSZFkLQljogHwLRe7HngzFQJo3AhLxjDVAQ+wXgQYghMOIjqHA-DsLuoZpAeeCDNkAASADioznLUClKRGzG0Pw-EsEJIkyOJkkjuQsm7g4NwOI0ABSPK5Ea9lOS5WmDHZDnOa5jIoQ2JHGYJXRmWJogSdRVkyXJPT1IeWR5F5OmMQFzGaJ+ewhaZokWdF0k2fFYa2IeJVxildQlVp3HBZUUREDE1TBGEEQNTEgVsqgLCwAQ-C5eZkWWYVZE5sJeWYTovHUIIcBROFwGnMAwA6QCNy1GBYHaWAAAKGRpDk-nbXtWAHTV9ZssN1nsVi0r8gYWLis0YDMfpF2DpoOVhRNUVSdZcW1I0aQ3C4yk6epoPbSDAAaRpAyDiAxt6Xlxg4dx3GM5SYxMSi0FU7BHKis7jtYNiXO6oiHBArBpOg7BoKgAAkgi0OcDOM8OjDaP4SiLkoYCLmBQA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEosMAD6jHDGIcQwqPpGdKKk7Eo6OgCCWACyAMIAIjoAvDoJSSmpOuHGhToKYBmZOgBCtbhlqdGxRQTJdVnpLTW9Ddm1AakBAUr8UKRQcTpc1CHTs9ZTM3OGOgDutKQAFrQQ7CtQuDogZWm5AMoAMvOkMAQhcAAeIVD8otRXuQCKN0ez1eHy+AEdRDoAKQAPmhbRMtGo5EY7DSjTuADEHgBCIq1ACatR0ADJ0picQAmHT4wbEsA2OEIiDlJEo1TogBqAEkbjzbDCjtCdN1agB1JxOADSOgAjDpcmlCToABwDCVS2U0pUquUAVg1YElMp0AGZFcqdFSqaMmfDETBBLNyMlWWz0rz+YKilBxMYoOoiGi0l6BXJWu62aG+QKAHLVZgQADW3Njtjj9pZHvKfowAaDaKziLZeYggngjBk1hhDqjHrzBdIwZrAGIAOQ6GBQZNHADmopIojgBGdWl05crMhMgebjERAQAvgFTtB4KIThsbFsxXVbncjddAaMlAArIhHELJuCsDenbdGfgRKDCUhRfi0UQvc+X6+34CrrAYibrMcgALquNA6DzEcexuqkpzVKckapHwQgiFCRRocIwGIk8nwhDAMCMDA8EetQUD0HA1DVLUmSZFkLQljogHwLRe7HngzFQJo3AhLxjDVAQ+wXgQYghMOIjqHA-DsLuoZpAeeCDNkAASADioznLUClKRGzG0Pw-EsEJIkyOJkkjuQsm7g4NwOI0ABSPK5Ea9lOS5WmDHZDnOa5jIoQ2JHGYJXRmWJogSdRVkyXJPT1IeWR5F5OmMQFzGaJ+ewhaZokWdF0k2fFYa2IeJVxildQlVp3HBZUUREDE1TBGEEQNTEgVsqgLCwAQ-C5eZkWWYVZE5sJeWYTovHUIIcBROFwGnMAwA6QCNy1GBYHaWAAAKGRpDk-nbXtWAHTV9ZssN1nsVi0r8gYWLis0YDMfpF2DpoOVhRNUVSdZcW1I0aQ3C4yk6epoPbSDAAaRpAyDiAxt6Xlxg4dx3GM5SYxMSi0FU7BHKis7jtYNiXO6oiHBArBpOg7BoKgAAkgi0OcDOM8OjDaP4SiLkoYCLmBQA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

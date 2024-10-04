@@ -321,19 +321,25 @@ template_summary_by <- function(parentname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADLB <- tmc_ex_adlb
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADLB <- tmc_ex_adlb
+#' })
+#' datanames(data) <- c("ADSL", "ADLB")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADLB <- data[["ADLB"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADLB = ADLB,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADLB <- tmc_ex_adlb
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_summary_by(
 #'       label = "Summary by Row Groups Table",

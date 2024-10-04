@@ -227,6 +227,11 @@ template_exposure <- function(parentname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
 #'
@@ -248,10 +253,8 @@ template_exposure <- function(parentname,
 #'     bind_rows(ADEX)
 #'   col_labels(ADEX) <- labels
 #' })
-#'
-#' datanames <- c("ADSL", "ADEX")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' datanames(data) <- c("ADSL", "ADEX")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
 #'
 #' app <- init(
 #'   data = data,

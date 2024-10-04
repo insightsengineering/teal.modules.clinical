@@ -316,6 +316,11 @@ template_smq <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
@@ -336,10 +341,8 @@ template_smq <- function(dataname,
 #'     fixed = TRUE
 #'   )
 #' })
-#'
-#' datanames <- c("ADSL", "ADAE")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' datanames(data) <- c("ADSL", "ADAE")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
 #'
 #' app <- init(
 #'   data = data,

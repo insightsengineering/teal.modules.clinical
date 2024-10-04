@@ -247,31 +247,34 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
 #'
-#' ADCM <- tmc_ex_adcm
-#' ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
-#' ADCM$CMASTDTM <- ADCM$ASTDTM
-#' ADCM$CMAENDTM <- ADCM$AENDTM
-#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADCM <- tmc_ex_adcm
+#'   ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
+#'   ADCM$CMASTDTM <- ADCM$ASTDTM
+#'   ADCM$CMAENDTM <- ADCM$AENDTM
+#' })
 #'
-#' join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
-#' join_keys["ADCM", "ADCM"] <- adcm_keys
+#' datanames(data) <- c("ADSL", "ADCM")
+#'
+#' join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADCM")]
+#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+#' join_keys(data)["ADCM", "ADCM"] <- adcm_keys
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADCM <- data[["ADCM"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADCM = ADCM,
-#'     code = "
-#'       ADCM <- tmc_ex_adcm
-#'       ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADCM$USUBJID)
-#'       ADCM$CMASTDTM <- ADCM$ASTDTM
-#'       ADCM$CMAENDTM <- ADCM$AENDTM
-#'     ",
-#'     join_keys = join_keys
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_pp_therapy(
 #'       label = "Therapy",

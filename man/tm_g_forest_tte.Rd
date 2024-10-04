@@ -123,10 +123,19 @@ This module produces a grid-style forest plot for time-to-event data with ADaM s
 }
 \examples{
 library(nestcolor)
+library(dplyr)
 
-ADSL <- tmc_ex_adsl
-ADTTE <- tmc_ex_adtte
-ADSL$RACE <- droplevels(ADSL$RACE) \%>\% with_label("Race")
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADTTE <- tmc_ex_adtte
+  ADSL$RACE <- droplevels(ADSL$RACE) \%>\% with_label("Race")
+})
+datanames(data) <- c("ADSL", "ADTTE")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADTTE <- data[["ADTTE"]]
 
 arm_ref_comp <- list(
   ARM = list(
@@ -140,15 +149,7 @@ arm_ref_comp <- list(
 )
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADTTE = ADTTE,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADTTE <- tmc_ex_adtte
-      ADSL$RACE <- droplevels(ADSL$RACE) \%>\% with_label(\"Race\")
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_forest_tte(
       label = "Forest Survival",
@@ -182,3 +183,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otT1Tc22tk5dPX2Dw-yk5BMtHQAkWI0AwrP5-IxEkXDa1KLs6+1bu042AKQAfPeFxSVp1FD0cNTsCmBYKAEOD-IIAXyCuWg8AuuRs+QIfzAV3+NX+LWmLjAQQAVkRymkANZwViwqrwoz8ODGKDCUhpAj8WiiPp4gnE0nAKGwMSVRJyAC6sSuXVywGA6La7X+AqFEAxM1FVXFksxMrlShYMDSjGpDKIMFQXToolIfwgDUaWAAsjoALw6E1miYNXXGe06f4AIUQOgACp9gfQiKiXTpiIaPYj0b7moxBABzHQADVRnrAO19OwN9HKCUsEFBEzkuDWNp2zQ9TvNDVd1I96JtOi9oYttYjRod0eRTcaacbtp2RbbQSCmvQXXKxRrOlyHtypbbfCEIlEHuXwl5YZ6aQTaWMAR8aRWcBntcdXx+DbAADFD6adK1BIxNFpuK3zw1ufBrwqsYvPx0LU0k0FgoxKfFgVENJRB+OB1Dgfgz0-UDGFoL4RAZCCZF5K4am7K1rX7HtrQrUESzDc8BzIsBKJ0Ci23PYC3X1SMHWYvUOwAz9UBYWBGXAyCxBguCEKQuiGlA6hBDgLChIuP80TAP0rUaUjmmIlTtiI7FuMA-4AHlWn+OiGMA0RBHoBMjkEVAQLArtsKgkSRDE5Dz1Q9D6EwggnNwqUamhfyOjkMzAPDJEvWtLAAGksAAJmI1onFTbFTL02tTWYRJ7MYQScOg2DXPIcTGJQlgvJ8vyFICiL-laexGlsRoAEYksa5rEuxML9LABrtk6kyyoaIJz1G+ilCCWh3XYcpyDUDRtGsGw6jbUQyggVhGnQdg0FQDZBFoGo9o2WCX1UcElDAMEBSAA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otT1Tc22tk5dPX2Dw-yk5BMtHQAkWI0AwrP5-IxEkXDa1KLs6+1bu042AKQAfPeFxSVp1FD0cNTsCmBYKAEOD-IIAXyCuWg8AuuRs+QIfzAV3+NX+LWmLjAQQAVkRymkANZwViwqrwoz8ODGKDCUhpAj8WiiPp4gnE0nAKGwMSVRJyAC6sSuXVywGA6La7X+AqFEAxM1FVXFksxMrlShYMDSjGpDKIMFQXToolIfwgDUaWAAsjoALw6E1miYNXXGe06f4AIUQOgACp9gfQiKiXTpiIaPYj0b7moxBABzHQADVRnrAO19OwN9HKCUsEFBEzkuDWNp2zQ9TvNDVd1I96JtOi9oYttYjRod0eRTcaacbtp2RbbQSCmvQXXKxRrOlyHtypbbfCEIlEHuXwl5YZ6aQTaWMAR8aRWcBntcdXx+DbAADFD6adK1BIxNFpuK3zw1ufBrwqsYvPx0LU0k0FgoxKfFgVENJRB+OB1Dgfgz0-UDGFoL4RAZCCZF5K4am7K1rX7HtrQrUESzDc8BzIsBKJ0Ci23PYC3X1SMHWYvUOwAz9UBYWBGXAyCxBguCEKQuiGlA6hBDgLChIuP80TAP0rUaUjmmIlTtiI7FuMA-4AHlWn+OiGMA0RBHoBMjkEVAQLArtsKgkSRDE5Dz1Q9D6EwggnNwqUamhfyOjkMzAPDJEvWtLAAGksAAJmI1onFTbFTL02tTWYRJ7MYQScOg2DXPIcTGJQlgvJ8vyFICiL-laexGlsRoAEYksa5rEuxML9LABrtk6kyyoaIJz1G+ilCCWh3XYcpyDUDRtGsGw6jbUQyggVhGnQdg0FQDZBFoGo9o2WCX1UcElDAMEBSAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

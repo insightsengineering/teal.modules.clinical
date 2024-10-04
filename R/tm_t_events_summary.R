@@ -522,6 +522,11 @@ template_events_summary <- function(anl_name,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
 #'
@@ -564,10 +569,8 @@ template_events_summary <- function(anl_name,
 #'   ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
 #'   aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
 #' })
-#'
-#' datanames <- c("ADSL", "ADAE")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' datanames(data) <- c("ADSL", "ADAE")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
 #'
 #' app <- init(
 #'   data = data,

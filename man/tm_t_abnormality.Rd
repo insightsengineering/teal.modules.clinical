@@ -101,11 +101,10 @@ Patients with the same abnormality at baseline as on the treatment visit can be
 excluded in accordance with GDSR specifications by using \code{exclude_base_abn}.
 }
 \examples{
+library(dplyr)
 
 data <- teal_data()
 data <- within(data, {
-  library(dplyr)
-
   ADSL <- tmc_ex_adsl
   ADLB <- tmc_ex_adlb \%>\%
     mutate(
@@ -115,9 +114,11 @@ data <- within(data, {
       ) \%>\% with_label("On Treatment Record Flag")
     )
 })
-datanames <- c("ADSL", "ADLB")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
+datanames(data) <- c("ADSL", "ADLB")
+join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+
+ADSL <- data[["ADSL"]]
+ADLB <- data[["ADLB"]]
 
 app <- init(
   data = data,
@@ -126,21 +127,21 @@ app <- init(
       label = "Abnormality Table",
       dataname = "ADLB",
       arm_var = choices_selected(
-        choices = variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
+        choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       add_total = FALSE,
       by_vars = choices_selected(
-        choices = variable_choices(data[["ADLB"]], subset = c("LBCAT", "PARAM", "AVISIT")),
+        choices = variable_choices(ADLB, subset = c("LBCAT", "PARAM", "AVISIT")),
         selected = c("LBCAT", "PARAM"),
         keep_order = TRUE
       ),
       baseline_var = choices_selected(
-        variable_choices(data[["ADLB"]], subset = "BNRIND"),
+        variable_choices(ADLB, subset = "BNRIND"),
         selected = "BNRIND", fixed = TRUE
       ),
       grade = choices_selected(
-        choices = variable_choices(data[["ADLB"]], subset = "ANRIND"),
+        choices = variable_choices(ADLB, subset = "ANRIND"),
         selected = "ANRIND",
         fixed = TRUE
       ),
@@ -158,3 +159,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lMIKh5OwLJToA8gBy9rYAYrUAvDqyonBRKRkUaxAb92UAagCSlc+209lTp2tglQDCWCcTm2z22AHEFHgdFD+qVKk5qmCXGAbAA-GFgKG4db3ezOHQYqEATShuJ0Nlm3zSmSi1Cg9Dg1F+mzutkYcBC8DIOiwcGIjH4On29IA5lCAvcAgBfAJ5aDwUS5RI2ZIEX4VGrYzEVAYSpQAKyI2SiAGs4KwlXlVUZ+HBjFBhKQogR+LRRE0jSbzZbgPLYGJlaE5ABdVwQTW1ZJ5YDAKGRqEhsMRvqDaOJWPx1OJ5NKNCoOrZdK3Ep5HQnPI4u46PhCESics1gTCQPrBpRZ0MiBERgwbjpDjk+mM6iN+P0bu9-ukVh2BkibHk-3wMdgXX9RfV+4sGBRTQsRsEDLGghiKLnETqOD8EsPEpHk9iRv7xi0ecXB8yQORgqiQT0c5SEPDUsAAWW1eMwP+coJTkKs7xKC9+XIIUTkg8CsS3DY4PJDp+A7IhQlHE59lKaoEXgh56FYPcWAbE5P1PURzyZZDr1vO9GKfE4XzfegRBdY8vyVddf3-QDgKhAZ-lKWwILAAAFUosFKDCCnjF43jk1EcKw+4kKvVCfik-oZO09TFOU1SJUou9zTgVAoh7O1GEbfEXD0ilbI2egoAvbILhfQ8hKYljLxQjiHl499BMfETUzEgC4CAtCwH6bYsDBGDUW8-TWMM1d0sy7ZsoKYxaBaa83McDy710u9RWYO1grisK2Jvcl7xC7idGi-iP26+KBkSiTUtKDKspszqdAMlDV3G4rSum8rKqM9zyXqh4ux7PtiJ0OhRFIdhqCIFJV2qTYAHVtSyUUMlXAAJZ5wQeqbPNaSRBDtKJfPOdoJ0bUjyNq7CegCAJaGMHR2Gycg1A0bRrBsIpq1ELIIFYUp0HYfMABJBFoAo8fORhtH8JRpSUMBpRDIA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lMIKh5OwLJToA8gBy9rYAYrUAvDqyonBRKRkUaxAb92UAagCSlc+209lTp2tglQDCWCcTm2z22AHEFHgdFD+qVKk5qmCXGAbAA-GFgKG4db3ezOHQYqEATShuJ0Nlm3zSmSi1Cg9Dg1F+mzutkYcBC8DIOiwcGIjH4On29IA5lCAvcAgBfAJ5aDwUS5RI2ZIEX4VGrYzEVAYSpQAKyI2SiAGs4KwlXlVUZ+HBjFBhKQogR+LRRE0jSbzZbgPLYGJlaE5ABdVwQTW1ZJ5YDAKGRqEhsMRvqDaOJWPx1OJ5NKNCoOrZdK3Ep5HQnPI4u46PhCESics1gTCQPrBpRZ0MiBERgwbjpDjk+mM6iN+P0bu9-ukVh2BkibHk-3wMdgXX9RfV+4sGBRTQsRsEDLGghiKLnETqOD8EsPEpHk9iRv7xi0ecXB8yQORgqiQT0c5SEPDUsAAWW1eMwP+coJTkKs7xKC9+XIIUTkg8CsS3DY4PJDp+A7IhQlHE59lKaoEXgh56FYPcWAbE5P1PURzyZZDr1vO9GKfE4XzfegRBdY8vyVddf3-QDgKhAZ-lKWwILAAAFUosFKDCCnjF43jk1EcKw+4kKvVCfik-oZO09TFOU1SJUou9zTgVAoh7O1GEbfEXD0ilbI2egoAvbILhfQ8hKYljLxQjiHl499BMfETUzEgC4CAtCwH6bYsDBGDUW8-TWMM1d0sy7ZsoKYxaBaa83McDy710u9RWYO1grisK2Jvcl7xC7idGi-iP26+KBkSiTUtKDKspszqdAMlDV3G4rSum8rKqM9zyXqh4ux7PtiJ0OhRFIdhqCIFJV2qTYAHVtSyUUMlXAAJZ5wQeqbPNaSRBDtKJfPOdoJ0bUjyNq7CegCAJaGMHR2Gycg1A0bRrBsIpq1ELIIFYUp0HYfMABJBFoAo8fORhtH8JRpSUMBpRDIA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+  }
+}
+}
+

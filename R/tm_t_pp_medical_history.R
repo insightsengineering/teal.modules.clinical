@@ -89,19 +89,25 @@ template_medical_history <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADMH <- tmc_ex_admh
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADMH <- tmc_ex_admh
+#' })
+#' datanames(data) <- c("ADSL", "ADMH")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADMH <- data[["ADMH"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADMH = ADMH,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADMH <- tmc_ex_admh
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_pp_medical_history(
 #'       label = "Medical History",

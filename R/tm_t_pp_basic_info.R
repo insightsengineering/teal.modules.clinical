@@ -66,14 +66,23 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#' })
+#' datanames(data) <- c("ADSL")
+#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#'
+#' ADSL <- data[["ADSL"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     code = "ADSL <- tmc_ex_adsl"
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_pp_basic_info(
 #'       label = "Basic Info",
