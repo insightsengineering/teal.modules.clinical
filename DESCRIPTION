@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9028
-Date: 2024-09-30
+Version: 0.9.1.9029
+Date: 2024-10-04
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -91,8 +91,8 @@ Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.widgets, insightsengineering/tern.gee,
     insightsengineering/tern.mmrm, shosaco/vistime, tidyverse/forcats,
     yihui/knitr, tidyverse/lubridate, insightsengineering/nestcolor,
-    r-lib/pkgload, insightsengineering/roxy.shinylive, tidyverse/rvest, rstudio/shinytest2, r-lib/styler,
-    r-lib/testthat, r-lib/withr
+    r-lib/pkgload, insightsengineering/roxy.shinylive, tidyverse/rvest,
+    rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
