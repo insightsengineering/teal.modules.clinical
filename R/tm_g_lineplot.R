@@ -362,7 +362,7 @@ ui_g_lineplot <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
       teal.transform::data_extract_ui(
         id = ns("param"),
@@ -414,9 +414,9 @@ ui_g_lineplot <- function(id, ...) {
         value = TRUE
       ),
       bslib::accordion(
+        open = FALSE,
         bslib::accordion_panel(
           title = "Additional plot settings",
-          open = FALSE,
           teal.widgets::optionalSelectInput(
             ns("conf_level"),
             "Level of Confidence",
@@ -462,9 +462,9 @@ ui_g_lineplot <- function(id, ...) {
         )
       ),
       bslib::accordion(
+        open = FALSE,
         bslib::accordion_panel(
           title = "Additional table settings",
-          open = FALSE,
           teal.widgets::optionalSliderInputValMinMax(
             ns("table_font_size"),
             "Table Font Size",

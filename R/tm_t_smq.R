@@ -457,7 +457,7 @@ ui_t_smq <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c(
         "arm_var", "baskets", "llt", "id_var", "scopes"
       )]),
@@ -481,9 +481,9 @@ ui_t_smq <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       bslib::accordion(
+        open = FALSE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
-          open = FALSE,
           checkboxInput(
             ns(
               "drop_arm_levels"

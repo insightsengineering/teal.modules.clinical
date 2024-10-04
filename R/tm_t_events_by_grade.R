@@ -921,7 +921,7 @@ ui_t_events_by_grade <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "hlt", "llt", "grade")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -958,9 +958,9 @@ ui_t_events_by_grade <- function(id, ...) {
         value = a$col_by_grade
       ),
       bslib::accordion(
+        open = FALSE,
         bslib::accordion_panel(
           title = "Additional table settings",
-          open = FALSE,
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",

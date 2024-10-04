@@ -401,7 +401,7 @@ ui_t_abnormality <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(
         a[c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var")]
       ),
@@ -430,9 +430,9 @@ ui_t_abnormality <- function(id, ...) {
         value = a$exclude_base_abn
       ),
       bslib::accordion(
+        open = FALSE,
         bslib::accordion_panel(
           title = "Additional table settings",
-          open = FALSE,
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
@@ -441,9 +441,9 @@ ui_t_abnormality <- function(id, ...) {
         )
       ),
       bslib::accordion(
+        open = FALSE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
-          open = FALSE,
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

@@ -345,7 +345,7 @@ ui_shift_by_arm <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c(
         "arm_var", "paramcd_var", "paramcd", "aval_var", "baseline_var", "visit_var", "treamtment_flag_var"
       )]),
@@ -387,9 +387,9 @@ ui_shift_by_arm <- function(id, ...) {
         selected = a$useNA
       ),
       bslib::accordion(
+        open = FALSE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
-          open = FALSE,
           teal.transform::data_extract_ui(
             id = ns("treatment_flag_var"),
             label = "On Treatment Flag Variable",

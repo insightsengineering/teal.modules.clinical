@@ -363,7 +363,7 @@ ui_t_logistic <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "avalc_var", "cov_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),

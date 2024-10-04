@@ -297,7 +297,7 @@ ui_g_laboratory <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(ui_args[c("timepoints", "aval_var", "avalu_var", "param", "paramcd", "anrind")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),

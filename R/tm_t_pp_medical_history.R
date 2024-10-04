@@ -191,7 +191,7 @@ ui_t_medical_history <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(ui_args[c("mhterm", "mhbodsys", "mhdistat")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),

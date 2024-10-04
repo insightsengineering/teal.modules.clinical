@@ -211,7 +211,7 @@ ui_g_barchart_simple <- function(id, ...) {
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),
         ###
-        tags$label("Encodings", class = "text-primary"),
+        tags$label("Encodings", class = "text-primary"), tags$br(),
         teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
         if (!is.null(args$x)) {
           teal.transform::data_extract_ui(
@@ -246,9 +246,9 @@ ui_g_barchart_simple <- function(id, ...) {
           )
         },
         bslib::accordion(
+          open = FALSE,
           bslib::accordion_panel(
             title = "Additional plot settings",
-            open = FALSE,
             if (!is.null(args$fill)) {
               radioButtons(
                 inputId = ns("barlayout"),

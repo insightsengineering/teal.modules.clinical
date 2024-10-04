@@ -631,12 +631,12 @@ ui_mmrm <- function(id, ...) {
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),
         ###
-        tags$label("Encodings", class = "text-primary"),
+        tags$label("Encodings", class = "text-primary"), tags$br(),
         teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
         bslib::accordion(
+          open = FALSE,
           bslib::accordion_panel(
             title = "Model Settings",
-            open = FALSE,
             teal.transform::data_extract_ui(
               id = ns("aval_var"),
               label = "Analysis Variable",
@@ -758,9 +758,10 @@ ui_mmrm <- function(id, ...) {
             "input['", ns("output_function"), "'] == 'g_mmrm_diagnostic'"
           ),
           bslib::accordion(
+            open = FALSE,
             bslib::accordion_panel(
               title = "Output Settings",
-              open = FALSE,
+
               # Additional option for LS means table.
               selectInput(
                 ns("t_mmrm_lsmeans_show_relative"),
