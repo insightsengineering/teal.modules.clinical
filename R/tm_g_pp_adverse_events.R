@@ -201,8 +201,7 @@ template_adverse_events <- function(dataname = "ANL",
 #'   ADSL <- tmc_ex_adsl %>%
 #'     filter(USUBJID %in% ADAE$USUBJID)
 #' })
-#' datanames(data) <- c("ADSL", "ADAE")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADAE <- data[["ADAE"]]

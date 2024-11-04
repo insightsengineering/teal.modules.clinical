@@ -208,8 +208,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADEG <- tmc_ex_adeg
 #' })
-#' datanames(data) <- c("ADSL", "ADEG")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADEG <- data[["ADEG"]]

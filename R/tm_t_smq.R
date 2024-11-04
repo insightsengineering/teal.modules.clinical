@@ -327,22 +327,21 @@ template_smq <- function(dataname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADAE <- tmc_ex_adae
 #'
-#'   names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
-#'   names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
+#'   .names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
+#'   .names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
 #'
-#'   cs_baskets <- choices_selected(
-#'     choices = variable_choices(ADAE, subset = names_baskets),
-#'     selected = names_baskets
+#'   .cs_baskets <- choices_selected(
+#'     choices = variable_choices(ADAE, subset = .names_baskets),
+#'     selected = .names_baskets
 #'   )
 #'
-#'   cs_scopes <- choices_selected(
-#'     choices = variable_choices(ADAE, subset = names_scopes),
-#'     selected = names_scopes,
+#'   .cs_scopes <- choices_selected(
+#'     choices = variable_choices(ADAE, subset = .names_scopes),
+#'     selected = .names_scopes,
 #'     fixed = TRUE
 #'   )
 #' })
-#' datanames(data) <- c("ADSL", "ADAE")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
 #'
 #' app <- init(
 #'   data = data,
@@ -355,8 +354,8 @@ template_smq <- function(dataname,
 #'         selected = "ARM"
 #'       ),
 #'       add_total = FALSE,
-#'       baskets = data[["cs_baskets"]],
-#'       scopes = data[["cs_scopes"]],
+#'       baskets = data[[".cs_baskets"]],
+#'       scopes = data[[".cs_scopes"]],
 #'       llt = choices_selected(
 #'         choices = variable_choices(data[["ADAE"]], subset = c("AEDECOD")),
 #'         selected = "AEDECOD"

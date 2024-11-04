@@ -332,8 +332,7 @@ template_summary_by <- function(parentname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb
 #' })
-#' datanames(data) <- c("ADSL", "ADLB")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADLB <- data[["ADLB"]]

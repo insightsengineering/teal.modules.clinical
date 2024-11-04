@@ -264,8 +264,6 @@ template_therapy <- function(dataname = "ANL",
 #'   ADCM$CMAENDTM <- ADCM$AENDTM
 #' })
 #'
-#' datanames(data) <- c("ADSL", "ADCM")
-#'
 #' join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADCM")]
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #' join_keys(data)["ADCM", "ADCM"] <- adcm_keys

@@ -95,22 +95,21 @@ data <- within(data, {
   ADSL <- tmc_ex_adsl
   ADAE <- tmc_ex_adae
 
-  names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
-  names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
+  .names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
+  .names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
 
-  cs_baskets <- choices_selected(
-    choices = variable_choices(ADAE, subset = names_baskets),
-    selected = names_baskets
+  .cs_baskets <- choices_selected(
+    choices = variable_choices(ADAE, subset = .names_baskets),
+    selected = .names_baskets
   )
 
-  cs_scopes <- choices_selected(
-    choices = variable_choices(ADAE, subset = names_scopes),
-    selected = names_scopes,
+  .cs_scopes <- choices_selected(
+    choices = variable_choices(ADAE, subset = .names_scopes),
+    selected = .names_scopes,
     fixed = TRUE
   )
 })
-datanames(data) <- c("ADSL", "ADAE")
-join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+join_keys(data) <- default_cdisc_join_keys[ls(data)]
 
 app <- init(
   data = data,
@@ -123,8 +122,8 @@ app <- init(
         selected = "ARM"
       ),
       add_total = FALSE,
-      baskets = data[["cs_baskets"]],
-      scopes = data[["cs_scopes"]],
+      baskets = data[[".cs_baskets"]],
+      scopes = data[[".cs_scopes"]],
       llt = choices_selected(
         choices = variable_choices(data[["ADAE"]], subset = c("AEDECOD")),
         selected = "AEDECOD"
@@ -144,9 +143,9 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zhXCAzoeFE-eihRAGs4UlEigHNGOFR2BTAAPXZcgFkARQAfAGFNuQwAKgA5TPWAEiWU-rF2HOa5FM1uQV0AXjtHJ0VenVvBqJiKgxDM5gslssNptjrldlc8P9YHcHj9nq8Pl9nL8GgRBsMxhMpuECDEiDIxH5RHAROo4PxFn8MqTyQRQZ8XoxaFB6CI-CyKaJ7k0nClRIJ6NTSDpPgChiNxpMng0MtTaeR+DKkQN5YTJg0cX88VTgaCSWTBVSaXA6QyVToBWyphyWNzeXB+RancLmmKJVKtXKgUQQaJlUydGqbRrA8jAabRLh7cZaBV6Vr7M4DUoAL6-JIAxKhGwkxZgHIFa46Jaopa-ABW5IgfnGrCFSRLRn4cGMUGEpH5-FoQL8jfiLbgbeABbjRc8cgAuj00KgivFooyMkktUkk38+EIRM6dAfhHd7SU-APRDAAI6bjKP6g8mlamv8bSMak6JzaMhTehWB0aE7B5ERrntLdQluN9yxFCCIwyFgYD8TktUdSko1tB9H0fDDj05N0+XwucoGAYAazyfIlgXBc-UlCZ0LLTIsHWKsllyJwAA063DXDcKwmNPhrVilkgnQ+P4mp+CvIhPGoLUADFMnyTi934nQCUVY8knIpZjS0okaLo8Tg1DHdQj0wh4xDMRjPU-jqGoaVPnwq11XpHD+PwrVCLAj0SN0ii4OaezI39RjXOYpxsicXYAHlsl4hyNME9NhPLGK4sSsTEIk+1fgyX5floYwdHYeJyDUDRtGsGw0j+UQ4ggVhMnQdgVwuQRaBSTrqUYT9fhzJQwBzBcgA}{Open in Shinylive}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zhXCAyMaHhRP3ooUQBrOFJRIoBzRjhUdgUwAD12XIBZAEUAHwBhLbkMACoAOUyNgBJllIGxdhzmuRTNbkFdAF47RydFXp1+rAxH5RMRUGJZvNFssVpstidcntrngdHdRA8mr8Xm9Pt9nH8GhIhiNxpNpuECDEiDJgaI4CJ1HB+Et-hlKdSCBCvq9GLQoPQRH52TT0Y8nClRIJ6HTSDovoDBsNRhMps8Ghk6QzyPw5QC0UrSVMGgT-kSQWCIRSqSKQfS4IzmeqdMLOdNuSw+QK4ELra6Mc0JVKZbqFbSLaI1aydJr7dqQ-rQURwaJcE7jLQKkzdfZnMalABfP4AK2pED8E1Y6KSNnC-DgxigwlIQv4tFBfhL8XLcErwGoVdCcgAuj00KgivFoiyMkldUlU-8+EIRG6dEvhPcnSU-M3RDAAI7TjLH6j8+m65aZfjaRh0nRObRkab0Vg6OF2fkiG5OmehO4XsAxW-KMMhYGA-B5XUXVpO0HSPY9j2g1ceU9QUkMSUJgGAS88nyZYhyHQNpUmKClkArANhuHRllyJwAA1ljkSMEIQmMHQAzIKOWH8dGYlian4HciE8ahdQAMUyfJaIXFidBJFVVySLDljNeSyXwwieMTZM50w7CwDNbSxA0mSWOoahZS+JDbS1Jl4JYpDdRQz9vXQpT9KAsACKI4MrLI5psicPYAHlskYvjZLYuMvkvJxApCsKwB4v4EJS3ilD+WhjB0dh4nINQNG0awbDSf5RDiCBWEydB2DHS5BFoFI6rpRgbz+fMlDAfMhyAA}{Open in Shinylive}
     \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zhXCAzoeFE-eihRAGs4UlEigHNGOFR2BTAAPXZcgFkARQAfAGFNuQwAKgA5TPWAEiWU-rF2HOa5FM1uQV0AXjtHJ0VenVvBqJiKgxDM5gslssNptjrldlc8P9YHcHj9nq8Pl9nL8GgRBsMxhMpuECDEiDIxH5RHAROo4PxFn8MqTyQRQZ8XoxaFB6CI-CyKaJ7k0nClRIJ6NTSDpPgChiNxpMng0MtTaeR+DKkQN5YTJg0cX88VTgaCSWTBVSaXA6QyVToBWyphyWNzeXB+RancLmmKJVKtXKgUQQaJlUydGqbRrA8jAabRLh7cZaBV6Vr7M4DUoAL6-JIAxKhGwkxZgHIFa46Jaopa-ABW5IgfnGrCFSRLRn4cGMUGEpH5-FoQL8jfiLbgbeABbjRc8cgAuj00KgivFooyMkktUkk38+EIRM6dAfhHd7SU-APRDAAI6bjKP6g8mlamv8bSMak6JzaMhTehWB0aE7B5ERrntLdQluN9yxFCCIwyFgYD8TktUdSko1tB9H0fDDj05N0+XwucoGAYAazyfIlgXBc-UlCZ0LLTIsHWKsllyJwAA063DXDcKwmNPhrVilkgnQ+P4mp+CvIhPGoLUADFMnyTi934nQCUVY8knIpZjS0okaLo8Tg1DHdQj0wh4xDMRjPU-jqGoaVPnwq11XpHD+PwrVCLAj0SN0ii4OaezI39RjXOYpxsicXYAHlsl4hyNME9NhPLGK4sSsTEIk+1fgyX5floYwdHYeJyDUDRtGsGw0j+UQ4ggVhMnQdgVwuQRaBSTrqUYT9fhzJQwBzBcgA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zhXCAyMaHhRP3ooUQBrOFJRIoBzRjhUdgUwAD12XIBZAEUAHwBhLbkMACoAOUyNgBJllIGxdhzmuRTNbkFdAF47RydFXp1+rAxH5RMRUGJZvNFssVpstidcntrngdHdRA8mr8Xm9Pt9nH8GhIhiNxpNpuECDEiDJgaI4CJ1HB+Et-hlKdSCBCvq9GLQoPQRH52TT0Y8nClRIJ6HTSDovoDBsNRhMps8Ghk6QzyPw5QC0UrSVMGgT-kSQWCIRSqSKQfS4IzmeqdMLOdNuSw+QK4ELra6Mc0JVKZbqFbSLaI1aydJr7dqQ-rQURwaJcE7jLQKkzdfZnMalABfP4AK2pED8E1Y6KSNnC-DgxigwlIQv4tFBfhL8XLcErwGoVdCcgAuj00KgivFoiyMkldUlU-8+EIRG6dEvhPcnSU-M3RDAAI7TjLH6j8+m65aZfjaRh0nRObRkab0Vg6OF2fkiG5OmehO4XsAxW-KMMhYGA-B5XUXVpO0HSPY9j2g1ceU9QUkMSUJgGAS88nyZYhyHQNpUmKClkArANhuHRllyJwAA1ljkSMEIQmMHQAzIKOWH8dGYlian4HciE8ahdQAMUyfJaIXFidBJFVVySLDljNeSyXwwieMTZM50w7CwDNbSxA0mSWOoahZS+JDbS1Jl4JYpDdRQz9vXQpT9KAsACKI4MrLI5psicPYAHlskYvjZLYuMvkvJxApCsKwB4v4EJS3ilD+WhjB0dh4nINQNG0awbDSf5RDiCBWEydB2DHS5BFoFI6rpRgbz+fMlDAfMhyAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
   }
 }
 }

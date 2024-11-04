@@ -803,13 +803,12 @@ template_events_col_by_grade <- function(dataname,
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
-#'   lbls_adae <- col_labels(tmc_ex_adae)
+#'   .lbls_adae <- col_labels(tmc_ex_adae)
 #'   ADAE <- tmc_ex_adae %>%
 #'     mutate_if(is.character, as.factor) #' be certain of having factors
-#'   col_labels(ADAE) <- lbls_adae
+#'   col_labels(ADAE) <- .lbls_adae
 #' })
-#' datanames(data) <- c("ADSL", "ADAE")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADAE <- data[["ADAE"]]

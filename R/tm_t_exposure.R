@@ -241,7 +241,7 @@ template_exposure <- function(parentname,
 #'   ADEX <- tmc_ex_adex
 #'
 #'   set.seed(1, kind = "Mersenne-Twister")
-#'   labels <- col_labels(ADEX, fill = FALSE)
+#'   .labels <- col_labels(ADEX, fill = FALSE)
 #'   ADEX <- ADEX %>%
 #'     distinct(USUBJID, .keep_all = TRUE) %>%
 #'     mutate(
@@ -251,10 +251,9 @@ template_exposure <- function(parentname,
 #'       AVALU = "Days"
 #'     ) %>%
 #'     bind_rows(ADEX)
-#'   col_labels(ADEX) <- labels
+#'   col_labels(ADEX) <- labels.
 #' })
-#' datanames(data) <- c("ADSL", "ADEX")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
 #'
 #' app <- init(
 #'   data = data,

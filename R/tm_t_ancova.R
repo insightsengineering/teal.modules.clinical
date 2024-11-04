@@ -446,8 +446,7 @@ template_ancova <- function(dataname = "ANL",
 #'   ADSL <- tmc_ex_adsl
 #'   ADQS <- tmc_ex_adqs
 #' })
-#' datanames(data) <- c("ADSL", "ADQS")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADQS <- data[["ADQS"]]
