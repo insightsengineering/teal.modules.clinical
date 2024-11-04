@@ -1401,7 +1401,7 @@ srv_mmrm <- function(id,
 
     all_q <- reactive({
       if (!is.null(plot_q()) && !is.null(table_q())) {
-        teal.code::join(plot_q(), table_q())
+        c(plot_q(), table_q())
       } else if (!is.null(plot_q())) {
         plot_q()
       } else {
