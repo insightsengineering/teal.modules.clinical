@@ -251,7 +251,7 @@ template_exposure <- function(parentname,
 #'       AVALU = "Days"
 #'     ) %>%
 #'     bind_rows(ADEX)
-#'   col_labels(ADEX) <- labels.
+#'   col_labels(ADEX) <- .labels
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
