@@ -369,7 +369,7 @@ template_binary_outcome <- function(dataname,
 #'     ) %>%
 #'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADRS <- data[["ADRS"]]

@@ -158,7 +158,7 @@ template_a_gee <- function(output_table,
 #'     ) %>%
 #'     droplevels()
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,

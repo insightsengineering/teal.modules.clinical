@@ -260,7 +260,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'       with_label("Character Result/Finding")) %>%
 #'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADRS <- data[["ADRS"]]

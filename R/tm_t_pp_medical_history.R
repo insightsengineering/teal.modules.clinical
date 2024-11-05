@@ -100,7 +100,7 @@ template_medical_history <- function(dataname = "ANL",
 #'   ADSL <- tmc_ex_adsl
 #'   ADMH <- tmc_ex_admh
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADMH <- data[["ADMH"]]

@@ -569,7 +569,7 @@ template_events_summary <- function(anl_name,
 #'   .ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
 #'   .aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,

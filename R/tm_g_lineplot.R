@@ -222,7 +222,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'   ADLB <- tmc_ex_adlb %>%
 #'     mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADLB <- data[["ADLB"]]

@@ -224,7 +224,7 @@ template_vitals <- function(dataname = "ANL",
 #'   ADSL <- tmc_ex_adsl
 #'   ADVS <- tmc_ex_advs
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADVS <- data[["ADVS"]]

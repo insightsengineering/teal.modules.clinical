@@ -412,7 +412,7 @@ template_tte <- function(dataname = "ANL",
 #'   ADSL <- tmc_ex_adsl
 #'   ADTTE <- tmc_ex_adtte
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADTTE <- data[["ADTTE"]]

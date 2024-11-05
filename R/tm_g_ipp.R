@@ -198,7 +198,7 @@ template_g_ipp <- function(dataname = "ANL",
 #'     df_explicit_na() %>%
 #'     filter(AVISIT != "SCREENING")
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADLB <- data[["ADLB"]]

@@ -202,7 +202,7 @@ template_g_ci <- function(dataname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADLB <- data[["ADLB"]]

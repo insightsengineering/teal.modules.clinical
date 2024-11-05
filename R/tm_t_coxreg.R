@@ -388,7 +388,7 @@ template_coxreg_m <- function(dataname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADTTE <- tmc_ex_adtte
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADTTE <- data[["ADTTE"]]
@@ -460,7 +460,7 @@ template_coxreg_m <- function(dataname,
 #'   )
 #' })
 #'
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADTTE <- data[["ADTTE"]]

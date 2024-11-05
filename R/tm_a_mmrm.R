@@ -491,7 +491,7 @@ template_mmrm_plots <- function(fit_name,
 #'         as.factor() #' making consecutive numeric factor
 #'     )
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,

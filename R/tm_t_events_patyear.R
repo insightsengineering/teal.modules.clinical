@@ -204,7 +204,7 @@ template_events_patyear <- function(dataname,
 #'     mutate(is_event = CNSR == 0) %>%
 #'     mutate(n_events = as.integer(is_event))
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADAETTE <- data[["ADAETTE"]]

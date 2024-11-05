@@ -472,7 +472,7 @@ template_events <- function(dataname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADAE <- tmc_ex_adae
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADAE <- data[["ADAE"]]

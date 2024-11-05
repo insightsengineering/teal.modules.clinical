@@ -32,7 +32,7 @@
 #'   ADAE <- tmc_ex_adae %>%
 #'     filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADAE <- data[["ADAE"]]
@@ -420,7 +420,9 @@ srv_g_barchart_simple <- function(id,
         count_exprs <- c(count_exprs, count_exprs2, count_str_to_col_exprs)
       }
 
-      data_list <- sapply(ls(data()), function(x) reactive(data()[[x]]),
+      data_list <- sapply(
+        names(data()),
+        function(x) reactive(data()[[x]]),
         simplify = FALSE
       )
 

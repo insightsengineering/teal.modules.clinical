@@ -32,7 +32,7 @@ BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.0),
-    teal (>= 0.15.2.9052),
+    teal (>= 0.15.2.9079),
     teal.transform (>= 0.5.0),
     tern (>= 0.9.6)
 Imports:
@@ -55,8 +55,8 @@ Imports:
     shinyvalidate,
     shinyWidgets (>= 0.5.1),
     stats,
-    teal.code (>= 0.5.0),
-    teal.data (>= 0.4.0),
+    teal.code (>= 0.5.0.9012),
+    teal.data (>= 0.6.0.9015),
     teal.logger (>= 0.2.0.9004),
     teal.reporter (>= 0.2.1),
     teal.widgets (>= 0.4.0),

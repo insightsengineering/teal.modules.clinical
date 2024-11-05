@@ -259,7 +259,7 @@ template_abnormality <- function(parentname,
 #'       ) %>% with_label("On Treatment Record Flag")
 #'     )
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADLB <- data[["ADLB"]]

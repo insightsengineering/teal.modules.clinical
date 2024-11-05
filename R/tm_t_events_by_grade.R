@@ -808,7 +808,7 @@ template_events_col_by_grade <- function(dataname,
 #'     mutate_if(is.character, as.factor) #' be certain of having factors
 #'   col_labels(ADAE) <- .lbls_adae
 #' })
-#' join_keys(data) <- default_cdisc_join_keys[ls(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADAE <- data[["ADAE"]]
