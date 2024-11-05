@@ -1,12 +1,11 @@
-app_driver_tm_t_pp_medical_history <- function() { # nolint: object_length
+app_driver_tm_t_pp_medical_history <- function() { # nolint: object_length.
   data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
     ADMH <- tmc_ex_admh
   })
-  datanames <- c("ADSL", "ADMH")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
+
   init_teal_app_driver(
     data = data,
     modules = tm_t_pp_medical_history(

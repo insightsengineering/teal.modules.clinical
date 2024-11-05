@@ -6,7 +6,7 @@ app_driver_tm_t_exposure <- function() {
     ADEX <- teal.data::rADEX
 
     set.seed(1, kind = "Mersenne-Twister")
-    labels <- col_labels(ADEX, fill = FALSE)
+    .labels <- col_labels(ADEX, fill = FALSE)
     ADEX <- ADEX %>%
       distinct(USUBJID, .keep_all = TRUE) %>%
       mutate(
@@ -16,12 +16,9 @@ app_driver_tm_t_exposure <- function() {
         AVALU = "Days"
       ) %>%
       bind_rows(ADEX)
-    col_labels(ADEX) <- labels
+    col_labels(ADEX) <- .labels
   })
-
-  datanames <- c("ADSL", "ADEX")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

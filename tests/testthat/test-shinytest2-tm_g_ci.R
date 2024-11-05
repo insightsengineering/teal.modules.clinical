@@ -4,8 +4,8 @@ app_driver_tm_g_ci <- function() {
     ADSL <- teal.data::rADSL
     ADLB <- teal.data::rADLB
   })
-  teal.data::datanames(data) <- c("ADSL", "ADLB")
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[c("ADSL", "ADLB")]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
+
   init_teal_app_driver(
     data = data,
     modules = tm_g_ci(

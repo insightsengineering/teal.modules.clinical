@@ -4,9 +4,7 @@ app_driver_tm_t_events <- function() {
     ADSL <- teal.data::rADSL
     ADAE <- teal.data::rADAE
   })
-  datanames <- c("ADSL", "ADAE")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

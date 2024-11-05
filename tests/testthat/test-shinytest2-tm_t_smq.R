@@ -4,24 +4,21 @@ app_driver_tm_t_smq <- function() {
     ADSL <- teal.data::rADSL
     ADAE <- teal.data::rADAE
 
-    names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
-    names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
+    .names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
+    .names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
 
-    cs_baskets <- choices_selected(
-      choices = teal.transform::variable_choices(ADAE, subset = names_baskets),
-      selected = names_baskets
+    .cs_baskets <- choices_selected(
+      choices = teal.transform::variable_choices(ADAE, subset = .names_baskets),
+      selected = .names_baskets
     )
 
-    cs_scopes <- choices_selected(
-      choices = teal.transform::variable_choices(ADAE, subset = names_scopes),
-      selected = names_scopes,
+    .cs_scopes <- choices_selected(
+      choices = teal.transform::variable_choices(ADAE, subset = .names_scopes),
+      selected = .names_scopes,
       fixed = TRUE
     )
   })
-
-  datanames <- c("ADSL", "ADAE")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,
@@ -43,8 +40,8 @@ app_driver_tm_t_smq <- function() {
       drop_arm_levels = TRUE,
       na_level = default_na_str(),
       smq_varlabel = "Standardized MedDRA Query",
-      baskets = data[["cs_baskets"]],
-      scopes = data[["cs_scopes"]],
+      baskets = data[[".cs_baskets"]],
+      scopes = data[[".cs_scopes"]],
       llt = teal.transform::choices_selected(
         choices = teal.transform::variable_choices(data[["ADAE"]], subset = c("AEDECOD", "SEX")),
         selected = "AEDECOD"

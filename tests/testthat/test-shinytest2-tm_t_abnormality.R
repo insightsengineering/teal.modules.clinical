@@ -12,9 +12,7 @@ app_driver_tm_t_abnormality <- function() {
         ) %>% with_label("On Treatment Record Flag")
       )
   })
-  datanames <- c("ADSL", "ADLB")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

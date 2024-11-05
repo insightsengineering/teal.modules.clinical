@@ -4,10 +4,7 @@ app_driver_tm_t_tte <- function() {
     ADSL <- teal.data::rADSL
     ADTTE <- teal.data::rADTTE
   })
-
-  datanames <- c("ADSL", "ADTTE")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   arm_ref_comp <- list(
     ACTARMCD = list(
