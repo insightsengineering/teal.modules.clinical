@@ -9,7 +9,7 @@ app_driver_tm_g_km <- function() {
         CENSORING = CNSR
       )
   })
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   arm_ref_comp <- list(
     ACTARMCD = list(
