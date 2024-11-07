@@ -29,7 +29,7 @@ ns_des_input <- function(id, dataname, type) {
 }
 
 app_driver_stop <- function(app_driver) {
-  app_driver_stop(app_driver)
+  app_driver$stop()
   app_driver$get_chromote_session()$parent$close()
   app_driver$get_chromote_session()$close()
 }
