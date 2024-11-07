@@ -28,8 +28,14 @@ ns_des_input <- function(id, dataname, type) {
   sprintf("%s-dataset_%s_singleextract-%s", id, dataname, type)
 }
 
-app_driver_stop <- function(app_driver) {
-  app_driver_stop(app_driver)
-  app_driver$get_chromote_session()$parent$close()
-  app_driver$get_chromote_session()$close()
+app_driver_stop <- function(app_driver, envir = parent.frame()) {
+  withr::defer(
+    {
+      app_driver_stop(app_driver)
+      app_driver$get_chromote_session()$parent$close()
+      app_driver$get_chromote_session()$close()
+      gc()
+    },
+    envir = envir
+  )
 }
