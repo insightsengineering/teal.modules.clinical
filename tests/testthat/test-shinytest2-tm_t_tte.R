@@ -80,7 +80,7 @@ testthat::test_that("e2e - tm_t_tte: Module initializes in teal without errors a
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -147,7 +147,7 @@ testthat::test_that(
     )
     testthat::expect_true(app_driver$get_active_module_input("compare_arms"))
     testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -165,7 +165,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -181,7 +181,7 @@ testthat::test_that("e2e - tm_t_tte: Deselection of paramcd throws validation er
     ),
     "An endpoint is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -198,7 +198,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -214,7 +214,7 @@ testthat::test_that("e2e - tm_t_tte: Deselection of arm_var throws validation er
     ),
     "Treatment variable must be selected"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -231,7 +231,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -249,6 +249,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )

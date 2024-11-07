@@ -58,7 +58,7 @@ testthat::test_that("e2e - tm_t_logistic: Module initializes in teal without err
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -100,7 +100,7 @@ testthat::test_that(
       "0.95"
     )
     testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -118,7 +118,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -134,7 +134,7 @@ testthat::test_that("e2e - tm_t_logistic: Deselection of paramcd throws validati
     ),
     "`Select Endpoint` field is empty"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -151,7 +151,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -165,7 +165,7 @@ testthat::test_that("e2e - tm_t_logistic: Deselection of arm_var throws validati
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Treatment variable must be selected"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -182,7 +182,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -196,5 +196,5 @@ testthat::test_that("e2e - tm_t_logistic: Deselection of cov_var throws validati
     app_driver$active_module_element_text("cov_var-dataset_ADRS_singleextract-select_input .shiny-validation-message"),
     "`Covariates` field is empty"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

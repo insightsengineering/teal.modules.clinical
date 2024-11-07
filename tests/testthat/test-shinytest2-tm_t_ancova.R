@@ -65,7 +65,7 @@ testthat::test_that("e2e - tm_t_ancova: Module initializes in teal without error
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -120,7 +120,7 @@ testthat::test_that(
       "0.95"
     )
     testthat::expect_false(app_driver$get_active_module_input("include_interact"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -141,7 +141,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -157,7 +157,7 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of avisit throws validation 
     ),
     "`Analysis Visit` field cannot be empty."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -174,7 +174,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -190,7 +190,7 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of paramcd throws validation
     ),
     "`Select Endpoint` is not selected."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -207,7 +207,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -221,7 +221,7 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of aval_var throws validatio
     app_driver$active_module_element_text("aval_var-dataset_ADQS_singleextract-select_input .shiny-validation-message"),
     "Analysis variable cannot be empty."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -238,7 +238,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -252,7 +252,7 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of arm_var throws validation
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Treatment variable must be selected"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -269,7 +269,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -287,6 +287,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )

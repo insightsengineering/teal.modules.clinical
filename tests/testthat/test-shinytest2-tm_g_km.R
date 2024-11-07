@@ -84,7 +84,7 @@ testthat::test_that("e2e - tm_g_km: Module initializes in teal without errors an
     app_driver$get_active_module_plot_output("myplot"),
     "data:image/png;base64,"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -128,7 +128,7 @@ testthat::test_that(
       app_driver$get_active_module_input(ns_des_input("strata_var", "ADSL", "select")),
       "SEX"
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -139,7 +139,7 @@ testthat::test_that("e2e - tm_g_km: Changing {paramcd} changes the plot without 
   app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", "EFS")
   app_driver$expect_no_validation_error()
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {facet_var} changes the plot without errors.", {
@@ -149,7 +149,7 @@ testthat::test_that("e2e - tm_g_km: Changing {facet_var} changes the plot withou
   app_driver$set_active_module_input(ns_des_input("facet_var", "ADSL", "select"), "SEX")
   app_driver$expect_no_validation_error()
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {arm_var} changes the plot without errors.", {
@@ -159,7 +159,7 @@ testthat::test_that("e2e - tm_g_km: Changing {arm_var} changes the plot without 
   app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ACTARMCD")
   app_driver$expect_no_validation_error()
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {compare_arms} changes the plot without errors.", {
@@ -169,7 +169,7 @@ testthat::test_that("e2e - tm_g_km: Changing {compare_arms} changes the plot wit
   app_driver$set_active_module_input("compare_arms", FALSE)
   app_driver$expect_no_validation_error()
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {strata_var} changes the plot without errors.", {
@@ -179,7 +179,7 @@ testthat::test_that("e2e - tm_g_km: Changing {strata_var} changes the plot witho
   app_driver$set_active_module_input(ns_des_input("strata_var", "ADSL", "select"), "BMRKR2")
   app_driver$expect_no_validation_error()
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation error.", {
@@ -197,7 +197,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation erro
     app_driver$active_module_element_text("myplot-plot-with-settings"),
     "An endpoint is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation error.", {
@@ -211,7 +211,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation erro
     ),
     "Treatment variable must be selected"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {compare_arms} sets it to FALSE.", {
@@ -220,7 +220,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {compare_arms} sets it to FALSE.
   app_driver$set_active_module_input("compare_arms", NULL)
   app_driver$expect_no_validation_error()
   testthat::expect_false(app_driver$get_active_module_input("compare_arms"))
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {strata_var} does not throw errors.", {
@@ -228,7 +228,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {strata_var} does not throw erro
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input(ns_des_input("strata_var", "ADSL", "select"), character(0))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 # groups ----------------------------------------------------------------------------------------------------------
@@ -247,7 +247,7 @@ testthat::test_that("e2e - tm_g_km: Starts with specified groups.", {
 
   testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
 
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 # comparison settings ---------------------------------------------------------------------------------------------
@@ -270,7 +270,7 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison s
     "Ties for Coxph (Hazard Ratio)"
   )
 
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {pval_method_coxph} changes the plot without errors.", {
@@ -280,7 +280,7 @@ testthat::test_that("e2e - tm_g_km: Changing {pval_method_coxph} changes the plo
   app_driver$set_active_module_input("pval_method_coxph", "wald")
   app_driver$expect_no_validation_error()
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {ties_coxph} changes the plot without errors.", {
@@ -290,7 +290,7 @@ testthat::test_that("e2e - tm_g_km: Changing {ties_coxph} changes the plot witho
   app_driver$set_active_module_input("ties_coxph", "breslow")
   app_driver$expect_no_validation_error()
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {pval_method_coxph} gives no validation error.", {
@@ -298,7 +298,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {pval_method_coxph} gives no val
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("pval_method_coxph", character(0))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {ties_coxph} gives no validation error.", {
@@ -306,7 +306,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {ties_coxph} gives no validation
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("ties_coxph", character(0))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 # plot settings ---------------------------------------------------------------------------------------------------
@@ -342,7 +342,7 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional p
   testthat::expect_equal(app_driver$active_module_element_text("rel_height_plot-label"), "Relative Height of Plot (%)")
   testthat::expect_equal(app_driver$active_module_element_text("xlab-label"), "X-axis label")
 
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 test_that_plot_settings <- function(input_id, new_value) {
@@ -358,7 +358,7 @@ test_that_plot_settings <- function(input_id, new_value) {
       app_driver$set_active_module_input(input_id, new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 }
@@ -381,5 +381,5 @@ testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation e
     app_driver$active_module_element_text("myplot-plot-with-settings"),
     "Confidence level must be between 0 and 1."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

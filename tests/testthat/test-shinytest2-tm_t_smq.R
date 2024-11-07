@@ -61,7 +61,7 @@ testthat::test_that("e2e - tm_t_smq: Module initializes in teal without errors a
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -91,7 +91,7 @@ testthat::test_that(
     )
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -109,7 +109,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -123,7 +123,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation er
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "At least one treatment variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_t_smq: Selecting paramcd changes the table and does not throw validation errors.", {
@@ -138,7 +138,7 @@ testthat::test_that("e2e - tm_t_smq: Selecting paramcd changes the table and doe
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_t_smq: Deselection of paramcd throws validation error.", {
@@ -151,7 +151,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of paramcd throws validation er
     app_driver$active_module_element_text("llt-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
     "A low level term variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -168,7 +168,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -182,5 +182,5 @@ testthat::test_that("e2e - tm_t_smq: Deselection of worst_flag throws validation
     app_driver$active_module_element_text("baskets-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
     "At least one basket is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

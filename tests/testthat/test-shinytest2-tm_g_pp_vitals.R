@@ -46,7 +46,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Module initializes in teal without er
     ),
     "data:image/png;base64,"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -84,7 +84,7 @@ testthat::test_that(
       app_driver$get_active_module_input("font_size"),
       12
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -100,7 +100,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Selecting patient_id changes plot and
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Deselecting patient_id column throws validation error.", {
@@ -113,7 +113,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting patient_id column throws 
     "Please select a patient."
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -151,7 +151,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -165,7 +165,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting paramcd throws validation
     "Please select PARAMCD variable."
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting xaxis changes plot and doesn't throw validation errors.", {
@@ -180,7 +180,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Selecting xaxis changes plot and does
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Deselecting xaxis column throws validation error.", {
@@ -193,7 +193,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting xaxis column throws valid
     "Please select Vitals x-axis variable."
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting aval_var changes plot and doesn't throw validation errors.", {
@@ -208,7 +208,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Selecting aval_var changes plot and d
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Deselecting aval_var column throws validation error.", {
@@ -221,7 +221,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting aval_var column throws va
     "Please select AVAL variable."
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Changing font_size changes plot and doesn't throw validation error.", {
@@ -231,5 +231,5 @@ testthat::test_that("e2e - tm_g_pp_vitals: Changing font_size changes plot and d
   app_driver$set_active_module_input("font_size", 20)
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("vitals_plot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

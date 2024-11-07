@@ -71,7 +71,7 @@ testthat::test_that("e2e - tm_g_ipp: Module initializes in teal without errors a
     app_driver$get_active_module_plot_output("myplot"),
     "data:image/png;base64,"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -125,7 +125,7 @@ testthat::test_that(
     testthat::expect_false(app_driver$get_active_module_input("separate_by_obs"))
     testthat::expect_false(app_driver$get_active_module_input("suppress_legend"))
     testthat::expect_true(app_driver$get_active_module_input("add_avalu"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -141,7 +141,7 @@ testthat::test_that("e2e - tm_g_ipp: Selecting arm_var changes plot and doesn't 
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Deselecting arm_var column throws validation error.", {
@@ -154,7 +154,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting arm_var column throws validatio
     "Please select Arm filter."
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Selecting paramcd changes plot and doesn't throw validation errors.", {
@@ -169,7 +169,7 @@ testthat::test_that("e2e - tm_g_ipp: Selecting paramcd changes plot and doesn't 
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Deselecting paramcd throws validation error.", {
@@ -182,7 +182,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting paramcd throws validation error
     "Please select Parameter filter."
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Selecting visit_var changes plot and doesn't throw validation errors.", {
@@ -197,7 +197,7 @@ testthat::test_that("e2e - tm_g_ipp: Selecting visit_var changes plot and doesn'
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Deselecting visit_var throws validation error.", {
@@ -210,7 +210,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting visit_var throws validation err
     "A Timepoint Variable must be selected"
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Selecting aval_var changes plot and doesn't throw validation errors.", {
@@ -225,7 +225,7 @@ testthat::test_that("e2e - tm_g_ipp: Selecting aval_var changes plot and doesn't
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Deselecting aval_var throws validation error.", {
@@ -238,7 +238,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting aval_var throws validation erro
     "A Parameter values over Time must be selected"
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Changing add_baseline_hline changes plot and doesn't throw validation errors.", {
@@ -253,7 +253,7 @@ testthat::test_that("e2e - tm_g_ipp: Changing add_baseline_hline changes plot an
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 testthat::test_that("e2e - tm_g_ipp: Changing separate_by_obs changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
@@ -267,7 +267,7 @@ testthat::test_that("e2e - tm_g_ipp: Changing separate_by_obs changes plot and d
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Changing suppress_legend changes plot and doesn't throw validation errors.", {
@@ -282,7 +282,7 @@ testthat::test_that("e2e - tm_g_ipp: Changing suppress_legend changes plot and d
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ipp: Changing add_avalu changes plot and doesn't throw validation errors.", {
@@ -297,5 +297,5 @@ testthat::test_that("e2e - tm_g_ipp: Changing add_avalu changes plot and doesn't
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

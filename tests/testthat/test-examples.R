@@ -55,7 +55,7 @@ with_mocked_app_bindings <- function(code) {
       check_names = FALSE, # explicit check below
       options = options() # https://github.com/rstudio/shinytest2/issues/377
     )
-    on.exit(app_driver$stop(), add = TRUE)
+    on.exit(app_driver_stop(app_driver), add = TRUE)
     app_driver$wait_for_idle(timeout = 20000)
 
     # Simple testing

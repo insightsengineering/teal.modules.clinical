@@ -72,7 +72,7 @@ testthat::test_that("e2e - tm_g_lineplot: Module initializes in teal without err
     app_driver$is_visible(app_driver$active_module_element("myplot-plot_main"))
   )
 
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -104,7 +104,7 @@ testthat::test_that(
     testthat::expect_equal(app_driver$get_active_module_input("table_font_size"), 4)
     testthat::expect_equal(app_driver$get_active_module_input("table"), c("n", "mean_sd", "median", "range"))
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -120,7 +120,7 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting param changes plot and doesn
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation error.", {
@@ -133,7 +133,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation er
     "Please select Biomarker filter."
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -150,7 +150,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -166,7 +166,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting strata throws validation e
     "Please select a treatment variable"
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Selecting y changes plot and doesn't throw validation errors.", {
@@ -181,7 +181,7 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting y changes plot and doesn't t
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.", {
@@ -196,7 +196,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.
     "Please select an analysis variable"
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Selecting conf_level changes plot and doesn't throw validation errors.", {
@@ -211,7 +211,7 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting conf_level changes plot and 
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting conf_level validation error.", {
@@ -224,5 +224,5 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting conf_level validation erro
     "Please choose a confidence level"
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

@@ -76,7 +76,7 @@ testthat::test_that("e2e - tm_t_exposure: Module initializes in teal without err
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -107,7 +107,7 @@ testthat::test_that(
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total_row"))
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -125,7 +125,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -141,7 +141,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd throws validati
     ),
     "Please select a parameter value."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -158,7 +158,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -174,7 +174,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of parcat throws validatio
     ),
     "Please select a parameter category value."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -191,7 +191,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -209,7 +209,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -227,7 +227,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -243,5 +243,5 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of row_by_var throws valid
     ),
     "Please select a row by variable."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

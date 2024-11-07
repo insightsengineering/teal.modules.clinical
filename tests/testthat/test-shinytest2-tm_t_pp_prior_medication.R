@@ -51,7 +51,7 @@ testthat::test_that(
     testthat::expect_true(
       app_driver$is_visible(app_driver$active_module_element("prior_medication_table"))
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -84,7 +84,7 @@ testthat::test_that(
       app_driver$get_active_module_input("cmstdy-dataset_ADCM_singleextract-select"),
       "ASTDY"
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -102,7 +102,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -115,7 +115,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of patient_id t
     app_driver$active_module_element_text("patient_id_input .shiny-validation-message"),
     "Please select patient id"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -132,7 +132,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -145,7 +145,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmdecod thro
     app_driver$active_module_element_text("cmdecod-dataset_ADCM_singleextract-select_input .shiny-validation-message"),
     "A medication decoding variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -162,7 +162,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -175,7 +175,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel throw
     app_driver$active_module_element_text("atirel-dataset_ADCM_singleextract-select_input .shiny-validation-message"),
     "An ATIREL variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -192,7 +192,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -205,7 +205,7 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc throw
     app_driver$active_module_element_text("cmindc-dataset_ADCM_singleextract-select_input .shiny-validation-message"),
     "A CMINDC variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -222,7 +222,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -235,5 +235,5 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmstdy throw
     app_driver$active_module_element_text("cmstdy-dataset_ADCM_singleextract-select_input .shiny-validation-message"),
     "A CMSTDY variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

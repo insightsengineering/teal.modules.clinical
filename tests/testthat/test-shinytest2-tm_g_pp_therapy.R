@@ -100,7 +100,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Module initializes in teal without e
     app_driver$is_visible(app_driver$active_module_element("therapy_table"))
   )
 
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -135,7 +135,7 @@ testthat::test_that(
     # only tests the options that are customizable
     testthat::expect_equal(app_driver$get_active_module_input("font_size"), 12)
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -166,7 +166,7 @@ test_different_selection <- function(input_name, input_id, new_value) {
         )
       )
       app_driver$expect_no_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 }
@@ -191,7 +191,7 @@ testthat::test_that(
     app_driver$set_active_module_input("font_size", 15)
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("therapy_plot")))
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -217,7 +217,7 @@ test_delection_validation <- function(input_name, input_id, deselect_message) {
       ),
       deselect_message
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   })
 }
 

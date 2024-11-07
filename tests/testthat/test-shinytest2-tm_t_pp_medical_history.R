@@ -41,7 +41,7 @@ testthat::test_that(
     testthat::expect_true(
       app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -71,7 +71,7 @@ testthat::test_that(
       app_driver$get_active_module_input("mhdistat-dataset_ADMH_singleextract-select"),
       "MHDISTAT"
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -89,7 +89,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -103,7 +103,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of patient_id th
     app_driver$active_module_element_text("patient_id_input .shiny-validation-message"),
     "Please select a patient"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -120,7 +120,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -134,7 +134,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhterm throws
     app_driver$active_module_element_text("mhterm-dataset_ADMH_singleextract-select_input .shiny-validation-message"),
     "Please select MHTERM variable."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -151,7 +151,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -165,7 +165,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhbodsys thro
     app_driver$active_module_element_text("mhbodsys-dataset_ADMH_singleextract-select_input .shiny-validation-message"),
     "Please select MHBODSYS variable."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -182,7 +182,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -196,5 +196,5 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhdistat thro
     app_driver$active_module_element_text("mhdistat-dataset_ADMH_singleextract-select_input .shiny-validation-message"),
     "Please select MHDISTAT variable."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

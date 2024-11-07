@@ -123,7 +123,7 @@ testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal with
 
   testthat::expect_true(app_driver$is_visible(app_driver$active_module_element("table")))
 
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -181,7 +181,7 @@ testthat::test_that(
     testthat::expect_true(app_driver$get_active_module_input("flip_axis"))
     testthat::expect_false(app_driver$get_active_module_input("show_n"))
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -196,7 +196,7 @@ testthat::test_that(
     app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), "RACE")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -214,7 +214,7 @@ testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws valid
     ),
     "^Please select an x-variable$"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 # Test pairs of dataset selection ---------------------------------------------
@@ -238,7 +238,7 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
         new_value
       )
       app_driver$expect_no_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 
@@ -256,7 +256,7 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       testthat::expect_null(app_driver$get_active_module_input(input_id))
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 }
@@ -301,7 +301,7 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
         ),
         "^Duplicated value: ACTARM$"
       )
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 }
@@ -322,7 +322,7 @@ test_that_plot_settings <- function(input_id, new_value, setup_fun = function(ap
       app_driver$set_active_module_input(input_id, new_value)
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 }

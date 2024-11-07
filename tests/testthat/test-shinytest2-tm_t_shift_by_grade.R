@@ -72,7 +72,7 @@ testthat::test_that(
     testthat::expect_true(
       app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -113,7 +113,7 @@ testthat::test_that(
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
     testthat::expect_false(app_driver$get_active_module_input("code_missing_baseline"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -131,7 +131,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -145,7 +145,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of arm_var throws va
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "A treatment variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -162,7 +162,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -178,7 +178,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of paramcd throws va
     ),
     "A laboratory parameter is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -195,7 +195,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -211,5 +211,5 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws
     ),
     "A worst treatment flag is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

@@ -60,7 +60,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Module initializes in teal witho
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("patyear_table-table-with-settings"))
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -99,7 +99,7 @@ testthat::test_that(
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -117,7 +117,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -136,7 +136,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd throws va
     ),
     "A Event Type Parameter is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -153,7 +153,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -170,7 +170,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws va
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Please select exactly 1 or 2 treatment variables"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -187,6 +187,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )

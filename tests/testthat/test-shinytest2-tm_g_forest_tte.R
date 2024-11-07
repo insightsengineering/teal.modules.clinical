@@ -82,7 +82,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without e
     app_driver$is_visible(app_driver$active_module_element("myplot-plot_out_main"))
   )
 
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -140,7 +140,7 @@ testthat::test_that(
     testthat::expect_equal(app_driver$get_active_module_input("rel_width_forest"), 25)
     testthat::expect_equal(app_driver$get_active_module_input("font_size"), 12)
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -153,7 +153,7 @@ testthat::test_that(
     app_driver$set_active_module_input(ns_des_input("paramcd", "ADTTE", "filter1-vals"), "CRSD")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -172,7 +172,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd filter throws
     ),
     "Please select Endpoint filter."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -184,7 +184,7 @@ testthat::test_that(
     app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), "ARM")
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -203,7 +203,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd var throws va
     ),
     "Treatment variable must be selected"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -222,6 +222,6 @@ testthat::test_that(
       ),
       "Please choose a confidence level"
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )

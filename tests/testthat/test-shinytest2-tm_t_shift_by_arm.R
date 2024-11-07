@@ -56,7 +56,7 @@ testthat::test_that("e2e - tm_t_shift_by_arm: Module initializes in teal without
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -90,7 +90,7 @@ testthat::test_that(
       "ONTRTFL"
     )
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -108,7 +108,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -122,7 +122,7 @@ testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of arm_var throws vali
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "A treatment variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -139,7 +139,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -155,7 +155,7 @@ testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of paramcd throws vali
     ),
     "An endpoint is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -172,7 +172,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -188,5 +188,5 @@ testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of visit_var throws va
     ),
     "A visit is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

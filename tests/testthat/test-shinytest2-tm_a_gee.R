@@ -48,7 +48,7 @@ testthat::test_that("e2e - tm_a_gee: Module initializes in teal without errors a
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(app_driver$is_visible(app_driver$active_module_element("table-table-with-settings")))
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -102,7 +102,7 @@ testthat::test_that(
       "Output Type.*LS means.*Covariance.*Coefficients",
       fixed = FALSE
     )
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -120,7 +120,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -134,7 +134,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation err
     app_driver$active_module_element_text("id_var-dataset_ADQS_singleextract-select_input > div > span"),
     "A Subject identifier is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and does not throw validation errors.", {
@@ -150,7 +150,7 @@ testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and doe
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation error.", {
@@ -163,7 +163,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation er
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input > div > span"),
     "A treatment variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -180,7 +180,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -195,7 +195,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of visit_var throws validation 
     app_driver$active_module_element_text("visit_var-dataset_ADQS_singleextract-select_input > div > span"),
     "A visit variable is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and does not throw validation errors.", {
@@ -210,7 +210,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and 
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of paramcd throws validation error.", {
@@ -223,7 +223,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of paramcd throws validation er
     app_driver$active_module_element_text("paramcd-dataset_ADQS_singleextract-filter1-vals_input > div > span"),
     "An endpoint is required"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and does not throw validation errors.", {
@@ -238,7 +238,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and 
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of conf_level changes the table and does not throw validation errors.", {
@@ -253,7 +253,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of conf_level changes the table a
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of conf_level out of [0,1] range throws validation error.", {
@@ -267,7 +267,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of conf_level out of [0,1] range 
     app_driver$active_module_element_text("conf_level_input > div > span"),
     "Confidence level must be between 0 and 1"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of conf_level throws validation error.", {
@@ -280,7 +280,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of conf_level throws validation
     app_driver$active_module_element_text("conf_level_input > div > span"),
     "Please choose a confidence level"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of cor_struct changes the table and does not throw validation errors.", {
@@ -295,7 +295,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of cor_struct changes the table a
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of cor_struct does not throw validation error.", {
@@ -303,7 +303,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of cor_struct does not throw va
   app_driver <- app_driver_tm_a_gee()
   app_driver$set_active_module_input("cor_struct", character(0), wait_ = FALSE) # not waiting because of a warning
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of output_table changes the table and doesn't throw validation error.", {
@@ -318,5 +318,5 @@ testthat::test_that("e2e - tm_a_gee: Selection of output_table changes the table
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

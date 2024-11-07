@@ -27,3 +27,9 @@ init_teal_app_driver <- function(...) {
 ns_des_input <- function(id, dataname, type) {
   sprintf("%s-dataset_%s_singleextract-%s", id, dataname, type)
 }
+
+app_driver_stop <- function(app_driver) {
+  app_driver_stop(app_driver)
+  app_driver$get_chromote_session()$parent$close()
+  app_driver$get_chromote_session()$close()
+}

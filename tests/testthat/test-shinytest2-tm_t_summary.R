@@ -41,7 +41,7 @@ testthat::test_that("e2e - tm_t_summary: Module initializes in teal without erro
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_t_summary: Starts with specified label, arm_var, summarize_vars, useNA, denominator.", {
@@ -67,7 +67,7 @@ testthat::test_that("e2e - tm_t_summary: Starts with specified label, arm_var, s
     app_driver$get_active_module_input("denominator"),
     "N"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -84,7 +84,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -98,7 +98,7 @@ testthat::test_that("e2e - tm_t_summary: Deselection of arm_var throws validatio
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Please select 1 or 2 column variables"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -115,7 +115,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -131,5 +131,5 @@ testthat::test_that("e2e - tm_t_summary: Deselection of summarize_vars throws va
     ),
     "Please select a summarize variable"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

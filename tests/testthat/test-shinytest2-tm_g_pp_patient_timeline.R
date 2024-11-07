@@ -97,7 +97,7 @@ testthat::test_that(
       "data:image/png;base64,"
     )
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -162,7 +162,7 @@ testthat::test_that(
       12
     )
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -193,7 +193,7 @@ testthat::test_that(
       )
     )
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -224,7 +224,7 @@ testthat::test_that(
       )
     )
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -242,7 +242,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -256,7 +256,7 @@ testthat::test_that("e2e - tm_g_pp_patient_timeline: Deselecting patient_id colu
     "Please select a patient"
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -273,7 +273,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -286,7 +286,7 @@ testthat::test_that(
     app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -304,7 +304,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -317,7 +317,7 @@ testthat::test_that(
     app_driver$set_active_module_input("aeterm-dataset_ADAE_singleextract-select", NULL)
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("patient_timeline_plot")))
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -336,7 +336,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -353,7 +353,7 @@ testthat::test_that(
       "Please add AE start date."
     )
     app_driver$expect_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -372,7 +372,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -389,7 +389,7 @@ testthat::test_that(
       "Please add AE end date."
     )
     app_driver$expect_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -407,7 +407,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -423,7 +423,7 @@ testthat::test_that(
       "Please add AE start date."
     )
     app_driver$expect_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -441,7 +441,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -457,7 +457,7 @@ testthat::test_that(
       "Please add AE end date."
     )
     app_driver$expect_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -476,7 +476,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -493,7 +493,7 @@ testthat::test_that(
       "Please add Medication start date."
     )
     app_driver$expect_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -512,7 +512,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -529,7 +529,7 @@ testthat::test_that(
       "Please add Medication end date."
     )
     app_driver$expect_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -547,7 +547,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -563,7 +563,7 @@ testthat::test_that(
       "Please add Medication start date."
     )
     app_driver$expect_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -581,7 +581,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -597,6 +597,6 @@ testthat::test_that(
       "Please add Medication end date."
     )
     app_driver$expect_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )

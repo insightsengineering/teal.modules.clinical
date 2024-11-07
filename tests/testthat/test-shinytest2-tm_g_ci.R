@@ -77,7 +77,7 @@ testthat::test_that("e2e - tm_g_ci: Module initializes in teal without errors an
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_match(app_driver$get_active_module_plot_output("myplot"), "data:image/png;base64,")
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -133,7 +133,7 @@ testthat::test_that(
       "mean"
     )
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -149,7 +149,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting x_var column changes plot and does
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ci: Deselecting x_var column throws validation error.", {
@@ -162,7 +162,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting x_var column throws validation e
     app_driver$active_module_element_text("x_var-dataset_ADSL_singleextract-select_input > div > span"),
     "Select a treatment (x axis)"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ci: Selecting y_var column changes plot and doesn't throw validation errors.", {
@@ -177,7 +177,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting y_var column changes plot and does
     )
   )
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ci: Deselecting y_var column throws validation error.", {
@@ -190,7 +190,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting y_var column throws validation e
     "Select an analysis value (y axis)"
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -207,7 +207,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -221,7 +221,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter value throws vali
     "Please select the filters."
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value doesn't throw validation errors.", {
@@ -231,7 +231,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value doesn't throw 
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter2-vals", "BASELINE")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter value throws validation error.", {
@@ -244,7 +244,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter value throws valid
     "Please select the filters."
   )
   app_driver$expect_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ci: Selecting color column changes plot output and doesn't throw validation errors.", {
@@ -254,7 +254,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting color column changes plot output a
   app_driver$set_active_module_input("color-dataset_ADSL_singleextract-select", "SEX")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ci: Deselecting color column changes plot output and doesn't throw validation error.", {
@@ -264,7 +264,7 @@ testthat::test_that("e2e - tm_g_ci: Deselecting color column changes plot output
   app_driver$set_active_module_input("color-dataset_ADSL_singleextract-select", character(0))
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that("e2e - tm_g_ci: Selecting confidence interval value changes plot and doesn't throw any errors.", {
@@ -274,7 +274,7 @@ testthat::test_that("e2e - tm_g_ci: Selecting confidence interval value changes 
   app_driver$set_active_module_input("conf_level", 0.90)
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 
@@ -285,5 +285,5 @@ testthat::test_that("e2e - tm_g_ci: Selecting statistic to use changes a plot an
   app_driver$set_active_module_input("stat", "median")
   testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
   app_driver$expect_no_validation_error()
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })

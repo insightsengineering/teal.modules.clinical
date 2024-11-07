@@ -88,7 +88,7 @@ testthat::test_that(
 
     testthat::expect_match(null_text, "Please first specify 'Model Settings' and press 'Fit Model'")
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -139,7 +139,7 @@ testthat::test_that(
 
     testthat::expect_equal(app_driver$get_active_module_input("output_function"), "t_mmrm_lsmeans")
 
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -153,7 +153,7 @@ testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default
   testthat::expect_true(all(unlist(col_val, use.names = FALSE) %in% colnames(table)))
   testthat::expect_equal(nrow(table), 25)
 
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -172,7 +172,7 @@ testthat::test_that(
     testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
     app_driver$set_active_module_input("t_mmrm_lsmeans_show_relative", "increase")
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -213,7 +213,7 @@ testthat::test_that(
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -240,7 +240,7 @@ testthat::test_that(
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -276,7 +276,7 @@ for (func in output_functions) {
         "Analysis Variable' field is not selected"
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 
@@ -311,7 +311,7 @@ for (func in output_functions) {
         "Select Endpoint' field is not selected"
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 
@@ -346,7 +346,7 @@ for (func in output_functions) {
         "Visit Variable' field is not selected"
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 
@@ -381,7 +381,7 @@ for (func in output_functions) {
         "Treatment variable must be selected"
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 
@@ -416,7 +416,7 @@ for (func in output_functions) {
         "Subject Identifier' field is not selected"
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 
@@ -451,7 +451,7 @@ for (func in output_functions) {
         "Confidence Level' field is not selected"
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 }
@@ -534,7 +534,7 @@ for (func in output_functions) {
           )
         }
       }
-      app_driver$stop()
+      app_driver_stop(app_driver)
     }
   )
 }

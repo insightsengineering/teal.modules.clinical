@@ -95,7 +95,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Module initializes in teal witho
   testthat::expect_true(
     app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -161,7 +161,7 @@ testthat::test_that(
     testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
     testthat::expect_true(app_driver$get_active_module_input("u_odds_ratio"))
     testthat::expect_false(app_driver$get_active_module_input("show_rsp_cat"))
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -179,7 +179,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -195,7 +195,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of paramcd throws va
     ),
     "Please select a filter."
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -212,7 +212,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -226,7 +226,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of responders throws
     app_driver$get_text("#teal-teal_modules-responders .shiny-validation-message"),
     "`Responders` field is empty"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -243,7 +243,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -257,7 +257,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var throws va
     app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Treatment variable must be selected"
   )
-  app_driver$stop()
+  app_driver_stop(app_driver)
 })
 
 testthat::test_that(
@@ -275,7 +275,7 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
 
@@ -293,6 +293,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
+    app_driver_stop(app_driver)
   }
 )
