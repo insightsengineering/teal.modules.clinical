@@ -467,7 +467,7 @@ srv_shift_by_arm <- function(id,
     )
 
     isolate({
-      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
+      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()))
       teal.widgets::updateOptionalSelectInput(
         session = session,
         inputId = "treatment_flag",
