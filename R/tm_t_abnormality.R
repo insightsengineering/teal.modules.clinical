@@ -259,8 +259,7 @@ template_abnormality <- function(parentname,
 #'       ) %>% with_label("On Treatment Record Flag")
 #'     )
 #' })
-#' datanames(data) <- c("ADSL", "ADLB")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADLB <- data[["ADLB"]]
@@ -544,7 +543,7 @@ srv_t_abnormality <- function(id,
     )
 
     isolate({
-      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
+      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()))
       teal.widgets::updateOptionalSelectInput(
         session = session,
         inputId = "treatment_flag",

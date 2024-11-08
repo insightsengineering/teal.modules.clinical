@@ -202,8 +202,7 @@ template_shift_by_arm <- function(dataname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADEG <- tmc_ex_adeg
 #' })
-#' datanames(data) <- c("ADSL", "ADEG")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADEG <- data[["ADEG"]]
@@ -468,7 +467,7 @@ srv_shift_by_arm <- function(id,
     )
 
     isolate({
-      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
+      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()))
       teal.widgets::updateOptionalSelectInput(
         session = session,
         inputId = "treatment_flag",

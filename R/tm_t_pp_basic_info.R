@@ -76,8 +76,7 @@ template_basic_info <- function(dataname = "ANL",
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
 #' })
-#' datanames(data) <- c("ADSL")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #'

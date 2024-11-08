@@ -491,8 +491,7 @@ template_mmrm_plots <- function(fit_name,
 #'         as.factor() #' making consecutive numeric factor
 #'     )
 #' })
-#' datanames(data) <- c("ADSL", "ADQS")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,
@@ -1402,7 +1401,7 @@ srv_mmrm <- function(id,
 
     all_q <- reactive({
       if (!is.null(plot_q()) && !is.null(table_q())) {
-        teal.code::join(plot_q(), table_q())
+        c(plot_q(), table_q())
       } else if (!is.null(plot_q())) {
         plot_q()
       } else {

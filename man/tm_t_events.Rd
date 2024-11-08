@@ -101,8 +101,7 @@ data <- within(data, {
   ADSL <- tmc_ex_adsl
   ADAE <- tmc_ex_adae
 })
-datanames(data) <- c("ADSL", "ADAE")
-join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+join_keys(data) <- default_cdisc_join_keys[names(data)]
 
 ADSL <- data[["ADSL"]]
 ADAE <- data[["ADAE"]]
@@ -139,9 +138,9 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zglAF9FCCToeFFE0JtwgnYFMByC6ZTpnObp-oArIni-AGs4VhGk8aN+OGMoYVI-An5aUTL1zZ294EHYMVHPOQBdVwhZwvCksBgIs8vlpp9vr8mi0AaEgSDlmAIT80KgivFolMIBkkjoALw6JK4Bp8IQiUT4nSk4RvBoZEp+C5wbRkEZ0jI6ahQehwaiUxb8bSMUS6Jws0h2bkiebsnGhIa6AkIlx4WU6FgwPyaFiUggxDYEMR+EUidRwfjsSaLLAAWXmOmtNoAwtkVgsZra3WrqNQJQS9QajSa4GaLWqMgGZGJKdrGLQpXBLvqoyMlk4UlaZk5bE5PXgHVnsk4nQB5V1gORyYnYjm14Oh3VTQvFssrNVVtUxX265OG0TG3kh8hhmu1iO96ME2Px+giJOB1PQjNN5oAITLuQAmrl7YsnLkS06Vh3R2P68P+Vn13lt9N29Wx+r+PxGURPHyCfZnA+x8yKBdSFYVBFQLGohRFHQ-zIO9T36DJ+n6WhjB0dh4nINQNG0awbDSGtRDiCBWEydB2FRAASQRaBSciRUYIV+h6JQwB6T4gA}{Open in Shinylive}
-    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zglAF9FCCToeFFE0JtwgnYFMByC6ZTpnObp-oArIni-AGs4VhGk8aN+OGMoYVI-An5aUTL1zZ294EHYMVHPOQBdVwhZwvCksBgIs8vlpp9vr8mi0AaEgSDlmAIT80KgivFolMIBkkjoALw6JK4Bp8IQiUT4nSk4RvBoZEp+C5wbRkEZ0jI6ahQehwaiUxb8bSMUS6Jws0h2bkiebsnGhIa6AkIlx4WU6FgwPyaFiUggxDYEMR+EUidRwfjsSaLLAAWXmOmtNoAwtkVgsZra3WrqNQJQS9QajSa4GaLWqMgGZGJKdrGLQpXBLvqoyMlk4UlaZk5bE5PXgHVnsk4nQB5V1gORyYnYjm14Oh3VTQvFssrNVVtUxX265OG0TG3kh8hhmu1iO96ME2Px+giJOB1PQjNN5oAITLuQAmrl7YsnLkS06Vh3R2P68P+Vn13lt9N29Wx+r+PxGURPHyCfZnA+x8yKBdSFYVBFQLGohRFHQ-zIO9T36DJ+n6WhjB0dh4nINQNG0awbDSGtRDiCBWEydB2FRAASQRaBSciRUYIV+h6JQwB6T4gA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyoZHxyeBoeCmkuQBdVwgcgqKk4GAFMEv8+5Ozi6aWudDb+5zm59elGhUEV4tF2A0kjoALw6JK4Bp8IQiUTQnSI4RicEQDIZEp+FZwbRkKYNHE6ahQehwaion78bSMUS6JxE0h2Skie7w7Fk2GhA66GE-d5c0k4lgwPyaFioggxYYEMR+JkidRwfjsAjgh5YACyXJ0Pz1AGFsvc5CkjfqwBaxRlqNQ2TC5QqlSq4GqNXacS6ZGJUdLGLQOXBVvK-VNfk4Ulqfk5bE49Qa49knMaAPJmm22nm8nTuz2y7XNVMZrP9PM5vMxR2y8OK0TK6ke8he3O830NgMsYP0ERh12R94x4tOABCmdyAE1csmHk5cunjeaq3n883C0L5xO8jP7t7V2Savx8URPDSYfZnNy84SKCtSKxUILDSh6aomTo72R9+2Kzp+n6WhjB0dh4nINQNG0awbDSHlRDiCBWEydB2CBAASQRaBSDCmUYBl+h6JQwB6E4gA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyoZHxyeBoeCmkuQBdVwgcgqKk4GAFMEv8+5Ozi6aWudDb+5zm59elGhUEV4tF2A0kjoALw6JK4Bp8IQiUTQnSI4RicEQDIZEp+FZwbRkKYNHE6ahQehwaion78bSMUS6JxE0h2Skie7w7Fk2GhA66GE-d5c0k4lgwPyaFioggxYYEMR+JkidRwfjsAjgh5YACyXJ0Pz1AGFsvc5CkjfqwBaxRlqNQ2TC5QqlSq4GqNXacS6ZGJUdLGLQOXBVvK-VNfk4Ulqfk5bE49Qa49knMaAPJmm22nm8nTuz2y7XNVMZrP9PM5vMxR2y8OK0TK6ke8he3O830NgMsYP0ERh12R94x4tOABCmdyAE1csmHk5cunjeaq3n883C0L5xO8jP7t7V2Savx8URPDSYfZnNy84SKCtSKxUILDSh6aomTo72R9+2Kzp+n6WhjB0dh4nINQNG0awbDSHlRDiCBWEydB2CBAASQRaBSDCmUYBl+h6JQwB6E4gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
 }

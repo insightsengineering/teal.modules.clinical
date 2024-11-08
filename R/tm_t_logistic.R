@@ -236,8 +236,7 @@ template_logistic <- function(dataname,
 #'   ADRS <- tmc_ex_adrs %>%
 #'     filter(PARAMCD %in% c("BESRSPI", "INVET"))
 #' })
-#' datanames(data) <- c("ADSL", "ADRS")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADRS <- data[["ADRS"]]

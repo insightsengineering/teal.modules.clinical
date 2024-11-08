@@ -1,13 +1,10 @@
-app_driver_tm_g_forest_tte <- function() { # nolint: object_length.
+app_driver_tm_g_forest_tte <- function() {
   data <- within(teal.data::teal_data(), {
     ADSL <- teal.modules.clinical::tmc_ex_adsl
     ADSL$RACE <- with_label(droplevels(ADSL$RACE), "Race")
     ADTTE <- teal.modules.clinical::tmc_ex_adtte
   })
-
-  datanames <- c("ADSL", "ADTTE")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   arm_ref_comp <- list(
     ARM = list(

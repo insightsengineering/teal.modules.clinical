@@ -294,8 +294,7 @@ template_mult_events <- function(dataname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADCM <- tmc_ex_adcm
 #' })
-#' datanames(data) <- c("ADSL", "ADCM")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #' join_keys(data)["ADCM", "ADCM"] <- adcm_keys
 #'

@@ -1,20 +1,16 @@
 app_driver_tm_g_ipp <- function() {
-  data <- teal.data::teal_data() %>%
-    within({
-      library(dplyr)
-      library(tern)
-      ADSL <- teal.data::rADSL %>%
-        slice(1:20) %>%
-        df_explicit_na()
-      ADLB <- teal.data::rADLB %>%
-        filter(USUBJID %in% ADSL$USUBJID) %>%
-        df_explicit_na() %>%
-        filter(AVISIT != "SCREENING")
-    })
-
-  datanames <- c("ADSL", "ADLB")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  data <- within(teal.data::teal_data(), {
+    library(dplyr)
+    library(tern)
+    ADSL <- teal.data::rADSL %>%
+      slice(1:20) %>%
+      df_explicit_na()
+    ADLB <- teal.data::rADLB %>%
+      filter(USUBJID %in% ADSL$USUBJID) %>%
+      df_explicit_na() %>%
+      filter(AVISIT != "SCREENING")
+  })
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

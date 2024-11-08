@@ -265,8 +265,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #'   ADLB <- tmc_ex_adlb %>%
 #'     filter(!AVISIT %in% c("SCREENING", "BASELINE"))
 #' })
-#' datanames(data) <- c("ADSL", "ADLB")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADLB <- data[["ADLB"]]
@@ -511,7 +510,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     isolate({
-      resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env))
+      resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()))
       teal.widgets::updateOptionalSelectInput(
         session = session,
         inputId = "worst_flag_indicator",

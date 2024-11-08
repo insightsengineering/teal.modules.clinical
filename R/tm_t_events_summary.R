@@ -541,7 +541,7 @@ template_events_summary <- function(anl_name,
 #'     )
 #'   ADAE <- tmc_ex_adae
 #'
-#'   add_event_flags <- function(dat) {
+#'   .add_event_flags <- function(dat) {
 #'     dat <- dat %>%
 #'       mutate(
 #'         TMPFL_SER = AESER == "Y",
@@ -564,13 +564,12 @@ template_events_summary <- function(anl_name,
 #'   }
 #'
 #'   #' Generating user-defined event flags.
-#'   ADAE <- ADAE %>% add_event_flags()
+#'   ADAE <- ADAE %>% .add_event_flags()
 #'
-#'   ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
-#'   aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
+#'   .ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
+#'   .aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
 #' })
-#' datanames(data) <- c("ADSL", "ADAE")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,
@@ -583,14 +582,14 @@ template_events_summary <- function(anl_name,
 #'         selected = "ARM"
 #'       ),
 #'       flag_var_anl = choices_selected(
-#'         choices = variable_choices("ADAE", data[["ae_anl_vars"]]),
-#'         selected = data[["ae_anl_vars"]][1],
+#'         choices = variable_choices("ADAE", data[[".ae_anl_vars"]]),
+#'         selected = data[[".ae_anl_vars"]][1],
 #'         keep_order = TRUE,
 #'         fixed = FALSE
 #'       ),
 #'       flag_var_aesi = choices_selected(
-#'         choices = variable_choices("ADAE", data[["aesi_vars"]]),
-#'         selected = data[["aesi_vars"]][1],
+#'         choices = variable_choices("ADAE", data[[".aesi_vars"]]),
+#'         selected = data[[".aesi_vars"]][1],
 #'         keep_order = TRUE,
 #'         fixed = FALSE
 #'       ),

@@ -1,18 +1,15 @@
-app_driver_tm_t_events_by_grade <- function() { # nolint: object_length
+app_driver_tm_t_events_by_grade <- function() { # nolint: object_length.
   data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
 
     ADSL <- teal.data::rADSL
-    lbls_adae <- col_labels(teal.data::rADAE)
+    .lbls_adae <- col_labels(teal.data::rADAE)
     ADAE <- teal.data::rADAE %>%
       mutate_if(is.character, as.factor)
-    col_labels(ADAE) <- lbls_adae
+    col_labels(ADAE) <- .lbls_adae
   })
-
-  datanames <- c("ADSL", "ADAE")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

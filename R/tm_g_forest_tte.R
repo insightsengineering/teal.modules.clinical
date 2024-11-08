@@ -258,8 +258,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'   ADTTE <- tmc_ex_adtte
 #'   ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
 #' })
-#' datanames(data) <- c("ADSL", "ADTTE")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADTTE <- data[["ADTTE"]]

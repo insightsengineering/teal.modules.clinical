@@ -8,10 +8,7 @@ app_driver_tm_t_events_patyear <- function() {
       mutate(is_event = CNSR == 0) %>%
       mutate(n_events = as.integer(is_event))
   })
-
-  datanames <- c("ADSL", "ADAETTE")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

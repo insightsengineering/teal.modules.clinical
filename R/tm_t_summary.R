@@ -235,8 +235,7 @@ template_summary <- function(dataname,
 #'   ADSL <- tmc_ex_adsl
 #'   ADSL$EOSDY[1] <- NA_integer_
 #' })
-#' datanames(data) <- c("ADSL")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #'

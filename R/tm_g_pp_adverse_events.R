@@ -154,7 +154,7 @@ template_adverse_events <- function(dataname = "ANL",
 
   chart_list <- add_expr(
     expr_ls = chart_list,
-    new_expr = quote(print(plot))
+    new_expr = quote(plot)
   )
 
   y$table <- bracket_expr(table_list)
@@ -201,8 +201,7 @@ template_adverse_events <- function(dataname = "ANL",
 #'   ADSL <- tmc_ex_adsl %>%
 #'     filter(USUBJID %in% ADAE$USUBJID)
 #' })
-#' datanames(data) <- c("ADSL", "ADAE")
-#' join_keys(data) <- default_cdisc_join_keys[datanames(data)]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' ADSL <- data[["ADSL"]]
 #' ADAE <- data[["ADAE"]]

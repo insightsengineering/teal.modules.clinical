@@ -1,4 +1,4 @@
-app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length
+app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length.
   data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
@@ -8,10 +8,7 @@ app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length
     ADCM$CMASTDTM <- ADCM$ASTDTM
     ADCM$CMAENDTM <- ADCM$AENDTM
   })
-
-  datanames <- c("ADSL", "ADCM")
-  teal.data::datanames(data) <- datanames
-  keys <- teal.data::default_cdisc_join_keys[datanames]
+  keys <- teal.data::default_cdisc_join_keys[names(data)]
   keys["ADCM", "ADCM"] <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
   teal.data::join_keys(data) <- keys
 

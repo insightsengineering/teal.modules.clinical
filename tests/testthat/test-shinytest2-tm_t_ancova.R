@@ -1,13 +1,9 @@
 app_driver_tm_t_ancova <- function() {
-  data <- teal.data::teal_data() %>%
-    within({
-      ADSL <- tmc_ex_adsl
-      ADQS <- tmc_ex_adqs
-    })
-
-  datanames <- c("ADSL", "ADQS")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  data <- within(teal.data::teal_data(), {
+    ADSL <- tmc_ex_adsl
+    ADQS <- tmc_ex_adqs
+  })
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   arm_ref_comp <- list(
     ARM = list(

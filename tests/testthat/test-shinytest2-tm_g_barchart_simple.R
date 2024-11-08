@@ -10,10 +10,7 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
       !((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X"))
     )
   })
-
-  datanames <- c("ADSL", "ADAE")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

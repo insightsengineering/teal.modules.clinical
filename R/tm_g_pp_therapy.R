@@ -192,7 +192,7 @@ template_therapy <- function(dataname = "ANL",
         ggtheme +
         theme
 
-      print(therapy_plot)
+      therapy_plot
     }, env = c(
       list(
         dataname = as.name(dataname),
@@ -263,8 +263,6 @@ template_therapy <- function(dataname = "ANL",
 #'   ADCM$CMASTDTM <- ADCM$ASTDTM
 #'   ADCM$CMAENDTM <- ADCM$AENDTM
 #' })
-#'
-#' datanames(data) <- c("ADSL", "ADCM")
 #'
 #' join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADCM")]
 #' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")

@@ -1,13 +1,9 @@
 app_driver_tm_g_pp_vitals <- function() {
-  data <- teal.data::teal_data() %>%
-    within({
-      ADSL <- teal.data::rADSL
-      ADVS <- teal.data::rADVS
-    })
-
-  datanames <- c("ADSL", "ADVS")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  data <- within(teal.data::teal_data(), {
+    ADSL <- teal.data::rADSL
+    ADVS <- teal.data::rADVS
+  })
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

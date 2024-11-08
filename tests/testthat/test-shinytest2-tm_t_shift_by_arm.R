@@ -4,10 +4,7 @@ app_driver_tm_t_shift_by_arm <- function() {
     ADSL <- tmc_ex_adsl
     ADEG <- tmc_ex_adeg
   })
-
-  datanames <- c("ADSL", "ADEG")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,
