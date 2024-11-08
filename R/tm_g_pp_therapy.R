@@ -192,7 +192,7 @@ template_therapy <- function(dataname = "ANL",
         ggtheme +
         theme
 
-      print(therapy_plot)
+      therapy_plot
     }, env = c(
       list(
         dataname = as.name(dataname),

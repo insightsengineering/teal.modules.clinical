@@ -154,7 +154,7 @@ template_adverse_events <- function(dataname = "ANL",
 
   chart_list <- add_expr(
     expr_ls = chart_list,
-    new_expr = quote(print(plot))
+    new_expr = quote(plot)
   )
 
   y$table <- bracket_expr(table_list)
