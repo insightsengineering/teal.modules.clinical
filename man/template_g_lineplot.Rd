@@ -6,7 +6,7 @@
 \usage{
 template_g_lineplot(
   dataname = "ANL",
-  strata = "ARM",
+  group_var = "ARM",
   x = "AVISIT",
   y = "AVAL",
   y_unit = "AVALU",
@@ -29,7 +29,7 @@ template_g_lineplot(
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
-\item{strata}{(\code{string} or \code{NA})\cr group variable name.}
+\item{group_var}{(\code{string} or \code{NA})\cr group variable name.}
 
 \item{x}{(\code{string})\cr x-variable name.}
 
