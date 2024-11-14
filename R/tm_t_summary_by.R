@@ -480,7 +480,7 @@ ui_summary_by <- function(id, ...) {
       teal.transform::datanames_input(a[c("arm_var", "id_var", "paramcd", "by_vars", "summarize_vars")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
-        label = "Select Treatment Variable",
+        label = "Select Column Variable(s)",
         data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
