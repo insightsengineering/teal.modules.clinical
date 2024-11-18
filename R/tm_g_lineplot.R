@@ -44,7 +44,7 @@ template_g_lineplot <- function(dataname = "ANL",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   if (lifecycle::is_present(strata)) {
     warning(
-      "The `strata` argument of `tm_g_lineplot()` is deprecated as of teal.modules.clinical 0.9.1. ",
+      "The `strata` argument of `template_g_lineplot()` is deprecated as of teal.modules.clinical 0.9.1. ",
       "Please use the `group_var` argument instead.",
       call. = FALSE
     )
@@ -309,14 +309,18 @@ tm_g_lineplot <- function(label,
       call. = FALSE
     )
     group_var <- strata
+  } else {
+    strata <- group_var # resolves missing argument error
   }
 
   # Now handle 'parentname' calculation based on 'group_var'
-  parentname <- ifelse(
-    inherits(group_var, "data_extract_spec"),
-    teal.transform::datanames_input(group_var),
-    "ADSL"
-  )
+  parentname <- if (is.null(parentname) {
+    ifelse(
+      inherits(group_var, "data_extract_spec"),
+      teal.transform::datanames_input(group_var),
+      "ADSL"
+    )
+  }
   message("Initializing tm_g_lineplot")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
