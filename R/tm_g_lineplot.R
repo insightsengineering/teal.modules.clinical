@@ -314,7 +314,7 @@ tm_g_lineplot <- function(label,
   }
 
   # Now handle 'parentname' calculation based on 'group_var'
-  parentname <- if (is.null(parentname) {
+  parentname <- if (is.null(parentname)) {
     ifelse(
       inherits(group_var, "data_extract_spec"),
       teal.transform::datanames_input(group_var),
