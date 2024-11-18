@@ -6,6 +6,7 @@
 \usage{
 template_g_lineplot(
   dataname = "ANL",
+  strata = lifecycle::deprecated(),
   group_var = "ARM",
   x = "AVISIT",
   y = "AVAL",
@@ -28,6 +29,8 @@ template_g_lineplot(
 }
 \arguments{
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
+
+\item{strata}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{group_var} argument instead.}
 
 \item{group_var}{(\code{string} or \code{NA})\cr group variable name.}
 

@@ -7,8 +7,8 @@
 tm_g_lineplot(
   label,
   dataname,
-  parentname = ifelse(inherits(group_var, "data_extract_spec"),
-    teal.transform::datanames_input(group_var), "ADSL"),
+  parentname = NULL,
+  strata = lifecycle::deprecated(),
   group_var =
     teal.transform::choices_selected(teal.transform::variable_choices(parentname,
     c("ARM", "ARMCD", "ACTARMCD")), "ARM"),
@@ -44,6 +44,8 @@ tm_g_lineplot(
 \item{dataname}{(\code{character})\cr analysis data used in teal module.}
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
+
+\item{strata}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{group_var} argument instead.}
 
 \item{group_var}{(\code{string} or \code{NA})\cr group variable name.}
 
