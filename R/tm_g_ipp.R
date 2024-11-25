@@ -607,7 +607,7 @@ srv_g_ipp <- function(id,
         ggplot2_args = ggplot2_args,
         add_avalu = input$add_avalu
       )
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

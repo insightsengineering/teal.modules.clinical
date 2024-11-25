@@ -628,7 +628,7 @@ srv_g_lineplot <- function(id,
         table_font_size = input$table_font_size,
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     plot_r <- reactive(all_q()[["plot"]])

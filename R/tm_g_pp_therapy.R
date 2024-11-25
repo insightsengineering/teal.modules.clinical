@@ -666,7 +666,7 @@ srv_g_therapy <- function(id,
           )
         )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls))
+        teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
     output$title <- renderText({
