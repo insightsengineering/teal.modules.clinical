@@ -5,7 +5,8 @@
 #' @inheritParams tern::g_lineplot
 #' @inheritParams tern::control_lineplot_vars
 #' @inheritParams template_arguments
-#' @param strata (`string` or `NA`)\cr group variable name.
+#' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
+#' @param group_var (`string` or `NA`)\cr group variable name.
 #' @param param (`character`)\cr parameter to filter the data by.
 #' @param incl_screen (`logical`)\cr whether the screening visit should be included.
 #' @param ggplot2_args (`ggplot2_args`) optional\cr object created by [teal.widgets::ggplot2_args()] with settings
@@ -22,7 +23,8 @@
 #'
 #' @keywords internal
 template_g_lineplot <- function(dataname = "ANL",
-                                strata = "ARM",
+                                strata = lifecycle::deprecated(),
+                                group_var = "ARM",
                                 x = "AVISIT",
                                 y = "AVAL",
                                 y_unit = "AVALU",
@@ -40,8 +42,17 @@ template_g_lineplot <- function(dataname = "ANL",
                                 title = "Line Plot",
                                 y_lab = "",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
+  if (lifecycle::is_present(strata)) {
+    warning(
+      "The `strata` argument of `template_g_lineplot()` is deprecated as of teal.modules.clinical 0.9.1. ",
+      "Please use the `group_var` argument instead.",
+      call. = FALSE
+    )
+    group_var <- strata
+  }
+
   checkmate::assert_string(dataname)
-  checkmate::assert_string(strata)
+  checkmate::assert_string(group_var)
   checkmate::assert_string(x)
   checkmate::assert_string(y)
   checkmate::assert_string(y_unit)
@@ -72,7 +83,7 @@ template_g_lineplot <- function(dataname = "ANL",
     )
   }
 
-  # droplevels for strata
+  # droplevels for group_var
   data_list <- add_expr(
     data_list,
     substitute_names(
@@ -80,7 +91,7 @@ template_g_lineplot <- function(dataname = "ANL",
         arm_var = droplevels(arm_var)
       ),
       names = list(
-        arm_var = as.name(strata)
+        arm_var = as.name(group_var)
       )
     )
   )
@@ -96,7 +107,7 @@ template_g_lineplot <- function(dataname = "ANL",
 
   z$variables <- substitute(
     expr = variables <- control_lineplot_vars(x = x, y = y, group_var = arm, paramcd = paramcd, y_unit = y_unit),
-    env = list(x = x, y = y, arm = strata, paramcd = paramcd, y_unit = y_unit)
+    env = list(x = x, y = y, arm = group_var, paramcd = paramcd, y_unit = y_unit)
   )
 
   mid_choices <- c(
@@ -233,7 +244,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'     tm_g_lineplot(
 #'       label = "Line Plot",
 #'       dataname = "ADLB",
-#'       strata = choices_selected(
+#'       group_var = choices_selected(
 #'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
 #'         "ARM"
 #'       ),
@@ -255,12 +266,9 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @export
 tm_g_lineplot <- function(label,
                           dataname,
-                          parentname = ifelse(
-                            inherits(strata, "data_extract_spec"),
-                            teal.transform::datanames_input(strata),
-                            "ADSL"
-                          ),
-                          strata = teal.transform::choices_selected(
+                          parentname = NULL,
+                          strata = lifecycle::deprecated(),
+                          group_var = teal.transform::choices_selected(
                             teal.transform::variable_choices(parentname, c("ARM", "ARMCD", "ACTARMCD")), "ARM"
                           ),
                           x = teal.transform::choices_selected(
@@ -294,6 +302,25 @@ tm_g_lineplot <- function(label,
                           pre_output = NULL,
                           post_output = NULL,
                           ggplot2_args = teal.widgets::ggplot2_args()) {
+  if (lifecycle::is_present(strata)) {
+    warning(
+      "The `strata` argument of `tm_g_lineplot()` is deprecated as of teal.modules.clinical 0.9.1. ",
+      "Please use the `group_var` argument instead.",
+      call. = FALSE
+    )
+    group_var <- strata
+  } else {
+    strata <- group_var # resolves missing argument error
+  }
+
+  # Now handle 'parentname' calculation based on 'group_var'
+  if (is.null(parentname)) {
+    parentname <- ifelse(
+      inherits(group_var, "data_extract_spec"),
+      teal.transform::datanames_input(group_var),
+      "ADSL"
+    )
+  }
   message("Initializing tm_g_lineplot")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -316,7 +343,7 @@ tm_g_lineplot <- function(label,
 
   args <- as.list(environment())
   data_extract_list <- list(
-    strata = cs_to_des_select(strata, dataname = parentname),
+    group_var = cs_to_des_select(group_var, dataname = parentname),
     param = cs_to_des_filter(param, dataname = dataname),
     x = cs_to_des_select(x, dataname = dataname, multiple = FALSE),
     y = cs_to_des_select(y, dataname = dataname, multiple = FALSE),
@@ -348,7 +375,7 @@ tm_g_lineplot <- function(label,
 ui_g_lineplot <- function(id, ...) {
   a <- list(...)
   is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$strata,
+    a$group_var,
     a$paramcd,
     a$x,
     a$param,
@@ -369,7 +396,7 @@ ui_g_lineplot <- function(id, ...) {
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
       tags$label("Encodings", class = "text-primary"),
-      teal.transform::datanames_input(a[c("strata", "paramcd", "x", "y", "y_unit", "param")]),
+      teal.transform::datanames_input(a[c("group_var", "paramcd", "x", "y", "y_unit", "param")]),
       teal.transform::data_extract_ui(
         id = ns("param"),
         label = "Select Biomarker",
@@ -377,9 +404,9 @@ ui_g_lineplot <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
-        id = ns("strata"),
+        id = ns("group_var"),
         label = "Select Treatment Variable",
-        data_extract_spec = a$strata,
+        data_extract_spec = a$group_var,
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
@@ -508,7 +535,7 @@ srv_g_lineplot <- function(id,
                            dataname,
                            parentname,
                            paramcd,
-                           strata,
+                           group_var,
                            x,
                            y,
                            param,
@@ -525,12 +552,12 @@ srv_g_lineplot <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(x = x, y = y, strata = strata, paramcd = paramcd, y_unit = y_unit, param = param),
+      data_extract = list(x = x, y = y, group_var = group_var, paramcd = paramcd, y_unit = y_unit, param = param),
       datasets = data,
       select_validation_rule = list(
         x = shinyvalidate::sv_required("Please select a time variable"),
         y = shinyvalidate::sv_required("Please select an analysis variable"),
-        strata = shinyvalidate::sv_required("Please select a treatment variable")
+        group_var = shinyvalidate::sv_required("Please select a treatment variable")
       ),
       filter_validation_rule = list(
         param = shinyvalidate::sv_required(message = "Please select Biomarker filter.")
@@ -569,7 +596,7 @@ srv_g_lineplot <- function(id,
       adsl_filtered <- merged$anl_q()[[parentname]]
       anl_filtered <- merged$anl_q()[[dataname]]
 
-      input_strata <- names(merged$anl_input_r()$columns_source$strata)
+      input_strata <- names(merged$anl_input_r()$columns_source$group_var)
       input_x_var <- names(merged$anl_input_r()$columns_source$x)
       input_y <- names(merged$anl_input_r()$columns_source$y)
       input_param <- unlist(param$filter)["vars_selected"]
@@ -612,7 +639,7 @@ srv_g_lineplot <- function(id,
 
       my_calls <- template_g_lineplot(
         dataname = "ANL",
-        strata = names(merged$anl_input_r()$columns_source$strata),
+        group_var = names(merged$anl_input_r()$columns_source$group_var),
         y = names(merged$anl_input_r()$columns_source$y),
         x = names(merged$anl_input_r()$columns_source$x),
         paramcd = names(merged$anl_input_r()$columns_source$paramcd),
