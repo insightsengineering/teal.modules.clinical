@@ -531,7 +531,7 @@ srv_gee <- function(id,
         cor_struct = input$cor_struct,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     output$gee_title <- renderText({
