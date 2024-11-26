@@ -977,7 +977,9 @@ srv_decorate_teal_data <- function(id, data, decorators, expr = NULL) {
 #' @details
 #' `ui_decorate_teal_data` is a wrapper around `ui_transform_teal_data`.
 #' @keywords internal
-ui_decorate_teal_data <- teal::ui_transform_teal_data
+ui_decorate_teal_data <- function(id, decorators, ...) {
+  teal::ui_transform_teal_data(NS(id, "inner"), transformators = decorators, ...)
+}
 
 #' Internal function to check if decorators is a valid object
 #' @noRd
