@@ -7,7 +7,7 @@
 \usage{
 srv_decorate_teal_data(id, data, decorators, expr = NULL)
 
-ui_decorate_teal_data(id, transformators, class = "well")
+ui_decorate_teal_data(id, decorators, ...)
 }
 \arguments{
 \item{id}{(\code{character(1)}) Module id}
@@ -17,10 +17,6 @@ ui_decorate_teal_data(id, transformators, class = "well")
 \item{expr}{(\code{expression}) to evaluate on the output of the decoration.
 Must be inline code. See \code{\link[=within]{within()}}
 Default is \code{NULL} which won't append any expression.}
-
-\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transformator module's data input.}
-
-\item{class}{(character(1)) CSS class to be added in the \code{div} wrapper tag.}
 }
 \description{
 Wrappers around \code{srv_transform_teal_data} that allows to decorate the data
