@@ -687,7 +687,7 @@ srv_g_forest_tte <- function(id,
         font_size = input$font_size,
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

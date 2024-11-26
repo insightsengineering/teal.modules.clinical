@@ -758,7 +758,7 @@ srv_g_forest_rsp <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     plot_r <- reactive(all_q()[["p"]])

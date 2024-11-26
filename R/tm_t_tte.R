@@ -944,7 +944,7 @@ srv_t_tte <- function(id,
         basic_table_args = basic_table_args
       )
 
-      anl_q() %>% teal.code::eval_code(as.expression(my_calls))
+      anl_q() %>% teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
     table_r <- reactive(all_q()[["table"]])

@@ -332,7 +332,7 @@ srv_t_medical_history <- function(id,
           )
         )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls))
+        teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
     table_r <- reactive(all_q()[["result"]])

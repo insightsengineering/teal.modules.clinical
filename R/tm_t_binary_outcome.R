@@ -992,7 +992,7 @@ srv_t_binary_outcome <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(qenv, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.
