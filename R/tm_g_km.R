@@ -271,6 +271,15 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating `tm_g_km`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -364,7 +373,8 @@ tm_g_km <- function(label,
                     plot_height = c(800L, 400L, 5000L),
                     plot_width = NULL,
                     pre_output = NULL,
-                    post_output = NULL) {
+                    post_output = NULL,
+                    decorators = NULL) {
   message("Initializing tm_g_km")
 
   checkmate::assert_string(label)
@@ -387,6 +397,14 @@ tm_g_km <- function(label,
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  if (checkmate::test_list(decorators, "teal_transform_module", null.ok = TRUE)) {
+    decorators <- if (checkmate::test_names(names(decorators), subset.of = c("default", "plot"))) {
+      lapply(decorators, list)
+    } else {
+      list(default = decorators)
+    }
+  }
+  assert_decorators(decorators, null.ok = TRUE, names = c("default", "plot"))
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -415,7 +433,8 @@ tm_g_km <- function(label,
         plot_width = plot_width,
         control_annot_surv_med = control_annot_surv_med,
         control_annot_coxph = control_annot_coxph,
-        legend_pos = legend_pos
+        legend_pos = legend_pos,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -512,6 +531,7 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("plot", args$decorators)),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         teal.widgets::panel_group(
@@ -635,7 +655,8 @@ srv_g_km <- function(id,
                      plot_width,
                      control_annot_surv_med,
                      control_annot_coxph,
-                     legend_pos) {
+                     legend_pos,
+                     decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -809,7 +830,13 @@ srv_g_km <- function(id,
       teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
-    plot_r <- reactive(all_q()[["plot"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = subset_decorators("plot", decorators),
+      expr = print(plot)
+    )
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -821,7 +848,7 @@ srv_g_km <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q()))),
       title = label
     )
 
@@ -841,7 +868,7 @@ srv_g_km <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(teal.code::get_code(req(decorated_all_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
