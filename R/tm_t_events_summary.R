@@ -985,7 +985,7 @@ srv_t_events_summary <- function(id,
       all_basic_table_args <- teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
       teal.code::eval_code(
         merged$anl_q(),
-        as.expression(my_calls)
+        as.expression(unlist(my_calls))
       ) %>%
         teal.code::eval_code(
           substitute(

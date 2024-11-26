@@ -627,7 +627,7 @@ srv_t_exposure <- function(id,
         avalu_var = input_avalu_var,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

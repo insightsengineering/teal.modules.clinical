@@ -550,7 +550,7 @@ srv_g_vitals <- function(id,
           )
         )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls))
+        teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
     plot_r <- reactive(all_q()[["result_plot"]])

@@ -806,7 +806,7 @@ srv_g_km <- function(id,
         ci_ribbon = input$show_ci_ribbon,
         title = title
       )
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     plot_r <- reactive(all_q()[["plot"]])

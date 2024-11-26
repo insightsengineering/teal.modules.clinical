@@ -325,7 +325,7 @@ srv_t_prior_medication <- function(id,
             )
           )
         ) %>%
-        teal.code::eval_code(as.expression(my_calls))
+        teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
     table_r <- reactive(all_q()[["result"]])
