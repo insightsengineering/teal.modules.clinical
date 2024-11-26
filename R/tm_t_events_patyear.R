@@ -624,7 +624,7 @@ srv_events_patyear <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

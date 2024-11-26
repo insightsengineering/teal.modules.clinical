@@ -589,7 +589,7 @@ srv_t_mult_events_byterm <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(anl_q, as.expression(my_calls))
+      teal.code::eval_code(anl_q, as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.
