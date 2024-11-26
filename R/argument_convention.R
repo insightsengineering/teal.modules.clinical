@@ -93,6 +93,9 @@
 #'   `dataname`.
 #' @param worst_flag_indicator (`character`)\cr value indicating worst grade.
 #' @param worst_flag_var (`character`)\cr name of the worst flag variable.
+#' @param decorators `r lifecycle::badge("experimental")` (`list` of `teal_transform_module` or `NULL`) optional,
+#' if not `NULL`, decorator for tables or plots included in the module.
+#'
 #'
 #' @return a `list` of expressions to generate a table or plot object.
 #'
