@@ -949,29 +949,41 @@ interactive <- NULL
 
 #' Wrappers around `srv_transform_teal_data` that allows to decorate the data
 #' @inheritParams teal::srv_transform_teal_data
-#' @param expr (`expression`) to evaluate on the output of the decoration.
-#' Must be inline code. See [within()]
-#' Default is `NULL` which won't append any expression.
-#' @param id `character(1)` Module id.
-#' @param data `[reactive_teal_data]`.
+#' @param expr (`expression` or `reactive`) to evaluate on the output of the decoration.
+#' When an expression it must be inline code. See [within()]
+#' Default is `NULL` which won't evaluate any appending code.
+#' @param expr_is_reactive ()
 #' @details
 #' `srv_decorate_teal_data` is a wrapper around `srv_transform_teal_data` that
-#' allows to decorate the data with additional reactive expressions.
+#' allows to decorate the data with additional expressions.
 #' When original `teal_data` object is in error state, it will show that error
 #' first.
 #'
 #' @keywords internal
-srv_decorate_teal_data <- function(id, data, decorators, expr = NULL) {
-  expr_quosure <- rlang::enexpr(expr)
-  decorated_output <- srv_transform_teal_data(id, data = data, transformators = decorators)
+srv_decorate_teal_data <- function(id, data, decorators, expr, expr_is_reactive = FALSE) {
+  assert_reactive(data)
+  checkmate::assert_list(decorators, "teal_transform_module")
+  checkmate::assert_flag(expr_is_reactive)
 
-  reactive({
-    req(data(), decorated_output()) # ensure original errors are displayed
-    if (is.null(expr_quosure)) {
-      decorated_output()
-    } else {
-      eval_code(decorated_output(), expr_quosure)
-    }
+  missing_expr <- missing(expr)
+  if (!missing_expr && !expr_is_reactive) {
+    expr <- rlang::enexpr(expr)
+  }
+
+  moduleServer(id, function(input, output, session) {
+    decorated_output <- srv_transform_teal_data("inner", data = data, transformators = decorators)
+
+    reactive({
+      # ensure original errors are displayed and `eval_code` is never executed with NULL
+      req(data(), decorated_output())
+      if (missing_expr) {
+        decorated_output()
+      } else if (expr_is_reactive) {
+        eval_code(decorated_output(), expr())
+      } else {
+        eval_code(decorated_output(), expr)
+      }
+    })
   })
 }
 

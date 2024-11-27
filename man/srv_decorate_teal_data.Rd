@@ -5,7 +5,7 @@
 \alias{ui_decorate_teal_data}
 \title{Wrappers around \code{srv_transform_teal_data} that allows to decorate the data}
 \usage{
-srv_decorate_teal_data(id, data, decorators, expr = NULL)
+srv_decorate_teal_data(id, data, decorators, expr, expr_is_reactive = FALSE)
 
 ui_decorate_teal_data(id, decorators, ...)
 }
@@ -14,16 +14,18 @@ ui_decorate_teal_data(id, decorators, ...)
 
 \item{data}{\verb{[reactive_teal_data]}.}
 
-\item{expr}{(\code{expression}) to evaluate on the output of the decoration.
-Must be inline code. See \code{\link[=within]{within()}}
-Default is \code{NULL} which won't append any expression.}
+\item{expr}{(\code{expression} or \code{reactive}) to evaluate on the output of the decoration.
+When an expression it must be inline code. See \code{\link[=within]{within()}}
+Default is \code{NULL} which won't evaluate any appending code.}
+
+\item{expr_is_reactive}{()}
 }
 \description{
 Wrappers around \code{srv_transform_teal_data} that allows to decorate the data
 }
 \details{
 \code{srv_decorate_teal_data} is a wrapper around \code{srv_transform_teal_data} that
-allows to decorate the data with additional reactive expressions.
+allows to decorate the data with additional expressions.
 When original \code{teal_data} object is in error state, it will show that error
 first.
 
