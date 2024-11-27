@@ -997,7 +997,7 @@ ui_decorate_teal_data <- function(id, decorators, ...) {
 
 #' Internal function to check if decorators is a valid object
 #' @noRd
-check_decorators <- function(x, names = NULL, null.ok = FALSE) {
+check_decorators <- function(x, names = NULL, null.ok = FALSE) {# nolint: object_name.
   checkmate::qassert(null.ok, "B1")
   check_message <- checkmate::check_list(
     x,
@@ -1050,4 +1050,21 @@ subset_decorators <- function(scope, decorators) {
   checkmate::assert_character(scope)
   scope <- intersect(union("default", scope), names(decorators))
   c(list(), unlist(decorators[scope], recursive = FALSE))
+}
+
+#' Convert flat list of `teal_transform_module` to named lists
+#'
+#' @param decorators (list of `teal_transformodules`) to normalize.
+#' @return A named list of lists with `teal_transform_module` objects.
+#' @keywords internal
+normalize_decorators <- function(decorators) {
+  if (checkmate::test_list(decorators, "teal_transform_module", null.ok = TRUE)) {
+    if (checkmate::test_names(names(decorators))) {
+      lapply(decorators, list)
+    } else {
+      list(default = decorators)
+    }
+  } else {
+    decorators
+  }
 }
