@@ -717,7 +717,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(table_r())
+        card$append_table(req(decorated_table_q())))
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
