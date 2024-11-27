@@ -135,6 +135,14 @@ template_a_gee <- function(output_table,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating `tm_a_gee`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`rtable`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
