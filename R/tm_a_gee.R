@@ -574,18 +574,19 @@ srv_gee <- function(id,
     decorated_output_q <- srv_decorate_teal_data(
       id = "decorate",
       data = table_r,
-      decorators = subset_decorators("table", decorators))
+      decorators = subset_decorators("table", decorators)
+   )
 
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = decorated_output_q()
+      table_r = decorated_output_q
     )
 
     # Render R code
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(decorated_output_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_output_q()))),
       title = label
     )
 
@@ -604,12 +605,12 @@ srv_gee <- function(id,
           "t_gee_lsmeans" = "LS Means Estimates"
         )
         card$append_text(paste(table_type, "Table"), "header3")
-        card$append_table(decorated_output_q())
+        card$append_table(table_r())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(decorated_output_q()))
+        card$append_src(teal.code::get_code(req(decorated_output_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
