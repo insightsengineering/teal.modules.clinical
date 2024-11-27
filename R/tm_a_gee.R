@@ -138,7 +138,7 @@ template_a_gee <- function(output_table,
 #' @section Decorating `tm_a_gee`:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`rtable`)
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`).
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
@@ -378,6 +378,7 @@ ui_gee <- function(id, ...) {
         selected = "t_gee_lsmeans"
       )
     ),
+    ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators)),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
