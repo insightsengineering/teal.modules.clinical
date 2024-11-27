@@ -210,7 +210,7 @@ template_forest_tte <- function(dataname = "ANL",
     plot_list,
     substitute(
       expr = {
-        p <- cowplot::plot_grid(
+        plot <- cowplot::plot_grid(
           f[["table"]] + ggplot2::labs(title = ggplot2_args_title, subtitle = ggplot2_args_subtitle),
           f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
           align = "h",
@@ -242,6 +242,14 @@ template_forest_tte <- function(dataname = "ANL",
 #' @inheritParams template_forest_tte
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating `tm_g_forest_tte`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -339,7 +347,8 @@ tm_g_forest_tte <- function(label,
                             font_size = c(15L, 1L, 30L),
                             pre_output = NULL,
                             post_output = NULL,
-                            ggplot2_args = teal.widgets::ggplot2_args()) {
+                            ggplot2_args = teal.widgets::ggplot2_args(),
+                            decorators = NULL) {
   message("Initializing tm_g_forest_tte")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -367,6 +376,8 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, null.ok = TRUE, "plot")
 
   args <- as.list(environment())
 
@@ -395,7 +406,8 @@ tm_g_forest_tte <- function(label,
         riskdiff = riskdiff,
         plot_height = plot_height,
         plot_width = plot_width,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -468,6 +480,7 @@ ui_g_forest_tte <- function(id, ...) {
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("plot", a$decorators)),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
@@ -528,7 +541,8 @@ srv_g_forest_tte <- function(id,
                              riskdiff,
                              plot_height,
                              plot_width,
-                             ggplot2_args) {
+                             ggplot2_args,
+                             decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -691,7 +705,13 @@ srv_g_forest_tte <- function(id,
     })
 
     # Outputs to render.
-    plot_r <- reactive(all_q()[["p"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = subset_decorators("plot", decorators),
+      expr = print(plot)
+    )
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -702,7 +722,7 @@ srv_g_forest_tte <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q()))),
       title = "R Code for the Current Time-to-Event Forest Plot"
     )
 
@@ -721,7 +741,7 @@ srv_g_forest_tte <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(teal.code::get_code(req(decorated_all_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
