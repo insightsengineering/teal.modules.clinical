@@ -1051,3 +1051,22 @@ subset_decorators <- function(scope, decorators) {
   scope <- intersect(union("default", scope), names(decorators))
   c(list(), unlist(decorators[scope], recursive = FALSE))
 }
+
+#' Convert flat list of `teal_transform_module` to named lists
+#'
+#' @param decorators (list of `teal_transformodules`) to normalize.
+#' @param available_decorators (`character`) a character vector of available decorator names.
+#' When `NULL` it assumes that all decorators should be applied, which can be used
+#' when module only has 1 object.
+#' @return A named list of lists with `teal_transform_module` objects.
+#' @keywords internal
+normalize_decorators <- function(decorators, available_decorators = NULL) {
+  available_decorators <- union("default", available_decorators)
+  if (checkmate::test_list(decorators, "teal_transform_module", null.ok = TRUE)) {
+    decorators <- if (checkmate::test_names(names(decorators), subset.of = available_decorators)) {
+      lapply(decorators, list)
+    } else {
+      list(default = decorators)
+    }
+  }
+}
