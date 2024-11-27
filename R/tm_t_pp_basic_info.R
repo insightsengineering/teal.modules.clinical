@@ -262,7 +262,7 @@ srv_t_basic_info <- function(id,
           )
         )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls))
+        teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
     output$title <- renderText({

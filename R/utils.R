@@ -977,4 +977,63 @@ srv_decorate_teal_data <- function(id, data, decorators, expr = NULL) {
 #' @details
 #' `ui_decorate_teal_data` is a wrapper around `ui_transform_teal_data`.
 #' @keywords internal
-ui_decorate_teal_data <- teal::ui_transform_teal_data
+ui_decorate_teal_data <- function(id, decorators, ...) {
+  teal::ui_transform_teal_data(NS(id, "inner"), transformators = decorators, ...)
+}
+
+#' Internal function to check if decorators is a valid object
+#' @noRd
+check_decorators <- function(x, names = NULL, null.ok = FALSE) {
+  checkmate::qassert(null.ok, "B1")
+  check_message <- checkmate::check_list(
+    x,
+    null.ok = null.ok,
+    names = "named"
+  )
+  if (!is.null(names)) {
+    check_message <- if (isTRUE(check_message)) {
+      out_message <- checkmate::check_names(names(x), subset.of = c("default", names))
+      # see https://github.com/insightsengineering/teal.logger/issues/101
+      if (isTRUE(out_message)) {
+        out_message
+      } else {
+        gsub("\\{", "(", gsub("\\}", ")", out_message))
+      }
+    } else {
+      check_message
+    }
+  }
+  if (!isTRUE(check_message)) {
+    return(check_message)
+  }
+  valid_elements <- vapply(
+    x,
+    checkmate::test_list,
+    types = "teal_transform_module",
+    null.ok = TRUE,
+    FUN.VALUE = logical(1L)
+  )
+  if (all(valid_elements)) {
+    return(TRUE)
+  }
+  "May only contain the type 'teal_transform_module' or a named list of 'teal_transform_module'."
+}
+#' Internal assertion on decorators
+#' @noRd
+assert_decorators <- checkmate::makeAssertionFunction(check_decorators)
+#' Subset decorators based on the scope
+#'
+#' `default` is a protected decorator name that is always included in the output,
+#' if it exists
+#'
+#' @param scope (`character`) a character vector of decorator names to include.
+#' @param decorators (named `list`) of list decorators to subset.
+#'
+#' @return A flat list with all decorators to include.
+#' It can be an empty list if none of the scope exists in `decorators` argument.
+#' @keywords internal
+subset_decorators <- function(scope, decorators) {
+  checkmate::assert_character(scope)
+  scope <- intersect(union("default", scope), names(decorators))
+  c(list(), unlist(decorators[scope], recursive = FALSE))
+}

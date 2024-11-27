@@ -1244,7 +1244,7 @@ srv_mmrm <- function(id,
         weights_emmeans = input$weights_emmeans,
         parallel = input$parallel
       )
-      teal.code::eval_code(qenv, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(unlist(my_calls)))
     })
 
     output$mmrm_title <- renderText({
