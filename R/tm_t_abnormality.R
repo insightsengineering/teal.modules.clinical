@@ -452,6 +452,7 @@ ui_t_abnormality <- function(id, ...) {
         "Exclude subjects whose baseline grade is the same as abnormal grade",
         value = a$exclude_base_abn
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators)),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
@@ -490,8 +491,7 @@ ui_t_abnormality <- function(id, ...) {
             fixed_on_single = TRUE
           )
         )
-      ),
-      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators)),
+      )
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
