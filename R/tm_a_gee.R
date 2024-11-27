@@ -570,7 +570,10 @@ srv_gee <- function(id,
     })
 
 
-    decorated_output_q <- srv_decorate_teal_data("decorate", data = table_r, decorators = decorators)
+    decorated_output_q <- srv_decorate_teal_data(
+      id = "decorate",
+      data = table_r,
+      decorators = subset_decorators("table", decorators))
 
 
     teal.widgets::table_with_settings_srv(
@@ -605,7 +608,7 @@ srv_gee <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(teal.code::get_code(decorated_output_q()))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
