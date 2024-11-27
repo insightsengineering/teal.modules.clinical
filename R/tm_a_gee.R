@@ -69,9 +69,9 @@ template_a_gee <- function(output_table,
       if (output_table == "t_gee_cov") {
         substitute(
           expr = {
-            result_table <- tern.gee::as.rtable(model_fit, type = "cov")
-            subtitles(result_table) <- st
-            main_footer(result_table) <- mf
+            table <- tern.gee::as.rtable(model_fit, type = "cov")
+            subtitles(table) <- st
+            main_footer(table) <- mf
           },
           env = list(
             st = basic_table_args$subtitles,
@@ -81,9 +81,9 @@ template_a_gee <- function(output_table,
       } else if (output_table == "t_gee_coef") {
         substitute(
           expr = {
-            result_table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
-            subtitles(result_table) <- st
-            main_footer(result_table) <- mf
+            table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
+            subtitles(table) <- st
+            main_footer(table) <- mf
           },
           env = list(
             conf_level = conf_level,
@@ -95,7 +95,7 @@ template_a_gee <- function(output_table,
         substitute(
           expr = {
             lsmeans_fit_model <- tern.gee::lsmeans(model_fit, conf_level)
-            result_table <- rtables::basic_table(show_colcounts = TRUE) %>%
+            table <- rtables::basic_table(show_colcounts = TRUE) %>%
               rtables::split_cols_by(var = input_arm_var, ref_group = model_fit$ref_level) %>%
               tern.gee::summarize_gee_logistic() %>%
               rtables::build_table(
@@ -103,9 +103,9 @@ template_a_gee <- function(output_table,
                 alt_counts_df = dataname_lsmeans
               )
 
-            subtitles(result_table) <- st
-            main_footer(result_table) <- mf
-            result_table
+            subtitles(table) <- st
+            main_footer(table) <- mf
+            table
           },
           env = list(
             dataname_lsmeans = as.name(dataname_lsmeans),
