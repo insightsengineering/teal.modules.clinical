@@ -7,7 +7,7 @@ testthat::test_that("template_g_lineplot works as expected with default argument
 
 testthat::test_that("template_g_lineplot gives correct data expression with custom arguments", {
   result <- template_g_lineplot(
-    strata = "ARMCD",
+    group_var = "ARMCD",
     y = "CHG",
     mid = "median",
     interval = "median_ci",
