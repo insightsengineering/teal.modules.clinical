@@ -200,7 +200,8 @@ tm_a_gee <- function(label,
                      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      pre_output = NULL,
                      post_output = NULL,
-                     basic_table_args = teal.widgets::basic_table_args()) {
+                     basic_table_args = teal.widgets::basic_table_args(),
+                     decorators = NULL) {
   message("Initializing tm_a_gee (prototype)")
 
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
@@ -218,6 +219,7 @@ tm_a_gee <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  checkmate::assert_list(decorators, "teal_transform_module", null.ok = TRUE)
 
   args <- as.list(environment())
 
@@ -243,7 +245,8 @@ tm_a_gee <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -385,7 +388,8 @@ srv_gee <- function(id,
                     label,
                     plot_height,
                     plot_width,
-                    basic_table_args) {
+                    basic_table_args,
+                    decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
