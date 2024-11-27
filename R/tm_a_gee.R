@@ -105,7 +105,6 @@ template_a_gee <- function(output_table,
 
             subtitles(table) <- st
             main_footer(table) <- mf
-            table
           },
           env = list(
             dataname_lsmeans = as.name(dataname_lsmeans),
@@ -567,27 +566,26 @@ srv_gee <- function(id,
       output_title
     })
 
-    table_r <- reactive({
-      table_q()[["result_table"]]
-    })
-
-
-    decorated_output_q <- srv_decorate_teal_data(
+    decorated_table_q <- srv_decorate_teal_data(
       id = "decorate",
-      data = table_r,
-      decorators = subset_decorators("table", decorators)
-   )
+      data = table_q,
+      decorators = subset_decorators("table", decorators),
+      expr = table
+    )
 
+    table_r <- reactive({
+      decorated_table_q()[["table"]]
+    })
 
     teal.widgets::table_with_settings_srv(
       id = "table",
-      table_r = decorated_output_q
+      table_r = table_r
     )
 
     # Render R code
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(req(decorated_output_q()))),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_table_q()))),
       title = label
     )
 
@@ -611,7 +609,7 @@ srv_gee <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(req(decorated_output_q())))
+        card$append_src(teal.code::get_code(req(decorated_table_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
