@@ -85,7 +85,7 @@ This module produces an analysis table using Generalized Estimating Equations (G
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table} (\code{rtable})
+\item \code{table} (\code{ElementaryTable} - output of \code{rtables::build_table}).
 }
 
 For additional details and examples of decorators, refer to the vignette

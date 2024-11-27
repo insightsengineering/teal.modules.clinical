@@ -952,6 +952,8 @@ interactive <- NULL
 #' @param expr (`expression`) to evaluate on the output of the decoration.
 #' Must be inline code. See [within()]
 #' Default is `NULL` which won't append any expression.
+#' @param id `character(1)` Module id.
+#' @param data `[reactive_teal_data]`.
 #' @details
 #' `srv_decorate_teal_data` is a wrapper around `srv_transform_teal_data` that
 #' allows to decorate the data with additional reactive expressions.

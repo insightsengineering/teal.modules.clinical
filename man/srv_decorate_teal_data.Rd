@@ -10,6 +10,10 @@ srv_decorate_teal_data(id, data, decorators, expr = NULL)
 ui_decorate_teal_data(id, decorators, ...)
 }
 \arguments{
+\item{id}{\code{character(1)} Module id.}
+
+\item{data}{\verb{[reactive_teal_data]}.}
+
 \item{expr}{(\code{expression}) to evaluate on the output of the decoration.
 Must be inline code. See \code{\link[=within]{within()}}
 Default is \code{NULL} which won't append any expression.}

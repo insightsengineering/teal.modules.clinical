@@ -270,8 +270,8 @@ tm_a_gee <- function(label,
 
 ui_gee <- function(id, ...) {
   a <- list(...) # module args
-
   ns <- NS(id)
+
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
     a$paramcd,
@@ -376,15 +376,16 @@ ui_gee <- function(id, ...) {
           "Coefficients" = "t_gee_coef"
         ),
         selected = "t_gee_lsmeans"
-      )
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators))
     ),
-    ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators)),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
+  a
 }
 
 srv_gee <- function(id,
