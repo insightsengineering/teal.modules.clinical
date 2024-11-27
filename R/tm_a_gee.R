@@ -69,9 +69,9 @@ template_a_gee <- function(output_table,
       if (output_table == "t_gee_cov") {
         substitute(
           expr = {
-            result_table <- tern.gee::as.rtable(model_fit, type = "cov")
-            subtitles(result_table) <- st
-            main_footer(result_table) <- mf
+            table <- tern.gee::as.rtable(model_fit, type = "cov")
+            subtitles(table) <- st
+            main_footer(table) <- mf
           },
           env = list(
             st = basic_table_args$subtitles,
@@ -81,9 +81,9 @@ template_a_gee <- function(output_table,
       } else if (output_table == "t_gee_coef") {
         substitute(
           expr = {
-            result_table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
-            subtitles(result_table) <- st
-            main_footer(result_table) <- mf
+            table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
+            subtitles(table) <- st
+            main_footer(table) <- mf
           },
           env = list(
             conf_level = conf_level,
@@ -95,7 +95,7 @@ template_a_gee <- function(output_table,
         substitute(
           expr = {
             lsmeans_fit_model <- tern.gee::lsmeans(model_fit, conf_level)
-            result_table <- rtables::basic_table(show_colcounts = TRUE) %>%
+            table <- rtables::basic_table(show_colcounts = TRUE) %>%
               rtables::split_cols_by(var = input_arm_var, ref_group = model_fit$ref_level) %>%
               tern.gee::summarize_gee_logistic() %>%
               rtables::build_table(
@@ -103,9 +103,8 @@ template_a_gee <- function(output_table,
                 alt_counts_df = dataname_lsmeans
               )
 
-            subtitles(result_table) <- st
-            main_footer(result_table) <- mf
-            result_table
+            subtitles(table) <- st
+            main_footer(table) <- mf
           },
           env = list(
             dataname_lsmeans = as.name(dataname_lsmeans),
@@ -134,6 +133,14 @@ template_a_gee <- function(output_table,
 #' @inheritParams template_a_gee
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating `tm_a_gee`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -200,7 +207,8 @@ tm_a_gee <- function(label,
                      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      pre_output = NULL,
                      post_output = NULL,
-                     basic_table_args = teal.widgets::basic_table_args()) {
+                     basic_table_args = teal.widgets::basic_table_args(),
+                     decorators = NULL) {
   message("Initializing tm_a_gee (prototype)")
 
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
@@ -218,6 +226,15 @@ tm_a_gee <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+
+  if (checkmate::test_list(decorators, "teal_transform_module", null.ok = TRUE)) {
+    decorators <- if (checkmate::test_names(names(decorators), subset.of = c("default", "table"))) {
+      lapply(decorators, list)
+    } else {
+      list(default = decorators)
+    }
+  }
+  assert_decorators(decorators, null.ok = TRUE, names = c("default", "table"))
 
   args <- as.list(environment())
 
@@ -243,7 +260,8 @@ tm_a_gee <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -358,7 +376,8 @@ ui_gee <- function(id, ...) {
           "Coefficients" = "t_gee_coef"
         ),
         selected = "t_gee_lsmeans"
-      )
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators))
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -385,7 +404,8 @@ srv_gee <- function(id,
                     label,
                     plot_height,
                     plot_width,
-                    basic_table_args) {
+                    basic_table_args,
+                    decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -546,9 +566,15 @@ srv_gee <- function(id,
       output_title
     })
 
-    table_r <- reactive({
-      table_q()[["result_table"]]
-    })
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = subset_decorators("table", decorators),
+      expr = table
+    )
+
+    # Outputs to render.
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -558,7 +584,7 @@ srv_gee <- function(id,
     # Render R code
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_table_q()))),
       title = label
     )
 
@@ -582,7 +608,7 @@ srv_gee <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(teal.code::get_code(req(decorated_table_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
