@@ -315,15 +315,8 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(aval_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(xaxis, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
-
-  if (checkmate::test_list(decorators, "teal_transform_module", null.ok = TRUE)) {
-    decorators <- if (checkmate::test_names(names(decorators), subset.of = c("default", "plot"))) {
-      lapply(decorators, list)
-    } else {
-      list(default = decorators)
-    }
-  }
-  assert_decorators(decorators, null.ok = TRUE, names = c("default", "plot"))
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, null.ok = TRUE, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
