@@ -678,7 +678,7 @@ ui_ancova <- function(id, ...) {
             )
           )
         ),
-        ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators))
+        ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
       )
     ),
     forms = tagList(
@@ -956,7 +956,7 @@ srv_ancova <- function(id,
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
       data = table_q,
-      decorators = subset_decorators("table", decorators),
+      decorators = select_decorators(decorators, "table"),
       expr = table
     )
 
