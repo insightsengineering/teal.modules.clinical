@@ -479,8 +479,6 @@ srv_g_ci <- function(id,
       teal.code::eval_code(anl_q(), list_calls)
     })
 
-    plot_r <- reactive(all_q()[["plot"]])
-
     decorated_plot_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,
@@ -488,8 +486,7 @@ srv_g_ci <- function(id,
       expr = print(plot)
     )
     # Outputs to render.
-    plot_r <- reactive({
-      decorated_plot_q()[["plot"]]})
+    plot_r <- reactive(decorated_plot_q()[["plot"]])
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
