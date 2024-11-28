@@ -525,7 +525,7 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("plot", a$decorators)),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         teal.widgets::panel_group(
@@ -827,7 +827,7 @@ srv_g_km <- function(id,
     decorated_all_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = subset_decorators("plot", decorators),
+      decorators = select_decorators(decorators, "plot"),
       expr = print(plot)
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
