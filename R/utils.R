@@ -952,7 +952,8 @@ interactive <- NULL
 #' @param expr (`expression` or `reactive`) to evaluate on the output of the decoration.
 #' When an expression it must be inline code. See [within()]
 #' Default is `NULL` which won't evaluate any appending code.
-#' @param expr_is_reactive ()
+#' @param expr_is_reactive (`logical(1)`) whether `expr` is a reactive expression
+#' that skips defusing the argument.
 #' @details
 #' `srv_decorate_teal_data` is a wrapper around `srv_transform_teal_data` that
 #' allows to decorate the data with additional expressions.
@@ -997,13 +998,15 @@ ui_decorate_teal_data <- function(id, decorators, ...) {
 
 #' Internal function to check if decorators is a valid object
 #' @noRd
-check_decorators <- function(x, names = NULL, null.ok = FALSE) {# nolint: object_name.
+check_decorators <- function(x, names = NULL, null.ok = FALSE) { # nolint: object_name.
   checkmate::qassert(null.ok, "B1")
+
   check_message <- checkmate::check_list(
     x,
     null.ok = null.ok,
     names = "named"
   )
+
   if (!is.null(names)) {
     check_message <- if (isTRUE(check_message)) {
       out_message <- checkmate::check_names(names(x), subset.of = c("default", names))
@@ -1017,9 +1020,11 @@ check_decorators <- function(x, names = NULL, null.ok = FALSE) {# nolint: object
       check_message
     }
   }
+
   if (!isTRUE(check_message)) {
     return(check_message)
   }
+
   valid_elements <- vapply(
     x,
     checkmate::test_list,
@@ -1027,14 +1032,18 @@ check_decorators <- function(x, names = NULL, null.ok = FALSE) {# nolint: object
     null.ok = TRUE,
     FUN.VALUE = logical(1L)
   )
+
   if (all(valid_elements)) {
     return(TRUE)
   }
+
   "May only contain the type 'teal_transform_module' or a named list of 'teal_transform_module'."
 }
+
 #' Internal assertion on decorators
 #' @noRd
 assert_decorators <- checkmate::makeAssertionFunction(check_decorators)
+
 #' Subset decorators based on the scope
 #'
 #' `default` is a protected decorator name that is always included in the output,
@@ -1046,8 +1055,8 @@ assert_decorators <- checkmate::makeAssertionFunction(check_decorators)
 #' @return A flat list with all decorators to include.
 #' It can be an empty list if none of the scope exists in `decorators` argument.
 #' @keywords internal
-subset_decorators <- function(scope, decorators) {
-  checkmate::assert_character(scope)
+select_decorators <- function(decorators, scope) {
+  checkmate::assert_character(scope, null.ok = TRUE)
   scope <- intersect(union("default", scope), names(decorators))
   c(list(), unlist(decorators[scope], recursive = FALSE))
 }
