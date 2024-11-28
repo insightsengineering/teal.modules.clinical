@@ -15,6 +15,31 @@
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating `tm_g_barchart_simple`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators::
+#' - `plot` (`ggplot2`)
+#' - `table` (`data.frame`)
+#'
+#' Decorators can be applied to all outputs or only to specific objects using a
+#' named list of `teal_transform_module` objects.
+#' The `"default"` name is reserved for decorators that are applied to all outputs.
+#' See code snippet below:
+#'
+#' ```
+#' tm_g_barchart_simple(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      default = list(teal_transform_module(...)), # applied to all outputs
+#'      plot = list(teal_transform_module(...)), # applied only to `plot` output
+#'      table = list(teal_transform_module(...)) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -146,7 +171,8 @@ tm_g_barchart_simple <- function(x = NULL,
                                  plot_width = NULL,
                                  pre_output = NULL,
                                  post_output = NULL,
-                                 ggplot2_args = teal.widgets::ggplot2_args()) {
+                                 ggplot2_args = teal.widgets::ggplot2_args(),
+                                 decorators = NULL) {
   message("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
@@ -171,6 +197,8 @@ tm_g_barchart_simple <- function(x = NULL,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, null.ok = TRUE, names = c('plot', 'table'))
 
   plot_options <- utils::modifyList(
     list(stacked = FALSE), # default
@@ -190,7 +218,8 @@ tm_g_barchart_simple <- function(x = NULL,
       y_facet = y_facet,
       plot_height = plot_height,
       plot_width = plot_width,
-      ggplot2_args = ggplot2_args
+      ggplot2_args = ggplot2_args,
+      decorators = decorators
     ),
     datanames = "all"
   )
@@ -249,6 +278,8 @@ ui_g_barchart_simple <- function(id, ...) {
             is_single_dataset = is_single_dataset_value
           )
         },
+        ui_decorate_teal_data(ns("d_table"), decorators = select_decorators(args$decorators, "table")),
+        ui_decorate_teal_data(ns("d_plot"), decorators = select_decorators(args$decorators, "plot")),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
             "Additional plot settings",
@@ -336,7 +367,8 @@ srv_g_barchart_simple <- function(id,
                                   y_facet,
                                   plot_height,
                                   plot_width,
-                                  ggplot2_args) {
+                                  ggplot2_args,
+                                  decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -436,7 +468,7 @@ srv_g_barchart_simple <- function(id,
             c(
               bquote(attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count"),
               bquote(
-                counts <- counts %>%
+                table <- counts %>%
                   dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
                   dplyr::slice(1) %>%
                   dplyr::ungroup() %>%
@@ -452,7 +484,7 @@ srv_g_barchart_simple <- function(id,
           teal.transform::get_anl_relabel_call(
             columns_source = anl_inputs()$columns_source,
             datasets = data_list,
-            anl_name = "counts"
+            anl_name = "table"
           )
         )
     })
@@ -506,17 +538,27 @@ srv_g_barchart_simple <- function(id,
           )
         )) %>%
         teal.code::eval_code(code = plot_call)
-
-      # explicitly calling print on the plot inside the qenv evaluates
-      # the ggplot call and therefore catches errors
-      teal.code::eval_code(all_q, code = quote(print(plot)))
     })
 
-    plot_r <- reactive(all_q()[["plot"]])
+    decorated_all_q_plot <- srv_decorate_teal_data(
+      "d_plot",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+
+    decorated_all_q_table <- srv_decorate_teal_data(
+      "d_table",
+      data = decorated_all_q_plot,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
+    plot_r <- reactive(decorated_all_q_plot()[["plot"]])
 
     output$table <- renderTable({
       req(iv_r()$is_valid())
-      teal.code::dev_suppress(all_q()[["counts"]])
+      teal.code::dev_suppress(decorated_all_q_table()[["table"]])
     })
 
     # get grouping variables
@@ -550,7 +592,7 @@ srv_g_barchart_simple <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q_table()))),
       title = "Bar Chart"
     )
 
@@ -569,7 +611,7 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(teal.code::get_code(req(decorated_all_q_table())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
