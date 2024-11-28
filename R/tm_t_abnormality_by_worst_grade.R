@@ -463,7 +463,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
         data_extract_spec = a$worst_high_flag_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators)),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
@@ -680,7 +680,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = subset_decorators("table", decorators),
+      decorators = select_decorators(decorators, "table"),
       expr = table
     )
 
