@@ -445,7 +445,7 @@ ui_t_abnormality <- function(id, ...) {
         "Exclude subjects whose baseline grade is the same as abnormal grade",
         value = a$exclude_base_abn
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators)),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
@@ -660,7 +660,7 @@ srv_t_abnormality <- function(id,
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = subset_decorators("table", decorators),
+      decorators = select_decorators(decorators, "table"),
       expr = table
     )
 
