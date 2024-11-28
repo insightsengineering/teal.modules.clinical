@@ -487,7 +487,7 @@ ui_g_forest_rsp <- function(id, ...) {
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("plot", a$decorators)),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
@@ -778,7 +778,7 @@ srv_g_forest_rsp <- function(id,
     decorated_all_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = subset_decorators("plot", decorators),
+      decorators = select_decorators(decorators, "plot"),
       expr = print(plot)
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
