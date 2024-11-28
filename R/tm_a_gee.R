@@ -370,7 +370,7 @@ ui_gee <- function(id, ...) {
         ),
         selected = "t_gee_lsmeans"
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("table", a$decorators))
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -562,7 +562,7 @@ srv_gee <- function(id,
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
       data = table_q,
-      decorators = subset_decorators("table", decorators),
+      decorators = select_decorators(decorators, "table"),
       expr = table
     )
 
