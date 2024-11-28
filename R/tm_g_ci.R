@@ -367,7 +367,7 @@ ui_g_ci <- function(id, ...) {
         choices = c("mean", "median"),
         selected = args$stat
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = subset_decorators("plot", args$decorators))
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(args$decorators, "plot"))
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
@@ -482,7 +482,7 @@ srv_g_ci <- function(id,
     decorated_plot_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = subset_decorators("plot", decorators),
+      decorators = select_decorators(decorators, "plot"),
       expr = print(plot)
     )
     # Outputs to render.
