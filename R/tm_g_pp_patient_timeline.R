@@ -611,7 +611,6 @@ ui_g_patient_timeline <- function(id, ...) {
         data_extract_spec = ui_args$aeterm,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "plot")),
       if (!is.null(ui_args$aerelday_start) || !is.null(ui_args$dsrelday_start)) {
         tagList(
           checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
@@ -683,6 +682,7 @@ ui_g_patient_timeline <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "plot")),
       teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
