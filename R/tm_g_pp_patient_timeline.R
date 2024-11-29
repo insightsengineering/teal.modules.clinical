@@ -923,14 +923,14 @@ srv_g_patient_timeline <- function(id,
       teal.code::eval_code(object = qenv, as.expression(patient_timeline_calls))
     })
 
-    decorated_all_q_plot <- srv_decorate_teal_data(
+    decorated_all_q <- srv_decorate_teal_data(
       "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
       expr = print(plot)
     )
 
-    plot_r <- reactive(decorated_all_q_plot()[["plot"]])
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "patient_timeline_plot",
@@ -941,7 +941,7 @@ srv_g_patient_timeline <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q_plot()[["plot"]]))),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q()[["plot"]]))),
       title = label
     )
 
@@ -960,7 +960,7 @@ srv_g_patient_timeline <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(req(decorated_all_q_plot()[["plot"]])))
+        card$append_src(teal.code::get_code(req(decorated_all_q()[["plot"]])))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
