@@ -131,6 +131,7 @@ template_a_gee <- function(output_table,
 #' @inheritParams module_arguments
 #' @inheritParams template_arguments
 #' @inheritParams template_a_gee
+#' @param decorators `r roxygen_decorators_param("tm_a_gee")`
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -227,7 +228,7 @@ tm_a_gee <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table", null.ok = TRUE)
 
   args <- as.list(environment())
 
