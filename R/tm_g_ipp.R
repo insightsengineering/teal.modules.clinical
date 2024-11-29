@@ -176,6 +176,7 @@ template_g_ipp <- function(dataname = "ANL",
 #' @inheritParams template_g_ipp
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as arm variable.
+#' @param decorators `r roxygen_decorators_param("tm_g_ipp")`
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -340,7 +341,7 @@ tm_g_ipp <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "plot")
+  assert_decorators(decorators, "plot", null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(

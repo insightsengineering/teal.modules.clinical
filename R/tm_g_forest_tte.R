@@ -240,6 +240,7 @@ template_forest_tte <- function(dataname = "ANL",
 #' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
 #' @inheritParams template_forest_tte
+#' @param decorators `r roxygen_decorators_param("tm_g_forest_tte")`
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -377,7 +378,7 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "plot")
+  assert_decorators(decorators, "plot", null.ok = TRUE)
 
   args <- as.list(environment())
 

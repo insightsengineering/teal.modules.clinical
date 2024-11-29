@@ -352,6 +352,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'   all available choices and preselected option for the `CMASTDTM` variable from `dataname_adcm`.
 #' @param dstime_end ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMAENDTM` variable from `dataname_adcm`.
+#' @param decorators `r roxygen_decorators_param("tm_")`
 #'
 #' @inherit module_arguments return
 #'
@@ -497,7 +498,7 @@ tm_g_pp_patient_timeline <- function(label,
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "plot")
+  assert_decorators(decorators, "plot", null.ok = TRUE)
 
   xor_error_string <- function(x, y) {
     paste(
