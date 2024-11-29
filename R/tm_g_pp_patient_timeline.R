@@ -496,6 +496,8 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, null.ok = TRUE, "plot")
 
   xor_error_string <- function(x, y) {
     paste(
@@ -609,6 +611,7 @@ ui_g_patient_timeline <- function(id, ...) {
         data_extract_spec = ui_args$aeterm,
         is_single_dataset = is_single_dataset_value
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table")),
       if (!is.null(ui_args$aerelday_start) || !is.null(ui_args$dsrelday_start)) {
         tagList(
           checkboxInput(ns("relday_x_axis"), label = "Use relative days on the x-axis", value = TRUE),
@@ -680,7 +683,6 @@ ui_g_patient_timeline <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table")),
       teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
