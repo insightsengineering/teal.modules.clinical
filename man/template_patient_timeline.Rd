@@ -62,6 +62,18 @@ a \code{list} of expressions to generate a table or plot object.
 \description{
 Creates a valid expression to generate a patient profile timeline \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plot using ADaM datasets.
 }
+\section{Decorating \code{tm_g_pp_patient_timeline}}{
+
+
+This module generates the following objects, which can be modified in place using decorators::
+\itemize{
+\item \code{plot} (\code{ggplot2})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \seealso{
 \code{\link[=tm_g_pp_patient_timeline]{tm_g_pp_patient_timeline()}}
 }
