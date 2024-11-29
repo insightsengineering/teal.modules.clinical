@@ -90,7 +90,6 @@ template_therapy <- function(dataname = "ANL",
         default_formatting = list(all = fmt_config(align = "left"))
       )
       main_title(table) <- paste("Patient ID:", patient_id)
-
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
@@ -190,7 +189,6 @@ template_therapy <- function(dataname = "ANL",
         labs +
         ggtheme +
         theme
-
     }, env = c(
       list(
         dataname = as.name(dataname),
@@ -242,6 +240,7 @@ template_therapy <- function(dataname = "ANL",
 #'   available choices and preselected option for the `CMDOSFRQ` variable from `dataname`.
 #' @param cmendy ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMENDY` variable from `dataname`.
+#' @param decorators `r roxygen_decorators_param("tm_g_pp_therapy")`
 #'
 #' @inherit module_arguments return
 #'
@@ -400,7 +399,7 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, names = c('plot', 'table'))
+  assert_decorators(decorators, null.ok = TRUE, names = c("plot", "table"))
 
   args <- as.list(environment())
   data_extract_list <- list(

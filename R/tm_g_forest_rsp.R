@@ -240,6 +240,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
 #' @inheritParams template_forest_rsp
+#' @param decorators `r roxygen_decorators_param("tm_g_forest_rsp")`
 #'
 #' @inherit module_arguments return seealso
 #'

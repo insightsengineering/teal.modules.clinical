@@ -185,6 +185,7 @@ template_g_ci <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_g_ci
 #' @param color (`data_extract_spec`)\cr the group variable used to determine the plot colors, shapes, and line types.
+#' @param decorators `r roxygen_decorators_param("tm_g_ci")`
 #'
 #' @inherit module_arguments return seealso
 #'

@@ -352,6 +352,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'   all available choices and preselected option for the `CMASTDTM` variable from `dataname_adcm`.
 #' @param dstime_end ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMAENDTM` variable from `dataname_adcm`.
+#' @param decorators `r roxygen_decorators_param("tm_")`
 #'
 #' @inherit module_arguments return
 #'
