@@ -494,7 +494,7 @@ srv_g_barchart_simple <- function(id,
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
       y_lab <- substitute(
-        column_annotation_label(counts, y_name),
+        column_annotation_label(table, y_name),
         list(y_name = get_n_name(groupby_vars))
       )
 
@@ -549,9 +549,13 @@ srv_g_barchart_simple <- function(id,
 
     decorated_all_q_table <- srv_decorate_teal_data(
       "d_table",
-      data = decorated_all_q_plot,
+      data = all_q,
       decorators = select_decorators(decorators, "table"),
       expr = table
+    )
+
+    decorated_all_q_code <- reactive(
+      c(decorated_all_q_plot(), decorated_all_q_table())
     )
 
     plot_r <- reactive(decorated_all_q_plot()[["plot"]])
@@ -592,7 +596,7 @@ srv_g_barchart_simple <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q_table()))),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q_code()))),
       title = "Bar Chart"
     )
 
@@ -611,7 +615,7 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(req(decorated_all_q_table())))
+        card$append_src(teal.code::get_code(req(decorated_all_q_plot())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
@@ -673,7 +677,7 @@ make_barchart_simple_call <- function(y_name,
   checkmate::assert_flag(rotate_x_label, null.ok = TRUE)
   checkmate::assert_flag(rotate_y_label, null.ok = TRUE)
 
-  plot_args <- list(quote(ggplot2::ggplot(counts)))
+  plot_args <- list(quote(ggplot2::ggplot(table)))
 
   # aesthetic variables
   x_val_var <- if (is.null(x_name)) 0 else x_name
