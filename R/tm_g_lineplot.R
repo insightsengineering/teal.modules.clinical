@@ -195,10 +195,7 @@ template_g_lineplot <- function(dataname = "ANL",
   graph_list <- add_expr(
     graph_list,
     substitute(
-      expr = {
-        plot <- plot_call
-        plot
-      },
+      expr = plot <- plot_call,
       env = list(plot_call = plot_call)
     )
   )
@@ -214,8 +211,17 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_lineplot
+#' @param decorators `r roxygen_decorators_param("tm_g_lineplot")`
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating `tm_g_lineplot`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -301,7 +307,8 @@ tm_g_lineplot <- function(label,
                           plot_width = NULL,
                           pre_output = NULL,
                           post_output = NULL,
-                          ggplot2_args = teal.widgets::ggplot2_args()) {
+                          ggplot2_args = teal.widgets::ggplot2_args(),
+                          decorators = NULL) {
   if (lifecycle::is_present(strata)) {
     warning(
       "The `strata` argument of `tm_g_lineplot()` is deprecated as of teal.modules.clinical 0.9.1. ",
@@ -341,6 +348,9 @@ tm_g_lineplot <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
 
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "plot", null.ok = TRUE)
+
   args <- as.list(environment())
   data_extract_list <- list(
     group_var = cs_to_des_select(group_var, dataname = parentname),
@@ -364,7 +374,8 @@ tm_g_lineplot <- function(label,
         parentname = parentname,
         plot_height = plot_height,
         plot_width = plot_width,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -446,6 +457,7 @@ ui_g_lineplot <- function(id, ...) {
         "Include screening visit",
         value = TRUE
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
@@ -543,7 +555,8 @@ srv_g_lineplot <- function(id,
                            label,
                            plot_height,
                            plot_width,
-                           ggplot2_args) {
+                           ggplot2_args,
+                           decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -658,7 +671,13 @@ srv_g_lineplot <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
-    plot_r <- reactive(all_q()[["plot"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -670,7 +689,7 @@ srv_g_lineplot <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q()))),
       title = label
     )
 
@@ -689,7 +708,7 @@ srv_g_lineplot <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(teal.code::get_code(req(decorated_all_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
