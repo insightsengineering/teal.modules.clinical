@@ -211,6 +211,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_lineplot
+#' @param decorators `r roxygen_decorators_param("tm_g_lineplot")`
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -221,8 +222,6 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
-#'
-#'
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
