@@ -233,6 +233,7 @@ template_abnormality <- function(parentname,
 #' @param baseline_var ([teal.transform::choices_selected()])\cr
 #'   variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
+#' @param decorators `r roxygen_decorators_param("tm_t_abnormality")`
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -360,7 +361,7 @@ tm_t_abnormality <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table", null.ok = TRUE)
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
