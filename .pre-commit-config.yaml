@@ -33,7 +33,6 @@ repos:
           - methods
           - rlistings
           - rmarkdown
-          - rtables
           - scales
           - shiny
           - shinyjs
@@ -48,6 +47,9 @@ repos:
           - insightsengineering/teal.widgets
           - insightsengineering/tern.gee
           - insightsengineering/tern.mmrm
+          - insightsengineering/rtables
+          - insightsengineering/rtables.officer
+          - insightsengineering/formatters
           - utils
           - vistime
       - id: spell-check
