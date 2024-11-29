@@ -941,7 +941,7 @@ srv_g_patient_timeline <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q()[["plot"]]))),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q()))),
       title = label
     )
 
@@ -960,7 +960,7 @@ srv_g_patient_timeline <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(req(decorated_all_q()[["plot"]])))
+        card$append_src(teal.code::get_code(req(decorated_all_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
