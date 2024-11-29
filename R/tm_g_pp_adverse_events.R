@@ -60,7 +60,6 @@ template_adverse_events <- function(dataname = "ANL",
           default_formatting = list(all = fmt_config(align = "left"))
         )
         main_title(table) <- paste("Patient ID:", patient_id)
-
       },
       env = list(
         dataname = as.name(dataname),
@@ -151,11 +150,6 @@ template_adverse_events <- function(dataname = "ANL",
     )
   )
 
-  chart_list <- add_expr(
-    expr_ls = chart_list,
-    new_expr = quote(plot)
-  )
-
   y$table <- bracket_expr(table_list)
   y$chart <- bracket_expr(chart_list)
 
@@ -182,6 +176,7 @@ template_adverse_events <- function(dataname = "ANL",
 #'   available choices and preselected option for the `ASTDY` variable from `dataname`.
 #' @param decod ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEDECOD` variable from `dataname`.
+#' @param decorators `r roxygen_decorators_param("tm_g_pp_adverse_events")`
 #'
 #' @inherit module_arguments return
 #'
@@ -315,7 +310,7 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, names = c('plot', 'table'))
+  assert_decorators(decorators, names = c("plot", "table"), null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(
