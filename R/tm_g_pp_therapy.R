@@ -399,7 +399,7 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, names = c("plot", "table"))
+  assert_decorators(decorators, names = c("plot", "table"), null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(
