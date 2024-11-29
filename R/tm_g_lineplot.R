@@ -195,10 +195,7 @@ template_g_lineplot <- function(dataname = "ANL",
   graph_list <- add_expr(
     graph_list,
     substitute(
-      expr = {
-        plot <- plot_call
-        plot
-      },
+      expr = plot <- plot_call,
       env = list(plot_call = plot_call)
     )
   )
