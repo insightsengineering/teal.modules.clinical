@@ -18,7 +18,8 @@ ui_decorate_teal_data(id, decorators, ...)
 When an expression it must be inline code. See \code{\link[=within]{within()}}
 Default is \code{NULL} which won't evaluate any appending code.}
 
-\item{expr_is_reactive}{()}
+\item{expr_is_reactive}{(\code{logical(1)}) whether \code{expr} is a reactive expression
+that skips defusing the argument.}
 }
 \description{
 Wrappers around \code{srv_transform_teal_data} that allows to decorate the data
