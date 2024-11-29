@@ -230,7 +230,6 @@ template_g_km <- function(dataname = "ANL",
           plotlist = plot_list,
           ncol = 1
         )
-        plot
       },
       env = list(
         facet_var = if (length(facet_var) != 0L) as.name(facet_var),
@@ -268,6 +267,7 @@ template_g_km <- function(dataname = "ANL",
 #' @inheritParams template_g_km
 #' @param facet_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for names of variable that can be used for plot faceting.
+#' @param decorators `r roxygen_decorators_param("tm_g_km")`
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -398,7 +398,7 @@ tm_g_km <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "plot")
+  assert_decorators(decorators, "plot", null.ok = TRUE)
 
   args <- as.list(environment())
   data_extract_list <- list(
