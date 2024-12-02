@@ -349,7 +349,8 @@ ui_g_barchart_simple <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+      teal.widgets::verbatim_popup_ui(ns("rcode_table"), button_label = "Show R code table"),
+      teal.widgets::verbatim_popup_ui(ns("rcode_plot"), button_label = "Show R code plot")
     ),
     pre_output = args$pre_output,
     post_output = args$post_output
@@ -595,9 +596,14 @@ srv_g_barchart_simple <- function(id,
     )
 
     teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q_code()))),
+      id = "rcode_plot",
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q_plot()))),
       title = "Bar Chart"
+    )
+    teal.widgets::verbatim_popup_srv(
+      id = "rcode_table",
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q_table()))),
+      title = "Table"
     )
 
     ### REPORTER
@@ -615,6 +621,7 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
+        card$append_src(teal.code::get_code(req(decorated_all_q_table())))
         card$append_src(teal.code::get_code(req(decorated_all_q_plot())))
         card
       }
