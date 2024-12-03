@@ -1226,7 +1226,6 @@ srv_t_events_by_grade <- function(id,
     )
     # Outputs to render.
     table_r <- reactive({
-      browser()
       decorated_table_q()[["table"]]
     })
 
