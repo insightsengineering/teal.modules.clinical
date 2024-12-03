@@ -22,7 +22,8 @@ tm_t_ancova(
     TRUE),
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  decorators = NULL
 )
 }
 \arguments{
@@ -94,6 +95,18 @@ expects that the analysis data has the following variables:
 observation per patient is expected for the analysis to be meaningful.
 }
 }
+\section{Decorating \code{tm_t_ancova}}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{ElementaryTable} - output of \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 data <- teal_data()
 data <- within(data, {

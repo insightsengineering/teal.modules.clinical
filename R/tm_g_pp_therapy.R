@@ -79,6 +79,7 @@ template_therapy <- function(dataname = "ANL",
         dplyr::select(-cmtrt) %>%
         dplyr::arrange(cmindc, cmdecod, cmstdy) %>%
         dplyr::distinct() %>%
+        dplyr::mutate(!!cmstdy_char := as.character(cmstdy_char), !!cmendy_char := as.character(cmendy_char)) %>%
         `colnames<-`(c(
           col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char)], "Dosage",
           col_labels(dataname, fill = TRUE)[c(cmstdy_char, cmendy_char)]
