@@ -28,7 +28,8 @@ tm_t_abnormality_by_worst_grade(
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  decorators = NULL
 )
 }
 \arguments{
@@ -90,6 +91,18 @@ a \code{teal_module} object.
 \description{
 This module produces a table to summarize laboratory test results with highest grade post-baseline
 }
+\section{Decorating \code{tm_t_abnormality_by_worst_grade}}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{ElementaryTable} - output of \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(dplyr)
 
