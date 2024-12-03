@@ -365,7 +365,7 @@ template_coxreg_m <- function(dataname,
 #' @section Decorating `tm_t_coxreg`:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `plot` (`TableTree` as created from `rtables::build_table`)
+#' - `table` (`TableTree` as created from `rtables::build_table`)
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
