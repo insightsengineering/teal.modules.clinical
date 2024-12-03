@@ -7,8 +7,17 @@
 #' @param grade (`character`)\cr name of the severity level variable.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
 #' module.
+#' @param decorators `r roxygen_decorators_param("tm_t_events_by_grade")`
 #'
 #' @inherit template_arguments return
+#'
+#' @section Decorating `tm_t_events_by_grade`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` as created from `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @seealso [tm_t_events_by_grade()]
 #'
@@ -303,7 +312,7 @@ template_events_by_grade <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = pruned_result <- pruned_result %>% rtables::prune_table(keep_content_rows(row_condition))
+        expr = table <- pruned_result %>% rtables::prune_table(keep_content_rows(row_condition))
       )
     )
   }
@@ -345,7 +354,7 @@ template_events_by_grade <- function(dataname,
       sort_list,
       substitute(
         expr = {
-          pruned_and_sorted_result <- pruned_result %>%
+          table <- pruned_result %>%
             sort_at_path(path = hlt, scorefun = scorefun, decreasing = TRUE) %>%
             sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun, decreasing = TRUE)
         },
@@ -359,7 +368,7 @@ template_events_by_grade <- function(dataname,
 
     sort_list <- add_expr(
       sort_list,
-      quote(pruned_and_sorted_result)
+      quote(table)
     )
   }
   y$sort <- bracket_expr(sort_list)
@@ -865,7 +874,8 @@ tm_t_events_by_grade <- function(label,
                                  drop_arm_levels = TRUE,
                                  pre_output = NULL,
                                  post_output = NULL,
-                                 basic_table_args = teal.widgets::basic_table_args()) {
+                                 basic_table_args = teal.widgets::basic_table_args(),
+                                 decorators = NULL) {
   message("Initializing tm_t_events_by_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -883,6 +893,8 @@ tm_t_events_by_grade <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table", null.ok = TRUE)
 
   args <- as.list(environment())
 
@@ -907,7 +919,8 @@ tm_t_events_by_grade <- function(label,
         total_label = total_label,
         grading_groups = grading_groups,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -962,6 +975,7 @@ ui_t_events_by_grade <- function(id, ...) {
         "Display grade groupings in nested columns",
         value = a$col_by_grade
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
@@ -1017,7 +1031,8 @@ srv_t_events_by_grade <- function(id,
                                   drop_arm_levels,
                                   total_label,
                                   na_level,
-                                  basic_table_args) {
+                                  basic_table_args,
+                                  decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -1202,9 +1217,17 @@ srv_t_events_by_grade <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
+
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
     # Outputs to render.
     table_r <- reactive({
-      table_q()[["pruned_and_sorted_result"]]
+      browser()
+      decorated_table_q()[["table"]]
     })
 
     teal.widgets::table_with_settings_srv(
@@ -1215,7 +1238,7 @@ srv_t_events_by_grade <- function(id,
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_table_q()))),
       title = label
     )
 
@@ -1234,7 +1257,7 @@ srv_t_events_by_grade <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(teal.code::get_code(req(decorated_table_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
