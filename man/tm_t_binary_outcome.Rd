@@ -30,7 +30,8 @@ tm_t_binary_outcome(
   na_level = default_na_str(),
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  decorators = NULL
 )
 }
 \arguments{
@@ -75,11 +76,11 @@ values and \code{levels} of default level choices.}
 \itemize{
 \item \code{global}: a list of settings for overall analysis with 2 named elements \code{method} and \code{conf_level}.
 \item \code{unstrat}: a list of settings for unstratified analysis with 3 named elements \code{method_ci} and \code{method_test}, and
-\code{odds}. See \code{\link[tern:prop_diff]{tern::estimate_proportion_diff()}}, \code{\link[tern:prop_diff_test]{tern::test_proportion_diff()}}, and
-\code{\link[tern:odds_ratio]{tern::estimate_odds_ratio()}}, respectively, for options and details on how these settings are implemented in the
+\code{odds}. See \code{\link[tern:estimate_proportion_diff]{tern::estimate_proportion_diff()}}, \code{\link[tern:test_proportion_diff]{tern::test_proportion_diff()}}, and
+\code{\link[tern:estimate_odds_ratio]{tern::estimate_odds_ratio()}}, respectively, for options and details on how these settings are implemented in the
 analysis.
 \item \code{strat}: a list of settings for stratified analysis with elements \code{method_ci} and \code{method_test}. See
-\code{\link[tern:prop_diff]{tern::estimate_proportion_diff()}} and \code{\link[tern:prop_diff_test]{tern::test_proportion_diff()}}, respectively, for options and details on
+\code{\link[tern:estimate_proportion_diff]{tern::estimate_proportion_diff()}} and \code{\link[tern:test_proportion_diff]{tern::test_proportion_diff()}}, respectively, for options and details on
 how these settings are implemented in the analysis.
 }}
 
@@ -103,6 +104,12 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}  (\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module} or \code{NULL}) optional, if not \code{NULL}, decorator for tables or plots included in the module. When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating \code{tm_t_binary_outcome}" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -120,6 +127,18 @@ or re-categorize response categories and arrange the display order. If response 
 \item Reference arms are automatically combined if multiple arms selected as reference group.
 }
 }
+\section{Decorating \code{tm_t_binary_outcome}}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(dplyr)
 
