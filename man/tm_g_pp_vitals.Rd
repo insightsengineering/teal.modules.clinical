@@ -18,7 +18,8 @@ tm_g_pp_vitals(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.widgets::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  decorators = NULL
 )
 }
 \arguments{
@@ -70,6 +71,18 @@ This module produces a patient profile vitals \code{\link[ggplot2:ggplot]{ggplot
 This plot supports horizontal lines for the following 6 \code{PARAMCD} levels when they are present in \code{dataname}:
 \code{"SYSBP"}, \code{"DIABP"}, \code{"TEMP"}, \code{"RESP"}, \code{"OXYSAT"}.
 }
+\section{Decorating \code{tm_g_pp_vitals}}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{plot} (\code{ggplot2})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(nestcolor)
 
