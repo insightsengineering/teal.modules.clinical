@@ -182,7 +182,7 @@ tm_g_barchart_simple <- function(x = NULL,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, names = c("plot", "table"), null.ok = TRUE)
+  assert_decorators(decorators, names = c("plot"), null.ok = TRUE)
 
   plot_options <- utils::modifyList(
     list(stacked = FALSE), # default

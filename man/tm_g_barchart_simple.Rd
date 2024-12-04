@@ -68,7 +68,7 @@ Categories can be defined up to four levels deep and are defined through the \co
 \section{Decorating \code{tm_g_barchart_simple}}{
 
 
-This module generates the following objects, which can be modified in place using decorators::
+This module generates the following objects, which can be modified in place using decorators:
 \itemize{
 \item \code{plot} (\code{ggplot2})
 }
