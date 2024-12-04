@@ -266,7 +266,7 @@ template_events <- function(dataname,
 
   # Full table.
   y$table <- substitute(
-    expr = result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent),
+    expr = table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(parent = as.name(parentname))
   )
 
@@ -275,7 +275,7 @@ template_events <- function(dataname,
   prune_list <- add_expr(
     prune_list,
     quote(
-      pruned_result <- result %>% rtables::prune_table()
+      pruned_result <- rtables::prune_table(table)
     )
   )
 
@@ -284,7 +284,7 @@ template_events <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = col_indices <- 1:(ncol(result) - add_total),
+        expr = col_indices <- 1:(ncol(table) - add_total),
         env = list(add_total = add_total)
       )
     )
@@ -366,7 +366,7 @@ template_events <- function(dataname,
     sort_list <- add_expr(
       sort_list,
       substitute(
-        expr = idx_split_col <- which(sapply(col_paths(result), tail, 1) == sort_freq_col),
+        expr = idx_split_col <- which(sapply(col_paths(table), tail, 1) == sort_freq_col),
         env = list(sort_freq_col = sort_freq_col)
       )
     )
@@ -378,7 +378,7 @@ template_events <- function(dataname,
       quote(cont_n_allcols)
     }
     scorefun_llt <- if (add_total) {
-      quote(score_occurrences_cols(col_indices = seq(1, ncol(result))))
+      quote(score_occurrences_cols(col_indices = seq(1, ncol(table))))
     } else {
       quote(score_occurrences)
     }
@@ -458,8 +458,17 @@ template_events <- function(dataname,
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
+#' @param decorators `r roxygen_decorators_param("tm_t_events")`
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating `tm_t_events`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` as created from `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -524,7 +533,8 @@ tm_t_events <- function(label,
                         incl_overall_sum = TRUE,
                         pre_output = NULL,
                         post_output = NULL,
-                        basic_table_args = teal.widgets::basic_table_args()) {
+                        basic_table_args = teal.widgets::basic_table_args(),
+                        decorators = NULL) {
   message("Initializing tm_t_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -545,6 +555,8 @@ tm_t_events <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table", null.ok = TRUE)
 
   args <- as.list(environment())
 
@@ -570,7 +582,8 @@ tm_t_events <- function(label,
         na_level = na_level,
         sort_freq_col = sort_freq_col,
         incl_overall_sum = incl_overall_sum,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -612,6 +625,7 @@ ui_t_events_byterm <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_item(
         "Additional table settings",
         checkboxInput(
@@ -675,7 +689,8 @@ srv_t_events_byterm <- function(id,
                                 total_label,
                                 na_level,
                                 sort_freq_col,
-                                basic_table_args) {
+                                basic_table_args,
+                                decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -808,10 +823,15 @@ srv_t_events_byterm <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
     # Outputs to render.
-    table_r <- reactive({
-      table_q()[["pruned_and_sorted_result"]]
-    })
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -821,7 +841,7 @@ srv_t_events_byterm <- function(id,
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_table_q()))),
       title = label
     )
 
@@ -840,7 +860,7 @@ srv_t_events_byterm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(teal.code::get_code(req(decorated_table_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
