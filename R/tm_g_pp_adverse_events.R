@@ -108,7 +108,7 @@ template_adverse_events <- function(dataname = "ANL",
   chart_list <- add_expr(
     list(),
     substitute(
-      expr = plot_gg <- dataname %>%
+      expr = plot_output <- dataname %>%
         dplyr::select(aeterm, time, tox_grade, causality) %>%
         dplyr::mutate(ATOXGR = as.character(tox_grade)) %>%
         dplyr::arrange(dplyr::desc(ATOXGR)) %>%
@@ -592,7 +592,7 @@ srv_g_adverse_events <- function(id,
 
     # Allow for the table and plot qenv to be joined
     table_q <- reactive(within(all_q(), table <- table_output))
-    plot_q <- reactive(within(all_q(), plot <- plot_gg))
+    plot_q <- reactive(within(all_q(), plot <- plot_output))
 
     decorated_all_q_table <- srv_decorate_teal_data(
       "d_table",
