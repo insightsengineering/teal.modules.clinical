@@ -245,6 +245,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #' object with all available choices and preselected option for variable names that can be used as Worst Low Grade flag.
 #' @param worst_flag_indicator ([teal.transform::choices_selected()])\cr
 #' value indicating worst grade.
+#' @param decorators `r roxygen_decorators_param("tm_t_abnormality_by_worst_grade")`
 #'
 #' @inherit module_arguments return seealso
 #'

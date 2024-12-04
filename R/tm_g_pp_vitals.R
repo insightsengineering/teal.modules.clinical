@@ -206,6 +206,7 @@ template_vitals <- function(dataname = "ANL",
 #' @inheritParams template_vitals
 #' @param xaxis ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
+#' @param decorators `r roxygen_decorators_param("tm_g_pp_vitals")`
 #'
 #' @inherit module_arguments return
 #'
@@ -443,19 +444,19 @@ srv_g_vitals <- function(id,
     )
 
     observeEvent(patient_data_base(),
-                 handlerExpr = {
-                   teal.widgets::updateOptionalSelectInput(
-                     session,
-                     "patient_id",
-                     choices = patient_data_base(),
-                     selected = if (length(patient_data_base()) == 1) {
-                       patient_data_base()
-                     } else {
-                       intersect(patient_id(), patient_data_base())
-                     }
-                   )
-                 },
-                 ignoreInit = TRUE
+      handlerExpr = {
+        teal.widgets::updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
 
     # Vitals tab ----
