@@ -12,6 +12,7 @@
 #' @param x_facet (`data_extract_spec`)\cr row-wise faceting groups.
 #' @param y_facet (`data_extract_spec`)\cr column-wise faceting groups.
 #' @param plot_options (`list`)\cr list of plot options.
+#' @param decorators `r roxygen_decorators_param("tm_g_barchart_simple")`
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -19,7 +20,6 @@
 #'
 #' This module generates the following objects, which can be modified in place using decorators::
 #' - `plot` (`ggplot2`)
-#' - `table` (`data.frame`)
 #'
 #' Decorators can be applied to all outputs or only to specific objects using a
 #' named list of `teal_transform_module` objects.
@@ -198,7 +198,7 @@ tm_g_barchart_simple <- function(x = NULL,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, names = c('plot', 'table'))
+  assert_decorators(decorators, names = c("plot", "table"), null.ok = TRUE)
 
   plot_options <- utils::modifyList(
     list(stacked = FALSE), # default
@@ -486,6 +486,9 @@ srv_g_barchart_simple <- function(id,
             datasets = data_list,
             anl_name = "table"
           )
+        ) %>%
+        within(
+          table # print table
         )
     })
 
@@ -540,29 +543,18 @@ srv_g_barchart_simple <- function(id,
         teal.code::eval_code(code = plot_call)
     })
 
-    decorated_all_q_plot <- srv_decorate_teal_data(
+    decorated_all_q_code <- srv_decorate_teal_data(
       "d_plot",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
       expr = print(plot)
     )
 
-    decorated_all_q_table <- srv_decorate_teal_data(
-      "d_table",
-      data = all_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
-    )
-
-    decorated_all_q_code <- reactive(
-      c(decorated_all_q_plot(), decorated_all_q_table())
-    )
-
-    plot_r <- reactive(decorated_all_q_plot()[["plot"]])
+    plot_r <- reactive(decorated_all_q_code()[["plot"]])
 
     output$table <- renderTable({
       req(iv_r()$is_valid())
-      teal.code::dev_suppress(decorated_all_q_table()[["table"]])
+      teal.code::dev_suppress(all_q()[["table"]])
     })
 
     # get grouping variables
@@ -615,7 +607,7 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(req(decorated_all_q_plot())))
+        card$append_src(teal.code::get_code(req(decorated_all_q_code())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
