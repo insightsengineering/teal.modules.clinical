@@ -278,8 +278,7 @@ ui_g_barchart_simple <- function(id, ...) {
             is_single_dataset = is_single_dataset_value
           )
         },
-        ui_decorate_teal_data(ns("d_table"), decorators = select_decorators(args$decorators, "table")),
-        ui_decorate_teal_data(ns("d_plot"), decorators = select_decorators(args$decorators, "plot")),
+        ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(args$decorators, "plot")),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
             "Additional plot settings",
@@ -544,7 +543,7 @@ srv_g_barchart_simple <- function(id,
     })
 
     decorated_all_q_code <- srv_decorate_teal_data(
-      "d_plot",
+      "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
       expr = print(plot)
