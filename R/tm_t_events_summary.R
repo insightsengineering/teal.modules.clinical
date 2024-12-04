@@ -1011,7 +1011,6 @@ srv_t_events_summary <- function(id,
               rtables::main_footer(table) <- footer
               rtables::prov_footer(table) <- p_footer
               rtables::subtitles(table) <- subtitle
-              table
             }, env = list(
               title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
               footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
