@@ -469,9 +469,6 @@ srv_g_barchart_simple <- function(id,
             datasets = data_list,
             anl_name = "counts"
           )
-        ) %>%
-        within(
-          counts # print counts table
         )
     })
 
