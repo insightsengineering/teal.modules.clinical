@@ -315,7 +315,6 @@ template_binary_outcome <- function(dataname,
   y$table <- substitute(
     expr = {
       table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
-      table
     },
     env = list(parentname = as.name(parentname))
   )
@@ -515,7 +514,7 @@ tm_t_binary_outcome <- function(label,
   )
   checkmate::assert_subset(control$strat$method_test, c("cmh"))
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table", null.ok = TRUE)
 
   args <- as.list(environment())
 
@@ -1019,8 +1018,7 @@ srv_t_binary_outcome <- function(id,
     )
 
     # Outputs to render.
-    table_r <- reactive({
-      decorated_all_q()[["table"]]})
+    table_r <- reactive(decorated_all_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
