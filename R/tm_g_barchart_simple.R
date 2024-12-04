@@ -18,24 +18,8 @@
 #'
 #' @section Decorating `tm_g_barchart_simple`:
 #'
-#' This module generates the following objects, which can be modified in place using decorators::
+#' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)
-#'
-#' Decorators can be applied to all outputs or only to specific objects using a
-#' named list of `teal_transform_module` objects.
-#' The `"default"` name is reserved for decorators that are applied to all outputs.
-#' See code snippet below:
-#'
-#' ```
-#' tm_g_barchart_simple(
-#'    ..., # arguments for module
-#'    decorators = list(
-#'      default = list(teal_transform_module(...)), # applied to all outputs
-#'      plot = list(teal_transform_module(...)), # applied only to `plot` output
-#'      table = list(teal_transform_module(...)) # applied only to `table` output
-#'    )
-#' )
-#' ```
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
