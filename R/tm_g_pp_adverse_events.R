@@ -47,23 +47,23 @@ template_adverse_events <- function(dataname = "ANL",
     list(),
     substitute(
       expr = {
-        table <- dataname %>%
+        table_data <- dataname %>%
           dplyr::select(
             aeterm, tox_grade, causality, outcome, action, time, decod
           ) %>%
           dplyr::arrange(dplyr::desc(tox_grade)) %>%
           `colnames<-`(col_labels(dataname, fill = TRUE)[vars])
 
-        table <- dplyr::mutate(
-          table,
+        table_data <- dplyr::mutate(
+          table_data,
           dplyr::across(dplyr::where(~ !is.factor(.) & !is.character(.)), ~ as.character(.))
         )
-        table <- rlistings::as_listing(
-          table,
+        table_output <- rlistings::as_listing(
+          table_data,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
         )
-        main_title(table) <- paste("Patient ID:", patient_id)
+        main_title(table_output) <- paste("Patient ID:", patient_id)
       },
       env = list(
         dataname = as.name(dataname),
@@ -108,7 +108,7 @@ template_adverse_events <- function(dataname = "ANL",
   chart_list <- add_expr(
     list(),
     substitute(
-      expr = plot <- dataname %>%
+      expr = plot_gg <- dataname %>%
         dplyr::select(aeterm, time, tox_grade, causality) %>%
         dplyr::mutate(ATOXGR = as.character(tox_grade)) %>%
         dplyr::arrange(dplyr::desc(ATOXGR)) %>%
@@ -590,23 +590,27 @@ srv_g_adverse_events <- function(id,
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
+    # Allow for the table and plot qenv to be joined
+    table_q <- reactive(within(all_q(), table <- table_output))
+    plot_q <- reactive(within(all_q(), plot <- plot_gg))
+
     decorated_all_q_table <- srv_decorate_teal_data(
       "d_table",
-      data = all_q,
+      data = table_q,
       decorators = select_decorators(decorators, "table"),
       expr = table
+    )
+
+    decorated_all_q_plot <- srv_decorate_teal_data(
+      "d_plot",
+      data = plot_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
     )
 
     output$table <- DT::renderDataTable(
       expr = teal.code::dev_suppress(decorated_all_q_table()[["table"]]),
       options = list(pageLength = input$table_rows)
-    )
-
-    decorated_all_q_plot <- srv_decorate_teal_data(
-      "d_plot",
-      data = decorated_all_q_table,
-      decorators = select_decorators(decorators, "plot"),
-      expr = print(plot)
     )
 
     plot_r <- reactive({
@@ -621,9 +625,13 @@ srv_g_adverse_events <- function(id,
       width = plot_width
     )
 
+    decorated_all_q <- reactive(
+      c(decorated_all_q_table(), decorated_all_q_plot())
+    )
+
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q_plot()))),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q()))),
       title = label
     )
 
@@ -644,7 +652,7 @@ srv_g_adverse_events <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(req(decorated_all_q_plot())))
+        card$append_src(teal.code::get_code(req(decorated_all_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
