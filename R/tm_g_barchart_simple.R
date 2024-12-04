@@ -12,8 +12,17 @@
 #' @param x_facet (`data_extract_spec`)\cr row-wise faceting groups.
 #' @param y_facet (`data_extract_spec`)\cr column-wise faceting groups.
 #' @param plot_options (`list`)\cr list of plot options.
+#' @param decorators `r roxygen_decorators_param("tm_g_barchart_simple")`
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating `tm_g_barchart_simple`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -146,7 +155,8 @@ tm_g_barchart_simple <- function(x = NULL,
                                  plot_width = NULL,
                                  pre_output = NULL,
                                  post_output = NULL,
-                                 ggplot2_args = teal.widgets::ggplot2_args()) {
+                                 ggplot2_args = teal.widgets::ggplot2_args(),
+                                 decorators = NULL) {
   message("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
@@ -171,6 +181,8 @@ tm_g_barchart_simple <- function(x = NULL,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, names = "plot", null.ok = TRUE)
 
   plot_options <- utils::modifyList(
     list(stacked = FALSE), # default
@@ -190,7 +202,8 @@ tm_g_barchart_simple <- function(x = NULL,
       y_facet = y_facet,
       plot_height = plot_height,
       plot_width = plot_width,
-      ggplot2_args = ggplot2_args
+      ggplot2_args = ggplot2_args,
+      decorators = decorators
     ),
     datanames = "all"
   )
@@ -249,6 +262,7 @@ ui_g_barchart_simple <- function(id, ...) {
             is_single_dataset = is_single_dataset_value
           )
         },
+        ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(args$decorators, "plot")),
         teal.widgets::panel_group(
           teal.widgets::panel_item(
             "Additional plot settings",
@@ -336,7 +350,8 @@ srv_g_barchart_simple <- function(id,
                                   y_facet,
                                   plot_height,
                                   plot_width,
-                                  ggplot2_args) {
+                                  ggplot2_args,
+                                  decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -506,13 +521,16 @@ srv_g_barchart_simple <- function(id,
           )
         )) %>%
         teal.code::eval_code(code = plot_call)
-
-      # explicitly calling print on the plot inside the qenv evaluates
-      # the ggplot call and therefore catches errors
-      teal.code::eval_code(all_q, code = quote(print(plot)))
     })
 
-    plot_r <- reactive(all_q()[["plot"]])
+    decorated_all_q_code <- srv_decorate_teal_data(
+      "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+
+    plot_r <- reactive(decorated_all_q_code()[["plot"]])
 
     output$table <- renderTable({
       req(iv_r()$is_valid())
@@ -550,7 +568,7 @@ srv_g_barchart_simple <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q_code()))),
       title = "Bar Chart"
     )
 
@@ -569,7 +587,7 @@ srv_g_barchart_simple <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(teal.code::get_code(req(decorated_all_q_code())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
