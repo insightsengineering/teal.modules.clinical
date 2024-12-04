@@ -440,9 +440,9 @@ ui_t_exposure <- function(id, ...) {
         data_extract_spec = a$row_by_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       checkboxInput(ns("add_total_row"), "Add Total row", value = a$add_total_row),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional Variables Info",
