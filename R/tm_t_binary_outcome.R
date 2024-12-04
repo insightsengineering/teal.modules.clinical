@@ -314,8 +314,7 @@ template_binary_outcome <- function(dataname,
 
   y$table <- substitute(
     expr = {
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
     },
     env = list(parentname = as.name(parentname))
   )
@@ -348,8 +347,17 @@ template_binary_outcome <- function(dataname,
 #'   `"Not Evaluable (NE)"`, or `"Missing or unevaluable"`, 95% confidence interval will not be calculated.
 #'
 #' * Reference arms are automatically combined if multiple arms selected as reference group.
+#' @param decorators `r roxygen_decorators_param("tm_t_binary_outcome")`
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating `tm_t_binary_outcome`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -464,7 +472,8 @@ tm_t_binary_outcome <- function(label,
                                 na_level = default_na_str(),
                                 pre_output = NULL,
                                 post_output = NULL,
-                                basic_table_args = teal.widgets::basic_table_args()) {
+                                basic_table_args = teal.widgets::basic_table_args(),
+                                decorators = NULL) {
   message("Initializing tm_t_binary_outcome")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -504,6 +513,8 @@ tm_t_binary_outcome <- function(label,
     control$strat$method_ci, c("wald", "waldcc", "cmh", "ha", "strat_newcombe", "strat_newcombecc")
   )
   checkmate::assert_subset(control$strat$method_test, c("cmh"))
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table", null.ok = TRUE)
 
   args <- as.list(environment())
 
@@ -531,7 +542,8 @@ tm_t_binary_outcome <- function(label,
         control = control,
         rsp_table = rsp_table,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -678,6 +690,7 @@ ui_t_binary_outcome <- function(id, ...) {
         condition = paste0("!input['", ns("compare_arms"), "']"),
         checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_item(
         "Additional table settings",
         teal.widgets::optionalSelectInput(
@@ -745,7 +758,8 @@ srv_t_binary_outcome <- function(id,
                                  default_responses,
                                  rsp_table,
                                  na_level,
-                                 basic_table_args) {
+                                 basic_table_args,
+                                 decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -995,8 +1009,16 @@ srv_t_binary_outcome <- function(id,
       teal.code::eval_code(qenv, as.expression(unlist(my_calls)))
     })
 
+
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
     # Outputs to render.
-    table_r <- reactive(table_q()[["result"]])
+    table_r <- reactive(decorated_all_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -1007,7 +1029,7 @@ srv_t_binary_outcome <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = reactive({
-        teal.code::get_code(table_q())
+        teal.code::get_code(req(decorated_all_q()))
       }),
       title = label
     )
@@ -1027,7 +1049,7 @@ srv_t_binary_outcome <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(teal.code::get_code(req(decorated_all_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
