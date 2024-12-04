@@ -7,17 +7,8 @@
 #' @param grade (`character`)\cr name of the severity level variable.
 #' @param label_grade (`string`)\cr label of the `grade` variable from `dataname`. The label will be extracted from the
 #' module.
-#' @param decorators `r roxygen_decorators_param("tm_t_events_by_grade")`
 #'
 #' @inherit template_arguments return
-#'
-#' @section Decorating `tm_t_events_by_grade`:
-#'
-#' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`TableTree` as created from `rtables::build_table`)
-#'
-#' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @seealso [tm_t_events_by_grade()]
 #'
@@ -797,8 +788,17 @@ template_events_col_by_grade <- function(dataname,
 #' @inheritParams template_events_col_by_grade
 #' @param col_by_grade (`logical`)\cr whether to display the grading groups in nested columns.
 #' @param grading_groups (`list`)\cr named list of grading groups used when `col_by_grade = TRUE`.
+#' @param decorators `r roxygen_decorators_param("tm_t_events_by_grade")`
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating `tm_t_events_by_grade`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` as created from `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @export
 #'
