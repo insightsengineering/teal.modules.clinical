@@ -468,7 +468,7 @@ srv_g_barchart_simple <- function(id,
             c(
               bquote(attr(counts[[.(get_n_name(groupby_vars))]], "label") <- "Count"),
               bquote(
-                table <- counts %>%
+                counts <- counts %>%
                   dplyr::group_by_at(.(as.vector(groupby_vars))) %>%
                   dplyr::slice(1) %>%
                   dplyr::ungroup() %>%
@@ -484,11 +484,11 @@ srv_g_barchart_simple <- function(id,
           teal.transform::get_anl_relabel_call(
             columns_source = anl_inputs()$columns_source,
             datasets = data_list,
-            anl_name = "table"
+            anl_name = "counts"
           )
         ) %>%
         within(
-          table # print table
+          counts # print counts table
         )
     })
 
@@ -497,7 +497,7 @@ srv_g_barchart_simple <- function(id,
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
       y_lab <- substitute(
-        column_annotation_label(table, y_name),
+        column_annotation_label(counts, y_name),
         list(y_name = get_n_name(groupby_vars))
       )
 
@@ -554,7 +554,7 @@ srv_g_barchart_simple <- function(id,
 
     output$table <- renderTable({
       req(iv_r()$is_valid())
-      teal.code::dev_suppress(all_q()[["table"]])
+      teal.code::dev_suppress(all_q()[["counts"]])
     })
 
     # get grouping variables
@@ -669,7 +669,7 @@ make_barchart_simple_call <- function(y_name,
   checkmate::assert_flag(rotate_x_label, null.ok = TRUE)
   checkmate::assert_flag(rotate_y_label, null.ok = TRUE)
 
-  plot_args <- list(quote(ggplot2::ggplot(table)))
+  plot_args <- list(quote(ggplot2::ggplot(counts)))
 
   # aesthetic variables
   x_val_var <- if (is.null(x_name)) 0 else x_name
