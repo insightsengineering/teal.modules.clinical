@@ -65,7 +65,7 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
-#' #' @section Decorating `tm_t_pp_basic_info`:
+#' @section Decorating `tm_t_pp_basic_info`:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` - output of `rtables::build_table`)
