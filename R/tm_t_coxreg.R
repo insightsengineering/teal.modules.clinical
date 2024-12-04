@@ -319,7 +319,6 @@ template_coxreg_m <- function(dataname,
 
   y$table <- quote({
     table <- rtables::build_table(lyt = lyt, df = anl)
-    table
   })
 
   y
@@ -1103,7 +1102,6 @@ srv_t_coxreg <- function(id,
 
     # Outputs to render.
     table_r <- reactive({
-      browser()
       decorated_table_q()[["table"]]})
 
     teal.widgets::table_with_settings_srv(
