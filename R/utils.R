@@ -968,7 +968,7 @@ srv_decorate_teal_data <- function(id, data, decorators, expr, expr_is_reactive 
 
   missing_expr <- missing(expr)
   if (!missing_expr && !expr_is_reactive) {
-    expr <- rlang::enexpr(expr)
+    expr <- dplyr::enexpr(expr) # Using dplyr re-export to avoid adding rlang to Imports
   }
 
   moduleServer(id, function(input, output, session) {
@@ -980,9 +980,9 @@ srv_decorate_teal_data <- function(id, data, decorators, expr, expr_is_reactive 
       if (missing_expr) {
         decorated_output()
       } else if (expr_is_reactive) {
-        eval_code(decorated_output(), expr())
+        teal.code::eval_code(decorated_output(), expr())
       } else {
-        eval_code(decorated_output(), expr)
+        teal.code::eval_code(decorated_output(), expr)
       }
     })
   })
