@@ -19,7 +19,8 @@ tm_t_logistic(
     TRUE),
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  decorators = NULL
 )
 }
 \arguments{
@@ -63,6 +64,15 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+" (\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module} or" \code{NULL}) optional,
+if not \code{NULL}, decorator for tables or plots included in the module.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -71,6 +81,18 @@ a \code{teal_module} object.
 This module produces a multi-variable logistic regression table consistent with the TLG Catalog template
 \code{LGRT02} available \href{https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/lgrt02.html}{here}.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{ElementaryTable} - output of \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(dplyr)
 
@@ -131,8 +153,8 @@ apps implementing this module can be found.
 \describe{
   \item{example-1}{
     \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlAVRTQsK0EDLAyOiKKiJdwdRwfhD4-Pq+YhWg+jC0AuIioi+MiDhU-QFMmtpGnmSEqt87o3n6n4iD+-Arsq5yYRhs5+neuqipa6pkSKCYdseOioCwsBok+0Fvh+X64f+c6ATBvY6A+1CCHAUFAVCcGVE8YAbFsaF4I60mbDs3x0fROjYd+5B4ReVw3JU9yESR1aqTxRCaPej5JmxYgcThWncfG1n8YhlROLm8n0gA4i4HmXNsWAANJYAAjChFz+UFABMKmYSUGm4SurnuUR2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFLVdWfow2j+EovxKGAvwkkAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlAVRTQsK0EDLAyOiKKiJdwdRwfhD4-Pq+YhWg+jC0AuIioi+MiDhU-QFMmtpGnmSEqt87o3n6n4iD+-Arsq5yYRhs5+neuqipa6pkSKCYdseOioCwsBok+0Fvh+X64f+c6ATBvY6A+1CCHAUFAVCcGVE8YAbFsaF4I60mbDs3x0fROjYd+5B4ReVw3JU9yESR1aqTxRCaPej5JmxYgcThWncfG1n8YhlROLm8n0gA4i4HmXNsWAANJYAAjChFz+UFABMKmYSUGm4SurnuUR2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFLVdWfow2j+EovxKGAvwkkAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
-    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSXGtNTkjOwACqVYpQCyAMLlU9mTOgTsCmAAQk6V-WsAkucF53cAcgBqTrbncgEAvgEAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImkCQeDIcBoPAoXk5ABdVwQCo1Op5YDAc6U6rnElkil9AZwxK0+lspkspQsGBRRgI1FEGCoOp0USkM4QEqlXa2TZ7A4AXh0Upl8x0wuMOnV9Kw2x0F0e2uI4v1JzOYGVZUeOkNxt23x6clwPTt6s1spKJV1VvOF0QOjW1CgBDg9CIZrlfotEvVp3pIfKjEEAHMdAANB3nXYh3Zi+jZEKWQJgAIlAIBfnoOrZdK+nR5K15D1xvhCEQTdVd4RiZslBpRFHUIgZjEaZNxv0aqD0ODUQNgaoTqcyHRYOAZ4WiUTl2Nzkp5Am6A22nl4bUlAVRTQsK0EDLAyOiKKiJdwdRwfhD4-Pq+YhWg+jC0AuIioi+MiDhU-QFMmtpGnmSEqt87o3n6n4iD+-Arsq5yYRhs5+neuqipa6pkSKCYdseOioCwsBok+0Fvh+X64f+c6ATBvY6A+1CCHAUFAVCcGVE8YAbFsaF4I60mbDs3x0fROjYd+5B4ReVw3JU9yESR1aqTxRCaPej5JmxYgcThWncfG1n8YhlROLm8n0gA4i4HmXNsWAANJYAAjChFz+UFABMKmYSUGm4SurnuUR2pVjoNZKLQersNkKwRho2jWDYRRxqIWQQKwpToOwaCoAAJIItAFLVdWfow2j+EovxKGAvwkkAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
   }
 }
 }
