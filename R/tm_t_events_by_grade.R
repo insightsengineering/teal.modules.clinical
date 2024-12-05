@@ -303,7 +303,7 @@ template_events_by_grade <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = result <- pruned_result %>% rtables::prune_table(keep_content_rows(row_condition))
+        expr = pruned_result <- pruned_result %>% rtables::prune_table(keep_content_rows(row_condition))
       )
     )
   }
@@ -332,7 +332,6 @@ template_events_by_grade <- function(dataname,
         expr = {
           pruned_and_sorted_result <- pruned_result %>%
             sort_at_path(path = term_var, scorefun = scorefun, decreasing = TRUE)
-          pruned_and_sorted_result
         },
         env = list(
           term_var = term_var,
@@ -355,11 +354,6 @@ template_events_by_grade <- function(dataname,
           scorefun = scorefun
         )
       )
-    )
-
-    sort_list <- add_expr(
-      sort_list,
-      quote(result)
     )
   }
   y$sort <- bracket_expr(sort_list)
@@ -539,7 +533,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = result <- rtables::split_cols_by(var = arm_var, split_fun = add_overall_level(total_label, first = FALSE)),
+        expr = rtables::split_cols_by(var = arm_var, split_fun = add_overall_level(total_label, first = FALSE)),
         env = list(
           arm_var = arm_var,
           total_label = total_label
@@ -739,7 +733,7 @@ template_events_col_by_grade <- function(dataname,
   prune_pipe <- add_expr(
     prune_pipe,
     quote(
-      pruned_and_sorted_table <- sorted_table %>% rtables::trim_rows(criteria = criteria_fun)
+      pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun)
     )
   )
 
@@ -769,11 +763,6 @@ template_events_col_by_grade <- function(dataname,
     prune_list,
     prune_pipe
   )
-  prune_list <- add_expr(
-    prune_list,
-    quote(pruned_and_sorted_table)
-  )
-
   y$prune <- bracket_expr(prune_list)
 
   y
@@ -1219,8 +1208,7 @@ srv_t_events_by_grade <- function(id,
 
 
     table_renamed_q <- reactive({
-      req(table_q())
-      if (length(table_q()[["prunned_and_sorted_result"]])) {
+      if (length(table_q()[["pruned_and_sorted_result"]])) {
         out <- within(table_q(), {table <- pruned_and_sorted_result})
       } else {
         out <- within(table_q(), {table <- pruned_result})
