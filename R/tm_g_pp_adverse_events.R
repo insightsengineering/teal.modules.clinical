@@ -608,10 +608,7 @@ srv_g_adverse_events <- function(id,
       expr = print(plot)
     )
 
-    output$table <- DT::renderDataTable(
-      expr = teal.code::dev_suppress(decorated_all_q_table()[["table"]]),
-      options = list(pageLength = input$table_rows)
-    )
+    table_r <- reactive(teal.code::dev_suppress(decorated_all_q_table()[["table"]]))
 
     plot_r <- reactive({
       req(iv_r()$is_valid())
@@ -623,6 +620,11 @@ srv_g_adverse_events <- function(id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
+    )
+
+    output$table <- DT::renderDataTable(
+      expr = table_r(),
+      options = list(pageLength = input$table_rows)
     )
 
     decorated_all_q <- reactive(
@@ -645,7 +647,7 @@ srv_g_adverse_events <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(teal.code::dev_suppress(all_q()[["table"]]))
+        card$append_table(teal.code::dev_suppress(table_r()))
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
