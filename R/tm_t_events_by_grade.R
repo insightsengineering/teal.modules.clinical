@@ -345,7 +345,7 @@ template_events_by_grade <- function(dataname,
       sort_list,
       substitute(
         expr = {
-          result <- pruned_result %>%
+          pruned_and_sorted_result <- pruned_result %>%
             sort_at_path(path = hlt, scorefun = scorefun, decreasing = TRUE) %>%
             sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun, decreasing = TRUE)
         },
