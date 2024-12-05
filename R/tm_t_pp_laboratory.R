@@ -70,7 +70,7 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::mutate(aval_anrind = paste(aval_var, anrind)) %>%
           dplyr::select(-c(aval_var, anrind))
 
-        table_raw <- labor_table_base %>%
+        table <- labor_table_base %>%
           as.data.frame() %>%
           stats::reshape(
             direction = "wide",
@@ -78,12 +78,14 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind",
             timevar = "INDEX"
           )
-        colnames(table_raw)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        colnames(table)[-c(1:3)] <- unique(labor_table_base$INDEX)
 
-        table_raw[[param_char]] <- clean_description(table_raw[[param_char]])
+        table[[param_char]] <- clean_description(table[[param_char]])
+
+        table
 
         table_listing <- rlistings::as_listing(
-          table_raw,
+          table,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
         )
@@ -286,7 +288,7 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, null.ok = TRUE, c("table_listing", "table_dt"))
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -530,19 +532,17 @@ srv_g_laboratory <- function(id,
     })
 
     # Decoration of raw table output.
-    decorated_table_listing_q <- srv_decorate_teal_data(
+    decorated_listing_q <- srv_decorate_teal_data(
       id = "d_listing",
       data = all_q,
-      decorators = select_decorators(decorators, "table_listing"),
-      expr = table
+      decorators = select_decorators(decorators, "table_listing")
     )
 
     # Decoration of DT output.
     decorated_table_q <- srv_decorate_teal_data(
       id = "d_dt",
-      data = all_q,
-      decorators = select_decorators(decorators, "table_dt"),
-      expr = table
+      data = decorated_listing_q,
+      decorators = select_decorators(decorators, "table_dt")
     )
 
     # Outputs to render.
