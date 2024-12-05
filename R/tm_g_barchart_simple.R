@@ -12,11 +12,10 @@
 #' @param x_facet (`data_extract_spec`)\cr row-wise faceting groups.
 #' @param y_facet (`data_extract_spec`)\cr column-wise faceting groups.
 #' @param plot_options (`list`)\cr list of plot options.
-#' @param decorators `r roxygen_decorators_param("tm_g_barchart_simple")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_g_barchart_simple`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)

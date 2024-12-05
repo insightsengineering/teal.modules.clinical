@@ -386,9 +386,8 @@ template_tte <- function(dataname = "ANL",
 #'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
 #'   information, optional.
-#' @param decorators `r roxygen_decorators_param("tm_t_tte")`
 #'
-#' @section Decorating `tm_t_tte`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` - output of `rtables::build_table`)

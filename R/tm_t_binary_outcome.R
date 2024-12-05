@@ -347,11 +347,10 @@ template_binary_outcome <- function(dataname,
 #'   `"Not Evaluable (NE)"`, or `"Missing or unevaluable"`, 95% confidence interval will not be calculated.
 #'
 #' * Reference arms are automatically combined if multiple arms selected as reference group.
-#' @param decorators `r roxygen_decorators_param("tm_t_binary_outcome")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_t_binary_outcome`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` - output of `rtables::build_table`)

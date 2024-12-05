@@ -233,11 +233,10 @@ template_abnormality <- function(parentname,
 #' @param baseline_var ([teal.transform::choices_selected()])\cr
 #'   variable for baseline abnormality grade.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
-#' @param decorators `r roxygen_decorators_param("tm_t_abnormality")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_t_abnormality`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`ElementaryTable` - output of `rtables::build_table`)

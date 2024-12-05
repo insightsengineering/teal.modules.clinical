@@ -458,11 +458,10 @@ template_events <- function(dataname,
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param decorators `r roxygen_decorators_param("tm_t_events")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_t_events`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` as created from `rtables::build_table`)
