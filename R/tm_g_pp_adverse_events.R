@@ -54,10 +54,6 @@ template_adverse_events <- function(dataname = "ANL",
           dplyr::arrange(dplyr::desc(tox_grade)) %>%
           `colnames<-`(col_labels(dataname, fill = TRUE)[vars])
 
-        table_data <- dplyr::mutate(
-          table_data,
-          dplyr::across(dplyr::where(~ !is.factor(.) & !is.character(.)), ~ as.character(.))
-        )
         table_output <- rlistings::as_listing(
           table_data,
           key_cols = NULL,
