@@ -421,6 +421,7 @@ template_ancova <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_ancova
+#' @param decorators `r roxygen_decorators_param("tm_t_ancova")`
 #'
 #' @inherit module_arguments return
 #'
