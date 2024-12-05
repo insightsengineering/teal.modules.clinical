@@ -20,7 +20,8 @@ tm_t_mult_events(
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  decorators = NULL
 )
 }
 \arguments{
@@ -72,12 +73,30 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}  (\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module} or \code{NULL}) optional, if not \code{NULL}, decorator for tables or plots included in the module. When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating \code{tm_t_mult_events}" below for more details.}
 }
 \value{
 a \code{teal_module} object.
 }
 \description{
 This module produces a table of multiple events by term.
+}
+\details{
+\itemize{
+\item Although this function just returns \code{NULL} it has two uses, for
+the teal module users it provides a documentation of arguments that are
+commonly and consistently used in the framework. For the developer it adds a
+single reference point to import the \code{roxygen} argument description with:
+\verb{@inheritParams module_arguments}
+\item Parameters with identical descriptions & input types to those in the Standard Template Arguments section are
+excluded to reduce duplication as each module function inherits parameters from its corresponding template
+function.
+}
 }
 \examples{
 data <- teal_data()
