@@ -89,30 +89,10 @@ template_medical_history <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table_listing` (`listing_df` - output of `rlistings::as_listing`)
-#'   - Only used in reporter
-#' - `table_dt` (`datatable` - output of `DT::datatable`)
-#'   - Not used in reporter
-#'
-#' Decorators can be applied to all outputs or only to specific objects using a
-#' named list of `teal_transform_module` objects.
-#' The `"default"` name is reserved for decorators that are applied to all outputs.
-#' See code snippet below:
-#'
-#' ```
-#' tm_t_pp_laboratory(
-#'    ..., # arguments for module
-#'    decorators = list(
-#'      default = list(teal_transform_module(...)), # applied to all outputs
-#'      table_listing = list(teal_transform_module(...)), # applied only to `table_listing` output
-#'      table_dt = list(teal_transform_module(...)) # applied only to `table_dt` output
-#'    )
-#' )
-#' ```
+#' - `table` (`TableTree` - output of `rtables::build_table`)
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
-#'
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
