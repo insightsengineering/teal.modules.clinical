@@ -263,8 +263,7 @@ template_mult_events <- function(dataname,
   # Combine tables.
   y$final_table <- quote(
     expr = {
-      result <- sorted_result
-      result
+      table <- sorted_result
     }
   )
 
@@ -280,8 +279,17 @@ template_mult_events <- function(dataname,
 #' @param seq_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as analysis sequence number
 #'   variable. Used for counting the unique number of events.
+#' @param decorators `r roxygen_decorators_param("tm_t_mult_events")`
 #'
 #' @inherit module_arguments return seealso
+#'
+#' #' @section Decorating `tm_t_mult_events`:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -345,7 +353,8 @@ tm_t_mult_events <- function(label,
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL,
-                             basic_table_args = teal.widgets::basic_table_args()) {
+                             basic_table_args = teal.widgets::basic_table_args(),
+                             decorators = NULL) {
   message("Initializing tm_t_mult_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -362,6 +371,8 @@ tm_t_mult_events <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, null.ok = TRUE, "table")
 
   args <- as.list(environment())
 
@@ -386,7 +397,8 @@ tm_t_mult_events <- function(label,
         label = label,
         total_label = total_label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -438,6 +450,7 @@ ui_t_mult_events_byterm <- function(id, ...) {
           )
         )
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional Variables Info",
@@ -474,7 +487,8 @@ srv_t_mult_events_byterm <- function(id,
                                      label,
                                      total_label,
                                      na_level,
-                                     basic_table_args) {
+                                     basic_table_args,
+                                     decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -592,15 +606,22 @@ srv_t_mult_events_byterm <- function(id,
       teal.code::eval_code(anl_q, as.expression(unlist(my_calls)))
     })
 
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
     # Outputs to render.
-    table_r <- reactive(all_q()[["result"]])
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
 
     # Render R code.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = reactive(teal.code::get_code(req(decorated_table_q()))),
       title = label
     )
 
@@ -619,7 +640,7 @@ srv_t_mult_events_byterm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(teal.code::get_code(req(decorated_table_q())))
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
