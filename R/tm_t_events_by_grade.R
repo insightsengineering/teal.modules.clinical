@@ -249,7 +249,7 @@ template_events_by_grade <- function(dataname,
 
   # Full table.
   y$table <- substitute(
-    expr = table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent),
+    expr = result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent),
     env = list(parent = as.name(parentname))
   )
 
@@ -258,7 +258,7 @@ template_events_by_grade <- function(dataname,
   prune_list <- add_expr(
     prune_list,
     quote(
-      pruned_table <- table
+      pruned_result <- result
     )
   )
 
@@ -267,7 +267,7 @@ template_events_by_grade <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = col_indices <- 1:(ncol(table) - add_total),
+        expr = col_indices <- 1:(ncol(result) - add_total),
         env = list(add_total = add_total)
       )
     )
@@ -303,7 +303,7 @@ template_events_by_grade <- function(dataname,
     prune_list <- add_expr(
       prune_list,
       substitute(
-        expr = table <- pruned_table %>% rtables::prune_table(keep_content_rows(row_condition))
+        expr = result <- pruned_result %>% rtables::prune_table(keep_content_rows(row_condition))
       )
     )
   }
@@ -330,9 +330,9 @@ template_events_by_grade <- function(dataname,
       sort_list,
       substitute(
         expr = {
-          pruned_and_sorted_table <- pruned_table %>%
+          pruned_and_sorted_result <- pruned_result %>%
             sort_at_path(path = term_var, scorefun = scorefun, decreasing = TRUE)
-          pruned_and_sorted_table
+          pruned_and_sorted_result
         },
         env = list(
           term_var = term_var,
@@ -345,7 +345,7 @@ template_events_by_grade <- function(dataname,
       sort_list,
       substitute(
         expr = {
-          table <- pruned_table %>%
+          result <- pruned_result %>%
             sort_at_path(path = hlt, scorefun = scorefun, decreasing = TRUE) %>%
             sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun, decreasing = TRUE)
         },
@@ -359,7 +359,7 @@ template_events_by_grade <- function(dataname,
 
     sort_list <- add_expr(
       sort_list,
-      quote(table)
+      quote(result)
     )
   }
   y$sort <- bracket_expr(sort_list)
@@ -539,7 +539,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = rtables::split_cols_by(var = arm_var, split_fun = add_overall_level(total_label, first = FALSE)),
+        expr = result <- rtables::split_cols_by(var = arm_var, split_fun = add_overall_level(total_label, first = FALSE)),
         env = list(
           arm_var = arm_var,
           total_label = total_label
@@ -638,7 +638,7 @@ template_events_col_by_grade <- function(dataname,
   )
 
   # Full table.
-  y$table <- quote(table <- rtables::build_table(lyt = lyt, df = anl, col_counts = col_counts))
+  y$table <- quote(result <- rtables::build_table(lyt = lyt, df = anl, col_counts = col_counts))
 
   # Start sorting table.
   sort_list <- list()
@@ -657,7 +657,7 @@ template_events_col_by_grade <- function(dataname,
   sort_list <- add_expr(
     sort_list,
     substitute(
-      expr = col_indices <- seq(start_index, ncol(table), by = length(grading_groups)),
+      expr = col_indices <- seq(start_index, ncol(result), by = length(grading_groups)),
       env = list(grading_groups = grading_groups)
     )
   )
@@ -679,7 +679,7 @@ template_events_col_by_grade <- function(dataname,
       sort_list,
       substitute(
         expr = {
-          sorted_table <- table %>%
+          sorted_result <- result %>%
             sort_at_path(path = c(llt), scorefun = scorefun_term, decreasing = TRUE)
         },
         env = list(llt = llt)
@@ -690,7 +690,7 @@ template_events_col_by_grade <- function(dataname,
       sort_list,
       substitute(
         expr = {
-          sorted_table <- table %>%
+          sorted_result <- result %>%
             sort_at_path(path = c(hlt), scorefun = scorefun_soc, decreasing = TRUE) %>%
             sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun_term, decreasing = TRUE)
         },
@@ -1218,9 +1218,19 @@ srv_t_events_by_grade <- function(id,
     })
 
 
+    table_renamed_q <- reactive({
+      req(table_q())
+      if (length(table_q()[["prunned_and_sorted_result"]])) {
+        out <- within(table_q(), {table <- pruned_and_sorted_result})
+      } else {
+        out <- within(table_q(), {table <- pruned_result})
+      }
+      out
+    })
+
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
-      data = table_q,
+      data = table_renamed_q,
       decorators = select_decorators(decorators, "table"),
       expr = table
     )
