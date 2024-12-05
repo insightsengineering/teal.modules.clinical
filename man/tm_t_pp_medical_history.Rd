@@ -13,7 +13,8 @@ tm_t_pp_medical_history(
   mhbodsys = NULL,
   mhdistat = NULL,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  decorators = NULL
 )
 }
 \arguments{
@@ -39,6 +40,15 @@ For example a title.}
 
 \item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+" (\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module} or" \code{NULL}) optional,
+if not \code{NULL}, decorator for tables or plots included in the module.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -46,6 +56,40 @@ a \code{teal_module} object.
 \description{
 This module produces a patient profile medical history report using ADaM datasets.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table_listing} (\code{listing_df} - output of \code{rlistings::as_listing})
+\itemize{
+\item Only used in reporter
+}
+\item \code{table_dt} (\code{datatable} - output of \code{DT::datatable})
+\itemize{
+\item Not used in reporter
+}
+}
+
+Decorators can be applied to all outputs or only to specific objects using a
+named list of \code{teal_transform_module} objects.
+The \code{"default"} name is reserved for decorators that are applied to all outputs.
+See code snippet below:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{tm_t_pp_laboratory(
+   ..., # arguments for module
+   decorators = list(
+     default = list(teal_transform_module(...)), # applied to all outputs
+     table_listing = list(teal_transform_module(...)), # applied only to `table_listing` output
+     table_dt = list(teal_transform_module(...)) # applied only to `table_dt` output
+   )
+)
+}\if{html}{\out{</div>}}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 data <- teal_data()
 data <- within(data, {
@@ -89,8 +133,8 @@ if (interactive()) {
 \describe{
   \item{example-1}{
     \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDEEGJjAhiPyiVlwdRc+mijJuj1iDGaFi0ZkiDbumQ4gEtFIEKFgVq2JxYJpPORyYVBjI+kT+-iq9OZ7NgLUZPPVzExegCUQzV1xz2ib2+kuBoMh+Po+ERxhR+gxvvt9iJlIclpmgDyeQAmrkc-mC0W-eRS0bWvOlyuq-b8bWjxleltqR5W6GOxvu3Xg22w4PI9G4LGb5OvtO0y1slbclsTJbFXB8dDvLcyz-ACgJAw8gyGBlEJ0IYhloYwdHYeInSgCxtGsGw0hFUQ4ggVhMnQdhQQAEkEWgUhon1GG0Rghn6JQwH6c4gA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDEEGJjAhiPyiVlwdRc+mijJuj1iDGaFi0ZkiDbumQ4gEtFIEKFgVq2JxYJpPORyYVBjI+kT+-iq9OZ7NgLUZPPVzExegCUQzV1xz2ib2+kuBoMh+Po+ERxhR+gxvvt9iJlIclpmgDyeQAmrkc-mC0W-eRS0bWvOlyuq-b8bWjxleltqR5W6GOxvu3Xg22w4PI9G4LGb5OvtO0y1slbclsTJbFXB8dDvLcyz-ACgJAw8gyGBlEJ0IYhloYwdHYeInSgCxtGsGw0hFUQ4ggVhMnQdhQQAEkEWgUhon1GG0Rghn6JQwH6c4gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
-    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDEEGJjAhiPyiVlwdRc+mijJuj1iDGaFi0ZkiDbumQ4gEtFIEKFgVq2JxYJpPORyYVBjI+kT+-iq9OZ7NgLUZPPVzExegCUQzV1xz2ib2+kuBoMh+Po+ERxhR+gxvvt9iJlIclpmgDyeQAmrkc-mC0W-eRS0bWvOlyuq-b8bWjxleltqR5W6GOxvu3Xg22w4PI9G4LGb5OvtO0y1slbclsTJbFXB8dDvLcyz-ACgJAw8gyGBlEJ0IYhloYwdHYeInSgCxtGsGw0hFUQ4ggVhMnQdhQQAEkEWgUhon1GG0Rghn6JQwH6c4gA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
   }
 }
 }
