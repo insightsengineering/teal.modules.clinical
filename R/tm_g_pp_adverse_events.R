@@ -54,6 +54,13 @@ template_adverse_events <- function(dataname = "ANL",
           dplyr::arrange(dplyr::desc(tox_grade)) %>%
           `colnames<-`(col_labels(dataname, fill = TRUE)[vars])
 
+        # Exception for columns of type difftime that is not supported by as_listing
+        table <- dplyr::mutate(
+          table,
+          dplyr::across(
+            dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
+          )
+        )
         table <- rlistings::as_listing(
           table,
           key_cols = NULL,
