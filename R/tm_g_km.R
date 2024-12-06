@@ -267,11 +267,10 @@ template_g_km <- function(dataname = "ANL",
 #' @inheritParams template_g_km
 #' @param facet_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for names of variable that can be used for plot faceting.
-#' @param decorators `r roxygen_decorators_param("tm_g_km")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_g_km`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)

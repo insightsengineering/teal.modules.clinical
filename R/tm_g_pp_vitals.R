@@ -206,12 +206,10 @@ template_vitals <- function(dataname = "ANL",
 #' @inheritParams template_vitals
 #' @param xaxis ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
-#' @param decorators `r roxygen_decorators_param("tm_g_pp_vitals")`
 #'
 #' @inherit module_arguments return
 #'
-#'
-#' @section Decorating `tm_g_pp_vitals`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)

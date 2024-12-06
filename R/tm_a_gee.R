@@ -131,11 +131,10 @@ template_a_gee <- function(output_table,
 #' @inheritParams module_arguments
 #' @inheritParams template_arguments
 #' @inheritParams template_a_gee
-#' @param decorators `r roxygen_decorators_param("tm_a_gee")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_a_gee`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`ElementaryTable` - output of `rtables::build_table`)
