@@ -42,13 +42,35 @@ a \code{teal_module} object.
 \description{
 This module produces a patient profile basic info report using ADaM datasets.
 }
-\section{Decorating \code{tm_t_pp_basic_info}}{
+\section{Decorating Module}{
 
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
+\item \code{table_listing} (\code{listing_df} - output of \code{rlistings::as_listing})
+\itemize{
+\item Only used in reporter
 }
+\item \code{table_dt} (\code{datatable} - output of \code{DT::datatable})
+\itemize{
+\item Not used in reporter
+}
+}
+
+Decorators can be applied to all outputs or only to specific objects using a
+named list of \code{teal_transform_module} objects.
+The \code{"default"} name is reserved for decorators that are applied to all outputs.
+See code snippet below:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{tm_t_pp_basic_info(
+   ..., # arguments for module
+   decorators = list(
+     default = list(teal_transform_module(...)), # applied to all outputs
+     table_listing = list(teal_transform_module(...)), # applied only to `table_listing` output
+     table_dt = list(teal_transform_module(...)) # applied only to `table_dt` output
+   )
+)
+}\if{html}{\out{</div>}}
 
 For additional details and examples of decorators, refer to the vignette
 \code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
