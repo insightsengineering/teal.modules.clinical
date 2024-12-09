@@ -16,14 +16,6 @@
 #'
 #' @inherit template_arguments return
 #'
-#' @section Decorating `tm_g_pp_patient_timeline`:
-#'
-#' This module generates the following objects, which can be modified in place using decorators::
-#' - `plot` (`ggplot2`)
-#'
-#' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
-#'
 #' @seealso [tm_g_pp_patient_timeline()]
 #'
 #' @keywords internal
@@ -352,9 +344,17 @@ template_patient_timeline <- function(dataname = "ANL",
 #'   all available choices and preselected option for the `CMASTDTM` variable from `dataname_adcm`.
 #' @param dstime_end ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMAENDTM` variable from `dataname_adcm`.
-#' @param decorators `r roxygen_decorators_param("tm_")`
 #'
 #' @inherit module_arguments return
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)

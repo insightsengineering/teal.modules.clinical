@@ -279,11 +279,10 @@ template_mult_events <- function(dataname,
 #' @param seq_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as analysis sequence number
 #'   variable. Used for counting the unique number of events.
-#' @param decorators `r roxygen_decorators_param("tm_t_mult_events")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' #' @section Decorating `tm_t_mult_events`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` - output of `rtables::build_table`)

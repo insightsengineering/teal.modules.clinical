@@ -189,11 +189,10 @@ template_events_patyear <- function(dataname,
 #'   second variable will be nested under the first variable.
 #' @param events_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the variable with all event counts.
-#' @param decorators `r roxygen_decorators_param("tm_t_events_patyear")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_t_events_patyear`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` as created from `rtables::build_table`)

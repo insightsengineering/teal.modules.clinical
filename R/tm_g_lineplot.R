@@ -211,11 +211,10 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @inheritParams module_arguments
 #' @inheritParams template_g_lineplot
-#' @param decorators `r roxygen_decorators_param("tm_g_lineplot")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_g_lineplot`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)
