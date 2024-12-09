@@ -248,7 +248,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_t_abnormality_by_worst_grade`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`ElementaryTable` - output of `rtables::build_table`)

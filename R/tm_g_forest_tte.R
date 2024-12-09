@@ -240,11 +240,10 @@ template_forest_tte <- function(dataname = "ANL",
 #' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
 #' @inheritParams template_forest_tte
-#' @param decorators `r roxygen_decorators_param("tm_g_forest_tte")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_g_forest_tte`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)

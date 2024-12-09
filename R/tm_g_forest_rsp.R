@@ -240,14 +240,13 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
 #' @inheritParams template_forest_rsp
-#' @param decorators `r roxygen_decorators_param("tm_g_forest_rsp")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_g_forest_tte`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `plot` (`gg`)
+#' - `plot` (`ggplot2`)
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.

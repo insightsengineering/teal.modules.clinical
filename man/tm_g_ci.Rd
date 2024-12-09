@@ -51,11 +51,14 @@ for the module plot. The argument is merged with option \code{teal.ggplot2_args}
 (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 
-\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}  (\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module} or \code{NULL}) optional, if not \code{NULL}, decorator for tables or plots included in the module. When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+" (\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module} or" \code{NULL}) optional,
+if not \code{NULL}, decorator for tables or plots included in the module.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
 
 Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
 
-See section "Decorating \code{tm_g_ci}" below for more details.}
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -64,7 +67,7 @@ a \code{teal_module} object.
 This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type confidence interval plot consistent with the TLG Catalog template
 \code{CIG01} available \href{https://insightsengineering.github.io/tlg-catalog/stable/graphs/other/cig01.html}{here}.
 }
-\section{Decorating \code{tm_g_ci}}{
+\section{Decorating Module}{
 
 
 This module generates the following objects, which can be modified in place using decorators:

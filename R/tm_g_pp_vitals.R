@@ -209,8 +209,7 @@ template_vitals <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
-#'
-#' @section Decorating `tm_g_pp_vitals`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)
@@ -443,19 +442,19 @@ srv_g_vitals <- function(id,
     )
 
     observeEvent(patient_data_base(),
-                 handlerExpr = {
-                   teal.widgets::updateOptionalSelectInput(
-                     session,
-                     "patient_id",
-                     choices = patient_data_base(),
-                     selected = if (length(patient_data_base()) == 1) {
-                       patient_data_base()
-                     } else {
-                       intersect(patient_id(), patient_data_base())
-                     }
-                   )
-                 },
-                 ignoreInit = TRUE
+      handlerExpr = {
+        teal.widgets::updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
     )
 
     # Vitals tab ----
