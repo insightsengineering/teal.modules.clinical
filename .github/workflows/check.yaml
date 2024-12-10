@@ -47,6 +47,7 @@ jobs:
         insightsengineering/teal.transform
         insightsengineering/tern
         insightsengineering/rlistings
+        insightsengineering/formatters
         insightsengineering/rtables
         insightsengineering/rtables.officer
         insightsengineering/teal.code
@@ -54,6 +55,7 @@ jobs:
         insightsengineering/teal.logger
         insightsengineering/teal.reporter
         insightsengineering/teal.widgets
+        insightsengineering/teal.slice
         insightsengineering/tern.gee
         insightsengineering/tern.mmrm
         insightsengineering/nestcolor
@@ -84,6 +86,7 @@ jobs:
         insightsengineering/teal.transform
         insightsengineering/tern
         insightsengineering/rlistings
+        insightsengineering/formatters
         insightsengineering/rtables
         insightsengineering/rtables.officer
         insightsengineering/teal.code
@@ -91,6 +94,7 @@ jobs:
         insightsengineering/teal.logger
         insightsengineering/teal.reporter
         insightsengineering/teal.widgets
+        insightsengineering/teal.slice
         insightsengineering/tern.gee
         insightsengineering/tern.mmrm
         insightsengineering/nestcolor
@@ -109,6 +113,7 @@ jobs:
         insightsengineering/teal.transform
         insightsengineering/tern
         insightsengineering/rlistings
+        insightsengineering/formatters
         insightsengineering/rtables
         insightsengineering/rtables.officer
         insightsengineering/teal.code
@@ -116,6 +121,7 @@ jobs:
         insightsengineering/teal.logger
         insightsengineering/teal.reporter
         insightsengineering/teal.widgets
+        insightsengineering/teal.slice
         insightsengineering/tern.gee
         insightsengineering/tern.mmrm
         insightsengineering/nestcolor
@@ -137,6 +143,7 @@ jobs:
         insightsengineering/teal.transform
         insightsengineering/tern
         insightsengineering/rlistings
+        insightsengineering/formatters
         insightsengineering/rtables
         insightsengineering/rtables.officer
         insightsengineering/teal.code
@@ -144,6 +151,7 @@ jobs:
         insightsengineering/teal.logger
         insightsengineering/teal.reporter
         insightsengineering/teal.widgets
+        insightsengineering/teal.slice
         insightsengineering/tern.gee
         insightsengineering/tern.mmrm
         insightsengineering/nestcolor
