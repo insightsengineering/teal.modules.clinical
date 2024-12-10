@@ -61,7 +61,6 @@ template_basic_info <- function(dataname = "ANL",
 #' @inheritParams template_basic_info
 #' @param vars ([teal.transform::choices_selected()])\cr  object with all
 #'   available choices and preselected option for variables from `dataname` to show in the table.
-#' @param decorators `r roxygen_decorators_param("tm_t_pp_basic_info")`
 #'
 #' @inherit module_arguments return
 #'
