@@ -199,7 +199,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`TableTree`)
+#' - `table` (`TableTree` - output of `rtables::build_table`)
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
