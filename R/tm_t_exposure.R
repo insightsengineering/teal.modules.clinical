@@ -198,7 +198,7 @@ template_exposure <- function(parentname,
     y$table <- substitute(
       expr = {
         table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-        rtables::prune_table(table)
+        table <- rtables::prune_table(table)
       },
       env = list(parent = as.name(parentname))
     )
