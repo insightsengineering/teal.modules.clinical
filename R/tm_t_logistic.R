@@ -186,14 +186,13 @@ template_logistic <- function(dataname,
 
   y$table <- substitute(
     expr = {
-      result <- expr_basic_table_args %>%
+      table <- expr_basic_table_args %>%
         summarize_logistic(
           conf_level = conf_level,
           drop_and_remove_str = "_NA_"
         ) %>%
         rtables::append_topleft(topleft) %>%
         rtables::build_table(df = mod)
-      result
     },
     env = list(
       expr_basic_table_args = parsed_basic_table_args,
@@ -221,6 +220,14 @@ template_logistic <- function(dataname,
 #'   available choices and preselected option for the analysis variable (categorical).
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -297,7 +304,8 @@ tm_t_logistic <- function(label,
                           conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                           pre_output = NULL,
                           post_output = NULL,
-                          basic_table_args = teal.widgets::basic_table_args()) {
+                          basic_table_args = teal.widgets::basic_table_args(),
+                          decorators = NULL) {
   message("Initializing tm_t_logistic")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -311,6 +319,8 @@ tm_t_logistic <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, null.ok = TRUE, "table")
 
   args <- as.list(environment())
 
@@ -333,7 +343,8 @@ tm_t_logistic <- function(label,
         label = label,
         dataname = dataname,
         parentname = parentname,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -424,7 +435,8 @@ ui_t_logistic <- function(id, ...) {
         a$conf_level$selected,
         multiple = FALSE,
         fixed = a$conf_level$fixed
-      )
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -447,7 +459,8 @@ srv_t_logistic <- function(id,
                            avalc_var,
                            cov_var,
                            label,
-                           basic_table_args) {
+                           basic_table_args,
+                           decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -659,6 +672,7 @@ srv_t_logistic <- function(id,
       )
     })
 
+    # Generate r code for the analysis.
     all_q <- reactive({
       validate_checks()
 
@@ -696,16 +710,26 @@ srv_t_logistic <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(calls))
     })
 
-    table_r <- reactive(all_q()[["result"]])
+    # Decoration of table output.
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
+    # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -724,7 +748,7 @@ srv_t_logistic <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
