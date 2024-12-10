@@ -80,7 +80,7 @@ This module produces a patient profile laboratory table using ADaM datasets.
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table_listing} (\code{listing_df} - output of \code{rlistings::as_listing})
+\item \code{table} (\code{listing_df} - output of \code{rlistings::as_listing})
 }
 
 For additional details and examples of decorators, refer to the vignette

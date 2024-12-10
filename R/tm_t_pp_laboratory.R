@@ -156,7 +156,7 @@ template_laboratory <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table_listing` (`listing_df` - output of `rlistings::as_listing`)
+#' - `table` (`listing_df` - output of `rlistings::as_listing`)
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
