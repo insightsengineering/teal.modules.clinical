@@ -21,7 +21,8 @@ tm_g_pp_adverse_events(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.widgets::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  decorators = NULL
 )
 }
 \arguments{
@@ -72,6 +73,8 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+
+\item{decorators}{\verb{r roxygen_decorators_param("tm_g_pp_adverse_events")}}
 }
 \value{
 a \code{teal_module} object.
@@ -79,6 +82,34 @@ a \code{teal_module} object.
 \description{
 This module produces an adverse events table and \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type plot using ADaM datasets.
 }
+\section{Decorating \code{tm_g_pp_adverse_events}}{
+
+
+This module generates the following objects, which can be modified in place using decorators::
+\itemize{
+\item \code{plot} (\code{ggplot2})
+\item \code{table} (\code{listing_df} - output of \code{rlistings::as_listing})
+}
+
+Decorators can be applied to all outputs or only to specific objects using a
+named list of \code{teal_transform_module} objects.
+The \code{"default"} name is reserved for decorators that are applied to all outputs.
+See code snippet below:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{tm_g_pp_adverse_events(
+   ..., # arguments for module
+   decorators = list(
+     default = list(teal_transform_module(...)), # applied to all outputs
+     plot = list(teal_transform_module(...)), # applied only to `plot` output
+     table = list(teal_transform_module(...)) # applied only to `table` output
+   )
+)
+}\if{html}{\out{</div>}}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(nestcolor)
 library(dplyr)
