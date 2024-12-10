@@ -70,7 +70,7 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::mutate(aval_anrind = paste(aval_var, anrind)) %>%
           dplyr::select(-c(aval_var, anrind))
 
-        table <- labor_table_base %>%
+        result <- labor_table_base %>%
           as.data.frame() %>%
           stats::reshape(
             direction = "wide",
@@ -78,18 +78,16 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind",
             timevar = "INDEX"
           )
-        colnames(table)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        colnames(result)[-c(1:3)] <- unique(labor_table_base$INDEX)
 
-        table[[param_char]] <- clean_description(table[[param_char]])
+        result[[param_char]] <- clean_description(result[[param_char]])
 
-        table
-
-        table_listing <- rlistings::as_listing(
-          table,
+        table <- rlistings::as_listing(
+          result,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
         )
-        main_title(table_listing) <- paste("Patient ID:", patient_id)
+        main_title(table) <- paste("Patient ID:", patient_id)
 
         table_html <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
@@ -159,25 +157,6 @@ template_laboratory <- function(dataname = "ANL",
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table_listing` (`listing_df` - output of `rlistings::as_listing`)
-#'   - Only used in reporter
-#' - `table_dt` (`datatable` - output of `DT::datatable`)
-#'   - Not used in reporter
-#'
-#' Decorators can be applied to all outputs or only to specific objects using a
-#' named list of `teal_transform_module` objects.
-#' The `"default"` name is reserved for decorators that are applied to all outputs.
-#' See code snippet below:
-#'
-#' ```
-#' tm_t_pp_laboratory(
-#'    ..., # arguments for module
-#'    decorators = list(
-#'      default = list(teal_transform_module(...)), # applied to all outputs
-#'      table_listing = list(teal_transform_module(...)), # applied only to `table_listing` output
-#'      table_dt = list(teal_transform_module(...)) # applied only to `table_dt` output
-#'    )
-#' )
-#' ```
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
@@ -288,7 +267,7 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, c("table_listing", "table_dt"))
+  assert_decorators(decorators, null.ok = TRUE, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -390,8 +369,7 @@ ui_g_laboratory <- function(id, ...) {
         label = "Select number of decimal places for rounding:",
         choices = NULL
       ),
-      ui_decorate_teal_data(ns("d_listing"), decorators = select_decorators(ui_args$decorators, "table_listing")),
-      ui_decorate_teal_data(ns("d_dt"), decorators = select_decorators(ui_args$decorators, "table_dt"))
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table"))
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -532,17 +510,11 @@ srv_g_laboratory <- function(id,
     })
 
     # Decoration of raw table output.
-    decorated_listing_q <- srv_decorate_teal_data(
-      id = "d_listing",
-      data = all_q,
-      decorators = select_decorators(decorators, "table_listing")
-    )
-
-    # Decoration of DT output.
     decorated_table_q <- srv_decorate_teal_data(
-      id = "d_dt",
-      data = decorated_listing_q,
-      decorators = select_decorators(decorators, "table_dt")
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
     )
 
     # Outputs to render.
@@ -550,11 +522,12 @@ srv_g_laboratory <- function(id,
       q <- decorated_table_q()
       list(
         html = q[["table_dt"]],
-        raw = q[["table_listing"]]
+        listing = q[["table"]]
       )
     })
 
     output$title <- renderText({
+      req(decorated_table_q())
       paste("<h5><b>Patient ID:", decorated_table_q()[["pt_id"]], "</b></h5>")
     })
 
@@ -578,7 +551,7 @@ srv_g_laboratory <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(table_r()$raw)
+        card$append_table(table_r()$listing)
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)

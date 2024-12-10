@@ -81,29 +81,7 @@ This module produces a patient profile laboratory table using ADaM datasets.
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
 \item \code{table_listing} (\code{listing_df} - output of \code{rlistings::as_listing})
-\itemize{
-\item Only used in reporter
 }
-\item \code{table_dt} (\code{datatable} - output of \code{DT::datatable})
-\itemize{
-\item Not used in reporter
-}
-}
-
-Decorators can be applied to all outputs or only to specific objects using a
-named list of \code{teal_transform_module} objects.
-The \code{"default"} name is reserved for decorators that are applied to all outputs.
-See code snippet below:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{tm_t_pp_laboratory(
-   ..., # arguments for module
-   decorators = list(
-     default = list(teal_transform_module(...)), # applied to all outputs
-     table_listing = list(teal_transform_module(...)), # applied only to `table_listing` output
-     table_dt = list(teal_transform_module(...)) # applied only to `table_dt` output
-   )
-)
-}\if{html}{\out{</div>}}
 
 For additional details and examples of decorators, refer to the vignette
 \code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
@@ -163,8 +141,8 @@ if (interactive()) {
 \describe{
   \item{example-1}{
     \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8umS5ilfjoggxUYEMR+URMuDqOD8HF8vHG01idGaFi0MkidYmmTY-7NFKPAAKmSwmQAsgBhLVgOQ8h0ZS0iG2GhUhsNRmPijJx7M6PWwI0+s2iC1WlP2hNO31ouFuxge+he6sl9j+wNgdMRx65nV8pPW8ipnTB0PdsB53sOjTwVCjMi1nQt80Dit5jLLxf1xvN4t+z4dnIATR78YTq6HLKe2RPE77ObPdKgEAbEGHm7LyaHlYdm9d7s9OBvWdGZ2xHJ4ADksHVCCYync9y0vBVMigmCs3vHR4KfN1-HrIsQM-QdbR-Pk-zrACmyAzc2wPcDMlZTIXljR9+0Q20r3oxjHknFiMigHDBD8PC4Q-C9iPXJc9y3CjdxAmiWkPBj8gcU8JLE4c-iUlS7wdQY6T0zClEGWhjB0dh4nINQNG0awbDSXlRDiCBWEydB2BBAASQRaBSTzLUYbRGEGPolDAPoziAA}{Open in Shinylive}
-    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8umS5ilfjoggxUYEMR+URMuDqOD8HF8vHG01idGaFi0MkidYmmTY-7NFKPAAKmSwmQAsgBhLVgOQ8h0ZS0iG2GhUhsNRmPijJx7M6PWwI0+s2iC1WlP2hNO31ouFuxge+he6sl9j+wNgdMRx65nV8pPW8ipnTB0PdsB53sOjTwVCjMi1nQt80Dit5jLLxf1xvN4t+z4dnIATR78YTq6HLKe2RPE77ObPdKgEAbEGHm7LyaHlYdm9d7s9OBvWdGZ2xHJ4ADksHVCCYync9y0vBVMigmCs3vHR4KfN1-HrIsQM-QdbR-Pk-zrACmyAzc2wPcDMlZTIXljR9+0Q20r3oxjHknFiMigHDBD8PC4Q-C9iPXJc9y3CjdxAmiWkPBj8gcU8JLE4c-iUlS7wdQY6T0zClEGWhjB0dh4nINQNG0awbDSXlRDiCBWEydB2BBAASQRaBSTzLUYbRGEGPolDAPoziAA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOz8gCEikrLK6v5qeiUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urptaF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NboPzUKD0IjMUgUjgNPE6Un0ODUdGPABq0W4okeiNxdPhoSOujhf0+3NpeNQHloFDWxGZwrADlyDmaACkAJLZMW8umS5ilfjoggxUYEMR+URMuDqOD8HF8vHG01idGaFi0MkidYmmTY-7NFKPAAKmSwmQAsgBhLVgOQ8h0ZS0iG2GhUhsNRmPijJx7M6PWwI0+s2iC1WlP2hNO31ouFuxge+he6sl9j+wNgdMRx65nV8pPW8ipnTB0PdsB53sOjTwVCjMi1nQt80Dit5jLLxf1xvN4t+z4dnIATR78YTq6HLKe2RPE77ObPdKgEAbEGHm7LyaHlYdm9d7s9OBvWdGZ2xHJ4ADksHVCCYync9y0vBVMigmCs3vHR4KfN1-HrIsQM-QdbR-Pk-zrACmyAzc2wPcDMlZTIXljR9+0Q20r3oxjHknFiMigHDBD8PC4Q-C9iPXJc9y3CjdxAmiWkPBj8gcU8JLE4c-iUlS7wdQY6T0zClEGWhjB0dh4nINQNG0awbDSXlRDiCBWEydB2BBAASQRaBSTzLUYbRGEGPolDAPoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
 }
