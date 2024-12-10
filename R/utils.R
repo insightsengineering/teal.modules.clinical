@@ -975,14 +975,19 @@ srv_decorate_teal_data <- function(id, data, decorators, expr, expr_is_reactive 
     decorated_output <- srv_transform_teal_data("inner", data = data, transformators = decorators)
 
     reactive({
-      # ensure original errors are displayed and `eval_code` is never executed with NULL
-      req(data(), decorated_output())
-      if (missing_expr) {
-        decorated_output()
-      } else if (expr_is_reactive) {
-        teal.code::eval_code(decorated_output(), expr())
+      data_out <- try(data(), silent = TRUE)
+      if (inherits(data_out, "qenv.error")) {
+        data()
       } else {
-        teal.code::eval_code(decorated_output(), expr)
+        # ensure original errors are displayed and `eval_code` is never executed with NULL
+        req(data(), decorated_output())
+        if (missing_expr) {
+          decorated_output()
+        } else if (expr_is_reactive) {
+          teal.code::eval_code(decorated_output(), expr())
+        } else {
+          teal.code::eval_code(decorated_output(), expr)
+        }
       }
     })
   })
