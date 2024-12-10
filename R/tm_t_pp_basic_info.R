@@ -31,25 +31,16 @@ template_basic_info <- function(dataname = "ANL",
 
         key <- col_labels(dataname, fill = TRUE)[rownames(values)]
 
-        table <-
+        result <-
           data.frame(var = rownames(values), key = key, value = values) %>%
           dplyr::select(var, key, value) %>%
           dplyr::rename(` ` = var, `  ` = key, `   ` = value)
 
-        table
-
-        table_listing <- rlistings::as_listing(
-          table,
+        table <- rlistings::as_listing(
+          result,
           default_formatting = list(all = fmt_config(align = "left"))
         )
-        main_title(table_listing) <- paste("Patient ID:", patient_id)
-
-        table_dt <- DT::datatable(
-          table,
-          options = list(
-            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
-          )
-        )
+        main_title(table) <- paste("Patient ID:", patient_id)
       }, env = list(
         dataname = as.name(dataname),
         vars = vars,
@@ -77,26 +68,7 @@ template_basic_info <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table_listing` (`listing_df` - output of `rlistings::as_listing`)
-#'   - Only used in reporter
-#' - `table_dt` (`datatable` - output of `DT::datatable`)
-#'   - Not used in reporter
-#'
-#' Decorators can be applied to all outputs or only to specific objects using a
-#' named list of `teal_transform_module` objects.
-#' The `"default"` name is reserved for decorators that are applied to all outputs.
-#' See code snippet below:
-#'
-#' ```
-#' tm_t_pp_basic_info(
-#'    ..., # arguments for module
-#'    decorators = list(
-#'      default = list(teal_transform_module(...)), # applied to all outputs
-#'      table_listing = list(teal_transform_module(...)), # applied only to `table_listing` output
-#'      table_dt = list(teal_transform_module(...)) # applied only to `table_dt` output
-#'    )
-#' )
-#' ```
+#' - `table` (`listing_df` - output of `rlistings::as_listing`)
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
@@ -149,7 +121,7 @@ tm_t_pp_basic_info <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, c("table_listing", "table_dt"))
+  assert_decorators(decorators, null.ok = TRUE, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -203,8 +175,7 @@ ui_t_basic_info <- function(id, ...) {
         data_extract_spec = ui_args$vars,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("d_listing"), decorators = select_decorators(ui_args$decorators, "table_listing")),
-      ui_decorate_teal_data(ns("d_dt"), decorators = select_decorators(ui_args$decorators, "table_dt"))
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table")),
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -307,26 +278,23 @@ srv_t_basic_info <- function(id,
         teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
-    decorated_listing_q <- srv_decorate_teal_data(
-      id = "d_listing",
-      data = all_q,
-      decorators = select_decorators(decorators, "table_listing")
-    )
-
     decorated_table_q <- srv_decorate_teal_data(
-      id = "d_dt",
-      data = decorated_listing_q,
-      decorators = select_decorators(decorators, "table_dt")
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table")
     )
 
     output$title <- renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    table_r <- reactive(decorated_table_q()[["table_dt"]])
+    table_r <- reactive(all_q()[["result"]])
 
     output$basic_info_table <- DT::renderDataTable(
-      expr = table_r()
+      expr = table_r(),
+      options = list(
+        lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
+      )
     )
 
     source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
@@ -346,7 +314,7 @@ srv_t_basic_info <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(decorated_table_q()[["table_listing"]])
+        card$append_table(decorated_table_q()[["table"]])
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
