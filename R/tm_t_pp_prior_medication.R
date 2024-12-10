@@ -26,7 +26,7 @@ template_prior_medication <- function(dataname = "ANL",
   table_list <- add_expr(
     list(),
     substitute(expr = {
-      table <-
+      result <-
         dataname %>%
         dplyr::filter(atirel %in% c("PRIOR", "PRIOR_CONCOMITANT")) %>%
         dplyr::select(cmindc, cmdecod, cmstdy) %>%
@@ -34,7 +34,13 @@ template_prior_medication <- function(dataname = "ANL",
         dplyr::distinct() %>%
         `colnames<-`(col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char, cmstdy_char)])
 
-      table
+      table <- result %>%
+        dplyr::mutate( # Exception for columns of type difftime that is not supported by as_listing
+          dplyr::across(
+            dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
+          )
+        ) %>%
+        rlistings::as_listing()
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
@@ -65,26 +71,7 @@ template_prior_medication <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table_listing` (`listing_df` - output of `rlistings::as_listing`)
-#'   - Only used in reporter
-#' - `table_dt` (`datatable` - output of `DT::datatable`)
-#'   - Not used in reporter
-#'
-#' Decorators can be applied to all outputs or only to specific objects using a
-#' named list of `teal_transform_module` objects.
-#' The `"default"` name is reserved for decorators that are applied to all outputs.
-#' See code snippet below:
-#'
-#' ```
-#' tm_t_pp_laboratory(
-#'    ..., # arguments for module
-#'    decorators = list(
-#'      default = list(teal_transform_module(...)), # applied to all outputs
-#'      table_listing = list(teal_transform_module(...)), # applied only to `table_listing` output
-#'      table_dt = list(teal_transform_module(...)) # applied only to `table_dt` output
-#'    )
-#' )
-#' ```
+#' - `table` (`listing_df` - output of `rlistings::as_listing`)
 #'
 #' For additional details and examples of decorators, refer to the vignette
 #' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
@@ -165,7 +152,7 @@ tm_t_pp_prior_medication <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, c("table_listing", "table_dt"))
+  assert_decorators(decorators, null.ok = TRUE, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -245,8 +232,7 @@ ui_t_prior_medication <- function(id, ...) {
         data_extract_spec = ui_args$cmstdy,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("d_listing"), decorators = select_decorators(ui_args$decorators, "table_listing")),
-      ui_decorate_teal_data(ns("d_dt"), decorators = select_decorators(ui_args$decorators, "table_dt"))
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table")),
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -364,53 +350,25 @@ srv_t_prior_medication <- function(id,
         teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
-    listing_q <- reactive(
-      within(all_q(), {
-        table_listing <- table %>%
-          dplyr::mutate( # Exception for columns of type difftime that is not supported by as_listing
-            dplyr::across(
-              dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
-            )
-          ) %>%
-          rlistings::as_listing()
-      })
-    )
-
-    dt_q <- reactive(
-      within(all_q(), {
-        table_dt <- DT::datatable(
-          table,
-          options = list(
-            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
-          )
-        )
-      })
-    )
-
     # Decoration of table output.
-    decorated_listing_q <- srv_decorate_teal_data(
-      id = "d_listing",
-      data = listing_q,
-      decorators = select_decorators(decorators, "table_listing")
-    )
-
-    # Decoration of table output.
-    decorated_dt_q <- srv_decorate_teal_data(
-      id = "d_dt",
-      data = dt_q,
-      decorators = select_decorators(decorators, "table_dt")
-    )
-
-    decorated_table_q <- reactive(
-      c(decorated_listing_q(), decorated_dt_q())
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
     )
 
     # Outputs to render.
     table_r <- reactive({
       q <- decorated_table_q()
       list(
-        html = q[["table_dt"]],
-        listing = q[["table_listing"]]
+        html = DT::datatable(
+          q[["result"]],
+          options = list(
+            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
+          )
+        ),
+        listing = q[["table"]]
       )
     })
 
