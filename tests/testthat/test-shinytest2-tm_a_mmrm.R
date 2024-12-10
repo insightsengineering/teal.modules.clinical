@@ -62,6 +62,7 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   )
   if (fit_model) {
     app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$wait_for_idle()
   }
   app_driver
 }
