@@ -185,11 +185,10 @@ template_g_ci <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams template_g_ci
 #' @param color (`data_extract_spec`)\cr the group variable used to determine the plot colors, shapes, and line types.
-#' @param decorators `r roxygen_decorators_param("tm_g_ci")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_g_ci`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)

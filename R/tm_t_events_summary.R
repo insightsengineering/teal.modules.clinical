@@ -522,10 +522,7 @@ template_events_summary <- function(anl_name,
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @param decorators `r roxygen_decorators_param("tm_t_events_summary")`
-#'
-#'
-#' @section Decorating `tm_t_events_summary`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` as created from `rtables::build_table`)

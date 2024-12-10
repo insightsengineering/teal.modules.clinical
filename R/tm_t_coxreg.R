@@ -336,7 +336,6 @@ template_coxreg_m <- function(dataname,
 #' @inheritParams template_coxreg_m
 #' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used instead of the
 #'   multi-variable model.
-#' @param decorators `r roxygen_decorators_param("tm_t_coxreg")`
 #'
 #' @details
 #' The Cox Proportional Hazards (PH) model is the most commonly used method to
@@ -361,7 +360,7 @@ template_coxreg_m <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_t_coxreg`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` as created from `rtables::build_table`)
@@ -1102,7 +1101,8 @@ srv_t_coxreg <- function(id,
 
     # Outputs to render.
     table_r <- reactive({
-      decorated_table_q()[["table"]]})
+      decorated_table_q()[["table"]]
+    })
 
     teal.widgets::table_with_settings_srv(
       id = "table",

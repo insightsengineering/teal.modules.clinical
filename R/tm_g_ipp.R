@@ -176,11 +176,10 @@ template_g_ipp <- function(dataname = "ANL",
 #' @inheritParams template_g_ipp
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as arm variable.
-#' @param decorators `r roxygen_decorators_param("tm_g_ipp")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_g_ipp`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)
