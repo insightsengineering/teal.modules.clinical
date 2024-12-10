@@ -42,3 +42,22 @@ jobs:
     with:
       default-landing-page: latest-tag
       additional-unit-test-report-directories: unit-test-report-non-cran
+      deps-installation-method: setup-r-dependencies
+      lookup-refs: |
+        insightsengineering/teal
+        insightsengineering/teal.transform
+        insightsengineering/tern
+        insightsengineering/rlistings
+        insightsengineering/formatters
+        insightsengineering/rtables
+        insightsengineering/rtables.officer
+        insightsengineering/teal.code
+        insightsengineering/teal.data
+        insightsengineering/teal.logger
+        insightsengineering/teal.reporter
+        insightsengineering/teal.widgets
+        insightsengineering/teal.slice
+        insightsengineering/tern.gee
+        insightsengineering/tern.mmrm
+        insightsengineering/nestcolor
+        insightsengineering/roxy.shinylive
