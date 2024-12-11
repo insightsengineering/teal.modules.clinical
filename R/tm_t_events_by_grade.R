@@ -1208,12 +1208,7 @@ srv_t_events_by_grade <- function(id,
 
 
     table_renamed_q <- reactive({
-      if (length(table_q()[["pruned_and_sorted_result"]])) {
-        out <- within(table_q(), {table <- pruned_and_sorted_result})
-      } else {
-        out <- within(table_q(), {table <- pruned_result})
-      }
-      out
+      within(table_q(), {table <- pruned_and_sorted_result})
     })
 
     decorated_table_q <- srv_decorate_teal_data(
