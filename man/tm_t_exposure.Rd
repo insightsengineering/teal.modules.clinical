@@ -28,7 +28,8 @@ tm_t_exposure(
   na_level = default_na_str(),
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  decorators = NULL
 )
 }
 \arguments{
@@ -91,6 +92,8 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{decorators}{\verb{r roxygen_decorators_param("tm_t_exposure")}}
 }
 \value{
 a \code{teal_module} object.
@@ -98,6 +101,18 @@ a \code{teal_module} object.
 \description{
 The module produces an exposure table for risk management plan.
 }
+\section{Decorating \code{tm_t_exposure}}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} as created from \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(dplyr)
 
