@@ -1467,62 +1467,63 @@ srv_mmrm <- function(id,
       teal.code::eval_code(qenv, as.expression(mmrm_plot_expr))
     })
 
-    decorated_lsmeans_table_q <- srv_decorate_teal_data(
-      id = "d_lsmeans_table",
-      data = table_q,
-      decorators = select_decorators(decorators, "lsmeans_table"),
-      expr = lsmeans_table
+    decorated_tables_q <- lapply(
+      rlang::set_names(
+        c("lsmeans_table", "diagnostic_table", "fixed_effects_table", "covariance_table")
+      ),
+      function(output_function) {
+        srv_decorate_teal_data(
+          id = sprintf("d_%s", output_function),
+          data = table_q,
+          decorators = select_decorators(decorators, output_function),
+          expr = reactive(bquote(.(as.name(output_function)))),
+          expr_is_reactive = TRUE
+        )
+      }
     )
 
-    decorated_diagnostic_table_q <- srv_decorate_teal_data(
-      id = "d_diagnostic_table",
-      data = table_q,
-      decorators = select_decorators(decorators, "diagnostic_table"),
-      expr = diagnostic_table
+    decorated_objs_q <- c(
+      decorated_tables_q,
+      lapply(
+        rlang::set_names(c("lsmeans_plot", "diagnostic_plot")),
+        function(output_function) {
+          srv_decorate_teal_data(
+            id = sprintf("d_%s", output_function),
+            data = plot_q,
+            decorators = select_decorators(decorators, output_function),
+            expr = reactive(bquote(.(as.name(output_function)))),
+            expr_is_reactive = TRUE
+          )
+        }
+      )
     )
 
-    decorated_fixed_effects_table_q <- srv_decorate_teal_data(
-      id = "d_fixed_effects_table",
-      data = table_q,
-      decorators = select_decorators(decorators, "fixed_effects_table"),
-      expr = fixed_effects_table
-    )
-
-    decorated_covariance_table_q <- srv_decorate_teal_data(
-      id = "d_covariance_table",
-      data = table_q,
-      decorators = select_decorators(decorators, "covariance_table"),
-      expr = covariance_table
-    )
-
-    table_r <- reactive({
+    obj_ix_r <- reactive({
       switch(input$output_function,
-        t_mmrm_lsmeans = decorated_lsmeans_table_q()[["lsmeans_table"]],
-        t_mmrm_diagnostic = decorated_diagnostic_table_q()[["diagnostic_table"]],
-        t_mmrm_fixed = decorated_fixed_effects_table_q()[["fixed_effects_table"]],
-        t_mmrm_cov = decorated_covariance_table_q()[["covariance_table"]]
+        t_mmrm_lsmeans = "lsmeans_table",
+        t_mmrm_diagnostic = "diagnostic_table",
+        t_mmrm_fixed = "fixed_effects_table",
+        t_mmrm_cov = "covariance_table",
+        g_mmrm_lsmeans = "lsmeans_plot",
+        g_mmrm_diagnostic = "diagnostic_plot"
       )
     })
 
-    decorated_lsmeans_plot_q <- srv_decorate_teal_data(
-      id = "d_lsmeans_plot",
-      data = plot_q,
-      decorators = select_decorators(decorators, "lsmeans_plot"),
-      expr = lsmeans_plot
-    )
-
-    decorated_diagnostic_plot_q <- srv_decorate_teal_data(
-      id = "d_diagnostic_plot",
-      data = plot_q,
-      decorators = select_decorators(decorators, "diagnostic_plot"),
-      expr = diagnostic_plot
-    )
-
     plot_r <- reactive({
-      switch(input$output_function,
-        g_mmrm_lsmeans = decorated_lsmeans_plot_q()[["lsmeans_plot"]],
-        g_mmrm_diagnostic = decorated_diagnostic_plot_q()[["diagnostic_plot"]]
-      )
+      if (is.null(table_q())) {
+        NULL
+      } else {
+        decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
+      }
+    })
+
+    table_r <- reactive({
+      if (is.null(table_q())) {
+        NULL
+      } else {
+        print(state_has_changed())
+        decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
+      }
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
@@ -1539,19 +1540,10 @@ srv_mmrm <- function(id,
       show_hide_signal = reactive(!show_plot_rv())
     )
 
-    source_code_r <- reactive({
-      q <- switch(input$output_function,
-        t_mmrm_lsmeans = decorated_lsmeans_table_q(),
-        t_mmrm_diagnostic = decorated_diagnostic_table_q(),
-        t_mmrm_fixed = decorated_fixed_effects_table_q(),
-        t_mmrm_cov = decorated_covariance_table_q(),
-        g_mmrm_lsmeans = decorated_lsmeans_plot_q(),
-        g_mmrm_diagnostic = decorated_diagnostic_plot_q()
-      )
-      teal.code::get_code(req(q))
-    })
-
     # Show R code once button is pressed.
+    source_code_r <- reactive(
+      teal.code::get_code(req(decorated_objs_q[[obj_ix_r()]]()))
+    )
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,
