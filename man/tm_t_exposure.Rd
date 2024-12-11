@@ -93,7 +93,14 @@ with settings for the module table. The argument is merged with option \code{tea
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
 
-\item{decorators}{\verb{r roxygen_decorators_param("tm_t_exposure")}}
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+" (\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module} or" \code{NULL}) optional,
+if not \code{NULL}, decorator for tables or plots included in the module.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -101,7 +108,7 @@ a \code{teal_module} object.
 \description{
 The module produces an exposure table for risk management plan.
 }
-\section{Decorating \code{tm_t_exposure}}{
+\section{Decorating Modules}{
 
 
 This module generates the following objects, which can be modified in place using decorators:
