@@ -273,7 +273,6 @@ template_mmrm_tables <- function(parentname,
             df = df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
             alt_counts_df = parentname
           )
-          lsmeans_table
         },
         env = list(
           parentname = as.name(parentname),
@@ -284,9 +283,8 @@ template_mmrm_tables <- function(parentname,
     t_mmrm_cov = {
       y$cov_matrix <- substitute(
         expr = {
-          cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
-          subtitles(cov_matrix) <- st
-          cov_matrix
+          covariance_table <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
+          subtitles(covariance_table) <- st
         },
         env = list(
           fit_mmrm = as.name(fit_name),
@@ -297,9 +295,8 @@ template_mmrm_tables <- function(parentname,
     t_mmrm_fixed = {
       y$fixed_effects <- substitute(
         expr = {
-          fixed_effects <- tern.mmrm::as.rtable(fit_mmrm, type = "fixed")
-          subtitles(fixed_effects) <- st
-          fixed_effects
+          fixed_effects_table <- tern.mmrm::as.rtable(fit_mmrm, type = "fixed")
+          subtitles(fixed_effects_table) <- st
         },
         env = list(
           fit_mmrm = as.name(fit_name),
@@ -312,7 +309,6 @@ template_mmrm_tables <- function(parentname,
         expr = {
           diagnostic_table <- tern.mmrm::as.rtable(fit_mmrm, type = "diagnostic")
           subtitles(diagnostic_table) <- st
-          diagnostic_table
         },
         env = list(
           fit_mmrm = as.name(fit_name),
@@ -462,6 +458,35 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `lsmeans_plot` (`ggplot2`)
+#' - `diagnostic_plot` (`TableTree`- output from `rtables::build_table`)
+#' - `lsmeans_table` (`TableTree`- output from `rtables::build_table`)
+#' - `covariance_table` (`TableTree`- output from `rtables::build_table`)
+#' - `fixed_effects_table` (`TableTree`- output from `rtables::build_table`)
+#' - `diagnostic_table` (`TableTree`- output from `rtables::build_table`)
+#'
+#' Decorators can be applied to all outputs or only to specific objects using a
+#' named list of `teal_transform_module` objects.
+#' The `"default"` name is reserved for decorators that are applied to all outputs.
+#' See code snippet below:
+#'
+#' ```
+#' tm_a_mrmm(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      default = list(teal_transform_module(...)), # applied to all outputs
+#'      lsmeans_plot = list(teal_transform_module(...)) # applied only to `lsmeans_plot` output
+#'      diagnostic_plot = list(teal_transform_module(...)) # applied only to `diagnostic_plot` output
+#'      lsmeans_table = list(teal_transform_module(...)) # applied only to `lsmeans_table` output
+#'      covariance_table = list(teal_transform_module(...)) # applied only to `covariance_table` output
+#'      fixed_effects_table = list(teal_transform_module(...)) # applied only to `fixed_effects_table` output
+#'      diagnostic_table = list(teal_transform_module(...)) # applied only to `diagnostic_table` output
+#'    )
+#' )
+#' ```
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -543,7 +568,8 @@ tm_a_mmrm <- function(label,
                       pre_output = NULL,
                       post_output = NULL,
                       basic_table_args = teal.widgets::basic_table_args(),
-                      ggplot2_args = teal.widgets::ggplot2_args()) {
+                      ggplot2_args = teal.widgets::ggplot2_args(),
+                      decorators = NULL) {
   message("Initializing tm_a_mmrm")
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
@@ -571,6 +597,20 @@ tm_a_mmrm <- function(label,
   plot_choices <- c("lsmeans", "diagnostic")
   checkmate::assert_list(ggplot2_args, types = "ggplot2_args")
   checkmate::assert_subset(names(ggplot2_args), c("default", plot_choices))
+
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(
+    decorators,
+    c(
+      "lsmeans_table",
+      "lsmeans_plot",
+      "covariance_table",
+      "fixed_effects_table",
+      "diagnostic_table",
+      "diagnostic_plot"
+    ),
+    null.ok = TRUE
+  )
 
   args <- as.list(environment())
 
@@ -600,7 +640,8 @@ tm_a_mmrm <- function(label,
         plot_height = plot_height,
         plot_width = plot_width,
         basic_table_args = basic_table_args,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -754,6 +795,32 @@ ui_mmrm <- function(id, ...) {
           ),
           selected = "t_mmrm_lsmeans"
         ),
+        # Decorators ---
+        conditionalPanel(
+          condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_lsmeans"),
+          ui_decorate_teal_data(ns("d_lsmeans_table"), select_decorators(a$decorators, "lsmeans_table"))
+        ),
+        conditionalPanel(
+          condition = sprintf("input['%s'] == '%s'", ns("output_function"), "g_mmrm_lsmeans"),
+          ui_decorate_teal_data(ns("d_lsmeans_plot"), select_decorators(a$decorators, "lsmeans_plot"))
+        ),
+        conditionalPanel(
+          condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_cov"),
+          ui_decorate_teal_data(ns("d_covariance_table"), select_decorators(a$decorators, "covariance_table"))
+        ),
+        conditionalPanel(
+          condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_fixed"),
+          ui_decorate_teal_data(ns("d_fixed_effects_table"), select_decorators(a$decorators, "fixed_effects_table"))
+        ),
+        conditionalPanel(
+          condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_diagnostic"),
+          ui_decorate_teal_data(ns("d_diagnostic_table"), select_decorators(a$decorators, "diagnostic_table"))
+        ),
+        conditionalPanel(
+          condition = sprintf("input['%s'] == '%s'", ns("output_function"), "g_mmrm_diagnostic"),
+          ui_decorate_teal_data(ns("d_diagnostic_plot"), select_decorators(a$decorators, "diagnostic_plot"))
+        ),
+        # End of Decorators ---
         conditionalPanel(
           condition = paste0(
             "input['", ns("output_function"), "'] == 't_mmrm_lsmeans'", " || ",
@@ -843,7 +910,8 @@ srv_mmrm <- function(id,
                      plot_height,
                      plot_width,
                      basic_table_args,
-                     ggplot2_args) {
+                     ggplot2_args,
+                     decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -1399,29 +1467,61 @@ srv_mmrm <- function(id,
       teal.code::eval_code(qenv, as.expression(mmrm_plot_expr))
     })
 
-    all_q <- reactive({
-      if (!is.null(plot_q()) && !is.null(table_q())) {
-        c(plot_q(), table_q())
-      } else if (!is.null(plot_q())) {
-        plot_q()
-      } else {
-        table_q()
-      }
-    })
+    decorated_lsmeans_table_q <- srv_decorate_teal_data(
+      id = "d_lsmeans_table",
+      data = table_q,
+      decorators = select_decorators(decorators, "lsmeans_table"),
+      expr = lsmeans_table
+    )
+
+    decorated_diagnostic_table_q <- srv_decorate_teal_data(
+      id = "d_diagnostic_table",
+      data = table_q,
+      decorators = select_decorators(decorators, "diagnostic_table"),
+      expr = diagnostic_table
+    )
+
+    decorated_fixed_effects_table_q <- srv_decorate_teal_data(
+      id = "d_fixed_effects_table",
+      data = table_q,
+      decorators = select_decorators(decorators, "fixed_effects_table"),
+      expr = fixed_effects_table
+    )
+
+    decorated_covariance_table_q <- srv_decorate_teal_data(
+      id = "d_covariance_table",
+      data = table_q,
+      decorators = select_decorators(decorators, "covariance_table"),
+      expr = covariance_table
+    )
 
     table_r <- reactive({
       switch(input$output_function,
-        t_mmrm_lsmeans = table_q()[["lsmeans_table"]],
-        t_mmrm_diagnostic = table_q()[["diagnostic_table"]],
-        t_mmrm_fixed = table_q()[["fixed_effects"]],
-        t_mmrm_cov = table_q()[["cov_matrix"]]
+        t_mmrm_lsmeans = decorated_lsmeans_table_q()[["lsmeans_table"]],
+        t_mmrm_diagnostic = decorated_diagnostic_table_q()[["diagnostic_table"]],
+        t_mmrm_fixed = decorated_fixed_effects_table_q()[["fixed_effects_table"]],
+        t_mmrm_cov = decorated_covariance_table_q()[["covariance_table"]]
       )
     })
 
+    decorated_lsmeans_plot_q <- srv_decorate_teal_data(
+      id = "d_lsmeans_plot",
+      data = plot_q,
+      decorators = select_decorators(decorators, "lsmeans_plot"),
+      expr = lsmeans_plot
+    )
+
+    decorated_diagnostic_plot_q <- srv_decorate_teal_data(
+      id = "d_diagnostic_plot",
+      data = plot_q,
+      decorators = select_decorators(decorators, "diagnostic_plot"),
+      expr = diagnostic_plot
+    )
+
     plot_r <- reactive({
       switch(input$output_function,
-        g_mmrm_lsmeans = plot_q()[["lsmeans_plot"]],
-        g_mmrm_diagnostic = plot_q()[["diagnostic_plot"]]
+        g_mmrm_lsmeans = decorated_lsmeans_plot_q()[["lsmeans_plot"]],
+        g_mmrm_diagnostic = decorated_diagnostic_plot_q()[["diagnostic_plot"]]
       )
     })
 
@@ -1439,10 +1539,22 @@ srv_mmrm <- function(id,
       show_hide_signal = reactive(!show_plot_rv())
     )
 
+    source_code_r <- reactive({
+      q <- switch(input$output_function,
+        t_mmrm_lsmeans = decorated_lsmeans_table_q(),
+        t_mmrm_diagnostic = decorated_diagnostic_table_q(),
+        t_mmrm_fixed = decorated_fixed_effects_table_q(),
+        t_mmrm_cov = decorated_covariance_table_q(),
+        g_mmrm_lsmeans = decorated_lsmeans_plot_q(),
+        g_mmrm_diagnostic = decorated_diagnostic_plot_q()
+      )
+      teal.code::get_code(req(q))
+    })
+
     # Show R code once button is pressed.
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       disabled = disable_r_code,
       title = "R Code for the Current MMRM Analysis"
     )
@@ -1472,7 +1584,7 @@ srv_mmrm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r)
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
