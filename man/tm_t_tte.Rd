@@ -75,7 +75,7 @@ for time points that can be used in \code{\link[tern:survival_timepoint]{tern::s
 \item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and pre-selected option for the time unit variable.}
 
-\item{event_desc_var}{(\code{character} or \code{\link[=data_extract_spec]{data_extract_spec()}})\cr variable name with the event description
+\item{event_desc_var}{(\code{character} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable name with the event description
 information, optional.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
@@ -108,7 +108,7 @@ template for \code{TTET01} available \href{https://insightsengineering.github.io
 }
 \details{
 \itemize{
-\item The core functionality of this module is based on \code{\link[=coxph_pairwise]{coxph_pairwise()}}, \code{\link[=surv_timepoint]{surv_timepoint()}}, and \code{\link[=surv_time]{surv_time()}} from
+\item The core functionality of this module is based on \code{\link[tern:survival_coxph_pairwise]{tern::coxph_pairwise()}}, \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}, and \code{\link[tern:survival_time]{tern::surv_time()}} from
 the \code{tern} package.
 \item The arm and stratification variables are taken from the \code{parentname} data.
 \item The following variables are used in the module:
