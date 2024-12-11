@@ -777,11 +777,10 @@ template_events_col_by_grade <- function(dataname,
 #' @inheritParams template_events_col_by_grade
 #' @param col_by_grade (`logical`)\cr whether to display the grading groups in nested columns.
 #' @param grading_groups (`list`)\cr named list of grading groups used when `col_by_grade = TRUE`.
-#' @param decorators `r roxygen_decorators_param("tm_t_events_by_grade")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_t_events_by_grade`:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` as created from `rtables::build_table`)
