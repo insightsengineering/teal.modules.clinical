@@ -288,7 +288,7 @@ srv_t_basic_info <- function(id,
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    table_r <- reactive(all_q()[["result"]])
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     output$basic_info_table <- DT::renderDataTable(
       expr = table_r(),
