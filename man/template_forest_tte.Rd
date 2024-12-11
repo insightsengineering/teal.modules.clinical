@@ -61,7 +61,7 @@ are required.
 }}
 
 \item{riskdiff}{(\code{list})\cr if a risk (proportion) difference column should be added, a list of settings to apply
-within the column. See \code{\link[=control_riskdiff]{control_riskdiff()}} for details. If \code{NULL}, no risk difference column will be added.}
+within the column. See \code{\link[tern:control_riskdiff]{tern::control_riskdiff()}} for details. If \code{NULL}, no risk difference column will be added.}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 

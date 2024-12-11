@@ -45,7 +45,7 @@ to specify the value of the covariate at which the effect should be estimated.}
 
 \item{combine_comp_arms}{(\code{logical})\cr triggers the combination of comparison arms.}
 
-\item{control}{(\code{list})\cr list of settings for the analysis (see \code{\link[=control_coxreg]{control_coxreg()}}).}
+\item{control}{(\code{list})\cr list of settings for the analysis (see \code{\link[tern:control_coxreg]{tern::control_coxreg()}}).}
 
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a

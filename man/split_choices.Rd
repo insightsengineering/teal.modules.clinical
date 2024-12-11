@@ -12,7 +12,7 @@ split_choices(x)
 object with interaction terms}
 }
 \value{
-a \code{\link[=choices_selected]{choices_selected()}} object.
+a \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} object.
 }
 \description{
 Split \code{choices_selected} objects with interactions into

@@ -434,7 +434,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #'
 #' @note uses the regex `\\*|:` to perform the split.
 #'
-#' @return  a [choices_selected()] object.
+#' @return  a [teal.transform::choices_selected()] object.
 #'
 #' @examples
 #' split_choices(choices_selected(choices = c("x:y", "a*b"), selected = all_choices()))
