@@ -385,12 +385,12 @@ template_tte <- function(dataname = "ANL",
 #'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
-#' @param event_desc_var (`character` or [teal.transform::data_extract_spec()])\cr variable name with the event description
-#'   information, optional.
+#' @param event_desc_var (`character` or [teal.transform::data_extract_spec()])\cr variable name with the
+#'   event description information, optional.
 #'
 #' @details
-#' * The core functionality of this module is based on [tern::coxph_pairwise()], [tern::surv_timepoint()], and [tern::surv_time()] from
-#' the `tern` package.
+#' * The core functionality of this module is based on [tern::coxph_pairwise()], [tern::surv_timepoint()],
+#'   and [tern::surv_time()] from the `tern` package.
 #' * The arm and stratification variables are taken from the `parentname` data.
 #' * The following variables are used in the module:
 #'
