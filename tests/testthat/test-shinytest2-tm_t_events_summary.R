@@ -11,7 +11,7 @@ app_driver_tm_t_events_summary <- function() {
       )
     ADAE <- teal.data::rADAE
 
-    add_event_flags <- function(dat) {
+    .add_event_flags <- function(dat) {
       dat <- dat %>%
         dplyr::mutate(
           TMPFL_SER = AESER == "Y",
@@ -33,15 +33,12 @@ app_driver_tm_t_events_summary <- function() {
       dat
     }
 
-    ADAE <- ADAE %>% add_event_flags()
+    ADAE <- ADAE %>% .add_event_flags()
 
-    ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
-    aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
+    .ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
+    .aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
   })
-
-  datanames <- c("ADSL", "ADAE")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,
@@ -54,14 +51,14 @@ app_driver_tm_t_events_summary <- function() {
         selected = "ARM"
       ),
       flag_var_anl = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices("ADAE", data[["ae_anl_vars"]]),
-        selected = data[["ae_anl_vars"]][1],
+        choices = teal.transform::variable_choices("ADAE", data[[".ae_anl_vars"]]),
+        selected = data[[".ae_anl_vars"]][1],
         keep_order = TRUE,
         fixed = FALSE
       ),
       flag_var_aesi = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices("ADAE", data[["aesi_vars"]]),
-        selected = data[["aesi_vars"]][1],
+        choices = teal.transform::variable_choices("ADAE", data[[".aesi_vars"]]),
+        selected = data[[".aesi_vars"]][1],
         keep_order = TRUE,
         fixed = FALSE
       ),

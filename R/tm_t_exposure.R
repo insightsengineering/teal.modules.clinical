@@ -227,6 +227,11 @@ template_exposure <- function(parentname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
 #'
@@ -236,7 +241,7 @@ template_exposure <- function(parentname,
 #'   ADEX <- tmc_ex_adex
 #'
 #'   set.seed(1, kind = "Mersenne-Twister")
-#'   labels <- col_labels(ADEX, fill = FALSE)
+#'   .labels <- col_labels(ADEX, fill = FALSE)
 #'   ADEX <- ADEX %>%
 #'     distinct(USUBJID, .keep_all = TRUE) %>%
 #'     mutate(
@@ -246,12 +251,9 @@ template_exposure <- function(parentname,
 #'       AVALU = "Days"
 #'     ) %>%
 #'     bind_rows(ADEX)
-#'   col_labels(ADEX) <- labels
+#'   col_labels(ADEX) <- .labels
 #' })
-#'
-#' datanames <- c("ADSL", "ADEX")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,
@@ -626,7 +628,7 @@ srv_t_exposure <- function(id,
         avalu_var = input_avalu_var,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

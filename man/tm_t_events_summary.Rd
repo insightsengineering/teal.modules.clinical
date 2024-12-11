@@ -126,7 +126,7 @@ data <- within(data, {
     )
   ADAE <- tmc_ex_adae
 
-  add_event_flags <- function(dat) {
+  .add_event_flags <- function(dat) {
     dat <- dat \%>\%
       mutate(
         TMPFL_SER = AESER == "Y",
@@ -149,15 +149,12 @@ data <- within(data, {
   }
 
   #' Generating user-defined event flags.
-  ADAE <- ADAE \%>\% add_event_flags()
+  ADAE <- ADAE \%>\% .add_event_flags()
 
-  ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
-  aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
+  .ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
+  .aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
 })
-
-datanames <- c("ADSL", "ADAE")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
+join_keys(data) <- default_cdisc_join_keys[names(data)]
 
 app <- init(
   data = data,
@@ -170,14 +167,14 @@ app <- init(
         selected = "ARM"
       ),
       flag_var_anl = choices_selected(
-        choices = variable_choices("ADAE", data[["ae_anl_vars"]]),
-        selected = data[["ae_anl_vars"]][1],
+        choices = variable_choices("ADAE", data[[".ae_anl_vars"]]),
+        selected = data[[".ae_anl_vars"]][1],
         keep_order = TRUE,
         fixed = FALSE
       ),
       flag_var_aesi = choices_selected(
-        choices = variable_choices("ADAE", data[["aesi_vars"]]),
-        selected = data[["aesi_vars"]][1],
+        choices = variable_choices("ADAE", data[[".aesi_vars"]]),
+        selected = data[[".aesi_vars"]][1],
         keep_order = TRUE,
         fixed = FALSE
       ),
@@ -194,3 +191,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otQ6AKQAfD3FJTowgqHk7EPDOuW2ABIAYrUAvDqyonBRKRkUkxDT0wCEtOLQ7LNzszYAfjoKYACa97hTB-bOOrf33-sHNv09VLpDJRahQehwaiTMCVQT0ABWcHUMzgIQyOgWYIA5vcAtM8WVyqUnHUGk1Wu1gnBXL8MB1+M1tGQosZsaI6qZzBorLEbEVfiVYnUhQDXiVRuM4HsDsNbABZAAKSyilScWB0q2JqvVy1W9yeeDFssVyqwThWZTV5o1esezyNJXlSuqUQA4lgAKway22ADyAA13Ta7mAPfaBW9FSq5QBFAAMAEZvcdTlB2JVY4mAHKlOVyF4R6ZO6PxgBMyZOGDOGbLObzBZljqjAGF40nVimq2nW9ncwT8a9iNRBDAIKDwZD2ck6KJSNLI86VWrvfdKqpLIJ2cTwzKnabrbasJCQnB+Jadwvle6vbbXcx+LovdvDYW7FGa4nvVAxLRxxCobEwDAKumYJnW9wALoQQUgHATCoGVM2kEQfmRrFh+5arN+oi-mC-7Qg8GAAJzEaRREAPQAFpkWRlqVAAkriDYLlEPbtjo2G4ROAEhEB9xseBYBQf2OgiUOf6TrkIRyMA0DwKI7BDiOY54ZOcgQXUUDiAQGQsFA6iqIpRDDqOEnUKIImxEMAC+NIlAAxAA5DoroUKoITZFiOibqoBgPsY2SnjocBMqQJhshgQwVMSdTRSSAI6HS-AMiFFCkCybLxIEtLfu0EDRJoLBTkYcliOwcUybOLCkKIADqwLsKVCkVQU9x7i6uIQUMdI-lEhWMMVOhNeVRJOJVoSMDV9WZI1sBlS1IbFp1SjWQE8JENkUQANZwKwCl5DYyT+VAwjpQQ-AnE062bTte2yXN+2JOpNJoKgdTZOk855N6eTMXwQgiOyqz-cIZWvA0UTpalZCiFEogjjAnjztMqndLapT8NoA26E4oXsrCMCI2wF7THkpUrmAcUk8MLAwH1LDejpG0EGIcOQki5D8MjBxMzIYjev1tDgiIUS8yzCn3BUNTPGs0KlFgcoy5LCvNuUuKoa+JQbCIBlnujCs-DKGsyqyUBYvTjB5WjawZMzrPaxzp7c9MYv86sgvC5srsS5To0y3kfFgD1VsW6IyHG42Du6z9iSB8HUD5aHyHAAm0EOjoO1wKgUREIwD6MN67xOMxJu0C0QWrAspTVKqRoR9Mpvm-17Q-oztt87DUec87wzewLLBC-QIve3Lft4DoAdwT1OFJ0JKElwcXcVxPsdT5xs9QSnaeaxncBZzneeqIXjjF+nAXl3rGLV7Xr71zTyWQ0QoTW0XrwEgEAS0MYOjsNk5BqBobQ1g+RDFEFkCArBSjoHYK9AAJIIWgBQ4EbEYFjAItkIBgGshBIAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otQ6AKQAfD3FJTowgqHk7EPDOuW2ABIAYrUAvDqyonBRKRkUkxDT0wCEtOLQ7LNzszYAfjoKYACa97hTB-bOOrf33-sHNv09VLpDJRahQehwaiTMCVQT0ABWcHUMzgIQyOgWYIA5vcAtM8WVyqUnHUGk1Wu1gnBXL8MB1+M1tGQosZsaI6qZzBorLEbEVfiVYnUhQDXiVRuM4HsDsNbABZAAKSyilScWB0q2JqvVy1W9yeeDFssVyqwThWZTV5o1esezyNJXlSuqUQA4lgAKway22ADyAA13Ta7mAPfaBW9FSq5QBFAAMAEZvcdTlB2JVY4mAHKlOVyF4R6ZO6PxgBMyZOGDOGbLObzBZljqjAGF40nVimq2nW9ncwT8a9iNRBDAIKDwZD2ck6KJSNLI86VWrvfdKqpLIJ2cTwzKnabrbasJCQnB+Jadwvle6vbbXcx+LovdvDYW7FGa4nvVAxLRxxCobEwDAKumYJnW9wALoQQUgHATCoGVM2kEQfmRrFh+5arN+oi-mC-7Qg8GAAJzEaRREAPQAFpkWRlqVAAkriDYLlEPbtjo2G4ROAEhEB9xseBYBQf2OgiUOf6TrkIRyMA0DwKI7BDiOY54ZOcgQXUUDiAQGQsFA6iqIpRDDqOEnUKIImxEMAC+NIlAAxAA5DoroUKoITZFiOibqoBgPsY2SnjocBMqQJhshgQwVMSdTRSSAI6HS-AMiFFCkCybLxIEtLfu0EDRJoLBTkYcliOwcUybOLCkKIADqwLsKVCkVQU9x7i6uIQUMdI-lEhWMMVOhNeVRJOJVoSMDV9WZI1sBlS1IbFp1SjWQE8JENkUQANZwKwCl5DYyT+VAwjpQQ-AnE062bTte2yXN+2JOpNJoKgdTZOk855N6eTMXwQgiOyqz-cIZWvA0UTpalZCiFEogjjAnjztMqndLapT8NoA26E4oXsrCMCI2wF7THkpUrmAcUk8MLAwH1LDejpG0EGIcOQki5D8MjBxMzIYjev1tDgiIUS8yzCn3BUNTPGs0KlFgcoy5LCvNuUuKoa+JQbCIBlnujCs-DKGsyqyUBYvTjB5WjawZMzrPaxzp7c9MYv86sgvC5srsS5To0y3kfFgD1VsW6IyHG42Du6z9iSB8HUD5aHyHAAm0EOjoO1wKgUREIwD6MN67xOMxJu0C0QWrAspTVKqRoR9Mpvm-17Q-oztt87DUec87wzewLLBC-QIve3Lft4DoAdwT1OFJ0JKElwcXcVxPsdT5xs9QSnaeaxncBZzneeqIXjjF+nAXl3rGLV7Xr71zTyWQ0QoTW0XrwEgEAS0MYOjsNk5BqBobQ1g+RDFEFkCArBSjoHYK9AAJIIWgBQ4EbEYFjAItkIBgGshBIAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

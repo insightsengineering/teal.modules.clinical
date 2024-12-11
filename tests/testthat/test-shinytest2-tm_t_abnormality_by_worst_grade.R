@@ -1,16 +1,12 @@
-app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_length
-  data <- teal.data::teal_data() %>%
-    within({
-      library(dplyr)
+app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_length.
+  data <- within(teal.data::teal_data(), {
+    library(dplyr)
 
-      ADSL <- teal.data::rADSL
-      ADLB <- teal.data::rADLB %>%
-        filter(!AVISIT %in% c("SCREENING", "BASELINE"))
-    })
-
-  datanames <- c("ADSL", "ADLB")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+    ADSL <- teal.data::rADSL
+    ADLB <- teal.data::rADLB %>%
+      filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+  })
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

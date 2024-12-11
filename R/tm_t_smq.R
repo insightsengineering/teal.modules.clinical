@@ -316,30 +316,32 @@ template_smq <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
 #'   ADAE <- tmc_ex_adae
 #'
-#'   names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
-#'   names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
+#'   .names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
+#'   .names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
 #'
-#'   cs_baskets <- choices_selected(
-#'     choices = variable_choices(ADAE, subset = names_baskets),
-#'     selected = names_baskets
+#'   .cs_baskets <- choices_selected(
+#'     choices = variable_choices(ADAE, subset = .names_baskets),
+#'     selected = .names_baskets
 #'   )
 #'
-#'   cs_scopes <- choices_selected(
-#'     choices = variable_choices(ADAE, subset = names_scopes),
-#'     selected = names_scopes,
+#'   .cs_scopes <- choices_selected(
+#'     choices = variable_choices(ADAE, subset = .names_scopes),
+#'     selected = .names_scopes,
 #'     fixed = TRUE
 #'   )
 #' })
-#'
-#' datanames <- c("ADSL", "ADAE")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,
@@ -352,8 +354,8 @@ template_smq <- function(dataname,
 #'         selected = "ARM"
 #'       ),
 #'       add_total = FALSE,
-#'       baskets = data[["cs_baskets"]],
-#'       scopes = data[["cs_scopes"]],
+#'       baskets = data[[".cs_baskets"]],
+#'       scopes = data[[".cs_scopes"]],
 #'       llt = choices_selected(
 #'         choices = variable_choices(data[["ADAE"]], subset = c("AEDECOD")),
 #'         selected = "AEDECOD"
@@ -638,7 +640,7 @@ srv_t_smq <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

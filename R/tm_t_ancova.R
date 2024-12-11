@@ -435,9 +435,21 @@ template_ancova <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADQS <- tmc_ex_adqs
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADQS <- tmc_ex_adqs
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADQS <- data[["ADQS"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -451,14 +463,7 @@ template_ancova <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADQS = ADQS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADQS <- tmc_ex_adqs
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_ancova(
 #'       label = "ANCOVA Table",
@@ -932,7 +937,7 @@ srv_ancova <- function(id,
         conf_level = as.numeric(input$conf_level),
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Output to render.

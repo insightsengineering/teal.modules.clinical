@@ -223,19 +223,24 @@ template_summary <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' # Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.
-#' ADSL <- tmc_ex_adsl
-#' ADSL$EOSDY[1] <- NA_integer_
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADSL$EOSDY[1] <- NA_integer_
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADSL$EOSDY[1] <- NA_integer_
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_summary(
 #'       label = "Demographic Table",
@@ -565,7 +570,7 @@ srv_summary <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

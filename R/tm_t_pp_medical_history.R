@@ -89,19 +89,24 @@ template_medical_history <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADMH <- tmc_ex_admh
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADMH <- tmc_ex_admh
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADMH <- data[["ADMH"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADMH = ADMH,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADMH <- tmc_ex_admh
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_pp_medical_history(
 #'       label = "Medical History",
@@ -327,7 +332,7 @@ srv_t_medical_history <- function(id,
           )
         )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls))
+        teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
     table_r <- reactive(all_q()[["result"]])

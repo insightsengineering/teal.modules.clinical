@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9028
-Date: 2024-09-30
+Version: 0.9.1.9038
+Date: 2024-12-10
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -32,8 +32,8 @@ BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.0),
-    teal (>= 0.15.2.9052),
-    teal.transform (>= 0.5.0),
+    teal (>= 0.15.2.9079),
+    teal.transform (>= 0.5.0.9015),
     tern (>= 0.9.6)
 Imports:
     broom (>= 0.7.10),
@@ -49,17 +49,17 @@ Imports:
     methods,
     rlistings (>= 0.2.8),
     rmarkdown (>= 2.23),
-    rtables (>= 0.6.8),
+    rtables (>= 0.6.10.9004),
     scales,
     shiny (>= 1.6.0),
     shinyjs,
     shinyvalidate,
     shinyWidgets (>= 0.5.1),
     stats,
-    teal.code (>= 0.5.0),
-    teal.data (>= 0.4.0),
+    teal.code (>= 0.5.0.9012),
+    teal.data (>= 0.6.0.9015),
     teal.logger (>= 0.2.0.9004),
-    teal.reporter (>= 0.2.1),
+    teal.reporter (>= 0.3.1.9017),
     teal.widgets (>= 0.4.0),
     tern.gee (>= 0.1.5),
     tern.mmrm (>= 0.3.1),
@@ -72,13 +72,15 @@ Suggests:
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
     pkgload,
+    roxy.shinylive,
     rvest,
     shinytest2,
     styler,
     testthat (>= 3.1.5),
     withr (> 2.0.1.5)
 VignetteBuilder:
-    knitr
+    knitr,
+    rmarkdown
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.transform, insightsengineering/tern,
     tidymodels/broom, mllg/checkmate, wilkelab/cowplot, tidyverse/dplyr,
@@ -91,12 +93,12 @@ Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.widgets, insightsengineering/tern.gee,
     insightsengineering/tern.mmrm, shosaco/vistime, tidyverse/forcats,
     yihui/knitr, tidyverse/lubridate, insightsengineering/nestcolor,
-    r-lib/pkgload, tidyverse/rvest, rstudio/shinytest2, r-lib/styler,
-    r-lib/testthat, r-lib/withr
+    r-lib/pkgload, insightsengineering/roxy.shinylive, tidyverse/rvest,
+    rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-Roxygen: list(markdown = TRUE)
+Roxygen: list(markdown = TRUE, packages = c("roxy.shinylive"))
 RoxygenNote: 7.3.2

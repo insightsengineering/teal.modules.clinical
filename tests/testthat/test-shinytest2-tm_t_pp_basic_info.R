@@ -3,8 +3,7 @@ app_driver_tm_t_pp_basic_info <- function() {
   data <- within(data, {
     ADSL <- teal.data::rADSL
   })
-  teal.data::datanames(data) <- "ADSL"
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys["ADSL"]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

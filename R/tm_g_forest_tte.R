@@ -243,12 +243,25 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADTTE <- tmc_ex_adtte
-#' ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADTTE <- tmc_ex_adtte
+#'   ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADTTE <- data[["ADTTE"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -262,15 +275,7 @@ template_forest_tte <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADTTE = ADTTE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADTTE <- tmc_ex_adtte
-#'       ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label(\"Race\")
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_forest_tte(
 #'       label = "Forest Survival",
@@ -683,7 +688,7 @@ srv_g_forest_tte <- function(id,
         font_size = input$font_size,
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

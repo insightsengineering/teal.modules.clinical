@@ -8,10 +8,7 @@ app_driver_tm_g_lineplot <- function() {
       AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min)
     )
   })
-
-  datanames <- c("ADSL", "ADLB")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,
@@ -19,7 +16,7 @@ app_driver_tm_g_lineplot <- function() {
       label = "Line Plot",
       dataname = "ADLB",
       parentname = "ADSL",
-      strata = teal.transform::choices_selected(
+      group_var = teal.transform::choices_selected(
         teal.transform::variable_choices("ADSL", c("ARM", "ARMCD", "ACTARMCD")),
         "ARM"
       ),
@@ -79,7 +76,7 @@ testthat::test_that("e2e - tm_g_lineplot: Module initializes in teal without err
 })
 
 testthat::test_that(
-  "e2e - tm_g_lineplot: Starts with specified label, param, strata, y, x, mid, interval, incl_screen,
+  "e2e - tm_g_lineplot: Starts with specified label, param, group_var, y, x, mid, interval, incl_screen,
     plot_settings and table_settings.",
   {
     skip_if_too_deep(5)
@@ -88,7 +85,7 @@ testthat::test_that(
 
     testthat::expect_equal(trimws(app_driver$get_text("#teal-teal_modules-active_tab > li.active")), "Line Plot")
     testthat::expect_equal(app_driver$get_active_module_input("param-dataset_ADLB_singleextract-filter1-vals"), "ALT")
-    testthat::expect_equal(app_driver$get_active_module_input("strata-dataset_ADSL_singleextract-select"), "ARM")
+    testthat::expect_equal(app_driver$get_active_module_input("group_var-dataset_ADSL_singleextract-select"), "ARM")
     testthat::expect_equal(app_driver$get_active_module_input("y-dataset_ADLB_singleextract-select"), "AVAL")
     testthat::expect_equal(app_driver$get_active_module_input("x-dataset_ADLB_singleextract-select"), "AVISIT")
     testthat::expect_equal(app_driver$get_active_module_input("mid"), "mean")
@@ -140,12 +137,12 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation er
 })
 
 testthat::test_that(
-  "e2e - tm_g_lineplot: Selecting strata changes plot and doesn't throw validation errors.",
+  "e2e - tm_g_lineplot: Selecting group_var changes plot and doesn't throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_lineplot()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
-    app_driver$set_active_module_input("strata-dataset_ADSL_singleextract-select", "ARMCD")
+    app_driver$set_active_module_input("group_var-dataset_ADSL_singleextract-select", "ARMCD")
     testthat::expect_false(
       identical(
         plot_before,
@@ -157,14 +154,14 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_g_lineplot: Deselecting strata throws validation error.", {
+testthat::test_that("e2e - tm_g_lineplot: Deselecting group_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
-  app_driver$set_active_module_input("strata-dataset_ADSL_singleextract-select", NULL)
+  app_driver$set_active_module_input("group_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
     app_driver$active_module_element_text(
-      "strata-dataset_ADSL_singleextract-select_input > div > span"
+      "group_var-dataset_ADSL_singleextract-select_input > div > span"
     ),
     "Please select a treatment variable"
   )

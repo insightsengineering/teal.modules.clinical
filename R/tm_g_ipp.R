@@ -179,28 +179,32 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl %>%
-#'   slice(1:20) %>%
-#'   df_explicit_na()
-#' ADLB <- tmc_ex_adlb %>%
-#'   filter(USUBJID %in% ADSL$USUBJID) %>%
-#'   df_explicit_na() %>%
-#'   filter(AVISIT != "SCREENING")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl %>%
+#'     slice(1:20) %>%
+#'     df_explicit_na()
+#'   ADLB <- tmc_ex_adlb %>%
+#'     filter(USUBJID %in% ADSL$USUBJID) %>%
+#'     df_explicit_na() %>%
+#'     filter(AVISIT != "SCREENING")
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADLB <- data[["ADLB"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADLB = ADLB,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl %>% slice(1:20) %>% df_explicit_na()
-#'       ADLB <- tmc_ex_adlb %>% filter(USUBJID %in% ADSL$USUBJID) %>%
-#'         df_explicit_na() %>% filter(AVISIT != \"SCREENING\")
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_ipp(
 #'       label = "Individual Patient Plot",
@@ -604,7 +608,7 @@ srv_g_ipp <- function(id,
         ggplot2_args = ggplot2_args,
         add_avalu = input$add_avalu
       )
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

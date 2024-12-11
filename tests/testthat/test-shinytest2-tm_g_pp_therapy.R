@@ -1,4 +1,4 @@
-app_driver_tm_g_pp_therapy <- function() { # nolint: object_length.
+app_driver_tm_g_pp_therapy <- function() {
   data <- within(teal.data::teal_data(), {
     ADCM <- teal.modules.clinical::tmc_ex_adcm
     ADSL <- dplyr::filter(
@@ -23,10 +23,8 @@ app_driver_tm_g_pp_therapy <- function() { # nolint: object_length.
   })
 
   adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
-  datanames <- c("ADSL", "ADCM")
 
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
   teal.data::join_keys(data)["ADCM", "ADCM"] <- adcm_keys
 
   init_teal_app_driver(
@@ -144,7 +142,7 @@ testthat::test_that(
 # Test changing selection ------------------------------------
 
 # Check if a new selection of input changes the plot and table without any validation errors.
-test_different_selection <- function(input_name, input_id, new_value) { # nolint object_length
+test_different_selection <- function(input_name, input_id, new_value) {
   testthat::test_that(
     sprintf(
       "e2e - tm_g_pp_therapy: Selection of %s changes the plot and table without any validation errors.",

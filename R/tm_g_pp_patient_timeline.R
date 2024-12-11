@@ -347,6 +347,11 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
@@ -354,26 +359,27 @@ template_patient_timeline <- function(dataname = "ANL",
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADAE <- tmc_ex_adae
-#'   ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADAE$USUBJID)
-#'   ADCM <- tmc_ex_adcm %>% mutate(
-#'     CMSTDY = case_when(
-#'       CMCAT == "medcl B" ~ 20,
-#'       CMCAT == "medcl C" ~ 150,
-#'       TRUE ~ 1
-#'     ) %>% with_label("Study Day of Start of Medication"),
-#'     CMENDY = case_when(
-#'       CMCAT == "medcl B" ~ 700,
-#'       CMCAT == "medcl C" ~ 1000,
-#'       TRUE ~ 500
-#'     ) %>% with_label("Study Day of End of Medication"),
-#'     CMASTDTM = ASTDTM,
-#'     CMAENDTM = AENDTM
-#'   )
+#'   ADSL <- tmc_ex_adsl %>%
+#'     filter(USUBJID %in% ADAE$USUBJID)
+#'   ADCM <- tmc_ex_adcm %>%
+#'     mutate(
+#'       CMSTDY = case_when(
+#'         CMCAT == "medcl B" ~ 20,
+#'         CMCAT == "medcl C" ~ 150,
+#'         TRUE ~ 1
+#'       ) %>% with_label("Study Day of Start of Medication"),
+#'       CMENDY = case_when(
+#'         CMCAT == "medcl B" ~ 700,
+#'         CMCAT == "medcl C" ~ 1000,
+#'         TRUE ~ 500
+#'       ) %>% with_label("Study Day of End of Medication"),
+#'       CMASTDTM = ASTDTM,
+#'       CMAENDTM = AENDTM
+#'     )
 #' })
 #'
-#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
-#' datanames(data) <- c("ADSL", "ADAE", "ADCM")
 #' join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADAE", "ADCM")]
+#' adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 #' join_keys(data)["ADCM", "ADCM"] <- adcm_keys
 #' join_keys(data)["ADAE", "ADCM"] <- c("STUDYID", "USUBJID")
 #'

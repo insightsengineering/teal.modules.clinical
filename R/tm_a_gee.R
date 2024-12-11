@@ -135,8 +135,14 @@ template_a_gee <- function(output_table,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
+#'
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
@@ -152,9 +158,7 @@ template_a_gee <- function(output_table,
 #'     ) %>%
 #'     droplevels()
 #' })
-#' datanames <- c("ADSL", "ADQS")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,
@@ -527,7 +531,7 @@ srv_gee <- function(id,
         cor_struct = input$cor_struct,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     output$gee_title <- renderText({

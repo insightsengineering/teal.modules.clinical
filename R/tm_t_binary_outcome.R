@@ -351,35 +351,35 @@ template_binary_outcome <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADRS <- tmc_ex_adrs %>%
-#'   mutate(
-#'     AVALC = d_onco_rsp_label(AVALC) %>%
-#'       with_label("Character Result/Finding")
-#'   ) %>%
-#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADRS <- tmc_ex_adrs %>%
+#'     mutate(
+#'       AVALC = d_onco_rsp_label(AVALC) %>%
+#'         with_label("Character Result/Finding")
+#'     ) %>%
+#'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADRS <- data[["ADRS"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
 #'   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
 #' )
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADRS = ADRS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADRS <- tmc_ex_adrs %>%
-#'         mutate(
-#'           AVALC = d_onco_rsp_label(AVALC) %>%
-#'             with_label(\"Character Result/Finding\")
-#'         ) %>%
-#'         filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_binary_outcome(
 #'       label = "Responders",
@@ -994,7 +994,7 @@ srv_t_binary_outcome <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(qenv, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

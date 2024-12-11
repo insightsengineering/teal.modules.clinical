@@ -1,15 +1,12 @@
-app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length
-  data <- teal.data::teal_data() |> within({
+app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length.
+  data <- within(teal.data::teal_data(), {
     library(nestcolor)
     library(dplyr)
 
     ADAE <- teal.data::rADAE
     ADSL <- teal.data::rADSL %>% filter(USUBJID %in% ADAE$USUBJID)
   })
-
-  teal.data::datanames(data) <- c("ADAE", "ADSL")
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[c("ADAE", "ADSL")]
-
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
     data = data,

@@ -189,21 +189,26 @@ template_g_ci <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADLB <- tmc_ex_adlb
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADLB <- tmc_ex_adlb
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADLB <- data[["ADLB"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADLB = ADLB,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADLB <- tmc_ex_adlb
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_ci(
 #'       label = "Confidence Interval Plot",
@@ -253,10 +258,6 @@ template_g_ci <- function(dataname,
 #'         )
 #'       )
 #'     )
-#'   ),
-#'   header = "Example of Confidence Interval Plot",
-#'   footer = tags$p(
-#'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
 #' if (interactive()) {

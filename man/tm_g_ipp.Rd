@@ -104,24 +104,23 @@ values over time for each patient, using data with ADaM structure.
 library(nestcolor)
 library(dplyr)
 
-ADSL <- tmc_ex_adsl \%>\%
-  slice(1:20) \%>\%
-  df_explicit_na()
-ADLB <- tmc_ex_adlb \%>\%
-  filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
-  df_explicit_na() \%>\%
-  filter(AVISIT != "SCREENING")
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl \%>\%
+    slice(1:20) \%>\%
+    df_explicit_na()
+  ADLB <- tmc_ex_adlb \%>\%
+    filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
+    df_explicit_na() \%>\%
+    filter(AVISIT != "SCREENING")
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADLB <- data[["ADLB"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADLB = ADLB,
-    code = "
-      ADSL <- tmc_ex_adsl \%>\% slice(1:20) \%>\% df_explicit_na()
-      ADLB <- tmc_ex_adlb \%>\% filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
-        df_explicit_na() \%>\% filter(AVISIT != \"SCREENING\")
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_ipp(
       label = "Individual Patient Plot",
@@ -171,3 +170,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otQ6AKQAfBP1DTpjMnDsAIyIAEwADDbTsxDzOvzG-QORMsVp0Nn7Tc3tAEJdPX2Dw-zU9JMzcw3GtNTkRjsBytBz3ABSAElmpNyhNbh0ACQgsFQ5o7b43BpHE5nAgXK4YvYHP4A1TsRoANUhrUhth0AEIALw6BRgVoAYSwTicADlIbyAOJsoIAXyCACsiOU0gBrOCsUSVRI2fL8ODGKDCUhpAj8WiiPpSmXyxXAaDwJW5OQAXViLQ6XVywGAbId7TZNrtEBaDydVRdbru9093qUaFQXXKxXYc1yOhZuVwcz4QhEogTOlTwjEsax3RgaQA5mlaOg8wcGtQoPQ4OMWWzIXEtLQhNwdAAFBK0CikTv+Uhs5P57FVC26BtgX0hvA-eYsQuaFiZgglaUEMRpUR1uDqOD8CuVhpL6iCOC6tdLJXTmpurAAWQ5zRFw6PDTv96abLnDTkr8rqAsLAeorpeG6iFuO57geP7zCeZ4XuuuY3qyYAdo0WCNI+z5gH+sHvlO7S2N+I46HhpFQCeaRLowoFIRB24iNBh5HjRtA1iIiFXhSwY1AQsZTpSjQengqEcgAEsKuHkW+qFUsJJFHjJlaUdwgjUcuLKrvRkFMeQMGkceLDsfQnHadxKH8W6QntA4IrKUe1nCXZs6GSYtADPumb2M4sEOfMrYabRWlgZujG7vpLGVmxHHnuZ4E8Q8fECSiELQvZ-6OWAqVokO+HuZ5-DeY4Likf5x4GhcNF0VeukRfuUUHDFplxaF168ToVmCTSdIZfl1k9cRYB+Zl8z0FAjHlOe1UhTp4XMflzVmW1iX3MlbL3I0rQuNJo0HBtW07Xt8x-IVxW+WVx0jPwaTjZN3hpCUUgTjoABiwnbcd26Acw5C3awaREPQGYsu97TbXOQS-koQS0MYOjsOUgJQBY2jWDYdQ3KIZQQKwjTlhGiKCLQNSE9ujDaDEECikoYCijaQA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otQ6AKQAfBP1DTpjMnDsAIyIAEwADDbTsxDzOvzG-QORMsVp0Nn7Tc3tAEJdPX2Dw-zU9JMzcw3GtNTkRjsBytBz3ABSAElmpNyhNbh0ACQgsFQ5o7b43BpHE5nAgXK4YvYHP4A1TsRoANUhrUhth0AEIALw6BRgVoAYSwTicADlIbyAOJsoIAXyCACsiOU0gBrOCsUSVRI2fL8ODGKDCUhpAj8WiiPpSmXyxXAaDwJW5OQAXViLQ6XVywGAbId7TZNrtEBaDydVRdbru9093qUaFQXXKxXYc1yOhZuVwcz4QhEogTOlTwjEsax3RgaQA5mlaOg8wcGtQoPQ4OMWWzIXEtLQhNwdAAFBK0CikTv+Uhs5P57FVC26BtgX0hvA-eYsQuaFiZgglaUEMRpUR1uDqOD8CuVhpL6iCOC6tdLJXTmpurAAWQ5zRFw6PDTv96abLnDTkr8rqAsLAeorpeG6iFuO57geP7zCeZ4XuuuY3qyYAdo0WCNI+z5gH+sHvlO7S2N+I46HhpFQCeaRLowoFIRB24iNBh5HjRtA1iIiFXhSwY1AQsZTpSjQengqEcgAEsKuHkW+qFUsJJFHjJlaUdwgjUcuLKrvRkFMeQMGkceLDsfQnHadxKH8W6QntA4IrKUe1nCXZs6GSYtADPumb2M4sEOfMrYabRWlgZujG7vpLGVmxHHnuZ4E8Q8fECSiELQvZ-6OWAqVokO+HuZ5-DeY4Likf5x4GhcNF0VeukRfuUUHDFplxaF168ToVmCTSdIZfl1k9cRYB+Zl8z0FAjHlOe1UhTp4XMflzVmW1iX3MlbL3I0rQuNJo0HBtW07Xt8x-IVxW+WVx0jPwaTjZN3hpCUUgTjoABiwnbcd26Acw5C3awaREPQGYsu97TbXOQS-koQS0MYOjsOUgJQBY2jWDYdQ3KIZQQKwjTlhGiKCLQNSE9ujDaDEECikoYCijaQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

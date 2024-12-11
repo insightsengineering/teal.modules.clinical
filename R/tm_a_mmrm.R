@@ -462,8 +462,14 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
+#'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(
 #'     ref = "ARM B",
@@ -485,10 +491,8 @@ template_mmrm_plots <- function(fit_name,
 #'         as.factor() #' making consecutive numeric factor
 #'     )
 #' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
-#' datanames <- c("ADSL", "ADQS")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
 #' app <- init(
 #'   data = data,
 #'   modules = modules(
@@ -1243,7 +1247,7 @@ srv_mmrm <- function(id,
         weights_emmeans = input$weights_emmeans,
         parallel = input$parallel
       )
-      teal.code::eval_code(qenv, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(unlist(my_calls)))
     })
 
     output$mmrm_title <- renderText({
@@ -1400,7 +1404,7 @@ srv_mmrm <- function(id,
 
     all_q <- reactive({
       if (!is.null(plot_q()) && !is.null(table_q())) {
-        teal.code::join(plot_q(), table_q())
+        c(plot_q(), table_q())
       } else if (!is.null(plot_q())) {
         plot_q()
       } else {

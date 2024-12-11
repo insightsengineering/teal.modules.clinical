@@ -6,10 +6,7 @@ app_driver_tm_t_logistic <- function() {
     ADRS <- teal.data::rADRS %>%
       filter(PARAMCD %in% c("BESRSPI", "INVET"))
   })
-
-  datanames <- c("ADSL", "ADRS")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   arm_ref_comp <- list(
     ACTARMCD = list(

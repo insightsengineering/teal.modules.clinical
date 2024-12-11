@@ -196,26 +196,30 @@ template_events_patyear <- function(dataname,
 #' @examples
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADAETTE <- tmc_ex_adaette %>%
-#'   filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
-#'   mutate(is_event = CNSR == 0) %>%
-#'   mutate(n_events = as.integer(is_event))
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADAETTE <- tmc_ex_adaette %>%
+#'     filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
+#'     mutate(is_event = CNSR == 0) %>%
+#'     mutate(n_events = as.integer(is_event))
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
+#' ADSL <- data[["ADSL"]]
+#' ADAETTE <- data[["ADAETTE"]]
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ examples[[1]] }}
+#' {{ next_example }}
+#'
+#' @examples
 #' # 1. Basic Example
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADAETTE = ADAETTE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADAETTE <- tmc_ex_adaette %>%
-#'         filter(PARAMCD %in% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) %>%
-#'         mutate(is_event = CNSR == 0) %>%
-#'         mutate(n_events = as.integer(is_event))
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_events_patyear(
 #'       label = "AE Rate Adjusted for Patient-Years At Risk Table",
@@ -241,20 +245,17 @@ template_events_patyear <- function(dataname,
 #'   shinyApp(app$ui, app$server)
 #' }
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ examples[[1]] }}
+#' {{ next_example }}
+#'
+#' @examples
 #' # 2. Example with table split on 2 arm_var variables
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADAETTE = ADAETTE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADAETTE <- tmc_ex_adaette %>%
-#'         filter(PARAMCD %in% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) %>%
-#'         mutate(is_event = CNSR == 0) %>%
-#'         mutate(n_events = as.integer(is_event))
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_events_patyear(
 #'       label = "AE Rate Adjusted for Patient-Years At Risk Table",
@@ -624,7 +625,7 @@ srv_events_patyear <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

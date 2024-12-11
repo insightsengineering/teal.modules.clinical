@@ -1,4 +1,4 @@
-app_driver_tm_g_pp_patient_timeline <- function() { # nolint object_length
+app_driver_tm_g_pp_patient_timeline <- function() { # nolint object_length.
   data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
@@ -21,11 +21,10 @@ app_driver_tm_g_pp_patient_timeline <- function() { # nolint object_length
   })
 
   adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
-  teal.data::datanames(data) <- c("ADSL", "ADAE", "ADCM")
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[c("ADSL", "ADAE", "ADCM")]
+
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
   teal.data::join_keys(data)["ADCM", "ADCM"] <- adcm_keys
   teal.data::join_keys(data)["ADAE", "ADCM"] <- c("STUDYID", "USUBJID")
-
 
   init_teal_app_driver(
     data = data,

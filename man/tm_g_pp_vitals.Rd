@@ -73,18 +73,18 @@ This plot supports horizontal lines for the following 6 \code{PARAMCD} levels wh
 \examples{
 library(nestcolor)
 
-ADSL <- tmc_ex_adsl
-ADVS <- tmc_ex_advs
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADVS <- tmc_ex_advs
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADVS <- data[["ADVS"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADVS = ADVS,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADVS <- tmc_ex_advs
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_pp_vitals(
       label = "Vitals",
@@ -112,3 +112,13 @@ if (interactive()) {
 }
 
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKc-VklgQxDFRHy4Oo4PxKYmygR0zIxCTNCxaDyRCcy5nNjDqkU-gAFcpYcoAWQAwo6wPHndScyJ8-xNR2u32B8Oh3rqW0oG1zmmM1nR3nyIXhyWGxXsVXGDX6HXS+um2DW1qAJp-efFnSb8eaqp3sBzhNKqBV2JHtflqI2a5uORbFuegGVtWtZwPWF7sM217lAM5Q6g+xbPtur4oTqc7ikEZRBEEtDGDo7C5OQagaNo1g2CUiqiDkECsOU6DsIiAAkgi0EUnE5ow2iBLMShgDMzxAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlQBq1Q1NLe2d-JqiSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vQbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5jF0DFNJluJs+tSdNQoPQ4NQSX8BqzqNM8BzqQV7rpsdCwX88VTOTpUCwKKQpQL-jVAWLFZyVRo1SciPyZWAHNUHAAhABSAElKvLxWVUP5jlk4LQ6VlSCSCOwAGwABiDtSKACYQ2GdJGo3IFUrlSxYKc-VklgQxDFRHy4Oo4PxKYmygR0zIxCTNCxaDyRCcy5nNjDqkU-gAFcpYcoAWQAwo6wPHndScyJ8-xNR2u32B8Oh3rqW0oG1zmmM1nR3nyIXhyWGxXsVXGDX6HXS+um2DW1qAJp-efFnSb8eaqp3sBzhNKqBV2JHtflqI2a5uORbFuegGVtWtZwPWF7sM217lAM5Q6g+xbPtur4oTqc7ikEZRBEEtDGDo7C5OQagaNo1g2CUiqiDkECsOU6DsIiAAkgi0EUnE5ow2iBLMShgDMzxAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

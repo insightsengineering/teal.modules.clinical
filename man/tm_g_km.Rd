@@ -111,8 +111,15 @@ This module produces a \code{ggplot}-style Kaplan-Meier plot for data with ADaM 
 \examples{
 library(nestcolor)
 
-ADSL <- tmc_ex_adsl
-ADTTE <- tmc_ex_adtte
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADTTE <- tmc_ex_adtte
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADTTE <- data[["ADTTE"]]
 
 arm_ref_comp <- list(
   ACTARMCD = list(
@@ -126,14 +133,7 @@ arm_ref_comp <- list(
 )
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADTTE = ADTTE,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADTTE <- tmc_ex_adtte
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_km(
       label = "Kaplan-Meier Plot",
@@ -167,3 +167,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlba2Tg1NLe2d-KTkSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAZDL7JH5-KqDFxgYFvFgwGKMfYnIgwVANOiiUjsPrlADCtnKWAAsoTKjoALw6HF4vplVHGGk6aHknQAIT+uEZOmImNZBHx-w55R5bNFZJ0hL+QTKcl5EDKpOltPp+OVZR0zNZf05iB0AAVqFACHB6EQeXyBVjacLoYbKoxBABzHQADQlf0JhsJGPouTClmCYHlOiCQSUaCxqVymU1ZQKrIKSrKfCEIlErIzwjEie1TRirtWMAL2rpUHocGoerAAGk0KaIAYyXBaKpjf5SNatRWCvddLToWC4WmKzokTFNCwhVklubRDFRDW4Oo4PxyxOZ4xaFWRCd5zJ8wCig6pd6pZTL0SSeTr2HFXyK+yyX9nxHxxXUCxYKc5wuYjLqu66bh+ZQztQghwIegGbDCQxFH8RqkuUFKVJeKFYGhcpfhOfwAPLVO+fbak+pFlFOzLooKtJUWitp4WUuLMOE06zvaR6LsBIigVuFY7nu9AHgQXEnjUtRniK1ROF6eCSpyZJYPWWAAExyuRE7an8MlyR+mkTgc5rHDuAHHkuK68eQYEUdqgn7jBolwewp78tJsmXopylqRpTHagAcg4tSArZ4YKn0kZKLQLLsLk5BqBo2jWDYJRaqIOQQKw5ToOwMYACSCLQRT5SujDaIEsxKGAMzPEAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlba2Tg1NLe2d-KTkSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAZDL7JH5-KqDFxgYFvFgwGKMfYnIgwVANOiiUjsPrlADCtnKWAAsoTKjoALw6HF4vplVHGGk6aHknQAIT+uEZOmImNZBHx-w55R5bNFZJ0hL+QTKcl5EDKpOltPp+OVZR0zNZf05iB0AAVqFACHB6EQeXyBVjacLoYbKoxBABzHQADQlf0JhsJGPouTClmCYHlOiCQSUaCxqVymU1ZQKrIKSrKfCEIlErIzwjEie1TRirtWMAL2rpUHocGoerAAGk0KaIAYyXBaKpjf5SNatRWCvddLToWC4WmKzokTFNCwhVklubRDFRDW4Oo4PxyxOZ4xaFWRCd5zJ8wCig6pd6pZTL0SSeTr2HFXyK+yyX9nxHxxXUCxYKc5wuYjLqu66bh+ZQztQghwIegGbDCQxFH8RqkuUFKVJeKFYGhcpfhOfwAPLVO+fbak+pFlFOzLooKtJUWitp4WUuLMOE06zvaR6LsBIigVuFY7nu9AHgQXEnjUtRniK1ROF6eCSpyZJYPWWAAExyuRE7an8MlyR+mkTgc5rHDuAHHkuK68eQYEUdqgn7jBolwewp78tJsmXopylqRpTHagAcg4tSArZ4YKn0kZKLQLLsLk5BqBo2jWDYJRaqIOQQKw5ToOwMYACSCLQRT5SujDaIEsxKGAMzPEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

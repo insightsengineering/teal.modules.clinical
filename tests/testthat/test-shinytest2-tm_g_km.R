@@ -1,19 +1,15 @@
 app_driver_tm_g_km <- function() {
-  data <- teal.data::teal_data() %>%
-    within({
-      library(dplyr)
-      ADSL <- tmc_ex_adsl
-      ADTTE <- tmc_ex_adtte %>%
-        rename(
-          VALUE_UNIT = AVALU,
-          ANALYSIS_VAL = AVAL,
-          CENSORING = CNSR
-        )
-    })
-
-  datanames <- c("ADSL", "ADTTE")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  data <- within(teal.data::teal_data(), {
+    library(dplyr)
+    ADSL <- tmc_ex_adsl
+    ADTTE <- tmc_ex_adtte %>%
+      rename(
+        VALUE_UNIT = AVALU,
+        ANALYSIS_VAL = AVAL,
+        CENSORING = CNSR
+      )
+  })
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   arm_ref_comp <- list(
     ACTARMCD = list(

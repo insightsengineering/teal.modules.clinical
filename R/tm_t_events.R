@@ -461,19 +461,24 @@ template_events <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADAE <- tmc_ex_adae
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADAE <- tmc_ex_adae
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADAE <- data[["ADAE"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADAE = ADAE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADAE <- tmc_ex_adae
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_events(
 #'       label = "Adverse Event Table",
@@ -800,7 +805,7 @@ srv_t_events_byterm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

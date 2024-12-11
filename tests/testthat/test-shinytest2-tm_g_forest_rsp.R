@@ -1,18 +1,14 @@
 app_driver_tm_g_forest_rsp <- function() {
-  data <- teal.data::teal_data() %>%
-    within({
-      library(dplyr)
-      library(tern)
-      ADSL <- teal.data::rADSL
-      ADRS <- teal.data::rADRS %>%
-        mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
-        with_label("Character Result/Finding") %>%
-        filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
-    })
-
-  datanames <- c("ADSL", "ADRS")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  data <- within(teal.data::teal_data(), {
+    library(dplyr)
+    library(tern)
+    ADSL <- teal.data::rADSL
+    ADRS <- teal.data::rADRS %>%
+      mutate(AVALC = d_onco_rsp_label(AVALC)) %>%
+      with_label("Character Result/Finding") %>%
+      filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+  })
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   arm_ref_comp <- list(
     ARM = list(

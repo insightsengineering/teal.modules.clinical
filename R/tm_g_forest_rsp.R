@@ -243,15 +243,27 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADRS <- tmc_ex_adrs %>%
-#'   mutate(AVALC = d_onco_rsp_label(AVALC) %>%
-#'     with_label("Character Result/Finding")) %>%
-#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADRS <- tmc_ex_adrs %>%
+#'     mutate(AVALC = d_onco_rsp_label(AVALC) %>%
+#'       with_label("Character Result/Finding")) %>%
+#'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADRS <- data[["ADRS"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -265,17 +277,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADRS = ADRS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADRS <- tmc_ex_adrs %>%
-#'         mutate(AVALC = d_onco_rsp_label(AVALC) %>%
-#'         with_label(\"Character Result/Finding\")) %>%
-#'         filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
@@ -757,7 +759,7 @@ srv_g_forest_rsp <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     plot_r <- reactive(all_q()[["p"]])

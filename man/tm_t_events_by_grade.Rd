@@ -88,20 +88,19 @@ a \code{teal_module} object.
 This module produces a table to summarize events by grade.
 }
 \examples{
+library(dplyr)
 data <- teal_data()
 data <- within(data, {
-  library(dplyr)
-
   ADSL <- tmc_ex_adsl
-  lbls_adae <- col_labels(tmc_ex_adae)
+  .lbls_adae <- col_labels(tmc_ex_adae)
   ADAE <- tmc_ex_adae \%>\%
     mutate_if(is.character, as.factor) #' be certain of having factors
-  col_labels(ADAE) <- lbls_adae
+  col_labels(ADAE) <- .lbls_adae
 })
+join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-datanames <- c("ADSL", "ADAE")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
+ADSL <- data[["ADSL"]]
+ADAE <- data[["ADAE"]]
 
 app <- init(
   data = data,
@@ -111,15 +110,15 @@ app <- init(
       dataname = "ADAE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       llt = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
+        choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
         selected = c("AEDECOD")
       ),
       hlt = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
+        choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
         selected = "AEBODSYS"
       ),
       grade = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AETOXGR", "AESEV")),
+        choices = variable_choices(ADAE, c("AETOXGR", "AESEV")),
         selected = "AETOXGR"
       )
     )
@@ -134,3 +133,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEPxQpFD6RlzUAPpBIdZKMaGGOgDutKQAFrQQ7Am4OiBKOjoAggAiAMoAMmE6pDAEkXAAHpFQ-KLUhToY1PTUoq1BuknEUdRQ9HD9nPWNLW1QcAFFZcVONXUNzYOLOgCkAHx7XUUwgiHkkbTG7LTiBOksUOqqeVDixs+kRP46AMQAch0kx0BFUISyOiIxh0j00WQA5iYvj9RF1RpFxpNpqsnDYkj0+gMFnAlABfAIAKyIWUiAGs4KxRDlglB8UZ+HBPsJSJECPw7g1qbSGUzgNB4MyEnIALquCBlKo1BLAYAKMCKyrqmVyhWlNbK1mq9W47W6pRoVA1LJpdhdBI6AC8OlyXT4QhEoidOndwjEdogRSKdUivLg2jIA3orEiCOYnIDQaDWKm3pN-G0jFEuicEdIXujOgA4vHdLYJiJ1bgTkGEhLdM6TfqXHga0UWDBIpoWN6HjSwQNsyIXvx2AQ7RqsABZKs6E3TgDCpXVcjy85nYFXbZ01GopF76X7YkiQ7gI8TSaDfZkYm93cYtArcD5h5vzNxeXHJqctic09n36lE4C4APLLpuW6BpeRSniOvYTmsQGgeByyXpB0HpHuB5HoOUxnuQo7bkU14DneLCPn0z4kf6H6gghTgAEJgeUACa5QARqTjlCBC4ruh0E6LBBFppxTEVGx6rbvxSZxm0Dagq+A4nnh55EQpOFkQ+T4vjh7C0V+nG2CBAAaRZYBxazlE4ABqfHVlB0FCXA-AiWsRmmeZYBSTWqEBAE1w6LcKhqBo2jWDYBRQaImQQKwxToOwloACSCLQbzoEl2aMJmARkkoYBkjKQA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEPxQpFD6RlzUAPpBIdZKMaGGOgDutKQAFrQQ7Am4OiBKOjoAggAiAMoAMmE6pDAEkXAAHpFQ-KLUhToY1PTUoq1BuknEUdRQ9HD9nPWNLW1QcAFFZcVONXUNzYOLOgCkAHx7XUUwgiHkkbTG7LTiBOksUOqqeVDixs+kRP46AMQAch0kx0BFUISyOiIxh0j00WQA5iYvj9RF1RpFxpNpqsnDYkj0+gMFnAlABfAIAKyIWUiAGs4KxRDlglB8UZ+HBPsJSJECPw7g1qbSGUzgNB4MyEnIALquCBlKo1BLAYAKMCKyrqmVyhWlNbK1mq9W47W6pRoVA1LJpdhdBI6AC8OlyXT4QhEoidOndwjEdogRSKdUivLg2jIA3orEiCOYnIDQaDWKm3pN-G0jFEuicEdIXujOgA4vHdLYJiJ1bgTkGEhLdM6TfqXHga0UWDBIpoWN6HjSwQNsyIXvx2AQ7RqsABZKs6E3TgDCpXVcjy85nYFXbZ01GopF76X7YkiQ7gI8TSaDfZkYm93cYtArcD5h5vzNxeXHJqctic09n36lE4C4APLLpuW6BpeRSniOvYTmsQGgeByyXpB0HpHuB5HoOUxnuQo7bkU14DneLCPn0z4kf6H6gghTgAEJgeUACa5QARqTjlCBC4ruh0E6LBBFppxTEVGx6rbvxSZxm0Dagq+A4nnh55EQpOFkQ+T4vjh7C0V+nG2CBAAaRZYBxazlE4ABqfHVlB0FCXA-AiWsRmmeZYBSTWqEBAE1w6LcKhqBo2jWDYBRQaImQQKwxToOwloACSCLQbzoEl2aMJmARkkoYBkjKQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

@@ -197,19 +197,24 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'
 #' @inherit module_arguments return
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADEG <- tmc_ex_adeg
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADEG <- tmc_ex_adeg
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADEG <- data[["ADEG"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADEG = ADEG,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADEG <- tmc_ex_adeg
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_shift_by_arm_by_worst(
 #'       label = "Shift by Arm Table",
@@ -228,7 +233,8 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'       ),
 #'       worst_flag = choices_selected(
 #'         value_choices(ADEG, "WORS02FL"),
-#'         selected = "Y", fixed = TRUE
+#'         selected = "Y",
+#'         fixed = TRUE
 #'       ),
 #'       aval_var = choices_selected(
 #'         variable_choices(ADEG, c("AVALC", "ANRIND")),
@@ -481,7 +487,7 @@ srv_shift_by_arm_by_worst <- function(id,
     )
 
     isolate({
-      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()@env))
+      resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()))
       teal.widgets::updateOptionalSelectInput(
         session = session,
         inputId = "treatment_flag",
@@ -589,7 +595,7 @@ srv_shift_by_arm_by_worst <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.

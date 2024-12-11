@@ -1,4 +1,4 @@
-app_driver_tm_a_mmrm <- function(fit_model = TRUE) { # nolint: object_length.
+app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   arm_ref_comp <- list(
     ARMCD = list(
       ref = "ARM B",
@@ -20,10 +20,7 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) { # nolint: object_length.
           as.factor() #' making consecutive numeric factor
       )
   })
-
-  datanames <- c("ADSL", "ADQS")
-  teal.data::datanames(data) <- datanames
-  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[datanames]
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
 
@@ -65,6 +62,7 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) { # nolint: object_length.
   )
   if (fit_model) {
     app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$wait_for_idle()
   }
   app_driver
 }
