@@ -1510,10 +1510,9 @@ srv_mmrm <- function(id,
     })
 
     plot_r <- reactive({
-      if (is.null(table_q())) {
+      if (is.null(plot_q())) {
         NULL
       } else {
-        browser()
         decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
       }
     })
