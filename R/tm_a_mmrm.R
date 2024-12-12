@@ -1513,6 +1513,7 @@ srv_mmrm <- function(id,
       if (is.null(table_q())) {
         NULL
       } else {
+        browser()
         decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
       }
     })
@@ -1521,7 +1522,6 @@ srv_mmrm <- function(id,
       if (is.null(table_q())) {
         NULL
       } else {
-        print(state_has_changed())
         decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
       }
     })
