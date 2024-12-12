@@ -3,7 +3,7 @@
 #' Creates a valid expression to generate a univariable Cox regression analysis.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis (see [control_coxreg()]).
+#' @param control (`list`)\cr list of settings for the analysis (see [tern::control_coxreg()]).
 #' @param at (`list` of `numeric`)\cr when the candidate covariate is a `numeric` type variable, use `at`
 #'   to specify the value of the covariate at which the effect should be estimated.
 #' @param append (`logical`)\cr whether the result should be appended to the previous one.

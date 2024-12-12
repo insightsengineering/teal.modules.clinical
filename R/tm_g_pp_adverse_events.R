@@ -180,11 +180,10 @@ template_adverse_events <- function(dataname = "ANL",
 #'   available choices and preselected option for the `ASTDY` variable from `dataname`.
 #' @param decod ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AEDECOD` variable from `dataname`.
-#' @param decorators `r roxygen_decorators_param("tm_g_pp_adverse_events")`
 #'
 #' @inherit module_arguments return
 #'
-#' @section Decorating `tm_g_pp_adverse_events`:
+#' @section Decorating Modules:
 #'
 #' This module generates the following objects, which can be modified in place using decorators::
 #' - `plot` (`ggplot2`)

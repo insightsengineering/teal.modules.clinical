@@ -223,11 +223,10 @@ template_exposure <- function(parentname,
 #'   parameter category values.
 #' @param paramcd_label (`character`)\cr the column from the dataset where the value will be used to
 #'   label the argument `paramcd`.
-#' @param decorators `r roxygen_decorators_param("tm_t_exposure")`
 #'
 #' @inherit module_arguments return seealso
 #'
-#' @section Decorating `tm_t_exposure`:
+#' @section Decorating Modules:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` as created from `rtables::build_table`)
