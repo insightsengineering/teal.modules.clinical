@@ -1054,7 +1054,7 @@ srv_t_coxreg <- function(id,
         )
 
         merged$anl_q() %>%
-          teal.code::eval_code(quote(result <- list())) %>%
+          teal.code::eval_code(quote(table <- list())) %>%
           teal.code::eval_code(
             as.expression(unlist(lapply(
               unlist(input$buckets$Comp),
@@ -1066,19 +1066,18 @@ srv_t_coxreg <- function(id,
           teal.code::eval_code(
             substitute(
               expr = {
-                result <- lapply(result, function(x) {
-                  rtables::col_info(x) <- rtables::col_info(result[[1]])
+                table <- lapply(table, function(x) {
+                  rtables::col_info(x) <- rtables::col_info(table[[1]])
                   x
                 })
-                result <- rtables::rbindl_rtables(result, check_headers = TRUE)
-                rtables::main_title(result) <- title
-                rtables::main_footer(result) <- c(
+                table <- rtables::rbindl_rtables(table, check_headers = TRUE)
+                rtables::main_title(table) <- title
+                rtables::main_footer(table) <- c(
                   paste("p-value method for Coxph (Hazard Ratio):", control$pval_method),
                   paste("Ties for Coxph (Hazard Ratio):", control$ties)
                 )
-                rtables::prov_footer(result) <- p_footer
-                rtables::subtitles(result) <- subtitle
-                result
+                rtables::prov_footer(table) <- p_footer
+                rtables::subtitles(table) <- subtitle
               },
               env = list(
                 title = all_basic_table_args$title,
