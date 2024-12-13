@@ -58,8 +58,8 @@ template_adverse_events <- function(dataname = "ANL",
               dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
             )
           )
-        table <- rlistings::as_listing(
-          table,
+        table_output <- rlistings::as_listing(
+          table_data,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
         )
