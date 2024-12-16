@@ -24,7 +24,6 @@
               legend_title = NULL, ggtheme = ggplot2::theme_minimal(), 
               control = control_analyze_vars(conf_level = 0.95), subtitle_add_paramcd = FALSE, 
               subtitle_add_unit = FALSE)
-          plot
       }
       
 
@@ -54,7 +53,6 @@
               legend_title = NULL, ggtheme = ggplot2::theme_minimal(), 
               control = control_analyze_vars(conf_level = 0.9), subtitle_add_paramcd = FALSE, 
               subtitle_add_unit = FALSE)
-          plot
       }
       
 
