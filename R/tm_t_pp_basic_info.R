@@ -297,6 +297,7 @@ srv_t_basic_info <- function(id,
       )
     )
 
+    # Render R code
     source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",

@@ -574,6 +574,8 @@ srv_g_vitals <- function(id,
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 
+    # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     pws <- teal.widgets::plot_with_settings_srv(
       id = "vitals_plot",
       plot_r = plot_r,
@@ -583,7 +585,7 @@ srv_g_vitals <- function(id,
 
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(req(decorated_all_q()))),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -602,7 +604,7 @@ srv_g_vitals <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(req(decorated_all_q())))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

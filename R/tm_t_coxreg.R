@@ -1108,9 +1108,11 @@ srv_t_coxreg <- function(id,
       table_r = table_r
     )
 
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(req(decorated_table_q()))),
+      verbatim_content = source_code_r,
       title = "R Code for the Current (Multi-Variable) Cox proportional hazard regression model"
     )
 
@@ -1129,7 +1131,7 @@ srv_t_coxreg <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(req(decorated_table_q())))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
