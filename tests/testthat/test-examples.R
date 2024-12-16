@@ -49,11 +49,17 @@ with_mocked_app_bindings <- function(code) {
     args <- list(...)
     args[["launch.browser"]] <- FALSE # needed for RStudio
 
-    app_driver <- shinytest2::AppDriver$new(
-      x,
-      shiny_args = args,
-      check_names = FALSE, # explicit check below
-      options = options() # https://github.com/rstudio/shinytest2/issues/377
+    app_driver <- tryCatch(
+      shinytest2::AppDriver$new(
+        x,
+        shiny_args = args,
+        check_names = FALSE, # explicit check below
+        options = options() # https://github.com/rstudio/shinytest2/issues/377
+      ),
+      error = function(e) {
+        e$app$stop() # Ensure the R instance is stopped
+        stop(e)
+      }
     )
     on.exit(app_driver$stop(), add = TRUE)
     app_driver$wait_for_idle(timeout = 20000)
