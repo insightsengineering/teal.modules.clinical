@@ -574,6 +574,8 @@ srv_g_vitals <- function(id,
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 
+    # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     pws <- teal.widgets::plot_with_settings_srv(
       id = "vitals_plot",
       plot_r = plot_r,
