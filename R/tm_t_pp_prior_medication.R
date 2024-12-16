@@ -391,7 +391,11 @@ srv_t_prior_medication <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(table_r()$listing)
+        if (nrow(table_r()$listing) == 0L) {
+          card$append_text("No data available for table.")
+        } else {
+          card$append_table(table_r()$listing)
+        }
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
