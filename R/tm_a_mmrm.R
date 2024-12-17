@@ -1485,7 +1485,7 @@ srv_mmrm <- function(id,
     decorated_objs_q <- c(
       decorated_tables_q,
       lapply(
-        setNames(nm = c("lsmeans_plot", "diagnostic_plot")),
+        stats::setNames(nm = c("lsmeans_plot", "diagnostic_plot")),
         function(output_function) {
           srv_decorate_teal_data(
             id = sprintf("d_%s", output_function),
