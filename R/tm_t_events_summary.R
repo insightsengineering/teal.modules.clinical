@@ -244,7 +244,7 @@ template_events_summary <- function(anl_name,
   table_parent_list <- add_expr(
     table_parent_list,
     substitute(
-      expr = result_parent <- rtables::build_table(lyt = lyt_parent, df = df_parent, alt_counts_df = df_parent),
+      expr = table_parent <- rtables::build_table(lyt = lyt_parent, df = df_parent, alt_counts_df = df_parent),
       env = list(df_parent = as.name(parentname))
     )
   )
@@ -310,7 +310,7 @@ template_events_summary <- function(anl_name,
   table_anl_list <- add_expr(
     table_anl_list,
     substitute(
-      expr = result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = df_parent),
+      expr = table_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = df_parent),
       env = list(df_parent = as.name(parentname))
     )
   )
@@ -444,7 +444,7 @@ template_events_summary <- function(anl_name,
   table_list <- add_expr(
     table_list,
     quote(
-      rtables::col_info(result_parent) <- rtables::col_info(result_anl)
+      rtables::col_info(table_parent) <- rtables::col_info(table_anl)
     )
   )
 
@@ -461,10 +461,10 @@ template_events_summary <- function(anl_name,
     table_list <- add_expr(
       table_list,
       quote(
-        expr = result <- rtables::rbind(
-          result_anl[1:2, ],
-          result_parent,
-          result_anl[3:nrow(result_anl), ]
+        expr = table <- rtables::rbind(
+          table_anl[1:2, ],
+          table_parent,
+          table_anl[3:nrow(table_anl), ]
         )
       )
     )
@@ -472,9 +472,9 @@ template_events_summary <- function(anl_name,
     table_list <- add_expr(
       table_list,
       quote(
-        expr = result <- rtables::rbind(
-          result_anl[1:2, ],
-          result_anl[3:nrow(result_anl), ]
+        expr = table <- rtables::rbind(
+          table_anl[1:2, ],
+          table_anl[3:nrow(table_anl), ]
         )
       )
     )
@@ -482,7 +482,7 @@ template_events_summary <- function(anl_name,
     table_list <- add_expr(
       table_list,
       quote(
-        result <- rtables::rbind(result_anl, result_parent)
+        table <- rtables::rbind(table_anl, table_parent)
       )
     )
   }
@@ -521,6 +521,14 @@ template_events_summary <- function(anl_name,
 #'   adverse events sequence number from `dataset`. Used for counting total number of events.
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` as created from `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -638,7 +646,8 @@ tm_t_events_summary <- function(label,
                                 count_events = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
-                                basic_table_args = teal.widgets::basic_table_args()) {
+                                basic_table_args = teal.widgets::basic_table_args(),
+                                decorators = NULL) {
   message("Initializing tm_t_events_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -661,6 +670,8 @@ tm_t_events_summary <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table", null.ok = TRUE)
 
   args <- c(as.list(environment()))
 
@@ -695,7 +706,8 @@ tm_t_events_summary <- function(label,
         label = label,
         total_label = total_label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -758,6 +770,7 @@ ui_t_events_summary <- function(id, ...) {
         "Add All Patients column",
         value = a$add_total
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_item(
         "Table Settings",
         checkboxInput(
@@ -841,7 +854,8 @@ srv_t_events_summary <- function(id,
                                  label,
                                  total_label,
                                  na_level,
-                                 basic_table_args) {
+                                 basic_table_args,
+                                 decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -990,11 +1004,10 @@ srv_t_events_summary <- function(id,
         teal.code::eval_code(
           substitute(
             expr = {
-              rtables::main_title(result) <- title
-              rtables::main_footer(result) <- footer
-              rtables::prov_footer(result) <- p_footer
-              rtables::subtitles(result) <- subtitle
-              result
+              rtables::main_title(table) <- title
+              rtables::main_footer(table) <- footer
+              rtables::prov_footer(table) <- p_footer
+              rtables::subtitles(table) <- subtitle
             }, env = list(
               title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
               footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
@@ -1006,16 +1019,26 @@ srv_t_events_summary <- function(id,
     })
 
     # Outputs to render.
-    table_r <- reactive(table_q()[["result"]])
+
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -1034,7 +1057,7 @@ srv_t_events_summary <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

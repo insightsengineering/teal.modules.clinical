@@ -27,10 +27,9 @@
       
       $table
       {
-          result <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders") %>% 
+          table <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders") %>% 
               summarize_logistic(conf_level = 0.95, drop_and_remove_str = "_NA_") %>% 
               rtables::append_topleft("BESRSPI") %>% rtables::build_table(df = mod)
-          result
       }
       
 
@@ -63,10 +62,9 @@
       
       $table
       {
-          result <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders") %>% 
+          table <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders") %>% 
               summarize_logistic(conf_level = 0.95, drop_and_remove_str = "_NA_") %>% 
               rtables::append_topleft("BESRSPI") %>% rtables::build_table(df = mod)
-          result
       }
       
 
@@ -88,10 +86,9 @@
       
       $table
       {
-          result <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders") %>% 
+          table <- rtables::basic_table(title = "Summary of Logistic Regression Analysis for Best Confirmed Overall Response by Investigator for CR Responders") %>% 
               summarize_logistic(conf_level = 0.95, drop_and_remove_str = "_NA_") %>% 
               rtables::append_topleft("BESRSPI") %>% rtables::build_table(df = mod)
-          result
       }
       
 
