@@ -38,9 +38,8 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>% 
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>% 
               rtables::prune_table()
-          result
       }
       
 
@@ -83,9 +82,8 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>% 
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>% 
               rtables::prune_table()
-          result
       }
       
 
@@ -129,9 +127,8 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>% 
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>% 
               rtables::prune_table()
-          result
       }
       
 

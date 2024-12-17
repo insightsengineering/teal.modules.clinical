@@ -28,7 +28,7 @@
           .formats = c(count_fraction = format_count_fraction), denom = "N_col")
       
       $table_parent
-      result_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, 
+      table_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, 
           alt_counts_df = adsl)
       
       $layout_anl
@@ -41,12 +41,12 @@
               .labels = c(count = "Total AEs"), table_names = "total_aes")
       
       $table_anl
-      result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
+      table_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
       
       $table
       {
-          rtables::col_info(result_parent) <- rtables::col_info(result_anl)
-          result <- rtables::rbind(result_anl, result_parent)
+          rtables::col_info(table_parent) <- rtables::col_info(table_anl)
+          table <- rtables::rbind(table_anl, table_parent)
       }
       
 
@@ -79,7 +79,7 @@
           rtables::split_cols_by(var = "ARM") %>% rtables::add_overall_col(label = "All Patients")
       
       $table_parent
-      result_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, 
+      table_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, 
           alt_counts_df = adsl)
       
       $layout_anl
@@ -114,12 +114,12 @@
           show_labels = "visible")
       
       $table_anl
-      result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
+      table_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
       
       $table
       {
-          rtables::col_info(result_parent) <- rtables::col_info(result_anl)
-          result <- rtables::rbind(result_anl[1:2, ], result_anl[3:nrow(result_anl), 
+          rtables::col_info(table_parent) <- rtables::col_info(table_anl)
+          table <- rtables::rbind(table_anl[1:2, ], table_anl[3:nrow(table_anl), 
               ])
       }
       

@@ -52,8 +52,7 @@
           all_zero <- function(tr) {
               !inherits(tr, "ContentRow") && rtables::all_zero_or_na(tr)
           }
-          pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
-          pruned_and_sorted_result
+          table <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
       }
       
 
@@ -107,8 +106,7 @@
           all_zero <- function(tr) {
               !inherits(tr, "ContentRow") && rtables::all_zero_or_na(tr)
           }
-          pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
-          pruned_and_sorted_result
+          table <- sorted_result %>% rtables::trim_rows(criteria = all_zero)
       }
       
 
