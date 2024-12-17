@@ -1468,8 +1468,8 @@ srv_mmrm <- function(id,
     })
 
     decorated_tables_q <- lapply(
-      rlang::set_names(
-        c("lsmeans_table", "diagnostic_table", "fixed_effects_table", "covariance_table")
+      stats::setNames(
+        nm = c("lsmeans_table", "diagnostic_table", "fixed_effects_table", "covariance_table")
       ),
       function(output_function) {
         srv_decorate_teal_data(
@@ -1485,7 +1485,7 @@ srv_mmrm <- function(id,
     decorated_objs_q <- c(
       decorated_tables_q,
       lapply(
-        rlang::set_names(c("lsmeans_plot", "diagnostic_plot")),
+        setNames(nm = c("lsmeans_plot", "diagnostic_plot")),
         function(output_function) {
           srv_decorate_teal_data(
             id = sprintf("d_%s", output_function),
