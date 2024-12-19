@@ -300,8 +300,8 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE, la
     checkmate::check_class(cs, classes = "choices_selected"),
     .var.name = cs_name
   )
-  if (!multiple && length(cs$selected) != 1 && !is.null(cs$selected)) {
-    stop(cs_name, "must only have 1 selected value")
+  if (!inherits(cs$selected, "delayed_data") && !multiple && length(cs$selected) != 1 && !is.null(cs$selected)) {
+    stop(cs_name, " must only have 1 selected value")
   }
 
   if (inherits(cs, "choices_selected")) {
