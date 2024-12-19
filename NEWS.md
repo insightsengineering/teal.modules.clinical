@@ -16,6 +16,9 @@
 * Began deprecation cycle for the `show_labels` argument of `template_summary` which has no effect on the `tm_t_summary` module.
 * Replaced instances of deprecated `strata` argument to `tern::control_lineplot_vars()` with `group_var`.
 
+### Bug FIxes
+* Fixed bug in creating modules with `delayed_data` and `teal.transform::all_choices`.
+
 # teal.modules.clinical 0.9.1
 
 ### Enhancements
