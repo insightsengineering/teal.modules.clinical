@@ -1068,7 +1068,7 @@ select_decorators <- function(decorators, scope) {
 
 #' Convert flat list of `teal_transform_module` to named lists
 #'
-#' @param decorators (list of `teal_transformodules`) to normalize.
+#' @param decorators (list of `teal_transform_module`) to normalize.
 #' @return A named list of lists with `teal_transform_module` objects.
 #' @keywords internal
 normalize_decorators <- function(decorators) {
