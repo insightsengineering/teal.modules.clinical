@@ -7,7 +7,7 @@
 normalize_decorators(decorators)
 }
 \arguments{
-\item{decorators}{(list of \code{teal_transformodules}) to normalize.}
+\item{decorators}{(list of \code{teal_transform_module}) to normalize.}
 }
 \value{
 A named list of lists with \code{teal_transform_module} objects.
