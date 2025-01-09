@@ -190,8 +190,10 @@ tm_g_barchart_simple <- function(x = NULL,
 
   ui_args <- as.list(environment())
 
-  data_extract_list <- list(x = x, fill = fill,
-                            x_facet = x_facet, y_facet = y_facet)
+  data_extract_list <- list(
+    x = x, fill = fill,
+    x_facet = x_facet, y_facet = y_facet
+  )
 
   module(
     label = label,
