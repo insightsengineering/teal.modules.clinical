@@ -34,7 +34,7 @@ Depends:
     R (>= 4.0),
     teal (>= 0.15.2.9079),
     teal.transform (>= 0.5.0.9015),
-    tern (>= 0.9.6)
+    tern (>= 0.9.6.9018)
 Imports:
     broom (>= 0.7.10),
     checkmate (>= 2.1.0),
@@ -46,9 +46,9 @@ Imports:
     grid,
     lifecycle (>= 0.2.0),
     methods,
-    rlistings (>= 0.2.8),
+    rlistings (>= 0.2.10),
     rmarkdown (>= 2.23),
-    rtables (>= 0.6.10.9004),
+    rtables (>= 0.6.11),
     scales,
     shiny (>= 1.6.0),
     shinyjs,
@@ -101,3 +101,6 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE, packages = c("roxy.shinylive"))
 RoxygenNote: 7.3.2
+Remotes:
+    insightsengineering/rtables@981_cran_v0.6.11,
+    insightsengineering/tern@upversion_dep
