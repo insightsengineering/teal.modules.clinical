@@ -101,6 +101,3 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE, packages = c("roxy.shinylive"))
 RoxygenNote: 7.3.2
-Remotes:
-    insightsengineering/rtables@981_cran_v0.6.11,
-    insightsengineering/tern@upversion_dep
