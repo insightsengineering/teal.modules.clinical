@@ -210,6 +210,7 @@ template_logistic <- function(dataname,
 #' `LGRT02` available [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/lgrt02.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_logistic
 #' @param arm_var ([teal.transform::choices_selected()] or `NULL`)\cr object
 #'   with all available choices and preselected option for variable names that can be used as `arm_var`. This defines
@@ -305,6 +306,7 @@ tm_t_logistic <- function(label,
                           pre_output = NULL,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args(),
+                          transformators = list(),
                           decorators = NULL) {
   message("Initializing tm_t_logistic")
   checkmate::assert_string(label)
@@ -347,6 +349,7 @@ tm_t_logistic <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

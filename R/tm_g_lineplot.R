@@ -210,6 +210,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #' This module produces a [ggplot2::ggplot()] type line plot, with optional summary table, for standard ADaM data.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_g_lineplot
 #'
 #' @inherit module_arguments return seealso
@@ -307,6 +308,7 @@ tm_g_lineplot <- function(label,
                           pre_output = NULL,
                           post_output = NULL,
                           ggplot2_args = teal.widgets::ggplot2_args(),
+                          transformators = list(),
                           decorators = NULL) {
   if (lifecycle::is_present(strata)) {
     warning(
@@ -377,6 +379,7 @@ tm_g_lineplot <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

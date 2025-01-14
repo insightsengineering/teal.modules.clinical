@@ -77,6 +77,7 @@ template_medical_history <- function(dataname = "ANL",
 #' This module produces a patient profile medical history report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_medical_history
 #' @param mhterm ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHTERM` variable from `dataname`.
@@ -147,6 +148,7 @@ tm_t_pp_medical_history <- function(label,
                                     mhdistat = NULL,
                                     pre_output = NULL,
                                     post_output = NULL,
+                                    transformators = list(),
                                     decorators = NULL) {
   message("Initializing tm_t_pp_medical_history")
   checkmate::assert_string(label)
@@ -183,6 +185,7 @@ tm_t_pp_medical_history <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }

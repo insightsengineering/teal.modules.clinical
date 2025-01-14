@@ -6,6 +6,7 @@
 #' `x_facet`, and `y_facet` parameters. Any parameters set to `NULL` (default) are ignored.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @param x (`data_extract_spec`)\cr variable on the x-axis.
 #' @param fill (`data_extract_spec`)\cr grouping variable to determine bar colors.
@@ -155,6 +156,7 @@ tm_g_barchart_simple <- function(x = NULL,
                                  pre_output = NULL,
                                  post_output = NULL,
                                  ggplot2_args = teal.widgets::ggplot2_args(),
+                                 transformators = list(),
                                  decorators = NULL) {
   message("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
@@ -204,6 +206,7 @@ tm_g_barchart_simple <- function(x = NULL,
       ggplot2_args = ggplot2_args,
       decorators = decorators
     ),
+    transformators = transformators,
     datanames = "all"
   )
 }

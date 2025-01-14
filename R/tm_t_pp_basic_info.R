@@ -58,6 +58,7 @@ template_basic_info <- function(dataname = "ANL",
 #' This module produces a patient profile basic info report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_basic_info
 #' @param vars ([teal.transform::choices_selected()])\cr  object with all
 #'   available choices and preselected option for variables from `dataname` to show in the table.
@@ -111,6 +112,7 @@ tm_t_pp_basic_info <- function(label,
                                vars = NULL,
                                pre_output = NULL,
                                post_output = NULL,
+                               transformators = list(),
                                decorators = NULL) {
   message("Initializing tm_t_pp_basic_info")
   checkmate::assert_string(label)
@@ -141,6 +143,7 @@ tm_t_pp_basic_info <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = dataname
   )
 }

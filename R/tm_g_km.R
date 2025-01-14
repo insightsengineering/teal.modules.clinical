@@ -264,6 +264,7 @@ template_g_km <- function(dataname = "ANL",
 #' This module produces a `ggplot`-style Kaplan-Meier plot for data with ADaM structure.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_g_km
 #' @param facet_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for names of variable that can be used for plot faceting.
@@ -373,6 +374,7 @@ tm_g_km <- function(label,
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL,
+                    transformators = list(),
                     decorators = NULL) {
   message("Initializing tm_g_km")
 
@@ -430,6 +432,7 @@ tm_g_km <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

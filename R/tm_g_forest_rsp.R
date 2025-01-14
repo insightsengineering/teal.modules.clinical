@@ -239,6 +239,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_forest_rsp
 #'
 #' @inherit module_arguments return seealso
@@ -364,6 +365,7 @@ tm_g_forest_rsp <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args(),
+                            transformators = list(),
                             decorators = NULL) {
   message("Initializing tm_g_forest_rsp")
   checkmate::assert_string(label)
@@ -424,6 +426,7 @@ tm_g_forest_rsp <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

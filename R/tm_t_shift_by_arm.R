@@ -186,6 +186,7 @@ template_shift_by_arm <- function(dataname,
 #' This module produces a summary table of analysis indicator levels by arm.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_shift_by_arm
 #'
 #' @inherit module_arguments return seealso
@@ -276,6 +277,7 @@ tm_t_shift_by_arm <- function(label,
                               pre_output = NULL,
                               post_output = NULL,
                               basic_table_args = teal.widgets::basic_table_args(),
+                              transformators = list(),
                               decorators = NULL) {
   if (lifecycle::is_present(base_var)) {
     baseline_var <- base_var
@@ -337,6 +339,7 @@ tm_t_shift_by_arm <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

@@ -310,6 +310,7 @@ template_summary_by <- function(parentname,
 #' This module produces a table to summarize variables by row groups.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_summary_by
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for variable names that can be used as `arm_var`.
@@ -403,6 +404,7 @@ tm_t_summary_by <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             basic_table_args = teal.widgets::basic_table_args(),
+                            transformators = list(),
                             decorators = NULL) {
   message("Initializing tm_t_summary_by")
   checkmate::assert_string(label)
@@ -465,6 +467,7 @@ tm_t_summary_by <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

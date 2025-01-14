@@ -497,6 +497,7 @@ template_events_summary <- function(anl_name,
 #' This module produces an adverse events summary table.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with all
@@ -647,6 +648,7 @@ tm_t_events_summary <- function(label,
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args(),
+                                transformators = list(),
                                 decorators = NULL) {
   message("Initializing tm_t_events_summary")
   checkmate::assert_string(label)
@@ -710,6 +712,7 @@ tm_t_events_summary <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

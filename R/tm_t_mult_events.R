@@ -275,6 +275,7 @@ template_mult_events <- function(dataname,
 #' This module produces a table of multiple events by term.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_mult_events
 #' @param seq_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as analysis sequence number
@@ -353,6 +354,7 @@ tm_t_mult_events <- function(label,
                              pre_output = NULL,
                              post_output = NULL,
                              basic_table_args = teal.widgets::basic_table_args(),
+                             transformators = list(),
                              decorators = NULL) {
   message("Initializing tm_t_mult_events")
   checkmate::assert_string(label)
@@ -400,6 +402,7 @@ tm_t_mult_events <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

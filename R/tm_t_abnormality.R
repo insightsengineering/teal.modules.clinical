@@ -225,6 +225,7 @@ template_abnormality <- function(parentname,
 #' This module produces a table to summarize abnormality.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_abnormality
 #' @param grade ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for variable names that can be used to
@@ -338,6 +339,7 @@ tm_t_abnormality <- function(label,
                              post_output = NULL,
                              na_level = default_na_str(),
                              basic_table_args = teal.widgets::basic_table_args(),
+                             transformators = list(),
                              decorators = NULL) {
   message("Initializing tm_t_abnormality")
   checkmate::assert_string(label)
@@ -392,6 +394,7 @@ tm_t_abnormality <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

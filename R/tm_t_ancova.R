@@ -420,6 +420,7 @@ template_ancova <- function(dataname = "ANL",
 #' endpoints are selected.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_ancova
 #'
 #' @inherit module_arguments return
@@ -528,6 +529,7 @@ tm_t_ancova <- function(label,
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
+                        transformators = list(),
                         decorators = NULL) {
   message("Initializing tm_t_ancova")
   checkmate::assert_string(label)
@@ -580,6 +582,7 @@ tm_t_ancova <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

@@ -773,6 +773,7 @@ template_events_col_by_grade <- function(dataname,
 #' This module produces a table to summarize events by grade.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
 #' @param col_by_grade (`logical`)\cr whether to display the grading groups in nested columns.
@@ -863,6 +864,7 @@ tm_t_events_by_grade <- function(label,
                                  pre_output = NULL,
                                  post_output = NULL,
                                  basic_table_args = teal.widgets::basic_table_args(),
+                                 transformators = list(),
                                  decorators = NULL) {
   message("Initializing tm_t_events_by_grade")
   checkmate::assert_string(label)
@@ -911,6 +913,7 @@ tm_t_events_by_grade <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

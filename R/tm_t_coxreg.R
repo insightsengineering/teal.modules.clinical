@@ -332,6 +332,7 @@ template_coxreg_m <- function(dataname,
 #' and `COXT02` [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt02.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_coxreg_u
 #' @inheritParams template_coxreg_m
 #' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used instead of the
@@ -528,6 +529,7 @@ tm_t_coxreg <- function(label,
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
+                        transformators = list(),
                         decorators = NULL) {
   message("Initializing tm_t_coxreg")
   checkmate::assert_string(label)
@@ -575,6 +577,7 @@ tm_t_coxreg <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

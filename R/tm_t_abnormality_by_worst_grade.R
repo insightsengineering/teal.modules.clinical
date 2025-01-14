@@ -234,6 +234,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #' This module produces a table to summarize laboratory test results with highest grade post-baseline
 
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_abnormality_by_worst_grade
 #' @param atoxgr_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option
@@ -347,6 +348,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             pre_output = NULL,
                                             post_output = NULL,
                                             basic_table_args = teal.widgets::basic_table_args(),
+                                            transformators = list(),
                                             decorators = NULL) {
   message("Initializing tm_t_abnormality_by_worst_grade")
   checkmate::assert_string(label)
@@ -394,6 +396,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

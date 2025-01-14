@@ -228,6 +228,7 @@ template_therapy <- function(dataname = "ANL",
 #' This module produces a patient profile therapy table and [ggplot2::ggplot()] type plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_therapy
 #' @param cmdose ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `CMDOSE` variable from `dataname`.
@@ -370,6 +371,7 @@ tm_g_pp_therapy <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args(),
+                            transformators = list(),
                             decorators = NULL) {
   message("Initializing tm_g_pp_therapy")
   checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
@@ -433,6 +435,7 @@ tm_g_pp_therapy <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }

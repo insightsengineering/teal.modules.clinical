@@ -129,6 +129,7 @@ template_a_gee <- function(output_table,
 #' This module produces an analysis table using Generalized Estimating Equations (GEE).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @inheritParams template_a_gee
 #'
@@ -208,6 +209,7 @@ tm_a_gee <- function(label,
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),
+                     transformators = list(),
                      decorators = NULL) {
   message("Initializing tm_a_gee (prototype)")
 
@@ -257,6 +259,7 @@ tm_a_gee <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

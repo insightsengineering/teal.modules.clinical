@@ -440,6 +440,7 @@ template_mmrm_plots <- function(fit_name,
 #' This module produces analysis tables and plots for Mixed Model Repeated Measurements.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_mmrm_tables
 #' @inheritParams template_mmrm_plots
 #' @param method ([teal.transform::choices_selected()])\cr object with
@@ -569,6 +570,7 @@ tm_a_mmrm <- function(label,
                       post_output = NULL,
                       basic_table_args = teal.widgets::basic_table_args(),
                       ggplot2_args = teal.widgets::ggplot2_args(),
+                      transformators = list(),
                       decorators = NULL) {
   message("Initializing tm_a_mmrm")
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
@@ -644,6 +646,7 @@ tm_a_mmrm <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

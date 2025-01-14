@@ -64,6 +64,7 @@ template_prior_medication <- function(dataname = "ANL",
 #' This module produces a patient profile prior medication report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_prior_medication
 #'
 #' @inherit module_arguments return
@@ -139,6 +140,7 @@ tm_t_pp_prior_medication <- function(label,
                                      cmstdy = NULL,
                                      pre_output = NULL,
                                      post_output = NULL,
+                                     transformators = list(),
                                      decorators = NULL) {
   message("Initializing tm_t_pp_prior_medication")
   checkmate::assert_string(label)
@@ -177,6 +179,7 @@ tm_t_pp_prior_medication <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }

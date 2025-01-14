@@ -379,6 +379,7 @@ template_tte <- function(dataname = "ANL",
 #' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/ttet01.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_tte
 #' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
@@ -501,6 +502,7 @@ tm_t_tte <- function(label,
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),
+                     transformators = list(),
                      decorators = NULL) {
   message("Initializing tm_t_tte")
   checkmate::assert_string(label)
@@ -554,6 +556,7 @@ tm_t_tte <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
