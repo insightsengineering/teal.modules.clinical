@@ -10,9 +10,9 @@ srv_decorate_teal_data(id, data, decorators, expr, expr_is_reactive = FALSE)
 ui_decorate_teal_data(id, decorators, ...)
 }
 \arguments{
-\item{id}{(\code{character(1)}) Module id}
+\item{id}{(\code{character(1)}) \code{shiny} module instance id.}
 
-\item{data}{(\verb{reactive teal_data})}
+\item{data}{(\code{reactive} returning \code{teal_data})}
 
 \item{expr}{(\code{expression} or \code{reactive}) to evaluate on the output of the decoration.
 When an expression it must be inline code. See \code{\link[=within]{within()}}
