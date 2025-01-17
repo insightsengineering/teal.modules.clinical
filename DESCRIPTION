@@ -80,7 +80,7 @@ Suggests:
 VignetteBuilder:
     knitr,
     rmarkdown
-Config/Needs/verdepcheck: insightsengineering/teal,
+Config/Needs/verdepcheck: insightsengineering/teal, insightsengineering/teal.slice,
     insightsengineering/teal.transform, insightsengineering/tern,
     tidymodels/broom, mllg/checkmate, wilkelab/cowplot, tidyverse/dplyr,
     rstudio/DT, tidyverse/ggplot2, slowkow/ggrepel, r-lib/lifecycle,
