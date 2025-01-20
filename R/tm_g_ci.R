@@ -292,6 +292,13 @@ tm_g_ci <- function(label,
   checkmate::assert_class(y_var, classes = "data_extract_spec")
   checkmate::assert_class(x_var, classes = "data_extract_spec")
   checkmate::assert_class(color, classes = "data_extract_spec")
+  x_var <- teal.transform::list_extract_spec(x_var, allow_null = TRUE)
+  y_var <- teal.transform::list_extract_spec(y_var, allow_null = TRUE)
+  color <- teal.transform::list_extract_spec(color, allow_null = TRUE)
+  teal.transform::check_no_multiple_selection(x_var)
+  teal.transform::check_no_multiple_selection(y_var)
+  teal.transform::check_no_multiple_selection(color)
+
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -307,6 +314,8 @@ tm_g_ci <- function(label,
   assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
+
+  data_extract_list <- list(x_var = x_var, y_var = y_var, color = color)
 
   module(
     label = label,
@@ -324,7 +333,7 @@ tm_g_ci <- function(label,
     transformators = transformators,
     ui = ui_g_ci,
     ui_args = args,
-    datanames = "all"
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
