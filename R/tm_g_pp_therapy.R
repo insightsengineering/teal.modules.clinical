@@ -372,7 +372,7 @@ tm_g_pp_therapy <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args(),
                             transformators = list(),
-                            decorators = NULL) {
+                            decorators = list()) {
   message("Initializing tm_g_pp_therapy")
   checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
@@ -401,7 +401,7 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, names = c("plot", "table"), null.ok = TRUE)
+  assert_decorators(decorators, names = c("plot", "table"))
 
   args <- as.list(environment())
   data_extract_list <- list(

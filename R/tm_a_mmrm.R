@@ -571,7 +571,7 @@ tm_a_mmrm <- function(label,
                       basic_table_args = teal.widgets::basic_table_args(),
                       ggplot2_args = teal.widgets::ggplot2_args(),
                       transformators = list(),
-                      decorators = NULL) {
+                      decorators = list()) {
   message("Initializing tm_a_mmrm")
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
@@ -610,8 +610,7 @@ tm_a_mmrm <- function(label,
       "fixed_effects_table",
       "diagnostic_table",
       "diagnostic_plot"
-    ),
-    null.ok = TRUE
+    )
   )
 
   args <- as.list(environment())

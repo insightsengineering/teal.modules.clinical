@@ -375,7 +375,7 @@ tm_g_km <- function(label,
                     pre_output = NULL,
                     post_output = NULL,
                     transformators = list(),
-                    decorators = NULL) {
+                    decorators = list()) {
   message("Initializing tm_g_km")
 
   checkmate::assert_string(label)
@@ -399,7 +399,7 @@ tm_g_km <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "plot", null.ok = TRUE)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(

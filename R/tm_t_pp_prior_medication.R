@@ -141,7 +141,7 @@ tm_t_pp_prior_medication <- function(label,
                                      pre_output = NULL,
                                      post_output = NULL,
                                      transformators = list(),
-                                     decorators = NULL) {
+                                     decorators = list()) {
   message("Initializing tm_t_pp_prior_medication")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -154,7 +154,7 @@ tm_t_pp_prior_medication <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(

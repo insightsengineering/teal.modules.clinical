@@ -289,7 +289,7 @@ tm_g_pp_adverse_events <- function(label,
                                    post_output = NULL,
                                    ggplot2_args = teal.widgets::ggplot2_args(),
                                    transformators = list(),
-                                   decorators = NULL) {
+                                   decorators = list()) {
   message("Initializing tm_g_pp_adverse_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -315,7 +315,7 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, names = c("plot", "table"), null.ok = TRUE)
+  assert_decorators(decorators, names = c("plot", "table"))
 
   args <- as.list(environment())
   data_extract_list <- list(

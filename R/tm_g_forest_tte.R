@@ -350,7 +350,7 @@ tm_g_forest_tte <- function(label,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args(),
                             transformators = list(),
-                            decorators = NULL) {
+                            decorators = list()) {
   message("Initializing tm_g_forest_tte")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -379,7 +379,7 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "plot", null.ok = TRUE)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
 

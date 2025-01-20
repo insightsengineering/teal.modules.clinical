@@ -281,7 +281,7 @@ tm_g_pp_vitals <- function(label,
                            post_output = NULL,
                            ggplot2_args = teal.widgets::ggplot2_args(),
                            transformators = list(),
-                           decorators = NULL) {
+                           decorators = list()) {
   if (lifecycle::is_present(aval)) {
     aval_var <- aval
     warning(
@@ -317,7 +317,7 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_multi_class(aval_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(xaxis, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "plot")
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(

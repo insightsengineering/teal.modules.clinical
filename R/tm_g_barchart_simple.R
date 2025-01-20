@@ -157,7 +157,7 @@ tm_g_barchart_simple <- function(x = NULL,
                                  post_output = NULL,
                                  ggplot2_args = teal.widgets::ggplot2_args(),
                                  transformators = list(),
-                                 decorators = NULL) {
+                                 decorators = list()) {
   message("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
@@ -183,7 +183,7 @@ tm_g_barchart_simple <- function(x = NULL,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, names = "plot", null.ok = TRUE)
+  assert_decorators(decorators, names = "plot")
 
   plot_options <- utils::modifyList(
     list(stacked = FALSE), # default

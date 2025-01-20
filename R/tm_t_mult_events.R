@@ -355,7 +355,7 @@ tm_t_mult_events <- function(label,
                              post_output = NULL,
                              basic_table_args = teal.widgets::basic_table_args(),
                              transformators = list(),
-                             decorators = NULL) {
+                             decorators = list()) {
   message("Initializing tm_t_mult_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -373,7 +373,7 @@ tm_t_mult_events <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 

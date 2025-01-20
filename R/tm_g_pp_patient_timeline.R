@@ -473,7 +473,7 @@ tm_g_pp_patient_timeline <- function(label,
                                      post_output = NULL,
                                      ggplot2_args = teal.widgets::ggplot2_args(),
                                      transformators = list(),
-                                     decorators = NULL) {
+                                     decorators = list()) {
   message("Initializing tm_g_pp_patient_timeline")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname_adcm)
@@ -500,7 +500,7 @@ tm_g_pp_patient_timeline <- function(label,
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "plot", null.ok = TRUE)
+  assert_decorators(decorators, "plot")
 
   xor_error_string <- function(x, y) {
     paste(

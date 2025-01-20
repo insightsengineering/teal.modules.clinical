@@ -291,7 +291,7 @@ tm_t_summary <- function(label,
                          post_output = NULL,
                          basic_table_args = teal.widgets::basic_table_args(),
                          transformators = list(),
-                         decorators = NULL) {
+                         decorators = list()) {
   message("Initializing tm_t_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -308,7 +308,7 @@ tm_t_summary <- function(label,
   checkmate::assert_flag(show_arm_var_labels)
   checkmate::assert_string(total_label)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table")
 
   useNA <- match.arg(useNA) # nolint: object_name.
   denominator <- match.arg(denominator)

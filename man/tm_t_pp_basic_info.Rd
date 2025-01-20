@@ -12,7 +12,7 @@ tm_t_pp_basic_info(
   pre_output = NULL,
   post_output = NULL,
   transformators = list(),
-  decorators = NULL
+  decorators = list()
 )
 }
 \arguments{
@@ -35,8 +35,8 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 To learn more check \code{vignette("data-transform-as-shiny-module", package = "teal")}.}
 
 \item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-" (\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module} or" \code{NULL}) optional,
-if not \code{NULL}, decorator for tables or plots included in the module.
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
 When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
 
 Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
@@ -93,8 +93,8 @@ if (interactive()) {
 \describe{
   \item{example-1}{
     \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWolAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyto7u3uBoeD6kuQBdVwgcgqKk4GAFMF38442tiCU0VCL46PZ0nSSdAF5n0NwnviERUTedD9hGJHhAMhkSn4Jug-PQoKIZH54sYiKDweDqFB6HBqADjgAheEyHQASQgKOOXzB6I+nhWunex1OlKe6NQHloFAmxFxjLADlyDnxACkSdkWdT0ZoWP93gQYu0CGI-KIcXB1HB+GiaRl5YqxADpYxaFiRJMFTIQac5FSdRlVSINfwAQRHicsABZSk6JkAcRceB9YFyTgAGt7jgBhADyDgAcvYAJoRsBYTKRgMpY5OaO5XK2WzHZo64vg0vNZq0Yw6djxchqDTaaw2NLU0RxCCsTLodg3AAkgloKX7qsY2kYzQaSjADQ2QA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWolAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyto7u3uBoeD6kuQBdVwgcgqKk4GAFMF38442tiCU0VCL46PZ0nSSdAF5n0NwnviERUTedD9hGJHhAMhkSn4Jug-PQoKIZH54sYiKDweDqFB6HBqADjgAheEyHQASQgKOOXzB6I+nhWunex1OlKe6NQHloFAmxFxjLADlyDnxACkSdkWdT0ZoWP93gQYu0CGI-KIcXB1HB+GiaRl5YqxADpYxaFiRJMFTIQac5FSdRlVSINfwAQRHicsABZSk6JkAcRceB9YFyTgAGt7jgBhADyDgAcvYAJoRsBYTKRgMpY5OaO5XK2WzHZo64vg0vNZq0Yw6djxchqDTaaw2NLU0RxCCsTLodg3AAkgloKX7qsY2kYzQaSjADQ2QA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
-    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWolAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEyto7u3uBoeD6kuQBdVwgcgqKk4GAFMF38442tiCU0VCL46PZ0nSSdAF5n0NwnviERUTedD9hGJHhAMhkSn4Jug-PQoKIZH54sYiKDweDqFB6HBqADjgAheEyHQASQgKOOXzB6I+nhWunex1OlKe6NQHloFAmxFxjLADlyDnxACkSdkWdT0ZoWP93gQYu0CGI-KIcXB1HB+GiaRl5YqxADpYxaFiRJMFTIQac5FSdRlVSINfwAQRHicsABZSk6JkAcRceB9YFyTgAGt7jgBhADyDgAcvYAJoRsBYTKRgMpY5OaO5XK2WzHZo64vg0vNZq0Yw6djxchqDTaaw2NLU0RxCCsTLodg3AAkgloKX7qsY2kYzQaSjADQ2QA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
   }
 }
 }

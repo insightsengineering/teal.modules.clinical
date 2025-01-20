@@ -210,7 +210,7 @@ tm_a_gee <- function(label,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),
                      transformators = list(),
-                     decorators = NULL) {
+                     decorators = list()) {
   message("Initializing tm_a_gee (prototype)")
 
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
@@ -229,7 +229,7 @@ tm_a_gee <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "table", null.ok = TRUE)
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 

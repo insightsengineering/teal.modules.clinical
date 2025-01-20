@@ -288,7 +288,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        post_output = NULL,
                                        basic_table_args = teal.widgets::basic_table_args(),
                                        transformators = list(),
-                                       decorators = NULL) {
+                                       decorators = list()) {
   if (lifecycle::is_present(base_var)) {
     baseline_var <- base_var
     warning(
@@ -318,7 +318,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
