@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9047
-Date: 2025-01-17
+Version: 0.9.1.9048
+Date: 2025-01-21
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -80,11 +80,12 @@ Suggests:
 VignetteBuilder:
     knitr,
     rmarkdown
-Config/Needs/verdepcheck: insightsengineering/teal, insightsengineering/teal.slice,
-    insightsengineering/teal.transform, insightsengineering/tern,
-    tidymodels/broom, mllg/checkmate, wilkelab/cowplot, tidyverse/dplyr,
-    rstudio/DT, tidyverse/ggplot2, slowkow/ggrepel, r-lib/lifecycle,
-    daroczig/logger, insightsengineering/rlistings, rstudio/rmarkdown,
+Config/Needs/verdepcheck: insightsengineering/teal,
+    insightsengineering/teal.slice, insightsengineering/teal.transform,
+    insightsengineering/tern, tidymodels/broom, mllg/checkmate,
+    wilkelab/cowplot, tidyverse/dplyr, rstudio/DT, tidyverse/ggplot2,
+    slowkow/ggrepel, r-lib/lifecycle, daroczig/logger,
+    insightsengineering/rlistings, rstudio/rmarkdown,
     insightsengineering/rtables, r-lib/scales, rstudio/shiny,
     daattali/shinyjs, rstudio/shinyvalidate, dreamRs/shinyWidgets,
     insightsengineering/teal.code, insightsengineering/teal.data,
