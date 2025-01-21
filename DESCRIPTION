@@ -75,8 +75,8 @@ Suggests:
     rvest,
     shinytest2,
     styler,
-    testthat (>= 3.2.2),
-    withr (> 3.0.2)
+    testthat (>= 3.1.5),
+    withr (> 2.0.1.5)
 VignetteBuilder:
     knitr,
     rmarkdown
