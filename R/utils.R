@@ -1010,6 +1010,10 @@ check_decorators <- function(x, names = NULL) { # nolint: object_name.
   if (!is.null(names)) {
     check_message <- if (isTRUE(check_message)) {
       out_message <- checkmate::check_names(names(x), subset.of = c("default", names))
+      if (length(names(x)) != length(unique(names(x)))) {
+        out_message <- "Non-unique names in decorators."
+      }
+
       # see https://github.com/insightsengineering/teal.logger/issues/101
       if (isTRUE(out_message)) {
         out_message
