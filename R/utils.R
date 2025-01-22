@@ -1015,7 +1015,7 @@ check_decorators <- function(x, names = NULL) { # nolint: object_name.
         if (isTRUE(out_message)) {
           out_message <- unique_message
         } else {
-          out_message <- paste0(out_message, '. Also, ', tolower(unique_message))
+          out_message <- paste0(out_message, ". Also, ", tolower(unique_message))
         }
       }
 
