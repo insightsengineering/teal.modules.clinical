@@ -173,6 +173,7 @@ template_g_ipp <- function(dataname = "ANL",
 #' values over time for each patient, using data with ADaM structure.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_g_ipp
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as arm variable.
@@ -303,7 +304,8 @@ tm_g_ipp <- function(label,
                      pre_output = NULL,
                      post_output = NULL,
                      ggplot2_args = teal.widgets::ggplot2_args(),
-                     decorators = NULL) {
+                     transformators = list(),
+                     decorators = list()) {
   if (lifecycle::is_present(base_var)) {
     baseline_var <- base_var
     warning(
@@ -340,7 +342,7 @@ tm_g_ipp <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "plot", null.ok = TRUE)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -370,6 +372,7 @@ tm_g_ipp <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

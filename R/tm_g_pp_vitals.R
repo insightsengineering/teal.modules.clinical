@@ -203,6 +203,7 @@ template_vitals <- function(dataname = "ANL",
 #' `"SYSBP"`, `"DIABP"`, `"TEMP"`, `"RESP"`, `"OXYSAT"`.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_vitals
 #' @param xaxis ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
@@ -279,7 +280,8 @@ tm_g_pp_vitals <- function(label,
                            pre_output = NULL,
                            post_output = NULL,
                            ggplot2_args = teal.widgets::ggplot2_args(),
-                           decorators = NULL) {
+                           transformators = list(),
+                           decorators = list()) {
   if (lifecycle::is_present(aval)) {
     aval_var <- aval
     warning(
@@ -315,7 +317,7 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_multi_class(aval_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(xaxis, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "plot")
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -342,6 +344,7 @@ tm_g_pp_vitals <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }

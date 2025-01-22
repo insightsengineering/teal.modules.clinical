@@ -142,6 +142,7 @@ template_laboratory <- function(dataname = "ANL",
 #' This module produces a patient profile laboratory table using ADaM datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_laboratory
 #' @param param ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `PARAM` variable from `dataname`.
@@ -230,7 +231,8 @@ tm_t_pp_laboratory <- function(label,
                                anrind = NULL,
                                pre_output = NULL,
                                post_output = NULL,
-                               decorators = NULL) {
+                               transformators = list(),
+                               decorators = list()) {
   if (lifecycle::is_present(aval)) {
     aval_var <- aval
     warning(
@@ -267,7 +269,7 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -294,6 +296,7 @@ tm_t_pp_laboratory <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }

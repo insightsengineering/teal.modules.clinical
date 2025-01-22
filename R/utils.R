@@ -1003,18 +1003,22 @@ ui_decorate_teal_data <- function(id, decorators, ...) {
 
 #' Internal function to check if decorators is a valid object
 #' @noRd
-check_decorators <- function(x, names = NULL, null.ok = FALSE) { # nolint: object_name.
-  checkmate::qassert(null.ok, "B1")
+check_decorators <- function(x, names = NULL) { # nolint: object_name.
 
-  check_message <- checkmate::check_list(
-    x,
-    null.ok = null.ok,
-    names = "named"
-  )
+  check_message <- checkmate::check_list(x, names = "named")
 
   if (!is.null(names)) {
     check_message <- if (isTRUE(check_message)) {
       out_message <- checkmate::check_names(names(x), subset.of = c("default", names))
+      if (length(names(x)) != length(unique(names(x)))) {
+        unique_message <- "Non-unique names in decorators"
+        if (isTRUE(out_message)) {
+          out_message <- unique_message
+        } else {
+          out_message <- paste0(out_message, ". Also, ", tolower(unique_message))
+        }
+      }
+
       # see https://github.com/insightsengineering/teal.logger/issues/101
       if (isTRUE(out_message)) {
         out_message
@@ -1034,7 +1038,6 @@ check_decorators <- function(x, names = NULL, null.ok = FALSE) { # nolint: objec
     x,
     checkmate::test_list,
     types = "teal_transform_module",
-    null.ok = TRUE,
     FUN.VALUE = logical(1L)
   )
 
@@ -1072,7 +1075,7 @@ select_decorators <- function(decorators, scope) {
 #' @return A named list of lists with `teal_transform_module` objects.
 #' @keywords internal
 normalize_decorators <- function(decorators) {
-  if (checkmate::test_list(decorators, "teal_transform_module", null.ok = TRUE)) {
+  if (checkmate::test_list(decorators, "teal_transform_module")) {
     if (checkmate::test_names(names(decorators))) {
       lapply(decorators, list)
     } else {

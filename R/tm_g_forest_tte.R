@@ -239,6 +239,7 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_forest_tte
 #'
 #' @inherit module_arguments return seealso
@@ -348,7 +349,8 @@ tm_g_forest_tte <- function(label,
                             pre_output = NULL,
                             post_output = NULL,
                             ggplot2_args = teal.widgets::ggplot2_args(),
-                            decorators = NULL) {
+                            transformators = list(),
+                            decorators = list()) {
   message("Initializing tm_g_forest_tte")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -377,7 +379,7 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "plot", null.ok = TRUE)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
 
@@ -410,6 +412,7 @@ tm_g_forest_tte <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

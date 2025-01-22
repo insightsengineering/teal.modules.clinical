@@ -211,6 +211,7 @@ template_exposure <- function(parentname,
 #' The module produces an exposure table for risk management plan.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_exposure
 #' @param row_by_var ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for
@@ -332,7 +333,8 @@ tm_t_exposure <- function(label,
                           pre_output = NULL,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args(),
-                          decorators = NULL) {
+                          transformators = list(),
+                          decorators = list()) {
   message("Initializing tm_t_exposure")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -353,7 +355,7 @@ tm_t_exposure <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "table", null.ok = TRUE)
+  assert_decorators(decorators, "table")
 
   data_extract_list <- list(
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
@@ -385,6 +387,7 @@ tm_t_exposure <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

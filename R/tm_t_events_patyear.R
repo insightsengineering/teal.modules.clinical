@@ -181,6 +181,7 @@ template_events_patyear <- function(dataname,
 #' This module produces a table of event rates adjusted for patient-years.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_events_patyear
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for variable names that can be used as `arm_var`.
@@ -319,7 +320,8 @@ tm_t_events_patyear <- function(label,
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args(),
-                                decorators = NULL) {
+                                transformators = list(),
+                                decorators = list()) {
   message("Initializing tm_t_events_patyear")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -338,7 +340,7 @@ tm_t_events_patyear <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "table", null.ok = TRUE)
+  assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))
 
@@ -367,6 +369,7 @@ tm_t_events_patyear <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

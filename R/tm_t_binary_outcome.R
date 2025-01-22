@@ -328,6 +328,7 @@ template_binary_outcome <- function(dataname,
 #' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_binary_outcome
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
 #' @param control (named `list`)\cr named list containing 3 named lists as follows:
@@ -472,7 +473,8 @@ tm_t_binary_outcome <- function(label,
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args(),
-                                decorators = NULL) {
+                                transformators = list(),
+                                decorators = list()) {
   message("Initializing tm_t_binary_outcome")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -513,7 +515,7 @@ tm_t_binary_outcome <- function(label,
   )
   checkmate::assert_subset(control$strat$method_test, c("cmh"))
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "table", null.ok = TRUE)
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -545,6 +547,7 @@ tm_t_binary_outcome <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

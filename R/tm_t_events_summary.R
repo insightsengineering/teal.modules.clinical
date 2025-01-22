@@ -497,6 +497,7 @@ template_events_summary <- function(anl_name,
 #' This module produces an adverse events summary table.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with all
@@ -647,7 +648,8 @@ tm_t_events_summary <- function(label,
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args(),
-                                decorators = NULL) {
+                                transformators = list(),
+                                decorators = list()) {
   message("Initializing tm_t_events_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -671,7 +673,7 @@ tm_t_events_summary <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "table", null.ok = TRUE)
+  assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))
 
@@ -710,6 +712,7 @@ tm_t_events_summary <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

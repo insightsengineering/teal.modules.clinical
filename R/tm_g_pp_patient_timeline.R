@@ -323,6 +323,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' @inheritParams tm_g_pp_adverse_events
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_patient_timeline
 #' @param dataname_adcm (`character`)\cr name of `ADCM` dataset or equivalent.
 #' @param dataname_adae (`character`)\cr name of `ADAE` dataset or equivalent.
@@ -471,7 +472,8 @@ tm_g_pp_patient_timeline <- function(label,
                                      pre_output = NULL,
                                      post_output = NULL,
                                      ggplot2_args = teal.widgets::ggplot2_args(),
-                                     decorators = NULL) {
+                                     transformators = list(),
+                                     decorators = list()) {
   message("Initializing tm_g_pp_patient_timeline")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname_adcm)
@@ -498,7 +500,7 @@ tm_g_pp_patient_timeline <- function(label,
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "plot", null.ok = TRUE)
+  assert_decorators(decorators, "plot")
 
   xor_error_string <- function(x, y) {
     paste(
@@ -559,6 +561,7 @@ tm_g_pp_patient_timeline <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname_adcm, dataname_adae, parentname)
   )
 }

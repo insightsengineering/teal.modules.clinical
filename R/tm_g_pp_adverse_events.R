@@ -165,6 +165,7 @@ template_adverse_events <- function(dataname = "ANL",
 #' This module produces an adverse events table and [ggplot2::ggplot()] type plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_adverse_events
 #' @param aeterm ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETERM` variable from `dataname`.
@@ -287,7 +288,8 @@ tm_g_pp_adverse_events <- function(label,
                                    pre_output = NULL,
                                    post_output = NULL,
                                    ggplot2_args = teal.widgets::ggplot2_args(),
-                                   decorators = NULL) {
+                                   transformators = list(),
+                                   decorators = list()) {
   message("Initializing tm_g_pp_adverse_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -313,7 +315,7 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, names = c("plot", "table"), null.ok = TRUE)
+  assert_decorators(decorators, names = c("plot", "table"))
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -344,6 +346,7 @@ tm_g_pp_adverse_events <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }

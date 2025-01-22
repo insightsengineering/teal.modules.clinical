@@ -183,6 +183,7 @@ template_g_ci <- function(dataname,
 #' `CIG01` available [here](https://insightsengineering.github.io/tlg-catalog/stable/graphs/other/cig01.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_g_ci
 #' @param color (`data_extract_spec`)\cr the group variable used to determine the plot colors, shapes, and line types.
 #'
@@ -283,7 +284,8 @@ tm_g_ci <- function(label,
                     pre_output = NULL,
                     post_output = NULL,
                     ggplot2_args = teal.widgets::ggplot2_args(),
-                    decorators = NULL) {
+                    transformators = list(),
+                    decorators = list()) {
   message("Initializing tm_g_ci")
   checkmate::assert_string(label)
   stat <- match.arg(stat)
@@ -309,7 +311,7 @@ tm_g_ci <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, "plot", null.ok = TRUE)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
 
@@ -328,6 +330,7 @@ tm_g_ci <- function(label,
       ggplot2_args = ggplot2_args,
       decorators = decorators
     ),
+    transformators = transformators,
     ui = ui_g_ci,
     ui_args = args,
     datanames = teal.transform::get_extract_datanames(data_extract_list)

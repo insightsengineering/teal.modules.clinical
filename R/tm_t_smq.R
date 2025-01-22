@@ -302,6 +302,7 @@ template_smq <- function(dataname,
 #' This module produces an adverse events table by Standardized MedDRA Query.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_smq
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for variable names that can be used as `arm_var`.
@@ -399,7 +400,8 @@ tm_t_smq <- function(label,
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),
-                     decorators = NULL) {
+                     transformators = list(),
+                     decorators = list()) {
   message("Initializing tm_t_smq")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -417,7 +419,7 @@ tm_t_smq <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -446,6 +448,7 @@ tm_t_smq <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }

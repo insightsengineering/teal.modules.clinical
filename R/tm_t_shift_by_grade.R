@@ -463,6 +463,7 @@ template_shift_by_grade <- function(parentname,
 #' This module produces a summary table of worst grades per subject by visit and parameter.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_shift_by_grade
 #' @param anl_toxgrade_var ([teal.transform::choices_selected()])\cr
 #'   variable for analysis toxicity grade.
@@ -580,7 +581,8 @@ tm_t_shift_by_grade <- function(label,
                                 na_level = default_na_str(),
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.widgets::basic_table_args(),
-                                decorators = NULL) {
+                                transformators = list(),
+                                decorators = list()) {
   message("Initializing tm_t_shift_by_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -602,7 +604,7 @@ tm_t_shift_by_grade <- function(label,
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   decorators <- normalize_decorators(decorators)
-  assert_decorators(decorators, null.ok = TRUE, "table")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -633,6 +635,7 @@ tm_t_shift_by_grade <- function(label,
         decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
