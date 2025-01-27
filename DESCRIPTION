@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9050
-Date: 2025-01-23
+Version: 0.9.1.9051
+Date: 2025-01-27
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -82,9 +82,9 @@ VignetteBuilder:
     rmarkdown
 Remotes:
     insightsengineering/teal,
-    insightsengineering/teal.transform,
     insightsengineering/teal.code,
     insightsengineering/teal.data,
+    insightsengineering/teal.transform,
     insightsengineering/teal.widgets
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
