@@ -1079,7 +1079,9 @@ normalize_decorators <- function(decorators) {
     if (checkmate::test_names(names(decorators))) {
       lapply(decorators, list)
     } else {
-      list(default = decorators)
+      named <- which(names(decorators) != "")
+      unnamed <- setdiff(1:length(decorators), named)
+      c(list(default = decorators[unnamed]), lapply(decorators[named], list))
     }
   } else {
     decorators
