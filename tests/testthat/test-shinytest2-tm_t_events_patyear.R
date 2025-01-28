@@ -1,3 +1,5 @@
+tm_event_by_grade()
+
 app_driver_tm_t_events_patyear <- function() {
   data <- teal.data::teal_data()
   data <- within(data, {
