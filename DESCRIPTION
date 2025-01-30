@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9052
-Date: 2025-01-27
+Version: 0.9.1.9055
+Date: 2025-01-30
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
@@ -55,10 +55,10 @@ Imports:
     shinyvalidate,
     shinyWidgets (>= 0.5.1),
     stats,
-    teal.code (>= 0.5.0.9022),
-    teal.data (>= 0.6.0.9025),
+    teal.code (>= 0.6.0),
+    teal.data (>= 0.7.0),
     teal.logger (>= 0.3.1),
-    teal.reporter (>= 0.3.1.9023),
+    teal.reporter (>= 0.4.0),
     teal.widgets (>= 0.4.2.9025),
     tern.gee (>= 0.1.5),
     tern.mmrm (>= 0.3.1),
@@ -82,9 +82,6 @@ VignetteBuilder:
     rmarkdown
 Remotes:
     insightsengineering/teal,
-    insightsengineering/teal.code,
-    insightsengineering/teal.data,
-    insightsengineering/teal.reporter,
     insightsengineering/teal.transform,
     insightsengineering/teal.widgets
 Config/Needs/verdepcheck: insightsengineering/teal,
