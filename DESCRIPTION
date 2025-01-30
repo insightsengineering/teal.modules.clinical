@@ -56,7 +56,7 @@ Imports:
     shinyWidgets (>= 0.5.1),
     stats,
     teal.code (>= 0.6.0),
-    teal.data (>= 0.6.0.9025),
+    teal.data (>= 0.7.0),
     teal.logger (>= 0.3.1),
     teal.reporter (>= 0.4.0),
     teal.widgets (>= 0.4.2.9025),
@@ -82,7 +82,6 @@ VignetteBuilder:
     rmarkdown
 Remotes:
     insightsengineering/teal,
-    insightsengineering/teal.data,
     insightsengineering/teal.transform,
     insightsengineering/teal.widgets
 Config/Needs/verdepcheck: insightsengineering/teal,

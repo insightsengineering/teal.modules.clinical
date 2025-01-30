@@ -42,24 +42,6 @@ jobs:
       unit-test-report-brand: >-
         https://raw.githubusercontent.com/insightsengineering/hex-stickers/main/thumbs/teal.png
       deps-installation-method: setup-r-dependencies
-      lookup-refs: |
-        insightsengineering/teal
-        insightsengineering/teal.transform
-        insightsengineering/tern
-        insightsengineering/rlistings
-        insightsengineering/formatters
-        insightsengineering/rtables
-        insightsengineering/rtables.officer
-        insightsengineering/teal.code
-        insightsengineering/teal.data
-        insightsengineering/teal.logger
-        insightsengineering/teal.reporter
-        insightsengineering/teal.widgets
-        insightsengineering/teal.slice
-        insightsengineering/tern.gee
-        insightsengineering/tern.mmrm
-        insightsengineering/nestcolor
-        insightsengineering/roxy.shinylive
   r-cmd-non-cran:
     name: R CMD Check (non-CRAN) 🧬
     uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
@@ -81,24 +63,6 @@ jobs:
         checking for unstated dependencies in vignettes .* NOTE
         checking top-level files .* NOTE
       deps-installation-method: setup-r-dependencies
-      lookup-refs: |
-        insightsengineering/teal
-        insightsengineering/teal.transform
-        insightsengineering/tern
-        insightsengineering/rlistings
-        insightsengineering/formatters
-        insightsengineering/rtables
-        insightsengineering/rtables.officer
-        insightsengineering/teal.code
-        insightsengineering/teal.data
-        insightsengineering/teal.logger
-        insightsengineering/teal.reporter
-        insightsengineering/teal.widgets
-        insightsengineering/teal.slice
-        insightsengineering/tern.gee
-        insightsengineering/tern.mmrm
-        insightsengineering/nestcolor
-        insightsengineering/roxy.shinylive
   coverage:
     name: Coverage 📔
     uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
@@ -108,24 +72,6 @@ jobs:
       additional-env-vars: |
         NOT_CRAN=true
       deps-installation-method: setup-r-dependencies
-      lookup-refs: |
-        insightsengineering/teal
-        insightsengineering/teal.transform
-        insightsengineering/tern
-        insightsengineering/rlistings
-        insightsengineering/formatters
-        insightsengineering/rtables
-        insightsengineering/rtables.officer
-        insightsengineering/teal.code
-        insightsengineering/teal.data
-        insightsengineering/teal.logger
-        insightsengineering/teal.reporter
-        insightsengineering/teal.widgets
-        insightsengineering/teal.slice
-        insightsengineering/tern.gee
-        insightsengineering/tern.mmrm
-        insightsengineering/nestcolor
-        insightsengineering/roxy.shinylive
   linter:
     if: github.event_name != 'push'
     name: SuperLinter 🦸‍♀️
@@ -138,24 +84,6 @@ jobs:
     with:
       auto-update: true
       deps-installation-method: setup-r-dependencies
-      lookup-refs: |
-        insightsengineering/teal
-        insightsengineering/teal.transform
-        insightsengineering/tern
-        insightsengineering/rlistings
-        insightsengineering/formatters
-        insightsengineering/rtables
-        insightsengineering/rtables.officer
-        insightsengineering/teal.code
-        insightsengineering/teal.data
-        insightsengineering/teal.logger
-        insightsengineering/teal.reporter
-        insightsengineering/teal.widgets
-        insightsengineering/teal.slice
-        insightsengineering/tern.gee
-        insightsengineering/tern.mmrm
-        insightsengineering/nestcolor
-        insightsengineering/roxy.shinylive
   gitleaks:
     name: gitleaks 💧
     uses: insightsengineering/r.pkg.template/.github/workflows/gitleaks.yaml@main
