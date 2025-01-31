@@ -1076,12 +1076,13 @@ select_decorators <- function(decorators, scope) {
 #' @keywords internal
 normalize_decorators <- function(decorators) {
   if (checkmate::test_list(decorators, "teal_transform_module")) {
-    if (checkmate::test_names(names(decorators))) {
+    decorators_names <- setdiff(names(decorators), "")
+    if (length(decorators_names) == 0) {
+      list(default = decorators)
+    } else if (length(decorators_names) == length(decorators)) {
       lapply(decorators, list)
     } else {
-      named <- which(names(decorators) != "")
-      unnamed <- setdiff(1:length(decorators), named)
-      c(list(default = decorators[unnamed]), lapply(decorators[named], list))
+      stop("All decorators should either be named or unnamed.")
     }
   } else {
     decorators
