@@ -48,7 +48,7 @@ template_events_by_grade <- function(dataname,
   checkmate::assert_scalar(prune_diff)
 
   y <- list()
-  browser()
+  message("Random code modified")
   data_list <- list()
 
   data_list <- add_expr(
