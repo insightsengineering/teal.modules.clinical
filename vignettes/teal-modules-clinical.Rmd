@@ -46,7 +46,7 @@ See the full index of package functions & modules [here](https://insightsenginee
 A `teal.modules.clinical` module needs to be embedded inside a `shiny`/`teal` application to interact with it.
 A simple application including a bar chart module could look like this:
 
-```{r app, message = FALSE, results = "hide"}
+```{r app, eval=FALSE}
 library(teal.modules.clinical)
 library(nestcolor)
 
@@ -82,9 +82,7 @@ app <- init(
     )
   )
 )
-```
 
-```{r shinyapp, eval = FALSE}
 shinyApp(app$ui, app$server)
 ```
 
@@ -170,7 +168,7 @@ app <- init(
 Finally, we use `shiny` to launch the application:
 
 ```r
-if (interactive()) shinyApp(app$ui, app$server)
+shinyApp(app$ui, app$server)
 ```
 
 Some `teal.modules.clinical` modules allow for the specification of arguments using
@@ -194,7 +192,7 @@ app <- init(
   )
 )
 
-if (interactive()) shinyApp(app$ui, app$server)
+shinyApp(app$ui, app$server)
 ```
 
 Please refer to the [API reference](https://insightsengineering.github.io/teal.modules.clinical/latest-tag/reference/)
