@@ -46,7 +46,6 @@ arm_ref_comp_observer <- function(session,
   iv$add_validator(iv1)
   iv$add_validator(iv2)
 
-  message("random code modified")
   output[[output_id]] <- renderUI({
     if (isTRUE(on_off())) {
       df <- if (is.reactive(data)) {
