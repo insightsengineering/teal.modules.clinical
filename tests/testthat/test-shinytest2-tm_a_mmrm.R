@@ -1,4 +1,5 @@
 app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
+  message("tm_a_mmrm test file was modified")
   arm_ref_comp <- list(
     ARMCD = list(
       ref = "ARM B",
