@@ -17,6 +17,7 @@ tm_t_mult_events(
   total_label = default_total_label(),
   na_level = default_na_str(),
   event_type = "event",
+  title_text = "Concomitant Medications",
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
@@ -58,6 +59,9 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 
 \item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
 is \code{"event"}.}
+
+\item{title_text}{(\code{string})\cr text to display as the first part of the dynamic table title. The table title is
+constructed as follows: "\code{title_text} by \code{hlt} and \code{llt}". Defaults to \code{"Concomitant Medications"}.}
 
 \item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
 set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the

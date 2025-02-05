@@ -280,6 +280,8 @@ template_mult_events <- function(dataname,
 #' @param seq_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as analysis sequence number
 #'   variable. Used for counting the unique number of events.
+#' @param title_text (`string`)\cr text to display as the first part of the dynamic table title. The table title is
+#'   constructed as follows: "`title_text` by `hlt` and `llt`". Defaults to `"Concomitant Medications"`.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -350,6 +352,7 @@ tm_t_mult_events <- function(label,
                              total_label = default_total_label(),
                              na_level = default_na_str(),
                              event_type = "event",
+                             title_text = "Concomitant Medications",
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL,
@@ -365,6 +368,7 @@ tm_t_mult_events <- function(label,
   checkmate::assert_class(hlt, "choices_selected")
   checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_string(event_type)
+  checkmate::assert_string(title_text)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -395,6 +399,7 @@ tm_t_mult_events <- function(label,
         dataname = dataname,
         parentname = parentname,
         event_type = event_type,
+        title_text = title_text,
         label = label,
         total_label = total_label,
         na_level = na_level,
@@ -481,6 +486,7 @@ srv_t_mult_events_byterm <- function(id,
                                      dataname,
                                      parentname,
                                      event_type,
+                                     title_text,
                                      arm_var,
                                      seq_var,
                                      hlt,
@@ -582,12 +588,7 @@ srv_t_mult_events_byterm <- function(id,
 
       basic_table_args$title <- ifelse(
         is.null(basic_table_args$title),
-        paste(
-          "Concomitant Medications by",
-          paste(hlt_labels, collapse = ", "),
-          "and",
-          paste(llt_labels, collapse = ", ")
-        ),
+        paste(title_text, "by", paste(hlt_labels, collapse = ", "), "and", paste(llt_labels, collapse = ", ")),
         basic_table_args$title
       )
 
