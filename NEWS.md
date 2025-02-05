@@ -8,6 +8,7 @@
 * Added argument `stats` to modules `tm_g_forest_rsp` and `tm_g_forest_tte` to allow users to specify statistics to include in the table.
 * Added argument `riskdiff` to modules `tm_g_forest_rsp` and `tm_g_forest_tte` to allow users to add a risk difference table column.
 * Added the `count_dth` and `count_wd` parameters to `tm_t_events_summary` to select/deselect the "Total number of deaths" and "Total number of patients withdrawn from study due to an AE" rows, respectively. These options correspond to the "Count deaths" and "Count withdrawals due to AE" checkboxes available when the module is run.
+* Added the `title_text` argument to `tm_t_mult_events` to allow for greater customizability of the module's dynamic title.
 
 ### Miscellaneous
 * Removed `Show Warnings` modals from modules.
