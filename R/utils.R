@@ -567,7 +567,7 @@ prepare_arm <- function(dataname,
   checkmate::assert_flag(compare_arm)
   checkmate::assert_string(ref_arm_val)
   checkmate::assert_flag(drop)
-
+  message("Utils prepare_arm function is modified")
   data_list <- list()
 
   if (compare_arm) {
