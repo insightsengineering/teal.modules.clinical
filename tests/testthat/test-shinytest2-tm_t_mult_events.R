@@ -26,6 +26,7 @@ app_driver_tm_t_mult_events <- function() {
       ),
       add_total = TRUE,
       event_type = "treatment",
+      title_text = "Concom. Meds",
       total_label = default_total_label(),
       na_level = default_na_str(),
       drop_arm_levels = TRUE,
