@@ -280,6 +280,8 @@ template_mult_events <- function(dataname,
 #' @param seq_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable names that can be used as analysis sequence number
 #'   variable. Used for counting the unique number of events.
+#' @param title_text (`string`)\cr text to display as the first part of the dynamic table title. The table title is
+#'   constructed as follows: "`title_text` by `hlt` and `llt`". Defaults to `"Concomitant Medications"`.
 #'
 #' @inherit module_arguments return seealso
 #'
