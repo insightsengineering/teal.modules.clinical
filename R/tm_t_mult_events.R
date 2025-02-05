@@ -350,6 +350,7 @@ tm_t_mult_events <- function(label,
                              total_label = default_total_label(),
                              na_level = default_na_str(),
                              event_type = "event",
+                             title_text = "Concomitant Medications",
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL,
@@ -365,6 +366,7 @@ tm_t_mult_events <- function(label,
   checkmate::assert_class(hlt, "choices_selected")
   checkmate::assert_class(llt, "choices_selected")
   checkmate::assert_string(event_type)
+  checkmate::assert_string(title_text)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -395,6 +397,7 @@ tm_t_mult_events <- function(label,
         dataname = dataname,
         parentname = parentname,
         event_type = event_type,
+        title_text = title_text,
         label = label,
         total_label = total_label,
         na_level = na_level,
@@ -481,6 +484,7 @@ srv_t_mult_events_byterm <- function(id,
                                      dataname,
                                      parentname,
                                      event_type,
+                                     title_text,
                                      arm_var,
                                      seq_var,
                                      hlt,
@@ -582,12 +586,7 @@ srv_t_mult_events_byterm <- function(id,
 
       basic_table_args$title <- ifelse(
         is.null(basic_table_args$title),
-        paste(
-          "Concomitant Medications by",
-          paste(hlt_labels, collapse = ", "),
-          "and",
-          paste(llt_labels, collapse = ", ")
-        ),
+        paste(title_text, "by", paste(hlt_labels, collapse = ", "), "and", paste(llt_labels, collapse = ", ")),
         basic_table_args$title
       )
 
