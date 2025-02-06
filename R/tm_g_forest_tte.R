@@ -614,6 +614,7 @@ srv_g_forest_tte <- function(id,
       )
     })
 
+
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
@@ -711,8 +712,14 @@ srv_g_forest_tte <- function(id,
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
+      # print(names(input))
+      # print(input[["paramcd-dataset_ADTTE_singleextract-filter1-vals"]])
 
+      # print(paramcd)
       obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+      # obj_var_name <- input[["paramcd-dataset_ADTTE_singleextract-filter1-vals"]]
+      # we want this evaluate as OS
+      # obj_var_name = "OS"
 
       my_calls <- template_forest_tte(
         dataname = "ANL",
