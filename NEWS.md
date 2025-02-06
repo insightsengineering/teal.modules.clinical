@@ -18,6 +18,7 @@
 
 ### Bug fixes
 * Fixed bug in creating modules with `delayed_data` and `teal.transform::all_choices`.
+* Fixed bug in `tm_g_forest_tte` to resolve delayed data loading variables. 
 
 # teal.modules.clinical 0.9.1
 
