@@ -584,6 +584,36 @@ srv_g_forest_tte <- function(id,
       filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
     )
 
+    isolate({
+      resolved <- teal.transform::resolve_delayed(aval_var, as.list(data()))
+      teal.widgets::updateOptionalSelectInput(
+        session = session,
+        inputId = "aval_var",
+        choices = resolved$choices,
+        selected = resolved$selected
+      )
+    })
+
+    isolate({
+      resolved <- teal.transform::resolve_delayed(cnsr_var, as.list(data()))
+      teal.widgets::updateOptionalSelectInput(
+        session = session,
+        inputId = "cnsr_var",
+        choices = resolved$choices,
+        selected = resolved$selected
+      )
+    })
+
+    isolate({
+      resolved <- teal.transform::resolve_delayed(arm_var, as.list(data()))
+      teal.widgets::updateOptionalSelectInput(
+        session = session,
+        inputId = "arm_var",
+        choices = resolved$choices,
+        selected = resolved$selected
+      )
+    })
+
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
