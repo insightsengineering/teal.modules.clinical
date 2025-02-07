@@ -581,39 +581,10 @@ srv_g_forest_tte <- function(id,
         cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
         arm_var = shinyvalidate::sv_required("A treatment variable is required")
       ),
-      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter.")
+      )
     )
-
-    isolate({
-      resolved <- teal.transform::resolve_delayed(aval_var, as.list(data()))
-      teal.widgets::updateOptionalSelectInput(
-        session = session,
-        inputId = "aval_var",
-        choices = resolved$choices,
-        selected = resolved$selected
-      )
-    })
-
-    isolate({
-      resolved <- teal.transform::resolve_delayed(cnsr_var, as.list(data()))
-      teal.widgets::updateOptionalSelectInput(
-        session = session,
-        inputId = "cnsr_var",
-        choices = resolved$choices,
-        selected = resolved$selected
-      )
-    })
-
-    isolate({
-      resolved <- teal.transform::resolve_delayed(arm_var, as.list(data()))
-      teal.widgets::updateOptionalSelectInput(
-        session = session,
-        inputId = "arm_var",
-        choices = resolved$choices,
-        selected = resolved$selected
-      )
-    })
-
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
@@ -712,14 +683,8 @@ srv_g_forest_tte <- function(id,
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-      # print(names(input))
-      # print(input[["paramcd-dataset_ADTTE_singleextract-filter1-vals"]])
-
-      # print(paramcd)
-      obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
-      # obj_var_name <- input[["paramcd-dataset_ADTTE_singleextract-filter1-vals"]]
-      # we want this evaluate as OS
-      # obj_var_name = "OS"
+      resolved_paramcd <- teal.transform::resolve_delayed(paramcd, as.list(data()))
+      obj_var_name <- get_g_forest_obj_var_name(resolved_paramcd, input)
 
       my_calls <- template_forest_tte(
         dataname = "ANL",
