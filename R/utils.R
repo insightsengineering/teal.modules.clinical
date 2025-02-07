@@ -849,8 +849,8 @@ get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
     "_singleextract-filter", filter_idx, "-vals"
   )
 
-  choices <- paramcd$filter[[filter_idx]]$choices
   current_selected <- input[[input_obj]]
+  choices <- paramcd$filter[[filter_idx]]$choices
   obj_var_name <- names(choices)[choices == current_selected]
   obj_var_name
 }
