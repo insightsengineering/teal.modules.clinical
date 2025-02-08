@@ -754,6 +754,11 @@ srv_g_forest_rsp <- function(id,
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
 
       resolved_paramcd <- teal.transform::resolve_delayed(paramcd, as.list(data()))
+      print("paramcd")
+      print(paramcd)
+      print("resolved_paramcd")
+      print(resolved_paramcd)
+
       obj_var_name <- get_g_forest_obj_var_name(resolved_paramcd, input)
 print(obj_var_name)
       my_calls <- template_forest_rsp(
