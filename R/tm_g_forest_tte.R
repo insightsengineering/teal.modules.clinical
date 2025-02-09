@@ -581,7 +581,9 @@ srv_g_forest_tte <- function(id,
         cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
         arm_var = shinyvalidate::sv_required("A treatment variable is required")
       ),
-      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter.")
+      )
     )
 
     iv_r <- reactive({
@@ -592,7 +594,7 @@ srv_g_forest_tte <- function(id,
         shinyvalidate::sv_between(0, 1, message_fmt = "Confidence level must be between 0 and 1")
       )
       iv$add_validator(iv_arm_ref)
-      teal.transform::compose_and_enable_validators(iv, selector_list)
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "aval_var", "paramcd"))
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
@@ -681,8 +683,8 @@ srv_g_forest_tte <- function(id,
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-
-      obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+      resolved_paramcd <- teal.transform::resolve_delayed(paramcd, as.list(data()))
+      obj_var_name <- get_g_forest_obj_var_name(resolved_paramcd, input)
 
       my_calls <- template_forest_tte(
         dataname = "ANL",

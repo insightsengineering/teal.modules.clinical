@@ -844,12 +844,13 @@ clean_description <- function(x) {
 #' @keywords internal
 #'
 get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
-  choices <- paramcd$filter[[filter_idx]]$choices
   input_obj <- paste0(
     "paramcd-dataset_", paramcd$dataname,
     "_singleextract-filter", filter_idx, "-vals"
   )
+
   current_selected <- input[[input_obj]]
+  choices <- paramcd$filter[[filter_idx]]$choices
   obj_var_name <- names(choices)[choices == current_selected]
   obj_var_name
 }

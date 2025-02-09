@@ -752,8 +752,8 @@ srv_g_forest_rsp <- function(id,
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-
-      obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+      resolved_paramcd <- teal.transform::resolve_delayed(paramcd, as.list(data()))
+      obj_var_name <- get_g_forest_obj_var_name(resolved_paramcd, input)
 
       my_calls <- template_forest_rsp(
         dataname = "ANL",
