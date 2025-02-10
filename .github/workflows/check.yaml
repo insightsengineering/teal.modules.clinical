@@ -21,7 +21,7 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
   r-cmd:
     name: R CMD Check 🧬
-    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@cae30561c3232585c17d796e8e2299b2e501d60c
+    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@c6fa899f3903943b6019c70d23f01e6d85d69755
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
@@ -42,9 +42,10 @@ jobs:
       unit-test-report-brand: >-
         https://raw.githubusercontent.com/insightsengineering/hex-stickers/main/thumbs/teal.png
       deps-installation-method: setup-r-dependencies
+      selected-shinytests: true
   r-cmd-non-cran:
     name: R CMD Check (non-CRAN) 🧬
-    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@cae30561c3232585c17d796e8e2299b2e501d60c
+    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@c6fa899f3903943b6019c70d23f01e6d85d69755
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
@@ -63,7 +64,7 @@ jobs:
         checking for unstated dependencies in vignettes .* NOTE
         checking top-level files .* NOTE
       deps-installation-method: setup-r-dependencies
-      fast-tests: true
+      selected-shinytests: true
   coverage:
     name: Coverage 📔
     uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
