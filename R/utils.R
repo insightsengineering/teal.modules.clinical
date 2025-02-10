@@ -844,12 +844,13 @@ clean_description <- function(x) {
 #' @keywords internal
 #'
 get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
-  choices <- paramcd$filter[[filter_idx]]$choices
   input_obj <- paste0(
     "paramcd-dataset_", paramcd$dataname,
     "_singleextract-filter", filter_idx, "-vals"
   )
+
   current_selected <- input[[input_obj]]
+  choices <- paramcd$filter[[filter_idx]]$choices
   obj_var_name <- names(choices)[choices == current_selected]
   obj_var_name
 }
@@ -1076,10 +1077,15 @@ select_decorators <- function(decorators, scope) {
 #' @keywords internal
 normalize_decorators <- function(decorators) {
   if (checkmate::test_list(decorators, "teal_transform_module")) {
-    if (checkmate::test_names(names(decorators))) {
+    decorators_names <- names(decorators)[!names(decorators) %in% ""]
+    # Above is equivalent to decorators_names <- setdiff(names(decorators), "")
+    # but can return non-unique values. Non-unique values are checked in assert_decorators.
+    if (length(decorators_names) == 0) {
+      list(default = decorators)
+    } else if (length(decorators_names) == length(decorators)) {
       lapply(decorators, list)
     } else {
-      list(default = decorators)
+      stop("All decorators should either be named or unnamed.")
     }
   } else {
     decorators
