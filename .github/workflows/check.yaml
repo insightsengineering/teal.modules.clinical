@@ -21,7 +21,7 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
   r-cmd:
     name: R CMD Check 🧬
-    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@b6e7d636125a9b8cbe67007f77eb3386c016aeb3
+    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@934ca8e216ca934c57fdef599f979025283c3cfe
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
@@ -44,7 +44,7 @@ jobs:
       selected-shinytests: true
   r-cmd-non-cran:
     name: R CMD Check (non-CRAN) 🧬
-    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@b6e7d636125a9b8cbe67007f77eb3386c016aeb3
+    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@934ca8e216ca934c57fdef599f979025283c3cfe
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
