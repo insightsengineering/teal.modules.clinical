@@ -21,13 +21,12 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/audit.yaml@main
   r-cmd:
     name: R CMD Check 🧬
-    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
+    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@e391bb2ba6d0b1318773ff2f4dbb6c0eeaabcece
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
       additional-env-vars: |
         _R_CHECK_CRAN_INCOMING_REMOTE_=false
-        TESTING_DEPTH=5
       additional-r-cmd-check-params: --as-cran
       enforce-note-blocklist: true
       note-blocklist: |
@@ -42,9 +41,10 @@ jobs:
       unit-test-report-brand: >-
         https://raw.githubusercontent.com/insightsengineering/hex-stickers/main/thumbs/teal.png
       deps-installation-method: setup-r-dependencies
+      selected-shinytests: true
   r-cmd-non-cran:
     name: R CMD Check (non-CRAN) 🧬
-    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
+    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@e391bb2ba6d0b1318773ff2f4dbb6c0eeaabcece
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
@@ -63,6 +63,7 @@ jobs:
         checking for unstated dependencies in vignettes .* NOTE
         checking top-level files .* NOTE
       deps-installation-method: setup-r-dependencies
+      selected-shinytests: true
   coverage:
     name: Coverage 📔
     uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
