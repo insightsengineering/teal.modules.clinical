@@ -68,8 +68,9 @@ This module generates the following objects, which can be modified in place usin
 \item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
 }
 
-For additional details and examples of decorators, refer to the vignette
-\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+For additional details and examples of decorators, refer to the vignettes:
+\verb{vignette("decorate-module-output, package = "teal.modules.general")},
+\code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
 }
 
 \examples{
@@ -115,8 +116,8 @@ if (interactive()) {
 \describe{
   \item{example-1}{
     \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDEEGJjAhiPyiVlwdRc+mijJuj1iDGaFi0ZkiDbumQ4gEtFIEKFgVq2JxYJpPORyYVBjI+kT+-iq9OZ7NgLUZPPVzExegCUQzV1xz2ib2+kuBoMh+Po+ERxhR+gxvvt9iJlIclpmgDyeQAmrkc-mC0W-eRS0bWvOlyuq-b8bWjxleltqR5W6GOxvu3Xg22w4PI9G4LGb5OvtO0y1slbclsTJbFXB8dDvLcyz-ACgJAw8gyGBlEJ0IYhloYwdHYeInSgCxtGsGw0hFUQ4ggVhMnQdhQQAEkEWgUhon1GG0Rghn6JQwH6c4gA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDEEGJjAhiPyiVlwdRc+mijJuj1iDGaFi0ZkiDbumQ4gEtFIEKFgVq2JxYJpPORyYVBjI+kT+-iq9OZ7NgLUZPPVzExegCUQzV1xz2ib2+kuBoMh+Po+ERxhR+gxvvt9iJlIclpmgDyeQAmrkc-mC0W-eRS0bWvOlyuq-b8bWjxleltqR5W6GOxvu3Xg22w4PI9G4LGb5OvtO0y1slbclsTJbFXB8dDvLcyz-ACgJAw8gyGBlEJ0IYhloYwdHYeInSgCxtGsGw0hFUQ4ggVhMnQdhQQAEkEWgUhon1GG0Rghn6JQwH6c4gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
-    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDEEGJjAhiPyiVlwdRc+mijJuj1iDGaFi0ZkiDbumQ4gEtFIEKFgVq2JxYJpPORyYVBjI+kT+-iq9OZ7NgLUZPPVzExegCUQzV1xz2ib2+kuBoMh+Po+ERxhR+gxvvt9iJlIclpmgDyeQAmrkc-mC0W-eRS0bWvOlyuq-b8bWjxleltqR5W6GOxvu3Xg22w4PI9G4LGb5OvtO0y1slbclsTJbFXB8dDvLcyz-ACgJAw8gyGBlEJ0IYhloYwdHYeInSgCxtGsGw0hFUQ4ggVhMnQdhQQAEkEWgUhon1GG0Rghn6JQwH6c4gA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
   }
 }
 }

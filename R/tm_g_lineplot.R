@@ -220,8 +220,9 @@ template_g_lineplot <- function(dataname = "ANL",
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `plot` (`ggplot2`)
 #'
-#' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#' For additional details and examples of decorators, refer to the vignettes:
+#' `vignette("decorate-module-output, package = "teal.modules.general")`,
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
