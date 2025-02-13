@@ -196,8 +196,9 @@ template_shift_by_arm <- function(dataname,
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` - output of `rtables::build_table`)
 #'
-#' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#' For additional details and examples of decorators, refer to the vignettes:
+#' `vignette("decorate-module-output, package = "teal.modules.general")`,
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)

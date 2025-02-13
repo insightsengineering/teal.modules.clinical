@@ -254,8 +254,9 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`ElementaryTable` - output of `rtables::build_table`)
 #'
-#' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#' For additional details and examples of decorators, refer to the vignettes:
+#' `vignette("decorate-module-output, package = "teal.modules.general")`,
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @export
 #'

@@ -105,8 +105,9 @@ This module generates the following objects, which can be modified in place usin
 \item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
 }
 
-For additional details and examples of decorators, refer to the vignette
-\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+For additional details and examples of decorators, refer to the vignettes:
+\verb{vignette("decorate-module-output, package = "teal.modules.general")},
+\code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
 }
 
 \examples{
