@@ -945,7 +945,7 @@ srv_t_events_summary <- function(id,
       validate(
         need(
           is.factor(adsl_filtered[[input_arm_var[[1]]]]) && is.factor(anl_filtered[[input_arm_var[[1]]]]),
-          "Treatment variable is not a factor."
+          "The treatment variable selected must be a factor variable in all datasets used."
         ),
         if (length(input_arm_var) == 2) {
           need(
