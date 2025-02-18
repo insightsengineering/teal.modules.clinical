@@ -951,7 +951,11 @@ srv_t_events_summary <- function(id,
             )),
             "Please check nested treatment variable which needs to be a factor without NA or empty strings."
           )
-        }
+        },
+        need(
+          identical(levels(adsl_filtered[[input_arm_var[[1]]]]), levels(anl_filtered[[input_arm_var[[1]]]])),
+          "The treatment variable selected must have the same levels across all datasets used."
+        )
       )
 
       # validate inputs
