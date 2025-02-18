@@ -20,7 +20,7 @@
 * Replaced use of the `rtables::add_colcounts()` function with the `show_colcounts` argument to `basic_table()`.
 * Began deprecation cycle for the `show_labels` argument of `template_summary` which has no effect on the `tm_t_summary` module.
 * Replaced instances of deprecated `strata` argument to `tern::control_lineplot_vars()` with `group_var`.
-* Added an error message to `tm_t_events_summary()` whenever all datasets used do not have the same treatment variable levels.
+* Added an assertion to `tm_t_events_summary()` to check whether all datasets used have the same treatment variable levels.
 
 # teal.modules.clinical 0.9.1
 
