@@ -943,7 +943,10 @@ srv_t_events_summary <- function(id,
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
 
       validate(
-        need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor."),
+        need(
+          is.factor(adsl_filtered[[input_arm_var[[1]]]]) && is.factor(anl_filtered[[input_arm_var[[1]]]]),
+          "Treatment variable is not a factor."
+        ),
         if (length(input_arm_var) == 2) {
           need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) && all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
