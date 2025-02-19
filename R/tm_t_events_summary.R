@@ -943,7 +943,10 @@ srv_t_events_summary <- function(id,
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
 
       validate(
-        need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor."),
+        need(
+          is.factor(adsl_filtered[[input_arm_var[[1]]]]) && is.factor(anl_filtered[[input_arm_var[[1]]]]),
+          "The treatment variable selected must be a factor variable in all datasets used."
+        ),
         if (length(input_arm_var) == 2) {
           need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) && all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
@@ -951,7 +954,11 @@ srv_t_events_summary <- function(id,
             )),
             "Please check nested treatment variable which needs to be a factor without NA or empty strings."
           )
-        }
+        },
+        need(
+          identical(levels(adsl_filtered[[input_arm_var[[1]]]]), levels(anl_filtered[[input_arm_var[[1]]]])),
+          "The treatment variable selected must have the same levels across all datasets used."
+        )
       )
 
       # validate inputs

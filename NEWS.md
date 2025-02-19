@@ -10,16 +10,17 @@
 * Added the `count_dth` and `count_wd` parameters to `tm_t_events_summary` to select/deselect the "Total number of deaths" and "Total number of patients withdrawn from study due to an AE" rows, respectively. These options correspond to the "Count deaths" and "Count withdrawals due to AE" checkboxes available when the module is run.
 * Added the `title_text` argument to `tm_t_mult_events` to allow for more customization of the module's dynamic title.
 
+### Bug fixes
+* Fixed bug in creating modules with `delayed_data` and `teal.transform::all_choices`.
+* Fixed bug in `tm_g_forest_tte` and `tm_g_forest_rsp` to resolve delayed data loading variables.
+
 ### Miscellaneous
 * Removed `Show Warnings` modals from modules.
 * Clarified the documentation specifying whether multiple values can be selected in the `arm_var` argument for each module.
 * Replaced use of the `rtables::add_colcounts()` function with the `show_colcounts` argument to `basic_table()`.
 * Began deprecation cycle for the `show_labels` argument of `template_summary` which has no effect on the `tm_t_summary` module.
 * Replaced instances of deprecated `strata` argument to `tern::control_lineplot_vars()` with `group_var`.
-
-### Bug fixes
-* Fixed bug in creating modules with `delayed_data` and `teal.transform::all_choices`.
-* Fixed bug in `tm_g_forest_tte` and `tm_g_forest_rsp` to resolve delayed data loading variables. 
+* Added an assertion to `tm_t_events_summary()` to check whether all datasets used have the same treatment variable levels.
 
 # teal.modules.clinical 0.9.1
 
