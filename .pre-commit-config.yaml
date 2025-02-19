@@ -1,12 +1,12 @@
 ---
 # All available hooks: https://pre-commit.com/hooks.html
 # R specific hooks: https://github.com/lorenzwalthert/precommit
-default_stages: [commit]
+default_stages: [pre-commit]
 default_language_version:
   python: python3
 repos:
   - repo: https://github.com/lorenzwalthert/precommit
-    rev: v0.4.0
+    rev: v0.4.3.9003
     hooks:
       - id: style-files
         name: Style code with `styler`
@@ -33,13 +33,13 @@ repos:
           - methods
           - rlistings
           - rmarkdown
-          - rtables
           - scales
           - shiny
           - shinyjs
           - shinyvalidate
           - shinyWidgets
           - stats
+          - insightsengineering/roxy.shinylive
           - insightsengineering/teal.code
           - insightsengineering/teal.data
           - insightsengineering/teal.logger
@@ -47,6 +47,9 @@ repos:
           - insightsengineering/teal.widgets
           - insightsengineering/tern.gee
           - insightsengineering/tern.mmrm
+          - insightsengineering/rtables
+          - insightsengineering/rtables.officer
+          - insightsengineering/formatters
           - utils
           - vistime
       - id: spell-check
@@ -67,6 +70,7 @@ repos:
           .*\.svg|
           .*\.xml|
           (.*/|)\_pkgdown.y[a]?ml|
+          (.*/|)\.covrignore|
           (.*/|)\.gitignore|
           (.*/|)\.gitlab-ci\.y[a]?ml|
           (.*/|)\.lintr|

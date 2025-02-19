@@ -69,9 +69,9 @@ template_a_gee <- function(output_table,
       if (output_table == "t_gee_cov") {
         substitute(
           expr = {
-            result_table <- tern.gee::as.rtable(model_fit, type = "cov")
-            subtitles(result_table) <- st
-            main_footer(result_table) <- mf
+            table <- tern.gee::as.rtable(model_fit, type = "cov")
+            subtitles(table) <- st
+            main_footer(table) <- mf
           },
           env = list(
             st = basic_table_args$subtitles,
@@ -81,9 +81,9 @@ template_a_gee <- function(output_table,
       } else if (output_table == "t_gee_coef") {
         substitute(
           expr = {
-            result_table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
-            subtitles(result_table) <- st
-            main_footer(result_table) <- mf
+            table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
+            subtitles(table) <- st
+            main_footer(table) <- mf
           },
           env = list(
             conf_level = conf_level,
@@ -95,18 +95,16 @@ template_a_gee <- function(output_table,
         substitute(
           expr = {
             lsmeans_fit_model <- tern.gee::lsmeans(model_fit, conf_level)
-            result_table <- rtables::basic_table() %>%
+            table <- rtables::basic_table(show_colcounts = TRUE) %>%
               rtables::split_cols_by(var = input_arm_var, ref_group = model_fit$ref_level) %>%
-              rtables::add_colcounts() %>%
               tern.gee::summarize_gee_logistic() %>%
               rtables::build_table(
                 df = lsmeans_fit_model,
                 alt_counts_df = dataname_lsmeans
               )
 
-            subtitles(result_table) <- st
-            main_footer(result_table) <- mf
-            result_table
+            subtitles(table) <- st
+            main_footer(table) <- mf
           },
           env = list(
             dataname_lsmeans = as.name(dataname_lsmeans),
@@ -131,13 +129,28 @@ template_a_gee <- function(output_table,
 #' This module produces an analysis table using Generalized Estimating Equations (GEE).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @inheritParams template_a_gee
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
+#'
 #' data <- teal_data()
 #' data <- within(data, {
 #'   ADSL <- tmc_ex_adsl
@@ -153,9 +166,7 @@ template_a_gee <- function(output_table,
 #'     ) %>%
 #'     droplevels()
 #' })
-#' datanames <- c("ADSL", "ADQS")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,
@@ -197,7 +208,9 @@ tm_a_gee <- function(label,
                      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      pre_output = NULL,
                      post_output = NULL,
-                     basic_table_args = teal.widgets::basic_table_args()) {
+                     basic_table_args = teal.widgets::basic_table_args(),
+                     transformators = list(),
+                     decorators = list()) {
   message("Initializing tm_a_gee (prototype)")
 
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
@@ -215,6 +228,8 @@ tm_a_gee <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -240,9 +255,11 @@ tm_a_gee <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -355,10 +372,10 @@ ui_gee <- function(id, ...) {
           "Coefficients" = "t_gee_coef"
         ),
         selected = "t_gee_lsmeans"
-      )
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -383,13 +400,15 @@ srv_gee <- function(id,
                     label,
                     plot_height,
                     plot_width,
-                    basic_table_args) {
+                    basic_table_args,
+                    decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     ## split_covariates ----
     observeEvent(input[[extract_input("cov_var", dataname)]],
       ignoreNULL = FALSE,
@@ -448,7 +467,7 @@ srv_gee <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
         "conf_level",
         shinyvalidate::sv_between(
@@ -528,7 +547,7 @@ srv_gee <- function(id,
         cor_struct = input$cor_struct,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     output$gee_title <- renderText({
@@ -543,26 +562,26 @@ srv_gee <- function(id,
       output_title
     })
 
-    table_r <- reactive({
-      table_q()[["result_table"]]
-    })
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
+    # Outputs to render.
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
-    )
-
     # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -586,7 +605,7 @@ srv_gee <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

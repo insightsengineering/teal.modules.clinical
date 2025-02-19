@@ -30,6 +30,7 @@ template_g_km <- function(dataname = "ANL",
                           xlab = "Survival time",
                           time_unit_var = "AVALU",
                           yval = "Survival",
+                          ylim = NULL,
                           pval_method = "log-rank",
                           annot_surv_med = TRUE,
                           annot_coxph = TRUE,
@@ -181,6 +182,7 @@ template_g_km <- function(dataname = "ANL",
                 gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", tolower(x$time_unit_var[1]), perl = TRUE)
               ),
               yval = yval,
+              ylim = ylim,
               title = sprintf(
                 "%s%s",
                 sprintf(
@@ -228,7 +230,6 @@ template_g_km <- function(dataname = "ANL",
           plotlist = plot_list,
           ncol = 1
         )
-        plot
       },
       env = list(
         facet_var = if (length(facet_var) != 0L) as.name(facet_var),
@@ -238,6 +239,7 @@ template_g_km <- function(dataname = "ANL",
         xlab = xlab,
         time_unit_var = as.name(time_unit_var),
         yval = yval,
+        ylim = ylim,
         conf_level = conf_level,
         pval_method = pval_method,
         annot_surv_med = annot_surv_med,
@@ -262,17 +264,39 @@ template_g_km <- function(dataname = "ANL",
 #' This module produces a `ggplot`-style Kaplan-Meier plot for data with ADaM structure.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_g_km
 #' @param facet_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for names of variable that can be used for plot faceting.
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADTTE <- tmc_ex_adtte
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADTTE <- tmc_ex_adtte
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADTTE <- data[["ADTTE"]]
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -286,14 +310,7 @@ template_g_km <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADTTE = ADTTE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADTTE <- tmc_ex_adtte
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_km(
 #'       label = "Kaplan-Meier Plot",
@@ -356,7 +373,9 @@ tm_g_km <- function(label,
                     plot_height = c(800L, 400L, 5000L),
                     plot_width = NULL,
                     pre_output = NULL,
-                    post_output = NULL) {
+                    post_output = NULL,
+                    transformators = list(),
+                    decorators = list()) {
   message("Initializing tm_g_km")
 
   checkmate::assert_string(label)
@@ -379,6 +398,8 @@ tm_g_km <- function(label,
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -407,9 +428,11 @@ tm_g_km <- function(label,
         plot_width = plot_width,
         control_annot_surv_med = control_annot_surv_med,
         control_annot_coxph = control_annot_coxph,
-        legend_pos = legend_pos
+        legend_pos = legend_pos,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -504,6 +527,7 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         teal.widgets::panel_group(
@@ -551,6 +575,12 @@ ui_g_km <- function(id, ...) {
             choices = c("Survival probability", "Failure probability"),
             selected = c("Survival probability"),
           ),
+          teal.widgets::optionalSliderInput(
+            ns("ylim"),
+            tags$label("y-axis limits", class = "text-primary"),
+            value = c(0, 1),
+            min = 0, max = 1
+          ),
           teal.widgets::optionalSliderInputValMinMax(
             ns("font_size"),
             "Table Font Size",
@@ -594,7 +624,6 @@ ui_g_km <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -622,13 +651,15 @@ srv_g_km <- function(id,
                      plot_width,
                      control_annot_surv_med,
                      control_annot_coxph,
-                     legend_pos) {
+                     legend_pos,
+                     decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -672,6 +703,7 @@ srv_g_km <- function(id,
 
       iv$add_rule("font_size", shinyvalidate::sv_required("Plot tables font size must be greater than or equal to 5"))
       iv$add_rule("font_size", shinyvalidate::sv_gte(5, "Plot tables font size must be greater than or equal to 5"))
+      iv$add_rule("ylim", shinyvalidate::sv_required("Please choose a range for y-axis limits"))
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
         "conf_level",
@@ -786,14 +818,21 @@ srv_g_km <- function(id,
         ties = input$ties_coxph,
         xlab = input$xlab,
         yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
+        ylim = input$ylim,
         rel_height_plot = input$rel_height_plot / 100,
         ci_ribbon = input$show_ci_ribbon,
         title = title
       )
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
-    plot_r <- reactive(all_q()[["plot"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -803,16 +842,11 @@ srv_g_km <- function(id,
       width = plot_width
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -832,7 +866,7 @@ srv_g_km <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

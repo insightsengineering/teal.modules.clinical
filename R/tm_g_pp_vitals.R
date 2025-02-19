@@ -123,7 +123,7 @@ template_vitals <- function(dataname = "ANL",
           color = paramcd_levels_e
         )
 
-        result_plot <- ggplot2::ggplot(data = vitals, mapping = ggplot2::aes(x = xaxis)) + # replaced VSDY
+        plot <- ggplot2::ggplot(data = vitals, mapping = ggplot2::aes(x = xaxis)) + # replaced VSDY
           ggplot2::geom_line(
             data = vitals,
             mapping = ggplot2::aes(y = aval_var, color = paramcd),
@@ -172,8 +172,6 @@ template_vitals <- function(dataname = "ANL",
           labs +
           ggthemes +
           themes
-
-        print(result_plot)
       },
       env = list(
         dataname = as.name(dataname),
@@ -205,27 +203,42 @@ template_vitals <- function(dataname = "ANL",
 #' `"SYSBP"`, `"DIABP"`, `"TEMP"`, `"RESP"`, `"OXYSAT"`.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_vitals
 #' @param xaxis ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
 #'
 #' @inherit module_arguments return
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADVS <- tmc_ex_advs
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADVS <- tmc_ex_advs
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADVS <- data[["ADVS"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADVS = ADVS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADVS <- tmc_ex_advs
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_pp_vitals(
 #'       label = "Vitals",
@@ -266,7 +279,9 @@ tm_g_pp_vitals <- function(label,
                            plot_width = NULL,
                            pre_output = NULL,
                            post_output = NULL,
-                           ggplot2_args = teal.widgets::ggplot2_args()) {
+                           ggplot2_args = teal.widgets::ggplot2_args(),
+                           transformators = list(),
+                           decorators = list()) {
   if (lifecycle::is_present(aval)) {
     aval_var <- aval
     warning(
@@ -301,6 +316,8 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(aval_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(xaxis, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -323,9 +340,11 @@ tm_g_pp_vitals <- function(label,
         patient_col = patient_col,
         plot_height = plot_height,
         plot_width = plot_width,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
@@ -373,6 +392,7 @@ ui_g_vitals <- function(id, ...) {
         data_extract_spec = ui_args$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "plot")),
       teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
@@ -383,7 +403,6 @@ ui_g_vitals <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = ui_args$pre_output,
@@ -405,13 +424,15 @@ srv_g_vitals <- function(id,
                          plot_height,
                          plot_width,
                          label,
-                         ggplot2_args) {
+                         ggplot2_args,
+                         decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
     # Init
@@ -545,11 +566,19 @@ srv_g_vitals <- function(id,
           )
         )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls))
+        teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
-    plot_r <- reactive(all_q()[["result_plot"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
+    # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     pws <- teal.widgets::plot_with_settings_srv(
       id = "vitals_plot",
       plot_r = plot_r,
@@ -558,15 +587,8 @@ srv_g_vitals <- function(id,
     )
 
     teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
-    teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -585,7 +607,7 @@ srv_g_vitals <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

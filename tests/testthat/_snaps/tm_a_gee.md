@@ -13,9 +13,9 @@
       
       $table
       {
-          result_table <- tern.gee::as.rtable(model_fit, type = "cov")
-          subtitles(result_table) <- NULL
-          main_footer(result_table) <- NULL
+          table <- tern.gee::as.rtable(model_fit, type = "cov")
+          subtitles(table) <- NULL
+          main_footer(table) <- NULL
       }
       
 
@@ -34,9 +34,9 @@
       
       $table
       {
-          result_table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
-          subtitles(result_table) <- NULL
-          main_footer(result_table) <- NULL
+          table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
+          subtitles(table) <- NULL
+          main_footer(table) <- NULL
       }
       
 
@@ -56,13 +56,12 @@
       $table
       {
           lsmeans_fit_model <- tern.gee::lsmeans(model_fit, 0.95)
-          result_table <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM", 
-              ref_group = model_fit$ref_level) %>% rtables::add_colcounts() %>% 
+          table <- rtables::basic_table(show_colcounts = TRUE) %>% 
+              rtables::split_cols_by(var = "ARM", ref_group = model_fit$ref_level) %>% 
               tern.gee::summarize_gee_logistic() %>% rtables::build_table(df = lsmeans_fit_model, 
               alt_counts_df = ANL_ADSL)
-          subtitles(result_table) <- NULL
-          main_footer(result_table) <- NULL
-          result_table
+          subtitles(table) <- NULL
+          main_footer(table) <- NULL
       }
       
 
@@ -82,13 +81,12 @@
       $table
       {
           lsmeans_fit_model <- tern.gee::lsmeans(model_fit, 0.95)
-          result_table <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM", 
-              ref_group = model_fit$ref_level) %>% rtables::add_colcounts() %>% 
+          table <- rtables::basic_table(show_colcounts = TRUE) %>% 
+              rtables::split_cols_by(var = "ARM", ref_group = model_fit$ref_level) %>% 
               tern.gee::summarize_gee_logistic() %>% rtables::build_table(df = lsmeans_fit_model, 
               alt_counts_df = ANL_ADSL)
-          subtitles(result_table) <- NULL
-          main_footer(result_table) <- NULL
-          result_table
+          subtitles(table) <- NULL
+          main_footer(table) <- NULL
       }
       
 

@@ -4,6 +4,17 @@
 #'
 #' @inheritParams tern::g_forest
 #' @inheritParams template_arguments
+#' @param stats (`character`)\cr the names of statistics to be reported among:
+#'   * `n`: Total number of observations per group.
+#'   * `n_rsp`: Number of responders per group.
+#'   * `prop`: Proportion of responders.
+#'   * `n_tot`: Total number of observations.
+#'   * `or`: Odds ratio.
+#'   * `ci` : Confidence interval of odds ratio.
+#'   * `pval`: p-value of the effect.
+#'   Note, the statistics `n_tot`, `or`, and `ci` are required.
+#' @param riskdiff (`list`)\cr if a risk (proportion) difference column should be added, a list of settings to apply
+#'   within the column. See [tern::control_riskdiff()] for details. If `NULL`, no risk difference column will be added.
 #' @param obj_var_name (`character`)\cr additional text to append to the table title.
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
 #' @param col_symbol_size (`integer` or `NULL`)\cr column index to be used to determine relative size for
@@ -33,6 +44,8 @@ template_forest_rsp <- function(dataname = "ANL",
                                 responders = c("CR", "PR"),
                                 subgroup_var,
                                 strata_var = NULL,
+                                stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
+                                riskdiff = NULL,
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 rel_width_forest = 0.25,
@@ -44,6 +57,9 @@ template_forest_rsp <- function(dataname = "ANL",
   checkmate::assert_string(aval_var)
   checkmate::assert_string(obj_var_name)
   checkmate::assert_character(subgroup_var, null.ok = TRUE)
+  checkmate::assert_character(stats, min.len = 3)
+  checkmate::assert_true(all(c("n_tot", "or", "ci") %in% stats))
+  checkmate::assert_list(riskdiff, null.ok = TRUE)
   checkmate::assert_number(rel_width_forest, lower = 0, upper = 1)
   checkmate::assert_number(font_size)
 
@@ -155,9 +171,10 @@ template_forest_rsp <- function(dataname = "ANL",
   y$summary <- bracket_expr(summary_list)
 
   # Table output.
-  y$table <- quote(
-    result <- rtables::basic_table() %>%
-      tabulate_rsp_subgroups(df, vars = c("n_tot", "n", "n_rsp", "prop", "or", "ci"))
+  y$table <- substitute(
+    expr = result <- rtables::basic_table() %>%
+      tabulate_rsp_subgroups(df, vars = stats, riskdiff = riskdiff),
+    env = list(stats = stats, riskdiff = riskdiff)
   )
 
   all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
@@ -194,7 +211,7 @@ template_forest_rsp <- function(dataname = "ANL",
     plot_list,
     substitute(
       expr = {
-        p <- cowplot::plot_grid(
+        plot <- cowplot::plot_grid(
           f[["table"]] + ggplot2::labs(title = ggplot2_args_title),
           f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
           align = "h",
@@ -222,19 +239,40 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_forest_rsp
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
 #'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADRS <- tmc_ex_adrs %>%
-#'   mutate(AVALC = d_onco_rsp_label(AVALC) %>%
-#'     with_label("Character Result/Finding")) %>%
-#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADRS <- tmc_ex_adrs %>%
+#'     mutate(AVALC = d_onco_rsp_label(AVALC) %>%
+#'       with_label("Character Result/Finding")) %>%
+#'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADRS <- data[["ADRS"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -248,17 +286,7 @@ template_forest_rsp <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADRS = ADRS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADRS <- tmc_ex_adrs %>%
-#'         mutate(AVALC = d_onco_rsp_label(AVALC) %>%
-#'         with_label(\"Character Result/Finding\")) %>%
-#'         filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_forest_rsp(
 #'       label = "Forest Response",
@@ -325,6 +353,8 @@ tm_g_forest_rsp <- function(label,
                             ),
                             subgroup_var,
                             strata_var,
+                            stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
+                            riskdiff = NULL,
                             fixed_symbol_size = TRUE,
                             conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
@@ -334,7 +364,9 @@ tm_g_forest_rsp <- function(label,
                             font_size = c(15L, 1L, 30L),
                             pre_output = NULL,
                             post_output = NULL,
-                            ggplot2_args = teal.widgets::ggplot2_args()) {
+                            ggplot2_args = teal.widgets::ggplot2_args(),
+                            transformators = list(),
+                            decorators = list()) {
   message("Initializing tm_g_forest_rsp")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -346,6 +378,9 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_class(subgroup_var, "choices_selected")
   checkmate::assert_class(strata_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
+  checkmate::assert_character(stats, min.len = 3)
+  checkmate::assert_true(all(c("n_tot", "or", "ci") %in% stats))
+  checkmate::assert_list(riskdiff, null.ok = TRUE)
   checkmate::assert_multi_class(default_responses, c("list", "character", "numeric"), null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -357,6 +392,8 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
 
@@ -380,12 +417,16 @@ tm_g_forest_rsp <- function(label,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         label = label,
+        stats = stats,
+        riskdiff = riskdiff,
         default_responses = default_responses,
         plot_height = plot_height,
         plot_width = plot_width,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -449,6 +490,7 @@ ui_g_forest_rsp <- function(id, ...) {
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
@@ -477,7 +519,6 @@ ui_g_forest_rsp <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
     pre_output = a$pre_output,
@@ -498,17 +539,21 @@ srv_g_forest_rsp <- function(id,
                              aval_var,
                              subgroup_var,
                              strata_var,
+                             stats,
+                             riskdiff,
                              plot_height,
                              plot_width,
                              label,
                              default_responses,
-                             ggplot2_args) {
+                             ggplot2_args,
+                             decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -707,8 +752,8 @@ srv_g_forest_rsp <- function(id,
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-
-      obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+      resolved_paramcd <- teal.transform::resolve_delayed(paramcd, as.list(data()))
+      obj_var_name <- get_g_forest_obj_var_name(resolved_paramcd, input)
 
       my_calls <- template_forest_rsp(
         dataname = "ANL",
@@ -721,6 +766,8 @@ srv_g_forest_rsp <- function(id,
         responders = input$responders,
         subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
         strata_var = if (length(strata_var) != 0) strata_var else NULL,
+        stats = stats,
+        riskdiff = riskdiff,
         conf_level = as.numeric(input$conf_level),
         col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
         rel_width_forest = input$rel_width_forest / 100,
@@ -728,10 +775,16 @@ srv_g_forest_rsp <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
-    plot_r <- reactive(all_q()[["p"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -740,16 +793,11 @@ srv_g_forest_rsp <- function(id,
       width = plot_width
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -768,7 +816,7 @@ srv_g_forest_rsp <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

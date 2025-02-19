@@ -23,7 +23,9 @@ tm_t_smq(
   scopes,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -82,6 +84,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -89,30 +103,39 @@ a \code{teal_module} object.
 \description{
 This module produces an adverse events table by Standardized MedDRA Query.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 data <- teal_data()
 data <- within(data, {
   ADSL <- tmc_ex_adsl
   ADAE <- tmc_ex_adae
 
-  names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
-  names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
+  .names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
+  .names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
 
-  cs_baskets <- choices_selected(
-    choices = variable_choices(ADAE, subset = names_baskets),
-    selected = names_baskets
+  .cs_baskets <- choices_selected(
+    choices = variable_choices(ADAE, subset = .names_baskets),
+    selected = .names_baskets
   )
 
-  cs_scopes <- choices_selected(
-    choices = variable_choices(ADAE, subset = names_scopes),
-    selected = names_scopes,
+  .cs_scopes <- choices_selected(
+    choices = variable_choices(ADAE, subset = .names_scopes),
+    selected = .names_scopes,
     fixed = TRUE
   )
 })
-
-datanames <- c("ADSL", "ADAE")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
+join_keys(data) <- default_cdisc_join_keys[names(data)]
 
 app <- init(
   data = data,
@@ -125,8 +148,8 @@ app <- init(
         selected = "ARM"
       ),
       add_total = FALSE,
-      baskets = data[["cs_baskets"]],
-      scopes = data[["cs_scopes"]],
+      baskets = data[[".cs_baskets"]],
+      scopes = data[[".cs_scopes"]],
       llt = choices_selected(
         choices = variable_choices(data[["ADAE"]], subset = c("AEDECOD")),
         selected = "AEDECOD"
@@ -143,3 +166,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zhXCAyMaHhRP3ooUQBrOFJRIoBzRjhUdgUwAD12XIBZAEUAHwBhLbkMACoAOUyNgBJllIGxdhzmuRTNbkFdAF47RydFXp1+rAxH5RMRUGJZvNFssVpstidcntrngdHdRA8mr8Xm9Pt9nH8GhIhiNxpNpuECDEiDJgaI4CJ1HB+Et-hlKdSCBCvq9GLQoPQRH52TT0Y8nClRIJ6HTSDovoDBsNRhMps8Ghk6QzyPw5QC0UrSVMGgT-kSQWCIRSqSKQfS4IzmeqdMLOdNuSw+QK4ELra6Mc0JVKZbqFbSLaI1aydJr7dqQ-rQURwaJcE7jLQKkzdfZnMalABfP4AK2pED8E1Y6KSNnC-DgxigwlIQv4tFBfhL8XLcErwDRiVCcgAuj00KgivFoiyMkldUlU-8+EIRG6dEvhPcnSU-M3RDAAI7TjLH6j8+m65aZfjaRh0nRObRkab0Vg6OF2fkiG5OmehO4XsAxW-KMMhYGA-B5XUXVpO0HSPY9j2g1ceU9QUkIHTxgGAS88nyZYhyHQNpUmKClkArANhuHRllyJwAA1ljkSMEIQmMHQAzIKOWH8dGYlian4HciE8ahdQAMUyfJaIXFidBJFVVySLDljNeSyXwwieMTZM51CZSwDNbSxA0mSWOoahZS+JDbS1Jl4JYpDdRQz9vXQpTsMAzETOjIMSKssjmmyJw9gAeWyRi+Nkti4y+S8nCC0LwrAHi-gQ1LeKUP5aGMHR2Hicg1A0bRrBsNJ-lEOIIFYTJ0HYMdLkEWgUnqulGBvP58yUMB8yHIA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zhXCAyMaHhRP3ooUQBrOFJRIoBzRjhUdgUwAD12XIBZAEUAHwBhLbkMACoAOUyNgBJllIGxdhzmuRTNbkFdAF47RydFXp1+rAxH5RMRUGJZvNFssVpstidcntrngdHdRA8mr8Xm9Pt9nH8GhIhiNxpNpuECDEiDJgaI4CJ1HB+Et-hlKdSCBCvq9GLQoPQRH52TT0Y8nClRIJ6HTSDovoDBsNRhMps8Ghk6QzyPw5QC0UrSVMGgT-kSQWCIRSqSKQfS4IzmeqdMLOdNuSw+QK4ELra6Mc0JVKZbqFbSLaI1aydJr7dqQ-rQURwaJcE7jLQKkzdfZnMalABfP4AK2pED8E1Y6KSNnC-DgxigwlIQv4tFBfhL8XLcErwDRiVCcgAuj00KgivFoiyMkldUlU-8+EIRG6dEvhPcnSU-M3RDAAI7TjLH6j8+m65aZfjaRh0nRObRkab0Vg6OF2fkiG5OmehO4XsAxW-KMMhYGA-B5XUXVpO0HSPY9j2g1ceU9QUkIHTxgGAS88nyZYhyHQNpUmKClkArANhuHRllyJwAA1ljkSMEIQmMHQAzIKOWH8dGYlian4HciE8ahdQAMUyfJaIXFidBJFVVySLDljNeSyXwwieMTZM51CZSwDNbSxA0mSWOoahZS+JDbS1Jl4JYpDdRQz9vXQpTsMAzETOjIMSKssjmmyJw9gAeWyRi+Nkti4y+S8nCC0LwrAHi-gQ1LeKUP5aGMHR2Hicg1A0bRrBsNJ-lEOIIFYTJ0HYMdLkEWgUnqulGBvP58yUMB8yHIA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

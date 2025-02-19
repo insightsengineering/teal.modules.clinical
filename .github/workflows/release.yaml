@@ -8,15 +8,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build package 🎁
-    needs: release
-    uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
-    secrets:
-      REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-    with:
-      skip-r-cmd-check: true
-      skip-r-cmd-install: true
   docs:
     name: Pkgdown Docs 📚
     needs: release
@@ -25,19 +16,22 @@ jobs:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
     with:
       default-landing-page: latest-tag
+      deps-installation-method: setup-r-dependencies
   validation:
     name: R Package Validation report 📃
     needs: release
     uses: insightsengineering/r.pkg.template/.github/workflows/validation.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    with:
+      deps-installation-method: setup-r-dependencies
   release:
     name: Create release 🎉
     uses: insightsengineering/r.pkg.template/.github/workflows/release.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
-  r-cmd:
-    name: R CMD Check 🧬
+  build:
+    name: Build package and reports 🎁
     needs: [release, docs]
     uses: insightsengineering/r.pkg.template/.github/workflows/build-check-install.yaml@main
     secrets:
@@ -55,9 +49,18 @@ jobs:
         checking top-level files .* NOTE
       unit-test-report-brand: >-
         https://raw.githubusercontent.com/insightsengineering/hex-stickers/main/thumbs/teal.png
+      deps-installation-method: setup-r-dependencies
   coverage:
     name: Coverage 📔
     needs: [release, docs]
     uses: insightsengineering/r.pkg.template/.github/workflows/test-coverage.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
+    with:
+      additional-env-vars: |
+        NOT_CRAN=true
+      deps-installation-method: setup-r-dependencies
+  wasm:
+    name: Build WASM packages 🧑‍🏭
+    needs: release
+    uses: insightsengineering/r.pkg.template/.github/workflows/wasm.yaml@main

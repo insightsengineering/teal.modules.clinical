@@ -23,6 +23,8 @@ template_events_patyear <- function(dataname,
                                     control = control_incidence_rate(),
                                     drop_arm_levels = TRUE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
+
   # initialize
   y <- list()
   # data
@@ -39,10 +41,21 @@ template_events_patyear <- function(dataname,
     prepare_arm_levels(
       dataname = "anl",
       parentname = parentname,
-      arm_var = arm_var,
+      arm_var = arm_var[[1]],
       drop_arm_levels = drop_arm_levels
     )
   )
+  if (length(arm_var) == 2) {
+    data_list <- add_expr(
+      data_list,
+      prepare_arm_levels(
+        dataname = "anl",
+        parentname = parentname,
+        arm_var = arm_var[[2]],
+        drop_arm_levels = drop_arm_levels
+      )
+    )
+  }
 
   data_list <- add_expr(
     data_list,
@@ -82,6 +95,7 @@ template_events_patyear <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         title = basic_title,
         main_footer = basic_footer
       )
@@ -92,11 +106,28 @@ template_events_patyear <- function(dataname,
     layout_list,
     substitute(
       expr = expr_basic_table_args %>%
-        rtables::split_cols_by(var = arm_var) %>%
-        rtables::add_colcounts(),
-      env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
+        rtables::split_cols_by(var = arm_var),
+      env = list(arm_var = arm_var[[1]], expr_basic_table_args = parsed_basic_table_args)
     )
   )
+
+  if (length(arm_var) == 2) {
+    layout_list <- add_expr(
+      layout_list,
+      if (drop_arm_levels) {
+        substitute(
+          expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+          env = list(nested_col = arm_var[[2]])
+        )
+      } else {
+        substitute(
+          expr = rtables::split_cols_by(nested_col),
+          env = list(nested_col = arm_var[[2]])
+        )
+      }
+    )
+  }
+
   if (add_total) {
     layout_list <- add_expr(
       layout_list,
@@ -137,8 +168,7 @@ template_events_patyear <- function(dataname,
   # table
   y$table <- substitute(
     expr = {
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
     env = list(parent = as.name(parentname))
   )
@@ -151,32 +181,54 @@ template_events_patyear <- function(dataname,
 #' This module produces a table of event rates adjusted for patient-years.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_events_patyear
+#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for variable names that can be used as `arm_var`.
+#'   It defines the grouping variable(s) in the results table.
+#'   If there are two elements selected for `arm_var`,
+#'   second variable will be nested under the first variable.
 #' @param events_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for the variable with all event counts.
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` as created from `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#'
 #' @examples
 #' library(dplyr)
-#' ADSL <- tmc_ex_adsl
-#' ADAETTE <- tmc_ex_adaette %>%
-#'   filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
-#'   mutate(is_event = CNSR == 0) %>%
-#'   mutate(n_events = as.integer(is_event))
+#'
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADAETTE <- tmc_ex_adaette %>%
+#'     filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
+#'     mutate(is_event = CNSR == 0) %>%
+#'     mutate(n_events = as.integer(is_event))
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADAETTE <- data[["ADAETTE"]]
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ examples[[1]] }}
+#' {{ next_example }}
+#'
+#' @examples
+#' # 1. Basic Example
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADAETTE = ADAETTE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADAETTE <- tmc_ex_adaette %>%
-#'         filter(PARAMCD %in% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) %>%
-#'         mutate(is_event = CNSR == 0) %>%
-#'         mutate(n_events = as.integer(is_event))
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_events_patyear(
 #'       label = "AE Rate Adjusted for Patient-Years At Risk Table",
@@ -184,6 +236,42 @@ template_events_patyear <- function(dataname,
 #'       arm_var = choices_selected(
 #'         choices = variable_choices(ADSL, c("ARM", "ARMCD")),
 #'         selected = "ARMCD"
+#'       ),
+#'       add_total = TRUE,
+#'       events_var = choices_selected(
+#'         choices = variable_choices(ADAETTE, "n_events"),
+#'         selected = "n_events",
+#'         fixed = TRUE
+#'       ),
+#'       paramcd = choices_selected(
+#'         choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
+#'         selected = "AETTE1"
+#'       )
+#'     )
+#'   )
+#' )
+#' if (interactive()) {
+#'   shinyApp(app$ui, app$server)
+#' }
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ examples[[1]] }}
+#' {{ next_example }}
+#'
+#' @examples
+#' # 2. Example with table split on 2 arm_var variables
+#'
+#' app <- init(
+#'   data = data,
+#'   modules = modules(
+#'     tm_t_events_patyear(
+#'       label = "AE Rate Adjusted for Patient-Years At Risk Table",
+#'       dataname = "ADAETTE",
+#'       arm_var = choices_selected(
+#'         choices = variable_choices(ADSL, c("ARM", "ARMCD", "SEX")),
+#'         selected = c("ARM", "SEX")
 #'       ),
 #'       add_total = TRUE,
 #'       events_var = choices_selected(
@@ -231,7 +319,9 @@ tm_t_events_patyear <- function(label,
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
-                                basic_table_args = teal.widgets::basic_table_args()) {
+                                basic_table_args = teal.widgets::basic_table_args(),
+                                transformators = list(),
+                                decorators = list()) {
   message("Initializing tm_t_events_patyear")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -249,11 +339,13 @@ tm_t_events_patyear <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))
 
   data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
+    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     avalu_var = cs_to_des_select(avalu_var, dataname = dataname),
@@ -273,9 +365,11 @@ tm_t_events_patyear <- function(label,
         label = label,
         total_label = total_label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -343,6 +437,7 @@ ui_events_patyear <- function(id, ...) {
         multiple = FALSE,
         fixed = FALSE
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
@@ -370,7 +465,6 @@ ui_events_patyear <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -395,13 +489,15 @@ srv_events_patyear <- function(id,
                                na_level,
                                drop_arm_levels,
                                label,
-                               basic_table_args) {
+                               basic_table_args,
+                               decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     observeEvent(anl_q(), {
       data_anl <- merged$anl_q()[["ANL"]]
       aval_unit_var <- merged$anl_input_r()$columns_source$avalu_var
@@ -495,7 +591,7 @@ srv_events_patyear <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
         anlvars = c("USUBJID", "STUDYID", input_paramcd, input_events_var, input_aval_var, input_avalu_var),
-        arm_var = input_arm_var
+        arm_var = input_arm_var[[1]]
       )
 
       validate(
@@ -545,30 +641,30 @@ srv_events_patyear <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
+
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
     # Outputs to render.
-    table_r <- reactive({
-      table_q()[["result"]]
-    })
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "patyear_table",
       table_r = table_r
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
-    )
-
     # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -587,7 +683,7 @@ srv_events_patyear <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

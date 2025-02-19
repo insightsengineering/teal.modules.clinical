@@ -24,7 +24,7 @@ template_exposure <- function(parentname,
                               paramcd,
                               paramcd_label = NULL,
                               row_by_var,
-                              col_by_var,
+                              col_by_var = NULL,
                               add_total = FALSE,
                               total_label = "Total",
                               add_total_row = TRUE,
@@ -37,7 +37,7 @@ template_exposure <- function(parentname,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(row_by_var)
-  checkmate::assert_string(col_by_var, null.ok = TRUE)
+  checkmate::assert_character(col_by_var, null.ok = TRUE)
   checkmate::assert_string(paramcd)
   checkmate::assert_string(id_var)
   checkmate::assert_flag(add_total)
@@ -51,6 +51,10 @@ template_exposure <- function(parentname,
 
   y <- list()
   data_list <- list()
+
+  if (length(col_by_var) == 0) {
+    col_by_var <- NULL
+  }
 
   data_list <- add_expr(
     data_list,
@@ -85,6 +89,7 @@ template_exposure <- function(parentname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         main_footer = paste0("* Patient time is the sum of ", paramcd_label)
       )
     )
@@ -120,11 +125,6 @@ template_exposure <- function(parentname,
       )
     }
   }
-
-  layout_list <- add_expr(
-    layout_list,
-    quote(rtables::add_colcounts())
-  )
 
   layout_list <- add_expr(
     layout_list,
@@ -189,8 +189,7 @@ template_exposure <- function(parentname,
 
   y$table <- substitute(
     expr = {
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
     env = list(parent = as.name(parentname))
   )
@@ -198,8 +197,8 @@ template_exposure <- function(parentname,
   if (drop_levels) {
     y$table <- substitute(
       expr = {
-        result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-        rtables::prune_table(result)
+        table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
+        table <- rtables::prune_table(table)
       },
       env = list(parent = as.name(parentname))
     )
@@ -212,6 +211,7 @@ template_exposure <- function(parentname,
 #' The module produces an exposure table for risk management plan.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_exposure
 #' @param row_by_var ([teal.transform::choices_selected()])\cr
 #'   object with all available choices and preselected option for
@@ -227,6 +227,19 @@ template_exposure <- function(parentname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Modules:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` as created from `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
 #'
@@ -236,7 +249,7 @@ template_exposure <- function(parentname,
 #'   ADEX <- tmc_ex_adex
 #'
 #'   set.seed(1, kind = "Mersenne-Twister")
-#'   labels <- col_labels(ADEX, fill = FALSE)
+#'   .labels <- col_labels(ADEX, fill = FALSE)
 #'   ADEX <- ADEX %>%
 #'     distinct(USUBJID, .keep_all = TRUE) %>%
 #'     mutate(
@@ -246,12 +259,9 @@ template_exposure <- function(parentname,
 #'       AVALU = "Days"
 #'     ) %>%
 #'     bind_rows(ADEX)
-#'   col_labels(ADEX) <- labels
+#'   col_labels(ADEX) <- .labels
 #' })
-#'
-#' datanames <- c("ADSL", "ADEX")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,
@@ -322,7 +332,9 @@ tm_t_exposure <- function(label,
                           na_level = default_na_str(),
                           pre_output = NULL,
                           post_output = NULL,
-                          basic_table_args = teal.widgets::basic_table_args()) {
+                          basic_table_args = teal.widgets::basic_table_args(),
+                          transformators = list(),
+                          decorators = list()) {
   message("Initializing tm_t_exposure")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -342,6 +354,8 @@ tm_t_exposure <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
   data_extract_list <- list(
     paramcd = cs_to_des_filter(paramcd, dataname = dataname),
@@ -369,9 +383,11 @@ tm_t_exposure <- function(label,
         total_row_label = total_row_label,
         na_level = na_level,
         basic_table_args = basic_table_args,
-        paramcd_label = paramcd_label
+        paramcd_label = paramcd_label,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -428,6 +444,7 @@ ui_t_exposure <- function(id, ...) {
       ),
       checkboxInput(ns("add_total_row"), "Add Total row", value = a$add_total_row),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional Variables Info",
@@ -453,7 +470,6 @@ ui_t_exposure <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -480,12 +496,14 @@ srv_t_exposure <- function(id,
                            label,
                            total_label,
                            total_row_label,
-                           basic_table_args = basic_table_args) {
+                           basic_table_args = basic_table_args,
+                           decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     rule_intersection <- function(other) {
       function(value) {
         others <- selector_list()[[other]]()$select
@@ -625,28 +643,29 @@ srv_t_exposure <- function(id,
         avalu_var = input_avalu_var,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.
-    table_r <- reactive(all_q()[["result"]])
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
     # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -665,7 +684,7 @@ srv_t_exposure <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

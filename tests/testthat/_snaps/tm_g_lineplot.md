@@ -10,7 +10,7 @@
       
       $variables
       variables <- control_lineplot_vars(x = "AVISIT", y = "AVAL", 
-          strata = "ARM", paramcd = "PARAMCD", y_unit = "AVALU")
+          group_var = "ARM", paramcd = "PARAMCD", y_unit = "AVALU")
       
       $graph
       {
@@ -22,9 +22,8 @@
               title = "Plot of Mean and 95% Mean Confidence Interval of AVAL by Visit", 
               subtitle = "", caption = NULL, y_lab = "AVAL Mean Values for", 
               legend_title = NULL, ggtheme = ggplot2::theme_minimal(), 
-              control = control_summarize_vars(conf_level = 0.95), 
-              subtitle_add_paramcd = FALSE, subtitle_add_unit = FALSE)
-          plot
+              control = control_analyze_vars(conf_level = 0.95), subtitle_add_paramcd = FALSE, 
+              subtitle_add_unit = FALSE)
       }
       
 
@@ -40,7 +39,7 @@
       }
       
       $variables
-      variables <- control_lineplot_vars(x = "AVISIT", y = "CHG", strata = "ARMCD", 
+      variables <- control_lineplot_vars(x = "AVISIT", y = "CHG", group_var = "ARMCD", 
           paramcd = "PARAMCD", y_unit = "AVALU")
       
       $graph
@@ -52,9 +51,8 @@
               table_font_size = 4, newpage = FALSE, title = "Plot of Median and 90% Median Confidence Interval of CHG by Visit", 
               subtitle = "", caption = NULL, y_lab = "CHG Median Values for", 
               legend_title = NULL, ggtheme = ggplot2::theme_minimal(), 
-              control = control_summarize_vars(conf_level = 0.9), subtitle_add_paramcd = FALSE, 
+              control = control_analyze_vars(conf_level = 0.9), subtitle_add_paramcd = FALSE, 
               subtitle_add_unit = FALSE)
-          plot
       }
       
 

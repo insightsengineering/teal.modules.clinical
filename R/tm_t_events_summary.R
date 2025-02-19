@@ -15,6 +15,9 @@
 #'   they exist.
 #' @param aeseq_var (`character`)\cr name of variable for adverse events sequence number from `dataset`. Used for
 #'   counting total number of events.
+#' @param count_dth (`logical`)\cr whether to show count of total deaths (based on `dthfl_var`). Defaults to `TRUE`.
+#' @param count_wd (`logical`)\cr whether to show count of patients withdrawn from study due to an adverse event
+#'   (based on `dcsreas_var`). Defaults to `TRUE`.
 #' @param count_subj (`logical`)\cr whether to show count of unique subjects (based on `USUBJID`). Only applies if
 #'   event flag variables are provided.
 #' @param count_pt (`logical`)\cr whether to show count of unique preferred terms (based on `llt`). Only applies if
@@ -39,6 +42,8 @@ template_events_summary <- function(anl_name,
                                     add_total = TRUE,
                                     total_label = default_total_label(),
                                     na_level = default_na_str(),
+                                    count_dth = TRUE,
+                                    count_wd = TRUE,
                                     count_subj = TRUE,
                                     count_pt = TRUE,
                                     count_events = TRUE) {
@@ -54,6 +59,8 @@ template_events_summary <- function(anl_name,
   checkmate::assert_character(flag_var_aesi, null.ok = TRUE)
   checkmate::assert_string(aeseq_var)
   checkmate::assert_string(llt)
+  checkmate::assert_flag(count_dth)
+  checkmate::assert_flag(count_wd)
   checkmate::assert_flag(count_subj)
   checkmate::assert_flag(count_pt)
   checkmate::assert_flag(count_events)
@@ -164,7 +171,7 @@ template_events_summary <- function(anl_name,
   layout_parent_list <- list()
   layout_parent_list <- add_expr(
     layout_parent_list,
-    quote(rtables::basic_table())
+    quote(rtables::basic_table(show_colcounts = TRUE))
   )
 
   layout_parent_list <- add_expr(
@@ -184,11 +191,6 @@ template_events_summary <- function(anl_name,
     )
   }
 
-  layout_parent_list <- add_expr(
-    layout_parent_list,
-    quote(rtables::add_colcounts())
-  )
-
   if (add_total) {
     layout_parent_list <- add_expr(
       layout_parent_list,
@@ -199,26 +201,37 @@ template_events_summary <- function(anl_name,
     )
   }
 
-  layout_parent_list <- add_expr(
-    layout_parent_list,
-    substitute(
-      expr = count_values(
-        dthfl_var,
-        values = "Y",
-        .labels = c(count_fraction = "Total number of deaths"),
-        .formats = c(count_fraction = format_count_fraction),
-        denom = "N_col"
-      ) %>%
-        count_values(
+  if (count_dth) {
+    layout_parent_list <- add_expr(
+      layout_parent_list,
+      substitute(
+        expr = count_values(
+          dthfl_var,
+          values = "Y",
+          .labels = c(count_fraction = "Total number of deaths"),
+          .formats = c(count_fraction = format_count_fraction),
+          denom = "N_col"
+        ),
+        env = list(dthfl_var = dthfl_var)
+      )
+    )
+  }
+
+  if (count_wd) {
+    layout_parent_list <- add_expr(
+      layout_parent_list,
+      substitute(
+        expr = count_values(
           dcsreas_var,
           values = "ADVERSE EVENT",
           .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
           .formats = c(count_fraction = format_count_fraction),
           denom = "N_col"
         ),
-      env = list(dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)
+        env = list(dcsreas_var = dcsreas_var)
+      )
     )
-  )
+  }
 
   y$layout_parent <- substitute(
     expr = lyt_parent <- layout_parent_pipe,
@@ -231,7 +244,7 @@ template_events_summary <- function(anl_name,
   table_parent_list <- add_expr(
     table_parent_list,
     substitute(
-      expr = result_parent <- rtables::build_table(lyt = lyt_parent, df = df_parent, alt_counts_df = df_parent),
+      expr = table_parent <- rtables::build_table(lyt = lyt_parent, df = df_parent, alt_counts_df = df_parent),
       env = list(df_parent = as.name(parentname))
     )
   )
@@ -240,7 +253,7 @@ template_events_summary <- function(anl_name,
   layout_anl_list <- list()
   layout_anl_list <- add_expr(
     layout_anl_list,
-    quote(rtables::basic_table())
+    quote(rtables::basic_table(show_colcounts = TRUE))
   )
 
   layout_anl_list <- add_expr(
@@ -259,11 +272,6 @@ template_events_summary <- function(anl_name,
       )
     )
   }
-
-  layout_anl_list <- add_expr(
-    layout_anl_list,
-    quote(rtables::add_colcounts())
-  )
 
   if (add_total) {
     layout_anl_list <- add_expr(
@@ -302,12 +310,10 @@ template_events_summary <- function(anl_name,
   table_anl_list <- add_expr(
     table_anl_list,
     substitute(
-      expr = result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = df_parent),
+      expr = table_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = df_parent),
       env = list(df_parent = as.name(parentname))
     )
   )
-
-  count_flags <- c(count_subj, count_pt, count_events)
 
   condition1 <- count_subj && is.character(flag_var_anl)
   if (condition1) {
@@ -438,7 +444,7 @@ template_events_summary <- function(anl_name,
   table_list <- add_expr(
     table_list,
     quote(
-      rtables::col_info(result_parent) <- rtables::col_info(result_anl)
+      rtables::col_info(table_parent) <- rtables::col_info(table_anl)
     )
   )
 
@@ -451,14 +457,24 @@ template_events_summary <- function(anl_name,
     condition6
   )
 
-  if (any(all_conditions)) {
+  if (any(all_conditions) && (count_dth || count_wd)) {
     table_list <- add_expr(
       table_list,
       quote(
-        expr = result <- rtables::rbind(
-          result_anl[1:2, ],
-          result_parent,
-          result_anl[3:nrow(result_anl), ]
+        expr = table <- rtables::rbind(
+          table_anl[1:2, ],
+          table_parent,
+          table_anl[3:nrow(table_anl), ]
+        )
+      )
+    )
+  } else if (any(all_conditions)) {
+    table_list <- add_expr(
+      table_list,
+      quote(
+        expr = table <- rtables::rbind(
+          table_anl[1:2, ],
+          table_anl[3:nrow(table_anl), ]
         )
       )
     )
@@ -466,7 +482,7 @@ template_events_summary <- function(anl_name,
     table_list <- add_expr(
       table_list,
       quote(
-        result <- rtables::rbind(result_anl, result_parent)
+        table <- rtables::rbind(table_anl, table_parent)
       )
     )
   }
@@ -481,8 +497,14 @@ template_events_summary <- function(anl_name,
 #' This module produces an adverse events summary table.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
+#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for variable names that can be used as `arm_var`.
+#'   It defines the grouping variable(s) in the results table.
+#'   If there are two elements selected for `arm_var`,
+#'   second variable will be nested under the first variable.
 #' @param dthfl_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as death flag variable.
 #'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
@@ -501,6 +523,19 @@ template_events_summary <- function(anl_name,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` as created from `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
 #'
@@ -515,7 +550,7 @@ template_events_summary <- function(anl_name,
 #'     )
 #'   ADAE <- tmc_ex_adae
 #'
-#'   add_event_flags <- function(dat) {
+#'   .add_event_flags <- function(dat) {
 #'     dat <- dat %>%
 #'       mutate(
 #'         TMPFL_SER = AESER == "Y",
@@ -538,15 +573,12 @@ template_events_summary <- function(anl_name,
 #'   }
 #'
 #'   #' Generating user-defined event flags.
-#'   ADAE <- ADAE %>% add_event_flags()
+#'   ADAE <- ADAE %>% .add_event_flags()
 #'
-#'   ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
-#'   aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
+#'   .ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
+#'   .aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
 #' })
-#'
-#' datanames <- c("ADSL", "ADAE")
-#' datanames(data) <- datanames
-#' join_keys(data) <- default_cdisc_join_keys[datanames]
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
 #' app <- init(
 #'   data = data,
@@ -559,14 +591,14 @@ template_events_summary <- function(anl_name,
 #'         selected = "ARM"
 #'       ),
 #'       flag_var_anl = choices_selected(
-#'         choices = variable_choices("ADAE", data[["ae_anl_vars"]]),
-#'         selected = data[["ae_anl_vars"]][1],
+#'         choices = variable_choices("ADAE", data[[".ae_anl_vars"]]),
+#'         selected = data[[".ae_anl_vars"]][1],
 #'         keep_order = TRUE,
 #'         fixed = FALSE
 #'       ),
 #'       flag_var_aesi = choices_selected(
-#'         choices = variable_choices("ADAE", data[["aesi_vars"]]),
-#'         selected = data[["aesi_vars"]][1],
+#'         choices = variable_choices("ADAE", data[[".aesi_vars"]]),
+#'         selected = data[[".aesi_vars"]][1],
 #'         keep_order = TRUE,
 #'         fixed = FALSE
 #'       ),
@@ -608,12 +640,16 @@ tm_t_events_summary <- function(label,
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = default_na_str(),
+                                count_dth = TRUE,
+                                count_wd = TRUE,
                                 count_subj = TRUE,
                                 count_pt = TRUE,
                                 count_events = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
-                                basic_table_args = teal.widgets::basic_table_args()) {
+                                basic_table_args = teal.widgets::basic_table_args(),
+                                transformators = list(),
+                                decorators = list()) {
   message("Initializing tm_t_events_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -628,12 +664,16 @@ tm_t_events_summary <- function(label,
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
+  checkmate::assert_flag(count_dth)
+  checkmate::assert_flag(count_wd)
   checkmate::assert_flag(count_subj)
   checkmate::assert_flag(count_pt)
   checkmate::assert_flag(count_events)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))
 
@@ -668,9 +708,11 @@ tm_t_events_summary <- function(label,
         label = label,
         total_label = total_label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -731,21 +773,34 @@ ui_t_events_summary <- function(id, ...) {
         "Add All Patients column",
         value = a$add_total
       ),
-      tags$label("Table Settings"),
-      checkboxInput(
-        ns("count_subj"),
-        "Count patients",
-        value = a$count_subj
-      ),
-      checkboxInput(
-        ns("count_pt"),
-        "Count preferred terms",
-        value = a$count_pt
-      ),
-      checkboxInput(
-        ns("count_events"),
-        "Count events",
-        value = a$count_events
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
+      teal.widgets::panel_item(
+        "Table Settings",
+        checkboxInput(
+          ns("count_dth"),
+          "Count deaths",
+          value = a$count_dth
+        ),
+        checkboxInput(
+          ns("count_wd"),
+          "Count withdrawals due to AE",
+          value = a$count_wd
+        ),
+        checkboxInput(
+          ns("count_subj"),
+          "Count patients",
+          value = a$count_subj
+        ),
+        checkboxInput(
+          ns("count_pt"),
+          "Count preferred terms",
+          value = a$count_pt
+        ),
+        checkboxInput(
+          ns("count_events"),
+          "Count events",
+          value = a$count_events
+        )
       ),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
@@ -778,7 +833,6 @@ ui_t_events_summary <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -803,13 +857,15 @@ srv_t_events_summary <- function(id,
                                  label,
                                  total_label,
                                  na_level,
-                                 basic_table_args) {
+                                 basic_table_args,
+                                 decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     data_extract_vars <- list(
       arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
       aeseq_var = aeseq_var, llt = llt
@@ -887,7 +943,10 @@ srv_t_events_summary <- function(id,
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
 
       validate(
-        need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor."),
+        need(
+          is.factor(adsl_filtered[[input_arm_var[[1]]]]) && is.factor(anl_filtered[[input_arm_var[[1]]]]),
+          "The treatment variable selected must be a factor variable in all datasets used."
+        ),
         if (length(input_arm_var) == 2) {
           need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) && all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
@@ -895,7 +954,11 @@ srv_t_events_summary <- function(id,
             )),
             "Please check nested treatment variable which needs to be a factor without NA or empty strings."
           )
-        }
+        },
+        need(
+          identical(levels(adsl_filtered[[input_arm_var[[1]]]]), levels(anl_filtered[[input_arm_var[[1]]]])),
+          "The treatment variable selected must have the same levels across all datasets used."
+        )
       )
 
       # validate inputs
@@ -936,6 +999,8 @@ srv_t_events_summary <- function(id,
         add_total = input$add_total,
         total_label = total_label,
         na_level = na_level,
+        count_dth = input$count_dth,
+        count_wd = input$count_wd,
         count_subj = input$count_subj,
         count_pt = input$count_pt,
         count_events = input$count_events
@@ -944,16 +1009,15 @@ srv_t_events_summary <- function(id,
       all_basic_table_args <- teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
       teal.code::eval_code(
         merged$anl_q(),
-        as.expression(my_calls)
+        as.expression(unlist(my_calls))
       ) %>%
         teal.code::eval_code(
           substitute(
             expr = {
-              rtables::main_title(result) <- title
-              rtables::main_footer(result) <- footer
-              rtables::prov_footer(result) <- p_footer
-              rtables::subtitles(result) <- subtitle
-              result
+              rtables::main_title(table) <- title
+              rtables::main_footer(table) <- footer
+              rtables::prov_footer(table) <- p_footer
+              rtables::subtitles(table) <- subtitle
             }, env = list(
               title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
               footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
@@ -965,23 +1029,26 @@ srv_t_events_summary <- function(id,
     })
 
     # Outputs to render.
-    table_r <- reactive(table_q()[["result"]])
+
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
-    )
-
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -1000,7 +1067,7 @@ srv_t_events_summary <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

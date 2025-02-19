@@ -17,10 +17,13 @@ tm_t_mult_events(
   total_label = default_total_label(),
   na_level = default_na_str(),
   event_type = "event",
+  title_text = "Concomitant Medications",
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -32,9 +35,7 @@ tm_t_mult_events(
 
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+It defines the grouping variable in the results table.}
 
 \item{seq_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable names that can be used as analysis sequence number
@@ -59,6 +60,9 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
 is \code{"event"}.}
 
+\item{title_text}{(\code{string})\cr text to display as the first part of the dynamic table title. The table title is
+constructed as follows: "\code{title_text} by \code{hlt} and \code{llt}". Defaults to \code{"Concomitant Medications"}.}
+
 \item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
 set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
 \code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
@@ -74,6 +78,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -81,24 +97,33 @@ a \code{teal_module} object.
 \description{
 This module produces a table of multiple events by term.
 }
-\examples{
-ADSL <- tmc_ex_adsl
-ADCM <- tmc_ex_adcm
-adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+\section{Decorating Module}{
 
-join_keys <- default_cdisc_join_keys[c("ADSL", "ADCM")]
-join_keys["ADCM", "ADCM"] <- adcm_keys
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
+\examples{
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADCM <- tmc_ex_adcm
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
+join_keys(data)["ADCM", "ADCM"] <- adcm_keys
+
+ADSL <- data[["ADSL"]]
+ADCM <- data[["ADCM"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADCM = ADCM,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADCM <- tmc_ex_adcm
-    ",
-    join_keys = join_keys
-  ),
+  data = data,
   modules = modules(
     tm_t_mult_events(
       label = "Concomitant Medications by Medication Class and Preferred Name",
@@ -127,3 +152,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdJRreyenRIoJ2BTBc2wdsgE0ASWznlOeHLkHAAhABSPz+OmemVe2VsLUhz1auScAEVEWBMrYmgBGDFYpoAJnx2IAzCSmgAWZ5DPYQW4zOaeOTAaHNBF4KGY9nPc5Fa4wBmiVwQHIFIpJYCs7kFXmXUXsiWhKVs1pykVoVBFeLRJ4QDJJHQAXh0SVwDT4QhE9xNluEYj1GQyJT86xga3K2jIswaTp01Cg9Dg1GNXKaJGIMGiUDIOhacC2sg0JHu9FYcYTMg8ln1TQDonuMf4OgACoxlqpy8WAHKwOB-X1OpLHXQm1Uc836v06FiCzQsUMEGJjAhiPyiYNwdQJ9iPaFYDtczILpq-MByf6Yhc0zvdnQTgCOfn7jEHw5kY4nImn-CeYGRaMhV6n5GLbfvLRR6M5xloFQTob2M4G6NhkMTUKQZ4jpek43o6e46EO0E2joJ60IGIgbOeo6zDkrQpHOmLYninLQtixKkURTTkpRBLUuuIFdnuz43oOd4EiRm4EhRXFkhS9FDHujF7tQEFQReojjrBr7wXuSESaGaEYXAWHIeweEtARd6tNkThNAA8mucjCQhLGvmxSItLpBlGaBOgmX6NT8K6RCeCGJpAU4u7dnAXrrKQrCoK2XKkOWHjwGQzyNoJ9lKEMtDGDo7DxOQagaNo1g2GkXaiHEECsJk6DsJqAAkgi0CkpUTow2iMEM-RKGA-TnEAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAYQBZIpKyyur+AhglAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdJRreyenRIoJ2BTBc2wdsgE0ASWznlOeHLkHAAhABSPz+OmemVe2VsLUhz1auScAEVEWBMrYmgBGDFYpoAJnx2IAzCSmgAWZ5DPYQW4zOaeOTAaHNBF4KGY9nPc5Fa4wBmiVwQHIFIpJYCs7kFXmXUXsiWhKVs1pykVoVBFeLRJ4QDJJHQAXh0SVwDT4QhE9xNluEYj1GQyJT86xga3K2jIswaTp01Cg9Dg1GNXKaJGIMGiUDIOhacC2sg0JHu9FYcYTMg8ln1TQDonuMf4OgACoxlqpy8WAHKwOB-X1OpLHXQm1Uc836v06FiCzQsUMEGJjAhiPyiYNwdQJ9iPaFYDtczILpq-MByf6Yhc0zvdnQTgCOfn7jEHw5kY4nImn-CeYGRaMhV6n5GLbfvLRR6M5xloFQTob2M4G6NhkMTUKQZ4jpek43o6e46EO0E2joJ60IGIgbOeo6zDkrQpHOmLYninLQtixKkURTTkpRBLUuuIFdnuz43oOd4EiRm4EhRXFkhS9FDHujF7tQEFQReojjrBr7wXuSESaGaEYXAWHIeweEtARd6tNkThNAA8mucjCQhLGvmxSItLpBlGaBOgmX6NT8K6RCeCGJpAU4u7dnAXrrKQrCoK2XKkOWHjwGQzyNoJ9lKEMtDGDo7DxOQagaNo1g2GkXaiHEECsJk6DsJqAAkgi0CkpUTow2iMEM-RKGA-TnEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

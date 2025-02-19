@@ -97,7 +97,7 @@ get_var_labels <- function(datasets, dataname, vars) {
 #' h_concat_expr(expr)
 h_concat_expr <- function(expr) {
   expr <- deparse(expr)
-  paste(expr, collapse = " ")
+  paste(expr, collapse = "\n")
 }
 
 
@@ -300,8 +300,8 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE, la
     checkmate::check_class(cs, classes = "choices_selected"),
     .var.name = cs_name
   )
-  if (!multiple && length(cs$selected) != 1 && !is.null(cs$selected)) {
-    stop(cs_name, "must only have 1 selected value")
+  if (!inherits(cs$selected, "delayed_data") && !multiple && length(cs$selected) != 1 && !is.null(cs$selected)) {
+    stop(cs_name, " must only have 1 selected value")
   }
 
   if (inherits(cs, "choices_selected")) {
@@ -434,7 +434,7 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #'
 #' @note uses the regex `\\*|:` to perform the split.
 #'
-#' @return  a [choices_selected()] object.
+#' @return  a [teal.transform::choices_selected()] object.
 #'
 #' @examples
 #' split_choices(choices_selected(choices = c("x:y", "a*b"), selected = all_choices()))
@@ -844,12 +844,13 @@ clean_description <- function(x) {
 #' @keywords internal
 #'
 get_g_forest_obj_var_name <- function(paramcd, input, filter_idx = 1) {
-  choices <- paramcd$filter[[filter_idx]]$choices
   input_obj <- paste0(
     "paramcd-dataset_", paramcd$dataname,
     "_singleextract-filter", filter_idx, "-vals"
   )
+
   current_selected <- input[[input_obj]]
+  choices <- paramcd$filter[[filter_idx]]$choices
   obj_var_name <- names(choices)[choices == current_selected]
   obj_var_name
 }
@@ -942,4 +943,151 @@ default_total_label <- function() {
 set_default_total_label <- function(total_label) {
   checkmate::assert_character(total_label, len = 1, null.ok = TRUE)
   options("tmc_default_total_label" = total_label)
+}
+
+# for mocking in tests
+interactive <- NULL
+
+#' Wrappers around `srv_transform_teal_data` that allows to decorate the data
+#' @inheritParams teal::srv_transform_teal_data
+#' @param expr (`expression` or `reactive`) to evaluate on the output of the decoration.
+#' When an expression it must be inline code. See [within()]
+#' Default is `NULL` which won't evaluate any appending code.
+#' @param expr_is_reactive (`logical(1)`) whether `expr` is a reactive expression
+#' that skips defusing the argument.
+#' @details
+#' `srv_decorate_teal_data` is a wrapper around `srv_transform_teal_data` that
+#' allows to decorate the data with additional expressions.
+#' When original `teal_data` object is in error state, it will show that error
+#' first.
+#'
+#' @keywords internal
+srv_decorate_teal_data <- function(id, data, decorators, expr, expr_is_reactive = FALSE) {
+  checkmate::assert_class(data, classes = "reactive")
+  checkmate::assert_list(decorators, "teal_transform_module")
+  checkmate::assert_flag(expr_is_reactive)
+
+  missing_expr <- missing(expr)
+  if (!missing_expr && !expr_is_reactive) {
+    expr <- dplyr::enexpr(expr) # Using dplyr re-export to avoid adding rlang to Imports
+  }
+
+  moduleServer(id, function(input, output, session) {
+    decorated_output <- srv_transform_teal_data("inner", data = data, transformators = decorators)
+
+    reactive({
+      data_out <- try(data(), silent = TRUE)
+      if (inherits(data_out, "qenv.error")) {
+        data()
+      } else {
+        # ensure original errors are displayed and `eval_code` is never executed with NULL
+        req(data(), decorated_output())
+        if (missing_expr) {
+          decorated_output()
+        } else if (expr_is_reactive) {
+          teal.code::eval_code(decorated_output(), expr())
+        } else {
+          teal.code::eval_code(decorated_output(), expr)
+        }
+      }
+    })
+  })
+}
+
+#' @rdname srv_decorate_teal_data
+#' @details
+#' `ui_decorate_teal_data` is a wrapper around `ui_transform_teal_data`.
+#' @keywords internal
+ui_decorate_teal_data <- function(id, decorators, ...) {
+  teal::ui_transform_teal_data(NS(id, "inner"), transformators = decorators, ...)
+}
+
+#' Internal function to check if decorators is a valid object
+#' @noRd
+check_decorators <- function(x, names = NULL) { # nolint: object_name.
+
+  check_message <- checkmate::check_list(x, names = "named")
+
+  if (!is.null(names)) {
+    check_message <- if (isTRUE(check_message)) {
+      out_message <- checkmate::check_names(names(x), subset.of = c("default", names))
+      if (length(names(x)) != length(unique(names(x)))) {
+        unique_message <- "Non-unique names in decorators"
+        if (isTRUE(out_message)) {
+          out_message <- unique_message
+        } else {
+          out_message <- paste0(out_message, ". Also, ", tolower(unique_message))
+        }
+      }
+
+      # see https://github.com/insightsengineering/teal.logger/issues/101
+      if (isTRUE(out_message)) {
+        out_message
+      } else {
+        gsub("\\{", "(", gsub("\\}", ")", out_message))
+      }
+    } else {
+      check_message
+    }
+  }
+
+  if (!isTRUE(check_message)) {
+    return(check_message)
+  }
+
+  valid_elements <- vapply(
+    x,
+    checkmate::test_list,
+    types = "teal_transform_module",
+    FUN.VALUE = logical(1L)
+  )
+
+  if (all(valid_elements)) {
+    return(TRUE)
+  }
+
+  "May only contain the type 'teal_transform_module' or a named list of 'teal_transform_module'."
+}
+
+#' Internal assertion on decorators
+#' @noRd
+assert_decorators <- checkmate::makeAssertionFunction(check_decorators)
+
+#' Subset decorators based on the scope
+#'
+#' `default` is a protected decorator name that is always included in the output,
+#' if it exists
+#'
+#' @param scope (`character`) a character vector of decorator names to include.
+#' @param decorators (named `list`) of list decorators to subset.
+#'
+#' @return A flat list with all decorators to include.
+#' It can be an empty list if none of the scope exists in `decorators` argument.
+#' @keywords internal
+select_decorators <- function(decorators, scope) {
+  checkmate::assert_character(scope, null.ok = TRUE)
+  scope <- intersect(union("default", scope), names(decorators))
+  c(list(), unlist(decorators[scope], recursive = FALSE))
+}
+
+#' Convert flat list of `teal_transform_module` to named lists
+#'
+#' @param decorators (list of `teal_transform_module`) to normalize.
+#' @return A named list of lists with `teal_transform_module` objects.
+#' @keywords internal
+normalize_decorators <- function(decorators) {
+  if (checkmate::test_list(decorators, "teal_transform_module")) {
+    decorators_names <- names(decorators)[!names(decorators) %in% ""]
+    # Above is equivalent to decorators_names <- setdiff(names(decorators), "")
+    # but can return non-unique values. Non-unique values are checked in assert_decorators.
+    if (length(decorators_names) == 0) {
+      list(default = decorators)
+    } else if (length(decorators_names) == length(decorators)) {
+      lapply(decorators, list)
+    } else {
+      stop("All decorators should either be named or unnamed.")
+    }
+  } else {
+    decorators
+  }
 }

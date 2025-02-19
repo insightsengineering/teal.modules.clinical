@@ -171,8 +171,7 @@ template_g_ci <- function(dataname,
 
   substitute(
     expr = {
-      gg <- graph_expr
-      print(gg)
+      plot <- graph_expr
     },
     env = list(graph_expr = pipe_expr(graph_list, pipe_str = "+"))
   )
@@ -184,26 +183,40 @@ template_g_ci <- function(dataname,
 #' `CIG01` available [here](https://insightsengineering.github.io/tlg-catalog/stable/graphs/other/cig01.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_g_ci
 #' @param color (`data_extract_spec`)\cr the group variable used to determine the plot colors, shapes, and line types.
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADLB <- tmc_ex_adlb
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADLB <- tmc_ex_adlb
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADLB <- data[["ADLB"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADLB = ADLB,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADLB <- tmc_ex_adlb
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_ci(
 #'       label = "Confidence Interval Plot",
@@ -253,10 +266,6 @@ template_g_ci <- function(dataname,
 #'         )
 #'       )
 #'     )
-#'   ),
-#'   header = "Example of Confidence Interval Plot",
-#'   footer = tags$p(
-#'     class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
 #'   )
 #' )
 #' if (interactive()) {
@@ -274,13 +283,22 @@ tm_g_ci <- function(label,
                     plot_width = NULL,
                     pre_output = NULL,
                     post_output = NULL,
-                    ggplot2_args = teal.widgets::ggplot2_args()) {
+                    ggplot2_args = teal.widgets::ggplot2_args(),
+                    transformators = list(),
+                    decorators = list()) {
   message("Initializing tm_g_ci")
   checkmate::assert_string(label)
   stat <- match.arg(stat)
   checkmate::assert_class(y_var, classes = "data_extract_spec")
   checkmate::assert_class(x_var, classes = "data_extract_spec")
   checkmate::assert_class(color, classes = "data_extract_spec")
+  x_var <- teal.transform::list_extract_spec(x_var, allow_null = TRUE)
+  y_var <- teal.transform::list_extract_spec(y_var, allow_null = TRUE)
+  color <- teal.transform::list_extract_spec(color, allow_null = TRUE)
+  teal.transform::check_no_multiple_selection(x_var)
+  teal.transform::check_no_multiple_selection(y_var)
+  teal.transform::check_no_multiple_selection(color)
+
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -292,8 +310,12 @@ tm_g_ci <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
+
+  data_extract_list <- list(x_var = x_var, y_var = y_var, color = color)
 
   module(
     label = label,
@@ -305,11 +327,13 @@ tm_g_ci <- function(label,
       label = label,
       plot_height = plot_height,
       plot_width = plot_width,
-      ggplot2_args = ggplot2_args
+      ggplot2_args = ggplot2_args,
+      decorators = decorators
     ),
+    transformators = transformators,
     ui = ui_g_ci,
     ui_args = args,
-    datanames = "all"
+    datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
@@ -354,10 +378,10 @@ ui_g_ci <- function(id, ...) {
         label = "Statistic to use",
         choices = c("mean", "median"),
         selected = args$stat
-      )
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(args$decorators, "plot"))
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
     ),
     pre_output = args$pre_output,
@@ -376,13 +400,15 @@ srv_g_ci <- function(id,
                      label,
                      plot_height,
                      plot_width,
-                     ggplot2_args) {
+                     ggplot2_args,
+                     decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(x_var = x_var, y_var = y_var, color = color),
       datasets = data,
@@ -465,18 +491,20 @@ srv_g_ci <- function(id,
       teal.code::eval_code(anl_q(), list_calls)
     })
 
-    plot_r <- reactive(all_q()[["gg"]])
-
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+    decorated_plot_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
     )
+    # Outputs to render.
+    plot_r <- reactive(decorated_plot_q()[["plot"]])
 
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_plot_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -503,7 +531,7 @@ srv_g_ci <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

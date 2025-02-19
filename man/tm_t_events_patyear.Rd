@@ -24,7 +24,9 @@ tm_t_events_patyear(
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -80,6 +82,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -87,26 +101,38 @@ a \code{teal_module} object.
 \description{
 This module produces a table of event rates adjusted for patient-years.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} as created from \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(dplyr)
-ADSL <- tmc_ex_adsl
-ADAETTE <- tmc_ex_adaette \%>\%
-  filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
-  mutate(is_event = CNSR == 0) \%>\%
-  mutate(n_events = as.integer(is_event))
+
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADAETTE <- tmc_ex_adaette \%>\%
+    filter(PARAMCD \%in\% c("AETTE1", "AETTE2", "AETTE3")) \%>\%
+    mutate(is_event = CNSR == 0) \%>\%
+    mutate(n_events = as.integer(is_event))
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADAETTE <- data[["ADAETTE"]]
+
+# 1. Basic Example
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADAETTE = ADAETTE,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADAETTE <- tmc_ex_adaette \%>\%
-        filter(PARAMCD \%in\% c(\"AETTE1\", \"AETTE2\", \"AETTE3\")) \%>\%
-        mutate(is_event = CNSR == 0) \%>\%
-        mutate(n_events = as.integer(is_event))
-    "
-  ),
+  data = data,
   modules = modules(
     tm_t_events_patyear(
       label = "AE Rate Adjusted for Patient-Years At Risk Table",
@@ -132,8 +158,52 @@ if (interactive()) {
   shinyApp(app$ui, app$server)
 }
 
+# 2. Example with table split on 2 arm_var variables
+
+app <- init(
+  data = data,
+  modules = modules(
+    tm_t_events_patyear(
+      label = "AE Rate Adjusted for Patient-Years At Risk Table",
+      dataname = "ADAETTE",
+      arm_var = choices_selected(
+        choices = variable_choices(ADSL, c("ARM", "ARMCD", "SEX")),
+        selected = c("ARM", "SEX")
+      ),
+      add_total = TRUE,
+      events_var = choices_selected(
+        choices = variable_choices(ADAETTE, "n_events"),
+        selected = "n_events",
+        fixed = TRUE
+      ),
+      paramcd = choices_selected(
+        choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
+        selected = "AETTE1"
+      )
+    )
+  )
+)
+if (interactive()) {
+  shinyApp(app$ui, app$server)
+}
+
 }
 \seealso{
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeWlTra2TnUNTa3twXCk5DoApAB8sz0lxrTU5IzsAAqlWKUAsgDC5XPZszoE7Apg-YNOAIzXBde3QwBMTzovA0MAzNdyGwLJYQEolGCCULkdi0UTNbRkHQAXh0hwAcpUsMiUQAGIGLZY6CFQuDsCDwiikUTInRQcTZcgAc1UMLhcARpEBSgAvgEAFZEbJRADWcFYolyiRsyX4cGMUGEpCiBH4sKaAqFovFwGg8AleTkAF1XBAKjU6nlgMAXlVqtdDcbTX0fsMZYkrTbXi4wA6TUoAMQ6e4YHQAITpMh0ThasB8cBNaFQdWy6SuoJ0eRpeVwPT4QhE1JReeEYjTYPqMCiSvZlLhqBCrDgLDL5Z01Cg9Dg1Bp3x0WBCulK-D5glE5H4JiIjB0WxCtEpBgAmk3GNTSqQ+7DhXYOyInoSSnldboUZ6Xfv0+WWJXNCwaQQMoKCGIoqIu3B1HB+C3WxdHzIxBpW9GFoXc4GVf9nwlM1qgKS4XiwfZPgQo5ygBOQc0vVs3xET8J1PG5EOOa4Dx0DDSI6fgqyIUJuxRexnEw38azIOFgPvSCXxwj9xx-VsHyfQCUWA0D6BECDBOg507meSAKVYgEmN-HRuLwns5JYqkL2UkxaBaL8aQYlwsJKciTJ0etmEafC-0k193zwvjywEgDCx0W9qEEcCXKg9gKi9WSdj2VDkLAIKDkU0iSlU8d1K9R4wFIgJy2SsilACWhjB0GEVDUDRtGsGwinTUQsggVhSnQdhEwAEkEWgClqt9GG0fweSUMBuUNIA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeWlTra2TnUNTa3twXCk5DoApAB8sz0lxrTU5IzsAAqlWKUAsgDC5XPZszoE7Apg-YNOAIzXBde3QwBMTzovA0MAzNdyGwLJYQEolGCCULkdi0UTNbRkHQAXh0hwAcpUsMiUQAGIGLZY6CFQuDsCDwiikUTInRQcTZcgAc1UMLhcARpEBSgAvgEAFZEbJRADWcFYolyiRsyX4cGMUGEpCiBH4sKaAqFovFwGg8AleTkAF1XBAKjU6nlgMAXlVqtdDcbTX0fsMZYkrTbXi4wA6TUoAMQ6e4YHQAITpMh0ThasB8cBNaFQdWy6SuoJ0eRpeVwPT4QhE1JReeEYjTYPqMCiSvZlLhqBCrDgLDL5Z01Cg9Dg1Bp3x0WBCulK-D5glE5H4JiIjB0WxCtEpBgAmk3GNTSqQ+7DhXYOyInoSSnldboUZ6Xfv0+WWJXNCwaQQMoKCGIoqIu3B1HB+C3WxdHzIxBpW9GFoXc4GVf9nwlM1qgKS4XiwfZPgQo5ygBOQc0vVs3xET8J1PG5EOOa4Dx0DDSI6fgqyIUJuxRexnEw38azIOFgPvSCXxwj9xx-VsHyfQCUWA0D6BECDBOg507meSAKVYgEmN-HRuLwns5JYqkL2UkxaBaL8aQYlwsJKciTJ0etmEafC-0k193zwvjywEgDCx0W9qEEcCXKg9gKi9WSdj2VDkLAIKDkU0iSlU8d1K9R4wFIgJy2SsilACWhjB0GEVDUDRtGsGwinTUQsggVhSnQdhEwAEkEWgClqt9GG0fweSUMBuUNIA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+  \item{example-2}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeWlTra2TnUNTa3twXCk5DoApAB8sz0lxrTU5IzsAAqlWKUAsgDC5XPZszoE7Apg-YNOAIzXBde3QwBMTzovA0MAzNdyGwLJYQEolGCCULkdi0UTNbRkHQAXh0hwAcpUsMiUQAGIGLZY6CFQuDsCDwiikUTInRQcTZcgAc1UMLhcARpEBSgAvgEAFZEbJRADWcFYolyiRsyX4cGMUGEpCiBH4sKaAqFovFwGg8AleTkAF1XBAKjU6nlgMAXlVqtdDcbTX0fsMZYkrTbXi4wA6TUoAMQ6N4YHROFqwHy6NKZepQegiHSiHzpHQkIO0xgwKKaFg6HOMWhxkSiE1oVB1bLpK6gnR5Gl5XA9PhCYs05vCMTVsH1LNK9mUuGoEKsOAsLvdnTUONwag0746LAhXSlfh8wSicj8ExERg6LYhWiUgwATVHjGppVIC9hwrsRbgT0JJTyut0KM9LsfNe7LCz+ZpBAZIKBBiFEogznA6hwPw44ThcQEyGINL5oW8ZwMqCEgRKZrVAUlwvFg+yfARRzlMRYCVE4AAaAJyI234TuBIhQVuKL4TchHkZRNFgAEcF0U+tL8PwUSkEQoSzii9jOPRcH9mQcL-mxmGgUxkGbrBE6AcBSEoih94YTp2HOnczyQBSCkArJcGJhBLFzuZ8lUl+NkmLQLTQTS0kuAxJQCb5OhDswjSsfBRlgXZGmCSU2mIdSencII6GxVh7AVF6Zk7HspHkVlBxWdFtnMZuDleo8YCCXxYJVQEAS0MYOgwioagaNo1g2EUNaiFkECsKU6DsGWAAkgi0AUw3gYw2j+DyShgNyhpAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeWlTra2TnUNTa3twXCk5DoApAB8sz0lxrTU5IzsAAqlWKUAsgDC5XPZszoE7Apg-YNOAIzXBde3QwBMTzovA0MAzNdyGwLJYQEolGCCULkdi0UTNbRkHQAXh0hwAcpUsMiUQAGIGLZY6CFQuDsCDwiikUTInRQcTZcgAc1UMLhcARpEBSgAvgEAFZEbJRADWcFYolyiRsyX4cGMUGEpCiBH4sKaAqFovFwGg8AleTkAF1XBAKjU6nlgMAXlVqtdDcbTX0fsMZYkrTbXi4wA6TUoAMQ6N4YHROFqwHy6NKZepQegiHSiHzpHQkIO0xgwKKaFg6HOMWhxkSiE1oVB1bLpK6gnR5Gl5XA9PhCYs05vCMTVsH1LNK9mUuGoEKsOAsLvdnTUONwag0746LAhXSlfh8wSicj8ExERg6LYhWiUgwATVHjGppVIC9hwrsRbgT0JJTyut0KM9LsfNe7LCz+ZpBAZIKBBiFEogznA6hwPw44ThcQEyGINL5oW8ZwMqCEgRKZrVAUlwvFg+yfARRzlMRYCVE4AAaAJyI234TuBIhQVuKL4TchHkZRNFgAEcF0U+tL8PwUSkEQoSzii9jOPRcH9mQcL-mxmGgUxkGbrBE6AcBSEoih94YTp2HOnczyQBSCkArJcGJhBLFzuZ8lUl+NkmLQLTQTS0kuAxJQCb5OhDswjSsfBRlgXZGmCSU2mIdSencII6GxVh7AVF6Zk7HspHkVlBxWdFtnMZuDleo8YCCXxYJVQEAS0MYOgwioagaNo1g2EUNaiFkECsKU6DsGWAAkgi0AUw3gYw2j+DyShgNyhpAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

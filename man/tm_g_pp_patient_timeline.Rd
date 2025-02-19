@@ -25,7 +25,9 @@ tm_g_pp_patient_timeline(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.widgets::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -87,6 +89,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -94,6 +108,18 @@ a \code{teal_module} object.
 \description{
 This module produces a patient profile timeline \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type plot using ADaM datasets.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{plot} (\code{ggplot2})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(nestcolor)
 library(dplyr)
@@ -101,26 +127,27 @@ library(dplyr)
 data <- teal_data()
 data <- within(data, {
   ADAE <- tmc_ex_adae
-  ADSL <- tmc_ex_adsl \%>\% filter(USUBJID \%in\% ADAE$USUBJID)
-  ADCM <- tmc_ex_adcm \%>\% mutate(
-    CMSTDY = case_when(
-      CMCAT == "medcl B" ~ 20,
-      CMCAT == "medcl C" ~ 150,
-      TRUE ~ 1
-    ) \%>\% with_label("Study Day of Start of Medication"),
-    CMENDY = case_when(
-      CMCAT == "medcl B" ~ 700,
-      CMCAT == "medcl C" ~ 1000,
-      TRUE ~ 500
-    ) \%>\% with_label("Study Day of End of Medication"),
-    CMASTDTM = ASTDTM,
-    CMAENDTM = AENDTM
-  )
+  ADSL <- tmc_ex_adsl \%>\%
+    filter(USUBJID \%in\% ADAE$USUBJID)
+  ADCM <- tmc_ex_adcm \%>\%
+    mutate(
+      CMSTDY = case_when(
+        CMCAT == "medcl B" ~ 20,
+        CMCAT == "medcl C" ~ 150,
+        TRUE ~ 1
+      ) \%>\% with_label("Study Day of Start of Medication"),
+      CMENDY = case_when(
+        CMCAT == "medcl B" ~ 700,
+        CMCAT == "medcl C" ~ 1000,
+        TRUE ~ 500
+      ) \%>\% with_label("Study Day of End of Medication"),
+      CMASTDTM = ASTDTM,
+      CMAENDTM = AENDTM
+    )
 })
 
-adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
-datanames(data) <- c("ADSL", "ADAE", "ADCM")
 join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADAE", "ADCM")]
+adcm_keys <- c("STUDYID", "USUBJID", "ASTDTM", "CMSEQ", "ATC1", "ATC2", "ATC3", "ATC4")
 join_keys(data)["ADCM", "ADCM"] <- adcm_keys
 join_keys(data)["ADAE", "ADCM"] <- c("STUDYID", "USUBJID")
 
@@ -182,3 +209,13 @@ if (interactive()) {
 }
 
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACKNTsk6pDAEaXAAHmlQ8XD1Tc0AygAyHV09-YP8otQ6AKQAfCujDca01OSM7A7jDgBCAFIAks2r5StjbQAkR6eXzUENLQDCALIz3b0DIYEGCrDZbHQwQSJcjscENH7jWzNACaOgAvDpZKI4GkCiUKLCIA1icSfp9GrZ0RiFGB4PxJDoTjSdAA-HQAJgADLg4aTvuTKWjqbS4PTlp9mWyAIwAVm5vIa9mcrJ0Ut5NnWdyKpTS1Cg9Dg1FhYHGpEE-FYOmaUEtRGMOlNLFIOjtOm+opkCUsEBpch5RJJOh+TgAcij0ZioNjcfiKgqg-yKVSdDS6QymWAVQB2TnygOBhMC5Op0UMiWZ6W5vMFxWOdpsuWc9WgrXFEq6-WG42m82W622+1OOIu+3u-iejQkX3+gs-RqI5q2X4Y+dIpczwNz0OL5dNbdL8FBAC+QSUACsiOU0gBrOCsUSVRI2fL8ODGKDCUhpAjj0Q9C9Xre97AAQxotFMNI1DSLRtJBKZgF83y+gAukoQIwDed6iB0oE0oiDgolccE0s85xEXg8GrjuxFgAiTgAIo0RSnxqhR0G2J87JMRxADM3GfAALL656XhAmH3o+UByMA0HND8TFyUhYDIR06HiaIImAVhknSbJsFsQhik0ip+S4SatgEci5FQWApGvMJPrQOgHTlMUhINLkEa5BufBCCI2EYr5whiO5xJdGkADmaToNFXoUF+GjwFIcChSSeoGsswoAApxWQdi0El5QjHgvK5NA8ALFAujCjBLglfmxJlbAOLoRGsnyfVBaoCw8XldVlETJMkG8t1Gjxd+RCZfBdnWSN-hfvitARSUzoYqBABsuaTDUXKcttHJVpMfq8sCr7EPwEYECUl4EGIaTYiI6iiqlgZXTdYgRpoLC0PqIjftdMghbkwAyYZHXIchNk-M0TifAA8s007xg9cBPRdwrQ7DCPDQ1DTHbjOhVfsIJrQDt2iPdhqo+Q-AvSSb2AwFOhfYwP30H9DPk5JIN6XVEM2W0thOFgSn4zWOgo2jl1gU4Qsiw5BZi4GRMFTioiJIwq2YmTd2SzTdPEpzH0YizbMczrD7A6DtXGZDlELgeYBKwWeuitL0EO6L6obiSKsVRQ6Pa+9FOu7T8ZG0zpu-TiEfc9brR83b0H7qLPuBqH7sISnCuBs7jXq6r90a1rEeU49+vhxbn3fdH-3B3H7VKfz8Fzp7SMEw0Gdrcardrl7BN5x5Bf+8OpPB2X1PPZXwfV6ztex1bje21D3xtGGjuD8SXeYj3q-Z073u8lVjCGvErBF06l0WxPaMGw0Eez2bMcWw3hn6c3HtIsi7fi9vZlUd-A+A804NGPqfG0vRR5B0ZjfCuHdoHk0fvPF+i836JwFtuQBm9O5Uylt3ZOYYsGHwJosE+1Az4X01lfceoc74IONszGu7Nn711QYhZe9sv4-xrH-MCC4iHANKqIMhFCA7UJgbQ6ejMkHMLrozV+7DlJJyzoQ7hLtcE00zmvFEOcSTvGJPooIQRaD2nYOUfYUALDaGsDYOoAZRBlAgKwRo6B2BoFQA8QQtAajuIeNiRg2gYgQCPEoMAR5kJAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACKNTsk6pDAEaXAAHmlQ8XD1Tc0AygAyHV09-YP8otQ6AKQAfCujDca01OSM7A7jDgBCAFIAks2r5StjbQAkR6eXzUENLQDCALIz3b0DIYEGCrDZbHQwQSJcjscENH7jWzNACaOgAvDpZKI4GkCiUKLCIA1icSfp9GrZ0RiFGB4PxJDoTjSdAA-HQAJgADLg4aTvuTKWjqbS4PTlp9mWyAIwAVm5vIa9mcrJ0Ut5NnWdyKpTS1Cg9Dg1FhYHGpEE-FYOmaUEtRGMOlNLFIOjtOm+opkCUsEBpch5RJJOh+TgAcij0ZioNjcfiKgqg-yKVSdDS6QymWAVQB2TnygOBhMC5Op0UMiWZ6W5vMFxWOdpsuWc9WgrXFEq6-WG42m82W622+1OOIu+3u-iejQkX3+gs-RqI5q2X4Y+dIpczwNz0OL5dNbdL8FBAC+QSUACsiOU0gBrOCsUSVRI2fL8ODGKDCUhpAjj0Q9C9Xre97AAQxotFMNI1DSLRtJBKZgF83y+gAukoQIwDed6iB0oE0oiDgolccE0s85xEXg8GrjuxFgAiTgAIo0RSnxqhR0G2J87JMRxADM3GfAALL656XhAmH3o+UByMA0HND8TFyUhYDIR06HiaIImAVhknSbJsFsQhik0ip+S4SatgEci5FQWApGvMJPrQOgHTlMUhINLkEa5BufBCCI2EYr5whiO5xJdGkADmaToNFXoUF+GjwFIcChSSeoGsswoAApxWQdi0El5QjHgvK5NA8ALFAujCjBLglfmxJlbAOLoRGsnyfVBaoCw8XldVlETJMkG8t1Gjxd+RCZfBdnWSN-hfvitARSUzoYqBABsuaTDUXKcttHJVpMfq8sCr7EPwEYECUl4EGIaTYiI6iiqlgZXTdYgRpoLC0PqIjftdMghbkwAyYZHXIchNk-M0TifAA8s007xg9cBPRdwrQ7DCPDQ1DTHbjOhVfsIJrQDt2iPdhqo+Q-AvSSb2AwFOhfYwP30H9DPk5JIN6XVEM2W0thOFgSn4zWOgo2jl1gU4Qsiw5BZi4GRMFTioiJIwq2YmTd2SzTdPEpzH0YizbMczrD7A6DtXGZDlELgeYBKwWeuitL0EO6L6obiSKsVRQ6Pa+9FOu7T8ZG0zpu-TiEfc9brR83b0H7qLPuBqH7sISnCuBs7jXq6r90a1rEeU49+vhxbn3fdH-3B3H7VKfz8Fzp7SMEw0Gdrcardrl7BN5x5Bf+8OpPB2X1PPZXwfV6ztex1bje21D3xtGGjuD8SXeYj3q-Z073u8lVjCGvErBF06l0WxPaMGw0Eez2bMcWw3hn6c3HtIsi7fi9vZlUd-A+A804NGPqfG0vRR5B0ZjfCuHdoHk0fvPF+i836JwFtuQBm9O5Uylt3ZOYYsGHwJosE+1Az4X01lfceoc74IONszGu7Nn711QYhZe9sv4-xrH-MCC4iHANKqIMhFCA7UJgbQ6ejMkHMLrozV+7DlJJyzoQ7hLtcE00zmvFEOcSTvGJPooIQRaD2nYOUfYUALDaGsDYOoAZRBlAgKwRo6B2BoFQA8QQtAajuIeNiRg2gYgQCPEoMAR5kJAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

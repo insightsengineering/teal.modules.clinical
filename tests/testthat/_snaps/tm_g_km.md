@@ -24,8 +24,8 @@
                       xticks = NULL, xlab = sprintf("%s (%s)", "Survival time", 
                         gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", 
                           tolower(x$AVALU[1]), perl = TRUE)), yval = "Survival", 
-                      title = sprintf("%s%s", sprintf("%s%s", "KM Plot", 
-                        if (!is.null(facets)) {
+                      ylim = NULL, title = sprintf("%s%s", sprintf("%s%s", 
+                        "KM Plot", if (!is.null(facets)) {
                           sprintf(", %s = %s", as.character(quote(SEX)), 
                             unique(x[[as.character(quote(SEX))]]))
                         }
@@ -52,7 +52,6 @@
           g_km_counter <- g_km_counter_generator()
           plot_list <- lapply(anl, g_km_counter)
           plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
-          plot
       }
       
 
@@ -86,8 +85,8 @@
                       xticks = NULL, xlab = sprintf("%s (%s)", "Survival time", 
                         gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", 
                           tolower(x$AVALU[1]), perl = TRUE)), yval = "Survival", 
-                      title = sprintf("%s%s", sprintf("%s%s", "KM Plot", 
-                        if (!is.null(facets)) {
+                      ylim = NULL, title = sprintf("%s%s", sprintf("%s%s", 
+                        "KM Plot", if (!is.null(facets)) {
                           sprintf(", %s = %s", as.character(quote(SEX)), 
                             unique(x[[as.character(quote(SEX))]]))
                         }
@@ -114,7 +113,6 @@
           g_km_counter <- g_km_counter_generator()
           plot_list <- lapply(anl, g_km_counter)
           plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
-          plot
       }
       
 
@@ -149,8 +147,8 @@
                       xticks = NULL, xlab = sprintf("%s (%s)", "Survival time", 
                         gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", 
                           tolower(x$AVALU[1]), perl = TRUE)), yval = "Survival", 
-                      title = sprintf("%s%s", sprintf("%s%s", "KM Plot", 
-                        if (!is.null(facets)) {
+                      ylim = NULL, title = sprintf("%s%s", sprintf("%s%s", 
+                        "KM Plot", if (!is.null(facets)) {
                           sprintf(", %s = %s", as.character(quote(SEX)), 
                             unique(x[[as.character(quote(SEX))]]))
                         }
@@ -177,7 +175,6 @@
           g_km_counter <- g_km_counter_generator()
           plot_list <- lapply(anl, g_km_counter)
           plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
-          plot
       }
       
 

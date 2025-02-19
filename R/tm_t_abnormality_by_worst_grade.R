@@ -150,7 +150,10 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
   y$layout_prep <- bracket_expr(prep_list)
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
-    teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
+    teal.widgets::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = teal.widgets::basic_table_args(show_colcounts = TRUE)
+    )
   )
 
   # layout start
@@ -163,8 +166,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
           rtables::split_cols_by(
             var = arm_var,
             split_fun = add_overall_level(label = total_label, first = FALSE)
-          ) %>%
-          rtables::add_colcounts(),
+          ),
         env = list(
           arm_var = arm_var,
           total_label = total_label,
@@ -174,8 +176,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
     } else {
       substitute(
         expr = expr_basic_table_args %>%
-          rtables::split_cols_by(var = arm_var) %>%
-          rtables::add_colcounts(),
+          rtables::split_cols_by(var = arm_var),
         env = list(arm_var = arm_var, expr_basic_table_args = parsed_basic_table_args)
       )
     }
@@ -220,8 +221,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 
   y$table <- substitute(
     expr = {
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
     env = list(parent = as.name(parentname))
   )
@@ -234,6 +234,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #' This module produces a table to summarize laboratory test results with highest grade post-baseline
 
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_abnormality_by_worst_grade
 #' @param atoxgr_var ([teal.transform::choices_selected()])\cr
 #' object with all available choices and preselected option
@@ -248,25 +249,37 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
 #' @export
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
 #'
 #' @examples
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADLB <- tmc_ex_adlb %>%
-#'   filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADLB <- tmc_ex_adlb %>%
+#'     filter(!AVISIT %in% c("SCREENING", "BASELINE"))
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADLB <- data[["ADLB"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADLB = ADLB,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADLB <- tmc_ex_adlb %>%
-#'         filter(!AVISIT %in% c(\"SCREENING\", \"BASELINE\"))
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_abnormality_by_worst_grade(
 #'       label = "Laboratory Test Results with Highest Grade Post-Baseline",
@@ -334,7 +347,9 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             drop_arm_levels = TRUE,
                                             pre_output = NULL,
                                             post_output = NULL,
-                                            basic_table_args = teal.widgets::basic_table_args()) {
+                                            basic_table_args = teal.widgets::basic_table_args(),
+                                            transformators = list(),
+                                            decorators = list()) {
   message("Initializing tm_t_abnormality_by_worst_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -350,6 +365,8 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -375,9 +392,11 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
         label = label,
         worst_flag_indicator = worst_flag_indicator,
         total_label = total_label,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -447,6 +466,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
         data_extract_spec = a$worst_high_flag_var,
         is_single_dataset = is_single_dataset_value
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional table settings",
@@ -471,7 +491,6 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -497,15 +516,17 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                              total_label,
                                              drop_arm_levels,
                                              label,
-                                             basic_table_args) {
+                                             basic_table_args,
+                                             decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     isolate({
-      resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()@env))
+      resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()))
       teal.widgets::updateOptionalSelectInput(
         session = session,
         inputId = "worst_flag_indicator",
@@ -656,28 +677,29 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
     # Outputs to render.
-    table_r <- reactive(all_q()[["result"]])
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
     # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -697,7 +719,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

@@ -36,13 +36,11 @@ template_basic_info <- function(dataname = "ANL",
           dplyr::select(var, key, value) %>%
           dplyr::rename(` ` = var, `  ` = key, `   ` = value)
 
-        result <- rlistings::as_listing(
+        table <- rlistings::as_listing(
           result,
           default_formatting = list(all = fmt_config(align = "left"))
         )
-        main_title(result) <- paste("Patient ID:", patient_id)
-
-        result
+        main_title(table) <- paste("Patient ID:", patient_id)
       }, env = list(
         dataname = as.name(dataname),
         vars = vars,
@@ -60,20 +58,37 @@ template_basic_info <- function(dataname = "ANL",
 #' This module produces a patient profile basic info report using ADaM datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_basic_info
 #' @param vars ([teal.transform::choices_selected()])\cr  object with all
 #'   available choices and preselected option for variables from `dataname` to show in the table.
 #'
 #' @inherit module_arguments return
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`listing_df` - output of `rlistings::as_listing`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     code = "ADSL <- tmc_ex_adsl"
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_pp_basic_info(
 #'       label = "Basic Info",
@@ -96,7 +111,9 @@ tm_t_pp_basic_info <- function(label,
                                patient_col = "USUBJID",
                                vars = NULL,
                                pre_output = NULL,
-                               post_output = NULL) {
+                               post_output = NULL,
+                               transformators = list(),
+                               decorators = list()) {
   message("Initializing tm_t_pp_basic_info")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -104,6 +121,8 @@ tm_t_pp_basic_info <- function(label,
   checkmate::assert_class(vars, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -120,9 +139,11 @@ tm_t_pp_basic_info <- function(label,
       list(
         dataname = dataname,
         label = label,
-        patient_col = patient_col
+        patient_col = patient_col,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = dataname
   )
 }
@@ -155,10 +176,10 @@ ui_t_basic_info <- function(id, ...) {
         label = "Select variable:",
         data_extract_spec = ui_args$vars,
         is_single_dataset = is_single_dataset_value
-      )
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table")),
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = ui_args$pre_output,
@@ -174,13 +195,15 @@ srv_t_basic_info <- function(id,
                              dataname,
                              patient_col,
                              vars,
-                             label) {
+                             label,
+                             decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
     # Init
@@ -254,14 +277,21 @@ srv_t_basic_info <- function(id,
           )
         )
       ) %>%
-        teal.code::eval_code(as.expression(my_calls))
+        teal.code::eval_code(as.expression(unlist(my_calls)))
     })
+
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
 
     output$title <- renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    table_r <- reactive(all_q()[["result"]])
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     output$basic_info_table <- DT::renderDataTable(
       expr = table_r(),
@@ -270,16 +300,11 @@ srv_t_basic_info <- function(id,
       )
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -293,12 +318,12 @@ srv_t_basic_info <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(table_r())
+        card$append_table(decorated_table_q()[["table"]])
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

@@ -26,7 +26,9 @@ tm_a_mmrm(
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
-  ggplot2_args = teal.widgets::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -44,9 +46,7 @@ the variable name for subject id.}
 
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+It defines the grouping variable in the results table.}
 
 \item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable names that can be used as \code{visit} variable.
@@ -96,6 +96,18 @@ with settings for all the plots or named list of \code{ggplot2_args} objects for
 List names should match the following: \code{c("default", "lsmeans", "diagnostic")}. The argument is merged
 with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -109,8 +121,42 @@ different convergence behavior. This is a known observation with the used packag
 \code{lme4}. However, once convergence is achieved, the results are reliable up to
 numerical precision.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{lsmeans_plot} (\code{ggplot2})
+\item \code{diagnostic_plot} (\code{TableTree}- output from \code{rtables::build_table})
+\item \code{lsmeans_table} (\code{TableTree}- output from \code{rtables::build_table})
+\item \code{covariance_table} (\code{TableTree}- output from \code{rtables::build_table})
+\item \code{fixed_effects_table} (\code{TableTree}- output from \code{rtables::build_table})
+\item \code{diagnostic_table} (\code{TableTree}- output from \code{rtables::build_table})
+}
+
+Decorators can be applied to all outputs or only to specific objects using a
+named list of \code{teal_transform_module} objects.
+The \code{"default"} name is reserved for decorators that are applied to all outputs.
+See code snippet below:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{tm_a_mrmm(
+   ..., # arguments for module
+   decorators = list(
+     default = list(teal_transform_module(...)), # applied to all outputs
+     lsmeans_plot = list(teal_transform_module(...)) # applied only to `lsmeans_plot` output
+     diagnostic_plot = list(teal_transform_module(...)) # applied only to `diagnostic_plot` output
+     lsmeans_table = list(teal_transform_module(...)) # applied only to `lsmeans_table` output
+     covariance_table = list(teal_transform_module(...)) # applied only to `covariance_table` output
+     fixed_effects_table = list(teal_transform_module(...)) # applied only to `fixed_effects_table` output
+     diagnostic_table = list(teal_transform_module(...)) # applied only to `diagnostic_table` output
+   )
+)
+}\if{html}{\out{</div>}}
+}
+
 \examples{
 library(dplyr)
+
 arm_ref_comp <- list(
   ARMCD = list(
     ref = "ARM B",
@@ -132,10 +178,8 @@ data <- within(data, {
         as.factor() #' making consecutive numeric factor
     )
 })
+join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-datanames <- c("ADSL", "ADQS")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
 app <- init(
   data = data,
   modules = modules(
@@ -164,3 +208,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEosMAD6jHDGIcQwqPpGdKKk7Eo6OgCCWACyAMIAIjoAvDoJSSmpOuHGhToKYBmZOgBCtbhlqdGxRQTJdVnpLTW9Ddm1AakBAUr8UKRQcTpc1CHTs9ZTM3OGOgDutKQAFrQQ7CtQuDogZWm5AMoAMvOkMAQhcAAeIVD8otRXuQCKN0ez1eHy+AEdRDoAKQAPmhbRMtGo5EY7DSjTuADEHgBCIq1ACatR0ADJ0picQAmHT4wbEsA2OEIiDlJEo1TogBqAEkbjzbDCjtCdN1agB1JxOADSOgAjDpcmlCToABwDCVS2U0pUquUAVg1YElMp0AGZFcqdFSqaMmfDETBBLNyMlWWz0rz+YKilBxMYoOoiGi0l6BXJWu62aG+QKAHLVZgQADW3Njtjj9pZHvKfowAaDaKziLZeYggngjBk1hhDqjHrzBdIwZrAGIAOQ6GBQZNHADmopIojgBGdWl05crMhMgebjERAQAvgEAFZEI4hZNwViiE4bGxbfgRKDCUhRfi0UQvNcbrc74DQeC705yAC6rmg6HmRz2btSp2qU5I1SPghBEKEilA4QxD-conk+EIYBgRgYFgtlqCgeg4GoapakyTIshaEsdFOR9dAJOoARuIj61SKBNG4EIGMYaoCH2dcCDEEJhxEdQ4H4dgxTqLk0juI1sgACQAcVGc5alDUTZOI2h+CYlhWPYmQuJ4kdyAEoSHBuBxGgAKR5XIjSM0zzNkwZDOMsyLMZYCGxQtSWK6TTONEbjsN0-jBJ6eojXqPJbPkwjnOIzRLz2dyNI47S-L4-SgrDWwQvSuNwuE9MlNonRgjCCIoiIGJqiKypSpiFy2VQFhYAIfgEq0nydJStCPTYxKIJ0BjqEEOAoi8mDTmAYB5Ko2pX1fOSwAABQyNIcicubFqwZb8pzVJ2r03CwCxaV+QMLFxWaMBiIjYjiE0eLPJ63zeL0wLakaNIbhcPBBjSKTPrmj6AA0jTej7EBjb1bLjBw7juMZyjhiYlFoKp2COVFZ3HawbEud1REOCBWDSdB2DQVAABJBFoc5SbJ4dGG0fwlEXJQwEXV8gA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEosMAD6jHDGIcQwqPpGdKKk7Eo6OgCCWACyAMIAIjoAvDoJSSmpOuHGhToKYBmZOgBCtbhlqdGxRQTJdVnpLTW9Ddm1AakBAUr8UKRQcTpc1CHTs9ZTM3OGOgDutKQAFrQQ7CtQuDogZWm5AMoAMvOkMAQhcAAeIVD8otRXuQCKN0ez1eHy+AEdRDoAKQAPmhbRMtGo5EY7DSjTuADEHgBCIq1ACatR0ADJ0picQAmHT4wbEsA2OEIiDlJEo1TogBqAEkbjzbDCjtCdN1agB1JxOADSOgAjDpcmlCToABwDCVS2U0pUquUAVg1YElMp0AGZFcqdFSqaMmfDETBBLNyMlWWz0rz+YKilBxMYoOoiGi0l6BXJWu62aG+QKAHLVZgQADW3Njtjj9pZHvKfowAaDaKziLZeYggngjBk1hhDqjHrzBdIwZrAGIAOQ6GBQZNHADmopIojgBGdWl05crMhMgebjERAQAvgEAFZEI4hZNwViiE4bGxbfgRKDCUhRfi0UQvNcbrc74DQeC705yAC6rmg6HmRz2btSp2qU5I1SPghBEKEilA4QxD-conk+EIYBgRgYFgtlqCgeg4GoapakyTIshaEsdFOR9dAJOoARuIj61SKBNG4EIGMYaoCH2dcCDEEJhxEdQ4H4dgxTqLk0juI1sgACQAcVGc5alDUTZOI2h+CYlhWPYmQuJ4kdyAEoSHBuBxGgAKR5XIjSM0zzNkwZDOMsyLMZYCGxQtSWK6TTONEbjsN0-jBJ6eojXqPJbPkwjnOIzRLz2dyNI47S-L4-SgrDWwQvSuNwuE9MlNonRgjCCIoiIGJqiKypSpiFy2VQFhYAIfgEq0nydJStCPTYxKIJ0BjqEEOAoi8mDTmAYB5Ko2pX1fOSwAABQyNIcicubFqwZb8pzVJ2r03CwCxaV+QMLFxWaMBiIjYjiE0eLPJ63zeL0wLakaNIbhcPBBjSKTPrmj6AA0jTej7EBjb1bLjBw7juMZyjhiYlFoKp2COVFZ3HawbEud1REOCBWDSdB2DQVAABJBFoc5SbJ4dGG0fwlEXJQwEXV8gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

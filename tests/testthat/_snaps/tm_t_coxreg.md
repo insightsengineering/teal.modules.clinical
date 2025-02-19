@@ -25,7 +25,7 @@
                   "hr", "ci", "pval"), na_str = "<Missing>")
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl)
+      table <- rtables::build_table(lyt = lyt, df = anl)
       
 
 # template_coxreg generates correct univariate cox regression expressions with interactions
@@ -55,7 +55,7 @@
                   "hr", "ci", "pval", "pval_inter"), na_str = "<Missing>")
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl)
+      table <- rtables::build_table(lyt = lyt, df = anl)
       
 
 # template_coxreg generates correct multivariate cox regression expressions
@@ -85,8 +85,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl)
-          result
+          table <- rtables::build_table(lyt = lyt, df = anl)
       }
       
 

@@ -25,7 +25,9 @@ tm_t_shift_by_arm(
   total_label = default_total_label(),
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -37,9 +39,7 @@ tm_t_shift_by_arm(
 
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+It defines the grouping variable in the results table.}
 
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
@@ -84,6 +84,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -91,19 +103,31 @@ a \code{teal_module} object.
 \description{
 This module produces a summary table of analysis indicator levels by arm.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
-ADSL <- tmc_ex_adsl
-ADEG <- tmc_ex_adeg
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADEG <- tmc_ex_adeg
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADEG <- data[["ADEG"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADEG = ADEG,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADEG <- tmc_ex_adeg
-    "
-  ),
+  data = data,
   modules = modules(
     tm_t_shift_by_arm(
       label = "Shift by Arm Table",
@@ -122,11 +146,13 @@ app <- init(
       ),
       aval_var = choices_selected(
         variable_choices(ADEG, subset = "ANRIND"),
-        selected = "ANRIND", fixed = TRUE
+        selected = "ANRIND",
+        fixed = TRUE
       ),
       baseline_var = choices_selected(
         variable_choices(ADEG, subset = "BNRIND"),
-        selected = "BNRIND", fixed = TRUE
+        selected = "BNRIND",
+        fixed = TRUE
       ),
       useNA = "ifany"
     )
@@ -141,3 +167,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XCByCoqTgYAUwa-zHs4urptbF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0VjVRgwHF4vHUKD0ODUdGPXIk0g6clZKl2BkiR6I3G0+GhI66OF-T4Chq0lgwPyaFjoggxMYEMR+URMuDqOD8GnCjKKxi0PlwdaqmTY54pUSCehajlwgiQp5YACyAp0fw9AGFso85HJBYaMlqRLr+Cy3Z6wDK8cH4xlUCxYBtlZb1aJNdrIwbDYrqIJzSq1dbPilHgAFTJYTLu-2BkOh8M68hRiVgAASWEeSZ0iaFtM0W2iCqVzszGtbef7Ru4xYtZdm-2alaeADUAJK5Le2JtznQz9vRqsAeVytgMACFMrknPktwA5Jw6d3Prfuhyx-uDw1QQtx0YDNlxzCN23zYVjVNegRCXK0VwrI97UdaNMifLBnwDMA-xbXMT07dDMKfbDm0NYxaAqPV0XsZxfzIvF6CgcN4nNY0QIQsC2z1SDhxYGC4NLBD2FXW0ULgJ1vTAa8MKwg8h2FY9qM7GTiNIw8KKojs7EcFwFIyXDaUELUn0yaNaGWCBWD7BShgMpQhgsnR2Hicg1A0bRrBsNIhWJeJWEydB2BBAASQRaBSUKtUYbRGCGfolDAfoziAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XCByCoqTgYAUwa-zHs4urptbF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0VjVRgwHF4vHUKD0ODUdGPXIk0g6clZKl2BkiR6I3G0+GhI66OF-T4Chq0lgwPyaFjoggxMYEMR+URMuDqOD8GnCjKKxi0PlwdaqmTY54pUSCehajlwgiQp5YACyAp0fw9AGFso85HJBYaMlqRLr+Cy3Z6wDK8cH4xlUCxYBtlZb1aJNdrIwbDYrqIJzSq1dbPilHgAFTJYTLu-2BkOh8M68hRiVgAASWEeSZ0iaFtM0W2iCqVzszGtbef7Ru4xYtZdm-2alaeADUAJK5Le2JtznQz9vRqsAeVytgMACFMrknPktwA5Jw6d3Prfuhyx-uDw1QQtx0YDNlxzCN23zYVjVNegRCXK0VwrI97UdaNMifLBnwDMA-xbXMT07dDMKfbDm0NYxaAqPV0XsZxfzIvF6CgcN4nNY0QIQsC2z1SDhxYGC4NLBD2FXW0ULgJ1vTAa8MKwg8h2FY9qM7GTiNIw8KKojs7EcFwFIyXDaUELUn0yaNaGWCBWD7BShgMpQhgsnR2Hicg1A0bRrBsNIhWJeJWEydB2BBAASQRaBSUKtUYbRGCGfolDAfoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

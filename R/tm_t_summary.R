@@ -3,8 +3,9 @@
 #' Creates a valid expression to generate a table to summarize variables.
 #'
 #' @inheritParams template_arguments
-#' @param show_labels (`character`)\cr defines whether variable labels should be displayed. Options are
-#'   `"default"`, `"visible"`, and `"hidden"`.
+#' @param show_labels `r lifecycle::badge("deprecated")`
+#' @param arm_var_labels (`character` or `NULL`)\cr vector of column variable labels to display, of the same length as
+#'   `arm_var`. If `NULL`, no labels will be displayed.
 #'
 #' @inherit template_arguments return
 #'
@@ -15,10 +16,11 @@ template_summary <- function(dataname,
                              parentname,
                              arm_var,
                              sum_vars,
-                             show_labels = c("default", "visible", "hidden"),
+                             show_labels = lifecycle::deprecated(),
                              add_total = TRUE,
                              total_label = default_total_label(),
                              var_labels = character(),
+                             arm_var_labels = NULL,
                              na.rm = FALSE, # nolint: object_name.
                              na_level = default_na_str(),
                              numeric_stats = c(
@@ -27,16 +29,25 @@ template_summary <- function(dataname,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
+  if (lifecycle::is_present(show_labels)) {
+    warning(
+      "The `show_labels` argument of `template_summary` is deprecated as of teal.modules.clinical 0.9.1.9013 ",
+      "as it is has no effect on the module.",
+      call. = FALSE
+    )
+  }
+
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   checkmate::assert_character(sum_vars)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_character(var_labels)
+  checkmate::assert_character(arm_var_labels, len = length(arm_var), null.ok = TRUE)
   checkmate::assert_flag(na.rm)
   checkmate::assert_string(na_level)
   checkmate::assert_flag(drop_arm_levels)
-  checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_subset(
     numeric_stats,
@@ -44,7 +55,6 @@ template_summary <- function(dataname,
   )
 
   denominator <- match.arg(denominator)
-  show_labels <- match.arg(show_labels)
 
   y <- list()
 
@@ -91,6 +101,7 @@ template_summary <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         main_footer =
           "n represents the number of unique subject IDs such that the variable has non-NA values."
       )
@@ -128,15 +139,10 @@ template_summary <- function(dataname,
       )
     )
   }
-  layout_list <- add_expr(
-    layout_list,
-    quote(rtables::add_colcounts())
-  )
 
   env_sum_vars <- list(
     sum_vars = sum_vars,
     sum_var_labels = var_labels[sum_vars],
-    show_labels = show_labels,
     na.rm = na.rm,
     na_level = na_level,
     denom = ifelse(denominator == "n", "n", "N_col"),
@@ -153,7 +159,7 @@ template_summary <- function(dataname,
         expr = analyze_vars(
           vars = sum_vars,
           var_labels = sum_var_labels,
-          show_labels = show_labels,
+          show_labels = "visible",
           na.rm = na.rm,
           na_str = na_level,
           denom = denom,
@@ -165,7 +171,7 @@ template_summary <- function(dataname,
       substitute(
         expr = analyze_vars(
           vars = sum_vars,
-          show_labels = show_labels,
+          show_labels = "visible",
           na.rm = na.rm,
           na_str = na_level,
           denom = denom,
@@ -176,6 +182,16 @@ template_summary <- function(dataname,
     }
   )
 
+  if (!is.null(arm_var_labels)) {
+    layout_list <- add_expr(
+      layout_list,
+      substitute(
+        expr = append_topleft(arm_var_labels),
+        env = list(arm_var_labels = c(arm_var_labels, ""))
+      )
+    )
+  }
+
   y$layout <- substitute(
     expr = lyt <- layout_pipe,
     env = list(layout_pipe = pipe_expr(layout_list))
@@ -183,8 +199,7 @@ template_summary <- function(dataname,
 
   y$table <- substitute(
     expr = {
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
     env = list(parent = as.name(parentname))
   )
@@ -197,23 +212,43 @@ template_summary <- function(dataname,
 #' This module produces a table to summarize variables.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_summary
+#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
+#'   available choices and preselected option for variable names that can be used as `arm_var`.
+#'   It defines the grouping variable(s) in the results table.
+#'   If there are two elements selected for `arm_var`,
+#'   second variable will be nested under the first variable.
+#' @param show_arm_var_labels (`flag`)\cr whether arm variable label(s) should be displayed. Defaults to `TRUE`.
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' # Preparation of the test case - use `EOSDY` and `DCSREAS` variables to demonstrate missing data.
-#' ADSL <- tmc_ex_adsl
-#' ADSL$EOSDY[1] <- NA_integer_
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADSL$EOSDY[1] <- NA_integer_
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADSL$EOSDY[1] <- NA_integer_
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_summary(
 #'       label = "Demographic Table",
@@ -244,6 +279,7 @@ tm_t_summary <- function(label,
                          summarize_vars,
                          add_total = TRUE,
                          total_label = default_total_label(),
+                         show_arm_var_labels = TRUE,
                          useNA = c("ifany", "no"), # nolint: object_name.
                          na_level = default_na_str(),
                          numeric_stats = c(
@@ -253,7 +289,9 @@ tm_t_summary <- function(label,
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
                          post_output = NULL,
-                         basic_table_args = teal.widgets::basic_table_args()) {
+                         basic_table_args = teal.widgets::basic_table_args(),
+                         transformators = list(),
+                         decorators = list()) {
   message("Initializing tm_t_summary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -262,15 +300,18 @@ tm_t_summary <- function(label,
   checkmate::assert_class(summarize_vars, "choices_selected")
   checkmate::assert_string(na_level)
   checkmate::assert_character(numeric_stats, min.len = 1)
-  useNA <- match.arg(useNA) # nolint: object_name.
-  denominator <- match.arg(denominator)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  checkmate::assertFlag(add_total)
+  checkmate::assert_flag(add_total)
+  checkmate::assert_flag(show_arm_var_labels)
   checkmate::assert_string(total_label)
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
+  useNA <- match.arg(useNA) # nolint: object_name.
+  denominator <- match.arg(denominator)
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
   args <- as.list(environment())
@@ -291,11 +332,14 @@ tm_t_summary <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
+        show_arm_var_labels = show_arm_var_labels,
         total_label = total_label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
@@ -374,10 +418,10 @@ ui_summary <- function(id, ...) {
             )
           }
         )
-      )
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -395,16 +439,19 @@ srv_summary <- function(id,
                         arm_var,
                         summarize_vars,
                         add_total,
+                        show_arm_var_labels,
                         total_label,
                         na_level,
                         drop_arm_levels,
                         label,
-                        basic_table_args) {
+                        basic_table_args,
+                        decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
       datasets = data,
@@ -465,7 +512,7 @@ srv_summary <- function(id,
       }
     })
 
-    # validate inputs
+    # Validate inputs.
     validate_checks <- reactive({
       teal::validate_inputs(iv_r())
       adsl_filtered <- merged$anl_q()[[parentname]]
@@ -508,21 +555,28 @@ srv_summary <- function(id,
       )
     })
 
-    # generate r code for the analysis
+    # Generate r code for the analysis.
     all_q <- reactive({
       validate_checks()
 
       summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
       var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
+
+      arm_var_labels <- NULL
+      if (show_arm_var_labels) {
+        arm_vars <- merged$anl_input_r()$columns_source$arm_var
+        arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
+      }
+
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = merged$anl_input_r()$columns_source$arm_var,
         sum_vars = summarize_vars,
-        show_labels = "visible",
         add_total = input$add_total,
         total_label = total_label,
         var_labels = var_labels,
+        arm_var_labels = arm_var_labels,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         numeric_stats = input$numeric_stats,
@@ -531,24 +585,27 @@ srv_summary <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
-    # Outputs to render.
-    table_r <- reactive(all_q()[["result"]])
-    teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
-
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+    # Decoration of table output.
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
     )
 
+    # Outputs to render.
+    table_r <- reactive(decorated_table_q()[["table"]])
+
+    teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
+
     # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -567,7 +624,7 @@ srv_summary <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

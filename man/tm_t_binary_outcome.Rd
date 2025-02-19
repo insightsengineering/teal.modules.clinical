@@ -21,12 +21,18 @@ tm_t_binary_outcome(
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)", "M"),
   rsp_table = FALSE,
+  control = list(global = list(method = ifelse(rsp_table, "clopper-pearson", "waldcc"),
+    conf_level = 0.95), unstrat = list(method_ci = ifelse(rsp_table, "wald", "waldcc"),
+    method_test = "schouten", odds = TRUE), strat = list(method_ci = "cmh", method_test =
+    "cmh")),
   add_total = FALSE,
   total_label = default_total_label(),
   na_level = default_na_str(),
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -38,9 +44,7 @@ tm_t_binary_outcome(
 
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+It defines the grouping variable in the results table.}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -69,6 +73,18 @@ values and \code{levels} of default level choices.}
 
 \item{rsp_table}{(\code{logical})\cr whether the initial set-up of the module should match \code{RSPT01}. Defaults to \code{FALSE}.}
 
+\item{control}{(named \code{list})\cr named list containing 3 named lists as follows:
+\itemize{
+\item \code{global}: a list of settings for overall analysis with 2 named elements \code{method} and \code{conf_level}.
+\item \code{unstrat}: a list of settings for unstratified analysis with 3 named elements \code{method_ci} and \code{method_test}, and
+\code{odds}. See \code{\link[tern:prop_diff]{tern::estimate_proportion_diff()}}, \code{\link[tern:prop_diff_test]{tern::test_proportion_diff()}}, and
+\code{\link[tern:odds_ratio]{tern::estimate_odds_ratio()}}, respectively, for options and details on how these settings are implemented in the
+analysis.
+\item \code{strat}: a list of settings for stratified analysis with elements \code{method_ci} and \code{method_test}. See
+\code{\link[tern:prop_diff]{tern::estimate_proportion_diff()}} and \code{\link[tern:prop_diff_test]{tern::test_proportion_diff()}}, respectively, for options and details on
+how these settings are implemented in the analysis.
+}}
+
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
 \item{total_label}{(\code{string})\cr string to display as total column/row label if column/row is
@@ -89,6 +105,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -106,35 +134,42 @@ or re-categorize response categories and arrange the display order. If response 
 \item Reference arms are automatically combined if multiple arms selected as reference group.
 }
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(dplyr)
 
-ADSL <- tmc_ex_adsl
-ADRS <- tmc_ex_adrs \%>\%
-  mutate(
-    AVALC = d_onco_rsp_label(AVALC) \%>\%
-      with_label("Character Result/Finding")
-  ) \%>\%
-  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADRS <- tmc_ex_adrs \%>\%
+    mutate(
+      AVALC = d_onco_rsp_label(AVALC) \%>\%
+        with_label("Character Result/Finding")
+    ) \%>\%
+    filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADRS <- data[["ADRS"]]
 
 arm_ref_comp <- list(
   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
 )
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADRS = ADRS,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADRS <- tmc_ex_adrs \%>\%
-        mutate(
-          AVALC = d_onco_rsp_label(AVALC) \%>\%
-            with_label(\"Character Result/Finding\")
-        ) \%>\%
-        filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
-    "
-  ),
+  data = data,
   modules = modules(
     tm_t_binary_outcome(
       label = "Responders",
@@ -184,3 +219,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSUwgqHk7PMlZQBqpdUAwjoAvDr8USTEUeOoUdRQ9HDU7KVbuzYzcxDrH6npGVc3d6tgHYZFhQdSqHRYMTCUgAegAYtl+NkAOYKMABD4vWZrYy0ajkRjsAAKpSwpQAsjtyjoAISHNEAeQ2WAAkgA5DZonQAH02LMqLNsB3pYDhDOq1QZAHUdA4iWiAgBfAIAKyI2SiAGs4KxRLlEjZkvw4MYoNCogQkaImmqNdrdcBoPA9Xk5ABdVwQCo1Op5YDANHe6pot0er19AZGxL+wMRkNhpQsGDnE0WogwVB1OiiUird5lLCU6mHbO5xgmg46QOFnQAITRBWIGcrBABpPJZQbVbA7Z0OwVclwPV7JdoOfY5eMlbRtcQOiJ1wIcHoRC7Tczh1bgbn5UYgmROgAGl20Ts5zt0-RsiFLIF0QEAmhM8lsuk8yU8pW8kP83whCIJkOP9hDEd91gaKJSCiK9oDYE4libOAwI+a5bmoacwEhURUBIY1xgbNYP0SJ1dBFCp+gI-MPlQEFGn4FsMnVJdRCiUQ7jgMF+GQz4CEYmQxErTRuEEOALT45iHgjAo0RJMkixPMBZIpBUf0+dY2JETiMNrJxKn6IkWTRQidEHYykyiITGAYpixFY9jOO4j5eJswCdEs2gbhEMSXMk-pGzbQsFPbKkgp2WxgvKAdVLUnQNI48h6LIwKwGM0yqPWczJzTZtDky1N12ij4c2YUILJYaz+JYuKHOMkpnMqwSWA8+gvPqiTyMqfy0UqJxjzwbta3JLAAGksAAJgUskdhce9Cs+aqEowqaZtSuaPxNM18RTbCSDY1zS0c9YdL0yoDMrA7avWC4WwBC8MxEcgITEHCIDYnR2B2LBFH6mSWA0bgnp217dGJL6VMukoRG0ahXK3dKYu7O6fDgR6sJet6PrBn7FL+jz0LR3aQaJLG1pi7rQha3RyjHOAoAxypym+6TFMYIhkXLURRC0KmabponGaM+HPgxGK0oR9kNicIVR3HCGdGuzcAUqCmRB0am2L596GaZ7s2SIUgdCcITqEETyQbZJxvrFhGdChu5YcOtTT3TZHUeewn3s+nW0T1g2jeEs33ot72ccYf78fd4H3uJpm5ZKGTWfZsQue0NXeYxokBex5XA-V2n6azuWRbU621KZVkOXOsdczlhWdC3Fm2Y5lOeY1jOs+ZnPKbTtuQe18GhZQuBoYdhOm+T7me-z-mQ671W8819h++x33DeN03u-YYOFUu4v1j3kWHyUWgp3YbICVBDRtGsGwinzUQsggVhSnQdgnwAEkEWgCg-tjGG0fwShFRKDAIqN0QA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeVYlXUNTa3t-IyiOgCkAHyTPSUwgqHk7PMlZQBqpdUAwjoAvDr8USTEUeOoUdRQ9HDU7KVbuzYzcxDrH6npGVc3d6tgHYZFhQdSqHRYMTCUgAegAYtl+NkAOYKMABD4vWZrYy0ajkRjsAAKpSwpQAsjtyjoAISHNEAeQ2WAAkgA5DZonQAH02LMqLNsB3pYDhDOq1QZAHUdA4iWiAgBfAIAKyI2SiAGs4KxRLlEjZkvw4MYoNCogQkaImmqNdrdcBoPA9Xk5ABdVwQCo1Op5YDANHe6pot0er19AZGxL+wMRkNhpQsGDnE0WogwVB1OiiUird5lLCU6mHbO5xgmg46QOFnQAITRBWIGcrBABpPJZQbVbA7Z0OwVclwPV7JdoOfY5eMlbRtcQOiJ1wIcHoRC7Tczh1bgbn5UYgmROgAGl20Ts5zt0-RsiFLIF0QEAmhM8lsuk8yU8pW8kP83whCIJkOP9hDEd91gaKJSCiK9oDYE4libOAwI+a5bmoacwEhURUBIY1xgbNYP0SJ1dBFCp+gI-MPlQEFGn4FsMnVJdRCiUQ7jgMF+GQz4CEYmQxErTRuEEOALT45iHgjAo0RJMkixPMBZIpBUf0+dY2JETiMNrJxKn6IkWTRQidEHYykyiITGAYpixFY9jOO4j5eJswCdEs2gbhEMSXMk-pGzbQsFPbKkgp2WxgvKAdVLUnQNI48h6LIwKwGM0yqPWczJzTZtDky1N12ij4c2YUILJYaz+JYuKHOMkpnMqwSWA8+gvPqiTyMqfy0UqJxjzwbta3JLAAGksAAJgUskdhce9Cs+aqEowqaZtSuaPxNM18RTbCSDY1zS0c9YdL0yoDMrA7avWC4WwBC8MxEcgITEHCIDYnR2B2LBFH6mSWA0bgnp217dGJL6VMukoRG0ahXK3dKYu7O6fDgR6sJet6PrBn7FL+jz0LR3aQaJLG1pi7rQha3RyjHOAoAxypym+6TFMYIhkXLURRC0KmabponGaM+HPgxGK0oR9kNicIVR3HCGdGuzcAUqCmRB0am2L596GaZ7s2SIUgdCcITqEETyQbZJxvrFhGdChu5YcOtTT3TZHUeewn3s+nW0T1g2jeEs33ot72ccYf78fd4H3uJpm5ZKGTWfZsQue0NXeYxokBex5XA-V2n6azuWRbU621KZVkOXOsdczlhWdC3Fm2Y5lOeY1jOs+ZnPKbTtuQe18GhZQuBoYdhOm+T7me-z-mQ671W8819h++x33DeN03u-YYOFUu4v1j3kWHyUWgp3YbICVBDRtGsGwinzUQsggVhSnQdgnwAEkEWgCg-tjGG0fwShFRKDAIqN0QA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

@@ -167,7 +167,7 @@ template_ancova <- function(dataname = "ANL",
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(title = table_title)
+      module_table = teal.widgets::basic_table_args(show_colcounts = TRUE, title = table_title)
     )
   )
 
@@ -182,7 +182,6 @@ template_ancova <- function(dataname = "ANL",
     layout_list,
     substitute(
       expr = rtables::split_cols_by(var = arm_var, ref_group = ref_group) %>%
-        rtables::add_colcounts() %>%
         rtables::split_rows_by(
           visit_var,
           split_fun = split_fun,
@@ -402,8 +401,7 @@ template_ancova <- function(dataname = "ANL",
   # Build table.
   y$table <- substitute(
     expr = {
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
     },
     env = list(
       anl = as.name(dataname),
@@ -422,9 +420,18 @@ template_ancova <- function(dataname = "ANL",
 #' endpoints are selected.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_ancova
 #'
 #' @inherit module_arguments return
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @details
 #' When a single endpoint is selected, both unadjusted and adjusted comparison are provided. This modules
@@ -436,9 +443,21 @@ template_ancova <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADQS <- tmc_ex_adqs
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADQS <- tmc_ex_adqs
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADQS <- data[["ADQS"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -452,14 +471,7 @@ template_ancova <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADQS = ADQS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADQS <- tmc_ex_adqs
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_ancova(
 #'       label = "ANCOVA Table",
@@ -516,7 +528,9 @@ tm_t_ancova <- function(label,
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
-                        basic_table_args = teal.widgets::basic_table_args()) {
+                        basic_table_args = teal.widgets::basic_table_args(),
+                        transformators = list(),
+                        decorators = list()) {
   message("Initializing tm_t_ancova")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -530,6 +544,8 @@ tm_t_ancova <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))
 
@@ -562,9 +578,11 @@ tm_t_ancova <- function(label,
         arm_ref_comp = arm_ref_comp,
         include_interact = include_interact,
         label = label,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -662,11 +680,11 @@ ui_ancova <- function(id, ...) {
               fixed = FALSE
             )
           )
-        )
+        ),
+        ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -690,13 +708,15 @@ srv_ancova <- function(id,
                        paramcd,
                        avisit,
                        label,
-                       basic_table_args) {
+                       basic_table_args,
+                       decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel.
     iv_arco <- arm_ref_comp_observer(
@@ -933,12 +953,19 @@ srv_ancova <- function(id,
         conf_level = as.numeric(input$conf_level),
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(my_calls))
+      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
+
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
 
     # Output to render.
     table_r <- reactive({
-      table_q()[["result"]]
+      decorated_table_q()[["table"]]
     })
 
     teal.widgets::table_with_settings_srv(
@@ -946,17 +973,11 @@ srv_ancova <- function(id,
       table_r = table_r
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
-    )
-
     # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(table_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -976,7 +997,7 @@ srv_ancova <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

@@ -127,6 +127,7 @@ template_binary_outcome <- function(dataname,
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         title = table_title,
         subtitles = subtitle
       )
@@ -168,13 +169,12 @@ template_binary_outcome <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      rtables::add_colcounts() %>%
-        estimate_proportion(
-          vars = "is_rsp",
-          conf_level = conf_level,
-          method = method,
-          table_names = "prop_est"
-        ),
+      estimate_proportion(
+        vars = "is_rsp",
+        conf_level = conf_level,
+        method = method,
+        table_names = "prop_est"
+      ),
       env = list(
         conf_level = control$global$conf_level,
         method = control$global$method
@@ -314,8 +314,7 @@ template_binary_outcome <- function(dataname,
 
   y$table <- substitute(
     expr = {
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
-      result
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
     },
     env = list(parentname = as.name(parentname))
   )
@@ -329,8 +328,18 @@ template_binary_outcome <- function(dataname,
 #' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/rspt01.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_binary_outcome
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
+#' @param control (named `list`)\cr named list containing 3 named lists as follows:
+#'   * `global`: a list of settings for overall analysis with 2 named elements `method` and `conf_level`.
+#'   * `unstrat`: a list of settings for unstratified analysis with 3 named elements `method_ci` and `method_test`, and
+#'     `odds`. See [tern::estimate_proportion_diff()], [tern::test_proportion_diff()], and
+#'     [tern::estimate_odds_ratio()], respectively, for options and details on how these settings are implemented in the
+#'     analysis.
+#'   * `strat`: a list of settings for stratified analysis with elements `method_ci` and `method_test`. See
+#'     [tern::estimate_proportion_diff()] and [tern::test_proportion_diff()], respectively, for options and details on
+#'     how these settings are implemented in the analysis.
 #'
 #' @details
 #' * The display order of response categories inherits the factor level order of the source data. Use
@@ -342,35 +351,43 @@ template_binary_outcome <- function(dataname,
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADRS <- tmc_ex_adrs %>%
-#'   mutate(
-#'     AVALC = d_onco_rsp_label(AVALC) %>%
-#'       with_label("Character Result/Finding")
-#'   ) %>%
-#'   filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADRS <- tmc_ex_adrs %>%
+#'     mutate(
+#'       AVALC = d_onco_rsp_label(AVALC) %>%
+#'         with_label("Character Result/Finding")
+#'     ) %>%
+#'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADRS <- data[["ADRS"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")),
 #'   ARM = list(ref = "B: Placebo", comp = c("A: Drug X", "C: Combination"))
 #' )
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADRS = ADRS,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADRS <- tmc_ex_adrs %>%
-#'         mutate(
-#'           AVALC = d_onco_rsp_label(AVALC) %>%
-#'             with_label(\"Character Result/Finding\")
-#'         ) %>%
-#'         filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_binary_outcome(
 #'       label = "Responders",
@@ -438,12 +455,26 @@ tm_t_binary_outcome <- function(label,
                                 default_responses =
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 rsp_table = FALSE,
+                                control = list(
+                                  global = list(
+                                    method = ifelse(rsp_table, "clopper-pearson", "waldcc"),
+                                    conf_level = 0.95
+                                  ),
+                                  unstrat = list(
+                                    method_ci = ifelse(rsp_table, "wald", "waldcc"),
+                                    method_test = "schouten",
+                                    odds = TRUE
+                                  ),
+                                  strat = list(method_ci = "cmh", method_test = "cmh")
+                                ),
                                 add_total = FALSE,
                                 total_label = default_total_label(),
                                 na_level = default_na_str(),
                                 pre_output = NULL,
                                 post_output = NULL,
-                                basic_table_args = teal.widgets::basic_table_args()) {
+                                basic_table_args = teal.widgets::basic_table_args(),
+                                transformators = list(),
+                                decorators = list()) {
   message("Initializing tm_t_binary_outcome")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -465,6 +496,26 @@ tm_t_binary_outcome <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+
+  # control checks
+  checkmate::assert_names(names(control), permutation.of = c("global", "unstrat", "strat"))
+  checkmate::assert_names(names(control$global), permutation.of = c("method", "conf_level"))
+  checkmate::assert_names(names(control$unstrat), permutation.of = c("method_ci", "method_test", "odds"))
+  checkmate::assert_names(names(control$strat), permutation.of = c("method_ci", "method_test"))
+  checkmate::assert_subset(
+    control$global$method,
+    c("wald", "waldcc", "clopper-pearson", "wilson", "wilsonc", "jeffreys", "agresti-coull")
+  )
+  checkmate::assert_number(control$global$conf_level, lower = 0, upper = 1)
+  checkmate::assert_subset(control$unstrat$method_ci, c("wald", "waldcc", "ha", "newcombe", "newcombecc"))
+  checkmate::assert_subset(control$unstrat$method_test, c("chisq", "fisher", "schouten"))
+  checkmate::assert_logical(control$unstrat$odds)
+  checkmate::assert_subset(
+    control$strat$method_ci, c("wald", "waldcc", "cmh", "ha", "strat_newcombe", "strat_newcombecc")
+  )
+  checkmate::assert_subset(control$strat$method_test, c("cmh"))
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -489,11 +540,14 @@ tm_t_binary_outcome <- function(label,
         label = label,
         total_label = total_label,
         default_responses = default_responses,
+        control = control,
         rsp_table = rsp_table,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -578,7 +632,7 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Newcombe, without correction" = "newcombe",
                 "Newcombe, with correction" = "newcombecc"
               ),
-              selected = ifelse(a$rsp_table, "wald", "waldcc"),
+              selected = a$control$unstrat$method_ci,
               multiple = FALSE,
               fixed = FALSE
             ),
@@ -590,13 +644,13 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Fisher's Exact Test" = "fisher",
                 "Chi-Squared Test with Schouten correction" = "schouten"
               ),
-              selected = "chisq",
+              selected = a$control$unstrat$method_test,
               multiple = FALSE,
               fixed = FALSE
             ),
             tags$label("Odds Ratio Estimation"),
             shinyWidgets::switchInput(
-              inputId = ns("u_odds_ratio"), value = TRUE, size = "mini"
+              inputId = ns("u_odds_ratio"), value = a$control$unstrat$odds, size = "mini"
             )
           )
         ),
@@ -620,14 +674,14 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Stratified Newcombe, without correction" = "strat_newcombe",
                 "Stratified Newcombe, with correction" = "strat_newcombecc"
               ),
-              selected = "cmh",
+              selected = a$control$strat$method_ci,
               multiple = FALSE
             ),
             teal.widgets::optionalSelectInput(
               ns("s_diff_test"),
               label = "Method for Difference of Proportions Test",
               choices = c("CMH Test" = "cmh"),
-              selected = "cmh",
+              selected = a$control$strat$method_test,
               multiple = FALSE,
               fixed = TRUE
             )
@@ -638,6 +692,7 @@ ui_t_binary_outcome <- function(id, ...) {
         condition = paste0("!input['", ns("compare_arms"), "']"),
         checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       teal.widgets::panel_item(
         "Additional table settings",
         teal.widgets::optionalSelectInput(
@@ -652,7 +707,7 @@ ui_t_binary_outcome <- function(id, ...) {
             "Jeffreys" = "jeffreys",
             "Agresti-Coull" = "agresti-coull"
           ),
-          selected = ifelse(a$rsp_table, "clopper-pearson", "waldcc"),
+          selected = a$control$global$method,
           multiple = FALSE,
           fixed = FALSE
         ),
@@ -679,7 +734,6 @@ ui_t_binary_outcome <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -700,18 +754,21 @@ srv_t_binary_outcome <- function(id,
                                  arm_ref_comp,
                                  strata_var,
                                  add_total,
+                                 control,
                                  total_label,
                                  label,
                                  default_responses,
                                  rsp_table,
                                  na_level,
-                                 basic_table_args) {
+                                 basic_table_args,
+                                 decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -867,7 +924,8 @@ srv_t_binary_outcome <- function(id,
               vapply(
                 anl[input_strata_var],
                 FUN = function(strata) {
-                  tab <- base::table(strata, anl[[input_arm_var]])
+                  anl_arm <- factor(anl[[input_arm_var]])
+                  tab <- base::table(strata, anl_arm)
                   tab_logic <- tab != 0L
                   sum(apply(tab_logic, 1, sum) == ncol(tab_logic)) >= 2
                 },
@@ -950,30 +1008,30 @@ srv_t_binary_outcome <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(qenv, as.expression(my_calls))
+      teal.code::eval_code(qenv, as.expression(unlist(my_calls)))
     })
 
+
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
     # Outputs to render.
-    table_r <- reactive(table_q()[["result"]])
+    table_r <- reactive(decorated_all_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(table_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(table_q())))
-    )
-
     # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive({
-        teal.code::get_code(table_q())
-      }),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -992,7 +1050,7 @@ srv_t_binary_outcome <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(table_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

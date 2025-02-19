@@ -16,6 +16,8 @@ tm_g_forest_rsp(
     "AVALC"), "AVALC", fixed = TRUE),
   subgroup_var,
   strata_var,
+  stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
+  riskdiff = NULL,
   fixed_symbol_size = TRUE,
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
@@ -27,7 +29,9 @@ tm_g_forest_rsp(
   font_size = c(15L, 1L, 30L),
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.widgets::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -39,9 +43,7 @@ tm_g_forest_rsp(
 
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+It defines the grouping variable in the results table.}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -60,6 +62,21 @@ all available choices and preselected option for variable names that can be used
 
 \item{strata_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
 the variables for stratified analysis.}
+
+\item{stats}{(\code{character})\cr the names of statistics to be reported among:
+\itemize{
+\item \code{n}: Total number of observations per group.
+\item \code{n_rsp}: Number of responders per group.
+\item \code{prop}: Proportion of responders.
+\item \code{n_tot}: Total number of observations.
+\item \code{or}: Odds ratio.
+\item \code{ci} : Confidence interval of odds ratio.
+\item \code{pval}: p-value of the effect.
+Note, the statistics \code{n_tot}, \code{or}, and \code{ci} are required.
+}}
+
+\item{riskdiff}{(\code{list})\cr if a risk (proportion) difference column should be added, a list of settings to apply
+within the column. See \code{\link[tern:control_riskdiff]{tern::control_riskdiff()}} for details. If \code{NULL}, no risk difference column will be added.}
 
 \item{fixed_symbol_size}{(\code{logical})\cr When (\code{TRUE}), the same symbol size is used for plotting each estimate.
 Otherwise, the symbol size will be proportional to the sample size in each each subgroup.}
@@ -83,7 +100,7 @@ of the main plot and renders a slider on the plot to interactively adjust the pl
 \item{rel_width_forest}{(\code{proportion})\cr proportion of total width to allocate to the forest plot. Relative
 width of table is then \code{1 - rel_width_forest}. If \code{as_list = TRUE}, this parameter is ignored.}
 
-\item{font_size}{(\code{numeric})\cr font size.}
+\item{font_size}{(\code{numeric(1)})\cr font size.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
@@ -98,6 +115,18 @@ elements: \code{title}, \code{caption}. No other elements would be taken into ac
 merged with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -105,15 +134,34 @@ a \code{teal_module} object.
 \description{
 This module produces a grid-style forest plot for response data with ADaM structure.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{plot} (\code{ggplot2})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(nestcolor)
 library(dplyr)
 
-ADSL <- tmc_ex_adsl
-ADRS <- tmc_ex_adrs \%>\%
-  mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
-    with_label("Character Result/Finding")) \%>\%
-  filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADRS <- tmc_ex_adrs \%>\%
+    mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
+      with_label("Character Result/Finding")) \%>\%
+    filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADRS <- data[["ADRS"]]
 
 arm_ref_comp <- list(
   ARM = list(
@@ -127,17 +175,7 @@ arm_ref_comp <- list(
 )
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADRS = ADRS,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADRS <- tmc_ex_adrs \%>\%
-        mutate(AVALC = d_onco_rsp_label(AVALC) \%>\%
-        with_label(\"Character Result/Finding\")) \%>\%
-        filter(PARAMCD != \"OVRINV\" | AVISIT == \"FOLLOW UP\")
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_forest_rsp(
       label = "Forest Response",
@@ -192,3 +230,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otT1Tc1YrV09fYPD-IyiOgCkAHyrEw0wgonk7I0Aao3tAMI6ALw6-GkkxGnLqGnUUPRw1Icn5zYbWxANQGFYolF5vD7sBRgM4lFhQdSqHRYMTCUgAegAYuV+OUAOZQuS-TbbEy0ajkRjsAAKjSwjQAsmdmjoAITXKEAeSOWAAkgA5I5QnQAHyaRx5rR5tiu7LAGI57XaHIA6joHFSCUoAL5BABWRHKaQA1nBWKJKokbPl+HBjFBUWkCDjRH19YaTWbgNB4ObcnIALqxFodLq5YDAKHB9pQ-2BiAtaahqrhyNTVoxuNKFgwR62x1EGCoLp0USkSEAppYelXHQlsskxi2mtQgBCiB0VNeBDg9CIUNwJOIhZrBEhYEa7eajEEuJ0AA1+zooWd22cC-RyglLBBNRW5AOK7TGczrnXy0DG8Zm+OqzoW-3BwWi9dR5Hb41F2-q2ddw0gkEs3QLpymKc8biqGtcgPHYBGEMQaz4IQRHNEkejSXE0mMAIfEeURUDAoFXneahrwxbDSyRMRUBIUQ4AfCsgVyb1dFlBN0zwEkGmzNJNBYEcSgNbtRDSWiRARfgCKBHReMYWg3hER0BJkMRDjadoalfG96U-LSmQJfdOMBL89LAQyDIYwFuMvfNh2uKy8yHVBoKk1A4V6fh+MEsQRI+OBxMkoFeOoQQ4EUrzzTYmooRpOljx0mKGQJZypKXMB+SOJxbChMzksBURBHoXFGCIQRnhkzzlOE0S-PICTDIaGS5PoBSCCUoTVI6GpmIitTCVyoFNJbeksAAaSwAAmHTWicBcwCCFLzJS0tmESHi+JfNrvOq-z6uklgmpazaes6nRNNaexGlsRoAEYpouq7JrmxaUtS866Qe7KLL-fqdEiIhSDSEo4FoXESlIEd2AANgABmh9SdHG2H4cRpHnsY217XJXM8Jo+DT1oUsAsBFsnFaaYqR5Gsz12honghqFWkSZrdGaAm4CgWidHYVpmkUPBUr5f6dCcILBHk3R2D5Jw+bRl6RG0agVhfImUuXJ8RHISicYgTn2DOLA+aisAqRYDRuC16idYlqkDampmRB0VnaI5iWecNmmjON4qirEUQtBZtmXa5qleZ0wXwZF7gxeZrmpb5j35pe2WgXSzKqYJ+svqkunlbVwsNd0ZFtd1-XDdSk3GDNkii8t3WbZln7CLgBWldOlWpLzyI4E1mvca50uw6FyPgvF2Ppfi025Orqi++pW2OKz1WvaIH3RD97RHcDuvQ-5hn7YD53dbdz6XsBROFsbnQuV5AV08Jj2c7b6LvcbNf-c3w-rZ3o3GdHp32aPjvZOUl5YfFbppKkL9fbv3-kHak39Xr7w-gA12CCoTh2FqLUektx5zV2ufM+JJE7-iULQK87BygUnhBobQ1gbB1ArKIMoEBWCNHQOwNAqAAAkghaA1E4Vw2ijBtAxAgFqJQYAtT+iAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otT1Tc1YrV09fYPD-IyiOgCkAHyrEw0wgonk7I0Aao3tAMI6ALw6-GkkxGnLqGnUUPRw1Icn5zYbWxANQGFYolF5vD7sBRgM4lFhQdSqHRYMTCUgAegAYuV+OUAOZQuS-TbbEy0ajkRjsAAKjSwjQAsmdmjoAITXKEAeSOWAAkgA5I5QnQAHyaRx5rR5tiu7LAGI57XaHIA6joHFSCUoAL5BABWRHKaQA1nBWKJKokbPl+HBjFBUWkCDjRH19YaTWbgNB4ObcnIALqxFodLq5YDAKHB9pQ-2BiAtaahqrhyNTVoxuNKFgwR62x1EGCoLp0USkSEAppYelXHQlsskxi2mtQgBCiB0VNeBDg9CIUNwJOIhZrBEhYEa7eajEEuJ0AA1+zooWd22cC-RyglLBBNRW5AOK7TGczrnXy0DG8Zm+OqzoW-3BwWi9dR5Hb41F2-q2ddw0gkEs3QLpymKc8biqGtcgPHYBGEMQaz4IQRHNEkejSXE0mMAIfEeURUDAoFXneahrwxbDSyRMRUBIUQ4AfCsgVyb1dFlBN0zwEkGmzNJNBYEcSgNbtRDSWiRARfgCKBHReMYWg3hER0BJkMRDjadoalfG96U-LSmQJfdOMBL89LAQyDIYwFuMvfNh2uKy8yHVBoKk1A4V6fh+MEsQRI+OBxMkoFeOoQQ4EUrzzTYmooRpOljx0mKGQJZypKXMB+SOJxbChMzksBURBHoXFGCIQRnhkzzlOE0S-PICTDIaGS5PoBSCCUoTVI6GpmIitTCVyoFNJbeksAAaSwAAmHTWicBcwCCFLzJS0tmESHi+JfNrvOq-z6uklgmpazaes6nRNNaexGlsRoAEYpouq7JrmxaUtS866Qe7KLL-fqdEiIhSDSEo4FoXESlIEd2AANgABmh9SdHG2H4cRpHnsY217XJXM8Jo+DT1oUsAsBFsnFaaYqR5Gsz12honghqFWkSZrdGaAm4CgWidHYVpmkUPBUr5f6dCcILBHk3R2D5Jw+bRl6RG0agVhfImUuXJ8RHISicYgTn2DOLA+aisAqRYDRuC16idYlqkDampmRB0VnaI5iWecNmmjON4qirEUQtBZtmXa5qleZ0wXwZF7gxeZrmpb5j35pe2WgXSzKqYJ+svqkunlbVwsNd0ZFtd1-XDdSk3GDNkii8t3WbZln7CLgBWldOlWpLzyI4E1mvca50uw6FyPgvF2Ppfi025Orqi++pW2OKz1WvaIH3RD97RHcDuvQ-5hn7YD53dbdz6XsBROFsbnQuV5AV08Jj2c7b6LvcbNf-c3w-rZ3o3GdHp32aPjvZOUl5YfFbppKkL9fbv3-kHak39Xr7w-gA12CCoTh2FqLUektx5zV2ufM+JJE7-iULQK87BygUnhBobQ1gbB1ArKIMoEBWCNHQOwNAqAAAkghaA1E4Vw2ijBtAxAgFqJQYAtT+iAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

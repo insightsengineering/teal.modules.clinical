@@ -16,7 +16,9 @@ tm_g_ci(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.widgets::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -49,6 +51,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 for the module plot. The argument is merged with option \code{teal.ggplot2_args} and with default module arguments
 (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -57,21 +71,33 @@ a \code{teal_module} object.
 This module produces a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type confidence interval plot consistent with the TLG Catalog template
 \code{CIG01} available \href{https://insightsengineering.github.io/tlg-catalog/stable/graphs/other/cig01.html}{here}.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{plot} (\code{ggplot2})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(nestcolor)
 
-ADSL <- tmc_ex_adsl
-ADLB <- tmc_ex_adlb
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADLB <- tmc_ex_adlb
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADLB <- data[["ADLB"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADLB = ADLB,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADLB <- tmc_ex_adlb
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_ci(
       label = "Confidence Interval Plot",
@@ -121,10 +147,6 @@ app <- init(
         )
       )
     )
-  ),
-  header = "Example of Confidence Interval Plot",
-  footer = tags$p(
-    class = "text-muted", "Source: `teal.modules.clinical::tm_g_ci`"
   )
 )
 if (interactive()) {
@@ -136,3 +158,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlbUAQg1NLe2d-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5idaJTqdTqFB6HBqCS-gBhEjGWh7cy6ACSKkYmm4OgACv5SH88VSWToOpLGCSCq02qQ1MdRKg4ARmcqygV7rpsdCaoC8H0TaJOYbSCSHSJ1DF9YbjSaygQsksCGISUboVgALI8yoKnR-QZhrAAaSwACY-nJFT7qa6nXB+MG0f9w5G0xnM6SjrRUCISQAxcq1apOUuZgVtXO1+uNu3KoIm9PdsqsGJqjXJLU6qDuz0hpUms2wC0x-5ghUD6kC6jkdXYuiiUjen0brceg0zsvUtXEy1gaXlLDlCNR22zst+gNBndwbTUTYwwYAElve9H37F9M2zdR20-b9fzBQC7wfSM5GAABGZ5mzLGAKyrRc6wbJs1xNNkOS5a9qkddQdGIxA-kI6lQPPI9VBPL06JZS9uX+AA1EVqhFWxVzAn03xkD8qK-TlYKGf9yh4vjbAY88dAg8g82gyT2D-GS5P45C0IwzMsM3Stq2xPDGwMn1iM5TjyLdZ1NHOTIaLANidF7H1FPtCjnWxFSWLPMtrNIpdymgahWAAL3bLjuEEOBBPPETAyvHQQ24+to15AAJABxEs3JUqDQq4zLn3PIyNBwjt8MsllW2K8yXCEsoPJZLzqT8AJR3CcddQCg8WXneBOIBRKfRUl0fIGtzgs4vl-HVehWB0NVaHZERxszZKxPSxsAA0srAap7HKWxyhQo6Tvvc7UzADrvPs4q9tO87LvuurqUqkzcM7AiWvXWg2zUnQmrotr6O7DygiCWhjB0dhci3ScNG0awbBKJVRByCBWHKdB2ERf9BFoIoiYdCVVCCGYlDAGZniAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlbUAQg1NLe2d-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5idaJTqdTqFB6HBqCS-gBhEjGWh7cy6ACSKkYmm4OgACv5SH88VSWToOpLGCSCq02qQ1MdRKg4ARmcqygV7rpsdCaoC8H0TaJOYbSCSHSJ1DF9YbjSaygQsksCGISUboVgALI8yoKnR-QZhrAAaSwACY-nJFT7qa6nXB+MG0f9w5G0xnM6SjrRUCISQAxcq1apOUuZgVtXO1+uNu3KoIm9PdsqsGJqjXJLU6qDuz0hpUms2wC0x-5ghUD6kC6jkdXYuiiUjen0brceg0zsvUtXEy1gaXlLDlCNR22zst+gNBndwbTUTYwwYAElve9H37F9M2zdR20-b9fzBQC7wfSM5GAABGZ5mzLGAKyrRc6wbJs1xNNkOS5a9qkddQdGIxA-kI6lQPPI9VBPL06JZS9uX+AA1EVqhFWxVzAn03xkD8qK-TlYKGf9yh4vjbAY88dAg8g82gyT2D-GS5P45C0IwzMsM3Stq2xPDGwMn1iM5TjyLdZ1NHOTIaLANidF7H1FPtCjnWxFSWLPMtrNIpdymgahWAAL3bLjuEEOBBPPETAyvHQQ24+to15AAJABxEs3JUqDQq4zLn3PIyNBwjt8MsllW2K8yXCEsoPJZLzqT8AJR3CcddQCg8WXneBOIBRKfRUl0fIGtzgs4vl-HVehWB0NVaHZERxszZKxPSxsAA0srAap7HKWxyhQo6Tvvc7UzADrvPs4q9tO87LvuurqUqkzcM7AiWvXWg2zUnQmrotr6O7DygiCWhjB0dhci3ScNG0awbBKJVRByCBWHKdB2ERf9BFoIoiYdCVVCCGYlDAGZniAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

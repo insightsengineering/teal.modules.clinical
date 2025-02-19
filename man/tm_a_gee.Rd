@@ -20,7 +20,9 @@ tm_a_gee(
     TRUE),
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -38,9 +40,7 @@ the variable name for subject id.}
 
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+It defines the grouping variable in the results table.}
 
 \item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and preselected option for variable names that can be used as \code{visit} variable.
@@ -71,6 +71,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -78,8 +90,21 @@ a \code{teal_module} object.
 \description{
 This module produces an analysis table using Generalized Estimating Equations (GEE).
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{ElementaryTable} - output of \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(dplyr)
+
 data <- teal_data()
 data <- within(data, {
   ADSL <- tmc_ex_adsl
@@ -95,9 +120,7 @@ data <- within(data, {
     ) \%>\%
     droplevels()
 })
-datanames <- c("ADSL", "ADQS")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
+join_keys(data) <- default_cdisc_join_keys[names(data)]
 
 app <- init(
   data = data,
@@ -126,3 +149,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeUAipV1DU2t7fwAjqI6AKQAfNM9Jca01OSM7KUAQtUAYrUAhAC8OgpgAJqnOgBkZdt7AEw6RyfnpzZzCxAlJTCCoeTsRbfUoANQAkpUwbYdMcoOJjFB1ER1qCIVC5LggSVUZDbAA5GE6ZgQADWG3BuLx73mWO+cIwCKR62pn2+bJ09IggngjBk1hmNK+7JK9MZpGR1kxQrZoNK1U2YIJx1ltT0OgArAAGHQAYh0AClBKJSByplAvq1YD5dOKdABzOAmsL0bKeHQUbxEbKkDBAllA-iMIjW7TUUTxCAAXwCACsvRAoiS4Kxw3kbMl+HAEcJSFECPxaKImnHsonk6JgNB4KnEnIALquaDoOrZdKAoV5Ql5KU-ATCMSEvhCEThoENdpRB1wdvC6hQehwaiE04AcScLjwtLyVd0x1OFQGpx77Kgmm4UTPjEJBAyXoIYiiokXcHUcH4gLAKoVeKPJloLTfQl7GcDFaVofgLxYa9bxkB8nxEV93wID8HEqBxNn1MFyl-U40IwrC3gKU5UPQzDsLAUDpTpRgYEgq9jhvO84OfRD2GQ-csAAWRwz8uIAYXIjEXlKLjCNpTRC3SOjoKY0RHxY8gkI-HEoR4lT8UI4SKVUijjzZVAWFgfMZNguT4JfRSZ2FHRGNMwkz2oQQ4DzGD7xrUJgGAfd+kqU46zrIiwAABRE0pOIEniQqwMKxKotlzMQ5cwB2ABpSEDB2AB1TZTlpSjhWITRpIY1zmIQyz2LATZSkqDdAtKNceNqgANHjqtqxB1M0vEHGqaoAjZAadACAJaGMHR2G9VREQ0bRrBsIohVELIIFYUp0HYNBUAAEkEWgCi27an0YbR-CUSMlDASM6yAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeUAipV1DU2t7fwAjqI6AKQAfNM9Jca01OSM7KUAQtUAYrUAhAC8OgpgAJqnOgBkZdt7AEw6RyfnpzZzCxAlJTCCoeTsRbfUoANQAkpUwbYdMcoOJjFB1ER1qCIVC5LggSVUZDbAA5GE6ZgQADWG3BuLx73mWO+cIwCKR62pn2+bJ09IggngjBk1hmNK+7JK9MZpGR1kxQrZoNK1U2YIJx1ltT0OgArAAGHQAYh0AClBKJSByplAvq1YD5dOKdABzOAmsL0bKeHQUbxEbKkDBAllA-iMIjW7TUUTxCAAXwCACsvRAoiS4Kxw3kbMl+HAEcJSFECPxaKImnHsonk6JgNB4KnEnIALquaDoOrZdKAoV5Ql5KU-ATCMSEvhCEThoENdpRB1wdvC6hQehwaiE04AcScLjwtLyVd0x1OFQGpx77Kgmm4UTPjEJBAyXoIYiiokXcHUcH4gLAKoVeKPJloLTfQl7GcDFaVofgLxYa9bxkB8nxEV93wID8HEqBxNn1MFyl-U40IwrC3gKU5UPQzDsLAUDpTpRgYEgq9jhvO84OfRD2GQ-csAAWRwz8uIAYXIjEXlKLjCNpTRC3SOjoKY0RHxY8gkI-HEoR4lT8UI4SKVUijjzZVAWFgfMZNguT4JfRSZ2FHRGNMwkz2oQQ4DzGD7xrUJgGAfd+kqU46zrIiwAABRE0pOIEniQqwMKxKotlzMQ5cwB2ABpSEDB2AB1TZTlpSjhWITRpIY1zmIQyz2LATZSkqDdAtKNceNqgANHjqtqxB1M0vEHGqaoAjZAadACAJaGMHR2G9VREQ0bRrBsIohVELIIFYUp0HYNBUAAEkEWgCi27an0YbR-CUSMlDASM6yAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

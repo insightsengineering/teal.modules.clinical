@@ -47,21 +47,23 @@ template_adverse_events <- function(dataname = "ANL",
     list(),
     substitute(
       expr = {
-        table <- dataname %>%
+        table_data <- dataname %>%
           dplyr::select(
             aeterm, tox_grade, causality, outcome, action, time, decod
           ) %>%
           dplyr::arrange(dplyr::desc(tox_grade)) %>%
-          `colnames<-`(col_labels(dataname, fill = TRUE)[vars])
-
-        table <- rlistings::as_listing(
-          table,
+          `colnames<-`(col_labels(dataname, fill = TRUE)[vars]) %>%
+          dplyr::mutate( # Exception for columns of type difftime that is not supported by as_listing
+            dplyr::across(
+              dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
+            )
+          )
+        table_output <- rlistings::as_listing(
+          table_data,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
         )
-        main_title(table) <- paste("Patient ID:", patient_id)
-
-        table
+        main_title(table_output) <- paste("Patient ID:", patient_id)
       },
       env = list(
         dataname = as.name(dataname),
@@ -106,7 +108,7 @@ template_adverse_events <- function(dataname = "ANL",
   chart_list <- add_expr(
     list(),
     substitute(
-      expr = plot <- dataname %>%
+      expr = plot_output <- dataname %>%
         dplyr::select(aeterm, time, tox_grade, causality) %>%
         dplyr::mutate(ATOXGR = as.character(tox_grade)) %>%
         dplyr::arrange(dplyr::desc(ATOXGR)) %>%
@@ -152,11 +154,6 @@ template_adverse_events <- function(dataname = "ANL",
     )
   )
 
-  chart_list <- add_expr(
-    expr_ls = chart_list,
-    new_expr = quote(print(plot))
-  )
-
   y$table <- bracket_expr(table_list)
   y$chart <- bracket_expr(chart_list)
 
@@ -168,6 +165,7 @@ template_adverse_events <- function(dataname = "ANL",
 #' This module produces an adverse events table and [ggplot2::ggplot()] type plot using ADaM datasets.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_adverse_events
 #' @param aeterm ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `AETERM` variable from `dataname`.
@@ -186,22 +184,53 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @section Decorating Modules:
+#'
+#' This module generates the following objects, which can be modified in place using decorators::
+#' - `plot` (`ggplot2`)
+#' - `table` (`listing_df` - output of `rlistings::as_listing`)
+#'
+#' Decorators can be applied to all outputs or only to specific objects using a
+#' named list of `teal_transform_module` objects.
+#' The `"default"` name is reserved for decorators that are applied to all outputs.
+#' See code snippet below:
+#'
+#' ```
+#' tm_g_pp_adverse_events(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      default = list(teal_transform_module(...)), # applied to all outputs
+#'      plot = list(teal_transform_module(...)), # applied only to `plot` output
+#'      table = list(teal_transform_module(...)) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
 #'
-#' ADAE <- tmc_ex_adae
-#' ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADAE$USUBJID)
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADAE <- tmc_ex_adae
+#'   ADSL <- tmc_ex_adsl %>%
+#'     filter(USUBJID %in% ADAE$USUBJID)
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADAE <- data[["ADAE"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADAE = ADAE,
-#'     code = "
-#'       ADAE <- tmc_ex_adae
-#'       ADSL <- tmc_ex_adsl %>% filter(USUBJID %in% ADAE$USUBJID)
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_pp_adverse_events(
 #'       label = "Adverse Events",
@@ -258,7 +287,9 @@ tm_g_pp_adverse_events <- function(label,
                                    plot_width = NULL,
                                    pre_output = NULL,
                                    post_output = NULL,
-                                   ggplot2_args = teal.widgets::ggplot2_args()) {
+                                   ggplot2_args = teal.widgets::ggplot2_args(),
+                                   transformators = list(),
+                                   decorators = list()) {
   message("Initializing tm_g_pp_adverse_events")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -283,6 +314,8 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, names = c("plot", "table"))
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -309,9 +342,11 @@ tm_g_pp_adverse_events <- function(label,
         patient_col = patient_col,
         plot_height = plot_height,
         plot_width = plot_width,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
@@ -398,6 +433,8 @@ ui_g_adverse_events <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
+      ui_decorate_teal_data(ns("d_table"), decorators = select_decorators(ui_args$decorators, "table")),
+      ui_decorate_teal_data(ns("d_plot"), decorators = select_decorators(ui_args$decorators, "plot")),
       teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
@@ -410,7 +447,6 @@ ui_g_adverse_events <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = ui_args$pre_output,
@@ -436,13 +472,15 @@ srv_g_adverse_events <- function(id,
                                  plot_height,
                                  plot_width,
                                  label,
-                                 ggplot2_args) {
+                                 ggplot2_args,
+                                 decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
     # Init
@@ -554,14 +592,29 @@ srv_g_adverse_events <- function(id,
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    output$table <- DT::renderDataTable(
-      expr = teal.code::dev_suppress(all_q()[["table"]]),
-      options = list(pageLength = input$table_rows)
+    # Allow for the table and plot qenv to be joined
+    table_q <- reactive(within(all_q(), table <- table_output))
+    plot_q <- reactive(within(all_q(), plot <- plot_output))
+
+    decorated_all_q_table <- srv_decorate_teal_data(
+      "d_table",
+      data = table_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
     )
+
+    decorated_all_q_plot <- srv_decorate_teal_data(
+      "d_plot",
+      data = plot_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+
+    table_r <- reactive(teal.code::dev_suppress(decorated_all_q_table()[["table"]]))
 
     plot_r <- reactive({
       req(iv_r()$is_valid())
-      all_q()[["plot"]]
+      decorated_all_q_plot()[["plot"]]
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
@@ -571,16 +624,20 @@ srv_g_adverse_events <- function(id,
       width = plot_width
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
+    output$table <- DT::renderDataTable(
+      expr = table_r(),
+      options = list(pageLength = input$table_rows)
     )
 
+    decorated_all_q <- reactive(
+      c(decorated_all_q_table(), decorated_all_q_plot())
+    )
+
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -594,14 +651,14 @@ srv_g_adverse_events <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(teal.code::dev_suppress(all_q()[["table"]]))
+        card$append_table(teal.code::dev_suppress(table_r()))
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

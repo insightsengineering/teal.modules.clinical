@@ -4,6 +4,17 @@
 #'
 #' @inheritParams template_arguments
 #' @inheritParams template_forest_rsp
+#' @param stats (`character`)\cr the names of statistics to be reported among:
+#'   * `n_tot_events`: Total number of events per group.
+#'   * `n_events`: Number of events per group.
+#'   * `n_tot`: Total number of observations per group.
+#'   * `n`: Number of observations per group.
+#'   * `median`: Median survival time.
+#'   * `hr`: Hazard ratio.
+#'   * `ci`: Confidence interval of hazard ratio.
+#'   * `pval`: p-value of the effect.
+#'   Note, one of the statistics `n_tot` and `n_tot_events`, as well as both `hr` and `ci`
+#'   are required.
 #'
 #' @inherit template_arguments return
 #'
@@ -20,6 +31,8 @@ template_forest_tte <- function(dataname = "ANL",
                                 cnsr_var = "CNSR",
                                 subgroup_var,
                                 strata_var = NULL,
+                                stats = c("n_tot_events", "n_events", "median", "hr", "ci"),
+                                riskdiff = NULL,
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 time_unit_var = "AVALU",
@@ -30,6 +43,10 @@ template_forest_tte <- function(dataname = "ANL",
   checkmate::assert_string(arm_var)
   checkmate::assert_string(obj_var_name)
   checkmate::assert_character(subgroup_var, null.ok = TRUE)
+  checkmate::assert_character(stats, min.len = 3)
+  checkmate::assert_true(any(c("n_tot", "n_tot_events") %in% stats))
+  checkmate::assert_true(all(c("hr", "ci") %in% stats))
+  checkmate::assert_list(riskdiff, null.ok = TRUE)
   checkmate::assert_number(rel_width_forest, lower = 0, upper = 1)
   checkmate::assert_number(font_size)
 
@@ -147,11 +164,12 @@ template_forest_tte <- function(dataname = "ANL",
       result <- rtables::basic_table() %>%
         tabulate_survival_subgroups(
           df,
-          vars = c("n_tot", "n_tot_events", "n", "n_events", "median", "hr", "ci"),
-          time_unit = as.character(anl$time_unit_var[1])
+          vars = stats,
+          time_unit = as.character(anl$time_unit_var[1]),
+          riskdiff = riskdiff
         )
     },
-    env = list(time_unit_var = as.name(time_unit_var))
+    env = list(stats = stats, time_unit_var = as.name(time_unit_var), riskdiff = riskdiff)
   )
 
   all_ggplot2_args <- teal.widgets::resolve_ggplot2_args(
@@ -192,7 +210,7 @@ template_forest_tte <- function(dataname = "ANL",
     plot_list,
     substitute(
       expr = {
-        p <- cowplot::plot_grid(
+        plot <- cowplot::plot_grid(
           f[["table"]] + ggplot2::labs(title = ggplot2_args_title, subtitle = ggplot2_args_subtitle),
           f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
           align = "h",
@@ -221,16 +239,38 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_forest_tte
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
+#' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl
-#' ADTTE <- tmc_ex_adtte
-#' ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADTTE <- tmc_ex_adtte
+#'   ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADTTE <- data[["ADTTE"]]
 #'
 #' arm_ref_comp <- list(
 #'   ARM = list(
@@ -244,15 +284,7 @@ template_forest_tte <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADTTE = ADTTE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADTTE <- tmc_ex_adtte
-#'       ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label(\"Race\")
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_forest_tte(
 #'       label = "Forest Survival",
@@ -302,6 +334,8 @@ tm_g_forest_tte <- function(label,
                               teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
                               fixed = TRUE
                             ),
+                            stats = c("n_tot_events", "n_events", "median", "hr", "ci"),
+                            riskdiff = NULL,
                             conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                             time_unit_var = teal.transform::choices_selected(
                               teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
@@ -314,7 +348,9 @@ tm_g_forest_tte <- function(label,
                             font_size = c(15L, 1L, 30L),
                             pre_output = NULL,
                             post_output = NULL,
-                            ggplot2_args = teal.widgets::ggplot2_args()) {
+                            ggplot2_args = teal.widgets::ggplot2_args(),
+                            transformators = list(),
+                            decorators = list()) {
   message("Initializing tm_g_forest_tte")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -327,6 +363,10 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(cnsr_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(time_unit_var, "choices_selected")
+  checkmate::assert_character(stats, min.len = 3)
+  checkmate::assert_true(any(c("n_tot", "n_tot_events") %in% stats))
+  checkmate::assert_true(all(c("hr", "ci") %in% stats))
+  checkmate::assert_list(riskdiff, null.ok = TRUE)
   checkmate::assert_flag(fixed_symbol_size)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
@@ -338,6 +378,8 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
 
@@ -362,11 +404,15 @@ tm_g_forest_tte <- function(label,
         dataname = dataname,
         arm_ref_comp = arm_ref_comp,
         parentname = parentname,
+        stats = stats,
+        riskdiff = riskdiff,
         plot_height = plot_height,
         plot_width = plot_width,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -437,6 +483,7 @@ ui_g_forest_tte <- function(id, ...) {
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
@@ -471,7 +518,6 @@ ui_g_forest_tte <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -494,15 +540,19 @@ srv_g_forest_tte <- function(id,
                              aval_var,
                              cnsr_var,
                              time_unit_var,
+                             stats,
+                             riskdiff,
                              plot_height,
                              plot_width,
-                             ggplot2_args) {
+                             ggplot2_args,
+                             decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -531,7 +581,9 @@ srv_g_forest_tte <- function(id,
         cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
         arm_var = shinyvalidate::sv_required("A treatment variable is required")
       ),
-      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
+      filter_validation_rule = list(
+        paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter.")
+      )
     )
 
     iv_r <- reactive({
@@ -542,7 +594,7 @@ srv_g_forest_tte <- function(id,
         shinyvalidate::sv_between(0, 1, message_fmt = "Confidence level must be between 0 and 1")
       )
       iv$add_validator(iv_arm_ref)
-      teal.transform::compose_and_enable_validators(iv, selector_list)
+      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "aval_var", "paramcd"))
     })
 
     anl_inputs <- teal.transform::merge_expression_srv(
@@ -631,8 +683,8 @@ srv_g_forest_tte <- function(id,
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-
-      obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+      resolved_paramcd <- teal.transform::resolve_delayed(paramcd, as.list(data()))
+      obj_var_name <- get_g_forest_obj_var_name(resolved_paramcd, input)
 
       my_calls <- template_forest_tte(
         dataname = "ANL",
@@ -645,6 +697,8 @@ srv_g_forest_tte <- function(id,
         cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
         subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
         strata_var = if (length(strata_var) != 0) strata_var else NULL,
+        stats = stats,
+        riskdiff = riskdiff,
         conf_level = as.numeric(input$conf_level),
         col_symbol_size = if (!input$fixed_symbol_size) 1,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
@@ -652,11 +706,17 @@ srv_g_forest_tte <- function(id,
         font_size = input$font_size,
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.
-    plot_r <- reactive(all_q()[["p"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -665,16 +725,11 @@ srv_g_forest_tte <- function(id,
       width = plot_width
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = "R Code for the Current Time-to-Event Forest Plot"
     )
 
@@ -693,7 +748,7 @@ srv_g_forest_tte <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

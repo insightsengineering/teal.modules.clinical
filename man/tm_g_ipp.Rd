@@ -31,7 +31,9 @@ tm_g_ipp(
   plot_width = NULL,
   pre_output = NULL,
   post_output = NULL,
-  ggplot2_args = teal.widgets::ggplot2_args()
+  ggplot2_args = teal.widgets::ggplot2_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -92,6 +94,18 @@ argument is merged with option \code{teal.ggplot2_args} and with default module 
 body).
 
 For more details, see the vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -100,28 +114,39 @@ a \code{teal_module} object.
 This module produces \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} type individual patient plots that display trends in parameter
 values over time for each patient, using data with ADaM structure.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{plot} (\code{ggplot2})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(nestcolor)
 library(dplyr)
 
-ADSL <- tmc_ex_adsl \%>\%
-  slice(1:20) \%>\%
-  df_explicit_na()
-ADLB <- tmc_ex_adlb \%>\%
-  filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
-  df_explicit_na() \%>\%
-  filter(AVISIT != "SCREENING")
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl \%>\%
+    slice(1:20) \%>\%
+    df_explicit_na()
+  ADLB <- tmc_ex_adlb \%>\%
+    filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
+    df_explicit_na() \%>\%
+    filter(AVISIT != "SCREENING")
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADLB <- data[["ADLB"]]
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADLB = ADLB,
-    code = "
-      ADSL <- tmc_ex_adsl \%>\% slice(1:20) \%>\% df_explicit_na()
-      ADLB <- tmc_ex_adlb \%>\% filter(USUBJID \%in\% ADSL$USUBJID) \%>\%
-        df_explicit_na() \%>\% filter(AVISIT != \"SCREENING\")
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_ipp(
       label = "Individual Patient Plot",
@@ -171,3 +196,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otQ6AKQAfBP1DTpjMnDsAIyIAEwADDbTsxDzOvzG-QORMsVp0Nn7Tc3tAEJdPX2Dw-zU9JMzcw3GtNTkRjsBytBz3ABSAElmpNyhNbh0ACQgsFQ5o7b43BpHE5nAgXK4YvYHP4A1TsRoANUhrUhth0AEIALw6BRgVoAYSwTicADlIbyAOJsoIAXyCACsiOU0gBrOCsUSVRI2fL8ODGKDCUhpAj8WiiPpSmXyxXAaDwJW5OQAXViLQ6XVywGAbId7TZNrtEBaDydVRdbru9093qUaFQXXKxXYc1yOhZuVwcz4QhEogTOlTwjEsax3RgaQA5mlaOg8wcGtQoPQ4OMWWzIXEtLQhNwdAAFBK0CikTv+Uhs5P57FVC26BtgX0hvA-eYsQuaFiZgglaUEMRpUR1uDqOD8CuVhpL6iCOC6tdLJXTmpurAAWQ5zRFw6PDTv96abLnDTkr8rqAsLAeorpeG6iFuO57geP7zCeZ4XuuuY3qyYAdo0WCNI+z5gH+sHvlO7S2N+I46HhpFQCeaRLowoFIRB24iNBh5HjRtA1iIiFXhSwY1AQsZTpSjQengqEcgAEsKuHkW+qFUsJJFHjJlaUdwgjUcuLKrvRkFMeQMGkceLDsfQnHadxKH8W6QntA4IrKUe1nCXZs6GSYtADPumb2M4sEOfMrYabRWlgZujG7vpLGVmxHHnuZ4E8Q8fECSiELQvZ-6OWAqVokO+HuZ5-DeY4Likf5x4GhcNF0VeukRfuUUHDFplxaF168ToVmCTSdIZfl1k9cRYB+Zl8z0FAjHlOe1UhTp4XMflzVmW1iX3MlbL3I0rQuNJo0HBtW07Xt8x-IVxW+WVx0jPwaTjZN3hpCUUgTjoABiwnbcd26Acw5C3awaREPQGYsu97TbXOQS-koQS0MYOjsOUgJQBY2jWDYdQ3KIZQQKwjTlhGiKCLQNSE9ujDaDEECikoYCijaQA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBrhD8UKRQ+kZc1AD68YnWSplJhjoA7rSkABa0EOEJULg6IEo6OgCCACIAygAyyTqkMARpcAAeaVD8otQ6AKQAfBP1DTpjMnDsAIyIAEwADDbTsxDzOvzG-QORMsVp0Nn7Tc3tAEJdPX2Dw-zU9JMzcw3GtNTkRjsBytBz3ABSAElmpNyhNbh0ACQgsFQ5o7b43BpHE5nAgXK4YvYHP4A1TsRoANUhrUhth0AEIALw6BRgVoAYSwTicADlIbyAOJsoIAXyCACsiOU0gBrOCsUSVRI2fL8ODGKDCUhpAj8WiiPpSmXyxXAaDwJW5OQAXViLQ6XVywGAbId7TZNrtEBaDydVRdbru9093qUaFQXXKxXYc1yOhZuVwcz4QhEogTOlTwjEsax3RgaQA5mlaOg8wcGtQoPQ4OMWWzIXEtLQhNwdAAFBK0CikTv+Uhs5P57FVC26BtgX0hvA-eYsQuaFiZgglaUEMRpUR1uDqOD8CuVhpL6iCOC6tdLJXTmpurAAWQ5zRFw6PDTv96abLnDTkr8rqAsLAeorpeG6iFuO57geP7zCeZ4XuuuY3qyYAdo0WCNI+z5gH+sHvlO7S2N+I46HhpFQCeaRLowoFIRB24iNBh5HjRtA1iIiFXhSwY1AQsZTpSjQengqEcgAEsKuHkW+qFUsJJFHjJlaUdwgjUcuLKrvRkFMeQMGkceLDsfQnHadxKH8W6QntA4IrKUe1nCXZs6GSYtADPumb2M4sEOfMrYabRWlgZujG7vpLGVmxHHnuZ4E8Q8fECSiELQvZ-6OWAqVokO+HuZ5-DeY4Likf5x4GhcNF0VeukRfuUUHDFplxaF168ToVmCTSdIZfl1k9cRYB+Zl8z0FAjHlOe1UhTp4XMflzVmW1iX3MlbL3I0rQuNJo0HBtW07Xt8x-IVxW+WVx0jPwaTjZN3hpCUUgTjoABiwnbcd26Acw5C3awaREPQGYsu97TbXOQS-koQS0MYOjsOUgJQBY2jWDYdQ3KIZQQKwjTlhGiKCLQNSE9ujDaDEECikoYCijaQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

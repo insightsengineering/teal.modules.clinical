@@ -17,6 +17,8 @@ testthat::test_that("template_events_summary generates table with multiple flags
     add_total = TRUE,
     flag_var_anl = c("A", "B", "C"),
     flag_var_aesi = c("X", "Y"),
+    count_dth = FALSE,
+    count_wd = FALSE,
     count_subj = TRUE,
     count_pt = TRUE,
     count_events = TRUE

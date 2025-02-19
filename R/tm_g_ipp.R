@@ -173,34 +173,48 @@ template_g_ipp <- function(dataname = "ANL",
 #' values over time for each patient, using data with ADaM structure.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_g_ipp
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as arm variable.
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot2`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#'
+#'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
 #' library(nestcolor)
 #' library(dplyr)
 #'
-#' ADSL <- tmc_ex_adsl %>%
-#'   slice(1:20) %>%
-#'   df_explicit_na()
-#' ADLB <- tmc_ex_adlb %>%
-#'   filter(USUBJID %in% ADSL$USUBJID) %>%
-#'   df_explicit_na() %>%
-#'   filter(AVISIT != "SCREENING")
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl %>%
+#'     slice(1:20) %>%
+#'     df_explicit_na()
+#'   ADLB <- tmc_ex_adlb %>%
+#'     filter(USUBJID %in% ADSL$USUBJID) %>%
+#'     df_explicit_na() %>%
+#'     filter(AVISIT != "SCREENING")
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADLB <- data[["ADLB"]]
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADLB = ADLB,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl %>% slice(1:20) %>% df_explicit_na()
-#'       ADLB <- tmc_ex_adlb %>% filter(USUBJID %in% ADSL$USUBJID) %>%
-#'         df_explicit_na() %>% filter(AVISIT != \"SCREENING\")
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_g_ipp(
 #'       label = "Individual Patient Plot",
@@ -289,7 +303,9 @@ tm_g_ipp <- function(label,
                      plot_width = NULL,
                      pre_output = NULL,
                      post_output = NULL,
-                     ggplot2_args = teal.widgets::ggplot2_args()) {
+                     ggplot2_args = teal.widgets::ggplot2_args(),
+                     transformators = list(),
+                     decorators = list()) {
   if (lifecycle::is_present(base_var)) {
     baseline_var <- base_var
     warning(
@@ -325,6 +341,8 @@ tm_g_ipp <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -350,9 +368,11 @@ tm_g_ipp <- function(label,
         parentname = parentname,
         plot_height = plot_height,
         plot_width = plot_width,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -424,6 +444,7 @@ ui_g_ipp <- function(id, ...) {
         data_extract_spec = a$baseline_var,
         is_single_dataset = is_single_dataset_value
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       teal.widgets::panel_group(
         teal.widgets::panel_item(
           "Additional plot settings",
@@ -451,7 +472,6 @@ ui_g_ipp <- function(id, ...) {
       )
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -476,13 +496,15 @@ srv_g_ipp <- function(id,
                       plot_height,
                       plot_width,
                       label,
-                      ggplot2_args) {
+                      ggplot2_args,
+                      decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     selector_list <- teal.transform::data_extract_multiple_srv(
       datasets = data,
       data_extract = list(
@@ -603,11 +625,17 @@ srv_g_ipp <- function(id,
         ggplot2_args = ggplot2_args,
         add_avalu = input$add_avalu
       )
-      teal.code::eval_code(anl_q(), as.expression(my_calls))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.
-    plot_r <- reactive(all_q()[["plot"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
     # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
@@ -617,16 +645,11 @@ srv_g_ipp <- function(id,
       width = plot_width
     )
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -645,7 +668,7 @@ srv_g_ipp <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

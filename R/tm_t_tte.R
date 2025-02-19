@@ -159,6 +159,7 @@ template_tte <- function(dataname = "ANL",
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
         title = paste("Time-To-Event Table for", paramcd),
         main_footer = if (compare_arm) {
           c(
@@ -207,13 +208,12 @@ template_tte <- function(dataname = "ANL",
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = rtables::add_colcounts() %>%
-        analyze_vars(
-          "is_event",
-          .stats = "count_fraction",
-          .labels = c(count_fraction = "Patients with event (%)"),
-          na_str = na_str
-        ) %>%
+      expr = analyze_vars(
+        "is_event",
+        .stats = "count_fraction",
+        .labels = c(count_fraction = "Patients with event (%)"),
+        na_str = na_str
+      ) %>%
         rtables::split_rows_by(
           "EVNT1",
           split_label = "Earliest contributing event",
@@ -365,7 +365,6 @@ template_tte <- function(dataname = "ANL",
   y$table <- substitute(
     expr = {
       table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parentname)
-      table
     },
     env = list(parentname = as.name(parentname))
   )
@@ -380,17 +379,26 @@ template_tte <- function(dataname = "ANL",
 #' https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/ttet01.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_tte
 #' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
-#' @param event_desc_var (`character` or [data_extract_spec()])\cr variable name with the event description
-#'   information, optional.
+#' @param event_desc_var (`character` or [teal.transform::data_extract_spec()])\cr variable name with the
+#'   event description information, optional.
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table`)
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
 #'
 #' @details
-#' * The core functionality of this module is based on [coxph_pairwise()], [surv_timepoint()], and [surv_time()] from
-#' the `tern` package.
+#' * The core functionality of this module is based on [tern::coxph_pairwise()], [tern::surv_timepoint()],
+#'   and [tern::surv_time()] from the `tern` package.
 #' * The arm and stratification variables are taken from the `parentname` data.
 #' * The following variables are used in the module:
 #'
@@ -401,9 +409,21 @@ template_tte <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return seealso
 #'
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
 #' @examples
-#' ADSL <- tmc_ex_adsl
-#' ADTTE <- tmc_ex_adtte
+#' data <- teal_data()
+#' data <- within(data, {
+#'   ADSL <- tmc_ex_adsl
+#'   ADTTE <- tmc_ex_adtte
+#' })
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADTTE <- data[["ADTTE"]]
 #'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
@@ -417,14 +437,7 @@ template_tte <- function(dataname = "ANL",
 #' )
 #'
 #' app <- init(
-#'   data = cdisc_data(
-#'     ADSL = ADSL,
-#'     ADTTE = ADTTE,
-#'     code = "
-#'       ADSL <- tmc_ex_adsl
-#'       ADTTE <- tmc_ex_adtte
-#'     "
-#'   ),
+#'   data = data,
 #'   modules = modules(
 #'     tm_t_tte(
 #'       label = "Time To Event Table",
@@ -488,7 +501,9 @@ tm_t_tte <- function(label,
                      na_level = default_na_str(),
                      pre_output = NULL,
                      post_output = NULL,
-                     basic_table_args = teal.widgets::basic_table_args()) {
+                     basic_table_args = teal.widgets::basic_table_args(),
+                     transformators = list(),
+                     decorators = list()) {
   message("Initializing tm_t_tte")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -508,6 +523,8 @@ tm_t_tte <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  decorators <- normalize_decorators(decorators)
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -535,9 +552,11 @@ tm_t_tte <- function(label,
         label = label,
         total_label = total_label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -719,10 +738,10 @@ ui_t_tte <- function(id, ...) {
           data_extract_spec = a$time_unit_var,
           is_single_dataset = is_single_dataset_value
         )
-      )
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
     ),
     forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("warning"), button_label = "Show Warnings"),
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
     pre_output = a$pre_output,
@@ -749,12 +768,14 @@ srv_t_tte <- function(id,
                       total_label,
                       label,
                       na_level,
-                      basic_table_args) {
+                      basic_table_args,
+                      decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Setup arm variable selection, default reference arms, and default
     # comparison arms for encoding panel
     iv_arm_ref <- arm_ref_comp_observer(
@@ -939,23 +960,25 @@ srv_t_tte <- function(id,
         basic_table_args = basic_table_args
       )
 
-      anl_q() %>% teal.code::eval_code(as.expression(my_calls))
+      anl_q() %>% teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
-    table_r <- reactive(all_q()[["table"]])
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
 
-    teal.widgets::verbatim_popup_srv(
-      id = "warning",
-      verbatim_content = reactive(teal.code::get_warnings(all_q())),
-      title = "Warning",
-      disabled = reactive(is.null(teal.code::get_warnings(all_q())))
-    )
-
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -974,7 +997,7 @@ srv_t_tte <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

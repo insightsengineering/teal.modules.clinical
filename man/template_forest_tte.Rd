@@ -15,6 +15,8 @@ template_forest_tte(
   cnsr_var = "CNSR",
   subgroup_var,
   strata_var = NULL,
+  stats = c("n_tot_events", "n_events", "median", "hr", "ci"),
+  riskdiff = NULL,
   conf_level = 0.95,
   col_symbol_size = NULL,
   time_unit_var = "AVALU",
@@ -43,6 +45,23 @@ template_forest_tte(
 \item{subgroup_var}{(\code{character})\cr with variable names that can be used as subgroups.}
 
 \item{strata_var}{(\code{character})\cr names of the variables for stratified analysis.}
+
+\item{stats}{(\code{character})\cr the names of statistics to be reported among:
+\itemize{
+\item \code{n_tot_events}: Total number of events per group.
+\item \code{n_events}: Number of events per group.
+\item \code{n_tot}: Total number of observations per group.
+\item \code{n}: Number of observations per group.
+\item \code{median}: Median survival time.
+\item \code{hr}: Hazard ratio.
+\item \code{ci}: Confidence interval of hazard ratio.
+\item \code{pval}: p-value of the effect.
+Note, one of the statistics \code{n_tot} and \code{n_tot_events}, as well as both \code{hr} and \code{ci}
+are required.
+}}
+
+\item{riskdiff}{(\code{list})\cr if a risk (proportion) difference column should be added, a list of settings to apply
+within the column. See \code{\link[tern:control_riskdiff]{tern::control_riskdiff()}} for details. If \code{NULL}, no risk difference column will be added.}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 

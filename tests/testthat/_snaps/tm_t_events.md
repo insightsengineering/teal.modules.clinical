@@ -19,10 +19,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
-          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
@@ -34,21 +34,21 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
+          pruned_result <- rtables::prune_table(table)
       }
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(result))))
+              ncol(table))))
           pruned_and_sorted_result
       }
       
@@ -78,11 +78,11 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
           rtables::split_cols_by(var = "ACTARM") %>% rtables::split_cols_by("ACTARMCD", 
-          split_fun = drop_split_levels) %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+          split_fun = drop_split_levels) %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
@@ -94,21 +94,21 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
+          pruned_result <- rtables::prune_table(table)
       }
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(result))))
+              ncol(table))))
           pruned_and_sorted_result
       }
       
@@ -130,25 +130,24 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Con Med Code") %>% 
-          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
-          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
-              "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Con Med Code") %>% 
+          rtables::split_cols_by(var = "ACTARM") %>% summarize_num_patients(var = "USUBJID", 
+          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
               nonunique = "Overall total number of treatments"), na_str = "<Missing>") %>% 
           count_occurrences(vars = "CMDECOD", .indent_mods = -1L) %>% 
           append_varlabels(adcm, "CMDECOD")
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
+          pruned_result <- rtables::prune_table(table)
       }
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("CMDECOD"), 
               scorefun = score_occurrences)
@@ -179,10 +178,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
-          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
@@ -194,11 +193,11 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
+          pruned_result <- rtables::prune_table(table)
       }
       
       $sort
@@ -229,10 +228,10 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
-          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+          rtables::split_cols_by(var = "ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
@@ -244,12 +243,12 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
-          col_indices <- 1:(ncol(result) - TRUE)
+          pruned_result <- rtables::prune_table(table)
+          col_indices <- 1:(ncol(table) - TRUE)
           row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) & 
               has_fractions_difference(atleast = 0.1, col_indices = col_indices)
           pruned_result <- pruned_result %>% rtables::prune_table(keep_rows(row_condition))
@@ -257,12 +256,12 @@
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(result))))
+              ncol(table))))
           criteria_fun <- function(tr) {
               inherits(tr, "ContentRow")
           }
@@ -297,11 +296,11 @@
       split_fun <- drop_split_levels
       
       $layout
-      lyt <- rtables::basic_table(title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Event Summary by Term : Body System and Adverse Event Code") %>% 
           rtables::split_cols_by(var = "ACTARM") %>% rtables::split_cols_by("ACTARMCD", 
-          split_fun = drop_split_levels) %>% rtables::add_colcounts() %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
+          split_fun = drop_split_levels) %>% rtables::add_overall_col(label = "All Patients") %>% 
+          summarize_num_patients(var = "USUBJID", .stats = c("unique", 
+              "nonunique"), .labels = c(unique = "Total number of patients with at least one event", 
               nonunique = "Overall total number of events"), na_str = "<Missing>") %>% 
           rtables::split_rows_by("AEBODSYS", child_labels = "visible", 
               nested = FALSE, indent_mod = -1L, split_fun = split_fun, 
@@ -313,12 +312,12 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
-          col_indices <- 1:(ncol(result) - TRUE)
+          pruned_result <- rtables::prune_table(table)
+          col_indices <- 1:(ncol(table) - TRUE)
           row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) & 
               has_fractions_difference(atleast = 0.1, col_indices = col_indices)
           pruned_result <- pruned_result %>% rtables::prune_table(keep_rows(row_condition))
@@ -326,12 +325,12 @@
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(result))))
+              ncol(table))))
           criteria_fun <- function(tr) {
               inherits(tr, "ContentRow")
           }

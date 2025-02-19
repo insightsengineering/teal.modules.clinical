@@ -20,10 +20,10 @@
       split_fun <- trim_levels_in_group
       
       $layout
-      lyt <- rtables::basic_table(title = "Adverse Event summary by Analysis Toxicity Grade: Body System or Organ Class and Dictionary-Derived Term") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Adverse Event summary by Analysis Toxicity Grade: Body System or Organ Class and Dictionary-Derived Term") %>% 
           rtables::split_cols_by("ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
-          rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
-          grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
+          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
+              na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
           split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
@@ -50,7 +50,6 @@
                   1), decreasing = TRUE) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
               1), decreasing = TRUE)
-          pruned_and_sorted_result
       }
       
 
@@ -76,10 +75,10 @@
       split_fun <- trim_levels_in_group
       
       $layout
-      lyt <- rtables::basic_table(title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class and Dictionary-Derived Term") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class and Dictionary-Derived Term") %>% 
           rtables::split_cols_by("ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
-          rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
-          grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
+          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
+              na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
           split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
@@ -110,7 +109,6 @@
                   1), decreasing = TRUE) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
               1), decreasing = TRUE)
-          pruned_and_sorted_result
       }
       
 
@@ -135,10 +133,9 @@
       split_fun <- trim_levels_in_group
       
       $layout
-      lyt <- rtables::basic_table(title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class and Dictionary-Derived Term") %>% 
-          rtables::split_cols_by("ACTARM") %>% rtables::add_colcounts() %>% 
-          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
-              na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class and Dictionary-Derived Term") %>% 
+          rtables::split_cols_by("ACTARM") %>% summarize_occurrences_by_grade(var = "AESEV", 
+          grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
           split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
@@ -163,7 +160,6 @@
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = "AEBODSYS", 
               scorefun = cont_n_allcols, decreasing = TRUE) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = cont_n_allcols, decreasing = TRUE)
-          pruned_and_sorted_result
       }
       
 
@@ -189,10 +185,10 @@
       split_fun <- trim_levels_in_group
       
       $layout
-      lyt <- rtables::basic_table(title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class") %>% 
           rtables::split_cols_by("ACTARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
-          rtables::add_colcounts() %>% summarize_occurrences_by_grade(var = "AESEV", 
-          grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
+          summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
+              na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
           split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           summarize_num_patients(var = "", .stats = "unique", .labels = c("- Any Intensity -"), 
@@ -213,7 +209,6 @@
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = "AEBODSYS", 
               scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
                   1), decreasing = TRUE)
-          pruned_and_sorted_result
       }
       
 
@@ -280,7 +275,6 @@
               col_indices = col_indices)
           pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun) %>% 
               rtables::prune_table(keep_rows(at_least_percent_any))
-          pruned_and_sorted_result
       }
       
 
@@ -342,7 +336,6 @@
               col_indices = col_indices)
           pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun) %>% 
               rtables::prune_table(keep_rows(at_least_percent_any))
-          pruned_and_sorted_result
       }
       
 
@@ -402,7 +395,6 @@
               col_indices = col_indices)
           pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun) %>% 
               rtables::prune_table(keep_rows(at_least_percent_any))
-          pruned_and_sorted_result
       }
       
 
@@ -461,7 +453,6 @@
               col_indices = col_indices)
           pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun) %>% 
               rtables::prune_table(keep_rows(at_least_percent_any))
-          pruned_and_sorted_result
       }
       
 

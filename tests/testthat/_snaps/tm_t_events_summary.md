@@ -19,8 +19,8 @@
       }
       
       $layout_parent
-      lyt_parent <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
+      lyt_parent <- rtables::basic_table(show_colcounts = TRUE) %>% 
+          rtables::split_cols_by(var = "ARM") %>% rtables::add_overall_col(label = "All Patients") %>% 
           count_values("DTHFL", values = "Y", .labels = c(count_fraction = "Total number of deaths"), 
               .formats = c(count_fraction = format_count_fraction), 
               denom = "N_col") %>% count_values("DCSREAS", values = "ADVERSE EVENT", 
@@ -28,25 +28,25 @@
           .formats = c(count_fraction = format_count_fraction), denom = "N_col")
       
       $table_parent
-      result_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, 
+      table_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, 
           alt_counts_df = adsl)
       
       $layout_anl
-      lyt_anl <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
-          count_patients_with_event(vars = "USUBJID", filters = c(tmp_aefl = "Y"), 
-              denom = "N_col", .stats = "count_fraction", .labels = c(count_fraction = "Total number of patients with at least one adverse event"), 
-              .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>% 
+      lyt_anl <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
+          rtables::add_overall_col(label = "All Patients") %>% count_patients_with_event(vars = "USUBJID", 
+          filters = c(tmp_aefl = "Y"), denom = "N_col", .stats = "count_fraction", 
+          .labels = c(count_fraction = "Total number of patients with at least one adverse event"), 
+          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>% 
           count_values("STUDYID", values = study_id, .stats = "count", 
               .labels = c(count = "Total AEs"), table_names = "total_aes")
       
       $table_anl
-      result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
+      table_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
       
       $table
       {
-          rtables::col_info(result_parent) <- rtables::col_info(result_anl)
-          result <- rtables::rbind(result_anl, result_parent)
+          rtables::col_info(table_parent) <- rtables::col_info(table_anl)
+          table <- rtables::rbind(table_anl, table_parent)
       }
       
 
@@ -75,24 +75,19 @@
       }
       
       $layout_parent
-      lyt_parent <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
-          count_values("DTHFL", values = "Y", .labels = c(count_fraction = "Total number of deaths"), 
-              .formats = c(count_fraction = format_count_fraction), 
-              denom = "N_col") %>% count_values("DCSREAS", values = "ADVERSE EVENT", 
-          .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"), 
-          .formats = c(count_fraction = format_count_fraction), denom = "N_col")
+      lyt_parent <- rtables::basic_table(show_colcounts = TRUE) %>% 
+          rtables::split_cols_by(var = "ARM") %>% rtables::add_overall_col(label = "All Patients")
       
       $table_parent
-      result_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, 
+      table_parent <- rtables::build_table(lyt = lyt_parent, df = adsl, 
           alt_counts_df = adsl)
       
       $layout_anl
-      lyt_anl <- rtables::basic_table() %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_colcounts() %>% rtables::add_overall_col(label = "All Patients") %>% 
-          count_patients_with_event(vars = "USUBJID", filters = c(tmp_aefl = "Y"), 
-              denom = "N_col", .stats = "count_fraction", .labels = c(count_fraction = "Total number of patients with at least one adverse event"), 
-              .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>% 
+      lyt_anl <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
+          rtables::add_overall_col(label = "All Patients") %>% count_patients_with_event(vars = "USUBJID", 
+          filters = c(tmp_aefl = "Y"), denom = "N_col", .stats = "count_fraction", 
+          .labels = c(count_fraction = "Total number of patients with at least one adverse event"), 
+          .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>% 
           count_values("STUDYID", values = study_id, .stats = "count", 
               .labels = c(count = "Total AEs"), table_names = "total_aes") %>% 
           count_patients_with_flags(var = "USUBJID", flag_variables = flag_var_anl_label, 
@@ -119,13 +114,13 @@
           show_labels = "visible")
       
       $table_anl
-      result_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
+      table_anl <- rtables::build_table(lyt = lyt_anl, df = anl, alt_counts_df = adsl)
       
       $table
       {
-          rtables::col_info(result_parent) <- rtables::col_info(result_anl)
-          result <- rtables::rbind(result_anl[1:2, ], result_parent, 
-              result_anl[3:nrow(result_anl), ])
+          rtables::col_info(table_parent) <- rtables::col_info(table_anl)
+          table <- rtables::rbind(table_anl[1:2, ], table_anl[3:nrow(table_anl), 
+              ])
       }
       
 

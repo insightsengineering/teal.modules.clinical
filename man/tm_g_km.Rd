@@ -31,7 +31,9 @@ tm_g_km(
   plot_height = c(800L, 400L, 5000L),
   plot_width = NULL,
   pre_output = NULL,
-  post_output = NULL
+  post_output = NULL,
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -43,9 +45,7 @@ tm_g_km(
 
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+It defines the grouping variable in the results table.}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -84,7 +84,7 @@ options are: \code{x}, \code{y}, \code{w}, \code{h}, and \code{fill}. See \code{
 to the plot when \code{annot_coxph = TRUE}, specified using the \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} function. Parameter
 options are: \code{x}, \code{y}, \code{w}, \code{h}, \code{fill}, and \code{ref_lbls}. See \code{\link[tern:control_coxph_annot]{control_coxph_annot()}} for details.}
 
-\item{legend_pos}{(\code{numeric(2)})\cr vector of length 2 containing x- and y-coordinates, respectively, for the legend
+\item{legend_pos}{(\code{numeric(2)} or \code{NULL})\cr vector containing x- and y-coordinates, respectively, for the legend
 position relative to the KM plot area. If \code{NULL} (default), the legend is positioned in the bottom right corner of
 the plot, or the middle right of the plot if needed to prevent overlapping.}
 
@@ -103,6 +103,18 @@ For example a title.}
 
 \item{post_output}{(\code{shiny.tag}) optional,\cr with text placed after the output to put the output into context.
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -110,11 +122,30 @@ a \code{teal_module} object.
 \description{
 This module produces a \code{ggplot}-style Kaplan-Meier plot for data with ADaM structure.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{plot} (\code{ggplot2})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
 library(nestcolor)
 
-ADSL <- tmc_ex_adsl
-ADTTE <- tmc_ex_adtte
+data <- teal_data()
+data <- within(data, {
+  ADSL <- tmc_ex_adsl
+  ADTTE <- tmc_ex_adtte
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADTTE <- data[["ADTTE"]]
 
 arm_ref_comp <- list(
   ACTARMCD = list(
@@ -128,14 +159,7 @@ arm_ref_comp <- list(
 )
 
 app <- init(
-  data = cdisc_data(
-    ADSL = ADSL,
-    ADTTE = ADTTE,
-    code = "
-      ADSL <- tmc_ex_adsl
-      ADTTE <- tmc_ex_adtte
-    "
-  ),
+  data = data,
   modules = modules(
     tm_g_km(
       label = "Kaplan-Meier Plot",
@@ -169,3 +193,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlba2Tg1NLe2d-KTkSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAZDL7JH5-KqDFxgYFvFgwGKMfYnIgwVANOiiUjsPrlADCtnKWAAsoTKjoALw6HF4vplVHGGk6aHknQAIT+uEZOmImNZBHx-w55R5bNFZJ0hL+QTKcl5EDKpOltPp+OVZR0zNZf05iB0AAVqFACHB6EQeXyBVjacLoYbKoxBABzHQADQlf0JhsJGPouTClmCYHlOiCQSUaCxqVymU1ZQKrIKSrKfCEIlErIzwjEie1TRirtWMAL2rpUHocGoerAAGk0KaIAYyXBaKpjf5SNatRWCvddLToWC4WmKzokTFNCwhVklubRDFRDW4Oo4PxyxOZ4xaFWRCd5zJ8wCig6pd6pZTL0SSeTr2HFXyK+yyX9nxHxxXUCxYKc5wuYjLqu66bh+ZQztQghwIegGbDCQxFH8RqkuUFKVJeKFYGhcpfhOfwAPLVO+fbak+pFlFOzLooKtJUWitp4WUuLMOE06zvaR6LsBIigVuFY7nu9AHgQXEnjUtRniK1ROF6eCSpyZJYPWWAAExyuRE7an8MlyR+mkTgc5rHDuAHHkuK68eQYEUdqgn7jBolwewp78tJsmXopylqRpTHagAcg4tSArZ4YKn0kZKLQLLsLk5BqBo2jWDYJRaqIOQQKw5ToOwMYACSCLQRT5SujDaIEsxKGAMzPEAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlba2Tg1NLe2d-KTkSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAZDL7JH5-KqDFxgYFvFgwGKMfYnIgwVANOiiUjsPrlADCtnKWAAsoTKjoALw6HF4vplVHGGk6aHknQAIT+uEZOmImNZBHx-w55R5bNFZJ0hL+QTKcl5EDKpOltPp+OVZR0zNZf05iB0AAVqFACHB6EQeXyBVjacLoYbKoxBABzHQADQlf0JhsJGPouTClmCYHlOiCQSUaCxqVymU1ZQKrIKSrKfCEIlErIzwjEie1TRirtWMAL2rpUHocGoerAAGk0KaIAYyXBaKpjf5SNatRWCvddLToWC4WmKzokTFNCwhVklubRDFRDW4Oo4PxyxOZ4xaFWRCd5zJ8wCig6pd6pZTL0SSeTr2HFXyK+yyX9nxHxxXUCxYKc5wuYjLqu66bh+ZQztQghwIegGbDCQxFH8RqkuUFKVJeKFYGhcpfhOfwAPLVO+fbak+pFlFOzLooKtJUWitp4WUuLMOE06zvaR6LsBIigVuFY7nu9AHgQXEnjUtRniK1ROF6eCSpyZJYPWWAAExyuRE7an8MlyR+mkTgc5rHDuAHHkuK68eQYEUdqgn7jBolwewp78tJsmXopylqRpTHagAcg4tSArZ4YKn0kZKLQLLsLk5BqBo2jWDYJRaqIOQQKw5ToOwMYACSCLQRT5SujDaIEsxKGAMzPEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+

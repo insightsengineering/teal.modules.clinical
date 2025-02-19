@@ -24,7 +24,9 @@ tm_t_events_by_grade(
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -36,9 +38,7 @@ tm_t_events_by_grade(
 
 \item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for \code{arm_var},
-second variable will be nested under the first variable.}
+It defines the grouping variable in the results table.}
 
 \item{hlt}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr name of the variable
 with high level term for events.}
@@ -82,6 +82,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -89,21 +101,32 @@ a \code{teal_module} object.
 \description{
 This module produces a table to summarize events by grade.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} as created from \code{rtables::build_table})
+}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+}
+
 \examples{
+library(dplyr)
 data <- teal_data()
 data <- within(data, {
-  library(dplyr)
-
   ADSL <- tmc_ex_adsl
-  lbls_adae <- col_labels(tmc_ex_adae)
+  .lbls_adae <- col_labels(tmc_ex_adae)
   ADAE <- tmc_ex_adae \%>\%
     mutate_if(is.character, as.factor) #' be certain of having factors
-  col_labels(ADAE) <- lbls_adae
+  col_labels(ADAE) <- .lbls_adae
 })
+join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-datanames <- c("ADSL", "ADAE")
-datanames(data) <- datanames
-join_keys(data) <- default_cdisc_join_keys[datanames]
+ADSL <- data[["ADSL"]]
+ADAE <- data[["ADAE"]]
 
 app <- init(
   data = data,
@@ -113,15 +136,15 @@ app <- init(
       dataname = "ADAE",
       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
       llt = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
+        choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
         selected = c("AEDECOD")
       ),
       hlt = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
+        choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
         selected = "AEBODSYS"
       ),
       grade = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AETOXGR", "AESEV")),
+        choices = variable_choices(ADAE, c("AETOXGR", "AESEV")),
         selected = "AETOXGR"
       )
     )
@@ -136,3 +159,13 @@ if (interactive()) {
 The \href{https://insightsengineering.github.io/tlg-catalog/stable/}{TLG Catalog} where additional example
 apps implementing this module can be found.
 }
+\section{Examples in Shinylive}{
+\describe{
+  \item{example-1}{
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEPxQpFD6RlzUAPpBIdZKMaGGOgDutKQAFrQQ7Am4OiBKOjoAggAiAMoAMmE6pDAEkXAAHpFQ-KLUhToY1PTUoq1BuknEUdRQ9HD9nPWNLW1QcAFFZcVONXUNzYOLOgCkAHx7XUUwgiHkkbTG7LTiBOksUOqqeVDixs+kRP46AMQAch0kx0BFUISyOiIxh0j00WQA5iYvj9RF1RpFxpNpqsnDYkj0+gMFnAlABfAIAKyIWUiAGs4KxRDlglB8UZ+HBPsJSJECPw7g1qbSGUzgNB4MyEnIALquCBlKo1BLAYAKMCKyrqmVyhWlNbK1mq9W47W6pRoVA1LJpdhdBI6AC8OlyXT4QhEoidOndwjEdogRSKdUivLg2jIA3orEiCOYnIDQaDWKm3pN-G0jFEuicEdIXujOgA4vHdLYJiJ1bgTkGEhLdM6TfqXHga0UWDBIpoWN6HjSwQNsyIXvx2AQ7RqsABZKs6E3TgDCpXVcjy85nYFXbZ01GopF76X7YkiQ7gI8TSaDfZkYm93cYtArcD5h5vzNxeXHJqctic09n36lE4C4APLLpuW6BpeRSniOvYTmsQGgeByyXpB0HpHuB5HoOUxnuQo7bkU14DneLCPn0z4kf6H6gghTgAEJgeUACa5QARqTjlCBC4ruh0E6LBBFppxTEVGx6rbvxSZxm0Dagq+A4nnh55EQpOFkQ+T4vjh7C0V+nG2CBAAaRZYBxazlE4ABqfHVlB0FCXA-AiWsRmmeZYBSTWqEBAE1w6LcKhqBo2jWDYBRQaImQQKwxToOwloACSCLQbzoEl2aMJmARkkoYBkjKQA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEPxQpFD6RlzUAPpBIdZKMaGGOgDutKQAFrQQ7Am4OiBKOjoAggAiAMoAMmE6pDAEkXAAHpFQ-KLUhToY1PTUoq1BuknEUdRQ9HD9nPWNLW1QcAFFZcVONXUNzYOLOgCkAHx7XUUwgiHkkbTG7LTiBOksUOqqeVDixs+kRP46AMQAch0kx0BFUISyOiIxh0j00WQA5iYvj9RF1RpFxpNpqsnDYkj0+gMFnAlABfAIAKyIWUiAGs4KxRDlglB8UZ+HBPsJSJECPw7g1qbSGUzgNB4MyEnIALquCBlKo1BLAYAKMCKyrqmVyhWlNbK1mq9W47W6pRoVA1LJpdhdBI6AC8OlyXT4QhEoidOndwjEdogRSKdUivLg2jIA3orEiCOYnIDQaDWKm3pN-G0jFEuicEdIXujOgA4vHdLYJiJ1bgTkGEhLdM6TfqXHga0UWDBIpoWN6HjSwQNsyIXvx2AQ7RqsABZKs6E3TgDCpXVcjy85nYFXbZ01GopF76X7YkiQ7gI8TSaDfZkYm93cYtArcD5h5vzNxeXHJqctic09n36lE4C4APLLpuW6BpeRSniOvYTmsQGgeByyXpB0HpHuB5HoOUxnuQo7bkU14DneLCPn0z4kf6H6gghTgAEJgeUACa5QARqTjlCBC4ruh0E6LBBFppxTEVGx6rbvxSZxm0Dagq+A4nnh55EQpOFkQ+T4vjh7C0V+nG2CBAAaRZYBxazlE4ABqfHVlB0FCXA-AiWsRmmeZYBSTWqEBAE1w6LcKhqBo2jWDYBRQaImQQKwxToOwloACSCLQbzoEl2aMJmARkkoYBkjKQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+  }
+}
+}
+
