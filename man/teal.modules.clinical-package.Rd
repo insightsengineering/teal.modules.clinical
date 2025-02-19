@@ -19,16 +19,16 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Joe Zhu \email{joe.zhu@roche.com}
+\strong{Maintainer}: Dawid Kaledkowski \email{dawid.kaledkowski@roche.com}
 
 Authors:
 \itemize{
+  \item Joe Zhu \email{joe.zhu@roche.com} (\href{https://orcid.org/0000-0001-7566-2787}{ORCID})
   \item Jana Stoilova \email{jana.stoilova@roche.com}
   \item Davide Garolini \email{davide.garolini@roche.com}
   \item Emily de la Rua \email{emily.de_la_rua@contractors.roche.com}
   \item Abinaya Yogasekaram \email{abinaya.yogasekaram@contractors.roche.com}
   \item Mahmoud Hallal \email{mahmoud.hallal@roche.com}
-  \item Dawid Kaledkowski \email{dawid.kaledkowski@roche.com}
   \item Rosemary Li \email{li.yaqiong@gene.com}
   \item Heng Wang \email{wang.heng@gene.com}
   \item Pawel Rucki \email{pawel.rucki@roche.com}
