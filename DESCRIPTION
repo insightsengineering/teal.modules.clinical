@@ -3,13 +3,14 @@ Title: 'teal' Modules for Standard Clinical Outputs
 Version: 0.9.1.9062
 Date: 2025-02-19
 Authors@R: c(
-    person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
+    person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
+           comment = c(ORCID = "0000-0001-7566-2787")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
     person("Davide", "Garolini", , "davide.garolini@roche.com", role = "aut"),
     person("Emily", "de la Rua", , "emily.de_la_rua@contractors.roche.com", role = "aut"),
     person("Abinaya", "Yogasekaram", , "abinaya.yogasekaram@contractors.roche.com", role = "aut"),
     person("Mahmoud", "Hallal", , "mahmoud.hallal@roche.com", role = "aut"),
-    person("Dawid", "Kaledkowski", , "dawid.kaledkowski@roche.com", role = "aut"),
+    person("Dawid", "Kaledkowski", , "dawid.kaledkowski@roche.com", role = c("aut", "cre")),
     person("Rosemary", "Li", , "li.yaqiong@gene.com", role = "aut"),
     person("Heng", "Wang", , "wang.heng@gene.com", role = "aut"),
     person("Pawel", "Rucki", , "pawel.rucki@roche.com", role = "aut"),
