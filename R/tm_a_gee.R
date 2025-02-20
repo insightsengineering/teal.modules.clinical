@@ -138,7 +138,7 @@ template_a_gee <- function(output_table,
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`E8lementaryTable` - output of `rtables::build_table`)
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
