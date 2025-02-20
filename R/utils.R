@@ -1009,25 +1009,18 @@ check_decorators <- function(x, names = NULL) { # nolint: object_name.
   check_message <- checkmate::check_list(x, names = "named")
 
   if (!is.null(names)) {
-    check_message <- if (isTRUE(check_message)) {
-      out_message <- checkmate::check_names(names(x), subset.of = c("default", names))
+    if (isTRUE(check_message)) {
       if (length(names(x)) != length(unique(names(x)))) {
-        unique_message <- "Non-unique names in decorators"
-        if (isTRUE(out_message)) {
-          out_message <- unique_message
-        } else {
-          out_message <- paste0(out_message, ". Also, ", tolower(unique_message))
-        }
-      }
-
-      # see https://github.com/insightsengineering/teal.logger/issues/101
-      if (isTRUE(out_message)) {
-        out_message
-      } else {
-        gsub("\\{", "(", gsub("\\}", ")", out_message))
+        check_message <- sprintf(
+          "The `decorators` must contain unique names from these names: %s.",
+          paste(names, collapse = ", ")
+        )
       }
     } else {
-      check_message
+      check_message <- sprintf(
+        "The `decorators` must be a named list from these names: %s.",
+        paste(names, collapse = ", ")
+      )
     }
   }
 
@@ -1037,8 +1030,8 @@ check_decorators <- function(x, names = NULL) { # nolint: object_name.
 
   valid_elements <- vapply(
     x,
-    checkmate::test_list,
-    types = "teal_transform_module",
+    checkmate::test_class,
+    classes = "teal_transform_module",
     FUN.VALUE = logical(1L)
   )
 
@@ -1046,48 +1039,25 @@ check_decorators <- function(x, names = NULL) { # nolint: object_name.
     return(TRUE)
   }
 
-  "May only contain the type 'teal_transform_module' or a named list of 'teal_transform_module'."
+  "Make sure that the named list contains 'teal_transform_module' objects created using `teal_transform_module()`."
 }
-
 #' Internal assertion on decorators
 #' @noRd
 assert_decorators <- checkmate::makeAssertionFunction(check_decorators)
 
 #' Subset decorators based on the scope
 #'
-#' `default` is a protected decorator name that is always included in the output,
-#' if it exists
-#'
 #' @param scope (`character`) a character vector of decorator names to include.
 #' @param decorators (named `list`) of list decorators to subset.
 #'
-#' @return A flat list with all decorators to include.
+#' @return Subsetted list with all decorators to include.
 #' It can be an empty list if none of the scope exists in `decorators` argument.
 #' @keywords internal
 select_decorators <- function(decorators, scope) {
   checkmate::assert_character(scope, null.ok = TRUE)
-  scope <- intersect(union("default", scope), names(decorators))
-  c(list(), unlist(decorators[scope], recursive = FALSE))
-}
-
-#' Convert flat list of `teal_transform_module` to named lists
-#'
-#' @param decorators (list of `teal_transform_module`) to normalize.
-#' @return A named list of lists with `teal_transform_module` objects.
-#' @keywords internal
-normalize_decorators <- function(decorators) {
-  if (checkmate::test_list(decorators, "teal_transform_module")) {
-    decorators_names <- names(decorators)[!names(decorators) %in% ""]
-    # Above is equivalent to decorators_names <- setdiff(names(decorators), "")
-    # but can return non-unique values. Non-unique values are checked in assert_decorators.
-    if (length(decorators_names) == 0) {
-      list(default = decorators)
-    } else if (length(decorators_names) == length(decorators)) {
-      lapply(decorators, list)
-    } else {
-      stop("All decorators should either be named or unnamed.")
-    }
+  if (scope %in% names(decorators)) {
+    decorators[scope]
   } else {
-    decorators
+    list()
   }
 }

@@ -251,24 +251,22 @@ template_therapy <- function(dataname = "ANL",
 #' - `plot` (`ggplot2`)
 #' - `table` (`listing_df` - output of `rlistings::as_listing`)
 #'
-#' Decorators can be applied to all outputs or only to specific objects using a
-#' named list of `teal_transform_module` objects.
-#' The `"default"` name is reserved for decorators that are applied to all outputs.
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
 #' See code snippet below:
 #'
 #' ```
 #' tm_g_pp_therapy(
 #'    ..., # arguments for module
 #'    decorators = list(
-#'      default = list(teal_transform_module(...)), # applied to all outputs
-#'      plot = list(teal_transform_module(...)), # applied only to `plot` output
-#'      table = list(teal_transform_module(...)) # applied only to `table` output
+#'      plot = teal_transform_module(...), # applied only to `plot` output
+#'      table = teal_transform_module(...) # applied only to `table` output
 #'    )
 #' )
 #' ```
 #'
 #' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -400,7 +398,6 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, names = c("plot", "table"))
 
   args <- as.list(environment())

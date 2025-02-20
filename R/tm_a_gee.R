@@ -138,10 +138,23 @@ template_a_gee <- function(output_table,
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#' - `table` (`E8lementaryTable` - output of `rtables::build_table`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_a_gee(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied to the `table` output
+#'    )
+#' )
+#' ```
 #'
 #' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -228,7 +241,6 @@ tm_a_gee <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, "table")
 
   args <- as.list(environment())
