@@ -85,12 +85,7 @@ template_therapy <- function(dataname = "ANL",
           col_labels(dataname, fill = TRUE)[c(cmstdy_char, cmendy_char)]
         ))
 
-      table <- rlistings::as_listing(
-        table,
-        key_cols = NULL,
-        default_formatting = list(all = fmt_config(align = "left"))
-      )
-      main_title(table) <- paste("Patient ID:", patient_id)
+      table <- DT::datatable(table)
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),

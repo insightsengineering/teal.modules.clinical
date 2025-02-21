@@ -58,12 +58,7 @@ template_adverse_events <- function(dataname = "ANL",
               dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
             )
           )
-        table_output <- rlistings::as_listing(
-          table_data,
-          key_cols = NULL,
-          default_formatting = list(all = fmt_config(align = "left"))
-        )
-        main_title(table_output) <- paste("Patient ID:", patient_id)
+        table_output <- DT::datatable(table_data)
       },
       env = list(
         dataname = as.name(dataname),
