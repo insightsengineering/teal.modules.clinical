@@ -127,7 +127,7 @@ numerical precision.
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
 \item \code{lsmeans_plot} (\code{ggplot})
-\item \code{diagnostic_plot} (\code{ggplot}- output from \code{rtables::build_table})
+\item \code{diagnostic_plot} (\code{ggplot})
 \item \code{lsmeans_table} (\code{TableTree}- output from \code{rtables::build_table})
 \item \code{covariance_table} (\code{ElementaryTable}- output from \code{rtables::build_table})
 \item \code{fixed_effects_table} (\code{ElementaryTable}- output from \code{rtables::build_table})

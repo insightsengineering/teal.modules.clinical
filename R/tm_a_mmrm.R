@@ -463,7 +463,7 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `lsmeans_plot` (`ggplot`)
-#' - `diagnostic_plot` (`ggplot`- output from `rtables::build_table`)
+#' - `diagnostic_plot` (`ggplot`)
 #' - `lsmeans_table` (`TableTree`- output from `rtables::build_table`)
 #' - `covariance_table` (`ElementaryTable`- output from `rtables::build_table`)
 #' - `fixed_effects_table` (`ElementaryTable`- output from `rtables::build_table`)

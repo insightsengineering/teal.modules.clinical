@@ -54,7 +54,7 @@ relvar_init <- function(relvar1, relvar2) {
     ))
     return(NA)
   }
-  ist("relvar1" = relvar1, "relvar2" = relvar2)
+  List("relvar1" = relvar1, "relvar2" = relvar2)
 }
 
 rel_var <- function(df = NULL, var_name = NULL, var_values = NULL, related_var = NULL) {
