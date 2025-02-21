@@ -98,7 +98,7 @@ This module produces an adverse events table and \code{\link[ggplot2:ggplot]{ggp
 
 This module generates the following objects, which can be modified in place using decorators::
 \itemize{
-\item \code{plot} (\code{ggplot2})
+\item \code{plot} (\code{ggplot})
 \item \code{table} (\code{listing_df} - output of \code{rlistings::as_listing})
 }
 

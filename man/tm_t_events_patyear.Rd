@@ -106,7 +106,7 @@ This module produces a table of event rates adjusted for patient-years.
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table} (\code{TableTree} as created from \code{rtables::build_table})
+\item \code{table} (\code{ElementaryTable} as created from \code{rtables::build_table})
 }
 
 A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.

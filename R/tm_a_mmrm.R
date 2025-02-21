@@ -462,12 +462,12 @@ template_mmrm_plots <- function(fit_name,
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `lsmeans_plot` (`ggplot2`)
-#' - `diagnostic_plot` (`TableTree`- output from `rtables::build_table`)
+#' - `lsmeans_plot` (`ggplot`)
+#' - `diagnostic_plot` (`ggplot`- output from `rtables::build_table`)
 #' - `lsmeans_table` (`TableTree`- output from `rtables::build_table`)
-#' - `covariance_table` (`TableTree`- output from `rtables::build_table`)
-#' - `fixed_effects_table` (`TableTree`- output from `rtables::build_table`)
-#' - `diagnostic_table` (`TableTree`- output from `rtables::build_table`)
+#' - `covariance_table` (`ElementaryTable`- output from `rtables::build_table`)
+#' - `fixed_effects_table` (`ElementaryTable`- output from `rtables::build_table`)
+#' - `diagnostic_table` (`ElementaryTable`- output from `rtables::build_table`)
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.

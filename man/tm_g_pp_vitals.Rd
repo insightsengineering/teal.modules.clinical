@@ -89,7 +89,7 @@ This plot supports horizontal lines for the following 6 \code{PARAMCD} levels wh
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{plot} (\code{ggplot2})
+\item \code{plot} (\code{ggplot})
 }
 
 A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.

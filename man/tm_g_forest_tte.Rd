@@ -140,7 +140,7 @@ This module produces a grid-style forest plot for time-to-event data with ADaM s
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{plot} (\code{ggplot2})
+\item \code{plot} (\code{ggplot})
 }
 
 A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.

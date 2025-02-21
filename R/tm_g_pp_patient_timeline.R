@@ -351,7 +351,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `plot` (`ggplot2`)
+#' - `plot` (`ggplot`)
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
