@@ -71,7 +71,7 @@ get_var_labels <- function(datasets, dataname, vars) {
   )
   labels <- datasets$get_varlabels(dataname, vars)
   labels <- vapply(vars, function(x) ifelse(is.na(labels[[x]]), x, labels[[x]]), character(1))
-  return(labels)
+  labels
 }
 
 #' Expression Deparsing
@@ -450,7 +450,7 @@ split_choices <- function(x) {
     split_x$selected <- split_interactions(x$selected)
   }
 
-  return(split_x)
+  split_x
 }
 
 #' Extracts html id for `data_extract_ui`
