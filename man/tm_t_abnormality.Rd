@@ -119,11 +119,23 @@ excluded in accordance with GDSR specifications by using \code{exclude_base_abn}
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table} (\code{ElementaryTable} - output of \code{rtables::build_table})
+\item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
 }
 
+A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.
+The name of this list corresponds to the name of the output to which the decorator is applied.
+See code snippet below:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{tm_t_abnormality(
+   ..., # arguments for module
+   decorators = list(
+     table = teal_transform_module(...) # applied only to `table` output
+   )
+)
+}\if{html}{\out{</div>}}
+
 For additional details and examples of decorators, refer to the vignette
-\code{vignette("decorate-modules-output", package = "teal")} or the \code{\link[=teal_transform_module]{teal_transform_module()}} documentation.
+\code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
 }
 
 \examples{

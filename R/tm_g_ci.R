@@ -192,10 +192,23 @@ template_g_ci <- function(dataname,
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `plot` (`ggplot2`)
+#' - `plot` (`ggplot`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_g_ci(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      plot = teal_transform_module(...) # applied only to `plot` output
+#'    )
+#' )
+#' ```
 #'
 #' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -310,7 +323,6 @@ tm_g_ci <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, "plot")
 
   args <- as.list(environment())

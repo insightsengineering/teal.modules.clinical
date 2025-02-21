@@ -528,8 +528,21 @@ template_events_summary <- function(anl_name,
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` as created from `rtables::build_table`)
 #'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_events_summary(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
 #' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-modules-output", package = "teal")` or the [`teal_transform_module()`] documentation.
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -672,7 +685,6 @@ tm_t_events_summary <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))
