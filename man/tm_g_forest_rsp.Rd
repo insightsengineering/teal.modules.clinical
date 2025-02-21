@@ -139,6 +139,7 @@ This module produces a grid-style forest plot for response data with ADaM struct
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
+\item \code{table} (\code{ggplot})
 \item \code{plot} (\code{ggplot})
 }
 
@@ -149,6 +150,7 @@ See code snippet below:
 \if{html}{\out{<div class="sourceCode">}}\preformatted{tm_g_forest_rsp(
    ..., # arguments for module
    decorators = list(
+     table = teal_transform_module(...), # applied only to `table` output
      plot = teal_transform_module(...) # applied only to `plot` output
    )
 )

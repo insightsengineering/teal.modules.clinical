@@ -244,7 +244,7 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' This module generates the following objects, which can be modified in place using decorators::
 #' - `plot` (`ggplot`)
-#' - `table` (`listing_df` - output of `rlistings::as_listing`)
+#' - `table` (`datatable` - output of `DT::datatable()`)
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.

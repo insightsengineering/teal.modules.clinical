@@ -108,7 +108,7 @@ This module produces an adverse events table by Standardized MedDRA Query.
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table} (\code{TableTree} - output of \code{rtables::build_table})
+\item \code{table} (\code{TableTree} - output of \code{rtables::build_table()})
 }
 
 A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.
