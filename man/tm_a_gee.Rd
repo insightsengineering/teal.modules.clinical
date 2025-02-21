@@ -95,7 +95,7 @@ This module produces an analysis table using Generalized Estimating Equations (G
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table} (\code{ElementaryTable} - output of \code{rtables::build_table})
+\item \code{table} (\code{ElementaryTable} - output of \code{rtables::build_table()})
 }
 
 A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.

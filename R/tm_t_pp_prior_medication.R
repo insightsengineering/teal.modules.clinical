@@ -34,13 +34,20 @@ template_prior_medication <- function(dataname = "ANL",
         dplyr::distinct() %>%
         `colnames<-`(col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char, cmstdy_char)])
 
-      table <- result %>%
+      table_listing <- result %>%
         dplyr::mutate( # Exception for columns of type difftime that is not supported by as_listing
           dplyr::across(
             dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
           )
         ) %>%
         rlistings::as_listing()
+
+      table <- DT::datatable(
+        table_listing,
+        options = list(
+          lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
+        )
+      )
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
@@ -72,7 +79,7 @@ template_prior_medication <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`listing_df` - output of `rlistings::as_listing`)
+#' - `table` (`datatable` - output of `DT::datatable()`)
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
@@ -377,13 +384,8 @@ srv_t_prior_medication <- function(id,
     table_r <- reactive({
       q <- decorated_table_q()
       list(
-        html = DT::datatable(
-          q[["result"]],
-          options = list(
-            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
-          )
-        ),
-        listing = q[["table"]]
+        html = q[["table"]],
+        listing = q[["table_listing"]]
       )
     })
 
