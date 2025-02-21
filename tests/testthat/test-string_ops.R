@@ -19,7 +19,7 @@ testthat::test_that("`as_num` as a wide interpretation of input to extract numer
     FUN = function(x) {
       y <- unlist(x)
       y <- y[!is.na(y)]
-      return(y)
+      y
     }
   )
 

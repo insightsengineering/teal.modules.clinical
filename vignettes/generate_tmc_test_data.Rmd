@@ -54,7 +54,7 @@ relvar_init <- function(relvar1, relvar2) {
     ))
     return(NA)
   }
-  return(list("relvar1" = relvar1, "relvar2" = relvar2))
+  ist("relvar1" = relvar1, "relvar2" = relvar2)
 }
 
 rel_var <- function(df = NULL, var_name = NULL, var_values = NULL, related_var = NULL) {
@@ -897,7 +897,7 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
       } %>%
       dplyr::slice(1) %>%
       dplyr::ungroup()
-    return(data)
+    data
   }
 
   lbls <- col_labels(adeg)
@@ -961,7 +961,7 @@ generate_adeg <- function(adsl = tmc_ex_adsl,
     data_compare$new_var <- ifelse(data_compare$row_check %in% data$row_check, "Y", "")
     data_compare <- data_compare[, -which(names(data_compare) %in% c("row_check"))]
 
-    return(data_compare)
+    data_compare
   }
   adeg <- flag_variables(adeg, FALSE) %>% dplyr::rename(WORS01FL = "new_var")
   adeg <- flag_variables(adeg, TRUE) %>% dplyr::rename(WORS02FL = "new_var")
@@ -1451,7 +1451,7 @@ generate_adlb <- function(adsl = tmc_ex_adsl,
 
     data_compare$new_var <- ifelse(data_compare$row_check %in% data$row_check, "Y", "")
     data_compare <- data_compare[, -which(names(data_compare) %in% c("row_check"))]
-    return(data_compare)
+    data_compare
   }
   adlb <- flag_variables(adlb, TRUE, "ELSE", FALSE) %>% dplyr::rename(WORS01FL = "new_var")
   adlb <- flag_variables(adlb, FALSE, TRUE, TRUE) %>% dplyr::rename(WGRHIFL = "new_var")
