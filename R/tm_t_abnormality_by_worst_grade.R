@@ -252,7 +252,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`TableTree` - output of `rtables::build_table`)
+#' - `table` (`TableTree` - output of `rtables::build_table()`)
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
