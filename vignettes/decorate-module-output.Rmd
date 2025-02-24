@@ -101,7 +101,9 @@ library(teal.modules.clinical)
 data <- within(teal_data(), {
   library(dplyr)
   ADSL <- tmc_ex_adsl |>
-    mutate(ITTFL = factor("Y") |> with_label("Intent-To-Treat Population Flag")) |>
+    mutate(
+      ITTFL = factor("Y") |> with_label("Intent-To-Treat Population Flag")
+    ) |>
     mutate(DTHFL = case_when(!is.na(DTHDT) ~ "Y", TRUE ~ "") |> with_label("Subject Death Flag"))
 
 
