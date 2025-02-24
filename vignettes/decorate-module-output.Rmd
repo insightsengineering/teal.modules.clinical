@@ -94,7 +94,7 @@ Here's an example to showcase how you can edit an output of class `listing_df`, 
 All these classes are extension of objects created using `rtables` and
 can be modified with the help of `rtables` modifiers like `rtables::insert_rrow`.
 
-```{r decorate_listing_df}
+```{r decorate_listing_df, message=FALSE}
 library(teal.modules.clinical)
 
 data <- within(teal_data(), {
@@ -190,7 +190,7 @@ knitr::include_url(url, height = "800px")
 Here's an example to showcase how you can edit an output of class `ggplot`.
 You can extend them using `ggplot2` functions.
 
-```{r decorate_ggplot}
+```{r decorate_ggplot, message=FALSE}
 library(teal.modules.clinical)
 
 data <- teal_data(join_keys = default_cdisc_join_keys[c("ADSL", "ADRS")])
@@ -277,7 +277,7 @@ knitr::include_url(url, height = "800px")
 
 Here's an example to showcase how you can edit an output of class `datatables`.
 Please refer the [helper functions](https://rstudio.github.io/DT/functions.html) of the `DT` package to learn more about extending the `datatables` objects.
-```{r decorate_datatable}
+```{r decorate_datatable, message=FALSE}
 library(teal.modules.clinical)
 
 data <- teal_data(join_keys = default_cdisc_join_keys[c("ADSL", "ADRS")])
