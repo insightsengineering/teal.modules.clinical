@@ -12,11 +12,10 @@ select_decorators(decorators, scope)
 \item{scope}{(\code{character}) a character vector of decorator names to include.}
 }
 \value{
-A flat list with all decorators to include.
+Subsetted list with all decorators to include.
 It can be an empty list if none of the scope exists in \code{decorators} argument.
 }
 \description{
-\code{default} is a protected decorator name that is always included in the output,
-if it exists
+Subset decorators based on the scope
 }
 \keyword{internal}

@@ -38,9 +38,11 @@
           as_list = TRUE)
       
       $plot[[2]]
-      plot <- cowplot::plot_grid(f[["table"]] + ggplot2::labs(title = "Forest Plot of Survival Duration for \nStratified by STRATA2", 
-          subtitle = NULL), f[["plot"]] + ggplot2::labs(caption = ""), 
-          align = "h", axis = "tblr", rel_widths = c(1 - 0.25, 0.25))
+      table <- f[["table"]] + ggplot2::labs(title = "Forest Plot of Survival Duration for \nStratified by STRATA2", 
+          subtitle = NULL)
+      
+      $plot[[3]]
+      plot <- f[["plot"]] + ggplot2::labs(caption = "")
       
       
 
@@ -85,9 +87,11 @@
           as_list = TRUE)
       
       $plot[[2]]
-      plot <- cowplot::plot_grid(f[["table"]] + ggplot2::labs(title = "Forest Plot of Survival Duration for \nStratified by STRATA2", 
-          subtitle = NULL), f[["plot"]] + ggplot2::labs(caption = ""), 
-          align = "h", axis = "tblr", rel_widths = c(1 - 0.25, 0.25))
+      table <- f[["table"]] + ggplot2::labs(title = "Forest Plot of Survival Duration for \nStratified by STRATA2", 
+          subtitle = NULL)
+      
+      $plot[[3]]
+      plot <- f[["plot"]] + ggplot2::labs(caption = "")
       
       
 

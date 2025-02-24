@@ -194,10 +194,22 @@ template_shift_by_arm <- function(dataname,
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`TableTree` - output of `rtables::build_table`)
+#' - `table` (`TableTree` - output of `rtables::build_table()`)
 #'
-#' For additional details and examples of decorators, refer to the vignettes:
-#' `vignette("decorate-module-output, package = "teal.modules.general")`,
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_shift_by_arm(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
@@ -308,7 +320,6 @@ tm_t_shift_by_arm <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, "table")
 
   args <- as.list(environment())

@@ -58,12 +58,7 @@ template_adverse_events <- function(dataname = "ANL",
               dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
             )
           )
-        table_output <- rlistings::as_listing(
-          table_data,
-          key_cols = NULL,
-          default_formatting = list(all = fmt_config(align = "left"))
-        )
-        main_title(table_output) <- paste("Patient ID:", patient_id)
+        table_output <- DT::datatable(table_data)
       },
       env = list(
         dataname = as.name(dataname),
@@ -184,30 +179,27 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
-#' @section Decorating Modules:
+#' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators::
-#' - `plot` (`ggplot2`)
-#' - `table` (`listing_df` - output of `rlistings::as_listing`)
+#' - `plot` (`ggplot`)
+#' - `table` (`datatable` - output of `DT::datatable()`)
 #'
-#' Decorators can be applied to all outputs or only to specific objects using a
-#' named list of `teal_transform_module` objects.
-#' The `"default"` name is reserved for decorators that are applied to all outputs.
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
 #' See code snippet below:
 #'
 #' ```
 #' tm_g_pp_adverse_events(
 #'    ..., # arguments for module
 #'    decorators = list(
-#'      default = list(teal_transform_module(...)), # applied to all outputs
-#'      plot = list(teal_transform_module(...)), # applied only to `plot` output
-#'      table = list(teal_transform_module(...)) # applied only to `table` output
+#'      plot = teal_transform_module(...), # applied only to `plot` output
+#'      table = teal_transform_module(...) # applied only to `table` output
 #'    )
 #' )
 #' ```
 #'
-#' For additional details and examples of decorators, refer to the vignettes:
-#' `vignette("decorate-module-output, package = "teal.modules.general")`,
+#' For additional details and examples of decorators, refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
@@ -315,7 +307,6 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, names = c("plot", "table"))
 
   args <- as.list(environment())

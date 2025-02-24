@@ -36,7 +36,6 @@ template_forest_tte <- function(dataname = "ANL",
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
                                 time_unit_var = "AVALU",
-                                rel_width_forest = 0.25,
                                 font_size = 15,
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   checkmate::assert_string(dataname)
@@ -47,7 +46,6 @@ template_forest_tte <- function(dataname = "ANL",
   checkmate::assert_true(any(c("n_tot", "n_tot_events") %in% stats))
   checkmate::assert_true(all(c("hr", "ci") %in% stats))
   checkmate::assert_list(riskdiff, null.ok = TRUE)
-  checkmate::assert_number(rel_width_forest, lower = 0, upper = 1)
   checkmate::assert_number(font_size)
 
   y <- list()
@@ -210,16 +208,11 @@ template_forest_tte <- function(dataname = "ANL",
     plot_list,
     substitute(
       expr = {
-        plot <- cowplot::plot_grid(
-          f[["table"]] + ggplot2::labs(title = ggplot2_args_title, subtitle = ggplot2_args_subtitle),
-          f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
-          align = "h",
-          axis = "tblr",
-          rel_widths = c(1 - rel_width_forest, rel_width_forest)
-        )
+        table <- f[["table"]] +
+          ggplot2::labs(title = ggplot2_args_title, subtitle = ggplot2_args_subtitle)
+        plot <- f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption)
       },
       env = list(
-        rel_width_forest = rel_width_forest,
         ggplot2_args_title = all_ggplot2_args$labs$title,
         ggplot2_args_subtitle = all_ggplot2_args$labs$subtitle,
         ggplot2_args_caption = all_ggplot2_args$labs$caption
@@ -247,10 +240,22 @@ template_forest_tte <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `plot` (`ggplot2`)
+#' - `plot` (`ggplot`)
 #'
-#' For additional details and examples of decorators, refer to the vignettes:
-#' `vignette("decorate-module-output, package = "teal.modules.general")`,
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_g_forest_tte(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      plot = teal_transform_module(...) # applied only to `plot` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
@@ -379,7 +384,6 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
@@ -703,7 +707,6 @@ srv_g_forest_tte <- function(id,
         conf_level = as.numeric(input$conf_level),
         col_symbol_size = if (!input$fixed_symbol_size) 1,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-        rel_width_forest = input$rel_width_forest / 100,
         font_size = input$font_size,
         ggplot2_args = ggplot2_args
       )
@@ -717,7 +720,15 @@ srv_g_forest_tte <- function(id,
       decorators = select_decorators(decorators, "plot"),
       expr = print(plot)
     )
-    plot_r <- reactive(decorated_all_q()[["plot"]])
+    plot_r <- reactive({
+      cowplot::plot_grid(
+        decorated_all_q()[["table"]],
+        decorated_all_q()[["plot"]],
+        align = "h",
+        axis = "tblr",
+        rel_widths = c(1 - input$rel_width_forest / 100, input$rel_width_forest / 100)
+      )
+    })
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",

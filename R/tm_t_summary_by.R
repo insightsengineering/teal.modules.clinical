@@ -323,10 +323,22 @@ template_summary_by <- function(parentname,
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`TableTree` - output of `rtables::build_table`)
+#' - `table` (`TableTree` - output of `rtables::build_table()`)
 #'
-#' For additional details and examples of decorators, refer to the vignettes:
-#' `vignette("decorate-module-output, package = "teal.modules.general")`,
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_summary_by(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
@@ -434,7 +446,6 @@ tm_t_summary_by <- function(label,
   numeric_stats_choices <- c("n", "mean_sd", "mean_ci", "geom_mean", "median", "median_ci", "quantiles", "range")
   numeric_stats <- match.arg(numeric_stats, numeric_stats_choices, several.ok = TRUE)
 
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))

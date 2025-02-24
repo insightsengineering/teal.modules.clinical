@@ -105,7 +105,7 @@ For example a title.}
 For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are useful.}
 
 \item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
-To learn more check \code{vignette("data-transform-as-shiny-module", package = "teal")}.}
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
 
 \item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 (\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
@@ -127,11 +127,22 @@ This module produces a \code{ggplot}-style Kaplan-Meier plot for data with ADaM 
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{plot} (\code{ggplot2})
+\item \code{plot} (\code{ggplot})
 }
 
-For additional details and examples of decorators, refer to the vignettes:
-\verb{vignette("decorate-module-output, package = "teal.modules.general")},
+A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.
+The name of this list corresponds to the name of the output to which the decorator is applied.
+See code snippet below:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{tm_g_km(
+   ..., # arguments for module
+   decorators = list(
+     plot = teal_transform_module(...) # applied only to `plot` output
+   )
+)
+}\if{html}{\out{</div>}}
+
+For additional details and examples of decorators, refer to the vignette
 \code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
 }
 

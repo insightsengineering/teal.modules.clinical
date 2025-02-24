@@ -82,14 +82,14 @@ template_laboratory <- function(dataname = "ANL",
 
         result[[param_char]] <- clean_description(result[[param_char]])
 
-        table <- rlistings::as_listing(
+        table_listing <- rlistings::as_listing(
           result,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
         )
-        main_title(table) <- paste("Patient ID:", patient_id)
+        main_title(table_listing) <- paste("Patient ID:", patient_id)
 
-        table_html <- labor_table_base %>%
+        table <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
           dplyr::select(-aval_anrind) %>%
           as.data.frame() %>%
@@ -99,19 +99,19 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind_col",
             timevar = "INDEX"
           )
-        colnames(table_html)[-c(1:3)] <- unique(labor_table_base$INDEX)
-        table_html[[param_char]] <- clean_description(table_html[[param_char]])
+        colnames(table)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        table[[param_char]] <- clean_description(table[[param_char]])
 
-        table_dt <- DT::datatable(
-          table_html,
+        table <- DT::datatable(
+          table,
           escape = FALSE,
           options = list(
             lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
             scrollX = TRUE
           )
         )
-        table_dt$dependencies <- c(
-          table_dt$dependencies,
+        table$dependencies <- c(
+          table$dependencies,
           list(rmarkdown::html_dependency_bootstrap("default"))
         )
       },
@@ -157,10 +157,22 @@ template_laboratory <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`listing_df` - output of `rlistings::as_listing`)
+#' - `table` (`datatable` - output of `DT::datatable()`)
 #'
-#' For additional details and examples of decorators, refer to the vignettes:
-#' `vignette("decorate-module-output, package = "teal.modules.general")`,
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_pp_laboratory(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
@@ -269,7 +281,6 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_class(anrind, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, "table")
 
   args <- as.list(environment())
@@ -525,8 +536,8 @@ srv_g_laboratory <- function(id,
     table_r <- reactive({
       q <- decorated_table_q()
       list(
-        html = q[["table_dt"]],
-        listing = q[["table"]]
+        html = q[["table"]],
+        listing = q[["table_listing"]]
       )
     })
 

@@ -462,32 +462,34 @@ template_mmrm_plots <- function(fit_name,
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `lsmeans_plot` (`ggplot2`)
-#' - `diagnostic_plot` (`TableTree`- output from `rtables::build_table`)
+#' - `lsmeans_plot` (`ggplot`)
+#' - `diagnostic_plot` (`ggplot`)
 #' - `lsmeans_table` (`TableTree`- output from `rtables::build_table`)
-#' - `covariance_table` (`TableTree`- output from `rtables::build_table`)
-#' - `fixed_effects_table` (`TableTree`- output from `rtables::build_table`)
-#' - `diagnostic_table` (`TableTree`- output from `rtables::build_table`)
+#' - `covariance_table` (`ElementaryTable`- output from `rtables::build_table`)
+#' - `fixed_effects_table` (`ElementaryTable`- output from `rtables::build_table`)
+#' - `diagnostic_table` (`ElementaryTable`- output from `rtables::build_table`)
 #'
-#' Decorators can be applied to all outputs or only to specific objects using a
-#' named list of `teal_transform_module` objects.
-#' The `"default"` name is reserved for decorators that are applied to all outputs.
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
 #' See code snippet below:
 #'
 #' ```
 #' tm_a_mrmm(
 #'    ..., # arguments for module
 #'    decorators = list(
-#'      default = list(teal_transform_module(...)), # applied to all outputs
-#'      lsmeans_plot = list(teal_transform_module(...)) # applied only to `lsmeans_plot` output
-#'      diagnostic_plot = list(teal_transform_module(...)) # applied only to `diagnostic_plot` output
-#'      lsmeans_table = list(teal_transform_module(...)) # applied only to `lsmeans_table` output
-#'      covariance_table = list(teal_transform_module(...)) # applied only to `covariance_table` output
-#'      fixed_effects_table = list(teal_transform_module(...)) # applied only to `fixed_effects_table` output
-#'      diagnostic_table = list(teal_transform_module(...)) # applied only to `diagnostic_table` output
+#'      lsmeans_plot = teal_transform_module(...), # applied only to `lsmeans_plot` output
+#'      diagnostic_plot = teal_transform_module(...), # applied only to `diagnostic_plot` output
+#'      lsmeans_table = teal_transform_module(...), # applied only to `lsmeans_table` output
+#'      covariance_table = teal_transform_module(...), # applied only to `covariance_table` output
+#'      fixed_effects_table = teal_transform_module(...), # applied only to `fixed_effects_table` output
+#'      diagnostic_table = teal_transform_module(...) # applied only to `diagnostic_table` output
 #'    )
 #' )
 #' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -600,7 +602,6 @@ tm_a_mmrm <- function(label,
   checkmate::assert_list(ggplot2_args, types = "ggplot2_args")
   checkmate::assert_subset(names(ggplot2_args), c("default", plot_choices))
 
-  decorators <- normalize_decorators(decorators)
   assert_decorators(
     decorators,
     c(

@@ -528,8 +528,20 @@ template_events_summary <- function(anl_name,
 #' This module generates the following objects, which can be modified in place using decorators:
 #' - `table` (`TableTree` as created from `rtables::build_table`)
 #'
-#' For additional details and examples of decorators, refer to the vignettes:
-#' `vignette("decorate-module-output, package = "teal.modules.general")`,
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_events_summary(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
@@ -673,7 +685,6 @@ tm_t_events_summary <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  decorators <- normalize_decorators(decorators)
   assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))
@@ -944,7 +955,10 @@ srv_t_events_summary <- function(id,
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
 
       validate(
-        need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor."),
+        need(
+          is.factor(adsl_filtered[[input_arm_var[[1]]]]) && is.factor(anl_filtered[[input_arm_var[[1]]]]),
+          "The treatment variable selected must be a factor variable in all datasets used."
+        ),
         if (length(input_arm_var) == 2) {
           need(
             is.factor(adsl_filtered[[input_arm_var[[2]]]]) && all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
@@ -952,7 +966,11 @@ srv_t_events_summary <- function(id,
             )),
             "Please check nested treatment variable which needs to be a factor without NA or empty strings."
           )
-        }
+        },
+        need(
+          identical(levels(adsl_filtered[[input_arm_var[[1]]]]), levels(anl_filtered[[input_arm_var[[1]]]])),
+          "The treatment variable selected must have the same levels across all datasets used."
+        )
       )
 
       # validate inputs

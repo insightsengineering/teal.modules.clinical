@@ -1,15 +1,16 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9060
-Date: 2025-02-09
+Version: 0.9.1.9068
+Date: 2025-02-24
 Authors@R: c(
-    person("Joe", "Zhu", , "joe.zhu@roche.com", role = c("aut", "cre")),
+    person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
+           comment = c(ORCID = "0000-0001-7566-2787")),
     person("Jana", "Stoilova", , "jana.stoilova@roche.com", role = "aut"),
     person("Davide", "Garolini", , "davide.garolini@roche.com", role = "aut"),
     person("Emily", "de la Rua", , "emily.de_la_rua@contractors.roche.com", role = "aut"),
     person("Abinaya", "Yogasekaram", , "abinaya.yogasekaram@contractors.roche.com", role = "aut"),
     person("Mahmoud", "Hallal", , "mahmoud.hallal@roche.com", role = "aut"),
-    person("Dawid", "Kaledkowski", , "dawid.kaledkowski@roche.com", role = "aut"),
+    person("Dawid", "Kaledkowski", , "dawid.kaledkowski@roche.com", role = c("aut", "cre")),
     person("Rosemary", "Li", , "li.yaqiong@gene.com", role = "aut"),
     person("Heng", "Wang", , "wang.heng@gene.com", role = "aut"),
     person("Pawel", "Rucki", , "pawel.rucki@roche.com", role = "aut"),
@@ -32,8 +33,8 @@ BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.0),
-    teal (>= 0.15.2.9103),
-    teal.transform (>= 0.5.0.9021),
+    teal (>= 0.16.0),
+    teal.transform (>= 0.6.0),
     tern (>= 0.9.7)
 Imports:
     broom (>= 0.7.10),
@@ -77,14 +78,9 @@ Suggests:
     styler,
     testthat (>= 3.1.5),
     withr (> 2.0.1.5)
-Linking:
-    teal.modules.general
 VignetteBuilder:
     knitr,
     rmarkdown
-Remotes:
-    insightsengineering/teal,
-    insightsengineering/teal.transform
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
