@@ -33,7 +33,7 @@ BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.0),
-    teal (>= 0.15.2.9103),
+    teal (>= 0.16.0),
     teal.transform (>= 0.6.0),
     tern (>= 0.9.7)
 Imports:
@@ -81,8 +81,6 @@ Suggests:
 VignetteBuilder:
     knitr,
     rmarkdown
-Remotes:
-    insightsengineering/teal
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
