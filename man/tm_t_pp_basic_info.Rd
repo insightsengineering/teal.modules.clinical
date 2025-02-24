@@ -54,7 +54,7 @@ This module produces a patient profile basic info report using ADaM datasets.
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table} (\code{datatable} - output of \code{DT::datatable()})
+\item \code{table} (\code{datatables} - output of \code{DT::datatable()})
 }
 
 A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.
