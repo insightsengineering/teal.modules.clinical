@@ -80,6 +80,7 @@ You can also refer the table shown below to know which module outputs can be dec
 
 
 Also, note that there are three different types of objects that can be decorated:
+
 1. `listing_df`, `ElementaryTable`, `TableTree`
 2. `ggplot`
 3. `datatables`
