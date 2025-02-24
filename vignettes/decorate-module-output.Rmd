@@ -22,7 +22,7 @@ It is hard to design an output that will satisfy every possible user, so the for
 Here we describe the concept of _decoration_, enabling the app developer to tailor outputs to their specific requirements without rewriting the original module code.
 
 The decoration process is build upon transformation procedures, introduced in `teal`.
-While transformators are meant to edit module's input, decorators are meant to adjust the module's output.
+While `transformators` are meant to edit module's input, decorators are meant to adjust the module's output.
 To distinguish the difference, modules in  `teal.modules.clinical` have 2 separate parameters:
 `transformators` and `decorators`. 
 
@@ -32,7 +32,7 @@ To get a complete understanding refer the following vignettes:
 [this vignette](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html),
 - Transforming module output in [this vignette](https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html).
 
-## Decoratable outputs
+## Outputs that can be decorated
 
 It is important to note which output objects from a given module can be decorated.
 The module function documentation's _Decorating Module_ section has this information.
