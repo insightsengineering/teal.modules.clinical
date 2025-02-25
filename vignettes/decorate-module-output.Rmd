@@ -29,7 +29,7 @@ To distinguish the difference, modules in  `teal.modules.clinical` have 2 separa
 To get a complete understanding refer the following vignettes:
 
 - Transforming the input data in
-[this vignette](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html),
+[this vignette](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html).
 - Transforming module output in [this vignette](https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html).
 
 ## Outputs that can be decorated
