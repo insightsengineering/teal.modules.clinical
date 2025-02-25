@@ -35,11 +35,9 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 To learn more check \code{vignette("transform-input-data", package = "teal")}.}
 
 \item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+(named \code{list} of lists of \code{teal_transform_module}) optional,
 decorator for tables or plots included in the module output reported.
-When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
-
-Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+The decorators are applied to the respective output objects.
 
 See section "Decorating Module" below for more details.}
 }
@@ -54,7 +52,7 @@ This module produces a patient profile basic info report using ADaM datasets.
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table} (\code{datatable} - output of \code{DT::datatable()})
+\item \code{table} (\code{datatables} - output of \code{DT::datatable()})
 }
 
 A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.
@@ -70,6 +68,9 @@ See code snippet below:
 }\if{html}{\out{</div>}}
 
 For additional details and examples of decorators, refer to the vignette
+\code{vignette("decorate-module-output", package = "teal.modules.clinical")}.
+
+To learn more please refer to the vignette
 \code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
 }
 
