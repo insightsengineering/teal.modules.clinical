@@ -175,7 +175,7 @@ template_patient_timeline <- function(dataname = "ANL",
               ) +
               ggplot2::scale_x_datetime(labels = scales::date_format("%b-%Y")) + labs + themes
           }
-          patient_timeline_plot
+          plot <- patient_timeline_plot
         },
         env = list(
           font_size_var = font_size,
@@ -303,7 +303,7 @@ template_patient_timeline <- function(dataname = "ANL",
               ggthemes +
               themes
           }
-          patient_timeline_plot
+          plot <- patient_timeline_plot
         },
         env = list(
           labs = parsed_ggplot2_args$labs,
@@ -323,6 +323,7 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' @inheritParams tm_g_pp_adverse_events
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_patient_timeline
 #' @param dataname_adcm (`character`)\cr name of `ADCM` dataset or equivalent.
 #' @param dataname_adae (`character`)\cr name of `ADAE` dataset or equivalent.
@@ -346,6 +347,28 @@ template_patient_timeline <- function(dataname = "ANL",
 #'   available choices and preselected option for the `CMAENDTM` variable from `dataname_adcm`.
 #'
 #' @inherit module_arguments return
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_g_pp_patient_timeline(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      plot = teal_transform_module(...) # applied only to `plot` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
+#'
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -461,7 +484,9 @@ tm_g_pp_patient_timeline <- function(label,
                                      plot_width = NULL,
                                      pre_output = NULL,
                                      post_output = NULL,
-                                     ggplot2_args = teal.widgets::ggplot2_args()) {
+                                     ggplot2_args = teal.widgets::ggplot2_args(),
+                                     transformators = list(),
+                                     decorators = list()) {
   message("Initializing tm_g_pp_patient_timeline")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname_adcm)
@@ -487,6 +512,7 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
+  assert_decorators(decorators, "plot")
 
   xor_error_string <- function(x, y) {
     paste(
@@ -543,9 +569,11 @@ tm_g_pp_patient_timeline <- function(label,
         patient_col = patient_col,
         plot_height = plot_height,
         plot_width = plot_width,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = c(dataname_adcm, dataname_adae, parentname)
   )
 }
@@ -670,6 +698,7 @@ ui_g_patient_timeline <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "plot")),
       teal.widgets::panel_item(
         title = "Plot settings",
         collapsed = TRUE,
@@ -712,7 +741,8 @@ srv_g_patient_timeline <- function(id,
                                    plot_height,
                                    plot_width,
                                    label,
-                                   ggplot2_args) {
+                                   ggplot2_args,
+                                   decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -909,7 +939,14 @@ srv_g_patient_timeline <- function(id,
       teal.code::eval_code(object = qenv, as.expression(patient_timeline_calls))
     })
 
-    plot_r <- reactive(all_q()[["patient_timeline_plot"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = plot
+    )
+
+    plot_r <- reactive(decorated_all_q()[["plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "patient_timeline_plot",
@@ -918,9 +955,11 @@ srv_g_patient_timeline <- function(id,
       width = plot_width
     )
 
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -939,7 +978,7 @@ srv_g_patient_timeline <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

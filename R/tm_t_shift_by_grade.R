@@ -449,9 +449,8 @@ template_shift_by_grade <- function(parentname,
 
   y$table <- substitute(
     expr = {
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>%
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent) %>%
         rtables::prune_table()
-      result
     },
     env = list(parent = as.name(parentname))
   )
@@ -464,6 +463,7 @@ template_shift_by_grade <- function(parentname,
 #' This module produces a summary table of worst grades per subject by visit and parameter.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_shift_by_grade
 #' @param anl_toxgrade_var ([teal.transform::choices_selected()])\cr
 #'   variable for analysis toxicity grade.
@@ -471,6 +471,27 @@ template_shift_by_grade <- function(parentname,
 #'   variable for baseline toxicity grade.
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table()`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_shift_by_grade(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -572,7 +593,9 @@ tm_t_shift_by_grade <- function(label,
                                 post_output = NULL,
                                 na_level = default_na_str(),
                                 code_missing_baseline = FALSE,
-                                basic_table_args = teal.widgets::basic_table_args()) {
+                                basic_table_args = teal.widgets::basic_table_args(),
+                                transformators = list(),
+                                decorators = list()) {
   message("Initializing tm_t_shift_by_grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -593,6 +616,7 @@ tm_t_shift_by_grade <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -619,9 +643,11 @@ tm_t_shift_by_grade <- function(label,
         label = label,
         total_label = total_label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -705,6 +731,7 @@ ui_t_shift_by_grade <- function(id, ...) {
           )
         )
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = FALSE,
         bslib::accordion_panel(
@@ -753,7 +780,8 @@ srv_t_shift_by_grade <- function(id,
                                  drop_arm_levels,
                                  na_level,
                                  label,
-                                 basic_table_args) {
+                                 basic_table_args,
+                                 decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -842,6 +870,7 @@ srv_t_shift_by_grade <- function(id,
       )
     })
 
+    # Generate r code for the analysis.
     all_q <- reactive({
       validate_checks()
 
@@ -867,8 +896,16 @@ srv_t_shift_by_grade <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
+    # Decoration of table output.
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
     # Outputs to render.
-    table_r <- reactive(all_q()[["result"]])
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -876,9 +913,10 @@ srv_t_shift_by_grade <- function(id,
     )
 
     # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -897,7 +935,7 @@ srv_t_shift_by_grade <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

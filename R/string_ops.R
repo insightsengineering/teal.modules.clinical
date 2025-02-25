@@ -47,13 +47,13 @@ as_num.character <- function(str) {
   y <- lapply(y, as.numeric)
   y[unlist(lapply(y, length) == 0)] <- NA
 
-  return(y)
+  y
 }
 
 #' @export
 #' @rdname as_num
 as_num.numeric <- function(str) {
-  return(str)
+  str
 }
 
 #' @export
@@ -61,12 +61,12 @@ as_num.numeric <- function(str) {
 as_num.factor <- function(str) {
   y <- as.character(str)
   y <- as_num(y)
-  return(y)
+  y
 }
 
 #' @export
 #' @rdname as_num
 as_num.logical <- function(str) {
   y <- as.numeric(str)
-  return(y)
+  y
 }

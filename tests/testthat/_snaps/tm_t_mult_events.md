@@ -43,8 +43,7 @@
       
       $final_table
       {
-          result <- sorted_result
-          result
+          table <- sorted_result
       }
       
 
@@ -95,8 +94,7 @@
       
       $final_table
       {
-          result <- sorted_result
-          result
+          table <- sorted_result
       }
       
 
@@ -151,8 +149,7 @@
       
       $final_table
       {
-          result <- sorted_result
-          result
+          table <- sorted_result
       }
       
 
@@ -211,8 +208,7 @@
       
       $final_table
       {
-          result <- sorted_result
-          result
+          table <- sorted_result
       }
       
 
@@ -256,8 +252,7 @@
       
       $final_table
       {
-          result <- sorted_result
-          result
+          table <- sorted_result
       }
       
 
@@ -306,8 +301,7 @@
       
       $final_table
       {
-          result <- sorted_result
-          result
+          table <- sorted_result
       }
       
 

@@ -31,7 +31,9 @@ tm_t_tte(
   na_level = default_na_str(),
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -75,8 +77,8 @@ for time points that can be used in \code{\link[tern:survival_timepoint]{tern::s
 \item{time_unit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and pre-selected option for the time unit variable.}
 
-\item{event_desc_var}{(\code{character} or \code{\link[=data_extract_spec]{data_extract_spec()}})\cr variable name with the event description
-information, optional.}
+\item{event_desc_var}{(\code{character} or \code{\link[teal.transform:data_extract_spec]{teal.transform::data_extract_spec()}})\cr variable name with the
+event description information, optional.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -98,6 +100,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -108,8 +122,8 @@ template for \code{TTET01} available \href{https://insightsengineering.github.io
 }
 \details{
 \itemize{
-\item The core functionality of this module is based on \code{\link[=coxph_pairwise]{coxph_pairwise()}}, \code{\link[=surv_timepoint]{surv_timepoint()}}, and \code{\link[=surv_time]{surv_time()}} from
-the \code{tern} package.
+\item The core functionality of this module is based on \code{\link[tern:survival_coxph_pairwise]{tern::coxph_pairwise()}}, \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}},
+and \code{\link[tern:survival_time]{tern::surv_time()}} from the \code{tern} package.
 \item The arm and stratification variables are taken from the \code{parentname} data.
 \item The following variables are used in the module:
 \itemize{
@@ -120,6 +134,30 @@ filtering for \code{PARAMCD} one observation per patient is expected
 }
 }
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} - output of \code{rtables::build_table()})
+}
+
+A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.
+The name of this list corresponds to the name of the output to which the decorator is applied.
+See code snippet below:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{tm_t_tte(
+   ..., # arguments for module
+   decorators = list(
+     table = teal_transform_module(...) # applied only to `table` output
+   )
+)
+}\if{html}{\out{</div>}}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
+}
+
 \examples{
 data <- teal_data()
 data <- within(data, {

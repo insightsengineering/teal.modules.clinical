@@ -39,7 +39,6 @@
       $table
       {
           table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
-          table
       }
       
 
@@ -84,7 +83,6 @@
       $table
       {
           table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
-          table
       }
       
 
@@ -143,7 +141,6 @@
       $table
       {
           table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
-          table
       }
       
 
@@ -199,7 +196,6 @@
       $table
       {
           table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ANL_ADSL)
-          table
       }
       
 

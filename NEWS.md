@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.9.1.9038
+# teal.modules.clinical 0.9.1.9068
 
 ### Enhancements
 * Added `teal.logger` functionality for logging changes in shiny inputs in all modules.
@@ -8,6 +8,11 @@
 * Added argument `stats` to modules `tm_g_forest_rsp` and `tm_g_forest_tte` to allow users to specify statistics to include in the table.
 * Added argument `riskdiff` to modules `tm_g_forest_rsp` and `tm_g_forest_tte` to allow users to add a risk difference table column.
 * Added the `count_dth` and `count_wd` parameters to `tm_t_events_summary` to select/deselect the "Total number of deaths" and "Total number of patients withdrawn from study due to an AE" rows, respectively. These options correspond to the "Count deaths" and "Count withdrawals due to AE" checkboxes available when the module is run.
+* Added the `title_text` argument to `tm_t_mult_events` to allow for more customization of the module's dynamic title.
+
+### Bug fixes
+* Fixed bug in creating modules with `delayed_data` and `teal.transform::all_choices`.
+* Fixed bug in `tm_g_forest_tte` and `tm_g_forest_rsp` to resolve delayed data loading variables.
 
 ### Miscellaneous
 * Removed `Show Warnings` modals from modules.
@@ -15,6 +20,7 @@
 * Replaced use of the `rtables::add_colcounts()` function with the `show_colcounts` argument to `basic_table()`.
 * Began deprecation cycle for the `show_labels` argument of `template_summary` which has no effect on the `tm_t_summary` module.
 * Replaced instances of deprecated `strata` argument to `tern::control_lineplot_vars()` with `group_var`.
+* Added an assertion to `tm_t_events_summary()` to check whether all datasets used have the same treatment variable levels.
 
 # teal.modules.clinical 0.9.1
 

@@ -22,8 +22,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = adeg)
-          result
+          table <- rtables::build_table(lyt = lyt, df = adeg)
       }
       
 
@@ -51,8 +50,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = adeg)
-          result
+          table <- rtables::build_table(lyt = lyt, df = adeg)
       }
       
 
@@ -80,8 +78,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = adeg)
-          result
+          table <- rtables::build_table(lyt = lyt, df = adeg)
       }
       
 

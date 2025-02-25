@@ -19,7 +19,6 @@ template_forest_rsp(
   riskdiff = NULL,
   conf_level = 0.95,
   col_symbol_size = NULL,
-  rel_width_forest = 0.25,
   font_size = 15,
   ggplot2_args = teal.widgets::ggplot2_args()
 )
@@ -58,16 +57,13 @@ Note, the statistics \code{n_tot}, \code{or}, and \code{ci} are required.
 }}
 
 \item{riskdiff}{(\code{list})\cr if a risk (proportion) difference column should be added, a list of settings to apply
-within the column. See \code{\link[=control_riskdiff]{control_riskdiff()}} for details. If \code{NULL}, no risk difference column will be added.}
+within the column. See \code{\link[tern:control_riskdiff]{tern::control_riskdiff()}} for details. If \code{NULL}, no risk difference column will be added.}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
 
 \item{col_symbol_size}{(\code{integer} or \code{NULL})\cr column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 to calculate the estimator. If \code{NULL}, the same symbol size is used for all subgroups.}
-
-\item{rel_width_forest}{(\code{proportion})\cr proportion of total width to allocate to the forest plot. Relative
-width of table is then \code{1 - rel_width_forest}. If \code{as_list = TRUE}, this parameter is ignored.}
 
 \item{font_size}{(\code{numeric(1)})\cr font size.}
 

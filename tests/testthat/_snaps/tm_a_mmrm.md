@@ -62,9 +62,8 @@
       
       $cov_matrix
       {
-          cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
-          subtitles(cov_matrix) <- NULL
-          cov_matrix
+          covariance_table <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
+          subtitles(covariance_table) <- NULL
       }
       
 
@@ -80,9 +79,8 @@
       
       $cov_matrix
       {
-          cov_matrix <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
-          subtitles(cov_matrix) <- NULL
-          cov_matrix
+          covariance_table <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
+          subtitles(covariance_table) <- NULL
       }
       
 

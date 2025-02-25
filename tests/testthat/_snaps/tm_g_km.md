@@ -52,7 +52,6 @@
           g_km_counter <- g_km_counter_generator()
           plot_list <- lapply(anl, g_km_counter)
           plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
-          plot
       }
       
 
@@ -114,7 +113,6 @@
           g_km_counter <- g_km_counter_generator()
           plot_list <- lapply(anl, g_km_counter)
           plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
-          plot
       }
       
 
@@ -177,7 +175,6 @@
           g_km_counter <- g_km_counter_generator()
           plot_list <- lapply(anl, g_km_counter)
           plot <- cowplot::plot_grid(plotlist = plot_list, ncol = 1)
-          plot
       }
       
 

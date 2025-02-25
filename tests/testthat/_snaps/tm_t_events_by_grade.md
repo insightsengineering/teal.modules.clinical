@@ -50,7 +50,6 @@
                   1), decreasing = TRUE) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
               1), decreasing = TRUE)
-          pruned_and_sorted_result
       }
       
 
@@ -110,7 +109,6 @@
                   1), decreasing = TRUE) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
               1), decreasing = TRUE)
-          pruned_and_sorted_result
       }
       
 
@@ -162,7 +160,6 @@
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = "AEBODSYS", 
               scorefun = cont_n_allcols, decreasing = TRUE) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = cont_n_allcols, decreasing = TRUE)
-          pruned_and_sorted_result
       }
       
 
@@ -212,7 +209,6 @@
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = "AEBODSYS", 
               scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
                   1), decreasing = TRUE)
-          pruned_and_sorted_result
       }
       
 
@@ -279,7 +275,6 @@
               col_indices = col_indices)
           pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun) %>% 
               rtables::prune_table(keep_rows(at_least_percent_any))
-          pruned_and_sorted_result
       }
       
 
@@ -341,7 +336,6 @@
               col_indices = col_indices)
           pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun) %>% 
               rtables::prune_table(keep_rows(at_least_percent_any))
-          pruned_and_sorted_result
       }
       
 
@@ -401,7 +395,6 @@
               col_indices = col_indices)
           pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun) %>% 
               rtables::prune_table(keep_rows(at_least_percent_any))
-          pruned_and_sorted_result
       }
       
 
@@ -460,7 +453,6 @@
               col_indices = col_indices)
           pruned_and_sorted_result <- sorted_result %>% rtables::trim_rows(criteria = criteria_fun) %>% 
               rtables::prune_table(keep_rows(at_least_percent_any))
-          pruned_and_sorted_result
       }
       
 

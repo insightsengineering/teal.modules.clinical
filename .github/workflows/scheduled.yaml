@@ -3,7 +3,7 @@ name: Scheduled 🕰️
 
 on:
   schedule:
-    - cron: '45 3 * * 0'
+    - cron: "45 3 * * 0"
   workflow_dispatch:
     inputs:
       chosen-workflow:
@@ -38,6 +38,8 @@ jobs:
       strategy: ${{ matrix.test-strategy }}
       additional-env-vars: |
         PKG_SYSREQS_DRY_RUN=true
+      extra-deps: |
+        matrixStats (>= 1.5.0);teal.slice (>= 0.5.1.9024)
   branch-cleanup:
     if: >
       github.event_name == 'schedule' || (
@@ -64,18 +66,3 @@ jobs:
       )
     name: R-hub 🌐
     uses: insightsengineering/r.pkg.template/.github/workflows/rhub.yaml@main
-    with:
-      lookup-refs: |
-        insightsengineering/teal
-        insightsengineering/teal.transform
-        insightsengineering/tern
-        insightsengineering/rlistings
-        insightsengineering/rtables
-        insightsengineering/teal.code
-        insightsengineering/teal.data
-        insightsengineering/teal.logger
-        insightsengineering/teal.reporter
-        insightsengineering/teal.slice
-        insightsengineering/teal.widgets
-        insightsengineering/tern.gee
-        insightsengineering/tern.mmrm

@@ -203,6 +203,14 @@ NULL
 #'   value indicating worst grade.
 #' @param worst_flag_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as worst flag variable.
+#' @param decorators `r lifecycle::badge("experimental")`
+#' (`list` of `teal_transform_module`, named `list` of `teal_transform_module`) optional,
+#' decorator for tables or plots included in the module output reported.
+#' When a named list of `teal_transform_module`, the decorators are applied to the respective output objects.
+#'
+#' Otherwise, the decorators are applied to all objects, which is equivalent as using the name `default`.
+#'
+#' See section "Decorating Module" below for more details.
 #'
 #' @return a `teal_module` object.
 #'

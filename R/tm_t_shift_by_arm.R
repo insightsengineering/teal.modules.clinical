@@ -173,8 +173,7 @@ template_shift_by_arm <- function(dataname,
   # Full table.
   y$table <- substitute(
     expr = {
-      result <- rtables::build_table(lyt = lyt, df = dataname)
-      result
+      table <- rtables::build_table(lyt = lyt, df = dataname)
     },
     env = list(dataname = as.name(dataname))
   )
@@ -187,9 +186,31 @@ template_shift_by_arm <- function(dataname,
 #' This module produces a summary table of analysis indicator levels by arm.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_shift_by_arm
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table()`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_shift_by_arm(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -268,7 +289,9 @@ tm_t_shift_by_arm <- function(label,
                               total_label = default_total_label(),
                               pre_output = NULL,
                               post_output = NULL,
-                              basic_table_args = teal.widgets::basic_table_args()) {
+                              basic_table_args = teal.widgets::basic_table_args(),
+                              transformators = list(),
+                              decorators = list()) {
   if (lifecycle::is_present(base_var)) {
     baseline_var <- base_var
     warning(
@@ -297,6 +320,7 @@ tm_t_shift_by_arm <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -323,9 +347,11 @@ tm_t_shift_by_arm <- function(label,
         total_label = total_label,
         na_level = na_level,
         treatment_flag = treatment_flag,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -393,6 +419,7 @@ ui_shift_by_arm <- function(id, ...) {
         choices = c("ifany", "no"),
         selected = a$useNA
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = FALSE,
         bslib::accordion_panel(
@@ -438,7 +465,8 @@ srv_shift_by_arm <- function(id,
                              na_level,
                              add_total,
                              total_label,
-                             basic_table_args) {
+                             basic_table_args,
+                             decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -510,7 +538,7 @@ srv_shift_by_arm <- function(id,
       anl_q = anl_q
     )
 
-    # validate inputs
+    # Validate inputs.
     validate_checks <- reactive({
       teal::validate_inputs(iv_r())
 
@@ -541,7 +569,7 @@ srv_shift_by_arm <- function(id,
       )
     })
 
-    # generate r code for the analysis
+    # Generate r code for the analysis.
     all_q <- reactive({
       validate_checks()
 
@@ -564,8 +592,16 @@ srv_shift_by_arm <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
+    # Decoration of table output.
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
     # Outputs to render.
-    table_r <- reactive(all_q()[["result"]])
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -573,9 +609,10 @@ srv_shift_by_arm <- function(id,
     )
 
     # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -594,7 +631,7 @@ srv_shift_by_arm <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

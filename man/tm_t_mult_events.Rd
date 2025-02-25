@@ -17,10 +17,13 @@ tm_t_mult_events(
   total_label = default_total_label(),
   na_level = default_na_str(),
   event_type = "event",
+  title_text = "Concomitant Medications",
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args()
+  basic_table_args = teal.widgets::basic_table_args(),
+  transformators = list(),
+  decorators = list()
 )
 }
 \arguments{
@@ -57,6 +60,9 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{event_type}{(\code{character})\cr type of event that is summarized (e.g. adverse event, treatment). Default
 is \code{"event"}.}
 
+\item{title_text}{(\code{string})\cr text to display as the first part of the dynamic table title. The table title is
+constructed as follows: "\code{title_text} by \code{hlt} and \code{llt}". Defaults to \code{"Concomitant Medications"}.}
+
 \item{drop_arm_levels}{(\code{logical})\cr whether to drop unused levels of \code{arm_var}. If \code{TRUE}, \code{arm_var} levels are
 set to those used in the \code{dataname} dataset. If \code{FALSE}, \code{arm_var} levels are set to those used in the
 \code{parentname} dataset. If \code{dataname} and \code{parentname} are the same, then \code{drop_arm_levels} is set to \code{TRUE} and
@@ -72,6 +78,18 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 with settings for the module table. The argument is merged with option \code{teal.basic_table_args} and with default
 module arguments (hard coded in the module body).
 For more details, see the vignette: \code{vignette("custom-basic-table-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
+
+\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+(\code{list} of \code{teal_transform_module}, named \code{list} of \code{teal_transform_module}) optional,
+decorator for tables or plots included in the module output reported.
+When a named list of \code{teal_transform_module}, the decorators are applied to the respective output objects.
+
+Otherwise, the decorators are applied to all objects, which is equivalent as using the name \code{default}.
+
+See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
@@ -79,6 +97,30 @@ a \code{teal_module} object.
 \description{
 This module produces a table of multiple events by term.
 }
+\section{Decorating Module}{
+
+
+This module generates the following objects, which can be modified in place using decorators:
+\itemize{
+\item \code{table} (\code{TableTree} - output of \code{rtables::build_table()})
+}
+
+A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.
+The name of this list corresponds to the name of the output to which the decorator is applied.
+See code snippet below:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{tm_t_mult_events(
+   ..., # arguments for module
+   decorators = list(
+     table = teal_transform_module(...) # applied only to `table` output
+   )
+)
+}\if{html}{\out{</div>}}
+
+For additional details and examples of decorators, refer to the vignette
+\code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
+}
+
 \examples{
 data <- teal_data()
 data <- within(data, {

@@ -3,7 +3,7 @@
 #' Creates a valid expression to generate a univariable Cox regression analysis.
 #'
 #' @inheritParams template_arguments
-#' @param control (`list`)\cr list of settings for the analysis (see [control_coxreg()]).
+#' @param control (`list`)\cr list of settings for the analysis (see [tern::control_coxreg()]).
 #' @param at (`list` of `numeric`)\cr when the candidate covariate is a `numeric` type variable, use `at`
 #'   to specify the value of the covariate at which the effect should be estimated.
 #' @param append (`logical`)\cr whether the result should be appended to the previous one.
@@ -161,9 +161,9 @@ template_coxreg_u <- function(dataname,
   )
 
   y$table <- if (append) {
-    quote(result <- c(result, rtables::build_table(lyt = lyt, df = anl)))
+    quote(table <- c(table, rtables::build_table(lyt = lyt, df = anl)))
   } else {
-    quote(result <- rtables::build_table(lyt = lyt, df = anl))
+    quote(table <- rtables::build_table(lyt = lyt, df = anl))
   }
 
   y
@@ -318,8 +318,7 @@ template_coxreg_m <- function(dataname,
   )
 
   y$table <- quote({
-    result <- rtables::build_table(lyt = lyt, df = anl)
-    result
+    table <- rtables::build_table(lyt = lyt, df = anl)
   })
 
   y
@@ -333,6 +332,7 @@ template_coxreg_m <- function(dataname,
 #' and `COXT02` [here](https://insightsengineering.github.io/tlg-catalog/stable/tables/efficacy/coxt02.html).
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_coxreg_u
 #' @inheritParams template_coxreg_m
 #' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used instead of the
@@ -360,6 +360,27 @@ template_coxreg_m <- function(dataname,
 #' * Multi-variable is the default choice for backward compatibility.
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` as created from `rtables::build_table`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_coxreg(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -520,7 +541,9 @@ tm_t_coxreg <- function(label,
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
-                        basic_table_args = teal.widgets::basic_table_args()) {
+                        basic_table_args = teal.widgets::basic_table_args(),
+                        transformators = list(),
+                        decorators = list()) {
   message("Initializing tm_t_coxreg")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -536,6 +559,7 @@ tm_t_coxreg <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -561,9 +585,11 @@ tm_t_coxreg <- function(label,
         parentname = parentname,
         label = label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -695,7 +721,8 @@ ui_t_coxreg <- function(id, ...) {
             fixed = a$conf_level$fixed
           )
         )
-      )
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -721,7 +748,8 @@ srv_t_coxreg <- function(id,
                          arm_ref_comp,
                          label,
                          na_level,
-                         basic_table_args) {
+                         basic_table_args,
+                         decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -832,10 +860,7 @@ srv_t_coxreg <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
-    })
+    anl_q <- reactive(teal.code::eval_code(data(), as.expression(anl_inputs()$expr)))
 
     merged <- list(
       anl_input_r = anl_inputs,
@@ -1045,7 +1070,7 @@ srv_t_coxreg <- function(id,
         )
 
         merged$anl_q() %>%
-          teal.code::eval_code(quote(result <- list())) %>%
+          teal.code::eval_code(quote(table <- list())) %>%
           teal.code::eval_code(
             as.expression(unlist(lapply(
               unlist(input$buckets$Comp),
@@ -1057,19 +1082,18 @@ srv_t_coxreg <- function(id,
           teal.code::eval_code(
             substitute(
               expr = {
-                result <- lapply(result, function(x) {
-                  rtables::col_info(x) <- rtables::col_info(result[[1]])
+                table <- lapply(table, function(x) {
+                  rtables::col_info(x) <- rtables::col_info(table[[1]])
                   x
                 })
-                result <- rtables::rbindl_rtables(result, check_headers = TRUE)
-                rtables::main_title(result) <- title
-                rtables::main_footer(result) <- c(
+                table <- rtables::rbindl_rtables(table, check_headers = TRUE)
+                rtables::main_title(table) <- title
+                rtables::main_footer(table) <- c(
                   paste("p-value method for Coxph (Hazard Ratio):", control$pval_method),
                   paste("Ties for Coxph (Hazard Ratio):", control$ties)
                 )
-                rtables::prov_footer(result) <- p_footer
-                rtables::subtitles(result) <- subtitle
-                result
+                rtables::prov_footer(table) <- p_footer
+                rtables::subtitles(table) <- subtitle
               },
               env = list(
                 title = all_basic_table_args$title,
@@ -1081,16 +1105,30 @@ srv_t_coxreg <- function(id,
       }
     })
 
-    table_r <- reactive(all_q()[["result"]])
+
+
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
+    # Outputs to render.
+    table_r <- reactive({
+      decorated_table_q()[["table"]]
+    })
 
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
     )
 
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = "R Code for the Current (Multi-Variable) Cox proportional hazard regression model"
     )
 
@@ -1109,7 +1147,7 @@ srv_t_coxreg <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

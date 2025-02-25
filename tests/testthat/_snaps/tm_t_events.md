@@ -34,21 +34,21 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
+          pruned_result <- rtables::prune_table(table)
       }
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(result))))
+              ncol(table))))
           pruned_and_sorted_result
       }
       
@@ -94,21 +94,21 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
+          pruned_result <- rtables::prune_table(table)
       }
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(result))))
+              ncol(table))))
           pruned_and_sorted_result
       }
       
@@ -138,16 +138,16 @@
           append_varlabels(adcm, "CMDECOD")
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
+          pruned_result <- rtables::prune_table(table)
       }
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("CMDECOD"), 
               scorefun = score_occurrences)
@@ -193,11 +193,11 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
+          pruned_result <- rtables::prune_table(table)
       }
       
       $sort
@@ -243,12 +243,12 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
-          col_indices <- 1:(ncol(result) - TRUE)
+          pruned_result <- rtables::prune_table(table)
+          col_indices <- 1:(ncol(table) - TRUE)
           row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) & 
               has_fractions_difference(atleast = 0.1, col_indices = col_indices)
           pruned_result <- pruned_result %>% rtables::prune_table(keep_rows(row_condition))
@@ -256,12 +256,12 @@
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(result))))
+              ncol(table))))
           criteria_fun <- function(tr) {
               inherits(tr, "ContentRow")
           }
@@ -312,12 +312,12 @@
           append_varlabels(adae, "AEDECOD", indent = 1L)
       
       $table
-      result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
+      table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       
       $prune
       {
-          pruned_result <- result %>% rtables::prune_table()
-          col_indices <- 1:(ncol(result) - TRUE)
+          pruned_result <- rtables::prune_table(table)
+          col_indices <- 1:(ncol(table) - TRUE)
           row_condition <- has_fraction_in_any_col(atleast = 0.4, col_indices = col_indices) & 
               has_fractions_difference(atleast = 0.1, col_indices = col_indices)
           pruned_result <- pruned_result %>% rtables::prune_table(keep_rows(row_condition))
@@ -325,12 +325,12 @@
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(result), tail, 1) == 
+          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(result))))
+              ncol(table))))
           criteria_fun <- function(tr) {
               inherits(tr, "ContentRow")
           }

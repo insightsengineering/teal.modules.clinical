@@ -14,7 +14,7 @@
 #'   * `pval`: p-value of the effect.
 #'   Note, the statistics `n_tot`, `or`, and `ci` are required.
 #' @param riskdiff (`list`)\cr if a risk (proportion) difference column should be added, a list of settings to apply
-#'   within the column. See [control_riskdiff()] for details. If `NULL`, no risk difference column will be added.
+#'   within the column. See [tern::control_riskdiff()] for details. If `NULL`, no risk difference column will be added.
 #' @param obj_var_name (`character`)\cr additional text to append to the table title.
 #' @param responders (`character`)\cr values of `aval_var` that are considered to be responders.
 #' @param col_symbol_size (`integer` or `NULL`)\cr column index to be used to determine relative size for
@@ -48,7 +48,6 @@ template_forest_rsp <- function(dataname = "ANL",
                                 riskdiff = NULL,
                                 conf_level = 0.95,
                                 col_symbol_size = NULL,
-                                rel_width_forest = 0.25,
                                 font_size = 15,
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   checkmate::assert_string(dataname)
@@ -60,7 +59,6 @@ template_forest_rsp <- function(dataname = "ANL",
   checkmate::assert_character(stats, min.len = 3)
   checkmate::assert_true(all(c("n_tot", "or", "ci") %in% stats))
   checkmate::assert_list(riskdiff, null.ok = TRUE)
-  checkmate::assert_number(rel_width_forest, lower = 0, upper = 1)
   checkmate::assert_number(font_size)
 
   y <- list()
@@ -211,16 +209,10 @@ template_forest_rsp <- function(dataname = "ANL",
     plot_list,
     substitute(
       expr = {
-        p <- cowplot::plot_grid(
-          f[["table"]] + ggplot2::labs(title = ggplot2_args_title),
-          f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption),
-          align = "h",
-          axis = "tblr",
-          rel_widths = c(1 - rel_width_forest, rel_width_forest)
-        )
+        table <- f[["table"]] + ggplot2::labs(title = ggplot2_args_title)
+        plot <- f[["plot"]] + ggplot2::labs(caption = ggplot2_args_caption)
       },
       env = list(
-        rel_width_forest = rel_width_forest,
         ggplot2_args_title = all_ggplot2_args$labs$title,
         ggplot2_args_caption = all_ggplot2_args$labs$caption
       )
@@ -239,9 +231,31 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @inheritParams tern::g_forest
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_forest_rsp
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `plot` (`ggplot`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_g_forest_rsp(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      plot = teal_transform_module(...) # applied only to `plot` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -355,7 +369,9 @@ tm_g_forest_rsp <- function(label,
                             font_size = c(15L, 1L, 30L),
                             pre_output = NULL,
                             post_output = NULL,
-                            ggplot2_args = teal.widgets::ggplot2_args()) {
+                            ggplot2_args = teal.widgets::ggplot2_args(),
+                            transformators = list(),
+                            decorators = list()) {
   message("Initializing tm_g_forest_rsp")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -381,6 +397,7 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
 
@@ -409,9 +426,11 @@ tm_g_forest_rsp <- function(label,
         default_responses = default_responses,
         plot_height = plot_height,
         plot_width = plot_width,
-        ggplot2_args = ggplot2_args
+        ggplot2_args = ggplot2_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -475,6 +494,7 @@ ui_g_forest_rsp <- function(id, ...) {
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       bslib::accordion(
         open = FALSE,
         bslib::accordion_panel(
@@ -530,7 +550,8 @@ srv_g_forest_rsp <- function(id,
                              plot_width,
                              label,
                              default_responses,
-                             ggplot2_args) {
+                             ggplot2_args,
+                             decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -736,8 +757,8 @@ srv_g_forest_rsp <- function(id,
 
       strata_var <- as.vector(anl_m$columns_source$strata_var)
       subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-
-      obj_var_name <- get_g_forest_obj_var_name(paramcd, input)
+      resolved_paramcd <- teal.transform::resolve_delayed(paramcd, as.list(data()))
+      obj_var_name <- get_g_forest_obj_var_name(resolved_paramcd, input)
 
       my_calls <- template_forest_rsp(
         dataname = "ANL",
@@ -754,7 +775,6 @@ srv_g_forest_rsp <- function(id,
         riskdiff = riskdiff,
         conf_level = as.numeric(input$conf_level),
         col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
-        rel_width_forest = input$rel_width_forest / 100,
         font_size = input$font_size,
         ggplot2_args = ggplot2_args
       )
@@ -762,7 +782,22 @@ srv_g_forest_rsp <- function(id,
       teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
-    plot_r <- reactive(all_q()[["p"]])
+    decorated_all_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr = print(plot)
+    )
+
+    plot_r <- reactive({
+      cowplot::plot_grid(
+        decorated_all_q()[["table"]],
+        decorated_all_q()[["plot"]],
+        align = "h",
+        axis = "tblr",
+        rel_widths = c(1 - input$rel_width_forest / 100, input$rel_width_forest / 100)
+      )
+    })
 
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
@@ -771,9 +806,11 @@ srv_g_forest_rsp <- function(id,
       width = plot_width
     )
 
+    # Render R code
+    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -792,7 +829,7 @@ srv_g_forest_rsp <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

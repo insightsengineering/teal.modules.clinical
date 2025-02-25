@@ -285,20 +285,18 @@ template_summary_by <- function(parentname,
           rvs <- unlist(unname(row_values(tr)))
           isTRUE(all(rvs == 0))
         }
-        result <- rtables::build_table(
+        table <- rtables::build_table(
           lyt = lyt,
           df = anl,
           alt_counts_df = parent
         ) %>% rtables::trim_rows(criteria = all_zero)
-        result
       },
       env = list(parent = as.name(parentname))
     )
   } else {
     y$table <- substitute(
       expr = {
-        result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
-        result
+        table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = parent)
       },
       env = list(parent = as.name(parentname))
     )
@@ -312,6 +310,7 @@ template_summary_by <- function(parentname,
 #' This module produces a table to summarize variables by row groups.
 #'
 #' @inheritParams module_arguments
+#' @inheritParams teal::module
 #' @inheritParams template_summary_by
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for variable names that can be used as `arm_var`.
@@ -320,6 +319,27 @@ template_summary_by <- function(parentname,
 #'   second variable will be nested under the first variable.
 #'
 #' @inherit module_arguments return seealso
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table()`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_summary_by(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -396,7 +416,9 @@ tm_t_summary_by <- function(label,
                             drop_zero_levels = TRUE,
                             pre_output = NULL,
                             post_output = NULL,
-                            basic_table_args = teal.widgets::basic_table_args()) {
+                            basic_table_args = teal.widgets::basic_table_args(),
+                            transformators = list(),
+                            decorators = list()) {
   message("Initializing tm_t_summary_by")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -423,6 +445,8 @@ tm_t_summary_by <- function(label,
 
   numeric_stats_choices <- c("n", "mean_sd", "mean_ci", "geom_mean", "median", "median_ci", "quantiles", "range")
   numeric_stats <- match.arg(numeric_stats, numeric_stats_choices, several.ok = TRUE)
+
+  assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))
 
@@ -451,9 +475,11 @@ tm_t_summary_by <- function(label,
         label = label,
         total_label = total_label,
         na_level = na_level,
-        basic_table_args = basic_table_args
+        basic_table_args = basic_table_args,
+        decorators = decorators
       )
     ),
+    transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
@@ -559,6 +585,7 @@ ui_summary_by <- function(id, ...) {
           }
         )
       ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = FALSE,
         bslib::accordion_panel(
@@ -598,7 +625,8 @@ srv_summary_by <- function(id,
                            drop_arm_levels,
                            drop_zero_levels,
                            label,
-                           basic_table_args) {
+                           basic_table_args,
+                           decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -687,7 +715,7 @@ srv_summary_by <- function(id,
       }
     })
 
-    # The R-code corresponding to the analysis.
+    # Generate r code for the analysis.
     all_q <- reactive({
       validate_checks()
       summarize_vars <- as.vector(merged$anl_input_r()$columns_source$summarize_vars)
@@ -717,8 +745,16 @@ srv_summary_by <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
+    # Decoration of table output.
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
     # Outputs to render.
-    table_r <- reactive(all_q()[["result"]])
+    table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(
       id = "table",
@@ -726,9 +762,10 @@ srv_summary_by <- function(id,
     )
 
     # Render R code.
+    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
-      verbatim_content = reactive(teal.code::get_code(all_q())),
+      verbatim_content = source_code_r,
       title = label
     )
 
@@ -747,7 +784,7 @@ srv_summary_by <- function(id,
           card$append_text("Comment", "header3")
           card$append_text(comment)
         }
-        card$append_src(teal.code::get_code(all_q()))
+        card$append_src(source_code_r())
         card
       }
       teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)

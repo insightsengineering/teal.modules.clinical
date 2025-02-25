@@ -31,8 +31,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
-          result
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       }
       
 
@@ -68,8 +67,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
-          result
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       }
       
 
@@ -96,8 +94,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
-          result
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       }
       
 
@@ -141,8 +138,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
-          result
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       }
       
 
@@ -182,8 +178,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
-          result
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       }
       
 
@@ -211,8 +206,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
-          result
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = ADSL)
       }
       
 
@@ -270,8 +264,7 @@
       
       $table
       {
-          result <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
-          result
+          table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl)
       }
       
 
