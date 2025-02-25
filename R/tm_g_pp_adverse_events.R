@@ -585,8 +585,14 @@ srv_g_adverse_events <- function(id,
     })
 
     # Allow for the table and plot qenv to be joined
-    table_q <- reactive(teal.code::eval_code(all_q(), "table <- table_output"))
-    plot_q <- reactive(teal.code::eval_code(all_q(), "plot <- plot_output"))
+    table_q <- reactive({
+      req(all_q())
+      teal.code::eval_code(all_q(), "table <- table_output")
+    })
+    plot_q <- reactive({
+      req(all_q())
+      teal.code::eval_code(all_q(), "plot <- plot_output")
+    })
 
     decorated_all_q_table <- srv_decorate_teal_data(
       "d_table",
@@ -602,10 +608,13 @@ srv_g_adverse_events <- function(id,
       expr = print(plot)
     )
 
-    table_r <- reactive(teal.code::dev_suppress(decorated_all_q_table()[["table"]]))
+    table_r <- reactive({
+      req(decorated_all_q_table())
+      teal.code::dev_suppress(decorated_all_q_table()[["table"]])
+    })
 
     plot_r <- reactive({
-      req(iv_r()$is_valid())
+      req(iv_r()$is_valid(), decorated_all_q_plot())
       decorated_all_q_plot()[["plot"]]
     })
 
