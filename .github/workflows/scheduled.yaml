@@ -66,3 +66,14 @@ jobs:
       )
     name: R-hub 🌐
     uses: insightsengineering/r.pkg.template/.github/workflows/rhub.yaml@main
+    with:
+      config: >-
+        r-patched-linux-x86_64,
+        r-release-linux-x86_64,
+        r-devel-windows-x86_64,
+        r-release-macos-arm64,
+        r-release-macos-x86_64,
+        r-release-windows-x86_64,
+        r-oldrel-macos-arm64,
+        r-oldrel-macos-x86_64,
+        r-oldrel-windows-x86_64
