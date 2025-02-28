@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.9.1.9071
+# teal.modules.clinical 0.10.0
 
 ### Enhancements
 * Added `teal.logger` functionality for logging changes in shiny inputs in all modules.
@@ -9,6 +9,7 @@
 * Added argument `riskdiff` to modules `tm_g_forest_rsp` and `tm_g_forest_tte` to allow users to add a risk difference table column.
 * Added the `count_dth` and `count_wd` parameters to `tm_t_events_summary` to select/deselect the "Total number of deaths" and "Total number of patients withdrawn from study due to an AE" rows, respectively. These options correspond to the "Count deaths" and "Count withdrawals due to AE" checkboxes available when the module is run.
 * Added the `title_text` argument to `tm_t_mult_events` to allow for more customization of the module's dynamic title.
+* Introduced `transformators` and `decorators` argument to modules.
 
 ### Bug fixes
 * Fixed bug in creating modules with `delayed_data` and `teal.transform::all_choices`.
