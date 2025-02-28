@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
+<li><a class="dropdown-item" href="../articles/decorate-module-output.html">Decorate Module Output</a></li>
+    <li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
     <li><a class="dropdown-item" href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a></li>
   </ul>
 </li>
@@ -49,6 +50,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
 <li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
     <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
+    <li><a class="dropdown-item" href="../unit-test-report-non-cran/">Non-CRAN unit test report</a></li>
   </ul>
 </li>
       <div><li class="nav-item dropdown">
@@ -57,6 +59,7 @@
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0">v0.10.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0-rc1">v0.10.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.1">v0.9.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a>
@@ -81,7 +84,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>teal Module: Adverse Events Table by Standardized MedDRA Query</h1>
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/R/tm_t_smq.R" class="external-link"><code>R/tm_t_smq.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.10.0/R/tm_t_smq.R" class="external-link"><code>R/tm_t_smq.R</code></a></small>
       <div class="d-none name"><code>tm_t_smq.Rd</code></div>
     </div>
 
@@ -111,7 +114,9 @@
 <span>  <span class="va">scopes</span>,</span>
 <span>  pre_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  post_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  basic_table_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  basic_table_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  transformators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  decorators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -227,6 +232,23 @@ with settings for the module table. The argument is merged with option <code>tea
 module arguments (hard coded in the module body).
 For more details, see the vignette: <code><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-basic-table-arguments.html" class="external-link">vignette("custom-basic-table-arguments", package = "teal.widgets")</a></code>.</p></dd>
 
+
+<dt id="arg-transformators">transformators<a class="anchor" aria-label="anchor" href="#arg-transformators"></a>
+</dt>
+<dd><p>(<code>list</code> of <code>teal_transform_module</code>) that will be applied to transform module's data input.
+To learn more check <code><a href="https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html" class="external-link">vignette("transform-input-data", package = "teal")</a></code>.</p></dd>
+
+
+<dt id="arg-decorators">decorators<a class="anchor" aria-label="anchor" href="#arg-decorators"></a>
+</dt>
+<dd>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a>
+(named <code>list</code> of lists of <code>teal_transform_module</code>) optional,
+decorator for tables or plots included in the module output reported.
+The decorators are applied to the respective output objects.</p>
+<p>See section "Decorating Module" below for more details.</p>
+</dd>
+
 </dl>
 </div>
     <div class="section level2">
@@ -235,11 +257,52 @@ For more details, see the vignette: <code><a href="https://insightsengineering.g
     <p>a <code>teal_module</code> object.</p>
     </div>
     <div class="section level2">
+    <h2 id="decorating-module">Decorating Module<a class="anchor" aria-label="anchor" href="#decorating-module"></a>
+</h2>
+
+
+
+<p>This module generates the following objects, which can be modified in place using decorators:</p>
+<ul>
+<li><p><code>table</code> (<code>TableTree</code> - output of <code><a href="https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html" class="external-link">rtables::build_table()</a></code>)</p></li>
+</ul>
+<p>A Decorator is applied to the specific output using a named list of <code>teal_transform_module</code> objects.
+The name of this list corresponds to the name of the output to which the decorator is applied.
+See code snippet below:</p>
+<p></p>
+<div class="sourceCode">
+<pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">tm_t_smq</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>   ..., <span class="co"># arguments for module</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>   <span class="at">decorators =</span> <span class="fu">list</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>     <span class="at">table =</span> <span class="fu">teal_transform_module</span>(...) <span class="co"># applied only to `table` output</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>   )</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>)</span></code></pre>
+<p></p>
+</div>
+<p>For additional details and examples of decorators, refer to the vignette
+<code><a href="../articles/decorate-module-output.html">vignette("decorate-module-output", package = "teal.modules.clinical")</a></code>.</p>
+<p>To learn more please refer to the vignette
+<code><a href="https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html" class="external-link">vignette("transform-module-output", package = "teal")</a></code> or the <code><a href="https://insightsengineering.github.io/teal/latest-tag/reference/teal_transform_module.html" class="external-link">teal::teal_transform_module()</a></code> documentation.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
     <div class="dont-index"><p>The <a href="https://insightsengineering.github.io/tlg-catalog/stable/" class="external-link">TLG Catalog</a> where additional example
 apps implementing this module can be found.</p></div>
     </div>
+    <div class="section level2">
+    <h2 id="examples-in-shinylive">Examples in Shinylive<a class="anchor" aria-label="anchor" href="#examples-in-shinylive"></a>
+</h2>
+
+<dl>
+<dt>example-1</dt>
+<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zhXCAyMaHhRP3ooUQBrOFJRIoBzRjhUdgUwAD12XIBZAEUAHwBhLbkMACoAOUyNgBJllIGxdhzmuRTNbkFdAF47RydFXp1+rAxH5RMRUGJZvNFssVpstidcntrngdHdRA8mr8Xm9Pt9nH8GhIhiNxpNpuECDEiDJgaI4CJ1HB+Et-hlKdSCBCvq9GLQoPQRH52TT0Y8nClRIJ6HTSDovoDBsNRhMps8Ghk6QzyPw5QC0UrSVMGgT-kSQWCIRSqSKQfS4IzmeqdMLOdNuSw+QK4ELra6Mc0JVKZbqFbSLaI1aydJr7dqQ-rQURwaJcE7jLQKkzdfZnMalABfP4AK2pED8E1Y6KSNnC-DgxigwlIQv4tFBfhL8XLcErwDRiVCcgAuj00KgivFoiyMkldUlU-8+EIRG6dEvhPcnSU-M3RDAAI7TjLH6j8+m65aZfjaRh0nRObRkab0Vg6OF2fkiG5OmehO4XsAxW-KMMhYGA-B5XUXVpO0HSPY9j2g1ceU9QUkIHTxgGAS88nyZYhyHQNpUmKClkArANhuHRllyJwAA1ljkSMEIQmMHQAzIKOWH8dGYlian4HciE8ahdQAMUyfJaIXFidBJFVVySLDljNeSyXwwieMTZM51CZSwDNbSxA0mSWOoahZS+JDbS1Jl4JYpDdRQz9vXQpTsMAzETOjIMSKssjmmyJw9gAeWyRi+Nkti4y+S8nCC0LwrAHi-gQ1LeKUP5aGMHR2Hicg1A0bRrBsNJ-lEOIIFYTJ0HYMdLkEWgUnqulGBvP58yUMB8yHIA" class="external-link">Open in Shinylive</a>
+    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzMpyKSssrq9zhXCAyMaHhRP3ooUQBrOFJRIoBzRjhUdgUwAD12XIBZAEUAHwBhLbkMACoAOUyNgBJllIGxdhzmuRTNbkFdAF47RydFXp1+rAxH5RMRUGJZvNFssVpstidcntrngdHdRA8mr8Xm9Pt9nH8GhIhiNxpNpuECDEiDJgaI4CJ1HB+Et-hlKdSCBCvq9GLQoPQRH52TT0Y8nClRIJ6HTSDovoDBsNRhMps8Ghk6QzyPw5QC0UrSVMGgT-kSQWCIRSqSKQfS4IzmeqdMLOdNuSw+QK4ELra6Mc0JVKZbqFbSLaI1aydJr7dqQ-rQURwaJcE7jLQKkzdfZnMalABfP4AK2pED8E1Y6KSNnC-DgxigwlIQv4tFBfhL8XLcErwDRiVCcgAuj00KgivFoiyMkldUlU-8+EIRG6dEvhPcnSU-M3RDAAI7TjLH6j8+m65aZfjaRh0nRObRkab0Vg6OF2fkiG5OmehO4XsAxW-KMMhYGA-B5XUXVpO0HSPY9j2g1ceU9QUkIHTxgGAS88nyZYhyHQNpUmKClkArANhuHRllyJwAA1ljkSMEIQmMHQAzIKOWH8dGYlian4HciE8ahdQAMUyfJaIXFidBJFVVySLDljNeSyXwwieMTZM51CZSwDNbSxA0mSWOoahZS+JDbS1Jl4JYpDdRQz9vXQpTsMAzETOjIMSKssjmmyJw9gAeWyRi+Nkti4y+S8nCC0LwrAHi-gQ1LeKUP5aGMHR2Hicg1A0bRrBsNJ-lEOIIFYTJ0HYMdLkEWgUnqulGBvP58yUMB8yHIA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
+    <a style="height: 800px; display: block;"></a></p></dd>
+
+
+</dl>
+</div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a>
@@ -249,24 +312,21 @@ apps implementing this module can be found.</p></div>
 <span class="r-in"><span>  <span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
 <span class="r-in"><span>  <span class="va">ADAE</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adae</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">names_baskets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^(SMQ|CQ).*NAM$"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ADAE</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">names_scopes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^SMQ.*SC$"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ADAE</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">.names_baskets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^(SMQ|CQ).*NAM$"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ADAE</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">.names_scopes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^SMQ.*SC$"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">ADAE</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">cs_baskets</span> <span class="op">&lt;-</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, subset <span class="op">=</span> <span class="va">names_baskets</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    selected <span class="op">=</span> <span class="va">names_baskets</span></span></span>
+<span class="r-in"><span>  <span class="va">.cs_baskets</span> <span class="op">&lt;-</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, subset <span class="op">=</span> <span class="va">.names_baskets</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    selected <span class="op">=</span> <span class="va">.names_baskets</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">cs_scopes</span> <span class="op">&lt;-</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, subset <span class="op">=</span> <span class="va">names_scopes</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    selected <span class="op">=</span> <span class="va">names_scopes</span>,</span></span>
+<span class="r-in"><span>  <span class="va">.cs_scopes</span> <span class="op">&lt;-</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">ADAE</span>, subset <span class="op">=</span> <span class="va">.names_scopes</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    selected <span class="op">=</span> <span class="va">.names_scopes</span>,</span></span>
 <span class="r-in"><span>    fixed <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">datanames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ADSL"</span>, <span class="st">"ADAE"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">datanames</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">datanames</span></span></span>
-<span class="r-in"><span><span class="fu">join_keys</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">default_cdisc_join_keys</span><span class="op">[</span><span class="va">datanames</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu">join_keys</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">default_cdisc_join_keys</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
@@ -279,8 +339,8 @@ apps implementing this module can be found.</p></div>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"ARM"</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span>,</span></span>
 <span class="r-in"><span>      add_total <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
-<span class="r-in"><span>      baskets <span class="op">=</span> <span class="va">data</span><span class="op">[[</span><span class="st">"cs_baskets"</span><span class="op">]</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>      scopes <span class="op">=</span> <span class="va">data</span><span class="op">[[</span><span class="st">"cs_scopes"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>      baskets <span class="op">=</span> <span class="va">data</span><span class="op">[[</span><span class="st">".cs_baskets"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>      scopes <span class="op">=</span> <span class="va">data</span><span class="op">[[</span><span class="st">".cs_scopes"</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>      llt <span class="op">=</span> <span class="fu">choices_selected</span><span class="op">(</span></span></span>
 <span class="r-in"><span>        choices <span class="op">=</span> <span class="fu">variable_choices</span><span class="op">(</span><span class="va">data</span><span class="op">[[</span><span class="st">"ADAE"</span><span class="op">]</span><span class="op">]</span>, subset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AEDECOD"</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        selected <span class="op">=</span> <span class="st">"AEDECOD"</span></span></span>

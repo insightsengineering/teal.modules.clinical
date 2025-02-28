@@ -27,7 +27,7 @@ template for TTET01 available here.">
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,8 @@ template for TTET01 available here.">
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
+<li><a class="dropdown-item" href="../articles/decorate-module-output.html">Decorate Module Output</a></li>
+    <li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
     <li><a class="dropdown-item" href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a></li>
   </ul>
 </li>
@@ -51,6 +52,7 @@ template for TTET01 available here.">
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
 <li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
     <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
+    <li><a class="dropdown-item" href="../unit-test-report-non-cran/">Non-CRAN unit test report</a></li>
   </ul>
 </li>
       <div><li class="nav-item dropdown">
@@ -59,6 +61,7 @@ template for TTET01 available here.">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0">v0.10.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0-rc1">v0.10.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.1">v0.9.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a>
@@ -83,7 +86,7 @@ template for TTET01 available here.">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>teal Module: Time-To-Event Table</h1>
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/R/tm_t_tte.R" class="external-link"><code>R/tm_t_tte.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.10.0/R/tm_t_tte.R" class="external-link"><code>R/tm_t_tte.R</code></a></small>
       <div class="d-none name"><code>tm_t_tte.Rd</code></div>
     </div>
 
@@ -122,7 +125,9 @@ template for <code>TTET01</code> available <a href="https://insightsengineering.
 <span>  na_level <span class="op">=</span> <span class="fu">default_na_str</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  pre_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  post_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  basic_table_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  basic_table_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html" class="external-link">basic_table_args</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  transformators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  decorators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -151,9 +156,7 @@ template for <code>TTET01</code> available <a href="https://insightsengineering.
 </dt>
 <dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
 available choices and preselected option for variable names that can be used as <code>arm_var</code>.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for <code>arm_var</code>,
-second variable will be nested under the first variable.</p></dd>
+It defines the grouping variable in the results table.</p></dd>
 
 
 <dt id="arg-arm-ref-comp">arm_ref_comp<a class="anchor" aria-label="anchor" href="#arg-arm-ref-comp"></a>
@@ -215,8 +218,8 @@ with all available choices and pre-selected option for the time unit variable.</
 
 <dt id="arg-event-desc-var">event_desc_var<a class="anchor" aria-label="anchor" href="#arg-event-desc-var"></a>
 </dt>
-<dd><p>(<code>character</code> or <code>data_extract_spec()</code>)<br> variable name with the event description
-information, optional.</p></dd>
+<dd><p>(<code>character</code> or <code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/data_extract_spec.html" class="external-link">teal.transform::data_extract_spec()</a></code>)<br> variable name with the
+event description information, optional.</p></dd>
 
 
 <dt id="arg-add-total">add_total<a class="anchor" aria-label="anchor" href="#arg-add-total"></a>
@@ -257,6 +260,23 @@ with settings for the module table. The argument is merged with option <code>tea
 module arguments (hard coded in the module body).
 For more details, see the vignette: <code><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-basic-table-arguments.html" class="external-link">vignette("custom-basic-table-arguments", package = "teal.widgets")</a></code>.</p></dd>
 
+
+<dt id="arg-transformators">transformators<a class="anchor" aria-label="anchor" href="#arg-transformators"></a>
+</dt>
+<dd><p>(<code>list</code> of <code>teal_transform_module</code>) that will be applied to transform module's data input.
+To learn more check <code><a href="https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html" class="external-link">vignette("transform-input-data", package = "teal")</a></code>.</p></dd>
+
+
+<dt id="arg-decorators">decorators<a class="anchor" aria-label="anchor" href="#arg-decorators"></a>
+</dt>
+<dd>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a>
+(named <code>list</code> of lists of <code>teal_transform_module</code>) optional,
+decorator for tables or plots included in the module output reported.
+The decorators are applied to the respective output objects.</p>
+<p>See section "Decorating Module" below for more details.</p>
+</dd>
+
 </dl>
 </div>
     <div class="section level2">
@@ -269,8 +289,8 @@ For more details, see the vignette: <code><a href="https://insightsengineering.g
 </h2>
 
 <ul>
-<li><p>The core functionality of this module is based on <code>coxph_pairwise()</code>, <code>surv_timepoint()</code>, and <code>surv_time()</code> from
-the <code>tern</code> package.</p></li>
+<li><p>The core functionality of this module is based on <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/survival_coxph_pairwise.html" class="external-link">tern::coxph_pairwise()</a></code>, <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/survival_timepoint.html" class="external-link">tern::surv_timepoint()</a></code>,
+and <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/survival_time.html" class="external-link">tern::surv_time()</a></code> from the <code>tern</code> package.</p></li>
 <li><p>The arm and stratification variables are taken from the <code>parentname</code> data.</p></li>
 <li>
 <p>The following variables are used in the module:</p>
@@ -284,17 +304,65 @@ filtering for <code>PARAMCD</code> one observation per patient is expected</p></
 </ul>
 </div>
     <div class="section level2">
+    <h2 id="decorating-module">Decorating Module<a class="anchor" aria-label="anchor" href="#decorating-module"></a>
+</h2>
+
+
+
+<p>This module generates the following objects, which can be modified in place using decorators:</p>
+<ul>
+<li><p><code>table</code> (<code>TableTree</code> - output of <code><a href="https://insightsengineering.github.io/rtables/latest-tag/reference/build_table.html" class="external-link">rtables::build_table()</a></code>)</p></li>
+</ul>
+<p>A Decorator is applied to the specific output using a named list of <code>teal_transform_module</code> objects.
+The name of this list corresponds to the name of the output to which the decorator is applied.
+See code snippet below:</p>
+<p></p>
+<div class="sourceCode">
+<pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">tm_t_tte</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>   ..., <span class="co"># arguments for module</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>   <span class="at">decorators =</span> <span class="fu">list</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>     <span class="at">table =</span> <span class="fu">teal_transform_module</span>(...) <span class="co"># applied only to `table` output</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>   )</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>)</span></code></pre>
+<p></p>
+</div>
+<p>For additional details and examples of decorators, refer to the vignette
+<code><a href="../articles/decorate-module-output.html">vignette("decorate-module-output", package = "teal.modules.clinical")</a></code>.</p>
+<p>To learn more please refer to the vignette
+<code><a href="https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html" class="external-link">vignette("transform-module-output", package = "teal")</a></code> or the <code><a href="https://insightsengineering.github.io/teal/latest-tag/reference/teal_transform_module.html" class="external-link">teal::teal_transform_module()</a></code> documentation.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
     <div class="dont-index"><p>The <a href="https://insightsengineering.github.io/tlg-catalog/stable/" class="external-link">TLG Catalog</a> where additional example
 apps implementing this module can be found.</p></div>
     </div>
+    <div class="section level2">
+    <h2 id="examples-in-shinylive">Examples in Shinylive<a class="anchor" aria-label="anchor" href="#examples-in-shinylive"></a>
+</h2>
+
+<dl>
+<dt>example-1</dt>
+<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urppbb0PvHnOaXGA3pcWDA-IwlusiDBUEU6KJSOwGpkAMK2TJYACyKOyOgAvDp4YiGhkIcZ8To-lidAAhR64Ek6YgwikEJFPamZemUjmYnQox6DDJyBkQDIYvkEolIsUZHRkimPGmIHQABWoUAIcHoRHpjOZsIJbL+KuyjEEAHMdAANbmPFEqlHQ+jxDyWCCChqDQZKNCw8LxaIyjJJClJUUZPhCESiClR4RiYNykp+NY9OBJuWEqD0ODURVgWy0eB2Ig6JzaMh2HMiPWyrNJI66Al-T6AiNZnSgvyaFismKjLWiPyiPNwdRwfiZzu9xi0GtwdYDmSJ54pY28u28nFb1HorE7sByEWMrNUzGPU86E-1uXdslQlkE++Qg0drOoFiwDb9wdiEdjhOU5XhkvbUIIi4EMuQ7sP8LQpI8qoYpk2LZFuSFYChgrvp2jwAPK5Jet7CjhGQIswng9n2RrQf+o4iEB05ZrO870CIS5-jMa5MuyuROLaeA8jSmJYAA0lgABMgo3p2cqPHxAlXjJnYaPAfioKMZCxjRnEAQx5BTmyACMAAcEkpBJAAsADMIo6KZEnKVmcCVmsizbFRjC-iuw70eOBlMXKLELhxPmwW2CFgE4ABqABytjZE4uQCkepFyVFcUJUlKVpRkxi0BUk4UvYzhKYyQrXkogy0OS7DxOQagaNo1g2GksqiHEECsJk6DsH6AAkgi0CkA2jow2iMIMfRKGAfRnEAA" class="external-link">Open in Shinylive</a>
+    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XCByCoqTgYAUwa-zHs4urppbb0PvHnOaXGA3pcWDA-IwlusiDBUEU6KJSOwGpkAMK2TJYACyKOyOgAvDp4YiGhkIcZ8To-lidAAhR64Ek6YgwikEJFPamZemUjmYnQox6DDJyBkQDIYvkEolIsUZHRkimPGmIHQABWoUAIcHoRHpjOZsIJbL+KuyjEEAHMdAANbmPFEqlHQ+jxDyWCCChqDQZKNCw8LxaIyjJJClJUUZPhCESiClR4RiYNykp+NY9OBJuWEqD0ODURVgWy0eB2Ig6JzaMh2HMiPWyrNJI66Al-T6AiNZnSgvyaFismKjLWiPyiPNwdRwfiZzu9xi0GtwdYDmSJ54pY28u28nFb1HorE7sByEWMrNUzGPU86E-1uXdslQlkE++Qg0drOoFiwDb9wdiEdjhOU5XhkvbUIIi4EMuQ7sP8LQpI8qoYpk2LZFuSFYChgrvp2jwAPK5Jet7CjhGQIswng9n2RrQf+o4iEB05ZrO870CIS5-jMa5MuyuROLaeA8jSmJYAA0lgABMgo3p2cqPHxAlXjJnYaPAfioKMZCxjRnEAQx5BTmyACMAAcEkpBJAAsADMIo6KZEnKVmcCVmsizbFRjC-iuw70eOBlMXKLELhxPmwW2CFgE4ABqABytjZE4uQCkepFyVFcUJUlKVpRkxi0BUk4UvYzhKYyQrXkogy0OS7DxOQagaNo1g2GksqiHEECsJk6DsH6AAkgi0CkA2jow2iMIMfRKGAfRnEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
+    <a style="height: 800px; display: block;"></a></p></dd>
+
+
+</dl>
+</div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a>
 </h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
-<span class="r-in"><span><span class="va">ADTTE</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adtte</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">within</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
+<span class="r-in"><span>  <span class="va">ADTTE</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adtte</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">join_keys</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">default_cdisc_join_keys</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[[</span><span class="st">"ADSL"</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">ADTTE</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[[</span><span class="st">"ADTTE"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">arm_ref_comp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  ACTARMCD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -308,14 +376,7 @@ apps implementing this module can be found.</p></div>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    ADSL <span class="op">=</span> <span class="va">ADSL</span>,</span></span>
-<span class="r-in"><span>    ADTTE <span class="op">=</span> <span class="va">ADTTE</span>,</span></span>
-<span class="r-in"><span>    code <span class="op">=</span> <span class="st">"</span></span></span>
-<span class="r-in"><span><span class="st">      ADSL &lt;- tmc_ex_adsl</span></span></span>
-<span class="r-in"><span><span class="st">      ADTTE &lt;- tmc_ex_adtte</span></span></span>
-<span class="r-in"><span><span class="st">    "</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
 <span class="r-in"><span>  modules <span class="op">=</span> <span class="fu">modules</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu">tm_t_tte</span><span class="op">(</span></span></span>
 <span class="r-in"><span>      label <span class="op">=</span> <span class="st">"Time To Event Table"</span>,</span></span>

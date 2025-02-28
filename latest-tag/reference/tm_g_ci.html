@@ -27,7 +27,7 @@ CIG01 available here.">
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,8 @@ CIG01 available here.">
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
+<li><a class="dropdown-item" href="../articles/decorate-module-output.html">Decorate Module Output</a></li>
+    <li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
     <li><a class="dropdown-item" href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a></li>
   </ul>
 </li>
@@ -51,6 +52,7 @@ CIG01 available here.">
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
 <li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
     <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
+    <li><a class="dropdown-item" href="../unit-test-report-non-cran/">Non-CRAN unit test report</a></li>
   </ul>
 </li>
       <div><li class="nav-item dropdown">
@@ -59,6 +61,7 @@ CIG01 available here.">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0">v0.10.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0-rc1">v0.10.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.1">v0.9.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a>
@@ -83,7 +86,7 @@ CIG01 available here.">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>teal Module: Confidence Interval Plot</h1>
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/R/tm_g_ci.R" class="external-link"><code>R/tm_g_ci.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.10.0/R/tm_g_ci.R" class="external-link"><code>R/tm_g_ci.R</code></a></small>
       <div class="d-none name"><code>tm_g_ci.Rd</code></div>
     </div>
 
@@ -107,7 +110,9 @@ CIG01 available here.">
 <span>  plot_width <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pre_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  post_output <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ggplot2_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  ggplot2_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  transformators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  decorators <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -179,6 +184,23 @@ for the module plot. The argument is merged with option <code>teal.ggplot2_args<
 (hard coded in the module body).
 For more details, see the vignette: <code><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/articles/custom-ggplot2-arguments.html" class="external-link">vignette("custom-ggplot2-arguments", package = "teal.widgets")</a></code>.</p></dd>
 
+
+<dt id="arg-transformators">transformators<a class="anchor" aria-label="anchor" href="#arg-transformators"></a>
+</dt>
+<dd><p>(<code>list</code> of <code>teal_transform_module</code>) that will be applied to transform module's data input.
+To learn more check <code><a href="https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html" class="external-link">vignette("transform-input-data", package = "teal")</a></code>.</p></dd>
+
+
+<dt id="arg-decorators">decorators<a class="anchor" aria-label="anchor" href="#arg-decorators"></a>
+</dt>
+<dd>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a>
+(named <code>list</code> of lists of <code>teal_transform_module</code>) optional,
+decorator for tables or plots included in the module output reported.
+The decorators are applied to the respective output objects.</p>
+<p>See section "Decorating Module" below for more details.</p>
+</dd>
+
 </dl>
 </div>
     <div class="section level2">
@@ -187,29 +209,70 @@ For more details, see the vignette: <code><a href="https://insightsengineering.g
     <p>a <code>teal_module</code> object.</p>
     </div>
     <div class="section level2">
+    <h2 id="decorating-module">Decorating Module<a class="anchor" aria-label="anchor" href="#decorating-module"></a>
+</h2>
+
+
+
+<p>This module generates the following objects, which can be modified in place using decorators:</p>
+<ul>
+<li><p><code>plot</code> (<code>ggplot</code>)</p></li>
+</ul>
+<p>A Decorator is applied to the specific output using a named list of <code>teal_transform_module</code> objects.
+The name of this list corresponds to the name of the output to which the decorator is applied.
+See code snippet below:</p>
+<p></p>
+<div class="sourceCode">
+<pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">tm_g_ci</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>   ..., <span class="co"># arguments for module</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>   <span class="at">decorators =</span> <span class="fu">list</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>     <span class="at">plot =</span> <span class="fu">teal_transform_module</span>(...) <span class="co"># applied only to `plot` output</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>   )</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>)</span></code></pre>
+<p></p>
+</div>
+<p>For additional details and examples of decorators, refer to the vignette
+<code><a href="../articles/decorate-module-output.html">vignette("decorate-module-output", package = "teal.modules.clinical")</a></code>.</p>
+<p>To learn more please refer to the vignette
+<code><a href="https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html" class="external-link">vignette("transform-module-output", package = "teal")</a></code> or the <code><a href="https://insightsengineering.github.io/teal/latest-tag/reference/teal_transform_module.html" class="external-link">teal::teal_transform_module()</a></code> documentation.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
     <div class="dont-index"><p>The <a href="https://insightsengineering.github.io/tlg-catalog/stable/" class="external-link">TLG Catalog</a> where additional example
 apps implementing this module can be found.</p></div>
     </div>
+    <div class="section level2">
+    <h2 id="examples-in-shinylive">Examples in Shinylive<a class="anchor" aria-label="anchor" href="#examples-in-shinylive"></a>
+</h2>
+
+<dl>
+<dt>example-1</dt>
+<dd><p><a href="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlbUAQg1NLe2d-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5idaJTqdTqFB6HBqCS-gBhEjGWh7cy6ACSKkYmm4OgACv5SH88VSWToOpLGCSCq02qQ1MdRKg4ARmcqygV7rpsdCaoC8H0TaJOYbSCSHSJ1DF9YbjSaygQsksCGISUboVgALI8yoKnR-QZhrAAaSwACY-nJFT7qa6nXB+MG0f9w5G0xnM6SjrRUCISQAxcq1apOUuZgVtXO1+uNu3KoIm9PdsqsGJqjXJLU6qDuz0hpUms2wC0x-5ghUD6kC6jkdXYuiiUjen0brceg0zsvUtXEy1gaXlLDlCNR22zst+gNBndwbTUTYwwYAElve9H37F9M2zdR20-b9fzBQC7wfSM5GAABGZ5mzLGAKyrRc6wbJs1xNNkOS5a9qkddQdGIxA-kI6lQPPI9VBPL06JZS9uX+AA1EVqhFWxVzAn03xkD8qK-TlYKGf9yh4vjbAY88dAg8g82gyT2D-GS5P45C0IwzMsM3Stq2xPDGwMn1iM5TjyLdZ1NHOTIaLANidF7H1FPtCjnWxFSWLPMtrNIpdymgahWAAL3bLjuEEOBBPPETAyvHQQ24+to15AAJABxEs3JUqDQq4zLn3PIyNBwjt8MsllW2K8yXCEsoPJZLzqT8AJR3CcddQCg8WXneBOIBRKfRUl0fIGtzgs4vl-HVehWB0NVaHZERxszZKxPSxsAA0srAap7HKWxyhQo6Tvvc7UzADrvPs4q9tO87LvuurqUqkzcM7AiWvXWg2zUnQmrotr6O7DygiCWhjB0dhci3ScNG0awbBKJVRByCBWHKdB2ERf9BFoIoiYdCVVCCGYlDAGZniAA" class="external-link">Open in Shinylive</a>
+    <iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlbUAQg1NLe2d-NT0SgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAbDXbJH5-KpDIEgpRoVANXKZdh9Ao6AC8OgKuD6fCEIlEWJ0BOEYjREDKZSaMQA5idaJTqdTqFB6HBqCS-gBhEjGWh7cy6ACSKkYmm4OgACv5SH88VSWToOpLGCSCq02qQ1MdRKg4ARmcqygV7rpsdCaoC8H0TaJOYbSCSHSJ1DF9YbjSaygQsksCGISUboVgALI8yoKnR-QZhrAAaSwACY-nJFT7qa6nXB+MG0f9w5G0xnM6SjrRUCISQAxcq1apOUuZgVtXO1+uNu3KoIm9PdsqsGJqjXJLU6qDuz0hpUms2wC0x-5ghUD6kC6jkdXYuiiUjen0brceg0zsvUtXEy1gaXlLDlCNR22zst+gNBndwbTUTYwwYAElve9H37F9M2zdR20-b9fzBQC7wfSM5GAABGZ5mzLGAKyrRc6wbJs1xNNkOS5a9qkddQdGIxA-kI6lQPPI9VBPL06JZS9uX+AA1EVqhFWxVzAn03xkD8qK-TlYKGf9yh4vjbAY88dAg8g82gyT2D-GS5P45C0IwzMsM3Stq2xPDGwMn1iM5TjyLdZ1NHOTIaLANidF7H1FPtCjnWxFSWLPMtrNIpdymgahWAAL3bLjuEEOBBPPETAyvHQQ24+to15AAJABxEs3JUqDQq4zLn3PIyNBwjt8MsllW2K8yXCEsoPJZLzqT8AJR3CcddQCg8WXneBOIBRKfRUl0fIGtzgs4vl-HVehWB0NVaHZERxszZKxPSxsAA0srAap7HKWxyhQo6Tvvc7UzADrvPs4q9tO87LvuurqUqkzcM7AiWvXWg2zUnQmrotr6O7DygiCWhjB0dhci3ScNG0awbBKJVRByCBWHKdB2ERf9BFoIoiYdCVVCCGYlDAGZniAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50%; margin-top: 30px; transform: translateX(-50%); z-index: 1"></iframe>
+    <a style="height: 800px; display: block;"></a></p></dd>
+
+
+</dl>
+</div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a>
 </h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/nestcolor/" class="external-link">nestcolor</a></span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://insightsengineering.github.io/nestcolor/" class="external-link">nestcolor</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
-<span class="r-in"><span><span class="va">ADLB</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adlb</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">teal_data</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">within</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adsl</span></span></span>
+<span class="r-in"><span>  <span class="va">ADLB</span> <span class="op">&lt;-</span> <span class="va">tmc_ex_adlb</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">join_keys</span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">default_cdisc_join_keys</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ADSL</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[[</span><span class="st">"ADSL"</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">ADLB</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[[</span><span class="st">"ADLB"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">init</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="fu">cdisc_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    ADSL <span class="op">=</span> <span class="va">ADSL</span>,</span></span>
-<span class="r-in"><span>    ADLB <span class="op">=</span> <span class="va">ADLB</span>,</span></span>
-<span class="r-in"><span>    code <span class="op">=</span> <span class="st">"</span></span></span>
-<span class="r-in"><span><span class="st">      ADSL &lt;- tmc_ex_adsl</span></span></span>
-<span class="r-in"><span><span class="st">      ADLB &lt;- tmc_ex_adlb</span></span></span>
-<span class="r-in"><span><span class="st">    "</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">data</span>,</span></span>
 <span class="r-in"><span>  modules <span class="op">=</span> <span class="fu">modules</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu">tm_g_ci</span><span class="op">(</span></span></span>
 <span class="r-in"><span>      label <span class="op">=</span> <span class="st">"Confidence Interval Plot"</span>,</span></span>
@@ -259,10 +322,6 @@ apps implementing this module can be found.</p></div>
 <span class="r-in"><span>        <span class="op">)</span></span></span>
 <span class="r-in"><span>      <span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span>,</span></span>
-<span class="r-in"><span>  header <span class="op">=</span> <span class="st">"Example of Confidence Interval Plot"</span>,</span></span>
-<span class="r-in"><span>  footer <span class="op">=</span> <span class="va">tags</span><span class="op">$</span><span class="fu">p</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    class <span class="op">=</span> <span class="st">"text-muted"</span>, <span class="st">"Source: `teal.modules.clinical::tm_g_ci`"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Initializing tm_g_ci</span>

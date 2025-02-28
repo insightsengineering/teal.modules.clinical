@@ -27,7 +27,7 @@ that are used repeatedly to express an analysis.">
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,8 @@ that are used repeatedly to express an analysis.">
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
+<li><a class="dropdown-item" href="../articles/decorate-module-output.html">Decorate Module Output</a></li>
+    <li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
     <li><a class="dropdown-item" href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a></li>
   </ul>
 </li>
@@ -51,6 +52,7 @@ that are used repeatedly to express an analysis.">
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
 <li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
     <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
+    <li><a class="dropdown-item" href="../unit-test-report-non-cran/">Non-CRAN unit test report</a></li>
   </ul>
 </li>
       <div><li class="nav-item dropdown">
@@ -59,6 +61,7 @@ that are used repeatedly to express an analysis.">
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0">v0.10.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0-rc1">v0.10.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.1">v0.9.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a>
@@ -83,7 +86,7 @@ that are used repeatedly to express an analysis.">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Standard Module Arguments</h1>
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/R/argument_convention.R" class="external-link"><code>R/argument_convention.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.10.0/R/argument_convention.R" class="external-link"><code>R/argument_convention.R</code></a></small>
       <div class="d-none name"><code>module_arguments.Rd</code></div>
     </div>
 
@@ -112,9 +115,7 @@ reference and comparison arms when the arm variable is changed.</p></dd>
 </dt>
 <dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object with all
 available choices and preselected option for variable names that can be used as <code>arm_var</code>.
-It defines the grouping variable(s) in the results table.
-If there are two elements selected for <code>arm_var</code>,
-second variable will be nested under the first variable.</p></dd>
+It defines the grouping variable in the results table.</p></dd>
 
 
 <dt id="arg-atirel">atirel<a class="anchor" aria-label="anchor" href="#arg-atirel"></a>
@@ -355,6 +356,17 @@ value indicating worst grade.</p></dd>
 </dt>
 <dd><p>(<code><a href="https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html" class="external-link">teal.transform::choices_selected()</a></code>)<br> object
 with all available choices and preselected option for variable names that can be used as worst flag variable.</p></dd>
+
+
+<dt id="arg-decorators">decorators<a class="anchor" aria-label="anchor" href="#arg-decorators"></a>
+</dt>
+<dd>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a>
+(named <code>list</code> of lists of <code>teal_transform_module</code>) optional,
+decorator for tables or plots included in the module output reported.
+The decorators are applied to the respective output objects.</p>
+<p>See section "Decorating Module" below for more details.</p>
+</dd>
 
 </dl>
 </div>

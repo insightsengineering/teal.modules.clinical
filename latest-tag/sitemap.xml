@@ -4,6 +4,7 @@
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/CONTRIBUTING.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/LICENSE-text.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/SECURITY.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.clinical/articles/decorate-module-output.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/articles/generate_tmc_test_data.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/articles/index.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/articles/quickstart_substitute.html</loc></url>
@@ -40,9 +41,11 @@
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/pipe_expr.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/prepare_arm.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/prepare_arm_levels.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/select_decorators.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/split_choices.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/split_col_expr.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/split_interactions.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/srv_decorate_teal_data.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/substitute_names.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/substitute_q.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/teal.modules.clinical-package.html</loc></url>

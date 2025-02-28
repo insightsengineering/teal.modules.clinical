@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
+<li><a class="dropdown-item" href="../articles/decorate-module-output.html">Decorate Module Output</a></li>
+    <li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
     <li><a class="dropdown-item" href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a></li>
   </ul>
 </li>
@@ -47,6 +48,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
 <li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
     <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
+    <li><a class="dropdown-item" href="../unit-test-report-non-cran/">Non-CRAN unit test report</a></li>
   </ul>
 </li>
       <div><li class="nav-item dropdown">
@@ -55,6 +57,7 @@
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0">v0.10.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0-rc1">v0.10.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.1">v0.9.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a>
@@ -84,9 +87,9 @@
 
       <h1>Example Data Generation</h1>
             
-            <h4 data-toc-skip class="date">2024-11-19</h4>
+            <h4 data-toc-skip class="date">2025-02-28</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/vignettes/generate_tmc_test_data.Rmd" class="external-link"><code>vignettes/generate_tmc_test_data.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.10.0/vignettes/generate_tmc_test_data.Rmd" class="external-link"><code>vignettes/generate_tmc_test_data.Rmd</code></a></small>
       <div class="d-none name"><code>generate_tmc_test_data.Rmd</code></div>
     </div>
 
@@ -132,7 +135,7 @@ tracking.</p>
 <span>    <span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"relvar1"</span> <span class="op">=</span> <span class="va">relvar1</span>, <span class="st">"relvar2"</span> <span class="op">=</span> <span class="va">relvar2</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">List</span><span class="op">(</span><span class="st">"relvar1"</span> <span class="op">=</span> <span class="va">relvar1</span>, <span class="st">"relvar2"</span> <span class="op">=</span> <span class="va">relvar2</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">rel_var</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">var_name</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">var_values</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">related_var</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
@@ -980,7 +983,7 @@ tracking.</p>
 <span>      <span class="op">}</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span>    <span class="va">data</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
 <span>  <span class="va">lbls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://insightsengineering.github.io/teal.data/latest-tag/reference/col_labels.html" class="external-link">col_labels</a></span><span class="op">(</span><span class="va">adeg</span><span class="op">)</span></span>
@@ -1044,7 +1047,7 @@ tracking.</p>
 <span>    <span class="va">data_compare</span><span class="op">$</span><span class="va">new_var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">data_compare</span><span class="op">$</span><span class="va">row_check</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">data</span><span class="op">$</span><span class="va">row_check</span>, <span class="st">"Y"</span>, <span class="st">""</span><span class="op">)</span></span>
 <span>    <span class="va">data_compare</span> <span class="op">&lt;-</span> <span class="va">data_compare</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">data_compare</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row_check"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
-<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">data_compare</span><span class="op">)</span></span>
+<span>    <span class="va">data_compare</span></span>
 <span>  <span class="op">}</span></span>
 <span>  <span class="va">adeg</span> <span class="op">&lt;-</span> <span class="fu">flag_variables</span><span class="op">(</span><span class="va">adeg</span>, <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>WORS01FL <span class="op">=</span> <span class="st">"new_var"</span><span class="op">)</span></span>
 <span>  <span class="va">adeg</span> <span class="op">&lt;-</span> <span class="fu">flag_variables</span><span class="op">(</span><span class="va">adeg</span>, <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>WORS02FL <span class="op">=</span> <span class="st">"new_var"</span><span class="op">)</span></span>
@@ -1536,7 +1539,7 @@ tracking.</p>
 <span></span>
 <span>    <span class="va">data_compare</span><span class="op">$</span><span class="va">new_var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">data_compare</span><span class="op">$</span><span class="va">row_check</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">data</span><span class="op">$</span><span class="va">row_check</span>, <span class="st">"Y"</span>, <span class="st">""</span><span class="op">)</span></span>
 <span>    <span class="va">data_compare</span> <span class="op">&lt;-</span> <span class="va">data_compare</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">data_compare</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row_check"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
-<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">data_compare</span><span class="op">)</span></span>
+<span>    <span class="va">data_compare</span></span>
 <span>  <span class="op">}</span></span>
 <span>  <span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu">flag_variables</span><span class="op">(</span><span class="va">adlb</span>, <span class="cn">TRUE</span>, <span class="st">"ELSE"</span>, <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>WORS01FL <span class="op">=</span> <span class="st">"new_var"</span><span class="op">)</span></span>
 <span>  <span class="va">adlb</span> <span class="op">&lt;-</span> <span class="fu">flag_variables</span><span class="op">(</span><span class="va">adlb</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>WGRHIFL <span class="op">=</span> <span class="st">"new_var"</span><span class="op">)</span></span>

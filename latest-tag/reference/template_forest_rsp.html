@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">teal.modules.clinical</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
+<li><a class="dropdown-item" href="../articles/decorate-module-output.html">Decorate Module Output</a></li>
+    <li><a class="dropdown-item" href="../articles/generate_tmc_test_data.html">Example Data Generation</a></li>
     <li><a class="dropdown-item" href="../articles/quickstart_substitute.html">Quick start: `substitute` for NSE</a></li>
   </ul>
 </li>
@@ -49,6 +50,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-reports">
 <li><a class="dropdown-item" href="../coverage-report/">Coverage report</a></li>
     <li><a class="dropdown-item" href="../unit-test-report/">Unit test report</a></li>
+    <li><a class="dropdown-item" href="../unit-test-report-non-cran/">Non-CRAN unit test report</a></li>
   </ul>
 </li>
       <div><li class="nav-item dropdown">
@@ -57,6 +59,7 @@
     <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/release-candidate">release-candidate</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/main">main</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/latest-tag">latest-tag</a>
+<a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0">v0.10.0</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.10.0-rc1">v0.10.0-rc1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.1">v0.9.1</a>
 <a class="dropdown-item" data-toggle="tooltip" title="" href="https://insightsengineering.github.io/teal.modules.clinical/v0.9.0">v0.9.0</a>
@@ -81,7 +84,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Template: Response Forest Plot</h1>
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/HEAD/R/tm_g_forest_rsp.R" class="external-link"><code>R/tm_g_forest_rsp.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/teal.modules.clinical/blob/v0.10.0/R/tm_g_forest_rsp.R" class="external-link"><code>R/tm_g_forest_rsp.R</code></a></small>
       <div class="d-none name"><code>template_forest_rsp.Rd</code></div>
     </div>
 
@@ -103,9 +106,10 @@
 <span>  responders <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CR"</span>, <span class="st">"PR"</span><span class="op">)</span>,</span>
 <span>  <span class="va">subgroup_var</span>,</span>
 <span>  strata_var <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n_tot"</span>, <span class="st">"n"</span>, <span class="st">"n_rsp"</span>, <span class="st">"prop"</span>, <span class="st">"or"</span>, <span class="st">"ci"</span><span class="op">)</span>,</span>
+<span>  riskdiff <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  col_symbol_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  rel_width_forest <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>  font_size <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  ggplot2_args <span class="op">=</span> <span class="fu">teal.widgets</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html" class="external-link">ggplot2_args</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -167,6 +171,29 @@
 <dd><p>(<code>character</code>)<br> names of the variables for stratified analysis.</p></dd>
 
 
+<dt id="arg-stats">stats<a class="anchor" aria-label="anchor" href="#arg-stats"></a>
+</dt>
+<dd>
+<p>(<code>character</code>)<br> the names of statistics to be reported among:</p>
+<ul>
+<li><p><code>n</code>: Total number of observations per group.</p></li>
+<li><p><code>n_rsp</code>: Number of responders per group.</p></li>
+<li><p><code>prop</code>: Proportion of responders.</p></li>
+<li><p><code>n_tot</code>: Total number of observations.</p></li>
+<li><p><code>or</code>: Odds ratio.</p></li>
+<li><p><code>ci</code> : Confidence interval of odds ratio.</p></li>
+<li><p><code>pval</code>: p-value of the effect.
+Note, the statistics <code>n_tot</code>, <code>or</code>, and <code>ci</code> are required.</p></li>
+</ul>
+</dd>
+
+
+<dt id="arg-riskdiff">riskdiff<a class="anchor" aria-label="anchor" href="#arg-riskdiff"></a>
+</dt>
+<dd><p>(<code>list</code>)<br> if a risk (proportion) difference column should be added, a list of settings to apply
+within the column. See <code><a href="https://insightsengineering.github.io/tern/latest-tag/reference/control_riskdiff.html" class="external-link">tern::control_riskdiff()</a></code> for details. If <code>NULL</code>, no risk difference column will be added.</p></dd>
+
+
 <dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a>
 </dt>
 <dd><p>(<code>numeric</code>)<br> value for the confidence level within the range of (0, 1).</p></dd>
@@ -177,12 +204,6 @@
 <dd><p>(<code>integer</code> or <code>NULL</code>)<br> column index to be used to determine relative size for
 estimator plot symbol. Typically, the symbol size is proportional to the sample size used
 to calculate the estimator. If <code>NULL</code>, the same symbol size is used for all subgroups.</p></dd>
-
-
-<dt id="arg-rel-width-forest">rel_width_forest<a class="anchor" aria-label="anchor" href="#arg-rel-width-forest"></a>
-</dt>
-<dd><p>(<code>proportion</code>)<br> proportion of total width to allocate to the forest plot. Relative
-width of table is then <code>1 - rel_width_forest</code>. If <code>as_list = TRUE</code>, this parameter is ignored.</p></dd>
 
 
 <dt id="arg-font-size">font_size<a class="anchor" aria-label="anchor" href="#arg-font-size"></a>
