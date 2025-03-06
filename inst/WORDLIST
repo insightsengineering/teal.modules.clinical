@@ -1,6 +1,7 @@
 ADaM
 AE
 ANCOVA
+ElementaryTable
 Facetting
 Forkers
 GDSR
@@ -15,11 +16,15 @@ Rua
 SMQ
 Shinylive
 TLG
+TableTree
 UI
 Univariable
 customizable
+datatables
 de
 funder
+ggplot
+lsmeans
 pre
 preselected
 programmatically

@@ -800,6 +800,9 @@ template_events_col_by_grade <- function(dataname,
 #' ```
 #'
 #' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-module-output", package = "teal.modules.clinical")`.
+#'
+#' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @export
@@ -1223,7 +1226,8 @@ srv_t_events_by_grade <- function(id,
 
 
     table_renamed_q <- reactive({
-      within(table_q(), table <- pruned_and_sorted_result)
+      req(table_q())
+      teal.code::eval_code(table_q(), "table <- pruned_and_sorted_result")
     })
 
     decorated_table_q <- srv_decorate_teal_data(

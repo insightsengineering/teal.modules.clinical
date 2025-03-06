@@ -256,6 +256,9 @@ template_abnormality <- function(parentname,
 #' ```
 #'
 #' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-module-output", package = "teal.modules.clinical")`.
+#'
+#' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @note Patients with the same abnormality at baseline as on the treatment visit can be

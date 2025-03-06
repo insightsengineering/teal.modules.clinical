@@ -183,7 +183,7 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' This module generates the following objects, which can be modified in place using decorators::
 #' - `plot` (`ggplot`)
-#' - `table` (`datatable` - output of `DT::datatable()`)
+#' - `table` (`datatables` - output of `DT::datatable()`)
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
@@ -200,6 +200,9 @@ template_adverse_events <- function(dataname = "ANL",
 #' ```
 #'
 #' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-module-output", package = "teal.modules.clinical")`.
+#'
+#' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
@@ -585,8 +588,14 @@ srv_g_adverse_events <- function(id,
     })
 
     # Allow for the table and plot qenv to be joined
-    table_q <- reactive(within(all_q(), table <- table_output))
-    plot_q <- reactive(within(all_q(), plot <- plot_output))
+    table_q <- reactive({
+      req(all_q())
+      teal.code::eval_code(all_q(), "table <- table_output")
+    })
+    plot_q <- reactive({
+      req(all_q())
+      teal.code::eval_code(all_q(), "plot <- plot_output")
+    })
 
     decorated_all_q_table <- srv_decorate_teal_data(
       "d_table",
@@ -602,10 +611,13 @@ srv_g_adverse_events <- function(id,
       expr = print(plot)
     )
 
-    table_r <- reactive(teal.code::dev_suppress(decorated_all_q_table()[["table"]]))
+    table_r <- reactive({
+      req(decorated_all_q_table())
+      teal.code::dev_suppress(decorated_all_q_table()[["table"]])
+    })
 
     plot_r <- reactive({
-      req(iv_r()$is_valid())
+      req(iv_r()$is_valid(), decorated_all_q_plot())
       decorated_all_q_plot()[["plot"]]
     })
 

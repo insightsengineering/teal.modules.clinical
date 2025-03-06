@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.9.1.9068
-Date: 2025-02-24
+Version: 0.10.0.9000
+Date: 2025-02-28
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
            comment = c(ORCID = "0000-0001-7566-2787")),
@@ -57,9 +57,9 @@ Imports:
     shinyvalidate,
     shinyWidgets (>= 0.5.1),
     stats,
-    teal.code (>= 0.6.0),
+    teal.code (>= 0.6.1),
     teal.data (>= 0.7.0),
-    teal.logger (>= 0.3.1),
+    teal.logger (>= 0.3.2),
     teal.reporter (>= 0.4.0),
     teal.widgets (>= 0.4.3),
     tern.gee (>= 0.1.5),
