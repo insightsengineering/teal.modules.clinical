@@ -389,9 +389,7 @@ ui_t_logistic <- function(id, ...) {
 
   ns <- NS(id)
   teal.widgets::standard_layout(
-    output = teal.widgets::white_small_well(
-      teal.widgets::table_with_settings_ui(ns("table"))
-    ),
+    output = teal.widgets::table_with_settings_ui(ns("table")),
     encoding = tags$div(
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
