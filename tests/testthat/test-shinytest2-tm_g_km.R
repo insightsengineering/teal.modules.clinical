@@ -394,7 +394,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {conf_type} throws validation er
   app_driver$expect_validation_error()
   testthat::expect_match(
     app_driver$active_module_element_text("myplot-plot-with-settings"),
-    'Confidence interval type must be one of "plain", "log", "log-log".'
+    "Confidence interval type must be one of plain, log, log-log."
   )
   app_driver$stop()
 })
