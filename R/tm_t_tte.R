@@ -597,7 +597,7 @@ ui_t_tte <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(
         a[c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var")]
       ),
@@ -671,7 +671,7 @@ ui_t_tte <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
-        teal.widgets::panel_item(
+        bslib::accordion_panel(
           "Comparison settings",
           radioButtons(
             ns("pval_method_coxph"),
@@ -716,8 +716,9 @@ ui_t_tte <- function(id, ...) {
           )
         )
       ),
-      teal.widgets::panel_item(
+      bslib::accordion_panel(
         "Additional table settings",
+        open = TRUE,
         teal.widgets::optionalSelectInput(
           inputId = ns("conf_level_survfit"),
           label = HTML(

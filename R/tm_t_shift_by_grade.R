@@ -677,7 +677,7 @@ ui_t_shift_by_grade <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(
         a[c("arm_var", "id_var", "visit_var", "paramcd", "worst_flag_var", "anl_toxgrade_var", "base_toxgrade_var")]
       ),
@@ -718,9 +718,10 @@ ui_t_shift_by_grade <- function(id, ...) {
         data_extract_spec = a$base_toxgrade_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional table settings",
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
@@ -734,9 +735,10 @@ ui_t_shift_by_grade <- function(id, ...) {
         )
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

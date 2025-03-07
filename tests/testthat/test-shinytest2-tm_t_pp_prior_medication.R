@@ -61,7 +61,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab > li.active > a"),
+      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
       "Prior Medication"
     )
     testthat::expect_equal(

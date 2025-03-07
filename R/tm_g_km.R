@@ -478,7 +478,7 @@ ui_g_km <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -545,9 +545,10 @@ ui_g_km <- function(id, ...) {
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
-            "Comparison settings",
+        bslib::accordion(
+          open = TRUE,
+          bslib::accordion_panel(
+            title = "Comparison settings",
             radioButtons(
               ns("pval_method_coxph"),
               label = HTML(
@@ -577,9 +578,10 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional plot settings",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional plot settings",
           textInput(
             inputId = ns("xticks"),
             label = "Specify break intervals for x-axis e.g. 0 ; 500"

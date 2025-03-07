@@ -38,6 +38,7 @@ Depends:
     tern (>= 0.9.7)
 Imports:
     broom (>= 0.7.10),
+    bslib (>= 0.8.0),
     checkmate (>= 2.1.0),
     cowplot (>= 0.7.0),
     dplyr (>= 1.0.5),

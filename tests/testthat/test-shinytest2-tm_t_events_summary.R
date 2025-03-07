@@ -109,7 +109,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab > li.active > a"),
+      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
       "Adverse Events Summary"
     )
     testthat::expect_equal(

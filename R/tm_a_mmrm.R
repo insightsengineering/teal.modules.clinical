@@ -682,11 +682,12 @@ ui_mmrm <- function(id, ...) {
         ### Reporter
         teal.reporter::simple_reporter_ui(ns("simple_reporter")),
         ###
-        tags$label("Encodings", class = "text-primary"),
+        tags$label("Encodings", class = "text-primary"), tags$br(),
         teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
-            "Model Settings",
+        bslib::accordion(
+          open = TRUE,
+          bslib::accordion_panel(
+            title = "Model Settings",
             teal.transform::data_extract_ui(
               id = ns("aval_var"),
               label = "Analysis Variable",
@@ -777,8 +778,7 @@ ui_mmrm <- function(id, ...) {
               ns("parallel"),
               "Parallel Computing",
               value = TRUE
-            ),
-            collapsed = FALSE # Start with having this panel opened.
+            )
           )
         ),
         actionButton(
@@ -833,9 +833,11 @@ ui_mmrm <- function(id, ...) {
             "input['", ns("output_function"), "'] == 'g_mmrm_lsmeans'", " || ",
             "input['", ns("output_function"), "'] == 'g_mmrm_diagnostic'"
           ),
-          teal.widgets::panel_group(
-            teal.widgets::panel_item(
-              "Output Settings",
+          bslib::accordion(
+            open = TRUE,
+            bslib::accordion_panel(
+              title = "Output Settings",
+
               # Additional option for LS means table.
               selectInput(
                 ns("t_mmrm_lsmeans_show_relative"),

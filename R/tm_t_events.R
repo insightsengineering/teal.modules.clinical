@@ -621,7 +621,7 @@ ui_t_events_byterm <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "hlt", "llt")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -643,8 +643,9 @@ ui_t_events_byterm <- function(id, ...) {
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_item(
+      bslib::accordion_panel(
         "Additional table settings",
+        open = TRUE,
         checkboxInput(
           ns("drop_arm_levels"),
           label = "Drop columns not in filtered analysis dataset",

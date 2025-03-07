@@ -391,7 +391,7 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c(
         "arm_var", "paramcd_var", "paramcd", "aval_var",
         "baseline_var", "worst_flag_var", "worst_flag", "treamtment_flag_var"
@@ -442,9 +442,10 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
         selected = a$useNA
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("treatment_flag_var"),
             label = "On Treatment Flag Variable",
