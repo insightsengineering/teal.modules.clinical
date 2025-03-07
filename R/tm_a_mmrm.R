@@ -778,8 +778,7 @@ ui_mmrm <- function(id, ...) {
               ns("parallel"),
               "Parallel Computing",
               value = TRUE
-            ),
-            collapsed = FALSE # Start with having this panel opened.
+            )
           )
         ),
         actionButton(
