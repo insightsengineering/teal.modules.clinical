@@ -388,7 +388,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation e
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {conf_type} throws validation error.", {
-  #skip_if_too_deep(5)
+  skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("conf_type", "none")
   app_driver$expect_validation_error()
