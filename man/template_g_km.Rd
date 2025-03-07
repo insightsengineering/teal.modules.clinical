@@ -19,6 +19,7 @@ template_g_km(
   facet_var = "SEX",
   font_size = 11,
   conf_level = 0.95,
+  conf_type = "plain",
   ties = "efron",
   xlab = "Survival time",
   time_unit_var = "AVALU",
@@ -67,6 +68,9 @@ optimal tick positions on the x-axis.}
 \item{font_size}{(\code{numeric})\cr font size value.}
 
 \item{conf_level}{(\code{numeric})\cr value for the confidence level within the range of (0, 1).}
+
+\item{conf_type}{(\code{string})\cr confidence interval type for median survival time CI. Options are "plain" (default),
+"log", "log-log".}
 
 \item{ties}{(\code{string})\cr among \code{exact} (equivalent to \code{DISCRETE} in SAS), \code{efron} and \code{breslow},
 see \code{\link[survival:coxph]{survival::coxph()}}. Note: there is no equivalent of SAS \code{EXACT} method in R.}
