@@ -719,7 +719,7 @@ ui_t_shift_by_grade <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional table settings",
           checkboxInput(
@@ -736,7 +736,7 @@ ui_t_shift_by_grade <- function(id, ...) {
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
           teal.transform::data_extract_ui(

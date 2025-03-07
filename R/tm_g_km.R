@@ -546,7 +546,7 @@ ui_g_km <- function(id, ...) {
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         bslib::accordion(
-          open = FALSE,
+          open = TRUE,
           bslib::accordion_panel(
             title = "Comparison settings",
             radioButtons(
@@ -579,7 +579,7 @@ ui_g_km <- function(id, ...) {
         )
       ),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional plot settings",
           textInput(

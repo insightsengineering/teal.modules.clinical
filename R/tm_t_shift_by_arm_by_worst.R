@@ -443,7 +443,7 @@ ui_shift_by_arm_by_worst <- function(id, ...) {
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
           teal.transform::data_extract_ui(

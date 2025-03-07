@@ -635,7 +635,7 @@ ui_t_binary_outcome <- function(id, ...) {
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         bslib::accordion(
-          open = FALSE,
+          open = TRUE,
           bslib::accordion_panel(
             title = "Unstratified analysis settings",
             teal.widgets::optionalSelectInput(
@@ -671,7 +671,7 @@ ui_t_binary_outcome <- function(id, ...) {
           )
         ),
         bslib::accordion(
-          open = FALSE,
+          open = TRUE,
           bslib::accordion_panel(
             title = "Stratified analysis settings",
             teal.transform::data_extract_ui(
@@ -710,8 +710,9 @@ ui_t_binary_outcome <- function(id, ...) {
         checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_item(
+      bslib::accordion_panel(
         "Additional table settings",
+        open = TRUE,
         teal.widgets::optionalSelectInput(
           inputId = ns("prop_ci_method"),
           label = "Method for Proportion CI",

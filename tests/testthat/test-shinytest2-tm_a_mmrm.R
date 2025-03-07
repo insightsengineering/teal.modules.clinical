@@ -101,7 +101,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm(FALSE)
 
-    testthat::expect_equal(app_driver$get_text("#teal-teal_modules-active_tab > li.active > a"), "MMRM")
+    testthat::expect_equal(app_driver$get_text("#teal-teal_modules-active_tab .active"), "MMRM")
 
     testthat::expect_equal(app_driver$get_active_module_input("aval_var-dataset_ADQS_singleextract-select"), "AVAL")
 
@@ -165,6 +165,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_a_mmrm()
 
     app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$wait_for_idle()
     app_driver$expect_no_validation_error()
 
     app_driver$set_active_module_input("output_function", "t_mmrm_lsmeans", wait_ = FALSE)
@@ -185,6 +186,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_a_mmrm()
 
     app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$wait_for_idle()
     app_driver$expect_no_validation_error()
 
     app_driver$set_active_module_input("output_function", "g_mmrm_lsmeans", wait_ = FALSE)
@@ -226,6 +228,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_a_mmrm()
 
     app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$wait_for_idle()
     app_driver$expect_no_validation_error()
 
     app_driver$set_active_module_input("output_function", "g_mmrm_diagnostic", wait_ = FALSE)
@@ -515,6 +518,7 @@ for (func in output_functions) {
 
         app_driver$set_active_module_input(input_name, input_list[[input_name]])
         app_driver$click(selector = app_driver$active_module_element("button_start"))
+        app_driver$wait_for_idle()
         app_driver$expect_no_validation_error()
 
         # Check output based on function type (plot or table)

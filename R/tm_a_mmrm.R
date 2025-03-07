@@ -685,7 +685,7 @@ ui_mmrm <- function(id, ...) {
         tags$label("Encodings", class = "text-primary"), tags$br(),
         teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
         bslib::accordion(
-          open = FALSE,
+          open = TRUE,
           bslib::accordion_panel(
             title = "Model Settings",
             teal.transform::data_extract_ui(
@@ -835,7 +835,7 @@ ui_mmrm <- function(id, ...) {
             "input['", ns("output_function"), "'] == 'g_mmrm_diagnostic'"
           ),
           bslib::accordion(
-            open = FALSE,
+            open = TRUE,
             bslib::accordion_panel(
               title = "Output Settings",
 

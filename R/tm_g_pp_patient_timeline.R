@@ -702,9 +702,9 @@ ui_g_patient_timeline <- function(id, ...) {
         )
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "plot")),
-      teal.widgets::panel_item(
+      bslib::accordion_panel(
         title = "Plot settings",
-        collapsed = TRUE,
+        open = TRUE,
         teal.widgets::optionalSliderInputValMinMax(
           ns("font_size"),
           "Font Size",

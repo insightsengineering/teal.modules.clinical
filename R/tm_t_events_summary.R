@@ -789,8 +789,9 @@ ui_t_events_summary <- function(id, ...) {
         value = a$add_total
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_item(
+      bslib::accordion_panel(
         "Table Settings",
+        open = TRUE,
         checkboxInput(
           ns("count_dth"),
           "Count deaths",
@@ -818,7 +819,7 @@ ui_t_events_summary <- function(id, ...) {
         )
       ),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
           teal.transform::data_extract_ui(

@@ -476,7 +476,7 @@ ui_g_lineplot <- function(id, ...) {
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional plot settings",
           teal.widgets::optionalSelectInput(
@@ -524,7 +524,7 @@ ui_g_lineplot <- function(id, ...) {
         )
       ),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional table settings",
           teal.widgets::optionalSliderInputValMinMax(

@@ -388,7 +388,7 @@ ui_summary <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional table settings",
           radioButtons(

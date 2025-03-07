@@ -643,8 +643,9 @@ ui_t_events_byterm <- function(id, ...) {
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_item(
+      bslib::accordion_panel(
         "Additional table settings",
+        open = TRUE,
         checkboxInput(
           ns("drop_arm_levels"),
           label = "Drop columns not in filtered analysis dataset",

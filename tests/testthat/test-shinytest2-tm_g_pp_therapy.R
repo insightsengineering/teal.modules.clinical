@@ -111,7 +111,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_g_pp_therapy()
 
     testthat::expect_equal(
-      trimws(app_driver$get_text("#teal-teal_modules-active_tab > li.active")),
+      trimws(app_driver$get_text("#teal-teal_modules-active_tab .active")),
       "Therapy (e2e)"
     )
 

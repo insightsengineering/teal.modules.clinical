@@ -539,7 +539,7 @@ ui_summary_by <- function(id, ...) {
       checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
       checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = a$row_groups),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional table settings",
           checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
@@ -590,7 +590,7 @@ ui_summary_by <- function(id, ...) {
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
       bslib::accordion(
-        open = FALSE,
+        open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
           teal.transform::data_extract_ui(
