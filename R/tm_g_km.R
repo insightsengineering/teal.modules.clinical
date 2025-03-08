@@ -6,6 +6,8 @@
 #' @inheritParams tern::g_km
 #' @inheritParams tern::control_coxreg
 #' @param facet_var (`character`)\cr name of the variable to use to facet the plot.
+#' @param conf_type (`string`)\cr confidence interval type for median survival time CI. Options are "plain" (default),
+#'   "log", "log-log".
 #'
 #' @inherit template_arguments return
 #'
@@ -26,6 +28,7 @@ template_g_km <- function(dataname = "ANL",
                           facet_var = "SEX",
                           font_size = 11,
                           conf_level = 0.95,
+                          conf_type = "plain",
                           ties = "efron",
                           xlab = "Survival time",
                           time_unit_var = "AVALU",
@@ -174,7 +177,7 @@ template_g_km <- function(dataname = "ANL",
             g_km(
               x,
               variables = variables,
-              control_surv = control_surv_timepoint(conf_level = conf_level),
+              control_surv = control_surv_timepoint(conf_level = conf_level, conf_type = conf_type),
               xticks = xticks,
               xlab = sprintf(
                 "%s (%s)",
@@ -241,6 +244,7 @@ template_g_km <- function(dataname = "ANL",
         yval = yval,
         ylim = ylim,
         conf_level = conf_level,
+        conf_type = conf_type,
         pval_method = pval_method,
         annot_surv_med = annot_surv_med,
         annot_coxph = annot_coxph,
@@ -381,6 +385,7 @@ tm_g_km <- function(label,
                       fixed = TRUE
                     ),
                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                    conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain", TRUE),
                     font_size = c(11L, 1L, 30),
                     control_annot_surv_med = control_surv_med_annot(),
                     control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
@@ -405,6 +410,7 @@ tm_g_km <- function(label,
   checkmate::assert_class(aval_var, "choices_selected")
   checkmate::assert_class(cnsr_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
+  checkmate::assert_class(conf_type, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
@@ -628,6 +634,14 @@ ui_g_km <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_level$fixed
           ),
+          teal.widgets::optionalSelectInput(
+            ns("conf_type"),
+            "Confidence Interval Type",
+            a$conf_type$choices,
+            a$conf_type$selected,
+            multiple = FALSE,
+            fixed = a$conf_type$fixed
+          ),
           textInput(ns("xlab"), "X-axis label", "Time"),
           teal.transform::data_extract_ui(
             id = ns("time_unit_var"),
@@ -720,12 +734,20 @@ srv_g_km <- function(id,
       iv$add_rule("font_size", shinyvalidate::sv_gte(5, "Plot tables font size must be greater than or equal to 5"))
       iv$add_rule("ylim", shinyvalidate::sv_required("Please choose a range for y-axis limits"))
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
+      iv$add_rule("conf_type", shinyvalidate::sv_required("Please choose a confidence interval type"))
       iv$add_rule(
         "conf_level",
         shinyvalidate::sv_between(
           0, 1,
           inclusive = c(FALSE, FALSE),
           message_fmt = "Confidence level must be between 0 and 1"
+        )
+      )
+      iv$add_rule(
+        "conf_type",
+        shinyvalidate::sv_in_set(
+          c("plain", "log", "log-log"),
+          message_fmt = "Confidence interval type must be one of {values_text}."
         )
       )
       iv$add_rule("xticks", shinyvalidate::sv_optional())
@@ -830,6 +852,7 @@ srv_g_km <- function(id,
         font_size = input$font_size,
         pval_method = input$pval_method_coxph,
         conf_level = as.numeric(input$conf_level),
+        conf_type = input$conf_type,
         ties = input$ties_coxph,
         xlab = input$xlab,
         yval = ifelse(input$yval == "Survival probability", "Survival", "Failure"),
