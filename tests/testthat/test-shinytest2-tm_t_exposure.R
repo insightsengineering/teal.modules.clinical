@@ -69,6 +69,7 @@ app_driver_tm_t_exposure <- function() {
 }
 
 testthat::test_that("e2e - tm_t_exposure: Module initializes in teal without errors and produces table output.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$expect_no_shiny_error()
@@ -83,6 +84,7 @@ testthat::test_that(
   "e2e - tm_t_exposure: Starts with specified label, paramcd, parcat,
   col_by_var, row_by_var, add_total_row, add_total",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     testthat::expect_equal(
@@ -114,6 +116,7 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_exposure: Selecting paramcd changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -130,6 +133,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd throws validation error.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$set_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals", NULL)
@@ -147,6 +151,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd throws validati
 testthat::test_that(
   "e2e - tm_t_exposure: Selecting parcat changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -163,6 +168,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_exposure: Deselection of parcat throws validation error.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$set_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals", NULL)
@@ -180,6 +186,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of parcat throws validatio
 testthat::test_that(
   "e2e - tm_t_exposure: Selecting col_by_var changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -198,6 +205,7 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_exposure: Deselection of col_by_var changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -216,6 +224,7 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_exposure: Selecting row_by_var changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -232,6 +241,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_exposure: Deselection of row_by_var throws validation error.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
   app_driver$set_active_module_input("row_by_var-dataset_ADEX_singleextract-select", NULL)
