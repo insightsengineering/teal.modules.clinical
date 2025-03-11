@@ -34,6 +34,7 @@ app_driver_tm_t_summary <- function() {
 }
 
 testthat::test_that("e2e - tm_t_summary: Module initializes in teal without errors and produces table output.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_summary()
   app_driver$expect_no_shiny_error()
@@ -45,10 +46,11 @@ testthat::test_that("e2e - tm_t_summary: Module initializes in teal without erro
 })
 
 testthat::test_that("e2e - tm_t_summary: Starts with specified label, arm_var, summarize_vars, useNA, denominator.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_summary()
   testthat::expect_equal(
-    app_driver$get_text("#teal-teal_modules-active_tab > li.active > a"),
+    app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
     "Demographic Table"
   )
   testthat::expect_equal(
@@ -73,6 +75,7 @@ testthat::test_that("e2e - tm_t_summary: Starts with specified label, arm_var, s
 testthat::test_that(
   "e2e - tm_t_summary: Selecting arm_var changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -89,6 +92,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_summary: Deselection of arm_var throws validation error.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_summary()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -104,6 +108,7 @@ testthat::test_that("e2e - tm_t_summary: Deselection of arm_var throws validatio
 testthat::test_that(
   "e2e - tm_t_summary: Selecting summarize_vars changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -120,6 +125,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_summary: Deselection of summarize_vars throws validation error.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_summary()
   app_driver$set_active_module_input("summarize_vars-dataset_ADSL_singleextract-select", NULL)

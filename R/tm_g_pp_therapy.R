@@ -463,7 +463,7 @@ ui_g_therapy <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(ui_args[c(
         "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
         "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
@@ -536,9 +536,9 @@ ui_g_therapy <- function(id, ...) {
       ),
       ui_decorate_teal_data(ns("d_table"), decorators = select_decorators(ui_args$decorators, "table")),
       ui_decorate_teal_data(ns("d_plot"), decorators = select_decorators(ui_args$decorators, "plot")),
-      teal.widgets::panel_item(
+      bslib::accordion_panel(
         title = "Plot settings",
-        collapsed = TRUE,
+        open = TRUE,
         teal.widgets::optionalSliderInputValMinMax(
           ns("font_size"),
           "Font Size",

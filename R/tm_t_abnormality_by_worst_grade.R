@@ -438,7 +438,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(
         a[c(
           "arm_var",
@@ -482,9 +482,10 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
         is_single_dataset = is_single_dataset_value
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional table settings",
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

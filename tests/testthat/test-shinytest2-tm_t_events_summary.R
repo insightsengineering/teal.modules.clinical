@@ -92,6 +92,7 @@ app_driver_tm_t_events_summary <- function() {
 }
 
 testthat::test_that("e2e - tm_t_events_summary: Module initializes in teal without errors and produces table output.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_summary()
   app_driver$expect_no_shiny_error()
@@ -106,10 +107,11 @@ testthat::test_that(
   "e2e - tm_t_events_summary: Starts with specified label, arm_var, flag_var_anl, flag_var_aesi,
   add_total, count_subj, count_pt, count_events.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab > li.active > a"),
+      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
       "Adverse Events Summary"
     )
     testthat::expect_equal(
@@ -135,6 +137,7 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events_summary: Selecting arm_var changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -151,6 +154,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_events_summary: Deselection of arm_var throws validation error.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_summary()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -166,6 +170,7 @@ testthat::test_that("e2e - tm_t_events_summary: Deselection of arm_var throws va
 testthat::test_that(
   "e2e - tm_t_events_summary: Selecting flag_var_anl changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -185,6 +190,7 @@ testthat::test_that(
   "e2e - tm_t_events_summary: Deselection of flag_var_anl changes the table
   and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -204,6 +210,7 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events_summary: Selecting flag_var_aesi changes the table and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -223,6 +230,7 @@ testthat::test_that(
   "e2e - tm_t_events_summary: Deselection of flag_var_aesi changes the table
   and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")

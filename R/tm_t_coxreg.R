@@ -626,7 +626,7 @@ ui_t_coxreg <- function(id, ...) {
         ),
         selected = dplyr::if_else(a$multivariate, "Multivariate", "Univariate")
       ),
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(
         a[c("arm_var", "paramcd", "subgroup_var", "strata_var", "aval_var", "cnsr_var", "cov_var")]
       ),
@@ -682,9 +682,10 @@ ui_t_coxreg <- function(id, ...) {
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional table settings",
           conditionalPanel(
             condition = paste0("input['", ns("strata_var"), "'] != ''"),
             radioButtons(

@@ -413,7 +413,7 @@ ui_g_ipp <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(
         a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "baseline_var")]
       ),
@@ -460,9 +460,10 @@ ui_g_ipp <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional plot settings",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional plot settings",
           checkboxInput(
             ns("add_baseline_hline"),
             "Add reference lines at baseline value",
