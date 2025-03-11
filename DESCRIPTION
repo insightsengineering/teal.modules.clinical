@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.10.0.9000
-Date: 2025-02-28
+Version: 0.10.0.9001
+Date: 2025-03-11
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
            comment = c(ORCID = "0000-0001-7566-2787")),
@@ -82,6 +82,10 @@ Suggests:
 VignetteBuilder:
     knitr,
     rmarkdown
+Remotes:
+    insightsengineering/teal.reporter@main,
+    insightsengineering/teal.widgets@main,
+    insightsengineering/teal@main
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
@@ -104,7 +108,3 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE, packages = c("roxy.shinylive"))
 RoxygenNote: 7.3.2
-Remotes:
-    insightsengineering/teal.widgets@main,
-    insightsengineering/teal.reporter@main,
-    insightsengineering/teal@main
