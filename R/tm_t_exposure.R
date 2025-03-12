@@ -429,7 +429,7 @@ ui_t_exposure <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c(
         "paramcd", "col_by_var", "row_by_var", "id_var", "parcat", "aval_var", "avalu_var"
       )]),
@@ -460,9 +460,10 @@ ui_t_exposure <- function(id, ...) {
       checkboxInput(ns("add_total_row"), "Add Total row", value = a$add_total_row),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",

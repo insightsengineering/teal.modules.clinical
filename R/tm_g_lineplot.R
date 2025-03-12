@@ -423,7 +423,7 @@ ui_g_lineplot <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("group_var", "paramcd", "x", "y", "y_unit", "param")]),
       teal.transform::data_extract_ui(
         id = ns("param"),
@@ -475,9 +475,10 @@ ui_g_lineplot <- function(id, ...) {
         value = TRUE
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional plot settings",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional plot settings",
           teal.widgets::optionalSelectInput(
             ns("conf_level"),
             "Level of Confidence",
@@ -522,9 +523,10 @@ ui_g_lineplot <- function(id, ...) {
           )
         )
       ),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional table settings",
           teal.widgets::optionalSliderInputValMinMax(
             ns("table_font_size"),
             "Table Font Size",

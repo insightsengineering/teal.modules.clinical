@@ -451,7 +451,7 @@ ui_g_forest_rsp <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -498,9 +498,10 @@ ui_g_forest_rsp <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional plot settings",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional plot settings",
           teal.widgets::optionalSelectInput(
             inputId = ns("conf_level"),
             label = "Confidence Level",

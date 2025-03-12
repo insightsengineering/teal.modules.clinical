@@ -584,7 +584,7 @@ ui_t_binary_outcome <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
       teal.transform::data_extract_ui(
         id = ns("paramcd"),
@@ -634,9 +634,10 @@ ui_t_binary_outcome <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
-            "Unstratified analysis settings",
+        bslib::accordion(
+          open = TRUE,
+          bslib::accordion_panel(
+            title = "Unstratified analysis settings",
             teal.widgets::optionalSelectInput(
               ns("u_diff_ci"),
               label = "Method for Difference of Proportions CI",
@@ -669,9 +670,10 @@ ui_t_binary_outcome <- function(id, ...) {
             )
           )
         ),
-        teal.widgets::panel_group(
-          teal.widgets::panel_item(
-            "Stratified analysis settings",
+        bslib::accordion(
+          open = TRUE,
+          bslib::accordion_panel(
+            title = "Stratified analysis settings",
             teal.transform::data_extract_ui(
               id = ns("strata_var"),
               label = "Stratification Factors",
@@ -708,8 +710,9 @@ ui_t_binary_outcome <- function(id, ...) {
         checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_item(
+      bslib::accordion_panel(
         "Additional table settings",
+        open = TRUE,
         teal.widgets::optionalSelectInput(
           inputId = ns("prop_ci_method"),
           label = "Method for Proportion CI",

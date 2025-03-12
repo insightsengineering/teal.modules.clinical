@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.10.0.9000
-Date: 2025-02-28
+Version: 0.10.0.9001
+Date: 2025-03-11
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
            comment = c(ORCID = "0000-0001-7566-2787")),
@@ -33,11 +33,12 @@ BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.0),
-    teal (>= 0.16.0),
+    teal (>= 0.16.0.9002),
     teal.transform (>= 0.6.0),
     tern (>= 0.9.7)
 Imports:
     broom (>= 0.7.10),
+    bslib (>= 0.8.0),
     checkmate (>= 2.1.0),
     cowplot (>= 0.7.0),
     dplyr (>= 1.0.5),
@@ -59,8 +60,8 @@ Imports:
     teal.code (>= 0.6.1),
     teal.data (>= 0.7.0),
     teal.logger (>= 0.3.2),
-    teal.reporter (>= 0.4.0),
-    teal.widgets (>= 0.4.3),
+    teal.reporter (>= 0.4.0.9004),
+    teal.widgets (>= 0.4.3.9001),
     tern.gee (>= 0.1.5),
     tern.mmrm (>= 0.3.1),
     utils,
@@ -81,6 +82,10 @@ Suggests:
 VignetteBuilder:
     knitr,
     rmarkdown
+Remotes:
+    insightsengineering/teal.reporter@main,
+    insightsengineering/teal.widgets@main,
+    insightsengineering/teal@main
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,

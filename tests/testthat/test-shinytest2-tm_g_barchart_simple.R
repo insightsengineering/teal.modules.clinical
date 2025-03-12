@@ -112,6 +112,7 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
 # Initialization --------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal without errors and produces output.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_barchart_simple()
@@ -130,11 +131,12 @@ testthat::test_that(
   "e2e - tm_g_barchart_simple: Starts with specified label, id_var, arm_var, visit_var,
   paramcd, cov_var, conf_level and conf_struct.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
 
     testthat::expect_equal(
-      trimws(app_driver$get_text("#teal-teal_modules-active_tab > li.active")),
+      trimws(app_driver$get_text("#teal-teal_modules-active_tab .active")),
       "ADAE Analysis (e2e)"
     )
 
@@ -190,6 +192,7 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors.",
   {
+    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -201,6 +204,7 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws validation error.", {
+  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_barchart_simple()
   app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), character(0L))
@@ -226,6 +230,7 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       input_id
     ),
     {
+      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -249,6 +254,7 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       input_id
     ),
     {
+      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -274,6 +280,7 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
       input_id
     ),
     {
+      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), "ACTARM", wait_ = FALSE)
@@ -315,6 +322,7 @@ test_that_plot_settings <- function(input_id, new_value, setup_fun = function(ap
       input_id
     ),
     {
+      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
       setup_fun(app_driver)

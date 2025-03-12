@@ -487,7 +487,7 @@ ui_t_smq <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c(
         "arm_var", "baskets", "llt", "id_var", "scopes"
       )]),
@@ -511,9 +511,10 @@ ui_t_smq <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           checkboxInput(
             ns(
               "drop_arm_levels"

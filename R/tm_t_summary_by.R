@@ -505,7 +505,7 @@ ui_summary_by <- function(id, ...) {
       ### Reporter
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
-      tags$label("Encodings", class = "text-primary"),
+      tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "id_var", "paramcd", "by_vars", "summarize_vars")]),
       teal.transform::data_extract_ui(
         id = ns("arm_var"),
@@ -538,9 +538,10 @@ ui_summary_by <- function(id, ...) {
       ),
       checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = a$parallel_vars),
       checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = a$row_groups),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional table settings",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional table settings",
           checkboxInput(ns("drop_zero_levels"), "Drop rows with 0 count", value = a$drop_zero_levels),
           radioButtons(
             ns("useNA"),
@@ -588,9 +589,10 @@ ui_summary_by <- function(id, ...) {
         )
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      teal.widgets::panel_group(
-        teal.widgets::panel_item(
-          "Additional Variables Info",
+      bslib::accordion(
+        open = TRUE,
+        bslib::accordion_panel(
+          title = "Additional Variables Info",
           teal.transform::data_extract_ui(
             id = ns("id_var"),
             label = "Subject Identifier",
