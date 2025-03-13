@@ -61,6 +61,7 @@ app_driver_tm_g_km <- function() {
         fixed = TRUE
       ),
       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
+      conf_type = teal.transform::choices_selected(c("plain", "log", "log-log", "none"), "log", keep_order = TRUE),
       font_size = c(11L, 1L, 30),
       control_annot_surv_med = control_surv_med_annot(),
       control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
@@ -349,6 +350,7 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional p
   testthat::expect_false(app_driver$get_active_module_input("show_ci_ribbon"))
   testthat::expect_true(app_driver$get_active_module_input("show_km_table"))
   testthat::expect_equal(app_driver$get_active_module_input("conf_level"), "0.95")
+  testthat::expect_equal(app_driver$get_active_module_input("conf_type"), "log")
   testthat::expect_equal(app_driver$get_active_module_input("xlab"), "Time")
 
   testthat::expect_equal(

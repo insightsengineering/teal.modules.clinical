@@ -20,23 +20,23 @@
               plot_number <- 0L
               function(x) {
                   plot_number <<- plot_number + 1L
-                  g_km(x, variables = variables, control_surv = control_surv_timepoint(conf_level = 0.95), 
-                      xticks = NULL, xlab = sprintf("%s (%s)", "Survival time", 
-                        gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", 
-                          tolower(x$AVALU[1]), perl = TRUE)), yval = "Survival", 
-                      ylim = NULL, title = sprintf("%s%s", sprintf("%s%s", 
-                        "KM Plot", if (!is.null(facets)) {
+                  g_km(x, variables = variables, control_surv = control_surv_timepoint(conf_level = 0.95, 
+                      conf_type = "plain"), xticks = NULL, xlab = sprintf("%s (%s)", 
+                      "Survival time", gsub("(^|[[:space:]])([[:alpha:]])", 
+                        "\\1\\U\\2", tolower(x$AVALU[1]), perl = TRUE)), 
+                      yval = "Survival", ylim = NULL, title = sprintf("%s%s", 
+                        sprintf("%s%s", "KM Plot", if (!is.null(facets)) {
                           sprintf(", %s = %s", as.character(quote(SEX)), 
                             unique(x[[as.character(quote(SEX))]]))
                         }
                         else {
                           ""
                         }), if (length(NULL) != 0) {
-                        sprintf("\nStratified by %s", toString(NULL))
-                      }
-                      else {
-                        ""
-                      }), footnotes = if (TRUE) {
+                          sprintf("\nStratified by %s", toString(NULL))
+                        }
+                        else {
+                          ""
+                        }), footnotes = if (TRUE) {
                         paste("Ties for Coxph (Hazard Ratio):", "efron", 
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
@@ -81,23 +81,23 @@
               plot_number <- 0L
               function(x) {
                   plot_number <<- plot_number + 1L
-                  g_km(x, variables = variables, control_surv = control_surv_timepoint(conf_level = 0.95), 
-                      xticks = NULL, xlab = sprintf("%s (%s)", "Survival time", 
-                        gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", 
-                          tolower(x$AVALU[1]), perl = TRUE)), yval = "Survival", 
-                      ylim = NULL, title = sprintf("%s%s", sprintf("%s%s", 
-                        "KM Plot", if (!is.null(facets)) {
+                  g_km(x, variables = variables, control_surv = control_surv_timepoint(conf_level = 0.95, 
+                      conf_type = "plain"), xticks = NULL, xlab = sprintf("%s (%s)", 
+                      "Survival time", gsub("(^|[[:space:]])([[:alpha:]])", 
+                        "\\1\\U\\2", tolower(x$AVALU[1]), perl = TRUE)), 
+                      yval = "Survival", ylim = NULL, title = sprintf("%s%s", 
+                        sprintf("%s%s", "KM Plot", if (!is.null(facets)) {
                           sprintf(", %s = %s", as.character(quote(SEX)), 
                             unique(x[[as.character(quote(SEX))]]))
                         }
                         else {
                           ""
                         }), if (length(NULL) != 0) {
-                        sprintf("\nStratified by %s", toString(NULL))
-                      }
-                      else {
-                        ""
-                      }), footnotes = if (TRUE) {
+                          sprintf("\nStratified by %s", toString(NULL))
+                        }
+                        else {
+                          ""
+                        }), footnotes = if (TRUE) {
                         paste("Ties for Coxph (Hazard Ratio):", "efron", 
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
@@ -143,23 +143,23 @@
               plot_number <- 0L
               function(x) {
                   plot_number <<- plot_number + 1L
-                  g_km(x, variables = variables, control_surv = control_surv_timepoint(conf_level = 0.95), 
-                      xticks = NULL, xlab = sprintf("%s (%s)", "Survival time", 
-                        gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", 
-                          tolower(x$AVALU[1]), perl = TRUE)), yval = "Survival", 
-                      ylim = NULL, title = sprintf("%s%s", sprintf("%s%s", 
-                        "KM Plot", if (!is.null(facets)) {
+                  g_km(x, variables = variables, control_surv = control_surv_timepoint(conf_level = 0.95, 
+                      conf_type = "plain"), xticks = NULL, xlab = sprintf("%s (%s)", 
+                      "Survival time", gsub("(^|[[:space:]])([[:alpha:]])", 
+                        "\\1\\U\\2", tolower(x$AVALU[1]), perl = TRUE)), 
+                      yval = "Survival", ylim = NULL, title = sprintf("%s%s", 
+                        sprintf("%s%s", "KM Plot", if (!is.null(facets)) {
                           sprintf(", %s = %s", as.character(quote(SEX)), 
                             unique(x[[as.character(quote(SEX))]]))
                         }
                         else {
                           ""
                         }), if (length(NULL) != 0) {
-                        sprintf("\nStratified by %s", toString(NULL))
-                      }
-                      else {
-                        ""
-                      }), footnotes = if (TRUE) {
+                          sprintf("\nStratified by %s", toString(NULL))
+                        }
+                        else {
+                          ""
+                        }), footnotes = if (TRUE) {
                         paste("Ties for Coxph (Hazard Ratio):", "efron", 
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
