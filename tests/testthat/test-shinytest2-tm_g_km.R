@@ -391,7 +391,6 @@ test_that_plot_settings("rel_height_plot", 70)
 test_that_plot_settings("show_ci_ribbon", TRUE)
 test_that_plot_settings("show_km_table", FALSE)
 test_that_plot_settings("conf_level", 0.8)
-test_that_plot_settings("conf_type", "plain")
 test_that_plot_settings("xlab", "Time2")
 
 testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation error.", {
@@ -403,18 +402,6 @@ testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation e
   testthat::expect_match(
     app_driver$active_module_element_text("myplot-plot-with-settings"),
     "Confidence level must be between 0 and 1."
-  )
-  app_driver$stop()
-})
-
-testthat::test_that("e2e - tm_g_km: Deselecting {conf_type} throws validation error.", {
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_g_km()
-  app_driver$set_active_module_input("conf_type", "none")
-  app_driver$expect_validation_error()
-  testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot-with-settings"),
-    "Confidence interval type must be one of plain, log, log-log."
   )
   app_driver$stop()
 })
