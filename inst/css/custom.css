@@ -24,3 +24,7 @@
   color: grey;
   background-color: white;
 }
+
+.teal-sidebar-layout {
+  --_padding: 0px;
+}

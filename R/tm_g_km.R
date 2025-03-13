@@ -467,185 +467,192 @@ ui_g_km <- function(id, ...) {
 
   ns <- NS(id)
 
-  teal.widgets::standard_layout(
-    output = teal.widgets::white_small_well(
-      verbatimTextOutput(outputId = ns("text")),
-      teal.widgets::plot_with_settings_ui(
-        id = ns("myplot")
-      )
+  tagList(
+    singleton(
+      tags$head(includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
     ),
-    encoding = tags$div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
-      tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
+    teal.widgets::standard_layout(
+      output = teal.widgets::white_small_well(
+        verbatimTextOutput(outputId = ns("text")),
+        teal.widgets::plot_with_settings_ui(
+          id = ns("myplot")
+        )
       ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("cnsr_var"),
-        label = "Censor Variable",
-        data_extract_spec = a$cnsr_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("facet_var"),
-        label = "Facet Plots by",
-        data_extract_spec = a$facet_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      tags$div(
-        class = "arm-comp-box",
-        tags$label("Compare Treatments"),
-        shinyWidgets::switchInput(
-          inputId = ns("compare_arms"),
-          value = !is.null(a$arm_ref_comp),
-          size = "mini"
+      encoding = tags$div(
+        ### Reporter
+        teal.reporter::simple_reporter_ui(ns("simple_reporter")),
+        ###
+        tags$label("Encodings", class = "text-primary"), tags$br(),
+        teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
+        teal.transform::data_extract_ui(
+          id = ns("paramcd"),
+          label = "Select Endpoint",
+          data_extract_spec = a$paramcd,
+          is_single_dataset = is_single_dataset_value
         ),
+        teal.transform::data_extract_ui(
+          id = ns("aval_var"),
+          label = "Analysis Variable",
+          data_extract_spec = a$aval_var,
+          is_single_dataset = is_single_dataset_value
+        ),
+        teal.transform::data_extract_ui(
+          id = ns("cnsr_var"),
+          label = "Censor Variable",
+          data_extract_spec = a$cnsr_var,
+          is_single_dataset = is_single_dataset_value
+        ),
+        teal.transform::data_extract_ui(
+          id = ns("facet_var"),
+          label = "Facet Plots by",
+          data_extract_spec = a$facet_var,
+          is_single_dataset = is_single_dataset_value
+        ),
+        teal.transform::data_extract_ui(
+          id = ns("arm_var"),
+          label = "Select Treatment Variable",
+          data_extract_spec = a$arm_var,
+          is_single_dataset = is_single_dataset_value
+        ),
+        tags$div(
+          class = "arm-comp-box",
+          tags$label("Compare Treatments"),
+          shinyWidgets::switchInput(
+            inputId = ns("compare_arms"),
+            value = !is.null(a$arm_ref_comp),
+            size = "mini"
+          ),
+          conditionalPanel(
+            condition = paste0("input['", ns("compare_arms"), "']"),
+            tags$div(
+              uiOutput(
+                ns("arms_buckets"),
+                title = paste(
+                  "Multiple reference groups are automatically combined into a single group when more than one",
+                  "value is selected."
+                )
+              ),
+              checkboxInput(
+                ns("combine_comp_arms"),
+                "Combine all comparison groups?",
+                value = FALSE
+              ),
+              teal.transform::data_extract_ui(
+                id = ns("strata_var"),
+                label = "Stratify by",
+                data_extract_spec = a$strata_var,
+                is_single_dataset = is_single_dataset_value
+              )
+            )
+          )
+        ),
+        ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
         conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
-          tags$div(
-            uiOutput(
-              ns("arms_buckets"),
-              title = paste(
-                "Multiple reference groups are automatically combined into a single group when more than one",
-                "value is selected."
+          bslib::accordion(
+            open = TRUE,
+            bslib::accordion_panel(
+              title = "Comparison settings",
+              radioButtons(
+                ns("pval_method_coxph"),
+                label = HTML(
+                  paste(
+                    "p-value method for ",
+                    tags$span(class = "text-primary", "Coxph"),
+                    " (Hazard Ratio)",
+                    sep = ""
+                  )
+                ),
+                choices = c("wald", "log-rank", "likelihood"),
+                selected = "log-rank"
+              ),
+              radioButtons(
+                ns("ties_coxph"),
+                label = HTML(
+                  paste(
+                    "Ties for ",
+                    tags$span(class = "text-primary", "Coxph"),
+                    " (Hazard Ratio)",
+                    sep = ""
+                  )
+                ),
+                choices = c("exact", "breslow", "efron"),
+                selected = "exact"
               )
+            )
+          )
+        ),
+        bslib::accordion(
+          open = TRUE,
+          bslib::accordion_panel(
+            title = "Additional plot settings",
+            textInput(
+              inputId = ns("xticks"),
+              label = "Specify break intervals for x-axis e.g. 0 ; 500"
+            ),
+            radioButtons(
+              ns("yval"),
+              tags$label("Value on y-axis", class = "text-primary"),
+              choices = c("Survival probability", "Failure probability"),
+              selected = c("Survival probability"),
+            ),
+            teal.widgets::optionalSliderInput(
+              ns("ylim"),
+              tags$label("y-axis limits", class = "text-primary"),
+              value = c(0, 1),
+              min = 0, max = 1
+            ),
+            teal.widgets::optionalSliderInputValMinMax(
+              ns("font_size"),
+              "Table Font Size",
+              a$font_size,
+              ticks = FALSE, step = 1
+            ),
+            teal.widgets::optionalSliderInputValMinMax(
+              ns("rel_height_plot"),
+              "Relative Height of Plot (%)",
+              a$rel_height_plot,
+              ticks = FALSE, step = 1
             ),
             checkboxInput(
-              ns("combine_comp_arms"),
-              "Combine all comparison groups?",
-              value = FALSE
+              inputId = ns("show_ci_ribbon"),
+              label = "Show CI ribbon",
+              value = FALSE,
+              width = "100%"
             ),
+            checkboxInput(
+              inputId = ns("show_km_table"),
+              label = "Show KM table",
+              value = TRUE,
+              width = "100%"
+            ),
+            teal.widgets::optionalSelectInput(
+              ns("conf_level"),
+              "Level of Confidence",
+              a$conf_level$choices,
+              a$conf_level$selected,
+              multiple = FALSE,
+              fixed = a$conf_level$fixed
+            ),
+            textInput(ns("xlab"), "X-axis label", "Time"),
             teal.transform::data_extract_ui(
-              id = ns("strata_var"),
-              label = "Stratify by",
-              data_extract_spec = a$strata_var,
+              id = ns("time_unit_var"),
+              label = "Time Unit Variable",
+              data_extract_spec = a$time_unit_var,
               is_single_dataset = is_single_dataset_value
             )
           )
         )
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
-      conditionalPanel(
-        condition = paste0("input['", ns("compare_arms"), "']"),
-        bslib::accordion(
-          open = TRUE,
-          bslib::accordion_panel(
-            title = "Comparison settings",
-            radioButtons(
-              ns("pval_method_coxph"),
-              label = HTML(
-                paste(
-                  "p-value method for ",
-                  tags$span(class = "text-primary", "Coxph"),
-                  " (Hazard Ratio)",
-                  sep = ""
-                )
-              ),
-              choices = c("wald", "log-rank", "likelihood"),
-              selected = "log-rank"
-            ),
-            radioButtons(
-              ns("ties_coxph"),
-              label = HTML(
-                paste(
-                  "Ties for ",
-                  tags$span(class = "text-primary", "Coxph"),
-                  " (Hazard Ratio)",
-                  sep = ""
-                )
-              ),
-              choices = c("exact", "breslow", "efron"),
-              selected = "exact"
-            )
-          )
-        )
+      forms = tagList(
+        teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
       ),
-      bslib::accordion(
-        open = TRUE,
-        bslib::accordion_panel(
-          title = "Additional plot settings",
-          textInput(
-            inputId = ns("xticks"),
-            label = "Specify break intervals for x-axis e.g. 0 ; 500"
-          ),
-          radioButtons(
-            ns("yval"),
-            tags$label("Value on y-axis", class = "text-primary"),
-            choices = c("Survival probability", "Failure probability"),
-            selected = c("Survival probability"),
-          ),
-          teal.widgets::optionalSliderInput(
-            ns("ylim"),
-            tags$label("y-axis limits", class = "text-primary"),
-            value = c(0, 1),
-            min = 0, max = 1
-          ),
-          teal.widgets::optionalSliderInputValMinMax(
-            ns("font_size"),
-            "Table Font Size",
-            a$font_size,
-            ticks = FALSE, step = 1
-          ),
-          teal.widgets::optionalSliderInputValMinMax(
-            ns("rel_height_plot"),
-            "Relative Height of Plot (%)",
-            a$rel_height_plot,
-            ticks = FALSE, step = 1
-          ),
-          checkboxInput(
-            inputId = ns("show_ci_ribbon"),
-            label = "Show CI ribbon",
-            value = FALSE,
-            width = "100%"
-          ),
-          checkboxInput(
-            inputId = ns("show_km_table"),
-            label = "Show KM table",
-            value = TRUE,
-            width = "100%"
-          ),
-          teal.widgets::optionalSelectInput(
-            ns("conf_level"),
-            "Level of Confidence",
-            a$conf_level$choices,
-            a$conf_level$selected,
-            multiple = FALSE,
-            fixed = a$conf_level$fixed
-          ),
-          textInput(ns("xlab"), "X-axis label", "Time"),
-          teal.transform::data_extract_ui(
-            id = ns("time_unit_var"),
-            label = "Time Unit Variable",
-            data_extract_spec = a$time_unit_var,
-            is_single_dataset = is_single_dataset_value
-          )
-        )
-      )
-    ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+      pre_output = a$pre_output,
+      post_output = a$post_output
+    )
   )
+
+
 }
 
 #' @keywords internal
