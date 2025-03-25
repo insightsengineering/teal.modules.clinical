@@ -23,7 +23,7 @@ template_binary_outcome(
   add_total = FALSE,
   total_label = default_total_label(),
   na_level = default_na_str(),
-  denom = c("n", "N_col", "N_row"),
+  denom = c("N_col", "N_row", "n"),
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

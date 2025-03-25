@@ -36,7 +36,7 @@ template_binary_outcome <- function(dataname,
                                     add_total = FALSE,
                                     total_label = default_total_label(),
                                     na_level = default_na_str(),
-                                    denom = c("n", "N_col", "N_row"),
+                                    denom = c("N_col", "N_row", "n"),
                                     basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -182,7 +182,8 @@ template_binary_outcome <- function(dataname,
       ),
       env = list(
         conf_level = control$global$conf_level,
-        method = control$global$method
+        method = control$global$method,
+        denom = denom
       )
     )
   )
@@ -491,7 +492,7 @@ tm_t_binary_outcome <- function(label,
                                 add_total = FALSE,
                                 total_label = default_total_label(),
                                 na_level = default_na_str(),
-                                denom = c("n", "N_col", "N_row"),
+                                denom = c("N_col", "N_row", "n"),
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args(),
