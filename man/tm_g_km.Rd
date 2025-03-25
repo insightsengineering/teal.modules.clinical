@@ -23,6 +23,8 @@ tm_g_km(
     "CNSR"), "CNSR", fixed = TRUE),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
+  conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain",
+    TRUE),
   font_size = c(11L, 1L, 30),
   control_annot_surv_med = control_surv_med_annot(),
   control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
@@ -73,6 +75,9 @@ available choices and preselected option for the censoring variable.}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
+
+\item{conf_type}{(\code{string})\cr confidence interval type for median survival time CI. Options are "plain" (default),
+"log", "log-log".}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
 
