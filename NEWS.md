@@ -1,7 +1,7 @@
 # teal.modules.clinical 0.10.0.9001
 
 ### Enhancements
-* Added `denom` argument in `tm_t_binary_outcome` moodule.
+* Added `denom` argument in `tm_t_binary_outcome` module.
 
 # teal.modules.clinical 0.10.0
 
