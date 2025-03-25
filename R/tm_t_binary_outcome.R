@@ -446,7 +446,8 @@ template_binary_outcome <- function(dataname,
 #'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
 #'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
 #'         )
-#'       )
+#'       ),
+#'       denom = "N_col"
 #'     )
 #'   )
 #' )

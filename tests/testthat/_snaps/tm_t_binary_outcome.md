@@ -22,7 +22,7 @@
           subtitles = "") %>% rtables::split_cols_by(var = "ARMCD", 
           ref_group = "ARM A") %>% estimate_proportion(vars = "is_rsp", 
           conf_level = 0.95, method = "waldcc", table_names = "prop_est", 
-          denom = denom) %>% estimate_proportion_diff(vars = "is_rsp", 
+          denom = "n") %>% estimate_proportion_diff(vars = "is_rsp", 
           show_labels = "visible", var_labels = "Unstratified Analysis", 
           conf_level = 0.95, method = "waldcc", table_names = "u_prop_diff") %>% 
           test_proportion_diff(vars = "is_rsp", method = "schouten", 
@@ -59,7 +59,7 @@
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for PR and SD Responders", 
           subtitles = "") %>% rtables::split_cols_by(var = "ARM", ref_group = "B: Placebo") %>% 
           estimate_proportion(vars = "is_rsp", conf_level = 0.95, method = "waldcc", 
-              table_names = "prop_est", denom = denom) %>% estimate_proportion_diff(vars = "is_rsp", 
+              table_names = "prop_est", denom = "n") %>% estimate_proportion_diff(vars = "is_rsp", 
           show_labels = "visible", var_labels = "Unstratified Analysis", 
           conf_level = 0.95, method = "waldcc", table_names = "u_prop_diff") %>% 
           test_proportion_diff(vars = "is_rsp", method = "schouten", 
@@ -91,7 +91,7 @@
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
           subtitles = "") %>% rtables::split_cols_by(var = "ARM") %>% 
           estimate_proportion(vars = "is_rsp", conf_level = 0.95, method = "waldcc", 
-              table_names = "prop_est", denom = denom)
+              table_names = "prop_est", denom = "n")
       
       $table
       {
@@ -123,7 +123,7 @@
           subtitles = "Stratified by SEX") %>% rtables::split_cols_by(var = "ARM", 
           ref_group = "B: Placebo") %>% estimate_proportion(vars = "is_rsp", 
           conf_level = 0.8, method = "jeffreys", table_names = "prop_est", 
-          denom = denom) %>% estimate_proportion_diff(vars = "is_rsp", 
+          denom = "n") %>% estimate_proportion_diff(vars = "is_rsp", 
           show_labels = "visible", var_labels = "Unstratified Analysis", 
           conf_level = 0.8, method = "ha", table_names = "u_prop_diff") %>% 
           test_proportion_diff(vars = "is_rsp", method = "chisq", table_names = "u_test_diff") %>% 
@@ -170,7 +170,7 @@
           subtitles = "") %>% split_cols_by_groups(var = "ARMCD", groups_list = groups, 
           ref_group = names(groups)[1]) %>% estimate_proportion(vars = "is_rsp", 
           conf_level = 0.95, method = "waldcc", table_names = "prop_est", 
-          denom = denom) %>% estimate_proportion_diff(vars = "is_rsp", 
+          denom = "n") %>% estimate_proportion_diff(vars = "is_rsp", 
           show_labels = "visible", var_labels = "Unstratified Analysis", 
           conf_level = 0.95, method = "waldcc", table_names = "u_prop_diff") %>% 
           test_proportion_diff(vars = "is_rsp", method = "schouten", 
@@ -203,7 +203,7 @@
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
           subtitles = "") %>% rtables::split_cols_by(var = "ARMCD") %>% 
           estimate_proportion(vars = "is_rsp", conf_level = 0.95, method = "waldcc", 
-              table_names = "prop_est", denom = denom) %>% estimate_multinomial_response(var = "AVALC", 
+              table_names = "prop_est", denom = "n") %>% estimate_multinomial_response(var = "AVALC", 
           conf_level = 0.95, method = "waldcc")
       
       $table
@@ -257,7 +257,7 @@
           subtitles = "") %>% rtables::split_cols_by(var = "ARMCD", 
           ref_group = "ARM A/ARM B") %>% estimate_proportion(vars = "is_rsp", 
           conf_level = 0.95, method = "waldcc", table_names = "prop_est", 
-          denom = denom) %>% estimate_proportion_diff(vars = "is_rsp", 
+          denom = "n") %>% estimate_proportion_diff(vars = "is_rsp", 
           show_labels = "visible", var_labels = "Unstratified Analysis", 
           conf_level = 0.95, method = "waldcc", table_names = "u_prop_diff") %>% 
           test_proportion_diff(vars = "is_rsp", method = "schouten", 
