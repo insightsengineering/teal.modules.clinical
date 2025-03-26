@@ -203,7 +203,7 @@
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Table of BESRSPI for Complete Response (CR) and Partial Response (PR) Responders", 
           subtitles = "") %>% rtables::split_cols_by(var = "ARMCD") %>% 
           estimate_proportion(vars = "is_rsp", conf_level = 0.95, method = "waldcc", 
-              table_names = "prop_est", denom = "n") %>% estimate_multinomial_response(var = "AVALC", 
+              table_names = "prop_est", denom = "N_col") %>% estimate_multinomial_response(var = "AVALC", 
           conf_level = 0.95, method = "waldcc")
       
       $table
