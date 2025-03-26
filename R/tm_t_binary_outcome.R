@@ -3,7 +3,7 @@
 #' Creates a valid expression to generate a binary outcome analysis.
 #'
 #' @inheritParams template_arguments
-#' @inheritParams tern::s_count_occurrences
+#' @inheritParams tern::s_proportion
 #' @param responder_val (`character`)\cr the short label for observations to
 #'   translate `AVALC` into responder/non-responder.
 #' @param responder_val_levels (`character`)\cr the levels of responses that will be shown in the multinomial
@@ -335,7 +335,7 @@ template_binary_outcome <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @inheritParams tern::s_count_occurrences
+#' @inheritParams tern::s_proportion
 #' @inheritParams template_binary_outcome
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
 #' @param control (named `list`)\cr named list containing 3 named lists as follows:
