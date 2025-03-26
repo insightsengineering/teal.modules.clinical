@@ -335,6 +335,7 @@ template_binary_outcome <- function(dataname,
 #'
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
+#' @inheritParams tern::s_proportion
 #' @inheritParams template_binary_outcome
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
 #' @param control (named `list`)\cr named list containing 3 named lists as follows:
