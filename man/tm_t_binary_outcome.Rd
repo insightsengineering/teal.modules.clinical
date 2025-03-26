@@ -28,7 +28,7 @@ tm_t_binary_outcome(
   add_total = FALSE,
   total_label = default_total_label(),
   na_level = default_na_str(),
-  denom = c("n", "N_col", "N_row"),
+  denom = c("N_col", "n", "N_row"),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -95,6 +95,13 @@ apply in all modules, run \code{set_default_total_label("new_default")}.}
 \item{na_level}{(\code{string})\cr used to replace all \code{NA} or empty values
 in character or factor variables in the data. Defaults to \code{"<Missing>"}. To set a
 default \code{na_level} to apply in all modules, run \code{set_default_na_str("new_default")}.}
+
+\item{denom}{(\code{string})\cr choice of denominator for proportion. Options are:
+\itemize{
+\item \code{n}: number of values in this row and column intersection.
+\item \code{N_row}: total number of values in this row across columns.
+\item \code{N_col}: total number of values in this column across rows.
+}}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
 For example a title.}
