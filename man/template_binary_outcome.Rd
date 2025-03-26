@@ -68,9 +68,9 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 
 \item{denom}{(\code{string})\cr choice of denominator for proportion. Options are:
 \itemize{
-\item \code{n}: number of values in this row and column intersection.
-\item \code{N_row}: total number of values in this row across columns.
-\item \code{N_col}: total number of values in this column across rows.
+\item \code{N_col}: total number of patients in this column across rows.
+\item \code{n}: number of patients with any occurrences.
+\item \code{N_row}: total number of patients in this row across columns.
 }}
 
 \item{basic_table_args}{(\code{basic_table_args}) optional\cr object created by \code{\link[teal.widgets:basic_table_args]{teal.widgets::basic_table_args()}}
