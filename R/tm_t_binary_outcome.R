@@ -71,7 +71,7 @@ template_binary_outcome <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute_names(
-      expr = dplyr::mutate(is_rsp = aval_var %in% responder_val) %>%
+      expr = dplyr::mutate(is_rsp = dplyr::if_else(!is.na(aval_var), aval_var %in% responder_val, NA)) %>%
         dplyr::mutate(aval = factor(aval_var, levels = responder_val_levels)),
       names = list(
         aval = as.name(aval_var)
