@@ -8,9 +8,10 @@
           anl <- adrs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", 
-                  "Partial Response (PR)")) %>% dplyr::mutate(AVALC = factor(AVALC, 
-              levels = c("Complete Response (CR)", "Partial Response (PR)")))
+              dplyr::mutate(is_rsp = dplyr::if_else(!is.na(AVALC), 
+                  AVALC %in% c("Complete Response (CR)", "Partial Response (PR)"), 
+                  NA)) %>% dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", 
+              "Partial Response (PR)")))
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
@@ -46,9 +47,9 @@
           anl <- ADRS %>% dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", 
               "C: Combination")) %>% dplyr::mutate(ARM = stats::relevel(ARM, 
               ref = "B: Placebo")) %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
-              dplyr::mutate(is_rsp = AVALC %in% c("PR", "SD")) %>% 
-              dplyr::mutate(AVALC = factor(AVALC, levels = c("PR", 
-                  "SD")))
+              dplyr::mutate(is_rsp = dplyr::if_else(!is.na(AVALC), 
+                  AVALC %in% c("PR", "SD"), NA)) %>% dplyr::mutate(AVALC = factor(AVALC, 
+              levels = c("PR", "SD")))
           ADSL <- ADSL %>% dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", 
               "C: Combination")) %>% dplyr::mutate(ARM = stats::relevel(ARM, 
               ref = "B: Placebo")) %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
@@ -80,9 +81,10 @@
       $data
       {
           anl <- ADRS %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
-              dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", 
-                  "Partial Response (PR)")) %>% dplyr::mutate(AVALC = factor(AVALC, 
-              levels = c("Complete Response (CR)", "Partial Response (PR)")))
+              dplyr::mutate(is_rsp = dplyr::if_else(!is.na(AVALC), 
+                  AVALC %in% c("Complete Response (CR)", "Partial Response (PR)"), 
+                  NA)) %>% dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", 
+              "Partial Response (PR)")))
           ADSL <- ADSL %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
               df_explicit_na(na_level = "<Missing>")
       }
@@ -109,9 +111,10 @@
           anl <- ADRS %>% dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", 
               "C: Combination")) %>% dplyr::mutate(ARM = stats::relevel(ARM, 
               ref = "B: Placebo")) %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
-              dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", 
-                  "Partial Response (PR)")) %>% dplyr::mutate(AVALC = factor(AVALC, 
-              levels = c("Complete Response (CR)", "Partial Response (PR)")))
+              dplyr::mutate(is_rsp = dplyr::if_else(!is.na(AVALC), 
+                  AVALC %in% c("Complete Response (CR)", "Partial Response (PR)"), 
+                  NA)) %>% dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", 
+              "Partial Response (PR)")))
           ADSL <- ADSL %>% dplyr::filter(ARM %in% c("B: Placebo", "A: Drug X", 
               "C: Combination")) %>% dplyr::mutate(ARM = stats::relevel(ARM, 
               ref = "B: Placebo")) %>% dplyr::mutate(ARM = droplevels(ARM)) %>% 
@@ -153,9 +156,10 @@
           anl <- adrs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", 
-                  "Partial Response (PR)")) %>% dplyr::mutate(AVALC = factor(AVALC, 
-              levels = c("Complete Response (CR)", "Partial Response (PR)")))
+              dplyr::mutate(is_rsp = dplyr::if_else(!is.na(AVALC), 
+                  AVALC %in% c("Complete Response (CR)", "Partial Response (PR)"), 
+                  NA)) %>% dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", 
+              "Partial Response (PR)")))
           ADSL <- ADSL %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
@@ -192,9 +196,10 @@
       $data
       {
           anl <- adrs %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(is_rsp = AVALC %in% c("Complete Response (CR)", 
-                  "Partial Response (PR)")) %>% dplyr::mutate(AVALC = factor(AVALC, 
-              levels = c("Complete Response (CR)", "Partial Response (PR)")))
+              dplyr::mutate(is_rsp = dplyr::if_else(!is.na(AVALC), 
+                  AVALC %in% c("Complete Response (CR)", "Partial Response (PR)"), 
+                  NA)) %>% dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", 
+              "Partial Response (PR)")))
           ADSL <- ADSL %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
               df_explicit_na(na_level = "<Missing>")
       }
@@ -241,10 +246,10 @@
               "ARM C")) %>% dplyr::mutate(ARMCD = combine_levels(ARMCD, 
               levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>% 
               dplyr::mutate(ARMCD = stats::relevel(ARMCD, ref = "ARM A/ARM B")) %>% 
-              dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% dplyr::mutate(is_rsp = AVALC %in% 
-              c("Complete Response (CR)", "Partial Response (PR)")) %>% 
-              dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", 
-                  "Partial Response (PR)")))
+              dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% dplyr::mutate(is_rsp = dplyr::if_else(!is.na(AVALC), 
+              AVALC %in% c("Complete Response (CR)", "Partial Response (PR)"), 
+              NA)) %>% dplyr::mutate(AVALC = factor(AVALC, levels = c("Complete Response (CR)", 
+              "Partial Response (PR)")))
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = combine_levels(ARMCD, 
               levels = c("ARM A", "ARM B"), new_level = "ARM A/ARM B")) %>% 
