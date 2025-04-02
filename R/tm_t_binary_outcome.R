@@ -3,6 +3,7 @@
 #' Creates a valid expression to generate a binary outcome analysis.
 #'
 #' @inheritParams template_arguments
+#' @inheritParams tern::s_count_occurrences
 #' @param responder_val (`character`)\cr the short label for observations to
 #'   translate `AVALC` into responder/non-responder.
 #' @param responder_val_levels (`character`)\cr the levels of responses that will be shown in the multinomial
@@ -35,6 +36,7 @@ template_binary_outcome <- function(dataname,
                                     add_total = FALSE,
                                     total_label = default_total_label(),
                                     na_level = default_na_str(),
+                                    denom = c("N_col", "n", "N_row"),
                                     basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -46,6 +48,8 @@ template_binary_outcome <- function(dataname,
   checkmate::assert_flag(add_total)
   checkmate::assert_string(na_level)
   checkmate::assert_string(total_label)
+
+  denom <- match.arg(denom)
 
   ref_arm_val <- paste(ref_arm, collapse = "/")
   y <- list()
@@ -67,7 +71,7 @@ template_binary_outcome <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute_names(
-      expr = dplyr::mutate(is_rsp = aval_var %in% responder_val) %>%
+      expr = dplyr::mutate(is_rsp = dplyr::if_else(!is.na(aval_var), aval_var %in% responder_val, NA)) %>%
         dplyr::mutate(aval = factor(aval_var, levels = responder_val_levels)),
       names = list(
         aval = as.name(aval_var)
@@ -173,11 +177,13 @@ template_binary_outcome <- function(dataname,
         vars = "is_rsp",
         conf_level = conf_level,
         method = method,
-        table_names = "prop_est"
+        table_names = "prop_est",
+        denom = denom
       ),
       env = list(
         conf_level = control$global$conf_level,
-        method = control$global$method
+        method = control$global$method,
+        denom = denom
       )
     )
   )
@@ -440,7 +446,8 @@ template_binary_outcome <- function(dataname,
 #'           rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
 #'           levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
 #'         )
-#'       )
+#'       ),
+#'       denom = "N_col"
 #'     )
 #'   )
 #' )
@@ -486,6 +493,7 @@ tm_t_binary_outcome <- function(label,
                                 add_total = FALSE,
                                 total_label = default_total_label(),
                                 na_level = default_na_str(),
+                                denom = c("N_col", "n", "N_row"),
                                 pre_output = NULL,
                                 post_output = NULL,
                                 basic_table_args = teal.widgets::basic_table_args(),
@@ -532,6 +540,8 @@ tm_t_binary_outcome <- function(label,
   checkmate::assert_subset(control$strat$method_test, c("cmh"))
   assert_decorators(decorators, "table")
 
+  denom <- match.arg(denom)
+
   args <- as.list(environment())
 
   data_extract_list <- list(
@@ -558,6 +568,7 @@ tm_t_binary_outcome <- function(label,
         control = control,
         rsp_table = rsp_table,
         na_level = na_level,
+        denom = denom,
         basic_table_args = basic_table_args,
         decorators = decorators
       )
@@ -778,6 +789,7 @@ srv_t_binary_outcome <- function(id,
                                  default_responses,
                                  rsp_table,
                                  na_level,
+                                 denom,
                                  basic_table_args,
                                  decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
@@ -1023,6 +1035,7 @@ srv_t_binary_outcome <- function(id,
         add_total = input$add_total,
         total_label = total_label,
         na_level = na_level,
+        denom = denom,
         basic_table_args = basic_table_args
       )
 
