@@ -364,7 +364,10 @@ ui_g_adverse_events <- function(id, ...) {
     output = tags$div(
       htmlOutput(ns("title")),
       teal.widgets::get_dt_rows(ns("table"), ns("table_rows")),
-      DT::DTOutput(outputId = ns("table")),
+      tags$div(
+        style = "overflow: auto;",
+        DT::DTOutput(outputId = ns("table"))
+      ),
       teal.widgets::plot_with_settings_ui(id = ns("chart"))
     ),
     encoding = tags$div(
