@@ -368,22 +368,13 @@ tm_g_km <- function(label,
                       "ADSL"
                     ),
                     arm_var,
-                    arm_ref_comp = NULL,
+                    arm_ref_comp = list(ref = datasets(parentname), comp = datasets(parentname)),
                     paramcd,
                     strata_var,
                     facet_var,
-                    time_unit_var = teal.transform::choices_selected(
-                      teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
-                      fixed = TRUE
-                    ),
-                    aval_var = teal.transform::choices_selected(
-                      teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
-                      fixed = TRUE
-                    ),
-                    cnsr_var = teal.transform::choices_selected(
-                      teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
-                      fixed = TRUE
-                    ),
+                    time_unit_var = datasets(dataname) & variables("AVALU"),
+                    aval_var = datasets(dataname) & variables("AVAL"),
+                    cnsr_var = datasets(dataname) & variables("CNSR"),
                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain", TRUE),
                     font_size = c(11L, 1L, 30),
@@ -402,13 +393,13 @@ tm_g_km <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(strata_var, "choices_selected")
-  checkmate::assert_class(facet_var, "choices_selected")
-  checkmate::assert_class(time_unit_var, "choices_selected")
-  checkmate::assert_class(aval_var, "choices_selected")
-  checkmate::assert_class(cnsr_var, "choices_selected")
+  # checkmate::assert_class(arm_var, "choices_selected")
+  # checkmate::assert_class(paramcd, "choices_selected")
+  # checkmate::assert_class(strata_var, "choices_selected")
+  # checkmate::assert_class(facet_var, "choices_selected")
+  # checkmate::assert_class(time_unit_var, "choices_selected")
+  # checkmate::assert_class(aval_var, "choices_selected")
+  # checkmate::assert_class(cnsr_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(conf_type, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -423,16 +414,22 @@ tm_g_km <- function(label,
   assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
-    facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = FALSE),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
-    time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
-  )
-
+  # data_extract_list <- list(
+  #   arm_var = cs_to_des_select(arm_var, dataname = parentname),
+  #   paramcd = cs_to_des_filter(paramcd, dataname = dataname),
+  #   strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
+  #   facet_var = cs_to_des_select(facet_var, dataname = parentname, multiple = FALSE),
+  #   aval_var = cs_to_des_select(aval_var, dataname = dataname),
+  #   cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
+  #   time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
+  # )
+  data_extract_list <- list(arm_var = arm_var,
+                            paramcd = paramcd,
+                            strata_var = strata_var,
+                            facet_var = facet_var,
+                            aval_var = aval_var,
+                            cnsr_var = cnsr_var,
+                            time_unit_var = time_unit_var)
   module(
     label = label,
     server = srv_g_km,
@@ -453,23 +450,13 @@ tm_g_km <- function(label,
         decorators = decorators
       )
     ),
-    transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    transformators = transformators
   )
 }
 
 #' @keywords internal
 ui_g_km <- function(id, ...) {
   a <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var,
-    a$paramcd,
-    a$strata_var,
-    a$facet_var,
-    a$aval_var,
-    a$cnsr_var,
-    a$time_unit_var
-  )
 
   ns <- NS(id)
 
@@ -485,37 +472,12 @@ ui_g_km <- function(id, ...) {
       teal.reporter::simple_reporter_ui(ns("simple_reporter")),
       ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "strata_var", "facet_var", "aval_var", "cnsr_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("cnsr_var"),
-        label = "Censor Variable",
-        data_extract_spec = a$cnsr_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("facet_var"),
-        label = "Facet Plots by",
-        data_extract_spec = a$facet_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      module_input_ui(ns("arm_var"), "arm_var", a$arm_var),
+      module_input_ui(ns("paramcd"), "paramcd", a$paramcd),
+      module_input_ui(ns("strata_var"), "strata_var", a$strata_var),
+      module_input_ui(ns("facet_var"), "facet_var", a$facet_var),
+      module_input_ui(ns("aval_var"), "aval_var", a$aval_var),
+      module_input_ui(ns("cnsr_var"), "cnsr_var", a$cnsr_var),
       tags$div(
         class = "arm-comp-box",
         tags$label("Compare Treatments"),
@@ -539,12 +501,7 @@ ui_g_km <- function(id, ...) {
               "Combine all comparison groups?",
               value = FALSE
             ),
-            teal.transform::data_extract_ui(
-              id = ns("strata_var"),
-              label = "Stratify by",
-              data_extract_spec = a$strata_var,
-              is_single_dataset = is_single_dataset_value
-            )
+            module_input_ui(ns("strata_var"), "Stratify by", a$strata_var),
           )
         )
       ),
@@ -644,13 +601,7 @@ ui_g_km <- function(id, ...) {
             multiple = FALSE,
             fixed = a$conf_type$fixed
           ),
-          textInput(ns("xlab"), "X-axis label", "Time"),
-          teal.transform::data_extract_ui(
-            id = ns("time_unit_var"),
-            label = "Time Unit Variable",
-            data_extract_spec = a$time_unit_var,
-            is_single_dataset = is_single_dataset_value
-          )
+          textInput(ns("xlab"), "X-axis label", "Time")
         )
       )
     ),
@@ -693,37 +644,48 @@ srv_g_km <- function(id,
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     # Setup arm variable selection, default reference arms and default
     # comparison arms for encoding panel
+
     iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
       output,
-      id_arm_var = extract_input("arm_var", parentname),
+      id_arm_var = "arm_var",
       data = data()[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
       on_off = reactive(input$compare_arms)
     )
-
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        aval_var = aval_var,
-        cnsr_var = cnsr_var,
-        arm_var = arm_var,
-        paramcd = paramcd,
-        strata_var = strata_var,
-        facet_var = facet_var,
-        time_unit_var = time_unit_var
-      ),
-      datasets = data,
-      select_validation_rule = list(
-        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
-        cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
-        arm_var = shinyvalidate::sv_required("A treatment variable is required")
-      ),
-      filter_validation_rule = list(
-        paramcd = shinyvalidate::sv_required("An endpoint is required")
-      )
-    )
+    ce <- consolidate_extraction(aval_var = module_input_server("aval_var", aval_var, data)(),
+                                 cnsr_var = module_input_server("cnsr_var", cnsr_var, data)(),
+                                 arm_var = module_input_server("arm_var", arm_var, data)(),
+                                 paramcd = module_input_server("paramcd", paramcd, data)(),
+                                 strata_var = module_input_server("strata_var", strata_var, data)(),
+                                 facet_var = module_input_server("facet_var", facet_var, data)(),
+                                 arm_var = module_input_server("arm_var", arm_var, data)())
+    browser()
+    cei <- add_ids(ce, data())
+    data_extract <-  lapply(cei, teal.transform:::extract_input, data = data())
+    #
+    #     selector_list <- teal.transform::data_extract_multiple_srv(
+    #       data_extract = list(
+    #         aval_var = extract_input(module_input_server("aval_var", aval_var, data), data = data),
+    #         cnsr_var = extract_input(module_input_server("cnsr_var", cnsr_var, data), data = data),
+#         arm_var = extract_input(module_input_server("arm_var", arm_var, data), data = data),
+#         paramcd = extract_input(module_input_server("paramcd", paramcd, data), data = data),
+#         strata_var = extract_input(module_input_server("strata_var", strata_var, data), data = data),
+#         facet_var = extract_input(module_input_server("facet_var", facet_var, data), data = data),
+#         time_unit_var = extract_input(module_input_server("arm_var", arm_var, data), data = data)
+#       ),
+#       datasets = data,
+#       select_validation_rule = list(
+#         aval_var = shinyvalidate::sv_required("An analysis variable is required"),
+#         cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
+#         arm_var = shinyvalidate::sv_required("A treatment variable is required")
+#       ),
+#       filter_validation_rule = list(
+#         paramcd = shinyvalidate::sv_required("An endpoint is required")
+#       )
+#     )
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
@@ -764,9 +726,9 @@ srv_g_km <- function(id,
           }
         }
       )
-      teal.transform::compose_and_enable_validators(iv, selector_list)
+      # teal.transform::compose_and_enable_validators(iv, selector_list)
     })
-
+    browser()
     anl_inputs <- teal.transform::merge_expression_srv(
       datasets = data,
       selector_list = selector_list,
@@ -779,7 +741,7 @@ srv_g_km <- function(id,
     })
 
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
+      # teal::validate_inputs(iv_r())
 
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
