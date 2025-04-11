@@ -438,7 +438,7 @@ template_events <- function(dataname,
 
       sort_list <- add_expr(
         sort_list,
-        quote(pruned_and_sorted_result)
+        quote(table <- pruned_and_sorted_result)
       )
     }
   }
