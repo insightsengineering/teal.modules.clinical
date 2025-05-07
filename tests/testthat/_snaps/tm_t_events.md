@@ -49,7 +49,7 @@
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
               ncol(table))))
-          pruned_and_sorted_result
+          table <- pruned_and_sorted_result
       }
       
 
@@ -109,7 +109,7 @@
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
               "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
               ncol(table))))
-          pruned_and_sorted_result
+          table <- pruned_and_sorted_result
       }
       
 
@@ -267,7 +267,7 @@
           }
           pruned_and_sorted_result <- rtables::trim_rows(pruned_and_sorted_result, 
               criteria = criteria_fun)
-          pruned_and_sorted_result
+          table <- pruned_and_sorted_result
       }
       
 
@@ -336,7 +336,7 @@
           }
           pruned_and_sorted_result <- rtables::trim_rows(pruned_and_sorted_result, 
               criteria = criteria_fun)
-          pruned_and_sorted_result
+          table <- pruned_and_sorted_result
       }
       
 
