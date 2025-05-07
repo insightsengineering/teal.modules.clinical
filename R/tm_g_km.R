@@ -362,19 +362,14 @@ template_g_km <- function(dataname = "ANL",
 #' @export
 tm_g_km <- function(label,
                     dataname,
-                    parentname = ifelse(
-                      inherits(arm_var, "data_extract_spec"),
-                      teal.transform::datanames_input(arm_var),
-                      "ADSL"
-                    ),
                     arm_var,
-                    arm_ref_comp = list(ref = datasets(parentname), comp = datasets(parentname)),
+                    arm_ref_comp = list(ref = datasets(dataname), comp = datasets(dataname)),
                     paramcd,
                     strata_var,
                     facet_var,
-                    time_unit_var = datasets(dataname) & variables("AVALU"),
-                    aval_var = datasets(dataname) & variables("AVAL"),
-                    cnsr_var = datasets(dataname) & variables("CNSR"),
+                    time_unit_var = c(datasets(dataname), variables("AVALU")),
+                    aval_var = c(datasets(dataname), variables("AVAL")),
+                    cnsr_var = c(datasets(dataname), variables("CNSR")),
                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain", TRUE),
                     font_size = c(11L, 1L, 30),
@@ -392,7 +387,7 @@ tm_g_km <- function(label,
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
-  checkmate::assert_string(parentname)
+  # checkmate::assert_string(parentname)
   # checkmate::assert_class(arm_var, "choices_selected")
   # checkmate::assert_class(paramcd, "choices_selected")
   # checkmate::assert_class(strata_var, "choices_selected")
@@ -440,7 +435,7 @@ tm_g_km <- function(label,
       list(
         dataname = dataname,
         label = label,
-        parentname = parentname,
+        # parentname = parentname,
         arm_ref_comp = arm_ref_comp,
         plot_height = plot_height,
         plot_width = plot_width,
@@ -619,7 +614,7 @@ srv_g_km <- function(id,
                      reporter,
                      filter_panel_api,
                      dataname,
-                     parentname,
+                     # parentname,
                      paramcd,
                      arm_var,
                      arm_ref_comp,
@@ -650,7 +645,7 @@ srv_g_km <- function(id,
       input,
       output,
       id_arm_var = "arm_var",
-      data = data()[[parentname]],
+      data = data()[[dataname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
       on_off = reactive(input$compare_arms)
