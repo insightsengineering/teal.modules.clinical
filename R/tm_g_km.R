@@ -518,11 +518,10 @@ ui_g_km <- function(id, ...) {
       ),
       tags$div(
         class = "arm-comp-box",
-        tags$label("Compare Treatments"),
-        shinyWidgets::switchInput(
-          inputId = ns("compare_arms"),
-          value = !is.null(a$arm_ref_comp),
-          size = "mini"
+        bslib::input_switch(
+          id = ns("compare_arms"),
+          label = "Compare Treatments",
+          value = !is.null(a$arm_ref_comp)
         ),
         conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
