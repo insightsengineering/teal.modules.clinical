@@ -671,11 +671,10 @@ ui_ancova <- function(id, ...) {
         fixed = a$conf_level$fixed
       ),
       tags$div(
-        tags$label("Include Interaction Term"),
-        shinyWidgets::switchInput(
-          inputId = ns("include_interact"),
-          value = FALSE,
-          size = "mini"
+        bslib::input_switch(
+          id = ns("include_interact"),
+          label = "Include Interaction Term",
+          value = FALSE
         ),
         conditionalPanel(
           condition = paste0("input['", ns("include_interact"), "']"),
