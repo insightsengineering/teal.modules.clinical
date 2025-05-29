@@ -618,11 +618,10 @@ ui_t_binary_outcome <- function(id, ...) {
       ),
       tags$div(
         class = "arm-comp-box",
-        tags$label("Compare Treatments"),
-        shinyWidgets::switchInput(
-          inputId = ns("compare_arms"),
-          value = !is.null(a$arm_ref_comp),
-          size = "mini"
+        bslib::input_switch(
+          id = ns("compare_arms"),
+          label = "Compare Treatments",
+          value = !is.null(a$arm_ref_comp)
         ),
         conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
@@ -675,9 +674,10 @@ ui_t_binary_outcome <- function(id, ...) {
               multiple = FALSE,
               fixed = FALSE
             ),
-            tags$label("Odds Ratio Estimation"),
-            shinyWidgets::switchInput(
-              inputId = ns("u_odds_ratio"), value = a$control$unstrat$odds, size = "mini"
+            bslib::input_switch(
+              id = ns("u_odds_ratio"),
+              label = "Odds Ratio Estimation",
+              value = a$control$unstrat$odds
             )
           )
         ),
@@ -748,11 +748,10 @@ ui_t_binary_outcome <- function(id, ...) {
           multiple = FALSE,
           fixed = a$conf_level$fixed
         ),
-        tags$label("Show All Response Categories"),
-        shinyWidgets::switchInput(
-          inputId = ns("show_rsp_cat"),
-          value = ifelse(a$rsp_table, TRUE, FALSE),
-          size = "mini"
+        bslib::input_switch(
+          id = ns("show_rsp_cat"),
+          label = "Show All Response Categories",
+          value = ifelse(a$rsp_table, TRUE, FALSE)
         )
       ),
       teal.transform::data_extract_ui(
