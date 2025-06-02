@@ -429,7 +429,6 @@ srv_counts <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
       if (isTRUE(input$compare_arms)) {
-        # browser()
         validate_args <- append(
           validate_args,
           list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
@@ -449,11 +448,6 @@ srv_counts <- function(id,
 
     # Processing
     ## Data source merging
-    anl_merge_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
     adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
       join_keys = teal.data::join_keys(data),
@@ -481,17 +475,15 @@ srv_counts <- function(id,
         ANL <- df_explicit_na(ANL)
       })
     })
-    # TODO fix the reference and var group
-    # browser()
     ## Add basic specification for the table
     basic_table <- reactive({
-      need(!is.null(input$buckets$Ref), "Reference")
+      req(!is.null(input$buckets$Ref))
       within(anl(), {
         lyt <- rtables::basic_table(show_colcounts = TRUE) %>%
           rtables::split_cols_by(var, ref_group = ref_group, split_fun = tern::ref_group_position("first"))
       },
       ref_group = unlist(input$buckets$Ref),
-      var = input$arm_var
+      var = arm_var
       )
     })
 
@@ -522,7 +514,6 @@ srv_counts <- function(id,
       distribution = input$distribution)
     })
 
-    browser()
     # Add unstratified rows
     unstratified <- reactive({
       logger::log_info("Unstratified")
