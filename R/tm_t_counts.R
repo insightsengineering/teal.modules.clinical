@@ -17,7 +17,7 @@ tm_t_counts <- function(label = "Counts Module",
                         offset_var,
                         cov_var,
                         arm_ref_comp = NULL,
-                        paramcd,
+                        # paramcd,
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
@@ -44,7 +44,7 @@ tm_t_counts <- function(label = "Counts Module",
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cov_var = cs_to_des_select(cov_var, dataname = dataname),
-    paramcd = cs_to_des_select(paramcd, dataname = dataname),
+    # paramcd = cs_to_des_select(paramcd, dataname = dataname),
     offset_var = cs_to_des_select(offset_var, dataname = dataname),
     strata_var = cs_to_des_select(strata_var, dataname = dataname)
   #   hlt = cs_to_des_select(hlt, dataname = dataname, multiple = TRUE, ordered = TRUE),
@@ -84,7 +84,6 @@ ui_counts <-  function(id, ...) {
 
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
-    a$paramcd,
     a$offset_var,
     a$cov_var,
     a$aval_var
@@ -103,39 +102,45 @@ ui_counts <-  function(id, ...) {
     bslib::input_switch(
       id = ns("compare_arms"),
       label = "Compare Treatments",
-      value = FALSE,
-      width = "100%"
+      value = !is.null(a$arm_ref_comp)
     ),
     conditionalPanel(
       condition = paste0("input['", ns("compare_arms"), "']"),
       tags$div(
-        uiOutput(ns("arms_buckets")),
-        uiOutput(ns("helptext_ui")),
+        uiOutput(ns("arms_buckets")), # from arm_ref_comp_observer
+        uiOutput(ns("helptext_ui")), # For feedback on comparisons
         checkboxInput(
           ns("combine_comp_arms"),
           "Combine all comparison groups?",
           value = FALSE
         ),
-        # TODO replace by data_extract_ui as in tm_t_tte.R L646
+        teal.transform::data_extract_ui(
+          id = ns("strata_var"),
+          label = "Stratify by",
+          data_extract_spec = a$strata_var,
+          is_single_dataset = is_single_dataset_value
+        ),
+        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       )
     )
   )
 
+  # TODO: provide other p-values
   table_settings <- bslib::accordion_panel(
     "Additional table settings",
-    radioButtons(
-      ns("ties_coxph"),
-      label = HTML(
-        paste(
-          "Ties for ",
-          tags$span(class = "text-primary", "Coxph"),
-          " (Hazard Ratio)",
-          sep = ""
-        )
-      ),
-      choices = c("exact", "breslow", "efron"),
-      selected = "exact"
-    ),
+    # radioButtons(
+    #   ns("ties_coxph"),
+    #   label = HTML(
+    #     paste(
+    #       "Ties for ",
+    #       tags$span(class = "text-primary", "Coxph"),
+    #       " (Hazard Ratio)",
+    #       sep = ""
+    #     )
+    #   ),
+    #   choices = c("exact", "breslow", "efron"),
+    #   selected = "exact"
+    # ),
     teal.widgets::optionalSelectInput(
       inputId = ns("conf_level"),
       label = "Confidence Level",
@@ -155,6 +160,12 @@ ui_counts <-  function(id, ...) {
       ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::data_extract_ui(
+        ns("arm_var"),
+        "Select Treatment Variable",
+        data_extract_spec = a$arm_var,
+        is_single_dataset = is_single_dataset_value
+      ),
+      teal.transform::data_extract_ui(
         id = ns("aval_var"),
         label = "Analysis Variable",
         data_extract_spec = a$aval_var,
@@ -170,12 +181,6 @@ ui_counts <-  function(id, ...) {
         ns("offset_var"),
         "Offset variable",
         data_extract_spec = a$offset_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        ns("arm_var"),
-        "Group variable",
-        data_extract_spec = a$arm_var,
         is_single_dataset = is_single_dataset_value
       ),
       teal.transform::data_extract_ui(
@@ -208,7 +213,7 @@ srv_counts <- function(id,
                        dataname,
                        parentname,
                        arm_var,
-                       paramcd,
+                       # paramcd,
                        aval_var,
                        offset_var,
                        # paramcd,
@@ -244,7 +249,7 @@ srv_counts <- function(id,
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list(
         arm_var = arm_var,
-        paramcd = paramcd,
+        # paramcd = paramcd,
         aval_var = aval_var,
         strata_var = strata_var,
         offset_var = offset_var
@@ -253,10 +258,10 @@ srv_counts <- function(id,
       select_validation_rule = list(
         aval_var = shinyvalidate::sv_required("An analysis variable is required"),
         arm_var = shinyvalidate::sv_required("A treatment variable is required")
-      ),
-      filter_validation_rule = list(
-        paramcd = shinyvalidate::sv_required("An endpoint is required")
       )
+      # filter_validation_rule = list(
+      #   paramcd = shinyvalidate::sv_required("An endpoint is required")
+      # )
     )
 
     output$helptext_ui <- renderUI({
@@ -302,10 +307,7 @@ srv_counts <- function(id,
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_strata_var <- as.vector(anl_m$columns_source$strata_var)
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-      input_event_desc <- as.vector(anl_m$columns_source$event_desc_var)
-      input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      # input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
       # validate inputs
       validate_args <- list(
@@ -313,8 +315,7 @@ srv_counts <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
         anl = anl_filtered,
         anlvars = c(
-          "USUBJID", "STUDYID", input_paramcd, input_aval_var,
-          input_cnsr_var, input_event_desc, input_time_unit_var
+          "USUBJID", "STUDYID",  input_aval_var #, input_paramcd
         ),
         arm_var = input_arm_var
       )
@@ -324,6 +325,7 @@ srv_counts <- function(id,
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
       if (isTRUE(input$compare_arms)) {
+        # browser()
         validate_args <- append(
           validate_args,
           list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
@@ -352,7 +354,7 @@ srv_counts <- function(id,
       datasets = data,
       join_keys = teal.data::join_keys(data),
       data_extract = list(arm_var = arm_var, strata_var = strata_var),
-      anl_name = "ANL_ADSL"
+      anl_name = "ANL"
     )
 
     ## Add library calls
@@ -366,28 +368,26 @@ srv_counts <- function(id,
     ## Merge data
     anl_q <- reactive({
       add_pkg_loads() %>%
-        teal.code::eval_code(as.expression(anl_merge_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
     })
 
-    ##  Preprocessing the data
+    ##  Preprocessing the data: user specified
     anl <- reactive({
-      within(add_pkg_loads(), {
-        anl <- dplyr::filter(ADTTE, PARAMCD == "TNE")
-        anl$AVAL_f <- as.factor(anl$AVAL)
-        anl <- df_explicit_na(anl)
+      within(anl_q(), {
+        ANL <- df_explicit_na(ANL)
       })
     })
-    # TODO fix the reference and var group iff needed
-    browser()
+    # TODO fix the reference and var group
+    # browser()
     ## Add basic specification for the table
     basic_table <- reactive({
+      need(!is.null(input$buckets$Ref), "Reference")
       within(anl(), {
         lyt <- rtables::basic_table(show_colcounts = TRUE) %>%
           rtables::split_cols_by(var, ref_group = ref_group, split_fun = tern::ref_group_position("first"))
       },
-      ref_group = input$arm_var,
-      var = input$vars_vars
+      ref_group = unlist(input$buckets$Ref),
+      var = input$arm_var
       )
     })
 
@@ -411,7 +411,7 @@ srv_counts <- function(id,
                               rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
                             ))
       },
-      var = input$vars,
+      var = input$arm_var,
       variables = variables,
       conf_level = as.numeric(input$conf_level),
       method = input$rate_mean_method,
@@ -445,13 +445,11 @@ srv_counts <- function(id,
       within(pvalues(), {
         table <- build_table(
           lyt = lyt,
-          df = anl
+          df = ANL
         )
         table
       })
     })
-
-    # output$out <- shiny::renderText({get_code(table())})
 
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
