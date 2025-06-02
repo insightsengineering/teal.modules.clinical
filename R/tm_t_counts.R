@@ -417,13 +417,21 @@ srv_counts <- function(id,
       method = input$rate_mean_method,
       distribution = input$distribution)
     })
+
+    browser()
     # Add unstratified rows
     unstratified <- reactive({
       logger::log_info("Unstratified")
       within(summarize_counts(), {
-
-      })
+        lyt <- coxph_pairwise(summarized_counts, vars = vars, is_event = "is_event",
+                              var_labels = c("Unstratified Analysis"),
+                              control = list(pval_method = "log-rank", ties = "exact", conf_level = conf_level),
+                              na_str = "<Missing>", table_names = "unstratified")
+      },
+      vars = input$arm_var,
+      conf_level = input$conf_level)
     })
+
     # Add stratified rows
     stratified <- reactive({
       logger::log_info("stratified")
