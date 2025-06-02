@@ -1,3 +1,107 @@
+#' Teal Module: Counts
+#'
+#' This module produces a frequency table.
+#'
+#' @inheritParams module_arguments
+#' @inheritParams teal::module
+#' @param conf_level ([teal.transform::choices_selected()])\cr object with all available choices and
+#'   pre-selected option for confidence level, each within range of (0, 1).
+#' @param rate_mean_method method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans".
+#' @param distribution a character value specifying the distribution used in the regression (Poisson: `"poisson"`,  Quasi-Poisson: `"quasipoisson"`, negative binomial: `"negbin"`).
+#' @param offset_var a character value specifying a numeric vector adding an offset.
+#' @param basic_table_args Other arguments passed to generate the table.
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table()`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_counts(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' For additional details and examples of decorators, refer to the vignette
+#' `vignette("decorate-module-output", package = "teal.modules.clinical")`.
+#'
+#' To learn more please refer to the vignette
+#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
+#'
+#' @details
+#' * The core functionality of this module is based on [tern::summarize_glm_count()] from the `tern` package.
+#' * The arm and stratification variables are taken from the `parentname` data.
+#'
+#' @inherit module_arguments return seealso
+#' @examplesShinylive
+#' library(teal.modules.clinical)
+#' interactive <- function() TRUE
+#' {{ next_example }}
+#'
+#' @examples
+#' data <- within(teal_data(), {
+#'     library("tern")
+#'     ADSL <- tern_ex_adsl
+#'     ADTTE <- tern_ex_adtte
+#' })
+#'
+#' join_keys(data) <- default_cdisc_join_keys[names(data)]
+#'
+#' arm_ref_comp <- list(
+#'   ACTARMCD = list(
+#'     ref = "ARM B",
+#'     comp = c("ARM A", "ARM C")
+#'   ),
+#'   ARM = list(
+#'     ref = "B: Placebo",
+#'     comp = c("A: Drug X", "C: Combination")
+#'   )
+#' )
+#'
+#' ADSL <- data[["ADSL"]]
+#' ADTTE <- data[["ADTTE"]]
+#' # Initialize the teal app
+#' app <- init(
+#'   data = data,
+#'   modules = modules(
+#'     tm_t_counts(
+#'       dataname = "ADTTE",
+#'       arm_var = choices_selected(
+#'         variable_choices(ADTTE, c("ARM", "ARMCD", "ACTARMCD")),
+#'         "ARM"),
+#'       arm_ref_comp = arm_ref_comp,
+#'       aval_var = choices_selected(
+#'         variable_choices(ADTTE, "SEX"),
+#'         "SEX"),
+#'       # paramcd = choices_selected(
+#'       #   value_choices(ADTTE, "PARAMCD", "PARAM"),
+#'       #   "OS"
+#'       # ),
+#'       strata_var = choices_selected(
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'         "SEX"
+#'       ),
+#'       offset_var = choices_selected(
+#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'         "SEX"
+#'       ),
+#'       cov_var = choices_selected(
+#'         variable_choices(ADTTE, c("BMRKR1","BMRKR2")),
+#'         "BMRKR1")
+#'     )
+#'   )
+#' )
+#'
+#' if (interactive()) {
+#'   shinyApp(ui = app$ui, server = app$server)
+#' }
+#' @export
 tm_t_counts <- function(label = "Counts Module",
                         dataname,
                         parentname = ifelse(
