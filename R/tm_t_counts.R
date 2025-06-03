@@ -132,15 +132,15 @@ tm_t_counts <- function(label = "Counts Module",
   message("Initializing tm_t_counts")
   # checkmate::assert_string(label)
   # checkmate::assert_string(dataname)
-  # rate_mean_method <- match.arg(rate_mean_method)
-  # distribution <- match.arg(distribution)
-  # checkmate::assert_string(parentname)
-  # checkmate::assert_class(arm_var, "choices_selected")
+  rate_mean_method <- match.arg(rate_mean_method)
+  distribution <- match.arg(distribution)
+  checkmate::assert_string(parentname)
+  checkmate::assert_class(arm_var, "choices_selected")
   # checkmate::assert_class(paramcd, "choices_selected")
   # checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
-  # checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  # checkmate::assert_class(basic_table_args, "basic_table_args")
-  # assert_decorators(decorators, "table")
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(basic_table_args, "basic_table_args")
+  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -350,14 +350,17 @@ srv_counts <- function(id,
       on_off = reactive(input$compare_arms)
     )
 
+    list_data_extract <- list(
+      arm_var = arm_var,
+      aval_var = aval_var,
+      strata_var = strata_var,
+      cov_var = cov_var,
+      offset_var = offset_var
+    )
+
+    # TODO: Why is it needed, we have also shinyvalidate checks and validate_checks
     selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        arm_var = arm_var,
-        # paramcd = paramcd,
-        aval_var = aval_var,
-        strata_var = strata_var,
-        offset_var = offset_var
-      ),
+      data_extract = list_data_extract,
       datasets = data,
       select_validation_rule = list(
         aval_var = shinyvalidate::sv_required("An analysis variable is required"),
@@ -368,9 +371,25 @@ srv_counts <- function(id,
       # )
     )
 
+    ## Data source merging
+    adsl_merge_inputs <- teal.transform::merge_expression_module(
+      datasets = data,
+      join_keys = teal.data::join_keys(data),
+      data_extract = list_data_extract,
+      anl_name = "ANL"
+    )
     output$helptext_ui <- renderUI({
       req(selector_list()$arm_var()$select)
       helpText("Multiple reference groups are automatically combined into a single group.")
+    })
+
+    ## Add library calls
+    add_pkg_loads <- reactive({
+      within(data(), {
+        library("dplyr")
+        library("tern")
+        library("rtables")
+      })
     })
 
 
@@ -446,29 +465,7 @@ srv_counts <- function(id,
       NULL
     })
 
-    # Processing
-    ## Data source merging
-    adsl_merge_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = teal.data::join_keys(data),
-      data_extract = list(arm_var = arm_var, strata_var = strata_var),
-      anl_name = "ANL"
-    )
-
-    ## Add library calls
-    add_pkg_loads <- reactive({
-      within(data(), {
-        library("dplyr")
-        library("tern")
-        library("rtables")
-      })
-    })
-    ## Merge data
-    anl_q <- reactive({
-      add_pkg_loads() %>%
-        teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
-    })
-
+    validate_checks()
     ##  Preprocessing the data: user specified
     anl <- reactive({
       within(anl_q(), {
@@ -477,13 +474,15 @@ srv_counts <- function(id,
     })
     ## Add basic specification for the table
     basic_table <- reactive({
+
       req(!is.null(input$buckets$Ref))
+      ami <- adsl_merge_inputs()
       within(anl(), {
         lyt <- rtables::basic_table(show_colcounts = TRUE) %>%
           rtables::split_cols_by(var, ref_group = ref_group, split_fun = tern::ref_group_position("first"))
       },
       ref_group = unlist(input$buckets$Ref),
-      var = arm_var
+      var = as.vector(ami$columns_source$arm_var)
       )
     })
 
@@ -544,19 +543,19 @@ srv_counts <- function(id,
     })
 
     # Create output table
-    table <- reactive({
       within(pvalues(), {
         table <- build_table(
           lyt = lyt,
           df = ANL
         )
         table
+    table_out <- reactive({
       })
     })
 
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
-      data = table(),
+      data = table_out,
       decorators = select_decorators(decorators, "table"),
       expr = table
     )
