@@ -339,6 +339,7 @@ srv_counts <- function(id,
   moduleServer(id, function(input, output, session) {
 
     # Input validation
+    # TODO: why the observer returns a InputValidator. Isn't the functionality of this to only populate the arm_ref widget
     iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
@@ -385,7 +386,7 @@ srv_counts <- function(id,
 
     ## Add library calls
     add_pkg_loads <- reactive({
-      within(data(), {
+      within(req(data()), {
         library("dplyr")
         library("tern")
         library("rtables")
@@ -420,6 +421,12 @@ srv_counts <- function(id,
       )
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
+
+    ## Merge data
+    anl_q <- reactive({
+      teal.code::eval_code(add_pkg_loads(), as.expression(adsl_merge_inputs()$expr))
+    })
+
     validate_checks <- reactive({
       teal::validate_inputs(iv_r())
       adsl_filtered <- anl_q()[[parentname]]
@@ -465,10 +472,9 @@ srv_counts <- function(id,
       NULL
     })
 
-    validate_checks()
     ##  Preprocessing the data: user specified
     anl <- reactive({
-      within(anl_q(), {
+      within(req(anl_q()), {
         ANL <- df_explicit_na(ANL)
       })
     })
@@ -476,8 +482,8 @@ srv_counts <- function(id,
     basic_table <- reactive({
 
       req(!is.null(input$buckets$Ref))
-      ami <- adsl_merge_inputs()
-      within(anl(), {
+      ami <- req(adsl_merge_inputs())
+      within(req(anl()), {
         lyt <- rtables::basic_table(show_colcounts = TRUE) %>%
           rtables::split_cols_by(var, ref_group = ref_group, split_fun = tern::ref_group_position("first"))
       },
@@ -487,11 +493,10 @@ srv_counts <- function(id,
     })
 
     ## Create covariates for the table
-    variables <- list(arm = input$arm_var, covariates = input$cov_var, offset = input$offset_var)
     ## Create tables
     summarize_counts <- reactive({
-      logger::log_info("counts")
-      within(basic_table(), {
+      within(req(basic_table()), {
+        variables <- list(arm = var, covariates = cov_var, offset = offset_var)
         summarized_counts <- tern::summarize_glm_count(lyt,
                             vars = var,
                             variables = variables,
@@ -506,7 +511,9 @@ srv_counts <- function(id,
                               rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
                             ))
       },
-      var = input$arm_var,
+      var = as.vector(adsl_merge_inputs()$columns_source$arm_var),
+      cov_var = as.vector(adsl_merge_inputs()$columns_source$cov_var),
+      offset_var = as.vector(adsl_merge_inputs()$columns_source$offset_var),
       variables = variables,
       conf_level = as.numeric(input$conf_level),
       method = input$rate_mean_method,
@@ -515,42 +522,34 @@ srv_counts <- function(id,
 
     # Add unstratified rows
     unstratified <- reactive({
-      logger::log_info("Unstratified")
-      within(summarize_counts(), {
+      within(req(summarize_counts()), {
         lyt <- coxph_pairwise(summarized_counts, vars = vars, is_event = "is_event",
                               var_labels = c("Unstratified Analysis"),
                               control = list(pval_method = "log-rank", ties = "exact", conf_level = conf_level),
                               na_str = "<Missing>", table_names = "unstratified")
       },
-      vars = input$arm_var,
-      conf_level = input$conf_level)
+      vars = as.vector(adsl_merge_inputs()$columns_source$arm_var),
+      conf_level = as.numeric(input$conf_level))
     })
 
-    # Add stratified rows
+    # WISH: Add stratified rows
     stratified <- reactive({
-      logger::log_info("stratified")
-      within(unstratified(), {
-
-      })
+      within( req(unstratified()), {})
     })
 
-    # Add/fix p-value
+    # WISH: Add/fix p-value for Wald...
     pvalues <- reactive({
-      logger::log_info("pvalues")
-      within(stratified(), {
-
-      })
+      within(req(stratified()), {})
     })
 
     # Create output table
-      within(pvalues(), {
-        table <- build_table(
-          lyt = lyt,
-          df = ANL
-        )
-        table
     table_out <- reactive({
-      })
+      within(req(basic_table()), {
+        table <- rtables::build_table(
+        lyt = lyt,
+        df = ANL
+        )
+        })
     })
 
     decorated_table_q <- srv_decorate_teal_data(
