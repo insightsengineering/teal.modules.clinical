@@ -74,16 +74,16 @@
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(
 #'         variable_choices(ADTTE, c("ARM", "ARMCD", "ACTARMCD")),
-#'         "ARM"
+#'         "ARMCD"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       aval_var = choices_selected(
-#'         variable_choices(ADTTE, "PARAMCD"),
-#'         "PARAMCD"
+#'         variable_choices(ADTTE, "AVAL"),
+#'         "AVAL"
 #'       ),
 #'       strata_var = choices_selected(
 #'         variable_choices(ADSL, "SEX"),
-#'         "SEX"
+#'         NULL
 #'       ),
 #'       offset_var = choices_selected(
 #'         variable_choices(ADSL, "AGE"),
@@ -91,7 +91,7 @@
 #'       ),
 #'       cov_var = choices_selected(
 #'         variable_choices(ADTTE, "SITEID"),
-#'         "SITEID"
+#'         NULL
 #'       )
 #'     )
 #'   )
@@ -489,45 +489,43 @@ srv_counts <- function(id,
     summarize_counts <- reactive({
       ami <- req(adsl_merge_inputs())
       offset_var <- as.vector(ami$columns_source$offset_var)
-      aval_var <- as.vector(ami$columns_source$aval_var)
       cov_var <- as.vector(ami$columns_source$cov_var)
-
-      variables <- if (!is.null(offset_var) && !is.null(cov_var)) {
+      arm_var <- as.vector(ami$columns_source$arm_var)
+      variables <- if (length(offset_var) && length(cov_var)) {
         within(req(basic_table()), {
           variables <- list(arm = var, covariates = cov_var, offset_var = offset_var)
         },
-        var = aval_var,
+        var = arm_var,
         cov_var = cov_var,
         offset_var = offset_var
         )
-      } else if (is.null(offset_var) && !is.null(cov_var)) {
+      } else if (!length(offset_var) && length(cov_var)) {
         within(req(basic_table()), {
           variables <- list(arm = var, covariates = cov_var)
         },
-        var = aval_var,
+        var = arm_var,
         cov_var = cov_var
         )
-      } else if (!is.null(offset_var) && is.null(cov_var)) {
+      } else if (length(offset_var) && !length(cov_var)) {
         within(req(basic_table()), {
           variables <- list(arm = var, offset_var = offset_var)
         },
-        var = aval_var,
+        var = arm_var,
         offset_var = offset_var
         )
       } else {
         within(req(basic_table()), {
           variables <- list(arm = var)
         },
-        var = aval_var)
+        var = arm_var)
       }
-
-      within(variables, {
+      w <- within(variables, {
           lyt <- tern::summarize_glm_count(lyt,
             vars = var,
             variables = variables,
             conf_level = conf_level,
             distribution = distribution,
-            rate_mean_method = method,
+            rate_mean_method = rate_mean_method,
             var_labels = "Adjusted (NB) exacerbation rate (per year)",
             table_names = "adj-nb",
             .stats = c("rate", "rate_ci", "rate_ratio", "rate_ratio_ci", "pval"),
@@ -537,10 +535,9 @@ srv_counts <- function(id,
             )
           )
         },
-        var = as.vector(ami$columns_source$strata_var),
-        cov_var = as.vector(ami$columns_source$cov_var),
+        rate_mean_method = input$rate_mean_method,
+        var = as.vector(ami$columns_source$aval_var),
         conf_level = as.numeric(input$conf_level),
-        method = input$rate_mean_method,
         distribution = input$distribution
       )
     })
