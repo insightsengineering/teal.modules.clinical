@@ -46,9 +46,9 @@
 #'
 #' @examples
 #' data <- within(teal_data(), {
-#'     library("tern")
-#'     ADSL <- tern_ex_adsl
-#'     ADTTE <- tern_ex_adtte
+#'   library("tern")
+#'   ADSL <- tern_ex_adsl
+#'   ADTTE <- tern_ex_adtte
 #' })
 #'
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
@@ -74,26 +74,25 @@
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(
 #'         variable_choices(ADTTE, c("ARM", "ARMCD", "ACTARMCD")),
-#'         "ARM"),
+#'         "ARM"
+#'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       aval_var = choices_selected(
-#'         variable_choices(ADTTE, "SEX"),
-#'         "SEX"),
-#'       # paramcd = choices_selected(
-#'       #   value_choices(ADTTE, "PARAMCD", "PARAM"),
-#'       #   "OS"
-#'       # ),
+#'         variable_choices(ADTTE, "PARAMCD"),
+#'         "PARAMCD"
+#'       ),
 #'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
+#'         variable_choices(ADSL, "SEX"),
 #'         "SEX"
 #'       ),
 #'       offset_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
-#'         "SEX"
+#'         variable_choices(ADSL, "AGE"),
+#'         NULL
 #'       ),
 #'       cov_var = choices_selected(
-#'         variable_choices(ADTTE, c("BMRKR1","BMRKR2")),
-#'         "BMRKR1")
+#'         variable_choices(ADTTE, "SITEID"),
+#'         "SITEID"
+#'       )
 #'     )
 #'   )
 #' )
@@ -113,11 +112,10 @@ tm_t_counts <- function(label = "Counts Module",
                           teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
                           fixed = TRUE
                         ),
-                        # id_var,
                         arm_var,
                         strata_var,
                         rate_mean_method = c("emmeans", "ppmeans"),
-                        distribution = c("quasipoisson", "negbin", "poisson"),
+                        distribution = c("negbin", "quasipoisson", "poisson"),
                         offset_var,
                         cov_var,
                         arm_ref_comp = NULL,
@@ -128,16 +126,15 @@ tm_t_counts <- function(label = "Counts Module",
                         basic_table_args = teal.widgets::basic_table_args(),
                         transformators = list(),
                         decorators = list()) {
-
   message("Initializing tm_t_counts")
-  # checkmate::assert_string(label)
-  # checkmate::assert_string(dataname)
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
   rate_mean_method <- match.arg(rate_mean_method)
   distribution <- match.arg(distribution)
   checkmate::assert_string(parentname)
   checkmate::assert_class(arm_var, "choices_selected")
   # checkmate::assert_class(paramcd, "choices_selected")
-  # checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
   assert_decorators(decorators, "table")
@@ -148,11 +145,8 @@ tm_t_counts <- function(label = "Counts Module",
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
     aval_var = cs_to_des_select(aval_var, dataname = dataname),
     cov_var = cs_to_des_select(cov_var, dataname = dataname),
-    # paramcd = cs_to_des_select(paramcd, dataname = dataname),
     offset_var = cs_to_des_select(offset_var, dataname = dataname),
     strata_var = cs_to_des_select(strata_var, dataname = dataname)
-  #   hlt = cs_to_des_select(hlt, dataname = dataname, multiple = TRUE, ordered = TRUE),
-  #   llt = cs_to_des_select(llt, dataname = dataname)
   )
 
   teal::module(
@@ -160,21 +154,22 @@ tm_t_counts <- function(label = "Counts Module",
     ui = ui_counts,
     server = srv_counts,
     ui_args = c(data_extract_list, args),
-    server_args = c(data_extract_list,
-                    list(
-                      dataname = dataname,
-                      parentname = parentname,
-                      arm_ref_comp = arm_ref_comp,
-                      # Arguments on data_extract_list:
-                      # paramcd = paramcd,
-                      # cov_var = cov_var,
-                      # aval_var = aval_var,
-                      # arm_var = arm_var,
-                      # strata_var = strata_var,
-                      label = label,
-                      basic_table_args = basic_table_args,
-                      decorators = decorators
-                    )
+    server_args = c(
+      data_extract_list,
+      list(
+        dataname = dataname,
+        parentname = parentname,
+        arm_ref_comp = arm_ref_comp,
+        # Arguments on data_extract_list:
+        # paramcd = paramcd,
+        # cov_var = cov_var,
+        # aval_var = aval_var,
+        # arm_var = arm_var,
+        # strata_var = strata_var,
+        label = label,
+        basic_table_args = basic_table_args,
+        decorators = decorators
+      )
     ),
     transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
@@ -182,7 +177,7 @@ tm_t_counts <- function(label = "Counts Module",
 }
 
 
-ui_counts <-  function(id, ...) {
+ui_counts <- function(id, ...) {
   ns <- NS(id)
   a <- list(...) # module args
 
@@ -193,8 +188,7 @@ ui_counts <-  function(id, ...) {
     a$aval_var
   )
   output <- teal.widgets::white_small_well(
-    teal.widgets::table_with_settings_ui(ns("table")
-    )
+    teal.widgets::table_with_settings_ui(ns("table"))
   )
   forms <- tagList(
     teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -248,7 +242,7 @@ ui_counts <-  function(id, ...) {
     teal.widgets::optionalSelectInput(
       inputId = ns("conf_level"),
       label = "Confidence Level",
-      choices = c(0.8, 0.9, 0.95, 0.99),
+      choices = c(0.8, 0.9, 0.95),
       selected = 0.95,
       multiple = FALSE,
       fixed = FALSE
@@ -337,7 +331,6 @@ srv_counts <- function(id,
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
-
     # Input validation
     # TODO: why the observer returns a InputValidator. Isn't the functionality of this to only populate the arm_ref widget
     iv_arm_ref <- arm_ref_comp_observer(
@@ -375,7 +368,6 @@ srv_counts <- function(id,
     ## Data source merging
     adsl_merge_inputs <- teal.transform::merge_expression_module(
       datasets = data,
-      join_keys = teal.data::join_keys(data),
       data_extract = list_data_extract,
       anl_name = "ANL"
     )
@@ -445,7 +437,7 @@ srv_counts <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
         anl = anl_filtered,
         anlvars = c(
-          "USUBJID", "STUDYID",  input_aval_var #, input_paramcd
+          "USUBJID", "STUDYID", input_aval_var # , input_paramcd
         ),
         arm_var = input_arm_var
       )
@@ -480,61 +472,103 @@ srv_counts <- function(id,
     })
     ## Add basic specification for the table
     basic_table <- reactive({
-
       req(!is.null(input$buckets$Ref))
       ami <- req(adsl_merge_inputs())
-      within(req(anl()), {
-        lyt <- rtables::basic_table(show_colcounts = TRUE) %>%
-          rtables::split_cols_by(var, ref_group = ref_group, split_fun = tern::ref_group_position("first"))
-      },
-      ref_group = unlist(input$buckets$Ref),
-      var = as.vector(ami$columns_source$arm_var)
+      within(req(anl()),
+        {
+          lyt <- rtables::basic_table(show_colcounts = TRUE) %>%
+            rtables::split_cols_by(var, ref_group = ref_group, split_fun = tern::ref_group_position("first"))
+        },
+        ref_group = unlist(input$buckets$Ref),
+        var = as.vector(ami$columns_source$arm_var)
       )
     })
 
     ## Create covariates for the table
     ## Create tables
     summarize_counts <- reactive({
-      within(req(basic_table()), {
-        variables <- list(arm = var, covariates = cov_var, offset = offset_var)
-        summarized_counts <- tern::summarize_glm_count(lyt,
-                            vars = var,
-                            variables = variables,
-                            conf_level = conf_level,
-                            distribution = distribution,
-                            rate_mean_method = method,
-                            var_labels = "Adjusted (NB) exacerbation rate (per year)",
-                            table_names = "adj-nb",
-                            .stats = c("rate", "rate_ci", "rate_ratio", "rate_ratio_ci", "pval"),
-                            .labels = c(
-                              rate = "Rate", rate_ci = "Rate CI", rate_ratio = "Rate Ratio",
-                              rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
-                            ))
-      },
-      var = as.vector(adsl_merge_inputs()$columns_source$arm_var),
-      cov_var = as.vector(adsl_merge_inputs()$columns_source$cov_var),
-      offset_var = as.vector(adsl_merge_inputs()$columns_source$offset_var),
-      variables = variables,
-      conf_level = as.numeric(input$conf_level),
-      method = input$rate_mean_method,
-      distribution = input$distribution)
+      ami <- req(adsl_merge_inputs())
+      offset_var <- as.vector(ami$columns_source$offset_var)
+      aval_var <- as.vector(ami$columns_source$aval_var)
+      cov_var <- as.vector(ami$columns_source$cov_var)
+
+      variables <- if (!is.null(offset_var) && !is.null(cov_var)) {
+        within(req(basic_table()), {
+          variables <- list(arm = var, covariates = cov_var, offset_var = offset_var)
+        },
+        var = aval_var,
+        cov_var = cov_var,
+        offset_var = offset_var
+        )
+      } else if (is.null(offset_var) && !is.null(cov_var)) {
+        within(req(basic_table()), {
+          variables <- list(arm = var, covariates = cov_var)
+        },
+        var = aval_var,
+        cov_var = cov_var
+        )
+      } else if (!is.null(offset_var) && is.null(cov_var)) {
+        within(req(basic_table()), {
+          variables <- list(arm = var, offset_var = offset_var)
+        },
+        var = aval_var,
+        offset_var = offset_var
+        )
+      } else {
+        within(req(basic_table()), {
+          variables <- list(arm = var)
+        },
+        var = aval_var)
+      }
+
+      within(variables, {
+          lyt <- tern::summarize_glm_count(lyt,
+            vars = var,
+            variables = variables,
+            conf_level = conf_level,
+            distribution = distribution,
+            rate_mean_method = method,
+            var_labels = "Adjusted (NB) exacerbation rate (per year)",
+            table_names = "adj-nb",
+            .stats = c("rate", "rate_ci", "rate_ratio", "rate_ratio_ci", "pval"),
+            .labels = c(
+              rate = "Rate", rate_ci = "Rate CI", rate_ratio = "Rate Ratio",
+              rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
+            )
+          )
+        },
+        var = as.vector(ami$columns_source$strata_var),
+        cov_var = as.vector(ami$columns_source$cov_var),
+        conf_level = as.numeric(input$conf_level),
+        method = input$rate_mean_method,
+        distribution = input$distribution
+      )
     })
 
-    # Add unstratified rows
+    # WISH: Add unstratified rows
     unstratified <- reactive({
-      within(req(summarize_counts()), {
-        lyt <- coxph_pairwise(summarized_counts, vars = vars, is_event = "is_event",
-                              var_labels = c("Unstratified Analysis"),
-                              control = list(pval_method = "log-rank", ties = "exact", conf_level = conf_level),
-                              na_str = "<Missing>", table_names = "unstratified")
-      },
-      vars = as.vector(adsl_merge_inputs()$columns_source$arm_var),
-      conf_level = as.numeric(input$conf_level))
+      within(req(summarize_counts()),
+        {
+          lyt <- coxph_pairwise(
+            lyt,
+            vars = vars,
+            var_labels = "Unstratified Analysis",
+            control = list(
+              pval_method = "log-rank",
+              ties = "exact",
+              conf_level = conf_level),
+            na_str = "<Missing>",
+            table_names = "unstratified"
+          )
+        },
+        vars = as.vector(adsl_merge_inputs()$columns_source$arm_var),
+        conf_level = as.numeric(input$conf_level)
+      )
     })
 
     # WISH: Add stratified rows
     stratified <- reactive({
-      within( req(unstratified()), {})
+      within(req(unstratified()), {})
     })
 
     # WISH: Add/fix p-value for Wald...
@@ -544,12 +578,13 @@ srv_counts <- function(id,
 
     # Create output table
     table_out <- reactive({
-      within(req(basic_table()), {
+      table <- within(req(summarize_counts()), {
         table <- rtables::build_table(
-        lyt = lyt,
-        df = ANL
+          lyt = lyt,
+          df = ANL
         )
-        })
+      })
+      table
     })
 
     decorated_table_q <- srv_decorate_teal_data(
@@ -593,4 +628,3 @@ srv_counts <- function(id,
     }
   })
 }
-
