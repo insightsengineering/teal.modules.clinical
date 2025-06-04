@@ -376,16 +376,6 @@ srv_counts <- function(id,
       helpText("Multiple reference groups are automatically combined into a single group.")
     })
 
-    ## Add library calls
-    add_pkg_loads <- reactive({
-      within(req(data()), {
-        library("dplyr")
-        library("tern")
-        library("rtables")
-      })
-    })
-
-
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
 
@@ -416,7 +406,7 @@ srv_counts <- function(id,
 
     ## Merge data
     anl_q <- reactive({
-      teal.code::eval_code(add_pkg_loads(), as.expression(adsl_merge_inputs()$expr))
+      teal.code::eval_code(data(), as.expression(adsl_merge_inputs()$expr))
     })
 
     validate_checks <- reactive({
@@ -425,7 +415,7 @@ srv_counts <- function(id,
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
 
-      anl_m <- anl_merge_inputs()
+      anl_m <- adsl_merge_inputs()
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_strata_var <- as.vector(anl_m$columns_source$strata_var)
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
