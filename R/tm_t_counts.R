@@ -7,7 +7,8 @@
 #' @param conf_level ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param rate_mean_method method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans".
-#' @param distribution a character value specifying the distribution used in the regression (Poisson: `"poisson"`,  Quasi-Poisson: `"quasipoisson"`, negative binomial: `"negbin"`).
+#' @param distribution a character value specifying the distribution used in the regression
+#' (Poisson: `"poisson"`,  Quasi-Poisson: `"quasipoisson"`, negative binomial: `"negbin"`).
 #' @param offset_var a character value specifying a numeric vector adding an offset.
 #' @param basic_table_args Other arguments passed to generate the table.
 #' @section Decorating Module:
@@ -133,7 +134,6 @@ tm_t_counts <- function(label = "Counts Module",
   distribution <- match.arg(distribution)
   checkmate::assert_string(parentname)
   checkmate::assert_class(arm_var, "choices_selected")
-  # checkmate::assert_class(paramcd, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -160,12 +160,7 @@ tm_t_counts <- function(label = "Counts Module",
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        # Arguments on data_extract_list:
-        # paramcd = paramcd,
-        # cov_var = cov_var,
-        # aval_var = aval_var,
-        # arm_var = arm_var,
-        # strata_var = strata_var,
+        # Arguments on data_extract_list: paramcd, cov_var, aval_var, arm_var, strata_var
         label = label,
         basic_table_args = basic_table_args,
         decorators = decorators
@@ -511,24 +506,24 @@ srv_counts <- function(id,
       }
       w <- within(variables, {
           lyt <- tern::summarize_glm_count(lyt,
-            vars = var,
-            variables = variables,
-            conf_level = conf_level,
-            distribution = distribution,
-            rate_mean_method = rate_mean_method,
-            var_labels = "Adjusted (NB) exacerbation rate (per year)",
-            table_names = "adj-nb",
-            .stats = c("rate", "rate_ci", "rate_ratio", "rate_ratio_ci", "pval"),
-            .labels = c(
-              rate = "Rate", rate_ci = "Rate CI", rate_ratio = "Rate Ratio",
-              rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
-            )
+                                           vars = var,
+                                           variables = variables,
+                                           conf_level = conf_level,
+                                           distribution = distribution,
+                                           rate_mean_method = rate_mean_method,
+                                           var_labels = "Adjusted (NB) exacerbation rate (per year)",
+                                           table_names = "adj-nb",
+                                           .stats = c("rate", "rate_ci", "rate_ratio", "rate_ratio_ci", "pval"),
+                                           .labels = c(
+                                             rate = "Rate", rate_ci = "Rate CI", rate_ratio = "Rate Ratio",
+                                             rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
+                                           )
           )
-        },
-        rate_mean_method = input$rate_mean_method,
-        var = as.vector(ami$columns_source$aval_var),
-        conf_level = as.numeric(input$conf_level),
-        distribution = input$distribution
+      },
+      rate_mean_method = input$rate_mean_method,
+      var = as.vector(ami$columns_source$aval_var),
+      conf_level = as.numeric(input$conf_level),
+      distribution = input$distribution
       )
     })
 
@@ -545,8 +540,7 @@ srv_counts <- function(id,
               ties = "exact",
               conf_level = conf_level),
             na_str = "<Missing>",
-            table_names = "unstratified"
-          )
+            table_names = "unstratified")
         },
         vars = as.vector(adsl_merge_inputs()$columns_source$arm_var),
         conf_level = as.numeric(input$conf_level)
