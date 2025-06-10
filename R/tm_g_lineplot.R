@@ -694,7 +694,7 @@ srv_g_lineplot <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = print(plot)
+      expr = plot
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 

@@ -551,7 +551,7 @@ srv_g_barchart_simple <- function(id,
       "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = print(plot)
+      expr = plot
     )
 
     plot_r <- reactive(decorated_all_q_code()[["plot"]])

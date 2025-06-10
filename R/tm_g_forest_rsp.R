@@ -789,7 +789,7 @@ srv_g_forest_rsp <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = print(plot)
+      expr = plot
     )
 
     plot_r <- reactive({

@@ -718,7 +718,7 @@ srv_g_therapy <- function(id,
       "d_plot",
       data = decorated_all_q_table,
       decorators = select_decorators(decorators, "plot"),
-      expr = print(plot)
+      expr = plot
     )
 
     plot_r <- reactive({
