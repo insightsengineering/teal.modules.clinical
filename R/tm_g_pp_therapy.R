@@ -709,7 +709,7 @@ srv_g_therapy <- function(id,
 
     output$therapy_table <- DT::renderDataTable(
       expr = {
-        teal.code::dev_suppress(decorated_all_q_table()[["table"]])
+        decorated_all_q_table()[["table"]]
       },
       options = list(pageLength = input$therapy_table_rows)
     )
@@ -751,7 +751,7 @@ srv_g_therapy <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(teal.code::dev_suppress(all_q()[["table"]]))
+        card$append_table(all_q()[["table"]])
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {

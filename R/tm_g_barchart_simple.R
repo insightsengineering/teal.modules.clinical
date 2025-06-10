@@ -558,7 +558,7 @@ srv_g_barchart_simple <- function(id,
 
     output$table <- renderTable({
       req(iv_r()$is_valid())
-      teal.code::dev_suppress(all_q()[["counts"]])
+      all_q()[["counts"]]
     })
 
     # get grouping variables
