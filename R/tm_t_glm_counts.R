@@ -1,16 +1,18 @@
-#' Teal Module: Counts
+#' Teal Module: Regression Counts Summary
 #'
-#' This module produces a frequency table.
+#' Summarize results of a Poisson negative binomial regression that is result
+#' of a generalized linear model of one (e.g. arm) or more covariates.
 #'
+#' @inheritParams template_arguments
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @param conf_level ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
-#' @param rate_mean_method method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans".
-#' @param distribution a character value specifying the distribution used in the regression
+#' @param rate_mean_method (`character`) method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans"
+#' (as in `summarize_glm_count()`).
+#' @param distribution (`character`) value specifying the distribution used in the regression model
 #' (Poisson: `"poisson"`,  Quasi-Poisson: `"quasipoisson"`, negative binomial: `"negbin"`).
-#' @param offset_var a character value specifying a numeric vector adding an offset.
-#' @param basic_table_args Other arguments passed to generate the table.
+#' @param offset_var (`character`) a name of the numeric variable to be used as an offset?
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
@@ -21,7 +23,7 @@
 #' See code snippet below:
 #'
 #' ```
-#' tm_t_counts(
+#' tm_t_glm_counts(
 #'    ..., # arguments for module
 #'    decorators = list(
 #'      table = teal_transform_module(...) # applied only to `table` output
@@ -36,9 +38,10 @@
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @details
-#' * The core functionality of this module is based on [tern::summarize_glm_count()] from the `tern` package.
+#' * Teal module for [tern::summarize_glm_count()] analysis, that summarizes results of a
+#' Poisson negative binomial regression.
 #' * The arm and stratification variables are taken from the `parentname` data.
-#'
+#' @seealso `summarize_glm_count()`
 #' @inherit module_arguments return seealso
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -71,7 +74,7 @@
 #' app <- init(
 #'   data = data,
 #'   modules = modules(
-#'     tm_t_counts(
+#'     tm_t_glm_counts(
 #'       dataname = "ADTTE",
 #'       arm_var = choices_selected(
 #'         variable_choices(ADTTE, c("ARM", "ARMCD", "ACTARMCD")),
@@ -102,7 +105,7 @@
 #'   shinyApp(ui = app$ui, server = app$server)
 #' }
 #' @export
-tm_t_counts <- function(label = "Counts Module",
+tm_t_glm_counts <- function(label = "Counts Module",
                         dataname,
                         parentname = ifelse(
                           inherits(arm_var, "data_extract_spec"),
@@ -120,14 +123,13 @@ tm_t_counts <- function(label = "Counts Module",
                         offset_var,
                         cov_var,
                         arm_ref_comp = NULL,
-                        # paramcd,
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
                         transformators = list(),
                         decorators = list()) {
-  message("Initializing tm_t_counts")
+  message("Initializing tm_t_glm_counts")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   rate_mean_method <- match.arg(rate_mean_method)
@@ -160,7 +162,6 @@ tm_t_counts <- function(label = "Counts Module",
         dataname = dataname,
         parentname = parentname,
         arm_ref_comp = arm_ref_comp,
-        # Arguments on data_extract_list: paramcd, cov_var, aval_var, arm_var, strata_var
         label = label,
         basic_table_args = basic_table_args,
         decorators = decorators
@@ -218,22 +219,8 @@ ui_counts <- function(id, ...) {
     )
   )
 
-  # TODO: provide other p-values
   table_settings <- bslib::accordion_panel(
     "Additional table settings",
-    # radioButtons(
-    #   ns("ties_coxph"),
-    #   label = HTML(
-    #     paste(
-    #       "Ties for ",
-    #       tags$span(class = "text-primary", "Coxph"),
-    #       " (Hazard Ratio)",
-    #       sep = ""
-    #     )
-    #   ),
-    #   choices = c("exact", "breslow", "efron"),
-    #   selected = "exact"
-    # ),
     teal.widgets::optionalSelectInput(
       inputId = ns("conf_level"),
       label = "Confidence Level",
@@ -306,19 +293,12 @@ srv_counts <- function(id,
                        dataname,
                        parentname,
                        arm_var,
-                       # paramcd,
                        aval_var,
                        offset_var,
-                       # paramcd,
-                       # id_var,
-                       # visit_var,
                        cov_var,
                        strata_var,
-                       # split_covariates,
                        arm_ref_comp,
                        label,
-                       # plot_height,
-                       # plot_width,
                        basic_table_args,
                        decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
@@ -327,7 +307,6 @@ srv_counts <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     # Input validation
-    # TODO: why the observer returns a InputValidator. Isn't the functionality of this to only populate the arm_ref widget
     iv_arm_ref <- arm_ref_comp_observer(
       session,
       input,
@@ -347,7 +326,6 @@ srv_counts <- function(id,
       offset_var = offset_var
     )
 
-    # TODO: Why is it needed, we have also shinyvalidate checks and validate_checks
     selector_list <- teal.transform::data_extract_multiple_srv(
       data_extract = list_data_extract,
       datasets = data,
@@ -355,9 +333,6 @@ srv_counts <- function(id,
         aval_var = shinyvalidate::sv_required("An analysis variable is required"),
         arm_var = shinyvalidate::sv_required("A treatment variable is required")
       )
-      # filter_validation_rule = list(
-      #   paramcd = shinyvalidate::sv_required("An endpoint is required")
-      # )
     )
 
     ## Data source merging
@@ -525,36 +500,6 @@ srv_counts <- function(id,
       conf_level = as.numeric(input$conf_level),
       distribution = input$distribution
       )
-    })
-
-    # WISH: Add unstratified rows
-    unstratified <- reactive({
-      within(req(summarize_counts()),
-        {
-          lyt <- coxph_pairwise(
-            lyt,
-            vars = vars,
-            var_labels = "Unstratified Analysis",
-            control = list(
-              pval_method = "log-rank",
-              ties = "exact",
-              conf_level = conf_level),
-            na_str = "<Missing>",
-            table_names = "unstratified")
-        },
-        vars = as.vector(adsl_merge_inputs()$columns_source$arm_var),
-        conf_level = as.numeric(input$conf_level)
-      )
-    })
-
-    # WISH: Add stratified rows
-    stratified <- reactive({
-      within(req(unstratified()), {})
-    })
-
-    # WISH: Add/fix p-value for Wald...
-    pvalues <- reactive({
-      within(req(stratified()), {})
     })
 
     # Create output table
