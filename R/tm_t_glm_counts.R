@@ -106,29 +106,29 @@
 #' }
 #' @export
 tm_t_glm_counts <- function(label = "Counts Module",
-                        dataname,
-                        parentname = ifelse(
-                          inherits(arm_var, "data_extract_spec"),
-                          teal.transform::datanames_input(arm_var),
-                          "ADSL"
-                        ),
-                        aval_var = teal.transform::choices_selected(
-                          teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
-                          fixed = TRUE
-                        ),
-                        arm_var,
-                        strata_var,
-                        rate_mean_method = c("emmeans", "ppmeans"),
-                        distribution = c("negbin", "quasipoisson", "poisson"),
-                        offset_var,
-                        cov_var,
-                        arm_ref_comp = NULL,
-                        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                        pre_output = NULL,
-                        post_output = NULL,
-                        basic_table_args = teal.widgets::basic_table_args(),
-                        transformators = list(),
-                        decorators = list()) {
+                            dataname,
+                            parentname = ifelse(
+                              inherits(arm_var, "data_extract_spec"),
+                              teal.transform::datanames_input(arm_var),
+                              "ADSL"
+                            ),
+                            aval_var = teal.transform::choices_selected(
+                              teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
+                              fixed = TRUE
+                            ),
+                            arm_var,
+                            strata_var,
+                            rate_mean_method = c("emmeans", "ppmeans"),
+                            distribution = c("negbin", "quasipoisson", "poisson"),
+                            offset_var,
+                            cov_var,
+                            arm_ref_comp = NULL,
+                            conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                            pre_output = NULL,
+                            post_output = NULL,
+                            basic_table_args = teal.widgets::basic_table_args(),
+                            transformators = list(),
+                            decorators = list()) {
   message("Initializing tm_t_glm_counts")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -389,7 +389,6 @@ srv_counts <- function(id,
       input_arm_var <- as.vector(anl_m$columns_source$arm_var)
       input_strata_var <- as.vector(anl_m$columns_source$strata_var)
       input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      # input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
       # validate inputs
       validate_args <- list(
@@ -480,20 +479,20 @@ srv_counts <- function(id,
         var = arm_var)
       }
       w <- within(variables, {
-          lyt <- tern::summarize_glm_count(lyt,
-                                           vars = var,
-                                           variables = variables,
-                                           conf_level = conf_level,
-                                           distribution = distribution,
-                                           rate_mean_method = rate_mean_method,
-                                           var_labels = "Adjusted (NB) exacerbation rate (per year)",
-                                           table_names = "adj-nb",
-                                           .stats = c("rate", "rate_ci", "rate_ratio", "rate_ratio_ci", "pval"),
-                                           .labels = c(
-                                             rate = "Rate", rate_ci = "Rate CI", rate_ratio = "Rate Ratio",
-                                             rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
-                                           )
-          )
+        lyt <- tern::summarize_glm_count(lyt,
+                                         vars = var,
+                                         variables = variables,
+                                         conf_level = conf_level,
+                                         distribution = distribution,
+                                         rate_mean_method = rate_mean_method,
+                                         var_labels = "Adjusted (NB) exacerbation rate (per year)",
+                                         table_names = "adj-nb",
+                                         .stats = c("rate", "rate_ci", "rate_ratio", "rate_ratio_ci", "pval"),
+                                         .labels = c(
+                                           rate = "Rate", rate_ci = "Rate CI", rate_ratio = "Rate Ratio",
+                                           rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
+                                         )
+        )
       },
       rate_mean_method = input$rate_mean_method,
       var = as.vector(ami$columns_source$aval_var),
