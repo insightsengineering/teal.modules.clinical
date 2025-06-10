@@ -451,53 +451,60 @@ srv_counts <- function(id,
       cov_var <- as.vector(ami$columns_source$cov_var)
       arm_var <- as.vector(ami$columns_source$arm_var)
       variables <- if (length(offset_var) && length(cov_var)) {
-        within(req(basic_table()), {
-          variables <- list(arm = var, covariates = cov_var, offset_var = offset_var)
-        },
-        var = arm_var,
-        cov_var = cov_var,
-        offset_var = offset_var
+        within(req(basic_table()),
+          {
+            variables <- list(arm = var, covariates = cov_var, offset_var = offset_var)
+          },
+          var = arm_var,
+          cov_var = cov_var,
+          offset_var = offset_var
         )
       } else if (!length(offset_var) && length(cov_var)) {
-        within(req(basic_table()), {
-          variables <- list(arm = var, covariates = cov_var)
-        },
-        var = arm_var,
-        cov_var = cov_var
+        within(req(basic_table()),
+          {
+            variables <- list(arm = var, covariates = cov_var)
+          },
+          var = arm_var,
+          cov_var = cov_var
         )
       } else if (length(offset_var) && !length(cov_var)) {
-        within(req(basic_table()), {
-          variables <- list(arm = var, offset_var = offset_var)
-        },
-        var = arm_var,
-        offset_var = offset_var
+        within(req(basic_table()),
+          {
+            variables <- list(arm = var, offset_var = offset_var)
+          },
+          var = arm_var,
+          offset_var = offset_var
         )
       } else {
-        within(req(basic_table()), {
-          variables <- list(arm = var)
-        },
-        var = arm_var)
-      }
-      w <- within(variables, {
-        lyt <- tern::summarize_glm_count(lyt,
-                                         vars = var,
-                                         variables = variables,
-                                         conf_level = conf_level,
-                                         distribution = distribution,
-                                         rate_mean_method = rate_mean_method,
-                                         var_labels = "Adjusted (NB) exacerbation rate (per year)",
-                                         table_names = "adj-nb",
-                                         .stats = c("rate", "rate_ci", "rate_ratio", "rate_ratio_ci", "pval"),
-                                         .labels = c(
-                                           rate = "Rate", rate_ci = "Rate CI", rate_ratio = "Rate Ratio",
-                                           rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
-                                         )
+        within(req(basic_table()),
+          {
+            variables <- list(arm = var)
+          },
+          var = arm_var
         )
-      },
-      rate_mean_method = input$rate_mean_method,
-      var = as.vector(ami$columns_source$aval_var),
-      conf_level = as.numeric(input$conf_level),
-      distribution = input$distribution
+      }
+      w <- within(variables,
+        {
+          lyt <- tern::summarize_glm_count(
+            lyt,
+            vars = var,
+            variables = variables,
+            conf_level = conf_level,
+            distribution = distribution,
+            rate_mean_method = rate_mean_method,
+            var_labels = "Adjusted (NB) exacerbation rate (per year)",
+            table_names = "adj-nb",
+            .stats = c("rate", "rate_ci", "rate_ratio", "rate_ratio_ci", "pval"),
+            .labels = c(
+              rate = "Rate", rate_ci = "Rate CI", rate_ratio = "Rate Ratio",
+              rate_ratio_ci = "Rate Ratio CI", pval = "p-value"
+            )
+          )
+        },
+        rate_mean_method = input$rate_mean_method,
+        var = as.vector(ami$columns_source$aval_var),
+        conf_level = as.numeric(input$conf_level),
+        distribution = input$distribution
       )
     })
 
