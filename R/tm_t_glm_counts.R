@@ -153,8 +153,8 @@ tm_t_glm_counts <- function(label = "Counts Module",
 
   teal::module(
     label = label,
-    ui = ui_counts,
-    server = srv_counts,
+    ui = ui_t_glm_counts,
+    server = srv_t_glm_counts,
     ui_args = c(data_extract_list, args),
     server_args = c(
       data_extract_list,
