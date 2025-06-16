@@ -173,7 +173,7 @@ tm_t_glm_counts <- function(label = "Counts Module",
 }
 
 
-ui_counts <- function(id, ...) {
+ui_t_glm_counts <- function(id, ...) {
   ns <- NS(id)
   a <- list(...) # module args
 
@@ -286,7 +286,7 @@ ui_counts <- function(id, ...) {
   )
 }
 
-srv_counts <- function(id,
+srv_t_glm_counts <- function(id,
                        data,
                        filter_panel_api,
                        reporter,
