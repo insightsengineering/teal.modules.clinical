@@ -511,7 +511,6 @@ srv_t_glm_counts <- function(id,
     # Create output table
     table_out <- reactive({
       req(summarize_counts())
-      browser()
       table <- within(req(summarize_counts()), {
         table <- rtables::build_table(
           lyt = lyt,
@@ -519,7 +518,7 @@ srv_t_glm_counts <- function(id,
         )
       })
 
-      validate(need(!inherits(table, "try-error"), paste0("Model couldn't be fitted:\n", as.character(table))))
+      validate(need(!inherits(table, "try-error"), "Model couldn't be fitted."))
       table
     })
 
