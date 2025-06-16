@@ -196,7 +196,7 @@ ui_t_glm_counts <- function(id, ...) {
     bslib::input_switch(
       id = ns("compare_arms"),
       label = "Compare Treatments",
-      value = !is.null(a$arm_ref_comp)
+      value = !is.null(a$arm_var)
     ),
     conditionalPanel(
       condition = paste0("input['", ns("compare_arms"), "']"),
