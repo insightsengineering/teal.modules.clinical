@@ -611,12 +611,13 @@ srv_g_adverse_events <- function(id,
       "d_plot",
       data = plot_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = print(plot)
+      expr = plot
     )
 
     table_r <- reactive({
       req(decorated_all_q_table())
-      teal.code::dev_suppress(decorated_all_q_table()[["table"]])
+
+      decorated_all_q_table()[["table"]]
     })
 
     plot_r <- reactive({
@@ -658,7 +659,7 @@ srv_g_adverse_events <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(teal.code::dev_suppress(table_r()))
+        card$append_table(table_r())
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
