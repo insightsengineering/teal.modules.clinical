@@ -287,20 +287,20 @@ ui_t_glm_counts <- function(id, ...) {
 }
 
 srv_t_glm_counts <- function(id,
-                       data,
-                       filter_panel_api,
-                       reporter,
-                       dataname,
-                       parentname,
-                       arm_var,
-                       aval_var,
-                       offset_var,
-                       cov_var,
-                       strata_var,
-                       arm_ref_comp,
-                       label,
-                       basic_table_args,
-                       decorators) {
+                             data,
+                             filter_panel_api,
+                             reporter,
+                             dataname,
+                             parentname,
+                             arm_var,
+                             aval_var,
+                             offset_var,
+                             cov_var,
+                             strata_var,
+                             arm_ref_comp,
+                             label,
+                             basic_table_args,
+                             decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
