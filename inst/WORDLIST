@@ -21,9 +21,11 @@ UI
 Univariable
 datatables
 de
+emmeans
 funder
 ggplot
 lsmeans
+ppmeans
 pre
 preselected
 responder
