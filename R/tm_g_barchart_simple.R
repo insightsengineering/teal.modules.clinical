@@ -429,8 +429,9 @@ srv_g_barchart_simple <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
+      obj <- data()
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "# Module's code")
+      obj %>% teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     count_q <- reactive({
