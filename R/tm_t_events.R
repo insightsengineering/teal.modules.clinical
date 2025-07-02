@@ -841,9 +841,14 @@ srv_t_events_byterm <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
+    table_renamed_q <- reactive({
+      req(table_q())
+      teal.code::eval_code(table_q(), "table <- pruned_and_sorted_result")
+    })
+
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
-      data = table_q,
+      data = table_renamed_q,
       decorators = select_decorators(decorators, "table"),
       expr = table
     )
