@@ -298,9 +298,6 @@ ui_gee <- function(id, ...) {
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),
       teal.transform::data_extract_ui(
@@ -401,7 +398,6 @@ ui_gee <- function(id, ...) {
 srv_gee <- function(id,
                     data,
                     filter_panel_api,
-                    reporter,
                     dataname,
                     parentname,
                     arm_var,
@@ -417,7 +413,6 @@ srv_gee <- function(id,
                     plot_width,
                     basic_table_args,
                     decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
@@ -562,7 +557,17 @@ srv_gee <- function(id,
         cor_struct = input$cor_struct,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
+
+      table_type <- switch(input$output_table,
+        "t_gee_cov" = "Residual Covariance Matrix Estimate",
+        "t_gee_coef" = "Model Coefficients",
+        "t_gee_lsmeans" = "LS Means Estimates"
+      )
+
+      obj <- merged$anl_q()
+      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Generalized Estimating Equations (GEE) Analysis Table", after = 0)
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), paste("## ", table_type, "Table"))
+      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     output$gee_title <- renderText({
@@ -600,30 +605,6 @@ srv_gee <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Generalized Estimating Equations (GEE) Analysis Table",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        table_type <- switch(input$output_table,
-          "t_gee_cov" = "Residual Covariance Matrix Estimate",
-          "t_gee_coef" = "Model Coefficients",
-          "t_gee_lsmeans" = "LS Means Estimates"
-        )
-        card$append_text(paste(table_type, "Table"), "header3")
-        card$append_table(table_r())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
-    }
+    decorated_table_q
   })
 }
