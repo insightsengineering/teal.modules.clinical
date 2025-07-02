@@ -397,7 +397,6 @@ ui_gee <- function(id, ...) {
 
 srv_gee <- function(id,
                     data,
-                    filter_panel_api,
                     dataname,
                     parentname,
                     arm_var,
@@ -413,7 +412,6 @@ srv_gee <- function(id,
                     plot_width,
                     basic_table_args,
                     decorators) {
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
