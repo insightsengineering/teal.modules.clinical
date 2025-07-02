@@ -448,9 +448,6 @@ ui_g_forest_rsp <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
       teal.transform::data_extract_ui(
@@ -537,8 +534,6 @@ ui_g_forest_rsp <- function(id, ...) {
 #' @keywords internal
 srv_g_forest_rsp <- function(id,
                              data,
-                             reporter,
-                             filter_panel_api,
                              dataname,
                              parentname,
                              arm_var,
@@ -555,8 +550,6 @@ srv_g_forest_rsp <- function(id,
                              default_responses,
                              ggplot2_args,
                              decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
@@ -615,7 +608,10 @@ srv_g_forest_rsp <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
+      obj <- data()
+      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Forest Response Plot", after = 0)
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Module's code")
+      obj %>% 
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_inputs()$expr))
     })
@@ -781,8 +777,9 @@ srv_g_forest_rsp <- function(id,
         font_size = input$font_size,
         ggplot2_args = ggplot2_args
       )
-
-      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
+      obj <- anl_q()
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot")
+      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     decorated_all_q <- srv_decorate_teal_data(
@@ -817,26 +814,6 @@ srv_g_forest_rsp <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Forest Response Plot",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Plot", "header3")
-        card$append_plot(plot_r(), dim = pws$dim())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    decorated_all_q
   })
 }
