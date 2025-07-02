@@ -247,11 +247,8 @@ ui_g_barchart_simple <- function(id, ...) {
         teal.widgets::plot_with_settings_ui(id = ns("myplot")),
         uiOutput(ns("table"), class = "overflow-y-scroll max-h-250")
       ),
-      encoding = tags$div(
-        ### Reporter
-        teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-        ###
-        tags$label("Encodings", class = "text-primary"), tags$br(),
+          encoding = tags$div(
+      tags$label("Encodings", class = "text-primary"), tags$br(),
         teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
         if (!is.null(args$x)) {
           teal.transform::data_extract_ui(
@@ -366,8 +363,6 @@ ui_g_barchart_simple <- function(id, ...) {
 #' @keywords internal
 srv_g_barchart_simple <- function(id,
                                   data,
-                                  reporter,
-                                  filter_panel_api,
                                   x,
                                   fill,
                                   x_facet,
@@ -376,8 +371,6 @@ srv_g_barchart_simple <- function(id,
                                   plot_width,
                                   ggplot2_args,
                                   decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
@@ -534,8 +527,10 @@ srv_g_barchart_simple <- function(id,
       )
 
       ANL <- count_q()[["ANL"]]
+      all_q <- count_q()
+      teal.reporter::teal_card(all_q) <- append(teal.reporter::teal_card(all_q), "# Bar Chart", after = 0)
 
-      all_q <- count_q() %>%
+      all_q %>%
         teal.code::eval_code(substitute(
           env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
           plot_title <- sprintf(
@@ -598,26 +593,7 @@ srv_g_barchart_simple <- function(id,
       title = "Bar Chart"
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Barchart Plot",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Plot", "header3")
-        card$append_plot(plot_r(), dim = pws$dim())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
-    }
+    decorated_all_q_code
     ###
   })
 }
