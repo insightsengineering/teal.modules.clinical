@@ -1251,6 +1251,7 @@ srv_t_events_by_grade <- function(id,
       verbatim_content = source_code_r,
       title = label
     )
+    decorated_table_q
 
   })
 }
