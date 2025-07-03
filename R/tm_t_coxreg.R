@@ -614,9 +614,6 @@ ui_t_coxreg <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
       radioButtons(
         ns("type"),
         label = tags$label("Type of Regression:", class = "text-primary"),
@@ -738,8 +735,6 @@ ui_t_coxreg <- function(id, ...) {
 #' @keywords internal
 srv_t_coxreg <- function(id,
                          data,
-                         reporter,
-                         filter_panel_api,
                          dataname,
                          parentname,
                          arm_var,
@@ -753,8 +748,6 @@ srv_t_coxreg <- function(id,
                          na_level,
                          basic_table_args,
                          decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
@@ -863,7 +856,12 @@ srv_t_coxreg <- function(id,
       merge_function = "dplyr::inner_join"
     )
 
-    anl_q <- reactive(teal.code::eval_code(data(), as.expression(anl_inputs()$expr)))
+    anl_q <- reactive({
+      obj <- data()
+      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Cox Regression Table", after = 0)
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Module's code")
+      teal.code::eval_code(obj, as.expression(anl_inputs()$expr))
+    })
 
     merged <- list(
       anl_input_r = anl_inputs,
@@ -1060,7 +1058,9 @@ srv_t_coxreg <- function(id,
           unlist(input$buckets$Comp), merged$anl_input_r(),
           paramcd, multivariate, all_basic_table_args
         )
-        teal.code::eval_code(merged$anl_q(), as.expression(expr))
+        obj <- merged$anl_q()
+        teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+        teal.code::eval_code(obj, as.expression(expr))
       } else {
         main_title <- paste("Cox Regression for", paramcd)
         subtitle <- ifelse(length(strata_var) == 0, "", paste("Stratified by", paste(strata_var, collapse = " and ")))
@@ -1072,7 +1072,9 @@ srv_t_coxreg <- function(id,
           )
         )
 
-        merged$anl_q() %>%
+        obj <- merged$anl_q()
+        teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+        obj %>%
           teal.code::eval_code(quote(table <- list())) %>%
           teal.code::eval_code(
             as.expression(unlist(lapply(
@@ -1135,26 +1137,6 @@ srv_t_coxreg <- function(id,
       title = "R Code for the Current (Multi-Variable) Cox proportional hazard regression model"
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Cox Regression Table",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    decorated_table_q
   })
 }
