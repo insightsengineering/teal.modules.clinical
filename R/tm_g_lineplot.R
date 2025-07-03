@@ -420,9 +420,6 @@ ui_g_lineplot <- function(id, ...) {
       )
     ),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("group_var", "paramcd", "x", "y", "y_unit", "param")]),
       teal.transform::data_extract_ui(
@@ -561,8 +558,6 @@ ui_g_lineplot <- function(id, ...) {
 #' @keywords internal
 srv_g_lineplot <- function(id,
                            data,
-                           reporter,
-                           filter_panel_api,
                            dataname,
                            parentname,
                            paramcd,
@@ -576,8 +571,6 @@ srv_g_lineplot <- function(id,
                            plot_width,
                            ggplot2_args,
                            decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
@@ -616,8 +609,10 @@ srv_g_lineplot <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
+      obj <- data()
+      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Line Plot", after = 0)
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Module's code")
+      obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
     })
 
     merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
@@ -687,7 +682,9 @@ srv_g_lineplot <- function(id,
         table_font_size = input$table_font_size,
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
+      obj <- merged$anl_q()
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot")
+      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     decorated_all_q <- srv_decorate_teal_data(
@@ -714,26 +711,6 @@ srv_g_lineplot <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Line Plot",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Plot", "header3")
-        card$append_plot(plot_r(), dim = pws$dim())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    decorated_all_q
   })
 }

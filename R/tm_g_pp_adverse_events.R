@@ -371,9 +371,6 @@ ui_g_adverse_events <- function(id, ...) {
       teal.widgets::plot_with_settings_ui(id = ns("chart"))
     ),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(ui_args[c(
         "aeterm", "tox_grade", "causality", "outcome",
@@ -455,8 +452,6 @@ ui_g_adverse_events <- function(id, ...) {
 #' @keywords internal
 srv_g_adverse_events <- function(id,
                                  data,
-                                 filter_panel_api,
-                                 reporter,
                                  dataname,
                                  parentname,
                                  patient_col,
@@ -472,8 +467,6 @@ srv_g_adverse_events <- function(id,
                                  label,
                                  ggplot2_args,
                                  decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
@@ -543,10 +536,12 @@ srv_g_adverse_events <- function(id,
       selector_list = selector_list
     )
 
-    anl_q <- reactive(
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
-    )
+    anl_q <- reactive({
+      obj <- data()
+      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Patient Profile Adverse Events", after = 0)
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Module's code")
+      obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
+    })
 
     all_q <- reactive({
       teal::validate_inputs(iv_r())
@@ -582,8 +577,9 @@ srv_g_adverse_events <- function(id,
         font_size = input[["font_size"]],
         ggplot2_args = ggplot2_args
       )
-
-      teal.code::eval_code(anl_q2, as.expression(calls))
+      obj <- anl_q2
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot and Table")
+      teal.code::eval_code(obj, as.expression(calls))
     })
 
     output$title <- renderText({
@@ -649,28 +645,6 @@ srv_g_adverse_events <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Patient Profile Adverse Events Plot",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r())
-        card$append_text("Plot", "header3")
-        card$append_plot(plot_r(), dim = pws$dim())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    decorated_all_q
   })
 }
