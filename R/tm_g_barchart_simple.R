@@ -430,6 +430,7 @@ srv_g_barchart_simple <- function(id,
 
     anl_q <- reactive({
       obj <- data()
+      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Barchart", after = 0)
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Module's code")
       obj %>% teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
@@ -528,7 +529,7 @@ srv_g_barchart_simple <- function(id,
       )
 
       ANL <- count_q()[["ANL"]]
-      count_q() %>%
+      obj <- count_q() %>%
         teal.code::eval_code(substitute(
           env = list(groupby_vars = paste(groupby_vars, collapse = ", ")),
           plot_title <- sprintf(
@@ -536,8 +537,9 @@ srv_g_barchart_simple <- function(id,
             nrow(ANL),
             groupby_vars
           )
-        )) %>%
-        teal.code::eval_code(code = plot_call)
+        ))
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot")
+      teal.code::eval_code(obj, code = plot_call)
     })
 
     decorated_all_q_code <- srv_decorate_teal_data(
