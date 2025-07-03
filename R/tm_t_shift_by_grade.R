@@ -922,6 +922,6 @@ srv_t_shift_by_grade <- function(id,
       title = label
     )
 
-    decorated_table_q()
+    decorated_table_q
   })
 }

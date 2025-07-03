@@ -995,5 +995,6 @@ srv_t_tte <- function(id,
       title = label
     )
 
+    decorated_table_q
   })
 }

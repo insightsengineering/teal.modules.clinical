@@ -652,6 +652,6 @@ srv_shift_by_arm_by_worst <- function(id,
       title = label
     )
 
-    decorated_table_q()
+    decorated_table_q
   })
 }

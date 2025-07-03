@@ -746,6 +746,7 @@ srv_t_logistic <- function(id,
       verbatim_content = source_code_r,
       title = label
     )
+    decorated_table_q
 
   })
 }

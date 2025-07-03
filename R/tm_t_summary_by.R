@@ -770,5 +770,6 @@ srv_summary_by <- function(id,
       title = label
     )
 
+    decorated_table_q
   })
 }

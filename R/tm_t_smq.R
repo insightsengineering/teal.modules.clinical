@@ -697,6 +697,6 @@ srv_t_smq <- function(id,
       title = label
     )
 
-    decorated_table_q()
+    decorated_table_q
   })
 }

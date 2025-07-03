@@ -618,6 +618,6 @@ srv_shift_by_arm <- function(id,
       title = label
     )
 
-    decorated_table_q()
+    decorated_table_q
   })
 }
