@@ -37,6 +37,8 @@
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @details
 #' * Teal module for [tern::summarize_glm_count()] analysis, that summarizes results of a
 #' Poisson negative binomial regression.
