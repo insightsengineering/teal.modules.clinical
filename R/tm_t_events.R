@@ -835,7 +835,9 @@ srv_t_events_byterm <- function(id,
 
     table_renamed_q <- reactive({
       req(table_q())
-      within(table_q(), {table <- pruned_and_sorted_result})
+      within(table_q(), {
+        table <- pruned_and_sorted_result
+      })
     })
 
     decorated_table_q <- srv_decorate_teal_data(
