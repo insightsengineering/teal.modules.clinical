@@ -7,7 +7,7 @@
 * Added `denom` argument in `tm_t_binary_outcome` module.
 
 ### Bug fixes
-* Fixed bug in `tm_t_events` to return sorted table.
+* Fixed bug in `tm_t_events` to return sorted table (#1393).
 
 # teal.modules.clinical 0.10.0
 
