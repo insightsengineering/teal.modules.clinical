@@ -340,7 +340,6 @@ template_events <- function(dataname,
         sort_list,
         quote({
           pruned_and_sorted_result <- pruned_result
-          pruned_and_sorted_result
         })
       )
     } else {
@@ -357,7 +356,6 @@ template_events <- function(dataname,
         sort_list,
         quote({
           pruned_and_sorted_result <- rtables::trim_rows(pruned_result, criteria = criteria_fun)
-          pruned_and_sorted_result
         })
       )
     }
@@ -392,7 +390,6 @@ template_events <- function(dataname,
           expr = {
             pruned_and_sorted_result <- pruned_result %>%
               sort_at_path(path = c(term_var), scorefun = scorefun_llt)
-            pruned_and_sorted_result
           },
           env = list(
             term_var = term_var,
@@ -435,11 +432,6 @@ template_events <- function(dataname,
           )
         )
       }
-
-      sort_list <- add_expr(
-        sort_list,
-        quote(table <- pruned_and_sorted_result)
-      )
     }
   }
   y$sort <- bracket_expr(sort_list)
