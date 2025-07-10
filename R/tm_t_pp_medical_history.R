@@ -324,10 +324,13 @@ srv_t_medical_history <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Patient Medical History Table", after = 0)
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Module's code")
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
+      teal.reporter::teal_card(obj) <- 
+        c(
+          teal.reporter::teal_card("# Patient Medical History Table"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      obj %>% teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     # Generate r code for the analysis.

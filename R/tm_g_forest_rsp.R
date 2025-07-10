@@ -611,8 +611,12 @@ srv_g_forest_rsp <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Forest Response Plot", after = 0)
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Module's code")
+      teal.reporter::teal_card(obj) <- 
+        c(
+          teal.reporter::teal_card("# Forest Response Plot"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
       obj %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_inputs()$expr))

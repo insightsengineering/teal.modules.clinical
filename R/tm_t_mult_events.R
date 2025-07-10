@@ -550,8 +550,12 @@ srv_t_mult_events_byterm <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Multiple Events by Term Table", after = 0)
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Module's code")
+      teal.reporter::teal_card(obj) <- 
+        c(
+          teal.reporter::teal_card("# Multiple Events by Term Table"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
       obj %>%
         teal.code::eval_code(as.expression(anl_merge_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
@@ -621,8 +625,7 @@ srv_t_mult_events_byterm <- function(id,
         basic_table_args = basic_table_args
       )
       obj <- anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
-      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card("## Table"), teal.code::eval_code(obj, as.expression(unlist(my_calls))))
     })
 
     decorated_table_q <- srv_decorate_teal_data(

@@ -860,8 +860,12 @@ srv_t_coxreg <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- append(teal.reporter::teal_card(obj), "# Cox Regression Table", after = 0)
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Module's code")
+      teal.reporter::teal_card(obj) <- 
+        c(
+          teal.reporter::teal_card("# Cox Regression Table"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
       teal.code::eval_code(obj, as.expression(anl_inputs()$expr))
     })
 
