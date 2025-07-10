@@ -361,13 +361,15 @@ template_events <- function(dataname,
     }
   } else {
     # Sort by decreasing frequency.
-    sort_list <- add_expr(
-      sort_list,
-      substitute(
-        expr = idx_split_col <- which(sapply(col_paths(table), tail, 1) == sort_freq_col),
-        env = list(sort_freq_col = sort_freq_col)
+    if (add_total) {
+      sort_list <- add_expr(
+        sort_list,
+        substitute(
+          expr = idx_split_col <- which(sapply(col_paths(table), tail, 1) == sort_freq_col),
+          env = list(sort_freq_col = sort_freq_col)
+        )
       )
-    )
+    }
 
     # When the "All Patients" column is present we only use that for scoring.
     scorefun_hlt <- if (add_total) {
@@ -376,7 +378,7 @@ template_events <- function(dataname,
       quote(cont_n_allcols)
     }
     scorefun_llt <- if (add_total) {
-      quote(score_occurrences_cols(col_indices = seq(1, ncol(table))))
+      quote(score_occurrences_cols(col_indices = idx_split_col))
     } else {
       quote(score_occurrences)
     }
