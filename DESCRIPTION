@@ -69,7 +69,7 @@ Imports:
 Suggests:
     forcats (>= 1.0.0),
     knitr (>= 1.42),
-    logger (>= 0.2.0),
+    logger (>= 0.4.0),
     lubridate (>= 1.7.9),
     nestcolor (>= 0.1.0),
     pkgload (>= 1.4.0),
