@@ -566,7 +566,7 @@ srv_g_vitals <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      obj <-teal.code::eval_code(
+      obj <- teal.code::eval_code(
         merged$anl_q(),
         substitute(
           expr = {

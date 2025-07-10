@@ -521,7 +521,7 @@ srv_g_laboratory <- function(id,
             patient_id = patient_id()
           )
         )
-      ) 
+      )
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
       obj %>% teal.code::eval_code(as.expression(labor_calls))
     })

@@ -1069,6 +1069,5 @@ srv_t_events_summary <- function(id,
       title = label
     )
     decorated_table_q
-
   })
 }

@@ -531,7 +531,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                              label,
                                              basic_table_args,
                                              decorators) {
-
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 

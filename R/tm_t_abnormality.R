@@ -533,7 +533,6 @@ srv_t_abnormality <- function(id,
                               na_level,
                               basic_table_args,
                               decorators) {
-
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 

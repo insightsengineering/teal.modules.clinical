@@ -359,7 +359,7 @@ srv_t_medical_history <- function(id,
             patient_id = patient_id()
           )
         )
-      ) 
+      )
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
       obj %>% teal.code::eval_code(as.expression(unlist(my_calls)))
     })

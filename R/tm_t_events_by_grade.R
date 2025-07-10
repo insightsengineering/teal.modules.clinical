@@ -1254,6 +1254,5 @@ srv_t_events_by_grade <- function(id,
       title = label
     )
     decorated_table_q
-
   })
 }

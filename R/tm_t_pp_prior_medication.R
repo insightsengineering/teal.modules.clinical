@@ -369,7 +369,7 @@ srv_t_prior_medication <- function(id,
               patient_id = patient_id()
             )
           )
-        ) 
+        )
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
       obj %>% teal.code::eval_code(as.expression(unlist(my_calls)))
     })

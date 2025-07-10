@@ -782,7 +782,6 @@ srv_t_shift_by_grade <- function(id,
                                  label,
                                  basic_table_args,
                                  decorators) {
-
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 

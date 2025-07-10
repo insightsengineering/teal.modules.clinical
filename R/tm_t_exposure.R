@@ -685,6 +685,5 @@ srv_t_exposure <- function(id,
       title = label
     )
     decorated_table_q
-
   })
 }

@@ -749,6 +749,5 @@ srv_t_logistic <- function(id,
       title = label
     )
     decorated_table_q
-
   })
 }

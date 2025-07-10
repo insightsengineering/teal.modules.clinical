@@ -467,7 +467,6 @@ srv_shift_by_arm <- function(id,
                              total_label,
                              basic_table_args,
                              decorators) {
-
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {

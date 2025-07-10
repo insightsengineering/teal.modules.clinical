@@ -249,8 +249,8 @@ ui_g_barchart_simple <- function(id, ...) {
         teal.widgets::plot_with_settings_ui(id = ns("myplot")),
         uiOutput(ns("table"), class = "overflow-y-scroll max-h-250")
       ),
-          encoding = tags$div(
-      tags$label("Encodings", class = "text-primary"), tags$br(),
+      encoding = tags$div(
+        tags$label("Encodings", class = "text-primary"), tags$br(),
         teal.transform::datanames_input(args[c("x", "fill", "x_facet", "y_facet")]),
         if (!is.null(args$x)) {
           teal.transform::data_extract_ui(
