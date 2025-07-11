@@ -47,9 +47,7 @@
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(table))))
-          table <- pruned_and_sorted_result
+              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = idx_split_col))
       }
       
 
@@ -107,9 +105,7 @@
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(table))))
-          table <- pruned_and_sorted_result
+              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = idx_split_col))
       }
       
 
@@ -147,11 +143,8 @@
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
-              "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("CMDECOD"), 
               scorefun = score_occurrences)
-          pruned_and_sorted_result
       }
       
 
@@ -203,7 +196,6 @@
       $sort
       {
           pruned_and_sorted_result <- pruned_result
-          pruned_and_sorted_result
       }
       
 
@@ -260,14 +252,12 @@
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(table))))
+              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = idx_split_col))
           criteria_fun <- function(tr) {
               inherits(tr, "ContentRow")
           }
           pruned_and_sorted_result <- rtables::trim_rows(pruned_and_sorted_result, 
               criteria = criteria_fun)
-          table <- pruned_and_sorted_result
       }
       
 
@@ -329,14 +319,12 @@
               "All Patients")
           pruned_and_sorted_result <- pruned_result %>% sort_at_path(path = c("AEBODSYS"), 
               scorefun = cont_n_onecol(idx_split_col)) %>% sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = seq(1, 
-              ncol(table))))
+              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = idx_split_col))
           criteria_fun <- function(tr) {
               inherits(tr, "ContentRow")
           }
           pruned_and_sorted_result <- rtables::trim_rows(pruned_and_sorted_result, 
               criteria = criteria_fun)
-          table <- pruned_and_sorted_result
       }
       
 

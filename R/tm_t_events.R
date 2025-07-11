@@ -340,7 +340,6 @@ template_events <- function(dataname,
         sort_list,
         quote({
           pruned_and_sorted_result <- pruned_result
-          pruned_and_sorted_result
         })
       )
     } else {
@@ -357,19 +356,20 @@ template_events <- function(dataname,
         sort_list,
         quote({
           pruned_and_sorted_result <- rtables::trim_rows(pruned_result, criteria = criteria_fun)
-          pruned_and_sorted_result
         })
       )
     }
   } else {
     # Sort by decreasing frequency.
-    sort_list <- add_expr(
-      sort_list,
-      substitute(
-        expr = idx_split_col <- which(sapply(col_paths(table), tail, 1) == sort_freq_col),
-        env = list(sort_freq_col = sort_freq_col)
+    if (add_total) {
+      sort_list <- add_expr(
+        sort_list,
+        substitute(
+          expr = idx_split_col <- which(sapply(col_paths(table), tail, 1) == sort_freq_col),
+          env = list(sort_freq_col = sort_freq_col)
+        )
       )
-    )
+    }
 
     # When the "All Patients" column is present we only use that for scoring.
     scorefun_hlt <- if (add_total) {
@@ -378,7 +378,7 @@ template_events <- function(dataname,
       quote(cont_n_allcols)
     }
     scorefun_llt <- if (add_total) {
-      quote(score_occurrences_cols(col_indices = seq(1, ncol(table))))
+      quote(score_occurrences_cols(col_indices = idx_split_col))
     } else {
       quote(score_occurrences)
     }
@@ -392,7 +392,6 @@ template_events <- function(dataname,
           expr = {
             pruned_and_sorted_result <- pruned_result %>%
               sort_at_path(path = c(term_var), scorefun = scorefun_llt)
-            pruned_and_sorted_result
           },
           env = list(
             term_var = term_var,
@@ -435,11 +434,6 @@ template_events <- function(dataname,
           )
         )
       }
-
-      sort_list <- add_expr(
-        sort_list,
-        quote(table <- pruned_and_sorted_result)
-      )
     }
   }
   y$sort <- bracket_expr(sort_list)
@@ -841,9 +835,16 @@ srv_t_events_byterm <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
+    table_renamed_q <- reactive({
+      req(table_q())
+      within(table_q(), {
+        table <- pruned_and_sorted_result
+      })
+    })
+
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
-      data = table_q,
+      data = table_renamed_q,
       decorators = select_decorators(decorators, "table"),
       expr = table
     )
