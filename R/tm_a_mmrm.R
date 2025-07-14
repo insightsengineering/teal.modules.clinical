@@ -521,7 +521,7 @@ template_mmrm_plots <- function(fit_name,
 #'       AVISITN = rank(AVISITN) %>%
 #'         as.factor() %>%
 #'         as.numeric() %>%
-#'         as.factor() #' making consecutive numeric factor
+#'         as.factor() # making consecutive numeric factor
 #'     )
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
@@ -1563,7 +1563,9 @@ srv_mmrm <- function(id,
       disabled = disable_r_code,
       title = "R Code for the Current MMRM Analysis"
     )
-
-    decorated_objs_q[[obj_ix_r()]]
+    reactive({
+      decorated_objs_q[[obj_ix_r()]]()
+    })
+    
   })
 }
