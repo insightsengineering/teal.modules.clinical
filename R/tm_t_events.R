@@ -480,6 +480,8 @@ template_events <- function(dataname,
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -612,9 +614,6 @@ ui_t_events_byterm <- function(id, ...) {
       teal.widgets::table_with_settings_ui(ns("table"))
     ),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "hlt", "llt")]),
       teal.transform::data_extract_ui(
@@ -687,8 +686,6 @@ ui_t_events_byterm <- function(id, ...) {
 #' @keywords internal
 srv_t_events_byterm <- function(id,
                                 data,
-                                filter_panel_api,
-                                reporter,
                                 dataname,
                                 parentname,
                                 event_type,
@@ -703,8 +700,6 @@ srv_t_events_byterm <- function(id,
                                 sort_freq_col,
                                 basic_table_args,
                                 decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
@@ -754,7 +749,14 @@ srv_t_events_byterm <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
+      obj <- data()
+      teal.reporter::teal_card(obj) <- 
+        c(
+          teal.reporter::teal_card("# Events by Term Table"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      obj %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
@@ -832,7 +834,8 @@ srv_t_events_byterm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
+      obj <- merged$anl_q()
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card("## Table"), teal.code::eval_code(obj, as.expression(unlist(my_calls))))
     })
 
     table_renamed_q <- reactive({
@@ -865,26 +868,6 @@ srv_t_events_byterm <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Events by Term Table",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    decorated_table_q
   })
 }

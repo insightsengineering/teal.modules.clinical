@@ -213,6 +213,8 @@ template_g_ci <- function(dataname,
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -360,9 +362,6 @@ ui_g_ci <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(args[c("x_var", "y_var", "color")]),
       teal.transform::data_extract_ui(
@@ -407,8 +406,6 @@ ui_g_ci <- function(id, ...) {
 #' @keywords internal
 srv_g_ci <- function(id,
                      data,
-                     reporter,
-                     filter_panel_api,
                      x_var,
                      y_var,
                      color,
@@ -417,8 +414,6 @@ srv_g_ci <- function(id,
                      plot_width,
                      ggplot2_args,
                      decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
@@ -453,8 +448,14 @@ srv_g_ci <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
+      obj <- data()
+      teal.reporter::teal_card(obj) <- 
+        c(
+          teal.reporter::teal_card("# CI Plot"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      obj %>% teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
     all_q <- reactive({
@@ -503,7 +504,9 @@ srv_g_ci <- function(id,
         conf_level = as.numeric(input$conf_level),
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(anl_q(), list_calls)
+      obj <- anl_q()
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot")
+      teal.code::eval_code(obj, list_calls)
     })
 
     decorated_plot_q <- srv_decorate_teal_data(
@@ -530,27 +533,6 @@ srv_g_ci <- function(id,
       width = plot_width
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "CI Plot",
-          label = label,
-          description = "Confidence Interval Plot",
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Plot", "header3")
-        card$append_plot(plot_r(), dim = pws$dim())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    decorated_plot_q
   })
 }
