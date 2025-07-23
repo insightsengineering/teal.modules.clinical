@@ -173,7 +173,7 @@ template_exposure <- function(parentname,
         col_split = FALSE,
         na_str = na_str
       ) %>%
-        append_topleft(c(split_label)),
+        rtables::append_topleft(c(split_label)),
       env = list(
         row_by_var = row_by_var,
         na_str = na_level,

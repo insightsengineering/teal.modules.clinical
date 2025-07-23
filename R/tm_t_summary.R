@@ -186,7 +186,7 @@ template_summary <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = append_topleft(arm_var_labels),
+        expr = rtables::append_topleft(arm_var_labels),
         env = list(arm_var_labels = c(arm_var_labels, ""))
       )
     )
