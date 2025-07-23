@@ -96,7 +96,7 @@ template_mult_events <- function(dataname,
 
   y$data <- bracket_expr(data_list)
 
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
@@ -599,8 +599,8 @@ srv_t_mult_events_byterm <- function(id,
       input_hlt <- names(anl_m$columns_source$hlt)
       input_llt <- names(anl_m$columns_source$llt)
 
-      hlt_labels <- mapply(function(x) rtables::obj_label(anl_q[["ANL"]][[x]]), input_hlt)
-      llt_labels <- mapply(function(x) rtables::obj_label(anl_q[["ANL"]][[x]]), input_llt)
+      hlt_labels <- mapply(function(x) formatters::obj_label(anl_q[["ANL"]][[x]]), input_hlt)
+      llt_labels <- mapply(function(x) formatters::obj_label(anl_q[["ANL"]][[x]]), input_llt)
 
       basic_table_args$title <- ifelse(
         is.null(basic_table_args$title),

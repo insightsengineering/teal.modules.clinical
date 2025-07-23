@@ -137,7 +137,7 @@ template_abnormality <- function(parentname,
         expr = expr_basic_table_args %>%
           rtables::split_cols_by(
             var = arm_var,
-            split_fun = add_overall_level(total_label, first = FALSE)
+            split_fun = rtables::add_overall_level(total_label, first = FALSE)
           ),
         env = list(
           arm_var = arm_var,
@@ -169,7 +169,7 @@ template_abnormality <- function(parentname,
           by_var,
           split_label = split_label,
           label_pos = "topleft",
-          split_fun = trim_levels_to_map(map = map)
+          split_fun = rtables::trim_levels_to_map(map = map)
         ),
         env = list(
           by_var = by_var,

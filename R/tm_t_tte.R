@@ -21,7 +21,7 @@ control_tte <- function(
       ties = "efron",
       conf_level = 0.95
     ),
-    surv_timepoint = control_surv_timepoint(
+    surv_timepoint = tern::control_surv_timepoint(
       conf_level = 0.95,
       conf_type = c("plain", "none", "log", "log-log")
     )) {
@@ -222,7 +222,7 @@ template_tte <- function(dataname = "ANL",
           child_labels = "hidden",
           indent_mod = 1L,
         ) %>%
-        rtables::split_rows_by(event_desc_var, split_fun = drop_split_levels) %>%
+        rtables::split_rows_by(event_desc_var, split_fun = rtables::drop_split_levels) %>%
         rtables::summarize_row_groups(format = "xx", na_str = na_str) %>%
         tern::analyze_vars(
           "is_not_event",
@@ -336,7 +336,7 @@ template_tte <- function(dataname = "ANL",
           is_event = "is_event",
           time_point = time_points,
           method = method,
-          control = control_surv_timepoint(
+          control = tern::control_surv_timepoint(
             conf_level = conf_level,
             conf_type = conf_type
           ),
@@ -964,7 +964,7 @@ srv_t_tte <- function(id,
             conf_type = input$conf_type_survfit,
             quantiles = input$probs_survfit
           ),
-          surv_timepoint = control_surv_timepoint(
+          surv_timepoint = tern::control_surv_timepoint(
             conf_level = as.numeric(input$conf_level_survfit),
             conf_type = input$conf_type_survfit
           )

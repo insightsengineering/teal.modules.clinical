@@ -92,7 +92,7 @@ template_summary_by <- function(parentname,
   y$data <- bracket_expr(data_list)
 
   # Build layout
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
   if (row_groups) {
     y$layout_cfun <- quote(
       cfun_unique <- function(x, labelstr = "", .N_col) { # nolint: object_name.
@@ -123,7 +123,7 @@ template_summary_by <- function(parentname,
   split_cols_call <- lapply(arm_var, function(x) {
     if (drop_arm_levels) {
       substitute(
-        expr = rtables::split_cols_by(x, split_fun = drop_split_levels),
+        expr = rtables::split_cols_by(x, split_fun = rtables::drop_split_levels),
         env = list(x = x)
       )
     } else {

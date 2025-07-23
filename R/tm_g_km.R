@@ -177,7 +177,7 @@ template_g_km <- function(dataname = "ANL",
             tern::g_km(
               x,
               variables = variables,
-              control_surv = control_surv_timepoint(conf_level = conf_level, conf_type = conf_type),
+              control_surv = tern::control_surv_timepoint(conf_level = conf_level, conf_type = conf_type),
               xticks = xticks,
               xlab = sprintf(
                 "%s (%s)",

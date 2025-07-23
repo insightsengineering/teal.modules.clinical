@@ -287,7 +287,7 @@ template_shift_by_grade <- function(parentname,
   y$data <- bracket_expr(data_list)
 
   # layout start
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
   basic_table_args$title <- "Grade Summary Table"
   basic_table_args$subtitles <- paste("Worst Flag Variable:", worst_flag_var)

@@ -118,7 +118,7 @@ template_summary <- function(dataname,
   split_cols_call <- lapply(arm_var, function(x) {
     if (drop_arm_levels) {
       substitute(
-        expr = rtables::split_cols_by(x, split_fun = drop_split_levels),
+        expr = rtables::split_cols_by(x, split_fun = rtables::drop_split_levels),
         env = list(x = x)
       )
     } else {

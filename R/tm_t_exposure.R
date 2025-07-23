@@ -79,7 +79,7 @@ template_exposure <- function(parentname,
   y$data <- bracket_expr(data_list)
 
   # layout start
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
   if (is.null(paramcd_label)) {
     paramcd_label <- paramcd
@@ -106,7 +106,7 @@ template_exposure <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          rtables::split_cols_by(col_by_var, split_fun = add_overall_level(total_label, first = FALSE)),
+          rtables::split_cols_by(col_by_var, split_fun = rtables::add_overall_level(total_label, first = FALSE)),
           env = list(
             col_by_var = col_by_var,
             total_label = total_label

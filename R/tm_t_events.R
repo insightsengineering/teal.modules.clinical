@@ -159,7 +159,7 @@ template_events <- function(dataname,
       layout_list,
       if (drop_arm_levels) {
         substitute(
-          expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+          expr = rtables::split_cols_by(nested_col, split_fun = rtables::drop_split_levels),
           env = list(nested_col = arm_var[[2]])
         )
       } else {
@@ -222,7 +222,7 @@ template_events <- function(dataname,
   } else {
     # Case when both hlt and llt are used.
 
-    y$layout_prep <- quote(split_fun <- drop_split_levels)
+    y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
     layout_list <- add_expr(
       layout_list,
