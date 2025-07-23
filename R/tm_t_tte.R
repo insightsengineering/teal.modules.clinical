@@ -63,7 +63,7 @@ template_tte <- function(dataname = "ANL",
                          control = control_tte(),
                          add_total = FALSE,
                          total_label = default_total_label(),
-                         na_level = default_na_str(),
+                         na_level = tern::default_na_str(),
                          basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -514,7 +514,7 @@ tm_t_tte <- function(label,
                      event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
                      total_label = default_total_label(),
-                     na_level = default_na_str(),
+                     na_level = tern::default_na_str(),
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),

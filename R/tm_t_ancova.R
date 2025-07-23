@@ -114,8 +114,8 @@ template_ancova <- function(dataname = "ANL",
     )
   }
 
-  anl_list <- add_expr(anl_list, quote(tern::df_explicit_na(na_level = default_na_str())))
-  parent_list <- add_expr(parent_list, quote(tern::df_explicit_na(na_level = default_na_str())))
+  anl_list <- add_expr(anl_list, quote(tern::df_explicit_na(na_level = tern::default_na_str())))
+  parent_list <- add_expr(parent_list, quote(tern::df_explicit_na(na_level = tern::default_na_str())))
 
   data_list <- add_expr(
     data_list,
@@ -237,7 +237,7 @@ template_ancova <- function(dataname = "ANL",
       layout_list <- add_expr(
         layout_list,
         substitute(
-          summarize_ancova(
+           tern::summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
             conf_level = conf_level,
@@ -260,7 +260,7 @@ template_ancova <- function(dataname = "ANL",
       layout_list <- add_expr(
         layout_list,
         substitute(
-          summarize_ancova(
+           tern::summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = NULL),
             conf_level = conf_level,
@@ -279,7 +279,7 @@ template_ancova <- function(dataname = "ANL",
         layout_list <- add_expr(
           layout_list,
           substitute(
-            summarize_ancova(
+             tern::summarize_ancova(
               vars = aval_var,
               variables = list(arm = arm_var, covariates = cov_var),
               conf_level = conf_level,
@@ -314,7 +314,7 @@ template_ancova <- function(dataname = "ANL",
         layout_list <- add_expr(
           layout_list,
           substitute(
-            summarize_ancova(
+             tern::summarize_ancova(
               vars = aval_var,
               variables = list(arm = arm_var, covariates = cov_var),
               conf_level = conf_level,
@@ -340,7 +340,7 @@ template_ancova <- function(dataname = "ANL",
           layout_list <- add_expr(
             layout_list,
             substitute(
-              summarize_ancova(
+               tern::summarize_ancova(
                 vars = aval_var,
                 variables = list(arm = arm_var, covariates = NULL),
                 conf_level = conf_level,
@@ -361,7 +361,7 @@ template_ancova <- function(dataname = "ANL",
           layout_list <- add_expr(
             layout_list,
             substitute(
-              summarize_ancova(
+               tern::summarize_ancova(
                 vars = aval_var,
                 variables = list(arm = arm_var, covariates = cov_var),
                 conf_level = conf_level,

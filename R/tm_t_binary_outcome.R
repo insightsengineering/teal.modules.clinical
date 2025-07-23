@@ -35,7 +35,7 @@ template_binary_outcome <- function(dataname,
                                     ),
                                     add_total = FALSE,
                                     total_label = default_total_label(),
-                                    na_level = default_na_str(),
+                                    na_level = tern::default_na_str(),
                                     denom = c("N_col", "n", "N_row"),
                                     basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
@@ -173,7 +173,7 @@ template_binary_outcome <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      estimate_proportion(
+      tern::estimate_proportion(
         vars = "is_rsp",
         conf_level = conf_level,
         method = method,
@@ -493,7 +493,7 @@ tm_t_binary_outcome <- function(label,
                                 ),
                                 add_total = FALSE,
                                 total_label = default_total_label(),
-                                na_level = default_na_str(),
+                                na_level = tern::default_na_str(),
                                 denom = c("N_col", "n", "N_row"),
                                 pre_output = NULL,
                                 post_output = NULL,

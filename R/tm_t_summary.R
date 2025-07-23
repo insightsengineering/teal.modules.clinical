@@ -22,7 +22,7 @@ template_summary <- function(dataname,
                              var_labels = character(),
                              arm_var_labels = NULL,
                              na.rm = FALSE, # nolint: object_name.
-                             na_level = default_na_str(),
+                             na_level = tern::default_na_str(),
                              numeric_stats = c(
                                "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                              ),
@@ -297,7 +297,7 @@ tm_t_summary <- function(label,
                          total_label = default_total_label(),
                          show_arm_var_labels = TRUE,
                          useNA = c("ifany", "no"), # nolint: object_name.
-                         na_level = default_na_str(),
+                         na_level = tern::default_na_str(),
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                          ),

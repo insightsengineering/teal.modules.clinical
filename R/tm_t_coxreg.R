@@ -24,8 +24,8 @@ template_coxreg_u <- function(dataname,
                               at = list(),
                               strata_var = NULL,
                               combine_comp_arms = FALSE,
-                              control = control_coxreg(),
-                              na_level = default_na_str(),
+                              control = tern::control_coxreg(),
+                              na_level = tern::default_na_str(),
                               append = FALSE,
                               basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
@@ -136,7 +136,7 @@ template_coxreg_u <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_coxreg(
+      expr = tern::summarize_coxreg(
         variables = variables,
         control = control,
         at = at,
@@ -192,8 +192,8 @@ template_coxreg_m <- function(dataname,
                               at = list(),
                               strata_var = NULL,
                               combine_comp_arms = FALSE,
-                              control = control_coxreg(),
-                              na_level = default_na_str(),
+                              control = tern::control_coxreg(),
+                              na_level = tern::default_na_str(),
                               basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -295,7 +295,7 @@ template_coxreg_m <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_coxreg(
+      expr = tern::summarize_coxreg(
         variables = variables,
         control = control,
         multivar = multivariate,
@@ -540,7 +540,7 @@ tm_t_coxreg <- function(label,
                           fixed = TRUE
                         ),
                         multivariate = TRUE,
-                        na_level = default_na_str(),
+                        na_level = tern::default_na_str(),
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,

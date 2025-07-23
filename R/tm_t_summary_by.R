@@ -25,7 +25,7 @@ template_summary_by <- function(parentname,
                                 parallel_vars = FALSE,
                                 row_groups = FALSE,
                                 na.rm = FALSE, # nolint: object_name.
-                                na_level = default_na_str(),
+                                na_level = tern::default_na_str(),
                                 numeric_stats = c(
                                   "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"
                                 ),
@@ -412,7 +412,7 @@ tm_t_summary_by <- function(label,
                             parallel_vars = FALSE,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint: object_name.
-                            na_level = default_na_str(),
+                            na_level = tern::default_na_str(),
                             numeric_stats = c("n", "mean_sd", "median", "range"),
                             denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             drop_arm_levels = TRUE,

@@ -19,8 +19,8 @@ template_events_patyear <- function(dataname,
                                     aval_var = "AVAL",
                                     add_total = TRUE,
                                     total_label = default_total_label(),
-                                    na_level = default_na_str(),
-                                    control = control_incidence_rate(),
+                                    na_level = tern::default_na_str(),
+                                    control = tern::control_incidence_rate(),
                                     drop_arm_levels = TRUE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
@@ -140,10 +140,10 @@ template_events_patyear <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = estimate_incidence_rate(
+      expr = tern::estimate_incidence_rate(
         vars = aval_var,
         n_events = events_var,
-        control = control_incidence_rate(
+        control = tern::control_incidence_rate(
           conf_level = conf_level,
           conf_type = conf_type,
           input_time_unit = input_time_unit,
@@ -327,7 +327,7 @@ tm_t_events_patyear <- function(label,
                                 ),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
-                                na_level = default_na_str(),
+                                na_level = tern::default_na_str(),
                                 conf_level = teal.transform::choices_selected(
                                   c(0.95, 0.9, 0.8), 0.95,
                                   keep_order = TRUE
@@ -636,7 +636,7 @@ srv_events_patyear <- function(id,
         add_total = input$add_total,
         total_label = total_label,
         na_level = na_level,
-        control = control_incidence_rate(
+        control = tern::control_incidence_rate(
           conf_level = as.numeric(input$conf_level),
           conf_type = if (input$conf_method == "Normal (rate)") {
             "normal"

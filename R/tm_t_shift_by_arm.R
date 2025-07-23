@@ -23,7 +23,7 @@ template_shift_by_arm <- function(dataname,
                                   base_var = lifecycle::deprecated(),
                                   baseline_var = "BNRIND",
                                   na.rm = FALSE, # nolint: object_name.
-                                  na_level = default_na_str(),
+                                  na_level = tern::default_na_str(),
                                   add_total = FALSE,
                                   total_label = default_total_label(),
                                   basic_table_args = teal.widgets::basic_table_args()) {
@@ -288,7 +288,7 @@ tm_t_shift_by_arm <- function(label,
                               ),
                               treatment_flag = teal.transform::choices_selected("Y"),
                               useNA = c("ifany", "no"), # nolint: object_name.
-                              na_level = default_na_str(),
+                              na_level = tern::default_na_str(),
                               add_total = FALSE,
                               total_label = default_total_label(),
                               pre_output = NULL,

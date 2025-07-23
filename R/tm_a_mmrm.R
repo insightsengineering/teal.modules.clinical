@@ -100,8 +100,8 @@ template_fit_mmrm <- function(parentname,
       )
     )
   }
-  data_list <- add_expr(data_list, quote(tern::df_explicit_na(na_level = default_na_str())))
-  parent_list <- add_expr(parent_list, quote(tern::df_explicit_na(na_level = default_na_str())))
+  data_list <- add_expr(data_list, quote(tern::df_explicit_na(na_level = tern::default_na_str())))
+  parent_list <- add_expr(parent_list, quote(tern::df_explicit_na(na_level = tern::default_na_str())))
 
   y$data <- substitute(
     expr = {
@@ -270,7 +270,7 @@ template_mmrm_tables <- function(parentname,
         expr = {
           lsmeans_table <- rtables::build_table(
             lyt = lyt,
-            df = tern::df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
+            df = tern::df_explicit_na(broom::tidy(fit_mmrm), na_level = tern::default_na_str()),
             alt_counts_df = parentname
           )
         },

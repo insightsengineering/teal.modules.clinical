@@ -117,7 +117,7 @@ template_logistic <- function(dataname,
     add_expr(
       model_list,
       substitute(
-        expr = fit_logistic(
+        expr = tern::fit_logistic(
           ANL,
           variables = list(response = "Response", arm = arm_var, covariates = cov_var)
         ),
@@ -128,7 +128,7 @@ template_logistic <- function(dataname,
     add_expr(
       model_list,
       substitute(
-        expr = fit_logistic(
+        expr = tern::fit_logistic(
           ANL,
           variables = list(
             response = "Response", arm = arm_var, covariates = cov_var,
@@ -187,7 +187,7 @@ template_logistic <- function(dataname,
   y$table <- substitute(
     expr = {
       table <- expr_basic_table_args %>%
-        summarize_logistic(
+        tern::summarize_logistic(
           conf_level = conf_level,
           drop_and_remove_str = "_NA_"
         ) %>%
