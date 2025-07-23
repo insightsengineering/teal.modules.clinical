@@ -133,7 +133,7 @@ template_forest_tte <- function(dataname = "ANL",
   summary_list <- add_expr(
     summary_list,
     substitute(
-      expr = df <- extract_survival_subgroups(
+      expr = df <- tern::extract_survival_subgroups(
         variables = list(
           tte = aval_var,
           is_event = "is_event",
@@ -160,7 +160,7 @@ template_forest_tte <- function(dataname = "ANL",
   y$table <- substitute(
     expr = {
       result <- rtables::basic_table() %>%
-        tabulate_survival_subgroups(
+        tern::tabulate_survival_subgroups(
           df,
           vars = stats,
           time_unit = as.character(anl$time_unit_var[1]),
@@ -190,7 +190,7 @@ template_forest_tte <- function(dataname = "ANL",
     plot_list,
     substitute(
       expr = {
-        f <- g_forest(
+        f <- tern::g_forest(
           tbl = result,
           col_symbol_size = col_s_size,
           font_size = font_size,

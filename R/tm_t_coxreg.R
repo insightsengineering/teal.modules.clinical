@@ -49,7 +49,7 @@ template_coxreg_u <- function(dataname,
     data_pipe <- add_expr(
       data_pipe,
       substitute_names(
-        expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = tern::combine_levels(x = arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -216,7 +216,7 @@ template_coxreg_m <- function(dataname,
     data_pipe <- add_expr(
       data_pipe,
       substitute_names(
-        expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = tern::combine_levels(x = arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )

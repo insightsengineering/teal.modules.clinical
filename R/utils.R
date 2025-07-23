@@ -590,7 +590,7 @@ prepare_arm <- function(dataname,
       data_list <- add_expr(
         data_list,
         substitute_names(
-          expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
+          expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
           names = list(arm_var = as.name(arm_var)),
           others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
         )
