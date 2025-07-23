@@ -157,7 +157,7 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = summarize_occurrences_by_grade(
+        expr = tern::summarize_occurrences_by_grade(
           var = grade,
           grade_groups = grade_groups,
           na_str = na_str
@@ -167,18 +167,18 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = split_fun(grade),
+            split_fun = rtables::split_fun(grade),
             label_pos = "topleft",
             split_label = teal.data::col_labels(dataname[term_var])
           ) %>%
-          summarize_num_patients(
+          tern::summarize_num_patients(
             var = id,
             .stats = "unique",
             .labels = c("- Any Intensity -"),
             na_str = na_str
           ) %>%
-          count_occurrences_by_grade(var = grade, .indent_mods = -1L, na_str = na_str) %>%
-          append_varlabels(dataname, grade, indent = 1L),
+          tern::count_occurrences_by_grade(var = grade, .indent_mods = -1L, na_str = na_str) %>%
+          tern::append_varlabels(dataname, grade, indent = 1L),
         env = list(
           id = id,
           arm_var = arm_var,
@@ -193,7 +193,7 @@ template_events_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = summarize_occurrences_by_grade(
+        expr = tern::summarize_occurrences_by_grade(
           var = grade,
           grade_groups = grade_groups,
           na_str = na_str
@@ -203,11 +203,11 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = split_fun(grade),
+            split_fun = rtables::split_fun(grade),
             label_pos = "topleft",
             split_label = teal.data::col_labels(dataname[hlt])
           ) %>%
-          summarize_occurrences_by_grade(
+          tern::summarize_occurrences_by_grade(
             var = grade,
             grade_groups = grade_groups,
             na_str = na_str
@@ -217,18 +217,18 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = split_fun(grade),
+            split_fun = rtables::split_fun(grade),
             label_pos = "topleft",
             split_label = teal.data::col_labels(dataname[llt])
           ) %>%
-          summarize_num_patients(
+          tern::summarize_num_patients(
             var = id,
             .stats = "unique",
             .labels = c("- Any Intensity -"),
             na_str = na_str
           ) %>%
-          count_occurrences_by_grade(var = grade, .indent_mods = -1L, na_str = na_str) %>%
-          append_varlabels(dataname, grade, indent = 2L),
+          tern::count_occurrences_by_grade(var = grade, .indent_mods = -1L, na_str = na_str) %>%
+          tern::append_varlabels(dataname, grade, indent = 2L),
         env = list(
           id = id,
           arm_var = arm_var,
@@ -331,7 +331,7 @@ template_events_by_grade <- function(dataname,
       substitute(
         expr = {
           pruned_and_sorted_result <- pruned_result %>%
-            sort_at_path(path = term_var, scorefun = scorefun, decreasing = TRUE)
+            rtables::sort_at_path(path = term_var, scorefun = scorefun, decreasing = TRUE)
         },
         env = list(
           term_var = term_var,
@@ -345,8 +345,8 @@ template_events_by_grade <- function(dataname,
       substitute(
         expr = {
           pruned_and_sorted_result <- pruned_result %>%
-            sort_at_path(path = hlt, scorefun = scorefun, decreasing = TRUE) %>%
-            sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun, decreasing = TRUE)
+            rtables::sort_at_path(path = hlt, scorefun = scorefun, decreasing = TRUE) %>%
+            rtables::sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun, decreasing = TRUE)
         },
         env = list(
           llt = llt,
@@ -575,7 +575,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = append_varlabels(df = anl, vars = hlt),
+        expr = tern::append_varlabels(df = anl, vars = hlt),
         env = list(hlt = hlt)
       )
     )
@@ -584,7 +584,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        summarize_num_patients(
+        tern::summarize_num_patients(
           var = id,
           .stats = "unique",
           .labels = unique_label,
@@ -597,7 +597,7 @@ template_events_col_by_grade <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      analyze_vars(
+      tern::analyze_vars(
         llt,
         na.rm = FALSE,
         denom = "N_col",
@@ -612,7 +612,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = append_varlabels(df = anl, vars = llt),
+        expr = tern::append_varlabels(df = anl, vars = llt),
         env = list(llt = llt)
       )
     )
@@ -620,7 +620,7 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = append_varlabels(df = anl, vars = llt, indent = 1L),
+        expr = tern::append_varlabels(df = anl, vars = llt, indent = 1L),
         env = list(llt = llt)
       )
     )
@@ -659,13 +659,13 @@ template_events_col_by_grade <- function(dataname,
   if (!is.null(hlt)) {
     sort_list <- add_expr(
       sort_list,
-      quote(scorefun_soc <- score_occurrences_cont_cols(col_indices = col_indices))
+      quote(scorefun_soc <- tern::score_occurrences_cont_cols(col_indices = col_indices))
     )
   }
 
   sort_list <- add_expr(
     sort_list,
-    quote(scorefun_term <- score_occurrences_cols(col_indices = col_indices))
+    quote(scorefun_term <- tern::score_occurrences_cols(col_indices = col_indices))
   )
 
   if (is.null(hlt)) {
@@ -674,7 +674,7 @@ template_events_col_by_grade <- function(dataname,
       substitute(
         expr = {
           sorted_result <- result %>%
-            sort_at_path(path = c(llt), scorefun = scorefun_term, decreasing = TRUE)
+            rtables::sort_at_path(path = c(llt), scorefun = scorefun_term, decreasing = TRUE)
         },
         env = list(llt = llt)
       )
@@ -685,8 +685,8 @@ template_events_col_by_grade <- function(dataname,
       substitute(
         expr = {
           sorted_result <- result %>%
-            sort_at_path(path = c(hlt), scorefun = scorefun_soc, decreasing = TRUE) %>%
-            sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun_term, decreasing = TRUE)
+            rtables::sort_at_path(path = c(hlt), scorefun = scorefun_soc, decreasing = TRUE) %>%
+            rtables::sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun_term, decreasing = TRUE)
         },
         env = list(
           hlt = hlt,

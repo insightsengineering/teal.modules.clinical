@@ -190,7 +190,7 @@ template_abnormality <- function(parentname,
         .indent_mods = 4L,
         exclude_base_abn = exclude_base_abn
       ) %>%
-        append_varlabels(dataname, grade, indent = indent_space),
+        tern::append_varlabels(dataname, grade, indent = indent_space),
       env = list(
         grade = grade,
         abnormal = abnormal,

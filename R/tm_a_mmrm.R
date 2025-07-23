@@ -206,7 +206,7 @@ template_mmrm_tables <- function(parentname,
         layout_list,
         substitute(
           expr = rtables::split_rows_by(visit_var) %>%
-            append_varlabels(dataname, visit_var) %>%
+            tern::append_varlabels(dataname, visit_var) %>%
             tern.mmrm::summarize_lsmeans(
               .stats = c(
                 "n",
@@ -230,7 +230,7 @@ template_mmrm_tables <- function(parentname,
         layout_list,
         substitute(
           expr = rtables::split_rows_by(visit_var) %>%
-            append_varlabels(dataname, visit_var) %>%
+            tern::append_varlabels(dataname, visit_var) %>%
             tern.mmrm::summarize_lsmeans(show_relative = show_relative) %>%
             rtables::append_topleft(paste0("  ", paramcd)),
           env = list(

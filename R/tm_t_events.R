@@ -188,7 +188,7 @@ template_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        summarize_num_patients(
+        tern::summarize_num_patients(
           var = "USUBJID",
           .stats = c("unique", "nonunique"),
           .labels = c(
@@ -211,8 +211,8 @@ template_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = count_occurrences(vars = term_var, .indent_mods = -1L) %>%
-          append_varlabels(dataname, term_var),
+        expr = tern::count_occurrences(vars = term_var, .indent_mods = -1L) %>%
+          tern::append_varlabels(dataname, term_var),
         env = list(
           term_var = term_var,
           dataname = as.name(dataname)
@@ -236,7 +236,7 @@ template_events <- function(dataname,
           label_pos = "topleft",
           split_label = teal.data::col_labels(dataname[hlt])
         ) %>%
-          summarize_num_patients(
+          tern::summarize_num_patients(
             var = "USUBJID",
             .stats = c("unique", "nonunique"),
             .labels = c(
@@ -245,8 +245,8 @@ template_events <- function(dataname,
             ),
             na_str = na_str
           ) %>%
-          count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
-          append_varlabels(dataname, llt, indent = 1L),
+          tern::count_occurrences(vars = llt, .indent_mods = c(count_fraction = 1L)) %>%
+          tern::append_varlabels(dataname, llt, indent = 1L),
         env = list(
           dataname = as.name(dataname),
           hlt = hlt,
@@ -391,7 +391,7 @@ template_events <- function(dataname,
         substitute(
           expr = {
             pruned_and_sorted_result <- pruned_result %>%
-              sort_at_path(path = c(term_var), scorefun = scorefun_llt)
+              rtables::sort_at_path(path = c(term_var), scorefun = scorefun_llt)
           },
           env = list(
             term_var = term_var,
@@ -405,8 +405,8 @@ template_events <- function(dataname,
         substitute(
           expr = {
             pruned_and_sorted_result <- pruned_result %>%
-              sort_at_path(path = c(hlt), scorefun = scorefun_hlt) %>%
-              sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun_llt)
+              rtables::sort_at_path(path = c(hlt), scorefun = scorefun_hlt) %>%
+              rtables::sort_at_path(path = c(hlt, "*", llt), scorefun = scorefun_llt)
           },
           env = list(
             llt = llt,

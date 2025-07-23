@@ -406,7 +406,7 @@ template_shift_by_grade <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_num_patients(
+      expr = tern::summarize_num_patients(
         var = id_var,
         .stats = c("unique_count")
       ),
@@ -427,13 +427,13 @@ template_shift_by_grade <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = count_occurrences(
+      expr = tern::count_occurrences(
         vars = count_var,
         denom = "n",
         drop = TRUE,
         .indent_mods = 4L
       ) %>%
-        append_varlabels(dataname, count_var, indent = indent),
+        tern::append_varlabels(dataname, count_var, indent = indent),
       env = list(
         count_var = count_var,
         dataname = as.name("anl"),

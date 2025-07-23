@@ -190,7 +190,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
         label_pos = "topleft",
         split_label = obj_label(anl[[paramcd]])
       ) %>%
-        summarize_num_patients(
+        tern::summarize_num_patients(
           var = id_var,
           required = "GRADE_ANL",
           .stats = "unique_count"

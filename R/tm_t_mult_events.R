@@ -133,7 +133,7 @@ template_mult_events <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      summarize_num_patients(
+      tern::summarize_num_patients(
         var = "USUBJID",
         count_by = seq_var,
         .stats = c("unique", "nonunique"),
@@ -150,8 +150,8 @@ template_mult_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_varlabels(dataname, llt, indent = 0L),
+        expr = tern::count_occurrences(vars = llt, .indent_mods = -1L) %>%
+          tern::append_varlabels(dataname, llt, indent = 0L),
         env = list(
           dataname = as.name(dataname), llt = llt
         )
@@ -204,7 +204,7 @@ template_mult_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = summarize_num_patients(
+        expr = tern::summarize_num_patients(
           var = "USUBJID",
           count_by = seq_var,
           .stats = c("unique", "nonunique"),
@@ -213,8 +213,8 @@ template_mult_events <- function(dataname,
             nonunique = nonunique_label
           )
         ) %>%
-          count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_varlabels(dataname, llt, indent = indent_space),
+          tern::count_occurrences(vars = llt, .indent_mods = -1L) %>%
+          tern::append_varlabels(dataname, llt, indent = indent_space),
         env = list(
           dataname = as.name(dataname), llt = llt,
           unique_label = unique_label, nonunique_label = nonunique_label,
@@ -253,7 +253,7 @@ template_mult_events <- function(dataname,
     sort_list,
     substitute(
       expr = sorted_result <- result %>%
-        sort_at_path(path = pth, scorefun = score_occurrences),
+        rtables::sort_at_path(path = pth, scorefun = score_occurrences),
       env = list(pth = pth)
     )
   )

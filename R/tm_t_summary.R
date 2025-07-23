@@ -156,7 +156,7 @@ template_summary <- function(dataname,
     layout_list,
     if (length(var_labels) > 0) {
       substitute(
-        expr = analyze_vars(
+        expr = tern::analyze_vars(
           vars = sum_vars,
           var_labels = sum_var_labels,
           show_labels = "visible",
@@ -169,7 +169,7 @@ template_summary <- function(dataname,
       )
     } else {
       substitute(
-        expr = analyze_vars(
+        expr = tern::analyze_vars(
           vars = sum_vars,
           show_labels = "visible",
           na.rm = na.rm,

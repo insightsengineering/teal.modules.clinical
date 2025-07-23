@@ -208,7 +208,7 @@ template_tte <- function(dataname = "ANL",
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = analyze_vars(
+      expr = tern::analyze_vars(
         "is_event",
         .stats = "count_fraction",
         .labels = c(count_fraction = "Patients with event (%)"),
@@ -224,7 +224,7 @@ template_tte <- function(dataname = "ANL",
         ) %>%
         rtables::split_rows_by(event_desc_var, split_fun = drop_split_levels) %>%
         rtables::summarize_row_groups(format = "xx", na_str = na_str) %>%
-        analyze_vars(
+        tern::analyze_vars(
           "is_not_event",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Patients without event (%)"),
@@ -242,7 +242,7 @@ template_tte <- function(dataname = "ANL",
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = surv_time(
+      expr = tern::surv_time(
         vars = aval_var,
         var_labels = paste0("Time to Event (", as.character(anl$time_unit_var[1]), ")"),
         is_event = "is_event",
@@ -267,7 +267,7 @@ template_tte <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = coxph_pairwise(
+        expr = tern::coxph_pairwise(
           vars = aval_var,
           is_event = "is_event",
           var_labels = c("Unstratified Analysis"),
@@ -292,7 +292,7 @@ template_tte <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = coxph_pairwise(
+        expr = tern::coxph_pairwise(
           vars = aval_var,
           is_event = "is_event",
           var_labels = paste0("Stratified By: ", paste(strata_var, collapse = ", ")),

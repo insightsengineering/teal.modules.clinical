@@ -107,15 +107,15 @@ template_shift_by_arm <- function(dataname,
             label_pos = "topleft",
             split_label = obj_label(dataname$arm_var)
           ) %>%
-          add_rowcounts() %>%
-          analyze_vars(
+          tern::add_rowcounts() %>%
+          tern::analyze_vars(
             baseline_var,
             denom = "N_row",
             na_str = na_str,
             na.rm = na.rm,
             .stats = "count_fraction"
           ) %>%
-          append_varlabels(dataname, baseline_var, indent = 1L),
+          tern::append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
           aval_var = aval_var,
           arm_var = arm_var,
@@ -142,15 +142,16 @@ template_shift_by_arm <- function(dataname,
             label_pos = "topleft",
             split_label = obj_label(dataname$arm_var)
           ) %>%
-          add_rowcounts() %>%
-          analyze_vars(
+          tern::add_rowcounts() %>%
+          tern::analyze_vars(
             baseline_var,
+
             denom = "N_row",
             na_str = na_str,
             na.rm = na.rm,
             .stats = "count_fraction"
           ) %>%
-          append_varlabels(dataname, baseline_var, indent = 1L),
+          tern::append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
           aval_var = aval_var,
           arm_var = arm_var,

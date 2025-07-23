@@ -181,7 +181,7 @@ template_smq <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_num_patients(
+      expr = tern::summarize_num_patients(
         var = id_var,
         .stats = c("unique"),
         .labels = c(
@@ -223,7 +223,7 @@ template_smq <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_num_patients(
+      expr = tern::summarize_num_patients(
         var = id_var,
         .stats = c("unique", "nonunique"),
         .labels = c(
@@ -240,7 +240,7 @@ template_smq <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = count_occurrences(vars = llt, drop = FALSE),
+      expr = tern::count_occurrences(vars = llt, drop = FALSE),
       env = list(
         llt = llt
       )
@@ -250,7 +250,7 @@ template_smq <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = append_varlabels(dataname, llt, indent = 1L),
+      expr = tern::append_varlabels(dataname, llt, indent = 1L),
       env = list(
         dataname = as.name("anl"),
         llt = llt
@@ -274,8 +274,8 @@ template_smq <- function(dataname,
     y$sort <- substitute(
       expr = {
         sorted_result <- result %>%
-          sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-          sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
+          rtables::sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
+          rtables::sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
       },
       env = list(llt = llt)
     )
