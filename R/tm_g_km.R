@@ -174,7 +174,7 @@ template_g_km <- function(dataname = "ANL",
           plot_number <- 0L
           function(x) {
             plot_number <<- plot_number + 1L
-            g_km(
+            tern::g_km(
               x,
               variables = variables,
               control_surv = control_surv_timepoint(conf_level = conf_level, conf_type = conf_type),
