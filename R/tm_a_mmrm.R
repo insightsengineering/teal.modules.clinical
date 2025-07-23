@@ -100,8 +100,8 @@ template_fit_mmrm <- function(parentname,
       )
     )
   }
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = default_na_str())))
-  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = default_na_str())))
+  data_list <- add_expr(data_list, quote(tern::df_explicit_na(na_level = default_na_str())))
+  parent_list <- add_expr(parent_list, quote(tern::df_explicit_na(na_level = default_na_str())))
 
   y$data <- substitute(
     expr = {

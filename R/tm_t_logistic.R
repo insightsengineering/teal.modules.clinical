@@ -158,7 +158,7 @@ template_logistic <- function(dataname,
     )
   }
 
-  model_list <- add_expr(model_list, quote(df_explicit_na(na_level = "_NA_")))
+  model_list <- add_expr(model_list, quote(tern::df_explicit_na(na_level = "_NA_")))
 
   y$model <- substitute(
     expr = mod <- model_pipe,

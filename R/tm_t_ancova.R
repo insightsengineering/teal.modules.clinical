@@ -114,8 +114,8 @@ template_ancova <- function(dataname = "ANL",
     )
   }
 
-  anl_list <- add_expr(anl_list, quote(df_explicit_na(na_level = default_na_str())))
-  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = default_na_str())))
+  anl_list <- add_expr(anl_list, quote(tern::df_explicit_na(na_level = default_na_str())))
+  parent_list <- add_expr(parent_list, quote(tern::df_explicit_na(na_level = default_na_str())))
 
   data_list <- add_expr(
     data_list,
