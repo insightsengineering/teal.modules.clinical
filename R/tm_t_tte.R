@@ -217,7 +217,7 @@ template_tte <- function(dataname = "ANL",
         rtables::split_rows_by(
           "EVNT1",
           split_label = "Earliest contributing event",
-          split_fun = keep_split_levels("Patients with event (%)"),
+          split_fun = rtables::keep_split_levels("Patients with event (%)"),
           label_pos = "visible",
           child_labels = "hidden",
           indent_mod = 1L,
