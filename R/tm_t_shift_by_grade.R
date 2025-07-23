@@ -74,7 +74,7 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      expr = dataname <- tern::df_explicit_na(dataname, na_level = na_str),
       env = list(
         dataname = as.name("anl"),
         na_str = na_level
@@ -85,7 +85,7 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(
         parentname = as.name(parentname),
         na_str = na_level

@@ -75,7 +75,7 @@ template_coxreg_u <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = df_explicit_na(na_level = na_lvl),
+      expr = tern::df_explicit_na(na_level = na_lvl),
       env = list(na_lvl = na_level)
     )
   )
@@ -242,7 +242,7 @@ template_coxreg_m <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = df_explicit_na(na_level = na_lvl),
+      expr = tern::df_explicit_na(na_level = na_lvl),
       env = list(na_lvl = na_level)
     )
   )

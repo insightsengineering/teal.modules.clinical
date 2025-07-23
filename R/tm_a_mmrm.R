@@ -270,7 +270,7 @@ template_mmrm_tables <- function(parentname,
         expr = {
           lsmeans_table <- rtables::build_table(
             lyt = lyt,
-            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
+            df = tern::df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
             alt_counts_df = parentname
           )
         },

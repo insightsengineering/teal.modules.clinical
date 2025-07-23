@@ -61,7 +61,7 @@ template_summary_by <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_str),
+        tern::df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_str),
       env = list(
         df = as.name(dataname),
         by_vars = by_vars,
@@ -84,7 +84,7 @@ template_summary_by <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )

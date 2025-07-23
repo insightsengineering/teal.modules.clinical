@@ -98,7 +98,7 @@ template_logistic <- function(dataname,
     substitute(
       expr = ANL <- df %>%
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
-        df_explicit_na(na_level = "_NA_"),
+        tern::df_explicit_na(na_level = "_NA_"),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )

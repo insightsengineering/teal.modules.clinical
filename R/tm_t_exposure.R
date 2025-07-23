@@ -69,7 +69,7 @@ template_exposure <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = na_str),
+      dataname <- tern::df_explicit_na(dataname, na_level = na_str),
       env = list(
         dataname = as.name("anl"),
         na_str = na_level

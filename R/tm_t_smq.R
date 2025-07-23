@@ -106,7 +106,7 @@ template_smq <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      anl <- df_explicit_na(
+      anl <- tern::df_explicit_na(
         dataname,
         na_level = na_str
       ),
@@ -120,7 +120,7 @@ template_smq <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(
+      parentname <- tern::df_explicit_na(
         parentname,
         na_level = na_str
       ),

@@ -426,7 +426,7 @@ srv_t_glm_counts <- function(id,
     ##  Preprocessing the data: user specified
     anl <- reactive({
       within(req(anl_q()), {
-        ANL <- df_explicit_na(ANL)
+        ANL <- tern::df_explicit_na(ANL)
       })
     })
     ## Add basic specification for the table

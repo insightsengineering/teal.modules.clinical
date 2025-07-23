@@ -87,7 +87,7 @@ template_binary_outcome <- function(dataname,
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na(na_level = na_str)
+      parentname <- arm_preparation %>% tern::df_explicit_na(na_level = na_str)
     },
     env = list(
       data_pipe = pipe_expr(data_list),

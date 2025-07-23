@@ -118,7 +118,7 @@ template_tte <- function(dataname = "ANL",
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = df_explicit_na(na_level = na_str),
+      expr = tern::df_explicit_na(na_level = na_str),
       env = list(na_str = na_level)
     )
   )
@@ -126,7 +126,7 @@ template_tte <- function(dataname = "ANL",
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na(na_level = na_str)
+      parentname <- arm_preparation %>% tern::df_explicit_na(na_level = na_str)
     },
     env = list(
       data_pipe = pipe_expr(data_list),

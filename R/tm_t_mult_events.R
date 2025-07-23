@@ -68,7 +68,7 @@ template_mult_events <- function(dataname,
     data_list,
     substitute(
       expr = anl <- anl %>%
-        df_explicit_na(omit_columns = setdiff(names(anl), term_vars)),
+        tern::df_explicit_na(omit_columns = setdiff(names(anl), term_vars)),
       env = list(
         term_vars = term_vars
       )
@@ -89,7 +89,7 @@ template_mult_events <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
