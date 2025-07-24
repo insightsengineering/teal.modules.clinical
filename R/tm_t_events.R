@@ -340,6 +340,7 @@ template_events <- function(dataname,
         sort_list,
         quote({
           pruned_and_sorted_result <- pruned_result
+          pruned_and_sorted_result
         })
       )
     } else {
@@ -356,20 +357,19 @@ template_events <- function(dataname,
         sort_list,
         quote({
           pruned_and_sorted_result <- rtables::trim_rows(pruned_result, criteria = criteria_fun)
+          pruned_and_sorted_result
         })
       )
     }
   } else {
     # Sort by decreasing frequency.
-    if (add_total) {
-      sort_list <- add_expr(
-        sort_list,
-        substitute(
-          expr = idx_split_col <- which(sapply(col_paths(table), tail, 1) == sort_freq_col),
-          env = list(sort_freq_col = sort_freq_col)
-        )
+    sort_list <- add_expr(
+      sort_list,
+      substitute(
+        expr = idx_split_col <- which(sapply(col_paths(table), tail, 1) == sort_freq_col),
+        env = list(sort_freq_col = sort_freq_col)
       )
-    }
+    )
 
     # When the "All Patients" column is present we only use that for scoring.
     scorefun_hlt <- if (add_total) {
@@ -378,7 +378,7 @@ template_events <- function(dataname,
       quote(cont_n_allcols)
     }
     scorefun_llt <- if (add_total) {
-      quote(score_occurrences_cols(col_indices = idx_split_col))
+      quote(score_occurrences_cols(col_indices = seq(1, ncol(table))))
     } else {
       quote(score_occurrences)
     }
@@ -392,6 +392,7 @@ template_events <- function(dataname,
           expr = {
             pruned_and_sorted_result <- pruned_result %>%
               sort_at_path(path = c(term_var), scorefun = scorefun_llt)
+            pruned_and_sorted_result
           },
           env = list(
             term_var = term_var,
@@ -434,6 +435,11 @@ template_events <- function(dataname,
           )
         )
       }
+
+      sort_list <- add_expr(
+        sort_list,
+        quote(table <- pruned_and_sorted_result)
+      )
     }
   }
   y$sort <- bracket_expr(sort_list)
@@ -613,7 +619,8 @@ ui_t_events_byterm <- function(id, ...) {
     ),
     encoding = tags$div(
       ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
+      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
+      tags$br(), tags$br(),
       ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "hlt", "llt")]),
@@ -835,16 +842,9 @@ srv_t_events_byterm <- function(id,
       teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
     })
 
-    table_renamed_q <- reactive({
-      req(table_q())
-      within(table_q(), {
-        table <- pruned_and_sorted_result
-      })
-    })
-
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
-      data = table_renamed_q,
+      data = table_q,
       decorators = select_decorators(decorators, "table"),
       expr = table
     )
@@ -883,7 +883,7 @@ srv_t_events_byterm <- function(id,
         card$append_src(source_code_r())
         card
       }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
+      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
     }
     ###
   })
