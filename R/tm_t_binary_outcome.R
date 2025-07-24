@@ -279,8 +279,7 @@ template_binary_outcome <- function(dataname,
       add_expr(
         layout_list,
         substitute(
-          expr = tern::estimate_odds_
-          ratio(
+          expr = tern::estimate_odds_ratio(
             vars = "is_rsp",
             variables = list(arm = arm_var, strata = strata),
             conf_level = conf_level,
