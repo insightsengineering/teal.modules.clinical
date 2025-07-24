@@ -776,6 +776,13 @@ srv_ancova <- function(id,
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
+    # Set tern default for missing values for reproducibility (on .onLoad for the examples)
+    add_options <- reactive({
+      within(data(), {
+        tern::set_default_na_str("<Missing>")
+      })
+    })
+
     anl_inputs <- teal.transform::merge_expression_srv(
       selector_list = selector_list,
       datasets = data,
@@ -789,7 +796,7 @@ srv_ancova <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
+      add_options() %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
@@ -799,6 +806,8 @@ srv_ancova <- function(id,
       adsl_input_r = adsl_inputs,
       anl_q = anl_q
     )
+
+
 
     output$helptext_ui <- renderUI({
       if (length(selector_list()$arm_var()$select) != 0) {

@@ -1029,8 +1029,15 @@ srv_mmrm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
+    # Set tern default for missing values for reproducibility (on .onLoad for the examples)
+    add_options <- reactive({
+      within(data(), {
+        tern::set_default_na_str("<Missing>")
+      })
+    })
+
     anl_q <- reactive({
-      data() %>%
+      add_options() %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_merge_inputs()$expr))
     })
