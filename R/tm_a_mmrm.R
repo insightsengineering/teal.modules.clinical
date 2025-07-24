@@ -1562,7 +1562,7 @@ srv_mmrm <- function(id,
       id = "rcode",
       verbatim_content = source_code_r,
       disabled = disable_r_code,
-      title = "R Code for the Current MMRM Analysis"
+      title = label
     )
 
     ### REPORTER

@@ -746,7 +746,7 @@ srv_g_forest_tte <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,
-      title = "R Code for the Current Time-to-Event Forest Plot"
+      title = label
     )
 
     ### REPORTER

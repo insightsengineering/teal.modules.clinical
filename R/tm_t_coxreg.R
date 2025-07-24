@@ -1132,7 +1132,7 @@ srv_t_coxreg <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,
-      title = "R Code for the Current (Multi-Variable) Cox proportional hazard regression model"
+      title = label
     )
 
     ### REPORTER
