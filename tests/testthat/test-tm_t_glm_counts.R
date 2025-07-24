@@ -66,7 +66,7 @@ testthat::test_that(
 
 
 testthat::test_that(
-  "e2e - tm_t_events_by_grade: Selecting arm_var changes the table and does not throw validation errors.",
+  "e2e - tm_t_glm_counts: Selecting arm_var changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_glm_counts()
