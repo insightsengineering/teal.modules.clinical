@@ -21,7 +21,7 @@ control_tte <- function(
       ties = "efron",
       conf_level = 0.95
     ),
-    surv_timepoint = control_surv_timepoint(
+    surv_timepoint = tern::control_surv_timepoint(
       conf_level = 0.95,
       conf_type = c("plain", "none", "log", "log-log")
     )) {
@@ -63,7 +63,7 @@ template_tte <- function(dataname = "ANL",
                          control = control_tte(),
                          add_total = FALSE,
                          total_label = default_total_label(),
-                         na_level = default_na_str(),
+                         na_level = tern::default_na_str(),
                          basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -118,7 +118,7 @@ template_tte <- function(dataname = "ANL",
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = df_explicit_na(na_level = na_str),
+      expr = tern::df_explicit_na(na_level = na_str),
       env = list(na_str = na_level)
     )
   )
@@ -126,7 +126,7 @@ template_tte <- function(dataname = "ANL",
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na(na_level = na_str)
+      parentname <- arm_preparation %>% tern::df_explicit_na(na_level = na_str)
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -208,7 +208,7 @@ template_tte <- function(dataname = "ANL",
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = analyze_vars(
+      expr = tern::analyze_vars(
         "is_event",
         .stats = "count_fraction",
         .labels = c(count_fraction = "Patients with event (%)"),
@@ -217,14 +217,14 @@ template_tte <- function(dataname = "ANL",
         rtables::split_rows_by(
           "EVNT1",
           split_label = "Earliest contributing event",
-          split_fun = keep_split_levels("Patients with event (%)"),
+          split_fun = rtables::keep_split_levels("Patients with event (%)"),
           label_pos = "visible",
           child_labels = "hidden",
           indent_mod = 1L,
         ) %>%
-        rtables::split_rows_by(event_desc_var, split_fun = drop_split_levels) %>%
+        rtables::split_rows_by(event_desc_var, split_fun = rtables::drop_split_levels) %>%
         rtables::summarize_row_groups(format = "xx", na_str = na_str) %>%
-        analyze_vars(
+        tern::analyze_vars(
           "is_not_event",
           .stats = "count_fraction",
           .labels = c(count_fraction = "Patients without event (%)"),
@@ -242,7 +242,7 @@ template_tte <- function(dataname = "ANL",
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = surv_time(
+      expr = tern::surv_time(
         vars = aval_var,
         var_labels = paste0("Time to Event (", as.character(anl$time_unit_var[1]), ")"),
         is_event = "is_event",
@@ -267,7 +267,7 @@ template_tte <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = coxph_pairwise(
+        expr = tern::coxph_pairwise(
           vars = aval_var,
           is_event = "is_event",
           var_labels = c("Unstratified Analysis"),
@@ -292,7 +292,7 @@ template_tte <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = coxph_pairwise(
+        expr = tern::coxph_pairwise(
           vars = aval_var,
           is_event = "is_event",
           var_labels = paste0("Stratified By: ", paste(strata_var, collapse = ", ")),
@@ -336,7 +336,7 @@ template_tte <- function(dataname = "ANL",
           is_event = "is_event",
           time_point = time_points,
           method = method,
-          control = control_surv_timepoint(
+          control = tern::control_surv_timepoint(
             conf_level = conf_level,
             conf_type = conf_type
           ),
@@ -514,7 +514,7 @@ tm_t_tte <- function(label,
                      event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
                      add_total = FALSE,
                      total_label = default_total_label(),
-                     na_level = default_na_str(),
+                     na_level = tern::default_na_str(),
                      pre_output = NULL,
                      post_output = NULL,
                      basic_table_args = teal.widgets::basic_table_args(),
@@ -965,7 +965,7 @@ srv_t_tte <- function(id,
             conf_type = input$conf_type_survfit,
             quantiles = input$probs_survfit
           ),
-          surv_timepoint = control_surv_timepoint(
+          surv_timepoint = tern::control_surv_timepoint(
             conf_level = as.numeric(input$conf_level_survfit),
             conf_type = input$conf_type_survfit
           )

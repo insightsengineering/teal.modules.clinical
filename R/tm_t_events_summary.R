@@ -41,7 +41,7 @@ template_events_summary <- function(anl_name,
                                     llt = "AEDECOD",
                                     add_total = TRUE,
                                     total_label = default_total_label(),
-                                    na_level = default_na_str(),
+                                    na_level = tern::default_na_str(),
                                     count_dth = TRUE,
                                     count_wd = TRUE,
                                     count_subj = TRUE,
@@ -152,14 +152,14 @@ template_events_summary <- function(anl_name,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      expr = dataname <- tern::df_explicit_na(dataname, na_level = na_str),
       env = list(dataname = as.name("anl"), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
@@ -185,7 +185,7 @@ template_events_summary <- function(anl_name,
     layout_parent_list <- add_expr(
       layout_parent_list,
       substitute(
-        expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+        expr = rtables::split_cols_by(nested_col, split_fun = rtables::drop_split_levels),
         env = list(nested_col = arm_var[[2]])
       )
     )
@@ -267,7 +267,7 @@ template_events_summary <- function(anl_name,
     layout_anl_list <- add_expr(
       layout_anl_list,
       substitute(
-        expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+        expr = rtables::split_cols_by(nested_col, split_fun = rtables::drop_split_levels),
         env = list(nested_col = arm_var[[2]])
       )
     )
@@ -655,7 +655,7 @@ tm_t_events_summary <- function(label,
                                 ),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
-                                na_level = default_na_str(),
+                                na_level = tern::default_na_str(),
                                 count_dth = TRUE,
                                 count_wd = TRUE,
                                 count_subj = TRUE,

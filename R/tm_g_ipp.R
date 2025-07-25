@@ -216,12 +216,13 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl %>%
 #'     slice(1:20) %>%
-#'     df_explicit_na()
+#'     tern::df_explicit_na()
 #'   ADLB <- tmc_ex_adlb %>%
 #'     filter(USUBJID %in% ADSL$USUBJID) %>%
-#'     df_explicit_na() %>%
+#'     tern::df_explicit_na() %>%
 #'     filter(AVISIT != "SCREENING")
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]

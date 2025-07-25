@@ -65,7 +65,7 @@ template_fit_mmrm <- function(parentname,
       data_list <- add_expr(
         data_list,
         substitute_names(
-          expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+          expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = comp_arm)),
           names = list(arm_var = as.name(arm_var)),
           others = list(comp_arm = comp_arm)
         )
@@ -73,7 +73,7 @@ template_fit_mmrm <- function(parentname,
       parent_list <- add_expr(
         parent_list,
         substitute_names(
-          expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+          expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = comp_arm)),
           names = list(arm_var = as.name(arm_var)),
           others = list(comp_arm = comp_arm)
         )
@@ -100,8 +100,8 @@ template_fit_mmrm <- function(parentname,
       )
     )
   }
-  data_list <- add_expr(data_list, quote(df_explicit_na(na_level = default_na_str())))
-  parent_list <- add_expr(parent_list, quote(df_explicit_na(na_level = default_na_str())))
+  data_list <- add_expr(data_list, quote(tern::df_explicit_na(na_level = tern::default_na_str())))
+  parent_list <- add_expr(parent_list, quote(tern::df_explicit_na(na_level = tern::default_na_str())))
 
   y$data <- substitute(
     expr = {
@@ -206,7 +206,7 @@ template_mmrm_tables <- function(parentname,
         layout_list,
         substitute(
           expr = rtables::split_rows_by(visit_var) %>%
-            append_varlabels(dataname, visit_var) %>%
+            tern::append_varlabels(dataname, visit_var) %>%
             tern.mmrm::summarize_lsmeans(
               .stats = c(
                 "n",
@@ -230,7 +230,7 @@ template_mmrm_tables <- function(parentname,
         layout_list,
         substitute(
           expr = rtables::split_rows_by(visit_var) %>%
-            append_varlabels(dataname, visit_var) %>%
+            tern::append_varlabels(dataname, visit_var) %>%
             tern.mmrm::summarize_lsmeans(show_relative = show_relative) %>%
             rtables::append_topleft(paste0("  ", paramcd)),
           env = list(
@@ -270,7 +270,7 @@ template_mmrm_tables <- function(parentname,
         expr = {
           lsmeans_table <- rtables::build_table(
             lyt = lyt,
-            df = df_explicit_na(broom::tidy(fit_mmrm), na_level = default_na_str()),
+            df = tern::df_explicit_na(broom::tidy(fit_mmrm), na_level = tern::default_na_str()),
             alt_counts_df = parentname
           )
         },
@@ -1030,8 +1030,15 @@ srv_mmrm <- function(id,
       anl_name = "ANL_ADSL"
     )
 
+    # Set tern default for missing values for reproducibility (on .onLoad for the examples)
+    add_options <- reactive({
+      within(data(), {
+        tern::set_default_na_str("<Missing>")
+      })
+    })
+
     anl_q <- reactive({
-      data() %>%
+      add_options() %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_merge_inputs()$expr))
     })
@@ -1556,7 +1563,7 @@ srv_mmrm <- function(id,
       id = "rcode",
       verbatim_content = source_code_r,
       disabled = disable_r_code,
-      title = "R Code for the Current MMRM Analysis"
+      title = label
     )
 
     ### REPORTER

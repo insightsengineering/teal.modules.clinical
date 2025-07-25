@@ -22,7 +22,7 @@ template_summary <- function(dataname,
                              var_labels = character(),
                              arm_var_labels = NULL,
                              na.rm = FALSE, # nolint: object_name.
-                             na_level = default_na_str(),
+                             na_level = tern::default_na_str(),
                              numeric_stats = c(
                                "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                              ),
@@ -65,7 +65,7 @@ template_summary <- function(dataname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_str),
+        tern::df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_str),
       env = list(
         df = as.name(dataname),
         sum_vars = sum_vars,
@@ -87,7 +87,7 @@ template_summary <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(
         parentname = as.name(parentname),
         na_str = na_level
@@ -118,7 +118,7 @@ template_summary <- function(dataname,
   split_cols_call <- lapply(arm_var, function(x) {
     if (drop_arm_levels) {
       substitute(
-        expr = rtables::split_cols_by(x, split_fun = drop_split_levels),
+        expr = rtables::split_cols_by(x, split_fun = rtables::drop_split_levels),
         env = list(x = x)
       )
     } else {
@@ -156,7 +156,7 @@ template_summary <- function(dataname,
     layout_list,
     if (length(var_labels) > 0) {
       substitute(
-        expr = analyze_vars(
+        expr = tern::analyze_vars(
           vars = sum_vars,
           var_labels = sum_var_labels,
           show_labels = "visible",
@@ -169,7 +169,7 @@ template_summary <- function(dataname,
       )
     } else {
       substitute(
-        expr = analyze_vars(
+        expr = tern::analyze_vars(
           vars = sum_vars,
           show_labels = "visible",
           na.rm = na.rm,
@@ -186,7 +186,7 @@ template_summary <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = append_topleft(arm_var_labels),
+        expr = rtables::append_topleft(arm_var_labels),
         env = list(arm_var_labels = c(arm_var_labels, ""))
       )
     )
@@ -297,7 +297,7 @@ tm_t_summary <- function(label,
                          total_label = default_total_label(),
                          show_arm_var_labels = TRUE,
                          useNA = c("ifany", "no"), # nolint: object_name.
-                         na_level = default_na_str(),
+                         na_level = tern::default_na_str(),
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                          ),
