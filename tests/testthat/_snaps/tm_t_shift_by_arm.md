@@ -15,7 +15,7 @@
       lyt <- rtables::basic_table() %>% rtables::split_cols_by("AVISIT", 
           split_fun = rtables::drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
           rtables::split_rows_by("ARM", split_fun = rtables::drop_split_levels, 
-              label_pos = "topleft", split_label = formatters::obj_label(adeg$ARM)) %>% 
+              label_pos = "topleft", split_label = rtables::obj_label(adeg$ARM)) %>% 
           tern::add_rowcounts() %>% tern::analyze_vars("BNRIND", denom = "N_row", 
           na_str = "<Missing>", na.rm = FALSE, .stats = "count_fraction") %>% 
           tern::append_varlabels(adeg, "BNRIND", indent = 1L)
@@ -43,7 +43,7 @@
       lyt <- rtables::basic_table() %>% rtables::split_cols_by("AVISIT", 
           split_fun = rtables::drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
           rtables::split_rows_by("ARM", split_fun = rtables::add_overall_level("All Patients", 
-              first = FALSE), label_pos = "topleft", split_label = formatters::obj_label(adeg$ARM)) %>% 
+              first = FALSE), label_pos = "topleft", split_label = rtables::obj_label(adeg$ARM)) %>% 
           tern::add_rowcounts() %>% tern::analyze_vars("BNRIND", denom = "N_row", 
           na_str = "<Missing>", na.rm = FALSE, .stats = "count_fraction") %>% 
           tern::append_varlabels(adeg, "BNRIND", indent = 1L)
@@ -71,7 +71,7 @@
       lyt <- rtables::basic_table() %>% rtables::split_cols_by("AVISIT", 
           split_fun = rtables::drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
           rtables::split_rows_by("ARM", split_fun = rtables::drop_split_levels, 
-              label_pos = "topleft", split_label = formatters::obj_label(adeg$ARM)) %>% 
+              label_pos = "topleft", split_label = rtables::obj_label(adeg$ARM)) %>% 
           tern::add_rowcounts() %>% tern::analyze_vars("BNRIND", denom = "N_row", 
           na_str = "<Missing>", na.rm = TRUE, .stats = "count_fraction") %>% 
           tern::append_varlabels(adeg, "BNRIND", indent = 1L)

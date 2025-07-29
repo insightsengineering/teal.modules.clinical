@@ -25,13 +25,11 @@
           tern::summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = rtables::split_fun("AESEV"), label_pos = "topleft", 
-          split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           tern::summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEDECOD", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = rtables::split_fun("AESEV"), label_pos = "topleft", 
-          split_label = teal.data::col_labels(adae["AEDECOD"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEDECOD"])) %>% 
           tern::summarize_num_patients(var = "", .stats = "unique", 
               .labels = c("- Any Intensity -"), na_str = "<Missing>") %>% 
           tern::count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L, 
@@ -83,13 +81,11 @@
           tern::summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = rtables::split_fun("AESEV"), label_pos = "topleft", 
-          split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           tern::summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEDECOD", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = rtables::split_fun("AESEV"), label_pos = "topleft", 
-          split_label = teal.data::col_labels(adae["AEDECOD"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEDECOD"])) %>% 
           tern::summarize_num_patients(var = "", .stats = "unique", 
               .labels = c("- Any Intensity -"), na_str = "<Missing>") %>% 
           tern::count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L, 
@@ -143,13 +139,11 @@
           rtables::split_cols_by("ACTARM") %>% tern::summarize_occurrences_by_grade(var = "AESEV", 
           grade_groups = grade_groups, na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = rtables::split_fun("AESEV"), label_pos = "topleft", 
-          split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           tern::summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEDECOD", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = rtables::split_fun("AESEV"), label_pos = "topleft", 
-          split_label = teal.data::col_labels(adae["AEDECOD"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEDECOD"])) %>% 
           tern::summarize_num_patients(var = "", .stats = "unique", 
               .labels = c("- Any Intensity -"), na_str = "<Missing>") %>% 
           tern::count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L, 
@@ -199,8 +193,7 @@
           tern::summarize_occurrences_by_grade(var = "AESEV", grade_groups = grade_groups, 
               na_str = "<Missing>") %>% rtables::split_rows_by("AEBODSYS", 
           child_labels = "visible", nested = TRUE, indent_mod = -1L, 
-          split_fun = rtables::split_fun("AESEV"), label_pos = "topleft", 
-          split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
+          split_fun = split_fun("AESEV"), label_pos = "topleft", split_label = teal.data::col_labels(adae["AEBODSYS"])) %>% 
           tern::summarize_num_patients(var = "", .stats = "unique", 
               .labels = c("- Any Intensity -"), na_str = "<Missing>") %>% 
           tern::count_occurrences_by_grade(var = "AESEV", .indent_mods = -1L, 
