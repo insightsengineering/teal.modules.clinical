@@ -167,7 +167,7 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = rtables::split_fun(grade),
+            split_fun = split_fun(grade),
             label_pos = "topleft",
             split_label = teal.data::col_labels(dataname[term_var])
           ) %>%
@@ -203,7 +203,7 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = rtables::split_fun(grade),
+            split_fun = split_fun(grade),
             label_pos = "topleft",
             split_label = teal.data::col_labels(dataname[hlt])
           ) %>%
@@ -217,7 +217,7 @@ template_events_by_grade <- function(dataname,
             child_labels = "visible",
             nested = TRUE,
             indent_mod = -1L,
-            split_fun = rtables::split_fun(grade),
+            split_fun = split_fun(grade),
             label_pos = "topleft",
             split_label = teal.data::col_labels(dataname[llt])
           ) %>%

@@ -105,7 +105,7 @@ template_shift_by_arm <- function(dataname,
             arm_var,
             split_fun = rtables::add_overall_level(total_label, first = FALSE),
             label_pos = "topleft",
-            split_label = formatters::obj_label(dataname$arm_var)
+            split_label = rtables::obj_label(dataname$arm_var)
           ) %>%
           tern::add_rowcounts() %>%
           tern::analyze_vars(
@@ -140,7 +140,7 @@ template_shift_by_arm <- function(dataname,
             arm_var,
             split_fun = rtables::drop_split_levels,
             label_pos = "topleft",
-            split_label = formatters::obj_label(dataname$arm_var)
+            split_label = rtables::obj_label(dataname$arm_var)
           ) %>%
           tern::add_rowcounts() %>%
           tern::analyze_vars(

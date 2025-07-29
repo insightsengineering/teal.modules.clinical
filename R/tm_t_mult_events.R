@@ -599,8 +599,8 @@ srv_t_mult_events_byterm <- function(id,
       input_hlt <- names(anl_m$columns_source$hlt)
       input_llt <- names(anl_m$columns_source$llt)
 
-      hlt_labels <- mapply(function(x) formatters::obj_label(anl_q[["ANL"]][[x]]), input_hlt)
-      llt_labels <- mapply(function(x) formatters::obj_label(anl_q[["ANL"]][[x]]), input_llt)
+      hlt_labels <- mapply(function(x) rtables::obj_label(anl_q[["ANL"]][[x]]), input_hlt)
+      llt_labels <- mapply(function(x) rtables::obj_label(anl_q[["ANL"]][[x]]), input_llt)
 
       basic_table_args$title <- ifelse(
         is.null(basic_table_args$title),
