@@ -698,7 +698,7 @@ srv_summary_by <- function(id,
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
       input_by_vars <- names(merged$anl_input_r()$columns_source$by_vars)
-      input_summarize_vars <- names(merged$anl_input_r()$columns_source$summarize_var)
+      input_summarize_vars <- names(merged$anl_input_r()$columns_source$summarize_vars)
       input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
 
       # validate inputs
