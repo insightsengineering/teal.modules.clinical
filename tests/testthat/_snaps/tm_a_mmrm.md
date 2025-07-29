@@ -8,11 +8,11 @@
           anl <- adqs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              df_explicit_na(na_level = default_na_str())
+              tern::df_explicit_na(na_level = tern::default_na_str())
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              df_explicit_na(na_level = default_na_str())
+              tern::df_explicit_na(na_level = tern::default_na_str())
       }
       
       $fit
@@ -32,13 +32,13 @@
           anl <- adqs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", 
-                  "ARM C"))) %>% df_explicit_na(na_level = default_na_str())
+              dplyr::mutate(ARMCD = tern::combine_levels(ARMCD, levels = c("ARM B", 
+                  "ARM C"))) %>% tern::df_explicit_na(na_level = tern::default_na_str())
           adsl <- adsl %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM B", 
-                  "ARM C"))) %>% df_explicit_na(na_level = default_na_str())
+              dplyr::mutate(ARMCD = tern::combine_levels(ARMCD, levels = c("ARM B", 
+                  "ARM C"))) %>% tern::df_explicit_na(na_level = tern::default_na_str())
       }
       
       $fit
@@ -57,7 +57,7 @@
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARMCD", 
           ref_group = "ARM A") %>% rtables::split_rows_by("AVISIT") %>% 
-          append_varlabels(ANL, "AVISIT") %>% tern.mmrm::summarize_lsmeans(show_relative = "increase") %>% 
+          tern::append_varlabels(ANL, "AVISIT") %>% tern.mmrm::summarize_lsmeans(show_relative = "increase") %>% 
           rtables::append_topleft(paste0("  ", "ALBUMIN"))
       
       $cov_matrix

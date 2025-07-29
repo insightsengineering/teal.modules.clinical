@@ -10,26 +10,26 @@
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-          anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
+          anl <- anl %>% tern::df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          rtables::add_overall_col(label = "All Patients") %>% tern::summarize_num_patients(var = "USUBJID", 
           count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
               nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
+          tern::summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adcm, "CMDECOD", 
+                  nonunique = "Total number of treatments")) %>% tern::count_occurrences(vars = "CMDECOD", 
+          .indent_mods = -1L) %>% tern::append_varlabels(adcm, "CMDECOD", 
           indent = 1L)
       
       $table
@@ -37,7 +37,7 @@
       
       $table_sorted
       {
-          sorted_result <- result %>% sort_at_path(path = c("ATC1", 
+          sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
               "*", "CMDECOD"), scorefun = score_occurrences)
       }
       
@@ -58,18 +58,18 @@
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(adsl[["ARM"]])
           anl <- anl %>% dplyr::mutate(ARM = factor(ARM, levels = arm_levels))
-          anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
+          anl <- anl %>% tern::df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "ATC2", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          rtables::add_overall_col(label = "All Patients") %>% tern::summarize_num_patients(var = "USUBJID", 
           count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
               nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
@@ -77,10 +77,10 @@
           rtables::split_rows_by("ATC2", child_labels = "visible", 
               nested = TRUE, indent_mod = 0L, split_fun = split_fun, 
               label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC2"])) %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
+          tern::summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adcm, "CMDECOD", 
+                  nonunique = "Total number of treatments")) %>% tern::count_occurrences(vars = "CMDECOD", 
+          .indent_mods = -1L) %>% tern::append_varlabels(adcm, "CMDECOD", 
           indent = 2L)
       
       $table
@@ -88,7 +88,7 @@
       
       $table_sorted
       {
-          sorted_result <- result %>% sort_at_path(path = c("ATC1", 
+          sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
               "*", "ATC2", "*", "CMDECOD"), scorefun = score_occurrences)
       }
       
@@ -110,18 +110,18 @@
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-          anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
+          anl <- anl %>% tern::df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "ATC2", "ATC3", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          rtables::add_overall_col(label = "All Patients") %>% tern::summarize_num_patients(var = "USUBJID", 
           count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
               nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
@@ -132,10 +132,10 @@
           rtables::split_rows_by("ATC3", child_labels = "visible", 
               nested = TRUE, indent_mod = 0L, split_fun = split_fun, 
               label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC3"])) %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
+          tern::summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adcm, "CMDECOD", 
+                  nonunique = "Total number of treatments")) %>% tern::count_occurrences(vars = "CMDECOD", 
+          .indent_mods = -1L) %>% tern::append_varlabels(adcm, "CMDECOD", 
           indent = 3L)
       
       $table
@@ -143,7 +143,7 @@
       
       $table_sorted
       {
-          sorted_result <- result %>% sort_at_path(path = c("ATC1", 
+          sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
               "*", "ATC2", "*", "ATC3", "*", "CMDECOD"), scorefun = score_occurrences)
       }
       
@@ -165,18 +165,18 @@
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-          anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
+          anl <- anl %>% tern::df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "ATC2", "ATC3", "ATC4", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          rtables::add_overall_col(label = "All Patients") %>% tern::summarize_num_patients(var = "USUBJID", 
           count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
               nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
@@ -190,10 +190,10 @@
           rtables::split_rows_by("ATC4", child_labels = "visible", 
               nested = TRUE, indent_mod = 0L, split_fun = split_fun, 
               label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC4"])) %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
+          tern::summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adcm, "CMDECOD", 
+                  nonunique = "Total number of treatments")) %>% tern::count_occurrences(vars = "CMDECOD", 
+          .indent_mods = -1L) %>% tern::append_varlabels(adcm, "CMDECOD", 
           indent = 4L)
       
       $table
@@ -201,7 +201,7 @@
       
       $table_sorted
       {
-          sorted_result <- result %>% sort_at_path(path = c("ATC1", 
+          sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
               "*", "ATC2", "*", "ATC3", "*", "ATC4", "*", "CMDECOD"), 
               scorefun = score_occurrences)
       }
@@ -224,21 +224,21 @@
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-          anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
+          anl <- anl %>% tern::df_explicit_na(omit_columns = setdiff(names(anl), 
               "CMDECOD"))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_overall_col(label = "All Patients") %>% summarize_num_patients(var = "USUBJID", 
+          rtables::add_overall_col(label = "All Patients") %>% tern::summarize_num_patients(var = "USUBJID", 
           count_by = "ASEQ", .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-              nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adcm, "CMDECOD", 
+              nonunique = "Total number of treatments")) %>% tern::count_occurrences(vars = "CMDECOD", 
+          .indent_mods = -1L) %>% tern::append_varlabels(adcm, "CMDECOD", 
           indent = 0L)
       
       $table
@@ -246,7 +246,7 @@
       
       $table_sorted
       {
-          sorted_result <- result %>% sort_at_path(path = "CMDECOD", 
+          sorted_result <- result %>% rtables::sort_at_path(path = "CMDECOD", 
               scorefun = score_occurrences)
       }
       
@@ -268,26 +268,26 @@
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-          anl <- anl %>% df_explicit_na(omit_columns = setdiff(names(anl), 
+          anl <- anl %>% tern::df_explicit_na(omit_columns = setdiff(names(anl), 
               c("ATC1", "CMDECOD")))
           anl <- anl %>% dplyr::mutate(ASEQ = as.factor(ASEQ))
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
+          tern::summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
                   nonunique = "Total number of treatments")) %>% rtables::split_rows_by("ATC1", 
           child_labels = "visible", nested = FALSE, indent_mod = -1L, 
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(adcm["ATC1"])) %>% 
-          summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
+          tern::summarize_num_patients(var = "USUBJID", count_by = "ASEQ", 
               .stats = c("unique", "nonunique"), .labels = c(unique = "Total number of patients with at least one treatment", 
-                  nonunique = "Total number of treatments")) %>% count_occurrences(vars = "CMDECOD", 
-          .indent_mods = -1L) %>% append_varlabels(adcm, "CMDECOD", 
+                  nonunique = "Total number of treatments")) %>% tern::count_occurrences(vars = "CMDECOD", 
+          .indent_mods = -1L) %>% tern::append_varlabels(adcm, "CMDECOD", 
           indent = 1L)
       
       $table
@@ -295,7 +295,7 @@
       
       $table_sorted
       {
-          sorted_result <- result %>% sort_at_path(path = c("ATC1", 
+          sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
               "*", "CMDECOD"), scorefun = score_occurrences)
       }
       
