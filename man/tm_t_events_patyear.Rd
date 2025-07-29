@@ -18,7 +18,7 @@ tm_t_events_patyear(
     "AVALU"), "AVALU", fixed = TRUE),
   add_total = TRUE,
   total_label = default_total_label(),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
   drop_arm_levels = TRUE,

@@ -15,7 +15,7 @@ tm_t_summary(
   total_label = default_total_label(),
   show_arm_var_labels = TRUE,
   useNA = c("ifany", "no"),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
   denominator = c("N", "n", "omit"),
