@@ -1031,14 +1031,14 @@ srv_mmrm <- function(id,
     )
 
     # Set tern default for missing values for reproducibility (on .onLoad for the examples)
-    add_options <- reactive({
+    data_with_tern_options_r <- reactive({
       within(data(), {
-        tern::set_default_na_str("<Missing>")
-      })
+        tern::set_default_na_str(default_na_str)
+      }, default_na_str = getOption("tern_default_na_str", default = "<Missing>"))
     })
 
     anl_q <- reactive({
-      add_options() %>%
+      data_with_tern_options_r() %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_merge_inputs()$expr))
     })
