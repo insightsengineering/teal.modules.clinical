@@ -237,7 +237,6 @@ ui_t_glm_counts <- function(id, ...) {
     encoding = tags$div(
       ### Reporter
       teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-      tags$br(), tags$br(),
       ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::data_extract_ui(
