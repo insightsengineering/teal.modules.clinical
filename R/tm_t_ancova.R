@@ -237,7 +237,7 @@ template_ancova <- function(dataname = "ANL",
       layout_list <- add_expr(
         layout_list,
         substitute(
-           tern::summarize_ancova(
+          tern::summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = cov_var),
             conf_level = conf_level,
@@ -260,7 +260,7 @@ template_ancova <- function(dataname = "ANL",
       layout_list <- add_expr(
         layout_list,
         substitute(
-           tern::summarize_ancova(
+          tern::summarize_ancova(
             vars = aval_var,
             variables = list(arm = arm_var, covariates = NULL),
             conf_level = conf_level,
@@ -279,7 +279,7 @@ template_ancova <- function(dataname = "ANL",
         layout_list <- add_expr(
           layout_list,
           substitute(
-             tern::summarize_ancova(
+            tern::summarize_ancova(
               vars = aval_var,
               variables = list(arm = arm_var, covariates = cov_var),
               conf_level = conf_level,
@@ -314,7 +314,7 @@ template_ancova <- function(dataname = "ANL",
         layout_list <- add_expr(
           layout_list,
           substitute(
-             tern::summarize_ancova(
+            tern::summarize_ancova(
               vars = aval_var,
               variables = list(arm = arm_var, covariates = cov_var),
               conf_level = conf_level,
@@ -340,7 +340,7 @@ template_ancova <- function(dataname = "ANL",
           layout_list <- add_expr(
             layout_list,
             substitute(
-               tern::summarize_ancova(
+              tern::summarize_ancova(
                 vars = aval_var,
                 variables = list(arm = arm_var, covariates = NULL),
                 conf_level = conf_level,
@@ -361,7 +361,7 @@ template_ancova <- function(dataname = "ANL",
           layout_list <- add_expr(
             layout_list,
             substitute(
-               tern::summarize_ancova(
+              tern::summarize_ancova(
                 vars = aval_var,
                 variables = list(arm = arm_var, covariates = cov_var),
                 conf_level = conf_level,

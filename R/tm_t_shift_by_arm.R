@@ -99,7 +99,9 @@ template_shift_by_arm <- function(dataname,
       layout_list,
       substitute(
         expr = expr_basic_table_args %>%
-          rtables::split_cols_by(visit_var, split_fun = rtables::drop_split_levels) %>% # temp solution for over arching column
+          rtables::split_cols_by(visit_var,
+            split_fun = rtables::drop_split_levels
+          ) %>% # temp solution for over arching column
           rtables::split_cols_by(aval_var) %>%
           rtables::split_rows_by(
             arm_var,
@@ -134,7 +136,9 @@ template_shift_by_arm <- function(dataname,
       layout_list,
       substitute(
         expr = expr_basic_table_args %>%
-          rtables::split_cols_by(visit_var, split_fun = rtables::drop_split_levels) %>% # temp solution for over arching column
+          rtables::split_cols_by(visit_var,
+            split_fun = rtables::drop_split_levels
+          ) %>% # temp solution for over arching column
           rtables::split_cols_by(aval_var) %>%
           rtables::split_rows_by(
             arm_var,
@@ -145,7 +149,6 @@ template_shift_by_arm <- function(dataname,
           tern::add_rowcounts() %>%
           tern::analyze_vars(
             baseline_var,
-
             denom = "N_row",
             na_str = na_str,
             na.rm = na.rm,

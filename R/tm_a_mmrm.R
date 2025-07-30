@@ -1032,9 +1032,12 @@ srv_mmrm <- function(id,
 
     # Set tern default for missing values for reproducibility (on .onLoad for the examples)
     data_with_tern_options_r <- reactive({
-      within(data(), {
-        tern::set_default_na_str(default_na_str)
-      }, default_na_str = getOption("tern_default_na_str", default = "<Missing>"))
+      within(data(),
+        {
+          tern::set_default_na_str(default_na_str)
+        },
+        default_na_str = getOption("tern_default_na_str", default = "<Missing>")
+      )
     })
 
     anl_q <- reactive({
