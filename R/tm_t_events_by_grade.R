@@ -533,8 +533,10 @@ template_events_col_by_grade <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = rtables::split_cols_by(var = arm_var,
-                                      split_fun = rtables::add_overall_level(total_label, first = FALSE)),
+        expr = rtables::split_cols_by(
+          var = arm_var,
+          split_fun = rtables::add_overall_level(total_label, first = FALSE)
+        ),
         env = list(
           arm_var = arm_var,
           total_label = total_label
