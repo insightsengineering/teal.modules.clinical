@@ -26,9 +26,9 @@ control_tte <- function(
       conf_type = c("plain", "none", "log", "log-log")
     )) {
   list(
-    surv_time = do.call("tern::control_surv_time", surv_time),
-    coxph = do.call("tern::control_coxph", coxph),
-    surv_timepoint = do.call("tern::control_surv_timepoint", surv_timepoint)
+    surv_time = do.call("control_surv_time", surv_time, envir = getNamespace("tern")),
+    coxph = do.call("control_coxph", coxph, envir = getNamespace("tern")),
+    surv_timepoint = do.call("control_surv_timepoint", surv_timepoint, envir = getNamespace("tern"))
   )
 }
 
