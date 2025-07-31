@@ -284,7 +284,7 @@ template_mmrm_tables <- function(parentname,
       y$cov_matrix <- substitute(
         expr = {
           covariance_table <- tern.mmrm::as.rtable(fit_mmrm, type = "cov")
-          subtitles(covariance_table) <- st
+          rtables::subtitles(covariance_table) <- st
         },
         env = list(
           fit_mmrm = as.name(fit_name),
@@ -296,7 +296,7 @@ template_mmrm_tables <- function(parentname,
       y$fixed_effects <- substitute(
         expr = {
           fixed_effects_table <- tern.mmrm::as.rtable(fit_mmrm, type = "fixed")
-          subtitles(fixed_effects_table) <- st
+          rtables::subtitles(fixed_effects_table) <- st
         },
         env = list(
           fit_mmrm = as.name(fit_name),
@@ -308,7 +308,7 @@ template_mmrm_tables <- function(parentname,
       y$diagnostic_table <- substitute(
         expr = {
           diagnostic_table <- tern.mmrm::as.rtable(fit_mmrm, type = "diagnostic")
-          subtitles(diagnostic_table) <- st
+          rtables::subtitles(diagnostic_table) <- st
         },
         env = list(
           fit_mmrm = as.name(fit_name),
