@@ -253,7 +253,7 @@ template_mult_events <- function(dataname,
     sort_list,
     substitute(
       expr = sorted_result <- result %>%
-        rtables::sort_at_path(path = pth, scorefun = tern::score_occurrences),
+        rtables::sort_at_path(path = pth, scorefun = score_occurrences),
       env = list(pth = pth)
     )
   )
