@@ -106,7 +106,7 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   z$variables <- substitute(
-    expr = variables <- control_lineplot_vars(x = x, y = y, group_var = arm, paramcd = paramcd, y_unit = y_unit),
+    expr = variables <- tern::control_lineplot_vars(x = x, y = y, group_var = arm, paramcd = paramcd, y_unit = y_unit),
     env = list(x = x, y = y, arm = group_var, paramcd = paramcd, y_unit = y_unit)
   )
 
@@ -151,7 +151,7 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   plot_call <- substitute(
-    g_lineplot(
+    tern::g_lineplot(
       df = anl,
       variables = variables,
       interval = interval,
@@ -168,7 +168,7 @@ template_g_lineplot <- function(dataname = "ANL",
       y_lab = ggplot2_args_ylab,
       legend_title = ggplot2_args_legend_title,
       ggtheme = ggplot2::theme_minimal(),
-      control = control_analyze_vars(conf_level = conf_level),
+      control = tern::control_analyze_vars(conf_level = conf_level),
       subtitle_add_paramcd = FALSE,
       subtitle_add_unit = FALSE
     ),
