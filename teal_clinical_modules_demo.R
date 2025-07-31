@@ -506,28 +506,34 @@ app <- teal::init(
           selected = "BNRIND",
           fixed = TRUE
         )
-      ),
-      tm_t_shift_by_arm_by_worst(
-        label = "ECG Shift by Arm by Worst Grade",
-        dataname = "ADEG",
-        arm_var = cs_arm_var,
-        paramcd = choices_selected(value_choices(ADEG, "PARAMCD"),
-          selected = "HR"
-        ),
-        visit_var = choices_selected(value_choices(ADEG, "AVISIT"),
-          selected = "POST-BASELINE MINIMUM"
-        ),
-        aval_var = choices_selected(
-          variable_choices(ADEG, subset = "ANRIND"),
-          selected = "ANRIND",
-          fixed = TRUE
-        ),
-        baseline_var = choices_selected(
-          variable_choices(ADEG, subset = "BNRIND"),
-          selected = "BNRIND",
-          fixed = TRUE
-        )
-      )
+      )#,
+      #tm_t_shift_by_arm_by_worst(
+      #  label = "ECG Shift by Arm by Worst Grade",
+      #  dataname = "ADEG",
+      #  arm_var = cs_arm_var,
+      #  paramcd = choices_selected(value_choices(ADEG, "PARAMCD"),
+      #    selected = "HR"
+      #  ),
+      #  aval_var = choices_selected(
+      #    variable_choices(ADEG, subset = "ANRIND"),
+      #    selected = "ANRIND",
+      #    fixed = TRUE
+      #  ),
+      #  baseline_var = choices_selected(
+      #    variable_choices(ADEG, subset = "BNRIND"),
+      #    selected = "BNRIND",
+      #    fixed = TRUE
+      #  ),
+      #  worst_flag_var = choices_selected(
+      #    choices = variable_choices(ADEG, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+      #    selected = "WGRLOVFL"
+      #  ),
+      #  worst_flag = choices_selected(
+      #    value_choices(ADEG, "WGRLOVFL"),
+      #    selected = "Y",
+      #    fixed = TRUE
+      #  )
+      #)
     ),
     
     # Patient Profiles section
@@ -536,22 +542,16 @@ app <- teal::init(
       tm_t_pp_basic_info(
         label = "Patient Profile - Basic Info",
         dataname = "ADSL",
-        patient_id = choices_selected(
-          choices = variable_choices(ADSL, subset = "USUBJID"),
-          selected = "USUBJID",
-          fixed = TRUE
-        ),
-        arm_var = cs_arm_var
+        patient_col = "USUBJID",
+        vars = choices_selected(
+          choices = variable_choices(ADSL, subset = c("SEX", "AGE", "RACE", "ETHNIC", "ARM", "ARMCD")),
+          selected = c("SEX", "AGE", "RACE", "ETHNIC")
+        )
       ),
       tm_t_pp_laboratory(
         label = "Patient Profile - Laboratory",
         dataname = "ADLB",
-        patient_id = choices_selected(
-          choices = variable_choices(ADSL, subset = "USUBJID"),
-          selected = "USUBJID",
-          fixed = TRUE
-        ),
-        arm_var = cs_arm_var,
+        patient_col = "USUBJID",
         paramcd = choices_selected(
           choices = value_choices(ADLB, "PARAMCD", "PARAM"),
           selected = "ALT"
@@ -560,12 +560,7 @@ app <- teal::init(
       tm_t_pp_medical_history(
         label = "Patient Profile - Medical History",
         dataname = "ADMH",
-        patient_id = choices_selected(
-          choices = variable_choices(ADSL, subset = "USUBJID"),
-          selected = "USUBJID",
-          fixed = TRUE
-        ),
-        arm_var = cs_arm_var
+        patient_col = "USUBJID"
       )#,
     #  tm_t_pp_prior_medication(
     #    label = "Patient Profile - Prior Medication",
@@ -595,6 +590,10 @@ app <- teal::init(
           choices = variable_choices(ADSL, subset = c("AGE", "SEX")),
           selected = "AGE"
         ),
+        avisit = choices_selected(
+          choices = value_choices(ADLB, "AVISIT"),
+          selected = "WEEK 1 DAY 8"
+        ),
         paramcd = choices_selected(
           choices = value_choices(ADLB, "PARAMCD", "PARAM"),
           selected = "ALT"
@@ -604,7 +603,7 @@ app <- teal::init(
         label = "Binary Outcome Analysis",
         dataname = "ADRS",
         arm_var = cs_arm_var,
-        response_var = choices_selected(
+        aval_var = choices_selected(
           choices = variable_choices(ADRS, subset = "AVALC"),
           selected = "AVALC",
           fixed = TRUE
@@ -612,32 +611,44 @@ app <- teal::init(
         paramcd = choices_selected(
           choices = value_choices(ADRS, "PARAMCD", "PARAM"),
           selected = "BESRSPI"
+        ),
+        strata_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+          selected = NULL
         )
       ),
-      tm_t_coxreg(
-        label = "Cox Regression Analysis",
-        dataname = "ADAETTE",
-        arm_var = cs_arm_var,
-        aval_var = choices_selected(
-          choices = variable_choices(ADAETTE, subset = "AVAL"),
-          selected = "AVAL",
-          fixed = TRUE
-        ),
-        cnsr_var = choices_selected(
-          choices = variable_choices(ADAETTE, subset = "CNSR"),
-          selected = "CNSR",
-          fixed = TRUE
-        ),
-        paramcd = choices_selected(
-          choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
-          selected = "AETTE1"
-        )
-      ),
+      #tm_t_coxreg(
+      #  label = "Cox Regression Analysis",
+      #  dataname = "ADAETTE",
+      #  arm_var = cs_arm_var,
+      #  aval_var = choices_selected(
+      #    choices = variable_choices(ADAETTE, subset = "AVAL"),
+      #    selected = "AVAL",
+      #    fixed = TRUE
+      #  ),
+      #  cnsr_var = choices_selected(
+      #    choices = variable_choices(ADAETTE, subset = "CNSR"),
+      #    selected = "CNSR",
+      #    fixed = TRUE
+      #  ),
+      #  paramcd = choices_selected(
+      #    choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
+      #    selected = "AETTE1"
+      #  ),
+      #  cov_var = choices_selected(
+      #    choices = variable_choices(ADSL, subset = c("AGE", "SEX")),
+      #    selected = "AGE"
+      #  ),
+      #  strata_var = choices_selected(
+      #    choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+      #    selected = NULL
+      #  )
+      #),
       tm_t_logistic(
         label = "Logistic Regression Analysis",
         dataname = "ADRS",
         arm_var = cs_arm_var,
-        response_var = choices_selected(
+        avalc_var = choices_selected(
           choices = variable_choices(ADRS, subset = "AVALC"),
           selected = "AVALC",
           fixed = TRUE
@@ -651,20 +662,32 @@ app <- teal::init(
           selected = "BESRSPI"
         )
       ),
-      tm_t_glm_counts(
-        label = "Generalized Linear Models for Counts",
-        dataname = "ADAE",
-        arm_var = cs_arm_var,
-        response_var = choices_selected(
-          choices = variable_choices(ADAE, subset = "AETOXGR"),
-          selected = "AETOXGR",
-          fixed = TRUE
-        ),
-        paramcd = choices_selected(
-          choices = value_choices(ADAE, "AEDECOD"),
-          selected = "HEADACHE"
-        )
-      ),
+      #tm_t_glm_counts(
+      #  label = "Generalized Linear Models for Counts",
+      #  dataname = "ADAE",
+      #  arm_var = cs_arm_var,
+      #  aval_var = choices_selected(
+      #    choices = variable_choices(ADAE, subset = "AETOXGR"),
+      #    selected = "AETOXGR",
+      #    fixed = TRUE
+      #  ),
+      #  strata_var = choices_selected(
+      #    choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+      #    selected = NULL
+      #  ),
+      #  offset_var = choices_selected(
+      #    choices = variable_choices(ADAE, subset = "EXPOSURE"),
+      #    selected = NULL
+      #  ),
+      #  cov_var = choices_selected(
+     #     choices = variable_choices(ADSL, subset = c("AGE", "SEX")),
+      #    selected = NULL
+      #  ),
+      #  paramcd = choices_selected(
+      #    choices = value_choices(ADAE, "AEDECOD"),
+      #    selected = "HEADACHE"
+      #  )
+      #),
       tm_t_tte(
         label = "Time-to-Event Analysis",
         dataname = "ADAETTE",
@@ -682,6 +705,34 @@ app <- teal::init(
         paramcd = choices_selected(
           choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
           selected = "AETTE1"
+        ),
+        strata_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+          selected = NULL
+        ),
+        time_points = choices_selected(
+          choices = c(30, 60, 90, 180, 365),
+          selected = c(30, 60, 90)
+        ),
+        event_desc_var = choices_selected(
+          choices = "EVNTDESC",
+          selected = "EVNTDESC",
+          fixed = TRUE
+        ),
+        conf_level_coxph = choices_selected(
+          choices = c(0.95, 0.9, 0.8),
+          selected = 0.95,
+          keep_order = TRUE
+        ),
+        conf_level_survfit = choices_selected(
+          choices = c(0.95, 0.9, 0.8),
+          selected = 0.95,
+          keep_order = TRUE
+        ),
+        time_unit_var = choices_selected(
+          choices = variable_choices(ADAETTE, subset = "AVALU"),
+          selected = "AVALU",
+          fixed = TRUE
         )
       ),
       tm_a_gee(
@@ -706,6 +757,10 @@ app <- teal::init(
         paramcd = choices_selected(
           choices = value_choices(ADLB, "PARAMCD", "PARAM"),
           selected = "ALT"
+        ),
+        cov_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("AGE", "SEX", "RACE")),
+          selected = c("AGE", "SEX")
         )
       ),
       tm_a_mmrm(
@@ -730,7 +785,22 @@ app <- teal::init(
         paramcd = choices_selected(
           choices = value_choices(ADLB, "PARAMCD", "PARAM"),
           selected = "ALT"
-        )
+        ),
+        cov_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("AGE", "SEX", "RACE")),
+          selected = c("AGE", "SEX")
+        ),
+        method = choices_selected(
+          choices = c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
+          selected = "Satterthwaite",
+          keep_order = TRUE
+        ),
+        plot_height = c(700L, 200L, 2000L),
+        plot_width = NULL,
+        total_label = "Total",
+        ggplot2_args = teal.widgets::ggplot2_args(),
+        basic_table_args = teal.widgets::basic_table_args(),
+        transformators = list()
       )
     ),
     
@@ -740,7 +810,7 @@ app <- teal::init(
       tm_g_lineplot(
         label = "Laboratory Values Over Time",
         dataname = "ADLB",
-        strata = cs_arm_var,
+        group_var = cs_arm_var,
         x = choices_selected(variable_choices(ADLB, "AVISIT"), "AVISIT", fixed = TRUE),
         y = choices_selected(variable_choices(ADLB, c(
           "AVAL", "BASE", "CHG", "PCHG"
@@ -768,38 +838,44 @@ app <- teal::init(
           selected = "AVAL",
           fixed = TRUE
         ),
-        plot_height = c(1000L, 200L, 4000L)
-      ),
-      tm_g_barchart_simple(
-        label = "Simple Bar Chart",
-        dataname = "ADLB",
-        arm_var = cs_arm_var,
-        paramcd = choices_selected(
-          choices = value_choices(ADLB, "PARAMCD", "PARAM"),
-          selected = "ALT"
+        strata_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+          selected = NULL
         ),
-        aval_var = choices_selected(
-          choices = variable_choices(ADLB, subset = "AVAL"),
-          selected = "AVAL",
-          fixed = TRUE
+        facet_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+          selected = NULL
         ),
         plot_height = c(1000L, 200L, 4000L)
       ),
-      tm_g_ci(
-        label = "Confidence Interval Plot",
-        dataname = "ADLB",
-        arm_var = cs_arm_var,
-        paramcd = choices_selected(
-          choices = value_choices(ADLB, "PARAMCD", "PARAM"),
-          selected = "ALT"
-        ),
-        aval_var = choices_selected(
-          choices = variable_choices(ADLB, subset = "AVAL"),
-          selected = "AVAL",
-          fixed = TRUE
-        ),
-        plot_height = c(1000L, 200L, 4000L)
-      ),
+      #tm_g_barchart_simple(
+      #  label = "Simple Bar Chart",
+      #  x = choices_selected(
+      #    choices = variable_choices(ADLB, subset = "PARAM"),
+      #    selected = "ALT"
+      #  ),
+      #  fill = choices_selected(
+      #    choices = variable_choices(ADSL, subset = c("ARM", "SEX")),
+      #    selected = "ARM"
+      #  ),
+      #  plot_height = c(1000L, 200L, 4000L)
+      #),
+      #tm_g_ci(
+      #  label = "Confidence Interval Plot",
+      #  x_var = choices_selected(
+      #    choices = variable_choices(ADSL, subset = c("ARM", "SEX")),
+      #    selected = "ARM"
+      #  ),
+      #  y_var = choices_selected(
+      #    choices = variable_choices(ADLB, subset = "AVAL"),
+      #    selected = "AVAL"
+      #  ),
+      #  color = choices_selected(
+      #    choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+      #    selected = "SEX"
+      #  ),
+      #  plot_height = c(1000L, 200L, 4000L)
+      #),
       tm_g_forest_rsp(
         label = "Forest Plot for Response",
         dataname = "ADRS",
@@ -808,10 +884,18 @@ app <- teal::init(
           choices = value_choices(ADRS, "PARAMCD", "PARAM"),
           selected = "BESRSPI"
         ),
-        response_var = choices_selected(
+        aval_var = choices_selected(
           choices = variable_choices(ADRS, subset = "AVALC"),
           selected = "AVALC",
           fixed = TRUE
+        ),
+        subgroup_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+          selected = NULL
+        ),
+        strata_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+          selected = NULL
         ),
         plot_height = c(1000L, 200L, 4000L)
       ),
@@ -858,44 +942,29 @@ app <- teal::init(
       tm_g_pp_adverse_events(
         label = "Patient Profile - Adverse Events Plots",
         dataname = "ADAE",
-        patient_id = choices_selected(
-          choices = variable_choices(ADSL, subset = "USUBJID"),
-          selected = "USUBJID",
-          fixed = TRUE
-        ),
+        patient_col = "USUBJID",
         arm_var = cs_arm_var,
         plot_height = c(1000L, 200L, 4000L)
       ),
       tm_g_pp_patient_timeline(
         label = "Patient Profile - Timeline Plots",
-        dataname = "ADSL",
-        patient_id = choices_selected(
-          choices = variable_choices(ADSL, subset = "USUBJID"),
-          selected = "USUBJID",
-          fixed = TRUE
-        ),
+        dataname_adcm = "ADCM",
+        dataname_adae = "ADAE",
+        patient_col = "USUBJID",
         arm_var = cs_arm_var,
         plot_height = c(1000L, 200L, 4000L)
       ),
       tm_g_pp_therapy(
         label = "Patient Profile - Therapy Plots",
         dataname = "ADEX",
-        patient_id = choices_selected(
-          choices = variable_choices(ADSL, subset = "USUBJID"),
-          selected = "USUBJID",
-          fixed = TRUE
-        ),
+        patient_col = "USUBJID",
         arm_var = cs_arm_var,
         plot_height = c(1000L, 200L, 4000L)
       ),
       tm_g_pp_vitals(
         label = "Patient Profile - Vital Signs Plots",
         dataname = "ADVS",
-        patient_id = choices_selected(
-          choices = variable_choices(ADSL, subset = "USUBJID"),
-          selected = "USUBJID",
-          fixed = TRUE
-        ),
+        patient_col = "USUBJID",
         arm_var = cs_arm_var,
         plot_height = c(1000L, 200L, 4000L)
       )
