@@ -103,8 +103,8 @@ template_a_gee <- function(output_table,
                 alt_counts_df = dataname_lsmeans
               )
 
-            subtitles(table) <- st
-            main_footer(table) <- mf
+            rtables::subtitles(table) <- st
+            rtables::main_footer(table) <- mf
           },
           env = list(
             dataname_lsmeans = as.name(dataname_lsmeans),
