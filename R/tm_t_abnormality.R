@@ -103,7 +103,7 @@ template_abnormality <- function(parentname,
     prep_list,
     substitute(
       # Define the map for layout using helper function h_map_for_count_abnormal
-      map <- h_map_for_count_abnormal(
+      map <- tern::h_map_for_count_abnormal(
         df = dataname,
         variables = list(anl = grade, split_rows = by_vars),
         abnormal = abnormal,
@@ -183,7 +183,7 @@ template_abnormality <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = count_abnormal(
+      expr = tern::count_abnormal(
         var = grade,
         abnormal = abnormal,
         variables = list(id = id_var, baseline = baseline_var),
