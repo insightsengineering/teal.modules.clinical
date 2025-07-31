@@ -12,9 +12,9 @@ data <- within(data, {
   library(sparkline)
 
   # Generate CDISC ADaM datasets
-  ADSL <- radsl(seed = 1)
-  ADAE <- radae(ADSL, seed = 1)
-  ADAETTE <- radaette(ADSL, seed = 1)
+  ADSL <- cadsl(seed = 1)
+  ADAE <- cadae(ADSL, seed = 1)
+  ADAETTE <- cadaette(ADSL, seed = 1)
   ADAETTE <- ADAETTE %>%
     mutate(is_event = case_when(
       grepl("TOT", .data$PARAMCD, fixed = TRUE) ~ TRUE,
@@ -36,7 +36,7 @@ data <- within(data, {
   .ADAETTE_AE <- full_join(.ADAETTE_AE, .ADAETTE_TTE, by = c("USUBJID", "ARM", "ARMCD"))
   ADAETTE <- rbind(.ADAETTE_AE, .ADAETTE_OTH)
 
-  ADEX <- radex(ADSL, seed = 1)
+  ADEX <- cadex(ADSL, seed = 1)
   .ADEX_labels <- teal.data::col_labels(ADEX, fill = FALSE)
   # Below steps are done to simulate data with TDURD parameter as it is not in the ADEX data from `random.cdisc.data` package
   set.seed(1, kind = "Mersenne-Twister")
@@ -59,11 +59,11 @@ data <- within(data, {
       PARAMCD %in% c("TDOSE", "TNDOSE", "TDURD"))
   teal.data::col_labels(ADEX) <- .ADEX_labels
 
-  ADLB <- radlb(ADSL, seed = 1)
-  ADEG <- radeg(ADSL, seed = 1)
+  ADLB <- cadlb(ADSL, seed = 1)
+  ADEG <- cadeg(ADSL, seed = 1)
 
   # For real data, ADVS needs some preprocessing like group different ANRIND and BNRIND into abnormal
-  ADVS <- radvs(ADSL, seed = 1) %>%
+  ADVS <- cadvs(ADSL, seed = 1) %>%
     mutate(ONTRTFL = ifelse(AVISIT %in% c("SCREENING", "BASELINE"), "", "Y")) %>%
     teal.data::col_relabel(ONTRTFL = "On Treatment Record Flag") %>%
     mutate(ANRIND = as.character(ANRIND), BNRIND = as.character(BNRIND)) %>%
@@ -80,17 +80,17 @@ data <- within(data, {
       )
     )
 
-  ADCM <- radcm(ADSL, seed = 1) %>% mutate(CMSEQ = as.integer(CMSEQ))
+  ADCM <- cadcm(ADSL, seed = 1) %>% mutate(CMSEQ = as.integer(CMSEQ))
 
   # Create additional datasets for patient profiles and statistical analysis
-  ADMH <- radmh(ADSL, seed = 1)  # Medical history
-  ADPM <- radpm(ADSL, seed = 1)  # Prior medication
+  ADMH <- cadmh(ADSL, seed = 1)  # Medical history
+  ADPM <- cadpm(ADSL, seed = 1)  # Prior medication
   
   # Create response dataset for statistical analysis
-  ADRS <- radrs(ADSL, seed = 1)  # Response dataset
+  ADRS <- cadrs(ADSL, seed = 1)  # Response dataset
   
   # Create efficacy dataset
-  ADEF <- radef(ADSL, seed = 1)  # Efficacy dataset
+  ADEF <- cadef(ADSL, seed = 1)  # Efficacy dataset
 
   # define study-specific analysis subgroups and baskets from ADAE
   .add_event_flags <- function(dat) {
