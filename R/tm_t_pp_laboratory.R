@@ -87,7 +87,7 @@ template_laboratory <- function(dataname = "ANL",
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
         )
-        main_title(table_listing) <- paste("Patient ID:", patient_id)
+        rtables::main_title(table_listing) <- paste("Patient ID:", patient_id)
 
         table <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
