@@ -275,7 +275,7 @@ template_smq <- function(dataname,
       expr = {
         sorted_result <- result %>%
           rtables::sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-          rtables::sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
+          rtables::sort_at_path(path = c("SMQ", "*", llt), scorefun = tern::score_occurrences, na.pos = "last")
       },
       env = list(llt = llt)
     )

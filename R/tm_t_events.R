@@ -378,9 +378,9 @@ template_events <- function(dataname,
       quote(cont_n_allcols)
     }
     scorefun_llt <- if (add_total) {
-      quote(score_occurrences_cols(col_indices = idx_split_col))
+      quote(tern::score_occurrences_cols(col_indices = idx_split_col))
     } else {
-      quote(score_occurrences)
+      quote(tern::score_occurrences)
     }
 
     if (one_term) {
