@@ -80,14 +80,14 @@ template_laboratory <- function(dataname = "ANL",
           )
         colnames(result)[-c(1:3)] <- unique(labor_table_base$INDEX)
 
-        result[[param_char]] <- teal.modules.clinical::clean_description(result[[param_char]])
+        result[[param_char]] <- clean_description(result[[param_char]])
 
         table_listing <- rlistings::as_listing(
           result,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
         )
-        rtables::main_title(table_listing) <- paste("Patient ID:", patient_id)
+        main_title(table_listing) <- paste("Patient ID:", patient_id)
 
         table <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
@@ -100,7 +100,7 @@ template_laboratory <- function(dataname = "ANL",
             timevar = "INDEX"
           )
         colnames(table)[-c(1:3)] <- unique(labor_table_base$INDEX)
-        table[[param_char]] <- teal.modules.clinical::clean_description(table[[param_char]])
+        table[[param_char]] <- clean_description(table[[param_char]])
 
         table <- DT::datatable(
           table,
