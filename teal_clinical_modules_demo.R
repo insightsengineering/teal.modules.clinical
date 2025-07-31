@@ -12,9 +12,9 @@ data <- within(data, {
   library(sparkline)
 
   # Generate CDISC ADaM datasets
-  ADSL <- cadsl(seed = 1)
-  ADAE <- cadae(ADSL, seed = 1)
-  ADAETTE <- cadaette(ADSL, seed = 1)
+  ADSL <- cadsl
+  ADAE <- cadae
+  ADAETTE <- cadaette
   ADAETTE <- ADAETTE %>%
     mutate(is_event = case_when(
       grepl("TOT", .data$PARAMCD, fixed = TRUE) ~ TRUE,
@@ -36,7 +36,7 @@ data <- within(data, {
   .ADAETTE_AE <- full_join(.ADAETTE_AE, .ADAETTE_TTE, by = c("USUBJID", "ARM", "ARMCD"))
   ADAETTE <- rbind(.ADAETTE_AE, .ADAETTE_OTH)
 
-  ADEX <- cadex(ADSL, seed = 1)
+  ADEX <- cadex
   .ADEX_labels <- teal.data::col_labels(ADEX, fill = FALSE)
   # Below steps are done to simulate data with TDURD parameter as it is not in the ADEX data from `random.cdisc.data` package
   set.seed(1, kind = "Mersenne-Twister")
@@ -59,11 +59,11 @@ data <- within(data, {
       PARAMCD %in% c("TDOSE", "TNDOSE", "TDURD"))
   teal.data::col_labels(ADEX) <- .ADEX_labels
 
-  ADLB <- cadlb(ADSL, seed = 1)
-  ADEG <- cadeg(ADSL, seed = 1)
+  ADLB <- cadlb
+  ADEG <- cadeg
 
   # For real data, ADVS needs some preprocessing like group different ANRIND and BNRIND into abnormal
-  ADVS <- cadvs(ADSL, seed = 1) %>%
+  ADVS <- cadvs %>%
     mutate(ONTRTFL = ifelse(AVISIT %in% c("SCREENING", "BASELINE"), "", "Y")) %>%
     teal.data::col_relabel(ONTRTFL = "On Treatment Record Flag") %>%
     mutate(ANRIND = as.character(ANRIND), BNRIND = as.character(BNRIND)) %>%
@@ -80,17 +80,17 @@ data <- within(data, {
       )
     )
 
-  ADCM <- cadcm(ADSL, seed = 1) %>% mutate(CMSEQ = as.integer(CMSEQ))
+  ADCM <- cadcm %>% mutate(CMSEQ = as.integer(CMSEQ))
 
   # Create additional datasets for patient profiles and statistical analysis
-  ADMH <- cadmh(ADSL, seed = 1)  # Medical history
-  ADPM <- cadpm(ADSL, seed = 1)  # Prior medication
+  ADMH <- cadmh  # Medical history
+  #ADPM <- cadpm  # Prior medication
   
   # Create response dataset for statistical analysis
-  ADRS <- cadrs(ADSL, seed = 1)  # Response dataset
+  ADRS <- cadrs  # Response dataset
   
   # Create efficacy dataset
-  ADEF <- cadef(ADSL, seed = 1)  # Efficacy dataset
+  #ADEF <- cadef  # Efficacy dataset
 
   # define study-specific analysis subgroups and baskets from ADAE
   .add_event_flags <- function(dat) {
@@ -117,7 +117,8 @@ data <- within(data, {
     .add_event_flags()
 })
 
-join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADAE", "ADAETTE", "ADEX", "ADLB", "ADEG", "ADVS", "ADCM", "ADMH", "ADPM", "ADRS", "ADEF")]
+join_keys(data) <- default_cdisc_join_keys[c("ADSL", "ADAE", "ADAETTE", "ADEX", "ADLB", "ADEG", "ADVS", "ADCM", "ADMH",# "ADPM",
+ "ADRS")]# "ADEF")]
 
 ## App configuration ----
 ADSL <- data[["ADSL"]]
@@ -129,9 +130,9 @@ ADEG <- data[["ADEG"]]
 ADVS <- data[["ADVS"]]
 ADCM <- data[["ADCM"]]
 ADMH <- data[["ADMH"]]
-ADPM <- data[["ADPM"]]
+#ADPM <- data[["ADPM"]]
 ADRS <- data[["ADRS"]]
-ADEF <- data[["ADEF"]]
+#ADEF <- data[["ADEF"]]
 
 arm_vars <- c("ACTARMCD", "ACTARM")
 
@@ -565,17 +566,17 @@ app <- teal::init(
           fixed = TRUE
         ),
         arm_var = cs_arm_var
-      ),
-      tm_t_pp_prior_medication(
-        label = "Patient Profile - Prior Medication",
-        dataname = "ADPM",
-        patient_id = choices_selected(
-          choices = variable_choices(ADSL, subset = "USUBJID"),
-          selected = "USUBJID",
-          fixed = TRUE
-        ),
-        arm_var = cs_arm_var
-      )
+      )#,
+    #  tm_t_pp_prior_medication(
+    #    label = "Patient Profile - Prior Medication",
+    #    dataname = "ADPM",
+    #    patient_id = choices_selected(
+    #      choices = variable_choices(ADSL, subset = "USUBJID"),
+    #      selected = "USUBJID",
+    #      fixed = TRUE
+    #    ),
+    #    arm_var = cs_arm_var
+    #  )
     ),
     
     # Statistical Analysis section
