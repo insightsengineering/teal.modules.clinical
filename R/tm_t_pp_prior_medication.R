@@ -32,7 +32,7 @@ template_prior_medication <- function(dataname = "ANL",
         dplyr::select(cmindc, cmdecod, cmstdy) %>%
         dplyr::filter(!is.na(cmdecod)) %>%
         dplyr::distinct() %>%
-        `colnames<-`(teal.data::col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char, cmstdy_char)])
+        `colnames<-`(col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char, cmstdy_char)])
 
       table_listing <- result %>%
         dplyr::mutate( # Exception for columns of type difftime that is not supported by as_listing
