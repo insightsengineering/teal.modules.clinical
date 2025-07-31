@@ -208,7 +208,7 @@ template_smq <- function(dataname,
         "SMQ",
         child_labels = "visible",
         nested = FALSE,
-        split_fun = trim_levels_in_group(llt, drop_outlevs = FALSE),
+        split_fun = rtables::trim_levels_in_group(llt, drop_outlevs = FALSE),
         indent_mod = -1L,
         label_pos = "topleft",
         split_label = split_label
