@@ -82,8 +82,8 @@ template_g_ci <- function(dataname,
         ),
         env = list(
           fun = switch(stat,
-            mean = substitute(stat_mean_ci),
-            median = substitute(stat_median_ci)
+            mean = substitute(tern::stat_mean_ci),
+            median = substitute(tern::stat_median_ci)
           )
         )
       )
@@ -101,11 +101,11 @@ template_g_ci <- function(dataname,
         env = list(
           fun = switch(stat,
             mean = substitute(
-              expr = function(x) stat_mean_ci(x, conf_level = conf_level),
+              expr = function(x) tern::stat_mean_ci(x, conf_level = conf_level),
               env = list(conf_level = conf_level)
             ),
             median = substitute(
-              expr = function(x) stat_median_ci(x, conf_level = conf_level),
+              expr = function(x) tern::stat_median_ci(x, conf_level = conf_level),
               env = list(conf_level = conf_level)
             )
           )
