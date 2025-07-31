@@ -141,7 +141,7 @@ template_forest_tte <- function(dataname = "ANL",
           subgroups = subgroup_var,
           strata = strata_var
         ),
-        control = control_coxph(conf_level = conf_level),
+        control = tern::control_coxph(conf_level = conf_level),
         data = anl
       ),
       env = list(
