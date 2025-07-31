@@ -917,55 +917,71 @@ app <- teal::init(
           selected = "CNSR",
           fixed = TRUE
         ),
-        plot_height = c(1000L, 200L, 4000L)
-      ),
-      tm_g_ipp(
-        label = "Individual Patient Plots",
-        dataname = "ADLB",
-        arm_var = cs_arm_var,
-        paramcd = choices_selected(
-          choices = value_choices(ADLB, "PARAMCD", "PARAM"),
-          selected = "ALT"
+        subgroup_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+          selected = NULL
         ),
-        aval_var = choices_selected(
-          choices = variable_choices(ADLB, subset = "AVAL"),
-          selected = "AVAL",
-          fixed = TRUE
-        ),
-        id_var = choices_selected(
-          choices = variable_choices(ADSL, subset = "USUBJID"),
-          selected = "USUBJID",
-          fixed = TRUE
+        strata_var = choices_selected(
+          choices = variable_choices(ADSL, subset = c("SEX", "RACE")),
+          selected = NULL
         ),
         plot_height = c(1000L, 200L, 4000L)
       ),
+      #tm_g_ipp(
+      #  label = "Individual Patient Plots",
+      #  dataname = "ADLB",
+      #  arm_var = cs_arm_var,
+      #  paramcd = choices_selected(
+      #    choices = value_choices(ADLB, "PARAMCD", "PARAM"),
+      #    selected = "ALT"
+      #  ),
+      #  aval_var = choices_selected(
+      #    choices = variable_choices(ADLB, subset = "AVAL"),
+      #    selected = "AVAL",
+      #    fixed = TRUE
+      #  ),
+      #  id_var = choices_selected(
+      #    choices = variable_choices(ADSL, subset = "USUBJID"),
+      #    selected = "USUBJID",
+      #    fixed = TRUE
+      #  ),
+      #  plot_height = c(1000L, 200L, 4000L)
+      #),
       tm_g_pp_adverse_events(
         label = "Patient Profile - Adverse Events Plots",
         dataname = "ADAE",
         patient_col = "USUBJID",
-        arm_var = cs_arm_var,
         plot_height = c(1000L, 200L, 4000L)
       ),
-      tm_g_pp_patient_timeline(
-        label = "Patient Profile - Timeline Plots",
-        dataname_adcm = "ADCM",
-        dataname_adae = "ADAE",
-        patient_col = "USUBJID",
-        arm_var = cs_arm_var,
-        plot_height = c(1000L, 200L, 4000L)
-      ),
+      #tm_g_pp_patient_timeline(
+      #  label = "Patient Profile - Timeline Plots",
+      #  dataname_adcm = "ADCM",
+      #  dataname_adae = "ADAE",
+      #  patient_col = "USUBJID",
+      #  aeterm = choices_selected(
+      #    choices = variable_choices(ADAE, subset = "AETERM"),
+      #    selected = "AETERM"
+      #  ),
+      #  aerelday_start = choices_selected(
+      #    choices = variable_choices(ADAE, subset = "AERELDAY"),
+      #    selected = "AERELDAY"
+      #  ),
+      #  aerelday_end = choices_selected(
+      #    choices = variable_choices(ADAE, subset = "AERELDAY"),
+      #    selected = "AERELDAY"
+      #  ),
+      #  plot_height = c(1000L, 200L, 4000L)
+      #),
       tm_g_pp_therapy(
         label = "Patient Profile - Therapy Plots",
         dataname = "ADEX",
         patient_col = "USUBJID",
-        arm_var = cs_arm_var,
         plot_height = c(1000L, 200L, 4000L)
       ),
       tm_g_pp_vitals(
         label = "Patient Profile - Vital Signs Plots",
         dataname = "ADVS",
-        patient_col = "USUBJID",
-        arm_var = cs_arm_var,
+        patient_col = "USUBJID", 
         plot_height = c(1000L, 200L, 4000L)
       )
     )
