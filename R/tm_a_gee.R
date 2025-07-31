@@ -70,8 +70,8 @@ template_a_gee <- function(output_table,
         substitute(
           expr = {
             table <- tern.gee::as.rtable(model_fit, type = "cov")
-            subtitles(table) <- st
-            main_footer(table) <- mf
+            rtables::subtitles(table) <- st
+            rtables::main_footer(table) <- mf
           },
           env = list(
             st = basic_table_args$subtitles,
@@ -82,8 +82,8 @@ template_a_gee <- function(output_table,
         substitute(
           expr = {
             table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
-            subtitles(table) <- st
-            main_footer(table) <- mf
+            rtables::subtitles(table) <- st
+            rtables::main_footer(table) <- mf
           },
           env = list(
             conf_level = conf_level,
