@@ -473,10 +473,10 @@ srv_g_ci <- function(id,
         )
       )
 
-      x_label <- column_annotation_label(data()[[attr(x, "dataname")]], x)
-      y_label <- column_annotation_label(data()[[attr(y, "dataname")]], y)
+      x_label <- teal.modules.clinical::column_annotation_label(data()[[attr(x, "dataname")]], x)
+      y_label <- teal.modules.clinical::column_annotation_label(data()[[attr(y, "dataname")]], y)
       color_label <- if (length(color)) {
-        column_annotation_label(data()[[attr(color, "dataname")]], color)
+        teal.modules.clinical::column_annotation_label(data()[[attr(color, "dataname")]], color)
       } else {
         NULL
       }
