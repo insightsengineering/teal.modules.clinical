@@ -753,7 +753,11 @@ make_barchart_simple_call <- function(y_name,
   # add legend for fill
   if (!is.null(fill_name)) {
     plot_args <- c(plot_args, bquote(
-      ggplot2::guides(fill = ggplot2::guide_legend(title = teal.modules.clinical::column_annotation_label(counts, .(fill_name))))
+      ggplot2::guides(
+        fill = ggplot2::guide_legend(
+          title = teal.modules.clinical::column_annotation_label(counts, .(fill_name))
+        )
+      )
     ))
   }
 
