@@ -24,7 +24,7 @@ expr1 <- substitute(
   expr = anl <- subset(df, PARAMCD == param),
   env = list(df = as.name("adrs"), param = "INVET")
 )
-expr2 <- substitute(expr = anl$rsp_lab <- d_onco_rsp_label(anl$AVALC))
+expr2 <- substitute(expr = anl$rsp_lab <- tern::d_onco_rsp_label(anl$AVALC))
 expr3 <- substitute(
   expr = {
     anl$is_rsp <- anl$rsp_lab \%in\%
