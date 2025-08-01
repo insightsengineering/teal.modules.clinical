@@ -678,6 +678,7 @@ ui_mmrm <- function(id, ...) {
       encoding = tags$div(
         ### Reporter
         teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
+        tags$br(), tags$br(),
         ###
         tags$label("Encodings", class = "text-primary"), tags$br(),
         teal.transform::datanames_input(a[c("arm_var", "paramcd", "id_var", "visit_var", "cov_var", "aval_var")]),

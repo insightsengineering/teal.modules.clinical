@@ -616,6 +616,7 @@ ui_t_coxreg <- function(id, ...) {
     encoding = tags$div(
       ### Reporter
       teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
+      tags$br(), tags$br(),
       ###
       radioButtons(
         ns("type"),
