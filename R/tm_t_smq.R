@@ -77,7 +77,7 @@ template_smq <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      anl <- h_stack_by_baskets(
+      anl <- tern::h_stack_by_baskets(
         df = dataname,
         baskets = baskets,
         smq_varlabel = smq_varlabel,

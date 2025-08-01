@@ -85,7 +85,7 @@ template_laboratory <- function(dataname = "ANL",
         table_listing <- rlistings::as_listing(
           result,
           key_cols = NULL,
-          default_formatting = list(all = fmt_config(align = "left"))
+          default_formatting = list(all = formatters::fmt_config(align = "left"))
         )
         rtables::main_title(table_listing) <- paste("Patient ID:", patient_id)
 
