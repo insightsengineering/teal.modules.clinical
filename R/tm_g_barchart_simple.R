@@ -240,13 +240,10 @@ ui_g_barchart_simple <- function(id, ...) {
   is_single_dataset_value <- teal.transform::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
 
   tagList(
-    singleton(
-      tags$head(includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
-    ),
     teal.widgets::standard_layout(
       output = teal.widgets::white_small_well(
         teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-        uiOutput(ns("table"), class = "overflow-y-scroll max-h-250")
+        uiOutput(ns("table"), style = "overflow-y: scroll; max-height: 250px;")
       ),
       encoding = tags$div(
         ### Reporter

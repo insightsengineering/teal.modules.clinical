@@ -668,9 +668,6 @@ ui_mmrm <- function(id, ...) {
   )
 
   tagList(
-    singleton(
-      tags$head(includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
-    ),
     teal.widgets::standard_layout(
       output = teal.widgets::white_small_well(
         textOutput(ns("null_input_msg")),
@@ -787,7 +784,8 @@ ui_mmrm <- function(id, ...) {
           "Fit Model",
           icon = icon("calculator"),
           width = "100%",
-          class = "btn action-button text-dark bg-orange mb-4"
+          class = "btn action-button",
+          style = "background-color: orange; color: black; margin-bottom: 1rem;"
         ),
         radioButtons(
           ns("output_function"),
