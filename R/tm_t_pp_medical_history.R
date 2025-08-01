@@ -36,7 +36,7 @@ template_medical_history <- function(dataname = "ANL",
         dplyr::select(mhbodsys, mhterm, mhdistat) %>%
         dplyr::arrange(mhbodsys) %>%
         dplyr::mutate_if(is.character, as.factor) %>%
-        dplyr::mutate_if(is.factor, function(x) tern::explicit_na(x, "UNKNOWN")) %>%
+        dplyr::mutate_if(is.factor, function(x) explicit_na(x, "UNKNOWN")) %>%
         dplyr::distinct() %>%
         `colnames<-`(labels)
 
@@ -54,7 +54,7 @@ template_medical_history <- function(dataname = "ANL",
         rtables::analyze_colvars(function(x) x[seq_along(x)]) %>%
         rtables::build_table(result_raw)
 
-      rtables::main_title(table) <- paste("Patient ID:", patient_id)
+      main_title(table) <- paste("Patient ID:", patient_id)
     }, env = list(
       dataname = as.name(dataname),
       mhbodsys = as.name(mhbodsys),
