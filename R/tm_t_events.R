@@ -365,7 +365,7 @@ template_events <- function(dataname,
       sort_list <- add_expr(
         sort_list,
         substitute(
-          expr = idx_split_col <- which(sapply(col_paths(table), tail, 1) == sort_freq_col),
+          expr = idx_split_col <- which(sapply(rtables::col_paths(table), tail, 1) == sort_freq_col),
           env = list(sort_freq_col = sort_freq_col)
         )
       )
@@ -373,14 +373,14 @@ template_events <- function(dataname,
 
     # When the "All Patients" column is present we only use that for scoring.
     scorefun_hlt <- if (add_total) {
-      quote(cont_n_onecol(idx_split_col))
+      quote(rtables::cont_n_onecol(idx_split_col))
     } else {
-      quote(cont_n_allcols)
+      quote(rtables::cont_n_allcols)
     }
     scorefun_llt <- if (add_total) {
-      quote(score_occurrences_cols(col_indices = idx_split_col))
+      quote(tern::score_occurrences_cols(col_indices = idx_split_col))
     } else {
-      quote(score_occurrences)
+      quote(tern::score_occurrences)
     }
 
     if (one_term) {

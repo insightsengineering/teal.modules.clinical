@@ -71,7 +71,7 @@ template_forest_tte <- function(dataname = "ANL",
     anl_list,
     substitute_names(
       expr = {
-        dplyr::mutate(arm_var = combine_levels(arm_var, comp_arm)) %>%
+        dplyr::mutate(arm_var = tern::combine_levels(arm_var, comp_arm)) %>%
           dplyr::mutate(is_event = cnsr_var == 0)
       },
       names = list(arm_var = as.name(arm_var)),
@@ -106,7 +106,7 @@ template_forest_tte <- function(dataname = "ANL",
   parent_list <- add_expr(
     parent_list,
     substitute_names(
-      expr = dplyr::mutate(arm_var = combine_levels(arm_var, comp_arm)),
+      expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(
         ref_arm = ref_arm,
@@ -141,7 +141,7 @@ template_forest_tte <- function(dataname = "ANL",
           subgroups = subgroup_var,
           strata = strata_var
         ),
-        control = control_coxph(conf_level = conf_level),
+        control = tern::control_coxph(conf_level = conf_level),
         data = anl
       ),
       env = list(

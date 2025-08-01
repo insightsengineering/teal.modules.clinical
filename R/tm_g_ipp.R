@@ -100,7 +100,7 @@ template_g_ipp <- function(dataname = "ANL",
     graph_list,
     substitute(
       expr = {
-        plot <- h_g_ipp(
+        plot <- tern::h_g_ipp(
           df = anl,
           xvar = visit,
           yvar = aval,

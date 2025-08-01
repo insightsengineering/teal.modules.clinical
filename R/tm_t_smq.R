@@ -208,7 +208,7 @@ template_smq <- function(dataname,
         "SMQ",
         child_labels = "visible",
         nested = FALSE,
-        split_fun = trim_levels_in_group(llt, drop_outlevs = FALSE),
+        split_fun = rtables::trim_levels_in_group(llt, drop_outlevs = FALSE),
         indent_mod = -1L,
         label_pos = "topleft",
         split_label = split_label
@@ -275,7 +275,7 @@ template_smq <- function(dataname,
       expr = {
         sorted_result <- result %>%
           rtables::sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-          rtables::sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
+          rtables::sort_at_path(path = c("SMQ", "*", llt), scorefun = tern::score_occurrences, na.pos = "last")
       },
       env = list(llt = llt)
     )

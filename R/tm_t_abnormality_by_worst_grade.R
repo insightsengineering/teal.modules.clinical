@@ -201,7 +201,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
           split_fun = rtables::trim_levels_to_map(map = map),
           split_label = rtables::obj_label(anl$GRADE_DIR)
         ) %>%
-        count_abnormal_by_worst_grade(
+        tern::count_abnormal_by_worst_grade(
           var = "GRADE_ANL",
           variables = list(id = id_var, param = paramcd, grade_dir = "GRADE_DIR"),
           .indent_mods = 4L

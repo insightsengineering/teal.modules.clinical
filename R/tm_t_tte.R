@@ -26,9 +26,9 @@ control_tte <- function(
       conf_type = c("plain", "none", "log", "log-log")
     )) {
   list(
-    surv_time = do.call("control_surv_time", surv_time),
-    coxph = do.call("control_coxph", coxph),
-    surv_timepoint = do.call("control_surv_timepoint", surv_timepoint)
+    surv_time = do.call("control_surv_time", surv_time, envir = getNamespace("tern")),
+    coxph = do.call("control_coxph", coxph, envir = getNamespace("tern")),
+    surv_timepoint = do.call("control_surv_timepoint", surv_timepoint, envir = getNamespace("tern"))
   )
 }
 
@@ -297,7 +297,7 @@ template_tte <- function(dataname = "ANL",
           is_event = "is_event",
           var_labels = paste0("Stratified By: ", paste(strata_var, collapse = ", ")),
           strata = strata_var,
-          control = control_coxph(
+          control = tern::control_coxph(
             pval_method = pval_method,
             ties = ties,
             conf_level = conf_level
@@ -955,7 +955,7 @@ srv_t_tte <- function(id,
         time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
         event_desc_var = as.vector(anl_m$columns_source$event_desc_var),
         control = control_tte(
-          coxph = control_coxph(
+          coxph = tern::control_coxph(
             pval_method = input$pval_method_coxph,
             ties = input$ties_coxph,
             conf_level = as.numeric(input$conf_level_coxph)

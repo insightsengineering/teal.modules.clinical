@@ -50,9 +50,8 @@
 #'
 #' @examples
 #' data <- within(teal_data(), {
-#'   library("tern")
-#'   ADSL <- tern_ex_adsl
-#'   ADTTE <- tern_ex_adtte
+#'   ADSL <- tern::tern_ex_adsl
+#'   ADTTE <- tern::tern_ex_adtte
 #' })
 #'
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]

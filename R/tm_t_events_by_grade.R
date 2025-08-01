@@ -106,7 +106,7 @@ template_events_by_grade <- function(dataname,
 
   y$data <- bracket_expr(data_list)
 
-  y$layout_prep <- quote(split_fun <- trim_levels_in_group)
+  y$layout_prep <- quote(split_fun <- rtables::trim_levels_in_group)
 
   layout_list <- list()
 
@@ -314,7 +314,7 @@ template_events_by_grade <- function(dataname,
   sort_list <- list()
   scorefun <- if (add_total) {
     substitute(
-      expr = cont_n_onecol(length(levels(parent$arm_var)) + 1),
+      expr = rtables::cont_n_onecol(length(levels(parent$arm_var)) + 1),
       env = list(
         parent = as.name(parentname),
         arm_var = as.name(arm_var)
@@ -569,7 +569,7 @@ template_events_col_by_grade <- function(dataname,
           hlt,
           child_labels = "visible",
           nested = FALSE,
-          split_fun = trim_levels_in_group(llt)
+          split_fun = rtables::trim_levels_in_group(llt)
         ),
         env = list(hlt = hlt, llt = llt)
       )
