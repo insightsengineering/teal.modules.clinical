@@ -5,7 +5,7 @@
     Output
       {
           plot <- ggplot2::ggplot(data = ANL, mapping = ggplot2::aes(x = ARMCD, 
-              y = AVAL, color = SEX, lty = SEX, shape = SEX)) + ggplot2::stat_summary(fun.data = stat_mean_ci, 
+              y = AVAL, color = SEX, lty = SEX, shape = SEX)) + ggplot2::stat_summary(fun.data = tern::stat_mean_ci, 
               geom = "errorbar", width = 0.1, position = ggplot2::position_dodge(width = 0.5)) + 
               ggplot2::stat_summary(fun = mean, geom = "point", position = ggplot2::position_dodge(width = 0.5)) + 
               ggplot2::labs(title = "Confidence Interval Plot by Treatment Group", 
@@ -22,8 +22,8 @@
       {
           plot <- ggplot2::ggplot(data = ANL, mapping = ggplot2::aes(x = ARMCD, 
               y = AVAL, color = STRATA2, lty = STRATA2, shape = STRATA2)) + 
-              ggplot2::stat_summary(fun.data = stat_mean_ci, geom = "errorbar", 
-                  width = 0.1, position = ggplot2::position_dodge(width = 0.5)) + 
+              ggplot2::stat_summary(fun.data = tern::stat_mean_ci, 
+                  geom = "errorbar", width = 0.1, position = ggplot2::position_dodge(width = 0.5)) + 
               ggplot2::stat_summary(fun = mean, geom = "point", position = ggplot2::position_dodge(width = 0.5)) + 
               ggplot2::labs(title = "Confidence Interval Plot by Treatment Group", 
                   caption = "Mean and 95% CIs for mean are displayed.", 
@@ -39,8 +39,8 @@
       {
           plot <- ggplot2::ggplot(data = ANL, mapping = ggplot2::aes(x = ARMCD, 
               y = AVAL, color = STRATA1, lty = STRATA1, shape = STRATA1)) + 
-              ggplot2::stat_summary(fun.data = stat_median_ci, geom = "errorbar", 
-                  width = 0.1, position = ggplot2::position_dodge(width = 0.5)) + 
+              ggplot2::stat_summary(fun.data = tern::stat_median_ci, 
+                  geom = "errorbar", width = 0.1, position = ggplot2::position_dodge(width = 0.5)) + 
               ggplot2::stat_summary(fun = median, geom = "point", position = ggplot2::position_dodge(width = 0.5)) + 
               ggplot2::labs(title = "Confidence Interval Plot by Treatment Group", 
                   caption = "Median and 95% CIs for median are displayed.", 
@@ -55,7 +55,7 @@
     Output
       {
           plot <- ggplot2::ggplot(data = ANL, mapping = ggplot2::aes(x = ARMCD, 
-              y = AVAL, color = SEX, lty = SEX, shape = SEX)) + ggplot2::stat_summary(fun.data = function(x) stat_mean_ci(x, 
+              y = AVAL, color = SEX, lty = SEX, shape = SEX)) + ggplot2::stat_summary(fun.data = function(x) tern::stat_mean_ci(x, 
               conf_level = 0.9), geom = "errorbar", width = 0.1, position = ggplot2::position_dodge(width = 0.5)) + 
               ggplot2::stat_summary(fun = mean, geom = "point", position = ggplot2::position_dodge(width = 0.5)) + 
               ggplot2::labs(title = "Confidence Interval Plot by Treatment Group", 

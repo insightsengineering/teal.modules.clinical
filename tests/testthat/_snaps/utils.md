@@ -72,7 +72,7 @@
       res
     Output
       adrs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>% 
-          dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", 
+          dplyr::mutate(ARMCD = tern::combine_levels(ARMCD, levels = c("ARM A", 
               "ARM B"), new_level = "ARM A/ARM B")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
           ref = "ARM A/ARM B")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
 
@@ -82,7 +82,7 @@
       res
     Output
       adrs %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", "ARM C")) %>% 
-          dplyr::mutate(ARMCD = combine_levels(ARMCD, levels = c("ARM A", 
+          dplyr::mutate(ARMCD = tern::combine_levels(ARMCD, levels = c("ARM A", 
               "ARM B"), new_level = "Control")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
           ref = "Control")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
 

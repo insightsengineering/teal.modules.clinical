@@ -16,7 +16,7 @@ template_shift_by_arm(
   base_var = lifecycle::deprecated(),
   baseline_var = "BNRIND",
   na.rm = FALSE,
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   add_total = FALSE,
   total_label = default_total_label(),
   basic_table_args = teal.widgets::basic_table_args()

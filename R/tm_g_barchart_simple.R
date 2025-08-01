@@ -222,6 +222,7 @@ tm_g_barchart_simple <- function(x = NULL,
       fill = fill,
       x_facet = x_facet,
       y_facet = y_facet,
+      label = label,
       plot_height = plot_height,
       plot_width = plot_width,
       ggplot2_args = ggplot2_args,
@@ -351,13 +352,13 @@ ui_g_barchart_simple <- function(id, ...) {
             )
           )
         )
-      )
-    ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
-    pre_output = args$pre_output,
-    post_output = args$post_output
+      ),
+      forms = tagList(
+        teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+      ),
+      pre_output = args$pre_output,
+      post_output = args$post_output
+    )
   )
 }
 
@@ -370,6 +371,7 @@ srv_g_barchart_simple <- function(id,
                                   fill,
                                   x_facet,
                                   y_facet,
+                                  label,
                                   plot_height,
                                   plot_width,
                                   ggplot2_args,
@@ -499,7 +501,7 @@ srv_g_barchart_simple <- function(id,
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
       y_lab <- substitute(
-        column_annotation_label(counts, y_name),
+        teal.modules.clinical::column_annotation_label(counts, y_name),
         list(y_name = get_n_name(groupby_vars))
       )
 
@@ -593,7 +595,7 @@ srv_g_barchart_simple <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,
-      title = "Bar Chart"
+      title = label
     )
 
     ### REPORTER
@@ -751,7 +753,11 @@ make_barchart_simple_call <- function(y_name,
   # add legend for fill
   if (!is.null(fill_name)) {
     plot_args <- c(plot_args, bquote(
-      ggplot2::guides(fill = ggplot2::guide_legend(title = column_annotation_label(counts, .(fill_name))))
+      ggplot2::guides(
+        fill = ggplot2::guide_legend(
+          title = teal.modules.clinical::column_annotation_label(counts, .(fill_name))
+        )
+      )
     ))
   }
 

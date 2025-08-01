@@ -82,8 +82,8 @@ template_g_ci <- function(dataname,
         ),
         env = list(
           fun = switch(stat,
-            mean = substitute(stat_mean_ci),
-            median = substitute(stat_median_ci)
+            mean = substitute(tern::stat_mean_ci),
+            median = substitute(tern::stat_median_ci)
           )
         )
       )
@@ -101,11 +101,11 @@ template_g_ci <- function(dataname,
         env = list(
           fun = switch(stat,
             mean = substitute(
-              expr = function(x) stat_mean_ci(x, conf_level = conf_level),
+              expr = function(x) tern::stat_mean_ci(x, conf_level = conf_level),
               env = list(conf_level = conf_level)
             ),
             median = substitute(
-              expr = function(x) stat_median_ci(x, conf_level = conf_level),
+              expr = function(x) tern::stat_median_ci(x, conf_level = conf_level),
               env = list(conf_level = conf_level)
             )
           )
@@ -473,10 +473,10 @@ srv_g_ci <- function(id,
         )
       )
 
-      x_label <- column_annotation_label(data()[[attr(x, "dataname")]], x)
-      y_label <- column_annotation_label(data()[[attr(y, "dataname")]], y)
+      x_label <- teal.modules.clinical::column_annotation_label(data()[[attr(x, "dataname")]], x)
+      y_label <- teal.modules.clinical::column_annotation_label(data()[[attr(y, "dataname")]], y)
       color_label <- if (length(color)) {
-        column_annotation_label(data()[[attr(color, "dataname")]], color)
+        teal.modules.clinical::column_annotation_label(data()[[attr(color, "dataname")]], color)
       } else {
         NULL
       }

@@ -94,7 +94,7 @@ template_forest_rsp <- function(dataname = "ANL",
   anl_list <- add_expr(
     anl_list,
     substitute_names(
-      expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+      expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(comp_arm = comp_arm)
     )
@@ -125,7 +125,7 @@ template_forest_rsp <- function(dataname = "ANL",
   parent_list <- add_expr(
     parent_list,
     substitute_names(
-      expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm)),
+      expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(comp_arm = comp_arm)
     )
@@ -149,7 +149,7 @@ template_forest_rsp <- function(dataname = "ANL",
   summary_list <- add_expr(
     summary_list,
     substitute(
-      expr = df <- extract_rsp_subgroups(
+      expr = df <- tern::extract_rsp_subgroups(
         variables = list(
           rsp = "is_rsp", arm = arm_var, subgroups = subgroup_var, strata = strata_var
         ),
@@ -171,7 +171,7 @@ template_forest_rsp <- function(dataname = "ANL",
   # Table output.
   y$table <- substitute(
     expr = result <- rtables::basic_table() %>%
-      tabulate_rsp_subgroups(df, vars = stats, riskdiff = riskdiff),
+      tern::tabulate_rsp_subgroups(df, vars = stats, riskdiff = riskdiff),
     env = list(stats = stats, riskdiff = riskdiff)
   )
 
@@ -191,7 +191,7 @@ template_forest_rsp <- function(dataname = "ANL",
     plot_list,
     substitute(
       expr = {
-        f <- g_forest(
+        f <- tern::g_forest(
           tbl = result,
           col_symbol_size = col_s_size,
           font_size = font_size,

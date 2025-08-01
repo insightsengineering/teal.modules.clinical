@@ -6,11 +6,11 @@
       $data
       {
           anl <- adex
-          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          anl <- tern::df_explicit_na(anl, na_level = "<Missing>")
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "* Patient time is the sum of TDURD") %>% 
@@ -21,7 +21,7 @@
                   "TDURD"), paste("Sum of", "TDURD", sprintf("(%s)", 
                   "Days")))), custom_label = "Total number of patients and patient time*") %>% 
           analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE, 
-              na_str = "<Missing>") %>% append_topleft(c(teal.data::col_labels(adex["RACE"], 
+              na_str = "<Missing>") %>% rtables::append_topleft(c(teal.data::col_labels(adex["RACE"], 
           fill = TRUE)))
       
       $table
@@ -39,11 +39,11 @@
       $data
       {
           anl <- myadex
-          anl <- df_explicit_na(anl, na_level = "<myMissing>")
+          anl <- tern::df_explicit_na(anl, na_level = "<myMissing>")
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "* Patient time is the sum of myTDURD") %>% 
@@ -54,7 +54,7 @@
                   "myTDURD"), paste("Sum of", "myTDURD", sprintf("(%s)", 
                   "Days")))), custom_label = "Total number of patients and patient time*") %>% 
           analyze_patients_exposure_in_cols(var = "myRACE", col_split = FALSE, 
-              na_str = "<myMissing>") %>% append_topleft(c(teal.data::col_labels(myadex["myRACE"], 
+              na_str = "<myMissing>") %>% rtables::append_topleft(c(teal.data::col_labels(myadex["myRACE"], 
           fill = TRUE)))
       
       $table
@@ -72,11 +72,11 @@
       $data
       {
           anl <- adex
-          anl <- df_explicit_na(anl, na_level = "<Missing>")
+          anl <- tern::df_explicit_na(anl, na_level = "<Missing>")
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "* Patient time is the sum of Total Duration (Days)") %>% 
@@ -87,7 +87,7 @@
                   "TDURD"), paste("Sum of", "TDURD", sprintf("(%s)", 
                   "Days")))), custom_label = "Total number of patients and patient time*") %>% 
           analyze_patients_exposure_in_cols(var = "RACE", col_split = FALSE, 
-              na_str = "<Missing>") %>% append_topleft(c(teal.data::col_labels(adex["RACE"], 
+              na_str = "<Missing>") %>% rtables::append_topleft(c(teal.data::col_labels(adex["RACE"], 
           fill = TRUE)))
       
       $table

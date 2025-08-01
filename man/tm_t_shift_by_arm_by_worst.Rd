@@ -20,7 +20,7 @@ tm_t_shift_by_arm_by_worst(
     teal.transform::variable_choices(dataname, subset = "ONTRTFL"), selected = "ONTRTFL"),
   treatment_flag = teal.transform::choices_selected("Y"),
   useNA = c("ifany", "no"),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   add_total = FALSE,
   total_label = default_total_label(),
   pre_output = NULL,

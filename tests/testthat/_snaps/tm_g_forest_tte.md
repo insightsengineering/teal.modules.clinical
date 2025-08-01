@@ -19,7 +19,7 @@
       
       $summary
       {
-          df <- extract_survival_subgroups(variables = list(tte = "AVAL", 
+          df <- tern::extract_survival_subgroups(variables = list(tte = "AVAL", 
               is_event = "is_event", arm = "ARMCD", subgroups = c("SEX", 
                   "BMRKR2"), strata = "STRATA2"), control = control_coxph(conf_level = 0.9), 
               data = anl)
@@ -27,14 +27,14 @@
       
       $table
       {
-          result <- rtables::basic_table() %>% tabulate_survival_subgroups(df, 
+          result <- rtables::basic_table() %>% tern::tabulate_survival_subgroups(df, 
               vars = c("n_tot_events", "n_events", "median", "hr", 
               "ci"), time_unit = as.character(anl$AVALU[1]), riskdiff = NULL)
       }
       
       $plot
       $plot[[1]]
-      f <- g_forest(tbl = result, col_symbol_size = NULL, font_size = 15, 
+      f <- tern::g_forest(tbl = result, col_symbol_size = NULL, font_size = 15, 
           as_list = TRUE)
       
       $plot[[2]]
@@ -67,7 +67,7 @@
       
       $summary
       {
-          df <- extract_survival_subgroups(variables = list(tte = "AVAL", 
+          df <- tern::extract_survival_subgroups(variables = list(tte = "AVAL", 
               is_event = "is_event", arm = "ARMCD", subgroups = c("SEX", 
                   "BMRKR2"), strata = "STRATA2"), control = control_coxph(conf_level = 0.9), 
               data = anl)
@@ -75,7 +75,7 @@
       
       $table
       {
-          result <- rtables::basic_table() %>% tabulate_survival_subgroups(df, 
+          result <- rtables::basic_table() %>% tern::tabulate_survival_subgroups(df, 
               vars = c("n_tot", "hr", "ci"), time_unit = as.character(anl$AVALU[1]), 
               riskdiff = list(arm_x = NULL, arm_y = NULL, format = "xx.x (xx.x - xx.x)", 
                   col_label = "Prop. Diff", pct = TRUE))
@@ -83,7 +83,7 @@
       
       $plot
       $plot[[1]]
-      f <- g_forest(tbl = result, col_symbol_size = NULL, font_size = 15, 
+      f <- tern::g_forest(tbl = result, col_symbol_size = NULL, font_size = 15, 
           as_list = TRUE)
       
       $plot[[2]]

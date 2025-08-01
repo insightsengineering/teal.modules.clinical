@@ -18,7 +18,7 @@ template_shift_by_grade(
   drop_arm_levels = TRUE,
   add_total = FALSE,
   total_label = default_total_label(),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   code_missing_baseline = FALSE,
   basic_table_args = teal.widgets::basic_table_args()
 )

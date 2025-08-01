@@ -10,8 +10,6 @@
 #' @import teal.transform
 #' @import tern
 #' @importFrom dplyr %>% .data
-#' @importFrom methods is
-#' @importFrom tern.gee lsmeans
 
 # We need this to avoid R CMD check warning about missing global definitions.
 utils::globalVariables(c(

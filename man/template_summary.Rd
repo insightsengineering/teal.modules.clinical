@@ -15,7 +15,7 @@ template_summary(
   var_labels = character(),
   arm_var_labels = NULL,
   na.rm = FALSE,
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
   denominator = c("N", "n", "omit"),

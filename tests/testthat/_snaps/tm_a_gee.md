@@ -14,8 +14,8 @@
       $table
       {
           table <- tern.gee::as.rtable(model_fit, type = "cov")
-          subtitles(table) <- NULL
-          main_footer(table) <- NULL
+          rtables::subtitles(table) <- NULL
+          rtables::main_footer(table) <- NULL
       }
       
 
@@ -35,8 +35,8 @@
       $table
       {
           table <- tern.gee::as.rtable(data.frame(Coefficient = model_fit$coefficients))
-          subtitles(table) <- NULL
-          main_footer(table) <- NULL
+          rtables::subtitles(table) <- NULL
+          rtables::main_footer(table) <- NULL
       }
       
 
@@ -60,8 +60,8 @@
               rtables::split_cols_by(var = "ARM", ref_group = model_fit$ref_level) %>% 
               tern.gee::summarize_gee_logistic() %>% rtables::build_table(df = lsmeans_fit_model, 
               alt_counts_df = ANL_ADSL)
-          subtitles(table) <- NULL
-          main_footer(table) <- NULL
+          rtables::subtitles(table) <- NULL
+          rtables::main_footer(table) <- NULL
       }
       
 
@@ -85,8 +85,8 @@
               rtables::split_cols_by(var = "ARM", ref_group = model_fit$ref_level) %>% 
               tern.gee::summarize_gee_logistic() %>% rtables::build_table(df = lsmeans_fit_model, 
               alt_counts_df = ANL_ADSL)
-          subtitles(table) <- NULL
-          main_footer(table) <- NULL
+          rtables::subtitles(table) <- NULL
+          rtables::main_footer(table) <- NULL
       }
       
 

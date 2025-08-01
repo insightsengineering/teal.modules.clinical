@@ -14,7 +14,7 @@ template_events(
   label_llt = NULL,
   add_total = TRUE,
   total_label = default_total_label(),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   event_type = "event",
   sort_criteria = c("freq_desc", "alpha"),
   sort_freq_col = total_label,

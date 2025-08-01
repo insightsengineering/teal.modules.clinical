@@ -27,7 +27,7 @@ tm_t_binary_outcome(
     "cmh")),
   add_total = FALSE,
   total_label = default_total_label(),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   denom = c("N_col", "n", "N_row"),
   pre_output = NULL,
   post_output = NULL,

@@ -16,7 +16,7 @@ template_events_summary(
   llt = "AEDECOD",
   add_total = TRUE,
   total_label = default_total_label(),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   count_dth = TRUE,
   count_wd = TRUE,
   count_subj = TRUE,

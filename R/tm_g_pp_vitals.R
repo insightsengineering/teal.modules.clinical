@@ -138,7 +138,7 @@ template_vitals <- function(dataname = "ANL",
             ggplot2::aes(x = x, y = y, label = label, color = color),
             alpha = 1,
             nudge_y = 2.2,
-            size = font_size_var / 3.5,
+            linewidth = font_size_var / 3.5,
             show.legend = FALSE
           ) +
           ggplot2::geom_hline(

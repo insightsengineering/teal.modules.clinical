@@ -198,7 +198,7 @@ add_expr <- function(expr_ls, new_expr) {
 #'   expr = anl <- subset(df, PARAMCD == param),
 #'   env = list(df = as.name("adrs"), param = "INVET")
 #' )
-#' expr2 <- substitute(expr = anl$rsp_lab <- d_onco_rsp_label(anl$AVALC))
+#' expr2 <- substitute(expr = anl$rsp_lab <- tern::d_onco_rsp_label(anl$AVALC))
 #' expr3 <- substitute(
 #'   expr = {
 #'     anl$is_rsp <- anl$rsp_lab %in%
@@ -590,7 +590,7 @@ prepare_arm <- function(dataname,
       data_list <- add_expr(
         data_list,
         substitute_names(
-          expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
+          expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
           names = list(arm_var = as.name(arm_var)),
           others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
         )

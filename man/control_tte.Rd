@@ -7,7 +7,7 @@
 control_tte(
   surv_time = list(conf_level = 0.95, conf_type = "plain", quantiles = c(0.25, 0.75)),
   coxph = list(pval_method = "log-rank", ties = "efron", conf_level = 0.95),
-  surv_timepoint = control_surv_timepoint(conf_level = 0.95, conf_type = c("plain",
+  surv_timepoint = tern::control_surv_timepoint(conf_level = 0.95, conf_type = c("plain",
     "none", "log", "log-log"))
 )
 }

@@ -16,8 +16,8 @@ template_coxreg_m(
   at = list(),
   strata_var = NULL,
   combine_comp_arms = FALSE,
-  control = control_coxreg(),
-  na_level = default_na_str(),
+  control = tern::control_coxreg(),
+  na_level = tern::default_na_str(),
   basic_table_args = teal.widgets::basic_table_args()
 )
 }

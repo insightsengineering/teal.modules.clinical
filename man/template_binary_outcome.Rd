@@ -22,7 +22,7 @@ template_binary_outcome(
     list(method_ci = "cmh", method_test = "cmh", strat = NULL)),
   add_total = FALSE,
   total_label = default_total_label(),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   denom = c("N_col", "n", "N_row"),
   basic_table_args = teal.widgets::basic_table_args()
 )

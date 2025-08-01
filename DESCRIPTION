@@ -47,7 +47,6 @@ Imports:
     ggrepel (>= 0.9.6),
     grid,
     lifecycle (>= 0.2.0),
-    methods,
     rlistings (>= 0.2.10),
     rmarkdown (>= 2.23),
     rtables (>= 0.6.11),
