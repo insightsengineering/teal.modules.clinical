@@ -82,7 +82,10 @@ This module produces a patient profile laboratory table using ADaM datasets.
 
 This module generates the following objects, which can be modified in place using decorators:
 \itemize{
-\item \code{table} (\code{datatables} - output of \code{DT::datatable()})
+\item \code{table} (\code{listing_df} - output of \code{rlistings::as_listing})
+\itemize{
+\item The decorated table is only shown in the reporter as it is presented as an interactive \code{DataTable} in the module.
+}
 }
 
 A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.
