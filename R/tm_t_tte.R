@@ -330,7 +330,7 @@ template_tte <- function(dataname = "ANL",
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = surv_timepoint(
+        expr = tern::surv_timepoint(
           vars = aval_var,
           var_labels = as.character(anl$time_unit_var[1]),
           is_event = "is_event",
