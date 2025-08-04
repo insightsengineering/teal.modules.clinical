@@ -58,7 +58,6 @@ template_adverse_events <- function(dataname = "ANL",
               dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
             )
           )
-        table_output <- DT::datatable(table_data)
       },
       env = list(
         dataname = as.name(dataname),
@@ -183,7 +182,8 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' This module generates the following objects, which can be modified in place using decorators::
 #' - `plot` (`ggplot`)
-#' - `table` (`datatables` - output of `DT::datatable()`)
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#'   - The decorated table is only shown in the reporter as it is presented as an interactive `DataTable` in the module.
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
@@ -594,11 +594,11 @@ srv_g_adverse_events <- function(id,
     # Allow for the table and plot qenv to be joined
     table_q <- reactive({
       req(all_q())
-      teal.code::eval_code(all_q(), "table <- table_output")
+      within(all_q(), table <- rtables::df_to_tt(table_data))
     })
     plot_q <- reactive({
       req(all_q())
-      teal.code::eval_code(all_q(), "plot <- plot_output")
+      within(all_q(), plot <- plot_output)
     })
 
     decorated_all_q_table <- srv_decorate_teal_data(
@@ -615,12 +615,6 @@ srv_g_adverse_events <- function(id,
       expr = plot
     )
 
-    table_r <- reactive({
-      req(decorated_all_q_table())
-
-      decorated_all_q_table()[["table"]]
-    })
-
     plot_r <- reactive({
       req(iv_r()$is_valid(), decorated_all_q_plot())
       decorated_all_q_plot()[["plot"]]
@@ -634,7 +628,7 @@ srv_g_adverse_events <- function(id,
     )
 
     output$table <- DT::renderDataTable(
-      expr = table_r(),
+      expr = req(decorated_all_q_table())[["table_data"]],
       options = list(pageLength = input$table_rows)
     )
 
@@ -660,7 +654,7 @@ srv_g_adverse_events <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(table_r())
+        card$append_table(decorated_all_q_table()[["table"]])
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
