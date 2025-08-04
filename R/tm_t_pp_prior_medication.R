@@ -26,7 +26,7 @@ template_prior_medication <- function(dataname = "ANL",
   table_list <- add_expr(
     list(),
     substitute(expr = {
-      result <-
+      table_data <-
         dataname %>%
         dplyr::filter(atirel %in% c("PRIOR", "PRIOR_CONCOMITANT")) %>%
         dplyr::select(cmindc, cmdecod, cmstdy) %>%
@@ -34,20 +34,13 @@ template_prior_medication <- function(dataname = "ANL",
         dplyr::distinct() %>%
         `colnames<-`(col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char, cmstdy_char)])
 
-      table_listing <- result %>%
+      table <- table_data %>%
         dplyr::mutate( # Exception for columns of type difftime that is not supported by as_listing
           dplyr::across(
             dplyr::where(~ inherits(., what = "difftime")), ~ as.double(., units = "auto")
           )
         ) %>%
         rlistings::as_listing()
-
-      table <- DT::datatable(
-        table_listing,
-        options = list(
-          lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
-        )
-      )
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
@@ -79,7 +72,8 @@ template_prior_medication <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`datatables` - output of `DT::datatable()`)
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#'   - The decorated table is only shown in the reporter as it is presented as an interactive `DataTable` in the module.
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
@@ -387,10 +381,15 @@ srv_t_prior_medication <- function(id,
     # Outputs to render.
     table_r <- reactive({
       q <- decorated_table_q()
-      list(
-        html = q[["table"]],
-        listing = q[["table_listing"]]
+
+      table_html <- DT::datatable(
+        data = q[["table"]],
+        options = list(
+          lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
+        )
       )
+
+      list(html = table_html, report = q[["table"]])
     })
 
     output$prior_medication_table <- DT::renderDataTable(expr = table_r()$html)
@@ -412,10 +411,10 @@ srv_t_prior_medication <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        if (nrow(table_r()$listing) == 0L) {
+        if (nrow(table_r()$report) == 0L) {
           card$append_text("No data available for table.")
         } else {
-          card$append_table(table_r()$listing)
+          card$append_table(table_r()$report)
         }
         if (!comment == "") {
           card$append_text("Comment", "header3")
