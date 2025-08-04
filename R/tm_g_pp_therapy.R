@@ -710,7 +710,7 @@ srv_g_therapy <- function(id,
 
     table_r <- reactive({
       q <- req(decorated_all_q_table())
-      
+
       list(
         html = DT::datatable(
           data = q[["table_data"]],

@@ -629,7 +629,7 @@ srv_g_adverse_events <- function(id,
 
     table_r <- reactive({
       q <- req(decorated_all_q_table())
-      
+
       list(
         html = DT::datatable(
           data = q[["table_data"]],

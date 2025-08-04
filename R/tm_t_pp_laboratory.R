@@ -81,7 +81,7 @@ template_laboratory <- function(dataname = "ANL",
         colnames(table_data)[-c(1:3)] <- unique(labor_table_base$INDEX)
 
         table_data[[param_char]] <- clean_description(table_data[[param_char]])
-        
+
         table <- rlistings::as_listing(
           table_data,
           key_cols = NULL,
@@ -99,7 +99,7 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind_col",
             timevar = "INDEX"
           )
-        
+
         colnames(table_data_html)[-c(1:3)] <- unique(labor_table_base$INDEX)
         table_data_html[[param_char]] <- clean_description(table_data_html[[param_char]])
       },
@@ -528,7 +528,7 @@ srv_g_laboratory <- function(id,
     # Outputs to render.
     table_r <- reactive({
       q <- req(decorated_table_q())
-      
+
       table_html <- DT::datatable(
         data = q[["table_data_html"]],
         escape = FALSE,

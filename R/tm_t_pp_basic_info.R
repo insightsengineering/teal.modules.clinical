@@ -302,7 +302,7 @@ srv_t_basic_info <- function(id,
 
     table_r <- reactive({
       q <- req(decorated_table_q())
-      
+
       list(
         html = DT::datatable(
           data = q[["table_data"]],
