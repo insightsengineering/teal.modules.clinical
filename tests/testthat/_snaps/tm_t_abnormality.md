@@ -17,7 +17,7 @@
       
       $layout_prep
       {
-          map <- h_map_for_count_abnormal(df = anl, variables = list(anl = "ANRIND", 
+          map <- tern::h_map_for_count_abnormal(df = anl, variables = list(anl = "ANRIND", 
               split_rows = c("AVISIT", "PARAM")), abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), method = "default", 
               na_str = "<Missing>")
@@ -31,7 +31,7 @@
           label_pos = "topleft", split_fun = rtables::trim_levels_to_map(map = map)) %>% 
           rtables::split_rows_by("PARAM", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["PARAM"]], label_pos = "topleft", split_fun = rtables::trim_levels_to_map(map = map)) %>% 
-          count_abnormal(var = "ANRIND", abnormal = list(low = c("LOW", 
+          tern::count_abnormal(var = "ANRIND", abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), variables = list(id = "USUBJID", 
               baseline = "BNRIND"), .indent_mods = 4L, exclude_base_abn = FALSE) %>% 
           tern::append_varlabels(adlb, "ANRIND", indent = 2L)
@@ -61,7 +61,7 @@
       
       $layout_prep
       {
-          map <- h_map_for_count_abnormal(df = anl, variables = list(anl = "MYANRIND", 
+          map <- tern::h_map_for_count_abnormal(df = anl, variables = list(anl = "MYANRIND", 
               split_rows = c("AVISIT", "PARAMCD")), abnormal = list(Low = "LOW", 
               Medium = "MEDIUM"), method = "default", na_str = "<Missing>")
       }
@@ -75,7 +75,7 @@
           label_pos = "topleft", split_fun = rtables::trim_levels_to_map(map = map)) %>% 
           rtables::split_rows_by("PARAMCD", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["PARAMCD"]], label_pos = "topleft", split_fun = rtables::trim_levels_to_map(map = map)) %>% 
-          count_abnormal(var = "MYANRIND", abnormal = list(Low = "LOW", 
+          tern::count_abnormal(var = "MYANRIND", abnormal = list(Low = "LOW", 
               Medium = "MEDIUM"), variables = list(id = "USUBJID", 
               baseline = "MYBASELINE"), .indent_mods = 4L, exclude_base_abn = TRUE) %>% 
           tern::append_varlabels(adlb, "MYANRIND", indent = 2L)
@@ -106,7 +106,7 @@
       
       $layout_prep
       {
-          map <- h_map_for_count_abnormal(df = anl, variables = list(anl = "ANRIND", 
+          map <- tern::h_map_for_count_abnormal(df = anl, variables = list(anl = "ANRIND", 
               split_rows = c("AVISIT", "PARAM")), abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), method = "default", 
               na_str = "NA")
@@ -120,7 +120,7 @@
           label_pos = "topleft", split_fun = rtables::trim_levels_to_map(map = map)) %>% 
           rtables::split_rows_by("PARAM", split_label = teal.data::col_labels(adlb, 
               fill = FALSE)[["PARAM"]], label_pos = "topleft", split_fun = rtables::trim_levels_to_map(map = map)) %>% 
-          count_abnormal(var = "ANRIND", abnormal = list(low = c("LOW", 
+          tern::count_abnormal(var = "ANRIND", abnormal = list(low = c("LOW", 
               "LOW LOW"), high = c("HIGH", "HIGH HIGH")), variables = list(id = "USUBJID", 
               baseline = "BNRIND"), .indent_mods = 4L, exclude_base_abn = FALSE) %>% 
           tern::append_varlabels(adlb, "ANRIND", indent = 2L)

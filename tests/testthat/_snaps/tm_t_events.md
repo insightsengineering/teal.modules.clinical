@@ -43,11 +43,12 @@
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
-              "All Patients")
+          idx_split_col <- which(sapply(rtables::col_paths(table), 
+              tail, 1) == "All Patients")
           pruned_and_sorted_result <- pruned_result %>% rtables::sort_at_path(path = c("AEBODSYS"), 
-              scorefun = cont_n_onecol(idx_split_col)) %>% rtables::sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = idx_split_col))
+              scorefun = rtables::cont_n_onecol(idx_split_col)) %>% 
+              rtables::sort_at_path(path = c("AEBODSYS", "*", "AEDECOD"), 
+                  scorefun = tern::score_occurrences_cols(col_indices = idx_split_col))
       }
       
 
@@ -101,11 +102,12 @@
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
-              "All Patients")
+          idx_split_col <- which(sapply(rtables::col_paths(table), 
+              tail, 1) == "All Patients")
           pruned_and_sorted_result <- pruned_result %>% rtables::sort_at_path(path = c("AEBODSYS"), 
-              scorefun = cont_n_onecol(idx_split_col)) %>% rtables::sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = idx_split_col))
+              scorefun = rtables::cont_n_onecol(idx_split_col)) %>% 
+              rtables::sort_at_path(path = c("AEBODSYS", "*", "AEDECOD"), 
+                  scorefun = tern::score_occurrences_cols(col_indices = idx_split_col))
       }
       
 
@@ -144,7 +146,7 @@
       $sort
       {
           pruned_and_sorted_result <- pruned_result %>% rtables::sort_at_path(path = c("CMDECOD"), 
-              scorefun = score_occurrences)
+              scorefun = tern::score_occurrences)
       }
       
 
@@ -248,11 +250,12 @@
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
-              "All Patients")
+          idx_split_col <- which(sapply(rtables::col_paths(table), 
+              tail, 1) == "All Patients")
           pruned_and_sorted_result <- pruned_result %>% rtables::sort_at_path(path = c("AEBODSYS"), 
-              scorefun = cont_n_onecol(idx_split_col)) %>% rtables::sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = idx_split_col))
+              scorefun = rtables::cont_n_onecol(idx_split_col)) %>% 
+              rtables::sort_at_path(path = c("AEBODSYS", "*", "AEDECOD"), 
+                  scorefun = tern::score_occurrences_cols(col_indices = idx_split_col))
           criteria_fun <- function(tr) {
               inherits(tr, "ContentRow")
           }
@@ -315,11 +318,12 @@
       
       $sort
       {
-          idx_split_col <- which(sapply(col_paths(table), tail, 1) == 
-              "All Patients")
+          idx_split_col <- which(sapply(rtables::col_paths(table), 
+              tail, 1) == "All Patients")
           pruned_and_sorted_result <- pruned_result %>% rtables::sort_at_path(path = c("AEBODSYS"), 
-              scorefun = cont_n_onecol(idx_split_col)) %>% rtables::sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = score_occurrences_cols(col_indices = idx_split_col))
+              scorefun = rtables::cont_n_onecol(idx_split_col)) %>% 
+              rtables::sort_at_path(path = c("AEBODSYS", "*", "AEDECOD"), 
+                  scorefun = tern::score_occurrences_cols(col_indices = idx_split_col))
           criteria_fun <- function(tr) {
               inherits(tr, "ContentRow")
           }

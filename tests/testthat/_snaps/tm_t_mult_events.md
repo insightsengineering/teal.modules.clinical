@@ -38,7 +38,7 @@
       $table_sorted
       {
           sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
-              "*", "CMDECOD"), scorefun = score_occurrences)
+              "*", "CMDECOD"), scorefun = tern::score_occurrences)
       }
       
       $final_table
@@ -89,7 +89,7 @@
       $table_sorted
       {
           sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
-              "*", "ATC2", "*", "CMDECOD"), scorefun = score_occurrences)
+              "*", "ATC2", "*", "CMDECOD"), scorefun = tern::score_occurrences)
       }
       
       $final_table
@@ -144,7 +144,7 @@
       $table_sorted
       {
           sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
-              "*", "ATC2", "*", "ATC3", "*", "CMDECOD"), scorefun = score_occurrences)
+              "*", "ATC2", "*", "ATC3", "*", "CMDECOD"), scorefun = tern::score_occurrences)
       }
       
       $final_table
@@ -203,7 +203,7 @@
       {
           sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
               "*", "ATC2", "*", "ATC3", "*", "ATC4", "*", "CMDECOD"), 
-              scorefun = score_occurrences)
+              scorefun = tern::score_occurrences)
       }
       
       $final_table
@@ -247,7 +247,7 @@
       $table_sorted
       {
           sorted_result <- result %>% rtables::sort_at_path(path = "CMDECOD", 
-              scorefun = score_occurrences)
+              scorefun = tern::score_occurrences)
       }
       
       $final_table
@@ -296,7 +296,7 @@
       $table_sorted
       {
           sorted_result <- result %>% rtables::sort_at_path(path = c("ATC1", 
-              "*", "CMDECOD"), scorefun = score_occurrences)
+              "*", "CMDECOD"), scorefun = tern::score_occurrences)
       }
       
       $final_table

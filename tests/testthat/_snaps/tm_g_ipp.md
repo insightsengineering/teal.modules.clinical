@@ -8,7 +8,7 @@
       
       $graph
       {
-          plot <- h_g_ipp(df = anl, xvar = "AVISIT", yvar = "AVAL", 
+          plot <- tern::h_g_ipp(df = anl, xvar = "AVISIT", yvar = "AVAL", 
               xlab = "Visit", ylab = "e (d)", title = "Individual Patient Plot for e Values (d) over Time", 
               subtitle = "a, b, c", id_var = "USUBJID", add_baseline_hline = FALSE, 
               yvar_baseline = "BASE")
@@ -27,7 +27,7 @@
       
       $graph
       {
-          plot <- h_g_ipp(df = anl, xvar = "AVISIT", yvar = "AVAL", 
+          plot <- tern::h_g_ipp(df = anl, xvar = "AVISIT", yvar = "AVAL", 
               xlab = "Visit", ylab = "e (d)", title = "Individual Patient Plot for e Values (d) over Time", 
               subtitle = "a, b, c", id_var = "SUBJID", add_baseline_hline = TRUE, 
               yvar_baseline = "BASE")

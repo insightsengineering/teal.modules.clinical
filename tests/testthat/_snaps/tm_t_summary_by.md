@@ -178,7 +178,7 @@
               if (!inherits(tr, "TableRow") || inherits(tr, "LabelRow")) {
                   return(FALSE)
               }
-              rvs <- unlist(unname(row_values(tr)))
+              rvs <- unlist(unname(rtables::row_values(tr)))
               isTRUE(all(rvs == 0))
           }
           table <- rtables::build_table(lyt = lyt, df = anl, alt_counts_df = adsl) %>% 

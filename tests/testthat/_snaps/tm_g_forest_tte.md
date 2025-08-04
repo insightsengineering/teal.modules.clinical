@@ -8,12 +8,12 @@
           anl <- adtte %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(ARMCD = combine_levels(ARMCD, c("ARM B", 
+              dplyr::mutate(ARMCD = tern::combine_levels(ARMCD, c("ARM B", 
                   "ARM C"))) %>% dplyr::mutate(is_event = CNSR == 0)
           parent <- ANL_ADSL %>% dplyr::filter(ARMCD %in% c("ARM A", 
               "ARM B", "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(ARMCD = combine_levels(ARMCD, c("ARM B", 
+              dplyr::mutate(ARMCD = tern::combine_levels(ARMCD, c("ARM B", 
                   "ARM C")))
       }
       
@@ -21,7 +21,7 @@
       {
           df <- tern::extract_survival_subgroups(variables = list(tte = "AVAL", 
               is_event = "is_event", arm = "ARMCD", subgroups = c("SEX", 
-                  "BMRKR2"), strata = "STRATA2"), control = control_coxph(conf_level = 0.9), 
+                  "BMRKR2"), strata = "STRATA2"), control = tern::control_coxph(conf_level = 0.9), 
               data = anl)
       }
       
@@ -56,12 +56,12 @@
           anl <- adtte %>% dplyr::filter(ARMCD %in% c("ARM A", "ARM B", 
               "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(ARMCD = combine_levels(ARMCD, c("ARM B", 
+              dplyr::mutate(ARMCD = tern::combine_levels(ARMCD, c("ARM B", 
                   "ARM C"))) %>% dplyr::mutate(is_event = CNSR == 0)
           parent <- ANL_ADSL %>% dplyr::filter(ARMCD %in% c("ARM A", 
               "ARM B", "ARM C")) %>% dplyr::mutate(ARMCD = stats::relevel(ARMCD, 
               ref = "ARM A")) %>% dplyr::mutate(ARMCD = droplevels(ARMCD)) %>% 
-              dplyr::mutate(ARMCD = combine_levels(ARMCD, c("ARM B", 
+              dplyr::mutate(ARMCD = tern::combine_levels(ARMCD, c("ARM B", 
                   "ARM C")))
       }
       
@@ -69,7 +69,7 @@
       {
           df <- tern::extract_survival_subgroups(variables = list(tte = "AVAL", 
               is_event = "is_event", arm = "ARMCD", subgroups = c("SEX", 
-                  "BMRKR2"), strata = "STRATA2"), control = control_coxph(conf_level = 0.9), 
+                  "BMRKR2"), strata = "STRATA2"), control = tern::control_coxph(conf_level = 0.9), 
               data = anl)
       }
       

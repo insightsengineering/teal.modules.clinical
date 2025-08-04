@@ -41,7 +41,7 @@
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
                       }, font_size = 11, ci_ribbon = FALSE, annot_surv_med = TRUE, 
-                      annot_coxph = TRUE, control_coxph_pw = control_coxph(conf_level = 0.95, 
+                      annot_coxph = TRUE, control_coxph_pw = tern::control_coxph(conf_level = 0.95, 
                         pval_method = "log-rank", ties = "efron"), 
                       control_annot_surv_med = list(x = 0.8, y = 0.85, 
                         w = 0.32, h = 0.16, fill = TRUE), control_annot_coxph = list(x = 0.27, 
@@ -102,7 +102,7 @@
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
                       }, font_size = 11, ci_ribbon = FALSE, annot_surv_med = TRUE, 
-                      annot_coxph = TRUE, control_coxph_pw = control_coxph(conf_level = 0.95, 
+                      annot_coxph = TRUE, control_coxph_pw = tern::control_coxph(conf_level = 0.95, 
                         pval_method = "log-rank", ties = "efron"), 
                       control_annot_surv_med = list(x = 0.8, y = 0.85, 
                         w = 0.32, h = 0.16, fill = TRUE), control_annot_coxph = list(x = 0.27, 
@@ -164,7 +164,7 @@
                           "\n", "p-value Method for Coxph (Hazard Ratio):", 
                           "log-rank")
                       }, font_size = 11, ci_ribbon = FALSE, annot_surv_med = TRUE, 
-                      annot_coxph = TRUE, control_coxph_pw = control_coxph(conf_level = 0.95, 
+                      annot_coxph = TRUE, control_coxph_pw = tern::control_coxph(conf_level = 0.95, 
                         pval_method = "log-rank", ties = "efron"), 
                       control_annot_surv_med = list(x = 0.8, y = 0.85, 
                         w = 0.32, h = 0.16, fill = TRUE), control_annot_coxph = list(x = 0.27, 

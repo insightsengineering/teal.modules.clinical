@@ -17,7 +17,7 @@
       }
       
       $layout_prep
-      split_fun <- trim_levels_in_group
+      split_fun <- rtables::trim_levels_in_group
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Adverse Event summary by Analysis Toxicity Grade: Body System or Organ Class and Dictionary-Derived Term") %>% 
@@ -47,9 +47,9 @@
       $sort
       {
           pruned_and_sorted_result <- pruned_result %>% rtables::sort_at_path(path = "AEBODSYS", 
-              scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
+              scorefun = rtables::cont_n_onecol(length(levels(adsl$ACTARM)) + 
                   1), decreasing = TRUE) %>% rtables::sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
+              "*", "AEDECOD"), scorefun = rtables::cont_n_onecol(length(levels(adsl$ACTARM)) + 
               1), decreasing = TRUE)
       }
       
@@ -73,7 +73,7 @@
       }
       
       $layout_prep
-      split_fun <- trim_levels_in_group
+      split_fun <- rtables::trim_levels_in_group
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class and Dictionary-Derived Term") %>% 
@@ -107,9 +107,9 @@
       $sort
       {
           pruned_and_sorted_result <- pruned_result %>% rtables::sort_at_path(path = "AEBODSYS", 
-              scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
+              scorefun = rtables::cont_n_onecol(length(levels(adsl$ACTARM)) + 
                   1), decreasing = TRUE) %>% rtables::sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
+              "*", "AEDECOD"), scorefun = rtables::cont_n_onecol(length(levels(adsl$ACTARM)) + 
               1), decreasing = TRUE)
       }
       
@@ -132,7 +132,7 @@
       }
       
       $layout_prep
-      split_fun <- trim_levels_in_group
+      split_fun <- rtables::trim_levels_in_group
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class and Dictionary-Derived Term") %>% 
@@ -185,7 +185,7 @@
       }
       
       $layout_prep
-      split_fun <- trim_levels_in_group
+      split_fun <- rtables::trim_levels_in_group
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Adverse Event summary by Severity/Intensity: Body System or Organ Class") %>% 
@@ -211,7 +211,7 @@
       $sort
       {
           pruned_and_sorted_result <- pruned_result %>% rtables::sort_at_path(path = "AEBODSYS", 
-              scorefun = cont_n_onecol(length(levels(adsl$ACTARM)) + 
+              scorefun = rtables::cont_n_onecol(length(levels(adsl$ACTARM)) + 
                   1), decreasing = TRUE)
       }
       
@@ -244,7 +244,7 @@
           groups = list(`Any Grade (%)` = c("1", "2", "3", "4", "5"), 
               `Grade 1-2 (%)` = c("1", "2"), `Grade 3-4 (%)` = c("3", 
                   "4"), `Grade 5 (%)` = "5")) %>% rtables::split_rows_by("AEBODSYS", 
-          child_labels = "visible", nested = FALSE, split_fun = trim_levels_in_group("AEDECOD")) %>% 
+          child_labels = "visible", nested = FALSE, split_fun = rtables::trim_levels_in_group("AEDECOD")) %>% 
           tern::append_varlabels(df = anl, vars = "AEBODSYS") %>% tern::summarize_num_patients(var = "USUBJID", 
           .stats = "unique", .labels = "Total number of patients with at least one adverse event", 
           ) %>% tern::analyze_vars("AEDECOD", na.rm = FALSE, denom = "N_col", 

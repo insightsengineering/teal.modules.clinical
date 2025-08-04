@@ -32,7 +32,7 @@
               as.character(anl$AVALU[1]), ")"), is_event = "is_event", 
               control = list(conf_level = 0.95, conf_type = "plain", 
                   quantiles = c(0.25, 0.75)), na_str = "<Missing>", 
-              table_names = "time_to_event") %>% surv_timepoint(vars = "AVAL", 
+              table_names = "time_to_event") %>% tern::surv_timepoint(vars = "AVAL", 
           var_labels = as.character(anl$AVALU[1]), is_event = "is_event", 
           time_point = c(183, 365, 548), method = "surv", control = tern::control_surv_timepoint(conf_level = 0.95, 
               conf_type = "plain"), .indent_mods = NULL, na_str = "<Missing>")
@@ -77,7 +77,7 @@
               as.character(anl$AVALU[1]), ")"), is_event = "is_event", 
               control = list(conf_level = 0.95, conf_type = "plain", 
                   quantiles = c(0.25, 0.75)), na_str = "<Missing>", 
-              table_names = "time_to_event") %>% surv_timepoint(vars = "AVAL", 
+              table_names = "time_to_event") %>% tern::surv_timepoint(vars = "AVAL", 
           var_labels = as.character(anl$AVALU[1]), is_event = "is_event", 
           time_point = c(183, 365, 548), method = "surv", control = tern::control_surv_timepoint(conf_level = 0.95, 
               conf_type = "plain"), .indent_mods = NULL, na_str = "<Missing>")
@@ -135,7 +135,7 @@
           is_event = "is_event", var_labels = c("Unstratified Analysis"), 
           control = list(pval_method = "log-rank", ties = "efron", 
               conf_level = 0.95), na_str = "<Missing>", table_names = "unstratified") %>% 
-          surv_timepoint(vars = "AVAL", var_labels = as.character(anl$AVALU[1]), 
+          tern::surv_timepoint(vars = "AVAL", var_labels = as.character(anl$AVALU[1]), 
               is_event = "is_event", time_point = c(183, 365, 548), 
               method = "both", control = tern::control_surv_timepoint(conf_level = 0.95, 
                   conf_type = "plain"), .indent_mods = c(pt_at_risk = 0L, 
@@ -191,7 +191,7 @@
           is_event = "is_event", var_labels = c("Unstratified Analysis"), 
           control = list(pval_method = "log-rank", ties = "efron", 
               conf_level = 0.95), na_str = "<Missing>", table_names = "unstratified") %>% 
-          surv_timepoint(vars = "AVAL", var_labels = as.character(anl$AVALU[1]), 
+          tern::surv_timepoint(vars = "AVAL", var_labels = as.character(anl$AVALU[1]), 
               is_event = "is_event", time_point = c(183, 365, 548), 
               method = "both", control = tern::control_surv_timepoint(conf_level = 0.95, 
                   conf_type = "plain"), .indent_mods = c(pt_at_risk = 0L, 

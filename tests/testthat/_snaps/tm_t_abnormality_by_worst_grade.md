@@ -35,7 +35,7 @@
           tern::summarize_num_patients(var = "USUBJID", required = "GRADE_ANL", 
               .stats = "unique_count") %>% rtables::split_rows_by("GRADE_DIR", 
           label_pos = "topleft", split_fun = rtables::trim_levels_to_map(map = map), 
-          split_label = rtables::obj_label(anl$GRADE_DIR)) %>% count_abnormal_by_worst_grade(var = "GRADE_ANL", 
+          split_label = rtables::obj_label(anl$GRADE_DIR)) %>% tern::count_abnormal_by_worst_grade(var = "GRADE_ANL", 
           variables = list(id = "USUBJID", param = "PARAMCD", grade_dir = "GRADE_DIR"), 
           .indent_mods = 4L) %>% rtables::append_topleft("                                  Highest Grade")
       
@@ -82,7 +82,7 @@
           tern::summarize_num_patients(var = "USUBJID", required = "GRADE_ANL", 
               .stats = "unique_count") %>% rtables::split_rows_by("GRADE_DIR", 
           label_pos = "topleft", split_fun = rtables::trim_levels_to_map(map = map), 
-          split_label = rtables::obj_label(anl$GRADE_DIR)) %>% count_abnormal_by_worst_grade(var = "GRADE_ANL", 
+          split_label = rtables::obj_label(anl$GRADE_DIR)) %>% tern::count_abnormal_by_worst_grade(var = "GRADE_ANL", 
           variables = list(id = "USUBJID", param = "myPARAMCD", grade_dir = "GRADE_DIR"), 
           .indent_mods = 4L) %>% rtables::append_topleft("                                  Highest Grade")
       
