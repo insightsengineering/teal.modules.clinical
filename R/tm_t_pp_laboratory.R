@@ -70,7 +70,7 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::mutate(aval_anrind = paste(aval_var, anrind)) %>%
           dplyr::select(-c(aval_var, anrind))
 
-        result <- labor_table_base %>%
+        table_data <- labor_table_base %>%
           as.data.frame() %>%
           stats::reshape(
             direction = "wide",
@@ -78,18 +78,18 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind",
             timevar = "INDEX"
           )
-        colnames(result)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        colnames(table_data)[-c(1:3)] <- unique(labor_table_base$INDEX)
 
-        result[[param_char]] <- clean_description(result[[param_char]])
-
-        table_listing <- rlistings::as_listing(
-          result,
+        table_data[[param_char]] <- clean_description(table_data[[param_char]])
+        
+        table <- rlistings::as_listing(
+          table_data,
           key_cols = NULL,
           default_formatting = list(all = fmt_config(align = "left"))
         )
-        main_title(table_listing) <- paste("Patient ID:", patient_id)
+        main_title(table) <- paste("Patient ID:", patient_id)
 
-        table <- labor_table_base %>%
+        table_data_html <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
           dplyr::select(-aval_anrind) %>%
           as.data.frame() %>%
@@ -99,21 +99,9 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind_col",
             timevar = "INDEX"
           )
-        colnames(table)[-c(1:3)] <- unique(labor_table_base$INDEX)
-        table[[param_char]] <- clean_description(table[[param_char]])
-
-        table <- DT::datatable(
-          table,
-          escape = FALSE,
-          options = list(
-            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
-            scrollX = TRUE
-          )
-        )
-        table$dependencies <- c(
-          table$dependencies,
-          list(rmarkdown::html_dependency_bootstrap("default"))
-        )
+        
+        colnames(table_data_html)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        table_data_html[[param_char]] <- clean_description(table_data_html[[param_char]])
       },
       env = list(
         dataname = as.name(dataname),
@@ -157,7 +145,8 @@ template_laboratory <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`datatables` - output of `DT::datatable()`)
+#' - `table` (`listing_df` - output of `rlistings::as_listing`)
+#'   - The decorated table is only shown in the reporter as it is presented as an interactive `DataTable` in the module.
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
@@ -538,11 +527,21 @@ srv_g_laboratory <- function(id,
 
     # Outputs to render.
     table_r <- reactive({
-      q <- decorated_table_q()
-      list(
-        html = q[["table"]],
-        listing = q[["table_listing"]]
+      q <- req(decorated_table_q())
+      
+      table_html <- DT::datatable(
+        data = q[["table_data_html"]],
+        escape = FALSE,
+        options = list(
+          lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
+          scrollX = TRUE
+        )
       )
+      table_html$dependencies <- c(
+        table_html$dependencies,
+        list(rmarkdown::html_dependency_bootstrap("default"))
+      )
+      list(html = table_html, report = q[["table"]])
     })
 
     output$title <- renderText({
@@ -570,7 +569,7 @@ srv_g_laboratory <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(table_r()$listing)
+        card$append_table(table_r()$report)
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)
