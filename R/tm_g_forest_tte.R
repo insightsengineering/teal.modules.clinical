@@ -726,8 +726,8 @@ srv_g_forest_tte <- function(id,
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
       expr = {
-          table
-          plot
+        table
+        plot
       }
     )
     plot_r <- reactive({
