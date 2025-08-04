@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.10.0.9013
+# teal.modules.clinical 0.10.0.9014
 
 ### Enhancements
 * Added argument `conf_type` to module `tm_g_km` to allow users to set a confidence interval type for median survival time estimation.
