@@ -129,7 +129,7 @@ template_exposure <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      analyze_patients_exposure_in_cols(
+      tern::analyze_patients_exposure_in_cols(
         var = row_by_var,
         ex_var = aval_var,
         col_split = TRUE,
@@ -168,7 +168,7 @@ template_exposure <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      analyze_patients_exposure_in_cols(
+      tern::analyze_patients_exposure_in_cols(
         var = row_by_var,
         col_split = FALSE,
         na_str = na_str
