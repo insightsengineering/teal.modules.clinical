@@ -708,10 +708,19 @@ srv_g_therapy <- function(id,
       expr = table
     )
 
-    output$therapy_table <- DT::renderDataTable(
-      expr = req(decorated_all_q_table())[["table_data"]],
-      options = list(pageLength = input$therapy_table_rows)
-    )
+    table_r <- reactive({
+      q <- req(decorated_all_q_table())
+      
+      list(
+        html = DT::datatable(
+          data = q[["table_data"]],
+          options = list(pageLength = input$therapy_table_rows)
+        ),
+        report = q[["table"]]
+      )
+    })
+
+    output$therapy_table <- DT::renderDataTable(table_r()[["html"]])
 
     decorated_all_q_plot <- srv_decorate_teal_data(
       "d_plot",
@@ -722,7 +731,7 @@ srv_g_therapy <- function(id,
 
     plot_r <- reactive({
       req(iv_r()$is_valid())
-      decorated_all_q_plot()[["plot"]]
+      req(decorated_all_q_plot())[["plot"]]
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
@@ -750,7 +759,7 @@ srv_g_therapy <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(all_q()[["table"]])
+        card$append_table(table_r()[["report"]])
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {

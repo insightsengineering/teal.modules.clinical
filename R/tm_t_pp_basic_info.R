@@ -31,12 +31,12 @@ template_basic_info <- function(dataname = "ANL",
 
         key <- col_labels(dataname, fill = TRUE)[rownames(values)]
 
-        result <-
+        table_data <-
           data.frame(var = rownames(values), key = key, value = values) %>%
           dplyr::select(var, key, value) %>%
           dplyr::rename(` ` = var, `  ` = key, `   ` = value)
 
-        table <- DT::datatable(result)
+        table <- rtables::df_to_tt(table_data)
       }, env = list(
         dataname = as.name(dataname),
         vars = vars,
@@ -64,7 +64,8 @@ template_basic_info <- function(dataname = "ANL",
 #' @section Decorating Module:
 #'
 #' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`datatables` - output of `DT::datatable()`)
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#'   - The decorated table is only shown in the reporter as it is presented as an interactive `DataTable` in the module.
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
@@ -299,18 +300,25 @@ srv_t_basic_info <- function(id,
       expr = table
     )
 
+    table_r <- reactive({
+      q <- req(decorated_table_q())
+      
+      list(
+        html = DT::datatable(
+          data = q[["table_data"]],
+          options = list(
+            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
+          )
+        ),
+        report = q[["table"]]
+      )
+    })
+
     output$title <- renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    table_r <- reactive(decorated_table_q()[["table"]])
-
-    output$basic_info_table <- DT::renderDataTable(
-      expr = table_r(),
-      options = list(
-        lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
-      )
-    )
+    output$basic_info_table <- DT::renderDataTable(table_r()[["html"]])
 
     # Render R code
     source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
@@ -330,7 +338,7 @@ srv_t_basic_info <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(decorated_table_q()[["table"]])
+        card$append_table(table_r()[["report"]])
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)

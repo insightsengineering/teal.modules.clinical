@@ -617,7 +617,7 @@ srv_g_adverse_events <- function(id,
 
     plot_r <- reactive({
       req(iv_r()$is_valid(), decorated_all_q_plot())
-      decorated_all_q_plot()[["plot"]]
+      req(decorated_all_q_plot())[["plot"]]
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
@@ -627,10 +627,19 @@ srv_g_adverse_events <- function(id,
       width = plot_width
     )
 
-    output$table <- DT::renderDataTable(
-      expr = req(decorated_all_q_table())[["table_data"]],
-      options = list(pageLength = input$table_rows)
-    )
+    table_r <- reactive({
+      q <- req(decorated_all_q_table())
+      
+      list(
+        html = DT::datatable(
+          data = q[["table_data"]],
+          options = list(pageLength = input$table_rows)
+        ),
+        report = q[["table"]]
+      )
+    })
+
+    output$table <- DT::renderDataTable(table_r()[["html"]])
 
     decorated_all_q <- reactive(
       c(decorated_all_q_table(), decorated_all_q_plot())
@@ -654,7 +663,7 @@ srv_g_adverse_events <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(decorated_all_q_table()[["table"]])
+        card$append_table(table_r()[["report"]])
         card$append_text("Plot", "header3")
         card$append_plot(plot_r(), dim = pws$dim())
         if (!comment == "") {
