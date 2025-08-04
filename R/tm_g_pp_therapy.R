@@ -65,7 +65,7 @@ template_therapy <- function(dataname = "ANL",
 
       dataname[setdiff(cols_to_include, names(dataname))] <- NA
 
-      table <- dataname %>%
+      table_data <- dataname %>%
         dplyr::filter(atirel %in% c("CONCOMITANT", "PRIOR")) %>% # removed PRIOR_CONCOMITANT
         dplyr::select(dplyr::all_of(cols_to_include)) %>%
         dplyr::filter(!is.na(cmdecod)) %>%
@@ -84,8 +84,7 @@ template_therapy <- function(dataname = "ANL",
           col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char)], "Dosage",
           col_labels(dataname, fill = TRUE)[c(cmstdy_char, cmendy_char)]
         ))
-
-      table <- DT::datatable(table)
+      table <- rtables::df_to_tt(table_data)
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
@@ -244,8 +243,9 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' This module generates the following objects, which can be modified in place using decorators::
 #' - `plot` (`ggplot`)
-#' - `table` (`datatables` - output of `DT::datatable()`)
-#'
+#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
+#'   - The decorated table is only shown in the reporter as it is presented as an interactive `DataTable` in the module.
+
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
 #' See code snippet below:
@@ -709,9 +709,7 @@ srv_g_therapy <- function(id,
     )
 
     output$therapy_table <- DT::renderDataTable(
-      expr = {
-        decorated_all_q_table()[["table"]]
-      },
+      expr = req(decorated_all_q_table())[["table_data"]],
       options = list(pageLength = input$therapy_table_rows)
     )
 
