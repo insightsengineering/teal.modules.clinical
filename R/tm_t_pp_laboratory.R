@@ -221,7 +221,7 @@ tm_t_pp_laboratory <- function(label,
       details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
     )
   }
-  
+
   if (lifecycle::is_present(aval)) {
     aval_var <- aval
     warning(

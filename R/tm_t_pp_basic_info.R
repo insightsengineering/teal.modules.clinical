@@ -112,7 +112,7 @@ tm_t_pp_basic_info <- function(label,
       details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
     )
   }
-  
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(patient_col)
