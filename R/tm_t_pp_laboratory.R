@@ -70,7 +70,7 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::mutate(aval_anrind = paste(aval_var, anrind)) %>%
           dplyr::select(-c(aval_var, anrind))
 
-        result <- labor_table_base %>%
+        table_data <- labor_table_base %>%
           as.data.frame() %>%
           stats::reshape(
             direction = "wide",
@@ -78,18 +78,19 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind",
             timevar = "INDEX"
           )
-        colnames(result)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        colnames(table_data)[-c(1:3)] <- unique(labor_table_base$INDEX)
 
-        result[[param_char]] <- teal.modules.clinical::clean_description(result[[param_char]])
+        table_data[[param_char]] <- teal.modules.clinical::clean_description(table_data[[param_char]])
 
-        table_listing <- rlistings::as_listing(
-          result,
+        table <- rlistings::as_listing(
+          table_data,
           key_cols = NULL,
           default_formatting = list(all = formatters::fmt_config(align = "left"))
         )
-        rtables::main_title(table_listing) <- paste("Patient ID:", patient_id)
+        rtables::main_title(table) <- paste("Patient ID:", patient_id)
+        table
 
-        table <- labor_table_base %>%
+        table_data_html <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
           dplyr::select(-aval_anrind) %>%
           as.data.frame() %>%
@@ -99,21 +100,9 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind_col",
             timevar = "INDEX"
           )
-        colnames(table)[-c(1:3)] <- unique(labor_table_base$INDEX)
-        table[[param_char]] <- teal.modules.clinical::clean_description(table[[param_char]])
 
-        table <- DT::datatable(
-          table,
-          escape = FALSE,
-          options = list(
-            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
-            scrollX = TRUE
-          )
-        )
-        table$dependencies <- c(
-          table$dependencies,
-          list(rmarkdown::html_dependency_bootstrap("default"))
-        )
+        colnames(table_data_html)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        table_data_html[[param_char]] <- teal.modules.clinical::clean_description(table_data_html[[param_char]])
       },
       env = list(
         dataname = as.name(dataname),
@@ -153,30 +142,6 @@ template_laboratory <- function(dataname = "ANL",
 #'   following 3 levels: `"HIGH"`, `"LOW"`, and `"NORMAL"`.
 #'
 #' @inherit module_arguments return
-#'
-#' @section Decorating Module:
-#'
-#' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`datatables` - output of `DT::datatable()`)
-#'
-#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
-#' The name of this list corresponds to the name of the output to which the decorator is applied.
-#' See code snippet below:
-#'
-#' ```
-#' tm_t_pp_laboratory(
-#'    ..., # arguments for module
-#'    decorators = list(
-#'      table = teal_transform_module(...) # applied only to `table` output
-#'    )
-#' )
-#' ```
-#'
-#' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-module-output", package = "teal.modules.clinical")`.
-#'
-#' To learn more please refer to the vignette
-#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -248,7 +213,15 @@ tm_t_pp_laboratory <- function(label,
                                pre_output = NULL,
                                post_output = NULL,
                                transformators = list(),
-                               decorators = list()) {
+                               decorators = lifecycle::deprecated()) {
+  if (lifecycle::is_present(decorators)) {
+    lifecycle::deprecate_warn(
+      when = "0.11.0",
+      what = "tm_t_pp_laboratory(decorators)",
+      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
+    )
+  }
+
   if (lifecycle::is_present(aval)) {
     aval_var <- aval
     warning(
@@ -284,7 +257,6 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_class(anrind, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -307,8 +279,7 @@ tm_t_pp_laboratory <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        patient_col = patient_col,
-        decorators = decorators
+        patient_col = patient_col
       )
     ),
     transformators = transformators,
@@ -387,8 +358,7 @@ ui_g_laboratory <- function(id, ...) {
         inputId = ns("round_value"),
         label = "Select number of decimal places for rounding:",
         choices = NULL
-      ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table"))
+      )
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -412,8 +382,7 @@ srv_g_laboratory <- function(id,
                              param,
                              paramcd,
                              anrind,
-                             label,
-                             decorators) {
+                             label) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -528,32 +497,34 @@ srv_g_laboratory <- function(id,
         teal.code::eval_code(as.expression(labor_calls))
     })
 
-    # Decoration of raw table output.
-    decorated_table_q <- srv_decorate_teal_data(
-      id = "decorator",
-      data = all_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
-    )
-
     # Outputs to render.
     table_r <- reactive({
-      q <- decorated_table_q()
-      list(
-        html = q[["table"]],
-        listing = q[["table_listing"]]
+      q <- req(all_q())
+
+      table_html <- DT::datatable(
+        data = q[["table_data_html"]],
+        escape = FALSE,
+        options = list(
+          lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
+          scrollX = TRUE
+        )
       )
+      table_html$dependencies <- c(
+        table_html$dependencies,
+        list(rmarkdown::html_dependency_bootstrap("default"))
+      )
+      list(html = table_html, report = q[["table"]])
     })
 
     output$title <- renderText({
-      req(decorated_table_q())
-      paste("<h5><b>Patient ID:", decorated_table_q()[["pt_id"]], "</b></h5>")
+      req(all_q())
+      paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
     output$lab_values_table <- DT::renderDataTable(expr = table_r()$html)
 
     # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
+    source_code_r <- reactive(teal.code::get_code(req(all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,
@@ -570,7 +541,7 @@ srv_g_laboratory <- function(id,
           filter_panel_api = filter_panel_api
         )
         card$append_text("Table", "header3")
-        card$append_table(table_r()$listing)
+        card$append_table(table_r()$report)
         if (!comment == "") {
           card$append_text("Comment", "header3")
           card$append_text(comment)

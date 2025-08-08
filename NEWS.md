@@ -2,12 +2,16 @@
 
 ### Enhancements
 * Added argument `conf_type` to module `tm_g_km` to allow users to set a confidence interval type for median survival time estimation.
-
-### Enhancements
 * Added `denom` argument in `tm_t_binary_outcome` module.
 
 ### Bug fixes
 * Fixed bug in `tm_t_events` to return sorted table (#1393).
+* Fixed "Add to Report" failures in `tm_g_pp_adverse_events`, `tm_g_pp_therapy`, `tm_t_pp_basic_info`, `tm_t_pp_laboratory` and `tm_t_pp_prior_medication` modules (#1404).
+
+### Breaking changes
+
+* Removed the `table` object decoration in `tm_g_pp_adverse_events`, `tm_g_pp_therapy` (#1404).
+* Deprecated the `decorators` argument in `tm_t_pp_basic_info`, `tm_t_pp_laboratory` and `tm_t_pp_prior_medication` (#1404).
 
 # teal.modules.clinical 0.10.0
 

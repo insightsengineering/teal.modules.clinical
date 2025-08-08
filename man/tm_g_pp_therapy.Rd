@@ -109,18 +109,15 @@ This module produces a patient profile therapy table and \code{\link[ggplot2:ggp
 This module generates the following objects, which can be modified in place using decorators::
 \itemize{
 \item \code{plot} (\code{ggplot})
-\item \code{table} (\code{datatables} - output of \code{DT::datatable()})
-}
-
 A Decorator is applied to the specific output using a named list of \code{teal_transform_module} objects.
 The name of this list corresponds to the name of the output to which the decorator is applied.
 See code snippet below:
+}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{tm_g_pp_therapy(
    ..., # arguments for module
    decorators = list(
-     plot = teal_transform_module(...), # applied only to `plot` output
-     table = teal_transform_module(...) # applied only to `table` output
+     plot = teal_transform_module(...) # applied only to `plot` output
    )
 )
 }\if{html}{\out{</div>}}
