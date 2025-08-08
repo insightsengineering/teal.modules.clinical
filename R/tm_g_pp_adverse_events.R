@@ -182,8 +182,6 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' This module generates the following objects, which can be modified in place using decorators::
 #' - `plot` (`ggplot`)
-#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
-#'   - The decorated table is only shown in the reporter as it is presented as an interactive `DataTable` in the module.
 #'
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
@@ -193,8 +191,7 @@ template_adverse_events <- function(dataname = "ANL",
 #' tm_g_pp_adverse_events(
 #'    ..., # arguments for module
 #'    decorators = list(
-#'      plot = teal_transform_module(...), # applied only to `plot` output
-#'      table = teal_transform_module(...) # applied only to `table` output
+#'      plot = teal_transform_module(...) # applied only to `plot` output
 #'    )
 #' )
 #' ```
@@ -310,7 +307,7 @@ tm_g_pp_adverse_events <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, names = c("plot", "table"))
+  assert_decorators(decorators, names = "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -432,7 +429,6 @@ ui_g_adverse_events <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      ui_decorate_teal_data(ns("d_table"), decorators = select_decorators(ui_args$decorators, "table")),
       ui_decorate_teal_data(ns("d_plot"), decorators = select_decorators(ui_args$decorators, "plot")),
       bslib::accordion_panel(
         title = "Plot settings",
@@ -594,19 +590,15 @@ srv_g_adverse_events <- function(id,
     # Allow for the table and plot qenv to be joined
     table_q <- reactive({
       req(all_q())
-      within(all_q(), table <- rtables::df_to_tt(table_data))
+      within(all_q(), {
+        table <- rtables::df_to_tt(table_data)
+        table
+      })
     })
     plot_q <- reactive({
       req(all_q())
       within(all_q(), plot <- plot_output)
     })
-
-    decorated_all_q_table <- srv_decorate_teal_data(
-      "d_table",
-      data = table_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
-    )
 
     decorated_all_q_plot <- srv_decorate_teal_data(
       "d_plot",
@@ -628,7 +620,7 @@ srv_g_adverse_events <- function(id,
     )
 
     table_r <- reactive({
-      q <- req(decorated_all_q_table())
+      q <- req(table_q())
 
       list(
         html = DT::datatable(
@@ -642,7 +634,7 @@ srv_g_adverse_events <- function(id,
     output$table <- DT::renderDataTable(table_r()[["html"]])
 
     decorated_all_q <- reactive(
-      c(decorated_all_q_table(), decorated_all_q_plot())
+      c(table_q(), decorated_all_q_plot())
     )
 
     # Render R code

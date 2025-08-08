@@ -41,6 +41,7 @@ template_prior_medication <- function(dataname = "ANL",
           )
         ) %>%
         rlistings::as_listing()
+      table
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
@@ -68,31 +69,6 @@ template_prior_medication <- function(dataname = "ANL",
 #' @inheritParams template_prior_medication
 #'
 #' @inherit module_arguments return
-#'
-#' @section Decorating Module:
-#'
-#' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
-#'   - The decorated table is only shown in the reporter as it is presented as an interactive `DataTable` in the module.
-#'
-#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
-#' The name of this list corresponds to the name of the output to which the decorator is applied.
-#' See code snippet below:
-#'
-#' ```
-#' tm_t_pp_prior_medication(
-#'    ..., # arguments for module
-#'    decorators = list(
-#'      table = teal_transform_module(...) # applied only to `table` output
-#'    )
-#' )
-#' ```
-#'
-#' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-module-output", package = "teal.modules.clinical")`.
-#'
-#' To learn more please refer to the vignette
-#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -158,7 +134,17 @@ tm_t_pp_prior_medication <- function(label,
                                      pre_output = NULL,
                                      post_output = NULL,
                                      transformators = list(),
-                                     decorators = list()) {
+                                     decorators = lifecycle::deprecated()) {
+  
+  if (lifecycle::is_present(decorators)) {
+    lifecycle::deprecate_warn(
+      when = "0.11.0",
+      what = "tm_t_pp_laboratory(decorators)",
+      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
+    )
+  }
+
+  
   message("Initializing tm_t_pp_prior_medication")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -170,7 +156,6 @@ tm_t_pp_prior_medication <- function(label,
   checkmate::assert_class(cmstdy, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -191,8 +176,7 @@ tm_t_pp_prior_medication <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        patient_col = patient_col,
-        decorators = decorators
+        patient_col = patient_col
       )
     ),
     transformators = transformators,
@@ -251,8 +235,7 @@ ui_t_prior_medication <- function(id, ...) {
         label = "Select CMSTDY variable:",
         data_extract_spec = ui_args$cmstdy,
         is_single_dataset = is_single_dataset_value
-      ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table")),
+      )
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -274,8 +257,7 @@ srv_t_prior_medication <- function(id,
                                    cmdecod,
                                    cmindc,
                                    cmstdy,
-                                   label,
-                                   decorators) {
+                                   label) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -370,17 +352,9 @@ srv_t_prior_medication <- function(id,
         teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
-    # Decoration of table output.
-    decorated_table_q <- srv_decorate_teal_data(
-      id = "decorator",
-      data = all_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
-    )
-
     # Outputs to render.
     table_r <- reactive({
-      q <- decorated_table_q()
+      q <- all_q()
 
       table_html <- DT::datatable(
         data = q[["table"]],
@@ -395,7 +369,7 @@ srv_t_prior_medication <- function(id,
     output$prior_medication_table <- DT::renderDataTable(expr = table_r()$html)
 
     # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
+    source_code_r <- reactive(teal.code::get_code(req(all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,

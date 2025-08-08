@@ -85,6 +85,7 @@ template_therapy <- function(dataname = "ANL",
           col_labels(dataname, fill = TRUE)[c(cmstdy_char, cmendy_char)]
         ))
       table <- rtables::df_to_tt(table_data)
+      table
     }, env = list(
       dataname = as.name(dataname),
       atirel = as.name(atirel),
@@ -243,8 +244,6 @@ template_therapy <- function(dataname = "ANL",
 #'
 #' This module generates the following objects, which can be modified in place using decorators::
 #' - `plot` (`ggplot`)
-#' - `table` (`ElementaryTable` - output of `rtables::build_table`)
-#'   - The decorated table is only shown in the reporter as it is presented as an interactive `DataTable` in the module.
 
 #' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
 #' The name of this list corresponds to the name of the output to which the decorator is applied.
@@ -254,8 +253,7 @@ template_therapy <- function(dataname = "ANL",
 #' tm_g_pp_therapy(
 #'    ..., # arguments for module
 #'    decorators = list(
-#'      plot = teal_transform_module(...), # applied only to `plot` output
-#'      table = teal_transform_module(...) # applied only to `table` output
+#'      plot = teal_transform_module(...) # applied only to `plot` output
 #'    )
 #' )
 #' ```
@@ -396,7 +394,7 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, names = c("plot", "table"))
+  assert_decorators(decorators, names = "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -535,7 +533,6 @@ ui_g_therapy <- function(id, ...) {
         data_extract_spec = ui_args$cmendy,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("d_table"), decorators = select_decorators(ui_args$decorators, "table")),
       ui_decorate_teal_data(ns("d_plot"), decorators = select_decorators(ui_args$decorators, "plot")),
       bslib::accordion_panel(
         title = "Plot settings",
@@ -701,15 +698,8 @@ srv_g_therapy <- function(id,
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    decorated_all_q_table <- srv_decorate_teal_data(
-      "d_table",
-      data = all_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
-    )
-
     table_r <- reactive({
-      q <- req(decorated_all_q_table())
+      q <- req(all_q())
 
       list(
         html = DT::datatable(
@@ -724,7 +714,7 @@ srv_g_therapy <- function(id,
 
     decorated_all_q_plot <- srv_decorate_teal_data(
       "d_plot",
-      data = decorated_all_q_table,
+      data = all_q,
       decorators = select_decorators(decorators, "plot"),
       expr = plot
     )
