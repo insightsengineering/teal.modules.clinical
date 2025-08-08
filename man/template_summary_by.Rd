@@ -17,7 +17,7 @@ template_summary_by(
   parallel_vars = FALSE,
   row_groups = FALSE,
   na.rm = FALSE,
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range"),
   denominator = c("N", "n", "omit"),

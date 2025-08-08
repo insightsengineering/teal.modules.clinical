@@ -13,8 +13,8 @@ template_events_patyear(
   aval_var = "AVAL",
   add_total = TRUE,
   total_label = default_total_label(),
-  na_level = default_na_str(),
-  control = control_incidence_rate(),
+  na_level = tern::default_na_str(),
+  control = tern::control_incidence_rate(),
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
 )

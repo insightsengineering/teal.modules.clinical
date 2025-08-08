@@ -23,7 +23,7 @@ template_shift_by_arm <- function(dataname,
                                   base_var = lifecycle::deprecated(),
                                   baseline_var = "BNRIND",
                                   na.rm = FALSE, # nolint: object_name.
-                                  na_level = default_na_str(),
+                                  na_level = tern::default_na_str(),
                                   add_total = FALSE,
                                   total_label = default_total_label(),
                                   basic_table_args = teal.widgets::basic_table_args()) {
@@ -57,14 +57,14 @@ template_shift_by_arm <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dataname <- df_explicit_na(dataname, na_level = na_str) %>%
+      expr = dataname <- tern::df_explicit_na(dataname, na_level = na_str) %>%
         dplyr::filter(treatment_flag_var == treatment_flag),
       env = list(
         dataname = as.name(dataname),
@@ -99,23 +99,25 @@ template_shift_by_arm <- function(dataname,
       layout_list,
       substitute(
         expr = expr_basic_table_args %>%
-          rtables::split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temp solution for over arching column
+          rtables::split_cols_by(visit_var,
+            split_fun = rtables::drop_split_levels
+          ) %>% # temp solution for over arching column
           rtables::split_cols_by(aval_var) %>%
           rtables::split_rows_by(
             arm_var,
-            split_fun = add_overall_level(total_label, first = FALSE),
+            split_fun = rtables::add_overall_level(total_label, first = FALSE),
             label_pos = "topleft",
-            split_label = obj_label(dataname$arm_var)
+            split_label = rtables::obj_label(dataname$arm_var)
           ) %>%
-          add_rowcounts() %>%
-          analyze_vars(
+          tern::add_rowcounts() %>%
+          tern::analyze_vars(
             baseline_var,
             denom = "N_row",
             na_str = na_str,
             na.rm = na.rm,
             .stats = "count_fraction"
           ) %>%
-          append_varlabels(dataname, baseline_var, indent = 1L),
+          tern::append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
           aval_var = aval_var,
           arm_var = arm_var,
@@ -134,23 +136,25 @@ template_shift_by_arm <- function(dataname,
       layout_list,
       substitute(
         expr = expr_basic_table_args %>%
-          rtables::split_cols_by(visit_var, split_fun = drop_split_levels) %>% # temp solution for over arching column
+          rtables::split_cols_by(visit_var,
+            split_fun = rtables::drop_split_levels
+          ) %>% # temp solution for over arching column
           rtables::split_cols_by(aval_var) %>%
           rtables::split_rows_by(
             arm_var,
-            split_fun = drop_split_levels,
+            split_fun = rtables::drop_split_levels,
             label_pos = "topleft",
-            split_label = obj_label(dataname$arm_var)
+            split_label = rtables::obj_label(dataname$arm_var)
           ) %>%
-          add_rowcounts() %>%
-          analyze_vars(
+          tern::add_rowcounts() %>%
+          tern::analyze_vars(
             baseline_var,
             denom = "N_row",
             na_str = na_str,
             na.rm = na.rm,
             .stats = "count_fraction"
           ) %>%
-          append_varlabels(dataname, baseline_var, indent = 1L),
+          tern::append_varlabels(dataname, baseline_var, indent = 1L),
         env = list(
           aval_var = aval_var,
           arm_var = arm_var,
@@ -287,7 +291,7 @@ tm_t_shift_by_arm <- function(label,
                               ),
                               treatment_flag = teal.transform::choices_selected("Y"),
                               useNA = c("ifany", "no"), # nolint: object_name.
-                              na_level = default_na_str(),
+                              na_level = tern::default_na_str(),
                               add_total = FALSE,
                               total_label = default_total_label(),
                               pre_output = NULL,
@@ -581,7 +585,7 @@ srv_shift_by_arm <- function(id,
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = names(merged$anl_input_r()$columns_source$arm_var),
-        paramcd = unlist(merged$anl_input_r()$filter)["vars_selected"],
+        paramcd = unlist(merged$anl_input_r()$filter_info)["vars_selected"],
         treatment_flag_var = names(merged$anl_input_r()$columns_source$treatment_flag_var),
         treatment_flag = input$treatment_flag,
         aval_var = names(merged$anl_input_r()$columns_source$aval_var),

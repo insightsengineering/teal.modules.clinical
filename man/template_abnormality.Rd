@@ -19,7 +19,7 @@ template_abnormality(
   total_label = default_total_label(),
   exclude_base_abn = FALSE,
   drop_arm_levels = TRUE,
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   basic_table_args = teal.widgets::basic_table_args(),
   tbl_title
 )

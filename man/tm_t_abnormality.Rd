@@ -28,7 +28,7 @@ tm_t_abnormality(
   drop_arm_levels = TRUE,
   pre_output = NULL,
   post_output = NULL,
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   basic_table_args = teal.widgets::basic_table_args(),
   transformators = list(),
   decorators = list()

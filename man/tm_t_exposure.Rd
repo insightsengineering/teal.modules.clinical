@@ -25,7 +25,7 @@ tm_t_exposure(
   total_label = default_total_label(),
   add_total_row = TRUE,
   total_row_label = "Total number of patients and patient time*",
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),

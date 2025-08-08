@@ -38,7 +38,7 @@ template_g_km <- function(dataname = "ANL",
                           annot_surv_med = TRUE,
                           annot_coxph = TRUE,
                           control_annot_surv_med = control_surv_med_annot(),
-                          control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+                          control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
                           legend_pos = NULL,
                           position_coxph = lifecycle::deprecated(),
                           width_annots = lifecycle::deprecated(),
@@ -112,7 +112,7 @@ template_g_km <- function(dataname = "ANL",
     data_list <- add_expr(
       data_list,
       substitute_names(
-        expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
+        expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = comp_arm, new_level = comp_arm_val)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm, comp_arm_val = comp_arm_val)
       )
@@ -174,10 +174,10 @@ template_g_km <- function(dataname = "ANL",
           plot_number <- 0L
           function(x) {
             plot_number <<- plot_number + 1L
-            g_km(
+            tern::g_km(
               x,
               variables = variables,
-              control_surv = control_surv_timepoint(conf_level = conf_level, conf_type = conf_type),
+              control_surv = tern::control_surv_timepoint(conf_level = conf_level, conf_type = conf_type),
               xticks = xticks,
               xlab = sprintf(
                 "%s (%s)",
@@ -213,7 +213,7 @@ template_g_km <- function(dataname = "ANL",
               ci_ribbon = ci_ribbon,
               annot_surv_med = annot_surv_med,
               annot_coxph = annot_coxph,
-              control_coxph_pw = control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
+              control_coxph_pw = tern::control_coxph(conf_level = conf_level, pval_method = pval_method, ties = ties),
               control_annot_surv_med = control_annot_surv_med,
               control_annot_coxph = control_annot_coxph,
               legend_pos = legend_pos,
@@ -387,8 +387,8 @@ tm_g_km <- function(label,
                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain", TRUE),
                     font_size = c(11L, 1L, 30),
-                    control_annot_surv_med = control_surv_med_annot(),
-                    control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+                    control_annot_surv_med = tern::control_surv_med_annot(),
+                    control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
                     legend_pos = c(0.9, 0.5),
                     rel_height_plot = c(80L, 0L, 100L),
                     plot_height = c(800L, 400L, 5000L),

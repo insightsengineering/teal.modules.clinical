@@ -17,7 +17,7 @@ tm_t_smq(
   total_label = default_total_label(),
   sort_criteria = c("freq_desc", "alpha"),
   drop_arm_levels = TRUE,
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   smq_varlabel = "Standardized MedDRA Query",
   baskets,
   scopes,

@@ -20,7 +20,7 @@ tm_t_summary_by(
   parallel_vars = FALSE,
   row_groups = FALSE,
   useNA = c("ifany", "no"),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "median", "range"),
   denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed =
     TRUE),
