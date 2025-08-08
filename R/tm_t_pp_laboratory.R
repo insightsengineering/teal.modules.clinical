@@ -80,7 +80,7 @@ template_laboratory <- function(dataname = "ANL",
           )
         colnames(table_data)[-c(1:3)] <- unique(labor_table_base$INDEX)
 
-        table_data[[param_char]] <- teal.modules.clinical::clean_description(result[[param_char]])
+        table_data[[param_char]] <- teal.modules.clinical::clean_description(table_data[[param_char]])
 
         table <- rlistings::as_listing(
           table_data,
