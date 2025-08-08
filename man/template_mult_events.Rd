@@ -13,7 +13,7 @@ template_mult_events(
   llt,
   add_total = TRUE,
   total_label = default_total_label(),
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   event_type = "event",
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()

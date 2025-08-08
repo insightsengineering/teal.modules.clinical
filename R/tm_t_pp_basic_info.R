@@ -29,7 +29,7 @@ template_basic_info <- function(dataname = "ANL",
           utils::head(1) %>%
           t()
 
-        key <- col_labels(dataname, fill = TRUE)[rownames(values)]
+        key <- teal.data::col_labels(dataname, fill = TRUE)[rownames(values)]
 
         table_data <-
           data.frame(var = rownames(values), key = key, value = values) %>%

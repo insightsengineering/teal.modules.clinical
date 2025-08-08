@@ -10,8 +10,8 @@
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-          anl <- df_explicit_na(anl, na_level = "<Missing>")
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
+          anl <- tern::df_explicit_na(anl, na_level = "<Missing>")
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
           by_visit <- TRUE
           anl <- dplyr::mutate(anl, ATOXGR_GP = factor(dplyr::case_when(ATOXGR %in% 
               c(0, 1, 2, 3, 4) ~ "Not Low", ATOXGR == -1 ~ "1", ATOXGR == 
@@ -35,7 +35,7 @@
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL", 
@@ -46,9 +46,9 @@
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
               fill = FALSE)[["AVISIT"]]) %>% rtables::split_rows_by(var = "ATOXGR_GP", 
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
-              fill = FALSE)[["ATOXGR_GP"]]) %>% summarize_num_patients(var = "USUBJID", 
-          .stats = c("unique_count")) %>% count_occurrences(vars = "BTOXGR_GP", 
-          denom = "n", drop = TRUE, .indent_mods = 4L) %>% append_varlabels(anl, 
+              fill = FALSE)[["ATOXGR_GP"]]) %>% tern::summarize_num_patients(var = "USUBJID", 
+          .stats = c("unique_count")) %>% tern::count_occurrences(vars = "BTOXGR_GP", 
+          denom = "n", drop = TRUE, .indent_mods = 4L) %>% tern::append_varlabels(anl, 
           "BTOXGR_GP", indent = 3L)
       
       $table
@@ -70,8 +70,8 @@
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-          anl <- df_explicit_na(anl, na_level = "<MYMissing>")
-          adsl <- df_explicit_na(adsl, na_level = "<MYMissing>")
+          anl <- tern::df_explicit_na(anl, na_level = "<MYMissing>")
+          adsl <- tern::df_explicit_na(adsl, na_level = "<MYMissing>")
           by_visit <- TRUE
           anl <- dplyr::mutate(anl, ATOXGR_GP = factor(dplyr::case_when(MYATOXGR %in% 
               c(0, 1, 2, 3, 4) ~ "Not Low", MYATOXGR == -1 ~ "1", MYATOXGR == 
@@ -95,7 +95,7 @@
       }
       
       $layout_prep
-      split_fun <- drop_split_levels
+      split_fun <- rtables::drop_split_levels
       
       $layout
       lyt <- rtables::basic_table(title = "Grade Summary Table", subtitles = "Worst Flag Variable: WGRLOVFL", 
@@ -106,9 +106,9 @@
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
               fill = FALSE)[["AVISIT"]]) %>% rtables::split_rows_by(var = "ATOXGR_GP", 
           split_fun = split_fun, label_pos = "topleft", split_label = teal.data::col_labels(anl, 
-              fill = FALSE)[["ATOXGR_GP"]]) %>% summarize_num_patients(var = "MYUSUBJID", 
-          .stats = c("unique_count")) %>% count_occurrences(vars = "BTOXGR_GP", 
-          denom = "n", drop = TRUE, .indent_mods = 4L) %>% append_varlabels(anl, 
+              fill = FALSE)[["ATOXGR_GP"]]) %>% tern::summarize_num_patients(var = "MYUSUBJID", 
+          .stats = c("unique_count")) %>% tern::count_occurrences(vars = "BTOXGR_GP", 
+          denom = "n", drop = TRUE, .indent_mods = 4L) %>% tern::append_varlabels(anl, 
           "BTOXGR_GP", indent = 3L)
       
       $table

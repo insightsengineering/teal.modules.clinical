@@ -77,7 +77,7 @@ template_logistic <- function(dataname,
       data_pipe <- add_expr(
         data_pipe,
         substitute_names(
-          expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+          expr = dplyr::mutate(arm_var = tern::combine_levels(x = arm_var, levels = comp_arm)),
           names = list(arm_var = as.name(arm_var)),
           others = list(comp_arm = comp_arm)
         )
@@ -98,7 +98,7 @@ template_logistic <- function(dataname,
     substitute(
       expr = ANL <- df %>%
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
-        df_explicit_na(na_level = "_NA_"),
+        tern::df_explicit_na(na_level = "_NA_"),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )
@@ -117,7 +117,7 @@ template_logistic <- function(dataname,
     add_expr(
       model_list,
       substitute(
-        expr = fit_logistic(
+        expr = tern::fit_logistic(
           ANL,
           variables = list(response = "Response", arm = arm_var, covariates = cov_var)
         ),
@@ -128,7 +128,7 @@ template_logistic <- function(dataname,
     add_expr(
       model_list,
       substitute(
-        expr = fit_logistic(
+        expr = tern::fit_logistic(
           ANL,
           variables = list(
             response = "Response", arm = arm_var, covariates = cov_var,
@@ -158,7 +158,7 @@ template_logistic <- function(dataname,
     )
   }
 
-  model_list <- add_expr(model_list, quote(df_explicit_na(na_level = "_NA_")))
+  model_list <- add_expr(model_list, quote(tern::df_explicit_na(na_level = "_NA_")))
 
   y$model <- substitute(
     expr = mod <- model_pipe,
@@ -187,7 +187,7 @@ template_logistic <- function(dataname,
   y$table <- substitute(
     expr = {
       table <- expr_basic_table_args %>%
-        summarize_logistic(
+        tern::summarize_logistic(
           conf_level = conf_level,
           drop_and_remove_str = "_NA_"
         ) %>%

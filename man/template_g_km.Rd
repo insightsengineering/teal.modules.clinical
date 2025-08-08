@@ -29,7 +29,7 @@ template_g_km(
   annot_surv_med = TRUE,
   annot_coxph = TRUE,
   control_annot_surv_med = control_surv_med_annot(),
-  control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+  control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
   legend_pos = NULL,
   position_coxph = lifecycle::deprecated(),
   width_annots = lifecycle::deprecated(),

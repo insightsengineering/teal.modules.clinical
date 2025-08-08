@@ -25,7 +25,7 @@ template_shift_by_grade <- function(parentname,
                                     drop_arm_levels = TRUE,
                                     add_total = FALSE,
                                     total_label = default_total_label(),
-                                    na_level = default_na_str(),
+                                    na_level = tern::default_na_str(),
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
@@ -74,7 +74,7 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      expr = dataname <- tern::df_explicit_na(dataname, na_level = na_str),
       env = list(
         dataname = as.name("anl"),
         na_str = na_level
@@ -85,7 +85,7 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(
         parentname = as.name(parentname),
         na_str = na_level
@@ -287,7 +287,7 @@ template_shift_by_grade <- function(parentname,
   y$data <- bracket_expr(data_list)
 
   # layout start
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
   basic_table_args$title <- "Grade Summary Table"
   basic_table_args$subtitles <- paste("Worst Flag Variable:", worst_flag_var)
@@ -406,7 +406,7 @@ template_shift_by_grade <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_num_patients(
+      expr = tern::summarize_num_patients(
         var = id_var,
         .stats = c("unique_count")
       ),
@@ -427,13 +427,13 @@ template_shift_by_grade <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = count_occurrences(
+      expr = tern::count_occurrences(
         vars = count_var,
         denom = "n",
         drop = TRUE,
         .indent_mods = 4L
       ) %>%
-        append_varlabels(dataname, count_var, indent = indent),
+        tern::append_varlabels(dataname, count_var, indent = indent),
       env = list(
         count_var = count_var,
         dataname = as.name("anl"),
@@ -594,7 +594,7 @@ tm_t_shift_by_grade <- function(label,
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
-                                na_level = default_na_str(),
+                                na_level = tern::default_na_str(),
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.widgets::basic_table_args(),
                                 transformators = list(),

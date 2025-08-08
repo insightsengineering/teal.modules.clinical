@@ -5,20 +5,20 @@
     Output
       $data
       {
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
-          adeg <- df_explicit_na(adeg, na_level = "<Missing>") %>% 
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
+          adeg <- tern::df_explicit_na(adeg, na_level = "<Missing>") %>% 
               dplyr::filter(ONTRTFL == "Y")
           attr(adeg$BNRIND, "label") <- "Baseline Assessment"
       }
       
       $layout
       lyt <- rtables::basic_table() %>% rtables::split_cols_by("AVISIT", 
-          split_fun = drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
-          rtables::split_rows_by("ARM", split_fun = drop_split_levels, 
-              label_pos = "topleft", split_label = obj_label(adeg$ARM)) %>% 
-          add_rowcounts() %>% analyze_vars("BNRIND", denom = "N_row", 
+          split_fun = rtables::drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
+          rtables::split_rows_by("ARM", split_fun = rtables::drop_split_levels, 
+              label_pos = "topleft", split_label = rtables::obj_label(adeg$ARM)) %>% 
+          tern::add_rowcounts() %>% tern::analyze_vars("BNRIND", denom = "N_row", 
           na_str = "<Missing>", na.rm = FALSE, .stats = "count_fraction") %>% 
-          append_varlabels(adeg, "BNRIND", indent = 1L)
+          tern::append_varlabels(adeg, "BNRIND", indent = 1L)
       
       $table
       {
@@ -33,20 +33,20 @@
     Output
       $data
       {
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
-          adeg <- df_explicit_na(adeg, na_level = "<Missing>") %>% 
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
+          adeg <- tern::df_explicit_na(adeg, na_level = "<Missing>") %>% 
               dplyr::filter(ONTRTFL == "Y")
           attr(adeg$BNRIND, "label") <- "Baseline Assessment"
       }
       
       $layout
       lyt <- rtables::basic_table() %>% rtables::split_cols_by("AVISIT", 
-          split_fun = drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
-          rtables::split_rows_by("ARM", split_fun = add_overall_level("All Patients", 
-              first = FALSE), label_pos = "topleft", split_label = obj_label(adeg$ARM)) %>% 
-          add_rowcounts() %>% analyze_vars("BNRIND", denom = "N_row", 
+          split_fun = rtables::drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
+          rtables::split_rows_by("ARM", split_fun = rtables::add_overall_level("All Patients", 
+              first = FALSE), label_pos = "topleft", split_label = rtables::obj_label(adeg$ARM)) %>% 
+          tern::add_rowcounts() %>% tern::analyze_vars("BNRIND", denom = "N_row", 
           na_str = "<Missing>", na.rm = FALSE, .stats = "count_fraction") %>% 
-          append_varlabels(adeg, "BNRIND", indent = 1L)
+          tern::append_varlabels(adeg, "BNRIND", indent = 1L)
       
       $table
       {
@@ -61,20 +61,20 @@
     Output
       $data
       {
-          adsl <- df_explicit_na(adsl, na_level = "<Missing>")
-          adeg <- df_explicit_na(adeg, na_level = "<Missing>") %>% 
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
+          adeg <- tern::df_explicit_na(adeg, na_level = "<Missing>") %>% 
               dplyr::filter(ONTRTFL == "Y")
           attr(adeg$BNRIND, "label") <- "Baseline Assessment"
       }
       
       $layout
       lyt <- rtables::basic_table() %>% rtables::split_cols_by("AVISIT", 
-          split_fun = drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
-          rtables::split_rows_by("ARM", split_fun = drop_split_levels, 
-              label_pos = "topleft", split_label = obj_label(adeg$ARM)) %>% 
-          add_rowcounts() %>% analyze_vars("BNRIND", denom = "N_row", 
+          split_fun = rtables::drop_split_levels) %>% rtables::split_cols_by("ANRIND") %>% 
+          rtables::split_rows_by("ARM", split_fun = rtables::drop_split_levels, 
+              label_pos = "topleft", split_label = rtables::obj_label(adeg$ARM)) %>% 
+          tern::add_rowcounts() %>% tern::analyze_vars("BNRIND", denom = "N_row", 
           na_str = "<Missing>", na.rm = TRUE, .stats = "count_fraction") %>% 
-          append_varlabels(adeg, "BNRIND", indent = 1L)
+          tern::append_varlabels(adeg, "BNRIND", indent = 1L)
       
       $table
       {

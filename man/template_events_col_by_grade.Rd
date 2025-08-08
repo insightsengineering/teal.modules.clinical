@@ -21,7 +21,7 @@ template_events_col_by_grade(
   label_grade = NULL,
   prune_freq = 0.1,
   prune_diff = 0,
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
 )

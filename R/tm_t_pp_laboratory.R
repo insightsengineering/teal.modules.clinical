@@ -80,14 +80,14 @@ template_laboratory <- function(dataname = "ANL",
           )
         colnames(table_data)[-c(1:3)] <- unique(labor_table_base$INDEX)
 
-        table_data[[param_char]] <- clean_description(table_data[[param_char]])
+        table_data[[param_char]] <- teal.modules.clinical::clean_description(result[[param_char]])
 
         table <- rlistings::as_listing(
           table_data,
           key_cols = NULL,
-          default_formatting = list(all = fmt_config(align = "left"))
+          default_formatting = list(all = formatters::fmt_config(align = "left"))
         )
-        main_title(table) <- paste("Patient ID:", patient_id)
+        rtables::main_title(table) <- paste("Patient ID:", patient_id)
         table
 
         table_data_html <- labor_table_base %>%
@@ -102,7 +102,7 @@ template_laboratory <- function(dataname = "ANL",
           )
 
         colnames(table_data_html)[-c(1:3)] <- unique(labor_table_base$INDEX)
-        table_data_html[[param_char]] <- clean_description(table_data_html[[param_char]])
+        table_data_html[[param_char]] <- teal.modules.clinical::clean_description(table_data_html[[param_char]])
       },
       env = list(
         dataname = as.name(dataname),

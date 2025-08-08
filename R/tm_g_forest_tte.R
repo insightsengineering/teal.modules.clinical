@@ -71,7 +71,7 @@ template_forest_tte <- function(dataname = "ANL",
     anl_list,
     substitute_names(
       expr = {
-        dplyr::mutate(arm_var = combine_levels(arm_var, comp_arm)) %>%
+        dplyr::mutate(arm_var = tern::combine_levels(arm_var, comp_arm)) %>%
           dplyr::mutate(is_event = cnsr_var == 0)
       },
       names = list(arm_var = as.name(arm_var)),
@@ -106,7 +106,7 @@ template_forest_tte <- function(dataname = "ANL",
   parent_list <- add_expr(
     parent_list,
     substitute_names(
-      expr = dplyr::mutate(arm_var = combine_levels(arm_var, comp_arm)),
+      expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, comp_arm)),
       names = list(arm_var = as.name(arm_var)),
       others = list(
         ref_arm = ref_arm,
@@ -133,7 +133,7 @@ template_forest_tte <- function(dataname = "ANL",
   summary_list <- add_expr(
     summary_list,
     substitute(
-      expr = df <- extract_survival_subgroups(
+      expr = df <- tern::extract_survival_subgroups(
         variables = list(
           tte = aval_var,
           is_event = "is_event",
@@ -141,7 +141,7 @@ template_forest_tte <- function(dataname = "ANL",
           subgroups = subgroup_var,
           strata = strata_var
         ),
-        control = control_coxph(conf_level = conf_level),
+        control = tern::control_coxph(conf_level = conf_level),
         data = anl
       ),
       env = list(
@@ -160,7 +160,7 @@ template_forest_tte <- function(dataname = "ANL",
   y$table <- substitute(
     expr = {
       result <- rtables::basic_table() %>%
-        tabulate_survival_subgroups(
+        tern::tabulate_survival_subgroups(
           df,
           vars = stats,
           time_unit = as.character(anl$time_unit_var[1]),
@@ -190,7 +190,7 @@ template_forest_tte <- function(dataname = "ANL",
     plot_list,
     substitute(
       expr = {
-        f <- g_forest(
+        f <- tern::g_forest(
           tbl = result,
           col_symbol_size = col_s_size,
           font_size = font_size,
@@ -414,6 +414,7 @@ tm_g_forest_tte <- function(label,
         parentname = parentname,
         stats = stats,
         riskdiff = riskdiff,
+        label = label,
         plot_height = plot_height,
         plot_width = plot_width,
         ggplot2_args = ggplot2_args,
@@ -552,6 +553,7 @@ srv_g_forest_tte <- function(id,
                              time_unit_var,
                              stats,
                              riskdiff,
+                             label,
                              plot_height,
                              plot_width,
                              ggplot2_args,
@@ -723,7 +725,10 @@ srv_g_forest_tte <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      expr = {
+        table
+        plot
+      }
     )
     plot_r <- reactive({
       cowplot::plot_grid(
@@ -747,7 +752,7 @@ srv_g_forest_tte <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,
-      title = "R Code for the Current Time-to-Event Forest Plot"
+      title = label
     )
 
     ### REPORTER
