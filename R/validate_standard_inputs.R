@@ -1,6 +1,6 @@
 #' Validate standard input values for a teal module
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description
 #' @param adsl data.frame with subject-level data
 #' @param adslvars required variables from `ADSL`
 #' @param anl data.frame with analysis data

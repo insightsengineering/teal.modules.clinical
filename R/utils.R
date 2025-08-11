@@ -896,7 +896,7 @@ as_numeric_from_comma_sep_str <- function(input_string, sep = ",") {
 
 #' Default string for total column label
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description
 #'
 #' The default string used as a label for the "total" column. This value is used as the default
 #' value for the `total_label` argument throughout the `teal.modules.clinical` package. If not specified

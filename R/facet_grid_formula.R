@@ -2,7 +2,7 @@
 
 #' Facetting formula `x_facet ~ y_facet`
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description
 #' Replaces `x_facet` or `y_facet` by . when empty character
 #'
 #' @md
