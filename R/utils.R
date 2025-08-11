@@ -62,7 +62,7 @@ count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars 
 #'
 #' @export
 get_var_labels <- function(datasets, dataname, vars) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "0.8.14",
     what = "get_var_labels()",
     with = "teal.data::col_labels()",

@@ -30,10 +30,9 @@ template_summary <- function(dataname,
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
   if (lifecycle::is_present(show_labels)) {
-    warning(
-      "The `show_labels` argument of `template_summary` is deprecated as of teal.modules.clinical 0.9.1.9013 ",
-      "as it is has no effect on the module.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.9.1.9013",
+      what = "template_summary(show_labels)"
     )
   }
 

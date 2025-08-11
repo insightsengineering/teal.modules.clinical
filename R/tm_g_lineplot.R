@@ -43,12 +43,12 @@ template_g_lineplot <- function(dataname = "ANL",
                                 y_lab = "",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
   if (lifecycle::is_present(strata)) {
-    warning(
-      "The `strata` argument of `template_g_lineplot()` is deprecated as of teal.modules.clinical 0.9.1. ",
-      "Please use the `group_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.9.1",
+      what = "template_g_lineplot(strata)",
+      with = "template_g_lineplot(group_var)"
     )
-    group_var <- strata
+    # group_var <- strata
   }
 
   checkmate::assert_string(dataname)

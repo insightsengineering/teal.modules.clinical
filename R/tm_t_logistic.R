@@ -33,7 +33,7 @@ template_logistic <- function(dataname,
                               at = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
   if (lifecycle::is_present(paramcd)) {
-    lifecycle::deprecate_warn("0.8.16", "template_logistic(paramcd)")
+    lifecycle::deprecate_stop("0.8.16", "template_logistic(paramcd)")
   }
 
   # Common assertion no matter if arm_var is NULL or not.
