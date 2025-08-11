@@ -17,6 +17,6 @@ check_arm_ref_comp(x, df_to_check, module)
 \code{TRUE} or \code{FALSE} whether the variable is in ref or comp
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Check if the Treatment variable is reference or compare
 }
 \keyword{internal}

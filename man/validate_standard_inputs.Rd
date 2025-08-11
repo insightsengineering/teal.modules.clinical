@@ -45,6 +45,6 @@ Use \code{NULL} for no maximum.}
 \item{min_nrow}{minimum number of observations in \code{ADSL} and \code{ANL}}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Validate standard input values for a teal module
 }
 \keyword{internal}
