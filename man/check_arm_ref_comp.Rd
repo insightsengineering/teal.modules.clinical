@@ -17,6 +17,6 @@ check_arm_ref_comp(x, df_to_check, module)
 \code{TRUE} or \code{FALSE} whether the variable is in ref or comp
 }
 \description{
-Check if the Treatment variable is reference or compare
+Check Treatment variable type.
 }
 \keyword{internal}

@@ -9,7 +9,6 @@ template_vitals(
   paramcd = "PARAMCD",
   paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
   xaxis = "ADY",
-  aval = lifecycle::deprecated(),
   aval_var = "AVAL",
   patient_id,
   font_size = 12L,
@@ -24,8 +23,6 @@ template_vitals(
 \item{paramcd_levels}{(\code{character})\cr vector of all levels of \code{paramcd}.}
 
 \item{xaxis}{(\code{character})\cr name of the time variable to put on the x-axis.}
-
-\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
 \item{aval_var}{(\code{character})\cr name of the analysis value variable.}
 

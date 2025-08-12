@@ -12,8 +12,7 @@ ui_decorate_teal_data(id, decorators, ...)
 \arguments{
 \item{id}{(\code{character(1)}) \code{shiny} module instance id.}
 
-\item{data}{(\code{teal_data}, \code{teal_data_module}, or \code{reactive} returning \code{teal_data})
-The data which application will depend on.}
+\item{data}{(\code{reactive} returning \code{teal_data})}
 
 \item{expr}{(\code{expression} or \code{reactive}) to evaluate on the output of the decoration.
 When an expression it must be inline code. See \code{\link[=within]{within()}}

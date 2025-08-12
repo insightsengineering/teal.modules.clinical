@@ -93,7 +93,7 @@ arm_ref_comp_observer <- function(session,
 
 #' Check if the Treatment variable is reference or compare
 #'
-#' @description
+#' @description Check Treatment variable type.
 #' @param x (`character`)\cr Name of the variable
 #' @param df_to_check (`data.frame`)\cr table to check
 #' @param module (`character`)\cr teal module the ref and comp are called in

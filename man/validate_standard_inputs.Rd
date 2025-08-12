@@ -45,6 +45,6 @@ Use \code{NULL} for no maximum.}
 \item{min_nrow}{minimum number of observations in \code{ADSL} and \code{ANL}}
 }
 \description{
-Validate standard input values for a teal module
+Validates standard input.
 }
 \keyword{internal}
