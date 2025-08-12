@@ -15,19 +15,10 @@ template_vitals <- function(dataname = "ANL",
                             paramcd = "PARAMCD",
                             paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
                             xaxis = "ADY",
-                            aval = lifecycle::deprecated(),
                             aval_var = "AVAL",
                             patient_id,
                             font_size = 12L,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
-  if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `template_vitals()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
-    )
-  }
 
   checkmate::assert_string(dataname)
   checkmate::assert_string(paramcd)
