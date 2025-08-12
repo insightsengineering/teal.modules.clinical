@@ -20,22 +20,12 @@ template_shift_by_arm_by_worst <- function(dataname,
                                            treatment_flag_var = "ONTRTFL",
                                            treatment_flag = "Y",
                                            aval_var = "ANRIND",
-                                           base_var = lifecycle::deprecated(),
                                            baseline_var = "BNRIND",
                                            na.rm = FALSE, # nolint: object_name.
                                            na_level = tern::default_na_str(),
                                            add_total = FALSE,
                                            total_label = default_total_label(),
                                            basic_table_args = teal.widgets::basic_table_args()) {
-  if (lifecycle::is_present(base_var)) {
-    baseline_var <- base_var
-    warning(
-      "The `base_var` argument of `template_shift_by_arm_by_worst()` ",
-      "is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `baseline_var` argument instead.",
-      call. = FALSE
-    )
-  }
 
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -306,14 +296,11 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        transformators = list(),
                                        decorators = list()) {
   if (lifecycle::is_present(base_var)) {
-    baseline_var <- base_var
-    warning(
-      "The `base_var` argument of `tm_t_shift_by_arm_by_worst()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `baseline_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_t_shift_by_arm_by_worst(base_var)",
+      details = "Please use the `baseline_var` argument instead."
     )
-  } else {
-    base_var <- baseline_var # resolves missing argument error
   }
 
   message("Initializing tm_t_shift_by_arm_by_worst")
