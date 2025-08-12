@@ -26,20 +26,18 @@ template_laboratory <- function(dataname = "ANL",
                                 patient_id = NULL,
                                 round_value = 0L) {
   if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `template_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "template_laboratory(aval)",
+      with = "template_laboratory(aval_var)"
     )
   }
 
   if (lifecycle::is_present(avalu)) {
-    avalu_var <- avalu
-    warning(
-      "The `avalu` argument of `template_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `avalu_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "template_laboratory(avalu)",
+      with = "template_laboratory(avalu_var)"
     )
   }
 
@@ -223,25 +221,19 @@ tm_t_pp_laboratory <- function(label,
   }
 
   if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `tm_t_pp_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_t_pp_laboratory(aval)",
+      with = "tm_t_pp_laboratory(aval_var)"
     )
-  } else {
-    aval <- aval_var # resolves missing argument error
   }
 
   if (lifecycle::is_present(avalu)) {
-    avalu_var <- avalu
-    warning(
-      "The `avalu` argument of `tm_t_pp_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `avalu_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_t_pp_laboratory(avalu)",
+      with = "tm_t_pp_laboratory(avalu_var)"
     )
-  } else {
-    avalu <- avalu_var # resolves missing argument error
   }
 
   message("Initializing tm_t_pp_laboratory")

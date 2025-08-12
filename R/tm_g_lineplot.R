@@ -327,14 +327,11 @@ tm_g_lineplot <- function(label,
                           transformators = list(),
                           decorators = list()) {
   if (lifecycle::is_present(strata)) {
-    warning(
-      "The `strata` argument of `tm_g_lineplot()` is deprecated as of teal.modules.clinical 0.9.1. ",
-      "Please use the `group_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.9.1",
+      what = "tm_g_lineplot(strata)",
+      with = "tm_g_lineplot(group_var)"
     )
-    group_var <- strata
-  } else {
-    strata <- group_var # resolves missing argument error
   }
 
   # Now handle 'parentname' calculation based on 'group_var'

@@ -290,14 +290,11 @@ tm_g_pp_vitals <- function(label,
                            transformators = list(),
                            decorators = list()) {
   if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `tm_g_pp_vitals()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_g_pp_vitals(aval)",
+      with = "tm_g_pp_vitals(aval_var)"
     )
-  } else {
-    aval <- aval_var # resolves missing argument error
   }
 
   message("Initializing tm_g_pp_vitals")
