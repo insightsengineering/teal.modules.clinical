@@ -166,6 +166,7 @@ template_g_ipp <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_g_ipp
+#' @inheritParams template_arguments
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as arm variable.
 #'

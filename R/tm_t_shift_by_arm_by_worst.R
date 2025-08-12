@@ -184,6 +184,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_shift_by_arm_by_worst
+#' @inheritParams template_arguments
 #'
 #' @inherit module_arguments return
 #'
