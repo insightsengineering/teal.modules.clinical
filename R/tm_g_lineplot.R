@@ -40,6 +40,7 @@ template_g_lineplot <- function(dataname = "ANL",
                                 title = "Line Plot",
                                 y_lab = "",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
+
   checkmate::assert_string(dataname)
   checkmate::assert_string(group_var)
   checkmate::assert_string(x)
