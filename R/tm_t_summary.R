@@ -3,7 +3,6 @@
 #' Creates a valid expression to generate a table to summarize variables.
 #'
 #' @inheritParams template_arguments
-#' @param show_labels `r lifecycle::badge("deprecated")`
 #' @param arm_var_labels (`character` or `NULL`)\cr vector of column variable labels to display, of the same length as
 #'   `arm_var`. If `NULL`, no labels will be displayed.
 #'

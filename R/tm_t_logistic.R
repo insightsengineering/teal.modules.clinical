@@ -9,7 +9,6 @@
 #' @param topleft (`character`)\cr text to use as top-left annotation in the table.
 #' @param interaction_var (`character`)\cr names of the variables that can be used for interaction variable selection.
 #' @param responder_val (`character`)\cr values of the responder variable corresponding with a successful response.
-#' @param paramcd `r lifecycle::badge("deprecated")` The `paramcd` argument is not used in this function.
 #' @param label_paramcd (`character`)\cr label of response parameter value to print in the table title.
 #'
 #' @inherit template_arguments return
