@@ -19,28 +19,10 @@ template_laboratory <- function(dataname = "ANL",
                                 param = "PARAM",
                                 anrind = "ANRIND",
                                 timepoints = "ADY",
-                                aval = lifecycle::deprecated(),
                                 aval_var = "AVAL",
-                                avalu = lifecycle::deprecated(),
                                 avalu_var = "AVALU",
                                 patient_id = NULL,
                                 round_value = 0L) {
-  if (lifecycle::is_present(aval)) {
-    lifecycle::deprecate_stop(
-      when = "0.8.16",
-      what = "template_laboratory(aval)",
-      with = "template_laboratory(aval_var)"
-    )
-  }
-
-  if (lifecycle::is_present(avalu)) {
-    lifecycle::deprecate_stop(
-      when = "0.8.16",
-      what = "template_laboratory(avalu)",
-      with = "template_laboratory(avalu_var)"
-    )
-  }
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(paramcd)
   checkmate::assert_string(param)
@@ -131,6 +113,7 @@ template_laboratory <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_laboratory
+#' @inheritParams template_arguments
 #' @param param ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `PARAM` variable from `dataname`.
 #' @param timepoints ([teal.transform::choices_selected()])\cr object with all

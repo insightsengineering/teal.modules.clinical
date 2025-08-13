@@ -5,7 +5,6 @@
 #' @inheritParams tern::g_lineplot
 #' @inheritParams tern::control_lineplot_vars
 #' @inheritParams template_arguments
-#' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
 #' @param group_var (`string` or `NA`)\cr group variable name.
 #' @param param (`character`)\cr parameter to filter the data by.
 #' @param incl_screen (`logical`)\cr whether the screening visit should be included.
@@ -23,7 +22,6 @@
 #'
 #' @keywords internal
 template_g_lineplot <- function(dataname = "ANL",
-                                strata = lifecycle::deprecated(),
                                 group_var = "ARM",
                                 x = "AVISIT",
                                 y = "AVAL",
@@ -42,15 +40,6 @@ template_g_lineplot <- function(dataname = "ANL",
                                 title = "Line Plot",
                                 y_lab = "",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-  if (lifecycle::is_present(strata)) {
-    lifecycle::deprecate_stop(
-      when = "0.9.1",
-      what = "template_g_lineplot(strata)",
-      with = "template_g_lineplot(group_var)"
-    )
-    # group_var <- strata
-  }
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(group_var)
   checkmate::assert_string(x)
@@ -212,6 +201,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_g_lineplot
+#' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
 #'
 #' @inherit module_arguments return seealso
 #'
