@@ -48,7 +48,6 @@ template_g_lineplot <- function(dataname = "ANL",
       what = "template_g_lineplot(strata)",
       with = "template_g_lineplot(group_var)"
     )
-    # group_var <- strata
   }
 
   checkmate::assert_string(dataname)
