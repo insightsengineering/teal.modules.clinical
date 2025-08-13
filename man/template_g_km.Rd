@@ -31,8 +31,6 @@ template_g_km(
   control_annot_surv_med = control_surv_med_annot(),
   control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
   legend_pos = NULL,
-  position_coxph = lifecycle::deprecated(),
-  width_annots = lifecycle::deprecated(),
   rel_height_plot = 0.8,
   ci_ribbon = FALSE,
   title = "KM Plot"
@@ -103,12 +101,6 @@ options are: \code{x}, \code{y}, \code{w}, \code{h}, \code{fill}, and \code{ref_
 \item{legend_pos}{(\code{numeric(2)} or \code{NULL})\cr vector containing x- and y-coordinates, respectively, for the legend
 position relative to the KM plot area. If \code{NULL} (default), the legend is positioned in the bottom right corner of
 the plot, or the middle right of the plot if needed to prevent overlapping.}
-
-\item{position_coxph}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}  Please use the \code{x} and \code{y} elements of
-\code{control_annot_coxph} instead.}
-
-\item{width_annots}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{w} element of \code{control_annot_surv_med}
-(for \code{surv_med}) and \code{control_annot_coxph} (for \code{coxph})."}
 
 \item{rel_height_plot}{(\code{proportion})\cr proportion of total figure height to allocate to the Kaplan-Meier plot.
 Relative height of patients at risk table is then \code{1 - rel_height_plot}. If \code{annot_at_risk = FALSE} or
