@@ -16,7 +16,6 @@ template_summary <- function(dataname,
                              parentname,
                              arm_var,
                              sum_vars,
-                             show_labels = lifecycle::deprecated(),
                              add_total = TRUE,
                              total_label = default_total_label(),
                              var_labels = character(),
@@ -29,12 +28,6 @@ template_summary <- function(dataname,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
-  if (lifecycle::is_present(show_labels)) {
-    lifecycle::deprecate_stop(
-      when = "0.9.1.9013",
-      what = "template_summary(show_labels)"
-    )
-  }
 
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

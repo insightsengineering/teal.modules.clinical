@@ -20,7 +20,6 @@
 template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
-                              paramcd = lifecycle::deprecated(),
                               label_paramcd,
                               cov_var,
                               interaction_var,
@@ -32,9 +31,6 @@ template_logistic <- function(dataname,
                               responder_val = c("CR", "PR"),
                               at = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
-  if (lifecycle::is_present(paramcd)) {
-    lifecycle::deprecate_stop("0.8.16", "template_logistic(paramcd)")
-  }
 
   # Common assertion no matter if arm_var is NULL or not.
   checkmate::assert_string(dataname)
