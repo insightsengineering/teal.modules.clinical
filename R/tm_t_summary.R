@@ -3,7 +3,6 @@
 #' Creates a valid expression to generate a table to summarize variables.
 #'
 #' @inheritParams template_arguments
-#' @param show_labels `r lifecycle::badge("deprecated")`
 #' @param arm_var_labels (`character` or `NULL`)\cr vector of column variable labels to display, of the same length as
 #'   `arm_var`. If `NULL`, no labels will be displayed.
 #'
@@ -16,7 +15,6 @@ template_summary <- function(dataname,
                              parentname,
                              arm_var,
                              sum_vars,
-                             show_labels = lifecycle::deprecated(),
                              add_total = TRUE,
                              total_label = default_total_label(),
                              var_labels = character(),
@@ -29,13 +27,6 @@ template_summary <- function(dataname,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
-  if (lifecycle::is_present(show_labels)) {
-    warning(
-      "The `show_labels` argument of `template_summary` is deprecated as of teal.modules.clinical 0.9.1.9013 ",
-      "as it is has no effect on the module.",
-      call. = FALSE
-    )
-  }
 
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

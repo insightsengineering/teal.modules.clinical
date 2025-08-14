@@ -9,7 +9,6 @@
 #' @param topleft (`character`)\cr text to use as top-left annotation in the table.
 #' @param interaction_var (`character`)\cr names of the variables that can be used for interaction variable selection.
 #' @param responder_val (`character`)\cr values of the responder variable corresponding with a successful response.
-#' @param paramcd `r lifecycle::badge("deprecated")` The `paramcd` argument is not used in this function.
 #' @param label_paramcd (`character`)\cr label of response parameter value to print in the table title.
 #'
 #' @inherit template_arguments return
@@ -20,7 +19,6 @@
 template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
-                              paramcd = lifecycle::deprecated(),
                               label_paramcd,
                               cov_var,
                               interaction_var,
@@ -32,9 +30,6 @@ template_logistic <- function(dataname,
                               responder_val = c("CR", "PR"),
                               at = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
-  if (lifecycle::is_present(paramcd)) {
-    lifecycle::deprecate_warn("0.8.16", "template_logistic(paramcd)")
-  }
 
   # Common assertion no matter if arm_var is NULL or not.
   checkmate::assert_string(dataname)

@@ -35,21 +35,12 @@ template_g_ipp <- function(dataname = "ANL",
                            avalu_var = "AVALU",
                            id_var = "USUBJID",
                            visit_var = "AVISIT",
-                           base_var = lifecycle::deprecated(),
                            baseline_var = "BASE",
                            add_baseline_hline = FALSE,
                            separate_by_obs = FALSE,
                            ggplot2_args = teal.widgets::ggplot2_args(),
                            suppress_legend = FALSE,
                            add_avalu = TRUE) {
-  if (lifecycle::is_present(base_var)) {
-    baseline_var <- base_var
-    warning(
-      "The `base_var` argument of `template_g_ipp()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `baseline_var` argument instead.",
-      call. = FALSE
-    )
-  }
 
   checkmate::assert_string(dataname)
   checkmate::assert_string(paramcd)
@@ -175,6 +166,7 @@ template_g_ipp <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_g_ipp
+#' @inheritParams template_arguments
 #' @param arm_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for variable values that can be used as arm variable.
 #'
@@ -324,14 +316,11 @@ tm_g_ipp <- function(label,
                      transformators = list(),
                      decorators = list()) {
   if (lifecycle::is_present(base_var)) {
-    baseline_var <- base_var
-    warning(
-      "The `base_var` argument of `tm_g_ipp()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `baseline_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_g_ipp(base_var)",
+      details = "Please use the `baseline_var` argument instead."
     )
-  } else {
-    base_var <- baseline_var # resolves missing argument error
   }
 
   message("Initializing tm_g_ipp")

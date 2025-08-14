@@ -19,30 +19,10 @@ template_laboratory <- function(dataname = "ANL",
                                 param = "PARAM",
                                 anrind = "ANRIND",
                                 timepoints = "ADY",
-                                aval = lifecycle::deprecated(),
                                 aval_var = "AVAL",
-                                avalu = lifecycle::deprecated(),
                                 avalu_var = "AVALU",
                                 patient_id = NULL,
                                 round_value = 0L) {
-  if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `template_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
-    )
-  }
-
-  if (lifecycle::is_present(avalu)) {
-    avalu_var <- avalu
-    warning(
-      "The `avalu` argument of `template_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `avalu_var` argument instead.",
-      call. = FALSE
-    )
-  }
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(paramcd)
   checkmate::assert_string(param)
@@ -133,6 +113,7 @@ template_laboratory <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_laboratory
+#' @inheritParams template_arguments
 #' @param param ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `PARAM` variable from `dataname`.
 #' @param timepoints ([teal.transform::choices_selected()])\cr object with all
@@ -223,25 +204,19 @@ tm_t_pp_laboratory <- function(label,
   }
 
   if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `tm_t_pp_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_t_pp_laboratory(aval)",
+      with = "tm_t_pp_laboratory(aval_var)"
     )
-  } else {
-    aval <- aval_var # resolves missing argument error
   }
 
   if (lifecycle::is_present(avalu)) {
-    avalu_var <- avalu
-    warning(
-      "The `avalu` argument of `tm_t_pp_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `avalu_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_t_pp_laboratory(avalu)",
+      with = "tm_t_pp_laboratory(avalu_var)"
     )
-  } else {
-    avalu <- avalu_var # resolves missing argument error
   }
 
   message("Initializing tm_t_pp_laboratory")

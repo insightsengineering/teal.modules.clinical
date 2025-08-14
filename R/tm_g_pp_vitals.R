@@ -15,19 +15,10 @@ template_vitals <- function(dataname = "ANL",
                             paramcd = "PARAMCD",
                             paramcd_levels = c("SYSBP", "DIABP", "PUL", "RESP", "OXYSAT", "WGHT", "TEMP"),
                             xaxis = "ADY",
-                            aval = lifecycle::deprecated(),
                             aval_var = "AVAL",
                             patient_id,
                             font_size = 12L,
                             ggplot2_args = teal.widgets::ggplot2_args()) {
-  if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `template_vitals()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
-    )
-  }
 
   checkmate::assert_string(dataname)
   checkmate::assert_string(paramcd)
@@ -205,6 +196,7 @@ template_vitals <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_vitals
+#' @inheritParams template_arguments
 #' @param xaxis ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
 #'
@@ -299,14 +291,11 @@ tm_g_pp_vitals <- function(label,
                            transformators = list(),
                            decorators = list()) {
   if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `tm_g_pp_vitals()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_g_pp_vitals(aval)",
+      with = "tm_g_pp_vitals(aval_var)"
     )
-  } else {
-    aval <- aval_var # resolves missing argument error
   }
 
   message("Initializing tm_g_pp_vitals")
