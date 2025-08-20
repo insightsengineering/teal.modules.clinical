@@ -48,9 +48,9 @@ Imports:
     ggrepel (>= 0.9.6),
     grid,
     lifecycle (>= 0.2.0),
-    rlistings (>= 0.2.10),
+    rlistings (>= 0.2.12),
     rmarkdown (>= 2.23),
-    rtables (>= 0.6.11),
+    rtables (>= 0.6.13),
     scales (>= 1.4.0),
     shiny (>= 1.8.1),
     shinyjs (>= 1.10.0),
@@ -63,7 +63,7 @@ Imports:
     teal.reporter (>= 0.5.0),
     teal.widgets (>= 0.5.0),
     tern.gee (>= 0.1.5),
-    tern.mmrm (>= 0.3.1),
+    tern.mmrm (>= 0.3.3),
     utils,
     vistime (>= 1.2.3)
 Suggests:
