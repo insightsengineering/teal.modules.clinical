@@ -1,6 +1,7 @@
-# teal.modules.clinical 0.10.0.9019
+# teal.modules.clinical 0.11.0
 
 ### Enhancements
+* Improved the layout and appearance of the app using `bslib` components.
 * Added argument `conf_type` to module `tm_g_km` to allow users to set a confidence interval type for median survival time estimation.
 * Added `denom` argument in `tm_t_binary_outcome` module.
 
