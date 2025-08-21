@@ -872,6 +872,72 @@ srv_t_shift_by_grade <- function(id,
         ),
         arm_var = input_arm_var
       )
+
+      # Additional validation for tm_t_shift_by_grade specific issues
+      # Check if worst flag values are valid
+      validate(
+        shiny::need(
+          length(input$worst_flag_indicator) > 0,
+          "Please select a value indicating worst grade."
+        )
+      )
+
+      # Check if worst flag filtering will result in non-empty dataset
+      if (input_worst_flag_var %in% names(anl_filtered) && length(input$worst_flag_indicator) > 0) {
+        available_worst_flag_values <- unique(anl_filtered[[input_worst_flag_var]])
+        validate(
+          shiny::need(
+            input$worst_flag_indicator %in% available_worst_flag_values,
+            paste0(
+              "The selected worst flag indicator '", input$worst_flag_indicator, 
+              "' is not found in the filtered data. Available values: ",
+              paste(available_worst_flag_values, collapse = ", ")
+            )
+          )
+        )
+
+        # Check if filtering by worst flag will result in any records
+        worst_flag_filtered_data <- anl_filtered[anl_filtered[[input_worst_flag_var]] == input$worst_flag_indicator, ]
+        validate(
+          shiny::need(
+            nrow(worst_flag_filtered_data) > 0,
+            paste0(
+              "No records found with worst flag indicator '", input$worst_flag_indicator,
+              "' in variable '", input_worst_flag_var, "'. Please check your data or filters."
+            )
+          )
+        )
+      }
+
+      # Check if selected PARAMCD values exist in the filtered dataset
+      if (length(input_paramcd) > 0 && input_paramcd_var %in% names(anl_filtered)) {
+        available_paramcd_values <- unique(anl_filtered[[input_paramcd_var]])
+        missing_paramcd <- setdiff(input_paramcd, available_paramcd_values)
+        validate(
+          shiny::need(
+            length(missing_paramcd) == 0,
+            paste0(
+              "The following selected lab parameters are not available in the filtered dataset: ",
+              paste(missing_paramcd, collapse = ", "), 
+              ". Available parameters: ", 
+              paste(available_paramcd_values, collapse = ", ")
+            )
+          )
+        )
+
+        # Check if records exist for the selected PARAMCD values
+        paramcd_filtered_data <- anl_filtered[anl_filtered[[input_paramcd_var]] %in% input_paramcd, ]
+        validate(
+          shiny::need(
+            nrow(paramcd_filtered_data) > 0,
+            paste0(
+              "No records found for the selected lab parameters: ",
+              paste(input_paramcd, collapse = ", "), 
+              ". Please check your data or filters."
+            )
+          )
+        )
+      }
     })
 
     # Generate r code for the analysis.

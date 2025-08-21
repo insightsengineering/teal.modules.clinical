@@ -98,3 +98,67 @@ testthat::test_that(
     testthat::expect_equal(expected_missing_n, result_missing_n)
   }
 )
+
+testthat::test_that(
+  "template_shift_by_grade handles empty dataset after worst flag filtering gracefully",
+  {
+    adsl <- tmc_ex_adsl
+    adlb <- tmc_ex_adlb
+    # Set all worst flag values to "N" to simulate no matching records
+    adlb$WGRLOVFL <- "N"
+    
+    template <- template_shift_by_grade(
+      parentname = "adsl",
+      dataname = "adlb",
+      arm_var = "ARM",
+      id_var = "USUBJID",
+      visit_var = "AVISIT",
+      worst_flag_var = c("WGRLOVFL"),
+      worst_flag_indicator = "Y",  # Looking for "Y" but all are "N"
+      anl_toxgrade_var = "ATOXGR",
+      base_toxgrade_var = "BTOXGR",
+      paramcd = "PARAMCD",
+      drop_arm_levels = TRUE,
+      add_total = FALSE,
+      na_level = "<Missing>",
+      code_missing_baseline = FALSE
+    )
+
+    template_data <- template$data
+    # Should not hang and produce an empty dataset
+    data <- eval(template_data)
+    testthat::expect_equal(nrow(data), 0)
+  }
+)
+
+testthat::test_that(
+  "template_shift_by_grade handles invalid worst flag indicator values",
+  {
+    adsl <- tmc_ex_adsl
+    adlb <- tmc_ex_adlb
+    # Set all worst flag values to "NA" to simulate the reported issue
+    adlb$WGRLOFL <- "NA"
+    
+    template <- template_shift_by_grade(
+      parentname = "adsl",
+      dataname = "adlb",
+      arm_var = "ARM",
+      id_var = "USUBJID",
+      visit_var = "AVISIT",
+      worst_flag_var = c("WGRLOFL"),
+      worst_flag_indicator = "Y",  # Looking for "Y" but all are "NA"
+      anl_toxgrade_var = "ATOXGR",
+      base_toxgrade_var = "BTOXGR",
+      paramcd = "PARAMCD",
+      drop_arm_levels = TRUE,
+      add_total = FALSE,
+      na_level = "<Missing>",
+      code_missing_baseline = FALSE
+    )
+
+    template_data <- template$data
+    # Should not hang and produce an empty dataset
+    data <- eval(template_data)
+    testthat::expect_equal(nrow(data), 0)
+  }
+)

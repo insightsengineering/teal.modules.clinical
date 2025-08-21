@@ -221,3 +221,85 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws
   )
   app_driver$stop()
 })
+
+app_driver_tm_t_shift_by_grade_invalid_data <- function() {
+  data <- teal.data::teal_data()
+  data <- within(data, {
+    ADSL <- teal.data::rADSL
+    ADLB <- teal.data::rADLB
+    # Simulate the issue: set all worst flag values to "NA" instead of "Y"  
+    ADLB$WGRLOFL <- "NA"
+  })
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
+
+  init_teal_app_driver(
+    data = data,
+    modules = tm_t_shift_by_grade(
+      label = "Grade Laboratory Abnormality Table",
+      dataname = "ADLB",
+      parentname = "ADSL",
+      visit_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADLB"]], subset = "AVISIT"),
+        selected = "AVISIT", fixed = TRUE
+      ),
+      arm_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("ARM", "ARMCD")),
+        selected = "ARM"
+      ),
+      paramcd = teal.transform::choices_selected(
+        choices = teal.transform::value_choices(data[["ADLB"]], "PARAMCD", "PARAM"),
+        selected = "ALT"
+      ),
+      worst_flag_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(
+          data[["ADLB"]],
+          subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")
+        ),
+        selected = c("WGRLOFL")  # Using WGRLOFL which has "NA" values
+      ),
+      worst_flag_indicator = teal.transform::choices_selected(
+        teal.transform::value_choices(data[["ADLB"]], "WGRLOFL"),
+        selected = "Y", fixed = TRUE  # Looking for "Y" but all values are "NA"
+      ),
+      anl_toxgrade_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("ATOXGR")),
+        selected = c("ATOXGR"),
+        fixed = TRUE
+      ),
+      base_toxgrade_var = teal.transform::choices_selected(
+        choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("BTOXGR")),
+        selected = c("BTOXGR"),
+        fixed = TRUE
+      ),
+      id_var = teal.transform::choices_selected(
+        teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
+        selected = "USUBJID", fixed = TRUE
+      ),
+      add_total = FALSE,
+      total_label = default_total_label(),
+      drop_arm_levels = TRUE,
+      pre_output = NULL,
+      post_output = NULL,
+      na_level = default_na_str(),
+      code_missing_baseline = FALSE,
+      basic_table_args = teal.widgets::basic_table_args()
+    ),
+    filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
+  )
+}
+
+testthat::test_that("e2e - tm_t_shift_by_grade: Invalid worst flag indicator shows validation error instead of hanging", {
+  testthat::skip("chromium")
+  skip_if_too_deep(5)
+  app_driver <- app_driver_tm_t_shift_by_grade_invalid_data()
+  # Should show validation error instead of hanging
+  app_driver$expect_validation_error()
+  testthat::expect_true(
+    grepl("not found in the filtered data", 
+          app_driver$get_active_module_plot_output("table-table-with-settings", 
+                                                  timeout = 5000), 
+          ignore.case = TRUE) ||
+    app_driver$is_visible(app_driver$active_module_element(".shiny-output-error"))
+  )
+  app_driver$stop()
+})
