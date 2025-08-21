@@ -78,7 +78,7 @@ Suggests:
     shinytest2 (>= 0.4.1),
     styler (>= 1.10.3),
     testthat (>= 3.2.3),
-    withr (> 2.0.1.5)
+    withr (>= 3.3.0)
 VignetteBuilder:
     knitr,
     rmarkdown
