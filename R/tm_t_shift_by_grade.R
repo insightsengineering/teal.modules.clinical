@@ -903,19 +903,16 @@ srv_t_shift_by_grade <- function(id,
       # Check if selected PARAMCD values exist in the filtered dataset
       if (length(input_paramcd) > 0 && input_paramcd_var %in% names(anl_filtered)) {
         available_paramcd_values <- unique(anl_filtered[[input_paramcd_var]])
-        missing_paramcd <- setdiff(input_paramcd, available_paramcd_values)
-        if (length(missing_paramcd) > 0) {
-          teal::validate_in(
-            input_paramcd,
-            available_paramcd_values,
-            paste0(
-              "The following selected lab parameters are not available in the filtered dataset: ",
-              paste(missing_paramcd, collapse = ", "),
-              ". Available parameters: ",
-              paste(available_paramcd_values, collapse = ", ")
-            )
+        teal::validate_in(
+          input_paramcd,
+          available_paramcd_values,
+          paste0(
+            "The following selected lab parameters are not available in the filtered dataset: ",
+            paste(setdiff(input_paramcd, available_paramcd_values), collapse = ", "),
+            ". Available parameters: ",
+            paste(available_paramcd_values, collapse = ", ")
           )
-        }
+        )
 
         # Check if records exist for the selected PARAMCD values
         paramcd_filtered_data <- anl_filtered[anl_filtered[[input_paramcd_var]] %in% input_paramcd, ]
