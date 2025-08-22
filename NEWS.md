@@ -1,9 +1,10 @@
-# teal.modules.clinical 0.11.0
+# teal.modules.clinical 0.11.1
 
 ### Enhancements
 * Improved the layout and appearance of the app using `bslib` components.
 * Added argument `conf_type` to module `tm_g_km` to allow users to set a confidence interval type for median survival time estimation.
 * Added `denom` argument in `tm_t_binary_outcome` module.
+* Update `withr` dependency to version.
 
 ### Bug fixes
 * Fixed bug in `tm_t_events` to return sorted table (#1393).
