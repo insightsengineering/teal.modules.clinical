@@ -222,7 +222,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws
   app_driver$stop()
 })
 
-app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_name_linter.
+app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_length, object_name.
   data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
