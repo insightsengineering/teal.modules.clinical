@@ -222,7 +222,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws
   app_driver$stop()
 })
 
-app_driver_tm_t_shift_by_grade_invalid_data <- function() {
+app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_name_linter.
   data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
@@ -236,7 +236,7 @@ app_driver_tm_t_shift_by_grade_invalid_data <- function() {
 
   init_teal_app_driver(
     data = data,
-    modules =modules(
+    modules = modules(
       tm_t_shift_by_grade(
         label = "Grade Laboratory Abnormality Table",
         dataname = "ADLB",
@@ -273,7 +273,8 @@ app_driver_tm_t_shift_by_grade_invalid_data <- function() {
   )
 }
 
-testthat::test_that("e2e - tm_t_shift_by_grade: Invalid worst flag indicator shows validation error instead of hanging", {
+testthat::test_that(
+  "e2e - tm_t_shift_by_grade: Invalid worst flag indicator shows validation error instead of hanging", {
   testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_grade_invalid_data()
