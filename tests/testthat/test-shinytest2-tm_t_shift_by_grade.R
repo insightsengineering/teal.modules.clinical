@@ -274,13 +274,15 @@ app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_len
 }
 
 testthat::test_that(
-  "e2e - tm_t_shift_by_grade: Invalid worst flag indicator shows validation error instead of hanging", {
-  testthat::skip("chromium")
-  skip_if_too_deep(5)
-  app_driver <- app_driver_tm_t_shift_by_grade_invalid_data()
-  app_driver$expect_validation_error()
-  testthat::expect_true(
-    nrow(app_driver$get_active_module_table_output("table-table-with-settings")) == 0
-  )
-  app_driver$stop()
-})
+  "e2e - tm_t_shift_by_grade: Invalid worst flag indicator shows validation error instead of hanging",
+  {
+    testthat::skip("chromium")
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_shift_by_grade_invalid_data()
+    app_driver$expect_validation_error()
+    testthat::expect_true(
+      nrow(app_driver$get_active_module_table_output("table-table-with-settings")) == 0
+    )
+    app_driver$stop()
+  }
+)

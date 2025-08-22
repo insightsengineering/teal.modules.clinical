@@ -106,7 +106,6 @@ testthat::test_that(
     adlb <- tmc_ex_adlb
     # Set all worst flag values to "N" to simulate no matching records
     adlb$WGRLOVFL <- "N"
-    
     template <- template_shift_by_grade(
       parentname = "adsl",
       dataname = "adlb",
@@ -138,7 +137,6 @@ testthat::test_that(
     adlb <- tmc_ex_adlb
     # Set all worst flag values to "NA" to simulate the reported issue
     adlb$WGRLOFL <- "NA"
-    
     template <- template_shift_by_grade(
       parentname = "adsl",
       dataname = "adlb",
