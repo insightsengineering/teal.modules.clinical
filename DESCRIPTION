@@ -1,6 +1,6 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.10.0.9019
+Version: 0.11.1
 Date: 2025-08-20
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
@@ -33,9 +33,9 @@ BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.0),
-    teal (>= 0.16.0.9002),
-    teal.transform (>= 0.6.0),
-    tern (>= 0.9.7.9016)
+    teal (>= 1.0.0),
+    teal.transform (>= 0.7.0),
+    tern (>= 0.9.9)
 Imports:
     broom (>= 0.7.10),
     bslib (>= 0.8.0),
@@ -48,9 +48,9 @@ Imports:
     ggrepel (>= 0.9.6),
     grid,
     lifecycle (>= 0.2.0),
-    rlistings (>= 0.2.10),
+    rlistings (>= 0.2.12),
     rmarkdown (>= 2.23),
-    rtables (>= 0.6.11),
+    rtables (>= 0.6.13),
     scales (>= 1.4.0),
     shiny (>= 1.8.1),
     shinyjs (>= 1.10.0),
@@ -58,12 +58,12 @@ Imports:
     shinyWidgets (>= 0.5.1),
     stats,
     teal.code (>= 0.7.0),
-    teal.data (>= 0.7.0),
+    teal.data (>= 0.8.0),
     teal.logger (>= 0.4.0),
     teal.reporter (>= 0.5.0),
-    teal.widgets (>= 0.4.3.9001),
+    teal.widgets (>= 0.5.0),
     tern.gee (>= 0.1.5),
-    tern.mmrm (>= 0.3.1),
+    tern.mmrm (>= 0.3.3),
     utils,
     vistime (>= 1.2.3)
 Suggests:
@@ -78,14 +78,10 @@ Suggests:
     shinytest2 (>= 0.4.1),
     styler (>= 1.10.3),
     testthat (>= 3.2.3),
-    withr (> 2.0.1.5)
+    withr (>= 3.0.0)
 VignetteBuilder:
     knitr,
     rmarkdown
-Remotes:
-    insightsengineering/teal.widgets@main,
-    insightsengineering/teal@main,
-    insightsengineering/tern@main
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
