@@ -248,6 +248,9 @@ template_g_km <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_g_km
+#' @param xticks (`numeric` or `NULL`)\cr numeric vector of tick positions or a single number with spacing
+#'   for the x-axis. If `NULL` (default), users can specify this interactively in the module.
+#'   If provided, the interactive input field is pre-populated with the specified values.
 #' @param facet_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for names of variable that can be used for plot faceting.
 #'
@@ -329,7 +332,8 @@ template_g_km <- function(dataname = "ANL",
 #'       facet_var = choices_selected(
 #'         variable_choices(ADSL, c("SEX", "BMRKR2")),
 #'         NULL
-#'       )
+#'       ),
+#'       xticks = c(0, 30, 60, 90, 120, 150, 180)
 #'     )
 #'   )
 #' )
@@ -365,6 +369,7 @@ tm_g_km <- function(label,
                     conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                     conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain", TRUE),
                     font_size = c(11L, 1L, 30),
+                    xticks = NULL,
                     control_annot_surv_med = tern::control_surv_med_annot(),
                     control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
                     legend_pos = c(0.9, 0.5),
@@ -389,6 +394,7 @@ tm_g_km <- function(label,
   checkmate::assert_class(cnsr_var, "choices_selected")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(conf_type, "choices_selected")
+  checkmate::assert_numeric(xticks, null.ok = TRUE)
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
@@ -425,6 +431,7 @@ tm_g_km <- function(label,
         arm_ref_comp = arm_ref_comp,
         plot_height = plot_height,
         plot_width = plot_width,
+        xticks = xticks,
         control_annot_surv_med = control_annot_surv_med,
         control_annot_coxph = control_annot_coxph,
         legend_pos = legend_pos,
@@ -568,7 +575,10 @@ ui_g_km <- function(id, ...) {
           title = "Additional plot settings",
           textInput(
             inputId = ns("xticks"),
-            label = "Specify break intervals for x-axis e.g. 0 ; 500"
+            label = "Specify break intervals for x-axis e.g. 0 ; 500",
+            value = if (!is.null(a$xticks)) {
+              paste(a$xticks, collapse = " ; ")
+            }
           ),
           radioButtons(
             ns("yval"),
@@ -658,6 +668,7 @@ srv_g_km <- function(id,
                      time_unit_var,
                      plot_height,
                      plot_width,
+                     xticks,
                      control_annot_surv_med,
                      control_annot_coxph,
                      legend_pos,
@@ -803,7 +814,9 @@ srv_g_km <- function(id,
       anl <- anl_q()[["ANL"]]
       teal::validate_has_data(anl, 2)
 
-      input_xticks <- if (!is.null(input$xticks)) {
+      input_xticks <- if (!is.null(xticks)) {
+        xticks
+      } else if (!is.null(input$xticks)) {
         as_numeric_from_comma_sep_str(input$xticks, sep = ";")
       }
 
