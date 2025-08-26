@@ -84,7 +84,8 @@ all available choices and pre-selected option for the confidence level, each wit
 
 \item{xticks}{(\code{numeric} or \code{NULL})\cr numeric vector of tick positions or a single number with spacing
 for the x-axis. If \code{NULL} (default), users can specify this interactively in the module.
-If provided, the interactive input field is pre-populated with the specified values.}
+If provided, the interactive input field is pre-populated with the specified values as a default.
+Users can then modify these values interactively, and their changes will take precedence over the default.}
 
 \item{control_annot_surv_med}{(\code{list})\cr parameters to control the position and size of the annotation table added
 to the plot when \code{annot_surv_med = TRUE}, specified using the \code{\link[tern:control_surv_med_annot]{control_surv_med_annot()}} function. Parameter
