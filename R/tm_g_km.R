@@ -250,7 +250,8 @@ template_g_km <- function(dataname = "ANL",
 #' @inheritParams template_g_km
 #' @param xticks (`numeric` or `NULL`)\cr numeric vector of tick positions or a single number with spacing
 #'   for the x-axis. If `NULL` (default), users can specify this interactively in the module.
-#'   If provided, the interactive input field is pre-populated with the specified values.
+#'   If provided, the interactive input field is pre-populated with the specified values as a default.
+#'   Users can then modify these values interactively, and their changes will take precedence over the default.
 #' @param facet_var ([teal.transform::choices_selected()])\cr object with
 #'   all available choices and preselected option for names of variable that can be used for plot faceting.
 #'
@@ -814,9 +815,7 @@ srv_g_km <- function(id,
       anl <- anl_q()[["ANL"]]
       teal::validate_has_data(anl, 2)
 
-      input_xticks <- if (!is.null(xticks)) {
-        xticks
-      } else if (!is.null(input$xticks)) {
+      input_xticks <- if (!is.null(input$xticks)) {
         as_numeric_from_comma_sep_str(input$xticks, sep = ";")
       }
 
