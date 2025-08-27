@@ -43,7 +43,6 @@ template_g_km <- function(dataname = "ANL",
                           rel_height_plot = 0.80,
                           ci_ribbon = FALSE,
                           title = "KM Plot") {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(arm_var)
   checkmate::assert_string(aval_var)
