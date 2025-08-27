@@ -26,6 +26,7 @@ tm_g_km(
   conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain",
     TRUE),
   font_size = c(11L, 1L, 30),
+  xticks = NULL,
   control_annot_surv_med = tern::control_surv_med_annot(),
   control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
   legend_pos = c(0.9, 0.5),
@@ -80,6 +81,11 @@ all available choices and pre-selected option for the confidence level, each wit
 "log", "log-log".}
 
 \item{font_size}{(\code{numeric})\cr numeric vector of length 3 of current, minimum and maximum font size values.}
+
+\item{xticks}{(\code{numeric} or \code{NULL})\cr numeric vector of tick positions or a single number with spacing
+for the x-axis. If \code{NULL} (default), users can specify this interactively in the module.
+If provided, the interactive input field is pre-populated with the specified values as a default.
+Users can then modify these values interactively, and their changes will take precedence over the default.}
 
 \item{control_annot_surv_med}{(\code{list})\cr parameters to control the position and size of the annotation table added
 to the plot when \code{annot_surv_med = TRUE}, specified using the \code{\link[tern:control_surv_med_annot]{control_surv_med_annot()}} function. Parameter
@@ -198,7 +204,8 @@ app <- init(
       facet_var = choices_selected(
         variable_choices(ADSL, c("SEX", "BMRKR2")),
         NULL
-      )
+      ),
+      xticks = c(0, 30, 60, 90, 120, 150, 180)
     )
   )
 )
@@ -214,8 +221,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlba2Tg1NLe2d-KTkSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAZDL7JH5-KqDFxgYFvFgwGKMfYnIgwVANOiiUjsPrlADCtnKWAAsoTKjoALw6HF4vplVHGGk6aHknQAIT+uEZOmImNZBHx-w55R5bNFZJ0hL+QTKcl5EDKpOltPp+OVZR0zNZf05iB0AAVqFACHB6EQeXyBVjacLoYbKoxBABzHQADQlf0JhsJGPouTClmCYHlOiCQSUaCxqVymU1ZQKrIKSrKfCEIlErIzwjEie1TRirtWMAL2rpUHocGoerAAGk0KaIAYyXBaKpjf5SNatRWCvddLToWC4WmKzokTFNCwhVklubRDFRDW4Oo4PxyxOZ4xaFWRCd5zJ8wCig6pd6pZTL0SSeTr2HFXyK+yyX9nxHxxXUCxYKc5wuYjLqu66bh+ZQztQghwIegGbDCQxFH8RqkuUFKVJeKFYGhcpfhOfwAPLVO+fbak+pFlFOzLooKtJUWitp4WUuLMOE06zvaR6LsBIigVuFY7nu9AHgQXEnjUtRniK1ROF6eCSpyZJYPWWAAExyuRE7an8MlyR+mkTgc5rHDuAHHkuK68eQYEUdqgn7jBolwewp78tJsmXopylqRpTHagAcg4tSArZ4YKn0kZKLQLLsLk5BqBo2jWDYJRaqIOQQKw5ToOwMYACSCLQRT5SujDaIEsxKGAMzPEAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlba2Tg1NLe2d-KTkSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAZDL7JH5-KqDFxgYFvFgwGKMfYnIgwVANOiiUjsPrlADCtnKWAAsoTKjoALw6HF4vplVHGGk6aHknQAIT+uEZOmImNZBHx-w55R5bNFZJ0hL+QTKcl5EDKpOltPp+OVZR0zNZf05iB0AAVqFACHB6EQeXyBVjacLoYbKoxBABzHQADQlf0JhsJGPouTClmCYHlOiCQSUaCxqVymU1ZQKrIKSrKfCEIlErIzwjEie1TRirtWMAL2rpUHocGoerAAGk0KaIAYyXBaKpjf5SNatRWCvddLToWC4WmKzokTFNCwhVklubRDFRDW4Oo4PxyxOZ4xaFWRCd5zJ8wCig6pd6pZTL0SSeTr2HFXyK+yyX9nxHxxXUCxYKc5wuYjLqu66bh+ZQztQghwIegGbDCQxFH8RqkuUFKVJeKFYGhcpfhOfwAPLVO+fbak+pFlFOzLooKtJUWitp4WUuLMOE06zvaR6LsBIigVuFY7nu9AHgQXEnjUtRniK1ROF6eCSpyZJYPWWAAExyuRE7an8MlyR+mkTgc5rHDuAHHkuK68eQYEUdqgn7jBolwewp78tJsmXopylqRpTHagAcg4tSArZ4YKn0kZKLQLLsLk5BqBo2jWDYJRaqIOQQKw5ToOwMYACSCLQRT5SujDaIEsxKGAMzPEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlba2Tg1NLe2d-KTkSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAZDL7JH5-KqDFxgYFvFgwGKMfYnIgwVANOiiUjsPrlADCtnKWAAsoTKjoALw6HF4vplVHGGk6aHknQAIT+uEZOmImNZBHx-w55R5bNFZJ0hL+QTKcl5EDKpOltPp+OVZR0zNZf05iB0AAVqFACHB6EQeXyBVjacLoYbKoxBABzHQADQlf0JhsJGPouTClmCYHlOiCQSUaCxqVymU1ZQKrIKSrKfCEIlErIzwjEie1TRirtWMAL2rpUHocGoerAAGk0KaIAYyXBaKpjf5SNatRWCvddLToWC4WmKzokTFNCwhVklubRDFRDW4Oo4PxyxOZ4xaFWRCd5zJ8wCig6pd6pZTL0SSeTr2HFXyK+yyX9nxHxxXUCxYKc5wuYjLqu66bh+ZQztQghwIegGbDCQxFH8RqkuUFKVJeKFYGhcpfhOfwAPLVO+fbak+pFlFOzLooKtJUWitp4WUuLMOE06zvaR6LsBIigVuFY7nu9AHgQXEnjUtRniK1ROF6eCSpyZJYPWWAAExyuRE7an8MlyR+mkTgc5rHDuAHHkuK68eQYEUdqgn7jBolwewp78tJsmXopylqRpTHagAcg4tSArZBkVm0GgECs2b2uwAAMRQAMwJToABsKUAJwpQAjKpOUAKw5QAHHF4YKn0kZKLQLLsLk5BqBo2jWDYJRaqIOQQKw5ToOwMYACSCLQRT9SujDaIEsxKGAMzPEAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo6AIIAIgDKADKROqQwBDFwAB4xUPyi1KUVlba2Tg1NLe2d-KTkSgC+QQBWRLkxANZwrKL5yTap-HDGUMKkMQT8tKIti8trG8DQ8JsFcgC6rhBVdQ0FwMAKYB+1P7PV7vAZDL7JH5-KqDFxgYFvFgwGKMfYnIgwVANOiiUjsPrlADCtnKWAAsoTKjoALw6HF4vplVHGGk6aHknQAIT+uEZOmImNZBHx-w55R5bNFZJ0hL+QTKcl5EDKpOltPp+OVZR0zNZf05iB0AAVqFACHB6EQeXyBVjacLoYbKoxBABzHQADQlf0JhsJGPouTClmCYHlOiCQSUaCxqVymU1ZQKrIKSrKfCEIlErIzwjEie1TRirtWMAL2rpUHocGoerAAGk0KaIAYyXBaKpjf5SNatRWCvddLToWC4WmKzokTFNCwhVklubRDFRDW4Oo4PxyxOZ4xaFWRCd5zJ8wCig6pd6pZTL0SSeTr2HFXyK+yyX9nxHxxXUCxYKc5wuYjLqu66bh+ZQztQghwIegGbDCQxFH8RqkuUFKVJeKFYGhcpfhOfwAPLVO+fbak+pFlFOzLooKtJUWitp4WUuLMOE06zvaR6LsBIigVuFY7nu9AHgQXEnjUtRniK1ROF6eCSpyZJYPWWAAExyuRE7an8MlyR+mkTgc5rHDuAHHkuK68eQYEUdqgn7jBolwewp78tJsmXopylqRpTHagAcg4tSArZBkVm0GgECs2b2uwAAMRQAMwJToABsKUAJwpQAjKpOUAKw5QAHHF4YKn0kZKLQLLsLk5BqBo2jWDYJRaqIOQQKw5ToOwMYACSCLQRT9SujDaIEsxKGAMzPEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
