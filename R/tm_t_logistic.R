@@ -9,7 +9,6 @@
 #' @param topleft (`character`)\cr text to use as top-left annotation in the table.
 #' @param interaction_var (`character`)\cr names of the variables that can be used for interaction variable selection.
 #' @param responder_val (`character`)\cr values of the responder variable corresponding with a successful response.
-#' @param paramcd `r lifecycle::badge("deprecated")` The `paramcd` argument is not used in this function.
 #' @param label_paramcd (`character`)\cr label of response parameter value to print in the table title.
 #'
 #' @inherit template_arguments return
@@ -20,7 +19,6 @@
 template_logistic <- function(dataname,
                               arm_var,
                               aval_var,
-                              paramcd = lifecycle::deprecated(),
                               label_paramcd,
                               cov_var,
                               interaction_var,
@@ -32,9 +30,6 @@ template_logistic <- function(dataname,
                               responder_val = c("CR", "PR"),
                               at = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
-  if (lifecycle::is_present(paramcd)) {
-    lifecycle::deprecate_warn("0.8.16", "template_logistic(paramcd)")
-  }
 
   # Common assertion no matter if arm_var is NULL or not.
   checkmate::assert_string(dataname)
@@ -77,7 +72,7 @@ template_logistic <- function(dataname,
       data_pipe <- add_expr(
         data_pipe,
         substitute_names(
-          expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+          expr = dplyr::mutate(arm_var = tern::combine_levels(x = arm_var, levels = comp_arm)),
           names = list(arm_var = as.name(arm_var)),
           others = list(comp_arm = comp_arm)
         )
@@ -98,7 +93,7 @@ template_logistic <- function(dataname,
     substitute(
       expr = ANL <- df %>%
         dplyr::mutate(Response = aval_var %in% responder_val) %>%
-        df_explicit_na(na_level = "_NA_"),
+        tern::df_explicit_na(na_level = "_NA_"),
       env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
     )
   )
@@ -117,7 +112,7 @@ template_logistic <- function(dataname,
     add_expr(
       model_list,
       substitute(
-        expr = fit_logistic(
+        expr = tern::fit_logistic(
           ANL,
           variables = list(response = "Response", arm = arm_var, covariates = cov_var)
         ),
@@ -128,7 +123,7 @@ template_logistic <- function(dataname,
     add_expr(
       model_list,
       substitute(
-        expr = fit_logistic(
+        expr = tern::fit_logistic(
           ANL,
           variables = list(
             response = "Response", arm = arm_var, covariates = cov_var,
@@ -158,7 +153,7 @@ template_logistic <- function(dataname,
     )
   }
 
-  model_list <- add_expr(model_list, quote(df_explicit_na(na_level = "_NA_")))
+  model_list <- add_expr(model_list, quote(tern::df_explicit_na(na_level = "_NA_")))
 
   y$model <- substitute(
     expr = mod <- model_pipe,
@@ -187,7 +182,7 @@ template_logistic <- function(dataname,
   y$table <- substitute(
     expr = {
       table <- expr_basic_table_args %>%
-        summarize_logistic(
+        tern::summarize_logistic(
           conf_level = conf_level,
           drop_and_remove_str = "_NA_"
         ) %>%

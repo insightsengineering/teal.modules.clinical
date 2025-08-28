@@ -5,7 +5,6 @@
 #' @inheritParams tern::g_lineplot
 #' @inheritParams tern::control_lineplot_vars
 #' @inheritParams template_arguments
-#' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
 #' @param group_var (`string` or `NA`)\cr group variable name.
 #' @param param (`character`)\cr parameter to filter the data by.
 #' @param incl_screen (`logical`)\cr whether the screening visit should be included.
@@ -23,7 +22,6 @@
 #'
 #' @keywords internal
 template_g_lineplot <- function(dataname = "ANL",
-                                strata = lifecycle::deprecated(),
                                 group_var = "ARM",
                                 x = "AVISIT",
                                 y = "AVAL",
@@ -42,14 +40,6 @@ template_g_lineplot <- function(dataname = "ANL",
                                 title = "Line Plot",
                                 y_lab = "",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-  if (lifecycle::is_present(strata)) {
-    warning(
-      "The `strata` argument of `template_g_lineplot()` is deprecated as of teal.modules.clinical 0.9.1. ",
-      "Please use the `group_var` argument instead.",
-      call. = FALSE
-    )
-    group_var <- strata
-  }
 
   checkmate::assert_string(dataname)
   checkmate::assert_string(group_var)
@@ -106,7 +96,7 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   z$variables <- substitute(
-    expr = variables <- control_lineplot_vars(x = x, y = y, group_var = arm, paramcd = paramcd, y_unit = y_unit),
+    expr = variables <- tern::control_lineplot_vars(x = x, y = y, group_var = arm, paramcd = paramcd, y_unit = y_unit),
     env = list(x = x, y = y, arm = group_var, paramcd = paramcd, y_unit = y_unit)
   )
 
@@ -151,7 +141,7 @@ template_g_lineplot <- function(dataname = "ANL",
   )
 
   plot_call <- substitute(
-    g_lineplot(
+    tern::g_lineplot(
       df = anl,
       variables = variables,
       interval = interval,
@@ -168,7 +158,7 @@ template_g_lineplot <- function(dataname = "ANL",
       y_lab = ggplot2_args_ylab,
       legend_title = ggplot2_args_legend_title,
       ggtheme = ggplot2::theme_minimal(),
-      control = control_analyze_vars(conf_level = conf_level),
+      control = tern::control_analyze_vars(conf_level = conf_level),
       subtitle_add_paramcd = FALSE,
       subtitle_add_unit = FALSE
     ),
@@ -212,6 +202,7 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_g_lineplot
+#' @param strata `r lifecycle::badge("deprecated")` Please use the `group_var` argument instead.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -329,14 +320,11 @@ tm_g_lineplot <- function(label,
                           transformators = list(),
                           decorators = list()) {
   if (lifecycle::is_present(strata)) {
-    warning(
-      "The `strata` argument of `tm_g_lineplot()` is deprecated as of teal.modules.clinical 0.9.1. ",
-      "Please use the `group_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.9.1",
+      what = "tm_g_lineplot(strata)",
+      with = "tm_g_lineplot(group_var)"
     )
-    group_var <- strata
-  } else {
-    strata <- group_var # resolves missing argument error
   }
 
   # Now handle 'parentname' calculation based on 'group_var'

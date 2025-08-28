@@ -13,10 +13,9 @@ template_shift_by_arm(
   treatment_flag_var = "ONTRTFL",
   treatment_flag = "Y",
   aval_var = "ANRIND",
-  base_var = lifecycle::deprecated(),
   baseline_var = "BNRIND",
   na.rm = FALSE,
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   add_total = FALSE,
   total_label = default_total_label(),
   basic_table_args = teal.widgets::basic_table_args()
@@ -40,8 +39,6 @@ template_shift_by_arm(
 records in \code{treatment_flag_var}.}
 
 \item{aval_var}{(\code{character})\cr name of the analysis reference range indicator variable.}
-
-\item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
 \item{baseline_var}{(\code{character})\cr name of the baseline reference range indicator variable.}
 

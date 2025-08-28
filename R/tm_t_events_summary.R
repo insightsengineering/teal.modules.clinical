@@ -41,7 +41,7 @@ template_events_summary <- function(anl_name,
                                     llt = "AEDECOD",
                                     add_total = TRUE,
                                     total_label = default_total_label(),
-                                    na_level = default_na_str(),
+                                    na_level = tern::default_na_str(),
                                     count_dth = TRUE,
                                     count_wd = TRUE,
                                     count_subj = TRUE,
@@ -152,14 +152,14 @@ template_events_summary <- function(anl_name,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      expr = dataname <- tern::df_explicit_na(dataname, na_level = na_str),
       env = list(dataname = as.name("anl"), na_str = na_level)
     )
   )
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
@@ -185,7 +185,7 @@ template_events_summary <- function(anl_name,
     layout_parent_list <- add_expr(
       layout_parent_list,
       substitute(
-        expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+        expr = rtables::split_cols_by(nested_col, split_fun = rtables::drop_split_levels),
         env = list(nested_col = arm_var[[2]])
       )
     )
@@ -205,11 +205,11 @@ template_events_summary <- function(anl_name,
     layout_parent_list <- add_expr(
       layout_parent_list,
       substitute(
-        expr = count_values(
+        expr = tern::count_values(
           dthfl_var,
           values = "Y",
           .labels = c(count_fraction = "Total number of deaths"),
-          .formats = c(count_fraction = format_count_fraction),
+          .formats = c(count_fraction = tern::format_count_fraction),
           denom = "N_col"
         ),
         env = list(dthfl_var = dthfl_var)
@@ -221,11 +221,11 @@ template_events_summary <- function(anl_name,
     layout_parent_list <- add_expr(
       layout_parent_list,
       substitute(
-        expr = count_values(
+        expr = tern::count_values(
           dcsreas_var,
           values = "ADVERSE EVENT",
           .labels = c(count_fraction = "Total number of patients withdrawn from study due to an AE"),
-          .formats = c(count_fraction = format_count_fraction),
+          .formats = c(count_fraction = tern::format_count_fraction),
           denom = "N_col"
         ),
         env = list(dcsreas_var = dcsreas_var)
@@ -267,7 +267,7 @@ template_events_summary <- function(anl_name,
     layout_anl_list <- add_expr(
       layout_anl_list,
       substitute(
-        expr = rtables::split_cols_by(nested_col, split_fun = drop_split_levels),
+        expr = rtables::split_cols_by(nested_col, split_fun = rtables::drop_split_levels),
         env = list(nested_col = arm_var[[2]])
       )
     )
@@ -296,7 +296,7 @@ template_events_summary <- function(anl_name,
         ),
         .indent_mods = c(count_fraction = 0L),
         table_names = "total_pts_at_least_one"
-      ) %>% count_values(
+      ) %>% tern::count_values(
         "STUDYID",
         values = study_id,
         .stats = "count",
@@ -320,7 +320,7 @@ template_events_summary <- function(anl_name,
     layout_anl_list <- add_expr(
       layout_anl_list,
       substitute(
-        expr = count_patients_with_flags(
+        expr = tern::count_patients_with_flags(
           var = "USUBJID",
           flag_variables = flag_var_anl_label,
           table_names = "count_subj_anl",
@@ -338,7 +338,7 @@ template_events_summary <- function(anl_name,
     layout_anl_list <- add_expr(
       layout_anl_list,
       substitute(
-        expr = count_patients_with_flags(
+        expr = tern::count_patients_with_flags(
           var = llt,
           flag_variables = flag_var_anl_label,
           table_names = "count_pt_anl",
@@ -358,7 +358,7 @@ template_events_summary <- function(anl_name,
     layout_anl_list <- add_expr(
       layout_anl_list,
       substitute(
-        expr = count_patients_with_flags(
+        expr = tern::count_patients_with_flags(
           var = "USUBJID_AESEQ",
           flag_variables = flag_var_anl_label,
           table_names = "count_events_anl",
@@ -378,7 +378,7 @@ template_events_summary <- function(anl_name,
     layout_anl_list <- add_expr(
       layout_anl_list,
       substitute(
-        expr = count_patients_with_flags(
+        expr = tern::count_patients_with_flags(
           var = "USUBJID",
           flag_variables = flag_var_aesi_label,
           table_names = "count_subj_aesi",
@@ -396,7 +396,7 @@ template_events_summary <- function(anl_name,
     layout_anl_list <- add_expr(
       layout_anl_list,
       substitute(
-        expr = count_patients_with_flags(
+        expr = tern::count_patients_with_flags(
           var = llt,
           flag_variables = flag_var_aesi_label,
           table_names = "count_pt_aesi",
@@ -416,7 +416,7 @@ template_events_summary <- function(anl_name,
     layout_anl_list <- add_expr(
       layout_anl_list,
       substitute(
-        expr = count_patients_with_flags(
+        expr = tern::count_patients_with_flags(
           var = "USUBJID_AESEQ",
           flag_variables = flag_var_aesi_label,
           table_names = "count_events_aesi",
@@ -657,7 +657,7 @@ tm_t_events_summary <- function(label,
                                 ),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
-                                na_level = default_na_str(),
+                                na_level = tern::default_na_str(),
                                 count_dth = TRUE,
                                 count_wd = TRUE,
                                 count_subj = TRUE,

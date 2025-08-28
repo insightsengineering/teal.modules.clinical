@@ -25,8 +25,6 @@ for \code{"tmc_default_total_label"}, or \code{"All Patients"} otherwise.
 }
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
-
 The default string used as a label for the "total" column. This value is used as the default
 value for the \code{total_label} argument throughout the \code{teal.modules.clinical} package. If not specified
 for each module by the user via the \code{total_label} argument, or in the R environment options via

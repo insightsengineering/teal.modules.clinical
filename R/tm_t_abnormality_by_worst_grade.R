@@ -116,7 +116,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = if (is.null(obj_label(anl[[paramcd]]))) {
+      expr = if (is.null(rtables::obj_label(anl[[paramcd]]))) {
         stop("Please specify label for ", paramcd)
       },
       env = list(
@@ -165,7 +165,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
         expr = expr_basic_table_args %>%
           rtables::split_cols_by(
             var = arm_var,
-            split_fun = add_overall_level(label = total_label, first = FALSE)
+            split_fun = rtables::add_overall_level(label = total_label, first = FALSE)
           ),
         env = list(
           arm_var = arm_var,
@@ -188,9 +188,9 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
       expr = rtables::split_rows_by(
         paramcd,
         label_pos = "topleft",
-        split_label = obj_label(anl[[paramcd]])
+        split_label = rtables::obj_label(anl[[paramcd]])
       ) %>%
-        summarize_num_patients(
+        tern::summarize_num_patients(
           var = id_var,
           required = "GRADE_ANL",
           .stats = "unique_count"
@@ -198,10 +198,10 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
         rtables::split_rows_by(
           "GRADE_DIR",
           label_pos = "topleft",
-          split_fun = trim_levels_to_map(map = map),
-          split_label = obj_label(anl$GRADE_DIR)
+          split_fun = rtables::trim_levels_to_map(map = map),
+          split_label = rtables::obj_label(anl$GRADE_DIR)
         ) %>%
-        count_abnormal_by_worst_grade(
+        tern::count_abnormal_by_worst_grade(
           var = "GRADE_ANL",
           variables = list(id = id_var, param = paramcd, grade_dir = "GRADE_DIR"),
           .indent_mods = 4L

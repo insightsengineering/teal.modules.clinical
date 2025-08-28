@@ -17,7 +17,6 @@ name of y facet, if empty, will not facet along y.}
 facet grid formula \code{formula(x_facet ~ y_facet)}
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 Replaces \code{x_facet} or \code{y_facet} by . when empty character
 }
 \keyword{internal}

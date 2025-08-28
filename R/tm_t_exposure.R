@@ -30,7 +30,7 @@ template_exposure <- function(parentname,
                               add_total_row = TRUE,
                               total_row_label = "Total number of patients and patient time*",
                               drop_levels = TRUE,
-                              na_level = default_na_str(),
+                              na_level = tern::default_na_str(),
                               aval_var,
                               avalu_var,
                               basic_table_args = teal.widgets::basic_table_args()) {
@@ -69,7 +69,7 @@ template_exposure <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = na_str),
+      dataname <- tern::df_explicit_na(dataname, na_level = na_str),
       env = list(
         dataname = as.name("anl"),
         na_str = na_level
@@ -79,7 +79,7 @@ template_exposure <- function(parentname,
   y$data <- bracket_expr(data_list)
 
   # layout start
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
   if (is.null(paramcd_label)) {
     paramcd_label <- paramcd
@@ -106,7 +106,7 @@ template_exposure <- function(parentname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          rtables::split_cols_by(col_by_var, split_fun = add_overall_level(total_label, first = FALSE)),
+          rtables::split_cols_by(col_by_var, split_fun = rtables::add_overall_level(total_label, first = FALSE)),
           env = list(
             col_by_var = col_by_var,
             total_label = total_label
@@ -129,7 +129,7 @@ template_exposure <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      analyze_patients_exposure_in_cols(
+      tern::analyze_patients_exposure_in_cols(
         var = row_by_var,
         ex_var = aval_var,
         col_split = TRUE,
@@ -168,12 +168,12 @@ template_exposure <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      analyze_patients_exposure_in_cols(
+      tern::analyze_patients_exposure_in_cols(
         var = row_by_var,
         col_split = FALSE,
         na_str = na_str
       ) %>%
-        append_topleft(c(split_label)),
+        rtables::append_topleft(c(split_label)),
       env = list(
         row_by_var = row_by_var,
         na_str = na_level,
@@ -347,7 +347,7 @@ tm_t_exposure <- function(label,
                           total_label = default_total_label(),
                           add_total_row = TRUE,
                           total_row_label = "Total number of patients and patient time*",
-                          na_level = default_na_str(),
+                          na_level = tern::default_na_str(),
                           pre_output = NULL,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args(),

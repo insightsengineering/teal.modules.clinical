@@ -221,3 +221,68 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws
   )
   app_driver$stop()
 })
+
+app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_length, object_name.
+  data <- teal.data::teal_data()
+  data <- within(data, {
+    ADSL <- tmc_ex_adsl
+    ADLB <- tmc_ex_adlb
+    ADLB$WGRLOFL <- "NA"
+  })
+  join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
+  #'
+  ADSL <- data[["ADSL"]]
+  ADLB <- data[["ADLB"]]
+
+  init_teal_app_driver(
+    data = data,
+    modules = modules(
+      tm_t_shift_by_grade(
+        label = "Grade Laboratory Abnormality Table",
+        dataname = "ADLB",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(ADSL, subset = c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(ADLB, "PARAMCD", "PARAM"),
+          selected = "ALT"
+        ),
+        worst_flag_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(ADLB, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+          selected = "WGRLOFL"
+        ),
+        worst_flag_indicator = teal.transform::choices_selected(
+          teal.transform::value_choices(ADLB, "WGRLOVFL"),
+          selected = "Y", fixed = TRUE
+        ),
+        anl_toxgrade_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(ADLB, subset = c("ATOXGR")),
+          selected = c("ATOXGR"),
+          fixed = TRUE
+        ),
+        base_toxgrade_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(ADLB, subset = c("BTOXGR")),
+          selected = c("BTOXGR"),
+          fixed = TRUE
+        ),
+        add_total = FALSE
+      )
+    ),
+    filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
+  )
+}
+
+testthat::test_that(
+  "e2e - tm_t_shift_by_grade: Invalid worst flag indicator shows validation error instead of hanging",
+  {
+    testthat::skip("chromium")
+    skip_if_too_deep(5)
+    app_driver <- app_driver_tm_t_shift_by_grade_invalid_data()
+    app_driver$expect_validation_error()
+    testthat::expect_true(
+      nrow(app_driver$get_active_module_table_output("table-table-with-settings")) == 0
+    )
+    app_driver$stop()
+  }
+)

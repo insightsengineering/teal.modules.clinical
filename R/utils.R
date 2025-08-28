@@ -62,7 +62,7 @@ count_str_to_column_expr <- function(column, n_column = get_n_name(groupby_vars 
 #'
 #' @export
 get_var_labels <- function(datasets, dataname, vars) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "0.8.14",
     what = "get_var_labels()",
     with = "teal.data::col_labels()",
@@ -198,7 +198,7 @@ add_expr <- function(expr_ls, new_expr) {
 #'   expr = anl <- subset(df, PARAMCD == param),
 #'   env = list(df = as.name("adrs"), param = "INVET")
 #' )
-#' expr2 <- substitute(expr = anl$rsp_lab <- d_onco_rsp_label(anl$AVALC))
+#' expr2 <- substitute(expr = anl$rsp_lab <- tern::d_onco_rsp_label(anl$AVALC))
 #' expr3 <- substitute(
 #'   expr = {
 #'     anl$is_rsp <- anl$rsp_lab %in%
@@ -590,7 +590,7 @@ prepare_arm <- function(dataname,
       data_list <- add_expr(
         data_list,
         substitute_names(
-          expr = dplyr::mutate(arm_var = combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
+          expr = dplyr::mutate(arm_var = tern::combine_levels(arm_var, levels = ref_arm, new_level = ref_arm_val)),
           names = list(arm_var = as.name(arm_var)),
           others = list(ref_arm = ref_arm, ref_arm_val = ref_arm_val)
         )
@@ -896,7 +896,7 @@ as_numeric_from_comma_sep_str <- function(input_string, sep = ",") {
 
 #' Default string for total column label
 #'
-#' @description `r lifecycle::badge("stable")`
+#' @description
 #'
 #' The default string used as a label for the "total" column. This value is used as the default
 #' value for the `total_label` argument throughout the `teal.modules.clinical` package. If not specified

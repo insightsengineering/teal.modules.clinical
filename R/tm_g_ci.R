@@ -82,8 +82,8 @@ template_g_ci <- function(dataname,
         ),
         env = list(
           fun = switch(stat,
-            mean = substitute(stat_mean_ci),
-            median = substitute(stat_median_ci)
+            mean = substitute(tern::stat_mean_ci),
+            median = substitute(tern::stat_median_ci)
           )
         )
       )
@@ -101,11 +101,11 @@ template_g_ci <- function(dataname,
         env = list(
           fun = switch(stat,
             mean = substitute(
-              expr = function(x) stat_mean_ci(x, conf_level = conf_level),
+              expr = function(x) tern::stat_mean_ci(x, conf_level = conf_level),
               env = list(conf_level = conf_level)
             ),
             median = substitute(
-              expr = function(x) stat_median_ci(x, conf_level = conf_level),
+              expr = function(x) tern::stat_median_ci(x, conf_level = conf_level),
               env = list(conf_level = conf_level)
             )
           )
@@ -362,6 +362,10 @@ ui_g_ci <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = tags$div(
+      ### Reporter
+      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
+      tags$br(), tags$br(),
+      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(args[c("x_var", "y_var", "color")]),
       teal.transform::data_extract_ui(
@@ -473,10 +477,10 @@ srv_g_ci <- function(id,
         )
       )
 
-      x_label <- column_annotation_label(data()[[attr(x, "dataname")]], x)
-      y_label <- column_annotation_label(data()[[attr(y, "dataname")]], y)
+      x_label <- teal.modules.clinical::column_annotation_label(data()[[attr(x, "dataname")]], x)
+      y_label <- teal.modules.clinical::column_annotation_label(data()[[attr(y, "dataname")]], y)
       color_label <- if (length(color)) {
-        column_annotation_label(data()[[attr(color, "dataname")]], color)
+        teal.modules.clinical::column_annotation_label(data()[[attr(color, "dataname")]], color)
       } else {
         NULL
       }

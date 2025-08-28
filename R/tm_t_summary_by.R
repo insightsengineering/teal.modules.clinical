@@ -25,7 +25,7 @@ template_summary_by <- function(parentname,
                                 parallel_vars = FALSE,
                                 row_groups = FALSE,
                                 na.rm = FALSE, # nolint: object_name.
-                                na_level = default_na_str(),
+                                na_level = tern::default_na_str(),
                                 numeric_stats = c(
                                   "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range"
                                 ),
@@ -61,7 +61,7 @@ template_summary_by <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_str),
+        tern::df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_str),
       env = list(
         df = as.name(dataname),
         by_vars = by_vars,
@@ -84,7 +84,7 @@ template_summary_by <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
@@ -92,7 +92,7 @@ template_summary_by <- function(parentname,
   y$data <- bracket_expr(data_list)
 
   # Build layout
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
   if (row_groups) {
     y$layout_cfun <- quote(
       cfun_unique <- function(x, labelstr = "", .N_col) { # nolint: object_name.
@@ -123,7 +123,7 @@ template_summary_by <- function(parentname,
   split_cols_call <- lapply(arm_var, function(x) {
     if (drop_arm_levels) {
       substitute(
-        expr = rtables::split_cols_by(x, split_fun = drop_split_levels),
+        expr = rtables::split_cols_by(x, split_fun = rtables::drop_split_levels),
         env = list(x = x)
       )
     } else {
@@ -244,7 +244,7 @@ template_summary_by <- function(parentname,
       } else {
         if (length(var_labels > 0)) {
           substitute(
-            expr = analyze_vars(
+            expr = tern::analyze_vars(
               vars = sum_vars,
               var_labels = sum_var_labels,
               na.rm = na.rm,
@@ -256,7 +256,7 @@ template_summary_by <- function(parentname,
           )
         } else {
           substitute(
-            expr = analyze_vars(
+            expr = tern::analyze_vars(
               vars = sum_vars,
               na.rm = na.rm,
               na_str = na_level,
@@ -282,7 +282,7 @@ template_summary_by <- function(parentname,
           if (!inherits(tr, "TableRow") || inherits(tr, "LabelRow")) {
             return(FALSE)
           }
-          rvs <- unlist(unname(row_values(tr)))
+          rvs <- unlist(unname(rtables::row_values(tr)))
           isTRUE(all(rvs == 0))
         }
         table <- rtables::build_table(
@@ -414,7 +414,7 @@ tm_t_summary_by <- function(label,
                             parallel_vars = FALSE,
                             row_groups = FALSE,
                             useNA = c("ifany", "no"), # nolint: object_name.
-                            na_level = default_na_str(),
+                            na_level = tern::default_na_str(),
                             numeric_stats = c("n", "mean_sd", "median", "range"),
                             denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             drop_arm_levels = TRUE,
@@ -700,7 +700,7 @@ srv_summary_by <- function(id,
       input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
       input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
       input_by_vars <- names(merged$anl_input_r()$columns_source$by_vars)
-      input_summarize_vars <- names(merged$anl_input_r()$columns_source$summarize_var)
+      input_summarize_vars <- names(merged$anl_input_r()$columns_source$summarize_vars)
       input_paramcd <- `if`(is.null(paramcd), NULL, unlist(paramcd$filter)["vars_selected"])
 
       # validate inputs

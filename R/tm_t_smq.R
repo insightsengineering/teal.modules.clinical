@@ -19,7 +19,7 @@ template_smq <- function(dataname,
                          total_label = default_total_label(),
                          sort_criteria = c("freq_desc", "alpha"),
                          drop_arm_levels = TRUE,
-                         na_level = default_na_str(),
+                         na_level = tern::default_na_str(),
                          smq_varlabel = "Standardized MedDRA Query",
                          baskets = c("SMQ01NAM", "SMQ02NAM", "CQ01NAM"),
                          id_var = "USUBJID",
@@ -77,7 +77,7 @@ template_smq <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      anl <- h_stack_by_baskets(
+      anl <- tern::h_stack_by_baskets(
         df = dataname,
         baskets = baskets,
         smq_varlabel = smq_varlabel,
@@ -106,7 +106,7 @@ template_smq <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      anl <- df_explicit_na(
+      anl <- tern::df_explicit_na(
         dataname,
         na_level = na_str
       ),
@@ -120,7 +120,7 @@ template_smq <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(
+      parentname <- tern::df_explicit_na(
         parentname,
         na_level = na_str
       ),
@@ -156,7 +156,7 @@ template_smq <- function(dataname,
       layout_list,
       if (drop_arm_levels) {
         substitute(
-          expr = rtables::split_cols_by(var = nested_col, split_fun = drop_split_levels),
+          expr = rtables::split_cols_by(var = nested_col, split_fun = rtables::drop_split_levels),
           env = list(nested_col = arm_var[[2]])
         )
       } else {
@@ -181,7 +181,7 @@ template_smq <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_num_patients(
+      expr = tern::summarize_num_patients(
         var = id_var,
         .stats = c("unique"),
         .labels = c(
@@ -208,7 +208,7 @@ template_smq <- function(dataname,
         "SMQ",
         child_labels = "visible",
         nested = FALSE,
-        split_fun = trim_levels_in_group(llt, drop_outlevs = FALSE),
+        split_fun = rtables::trim_levels_in_group(llt, drop_outlevs = FALSE),
         indent_mod = -1L,
         label_pos = "topleft",
         split_label = split_label
@@ -223,7 +223,7 @@ template_smq <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_num_patients(
+      expr = tern::summarize_num_patients(
         var = id_var,
         .stats = c("unique", "nonunique"),
         .labels = c(
@@ -240,7 +240,7 @@ template_smq <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = count_occurrences(vars = llt, drop = FALSE),
+      expr = tern::count_occurrences(vars = llt, drop = FALSE),
       env = list(
         llt = llt
       )
@@ -250,7 +250,7 @@ template_smq <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = append_varlabels(dataname, llt, indent = 1L),
+      expr = tern::append_varlabels(dataname, llt, indent = 1L),
       env = list(
         dataname = as.name("anl"),
         llt = llt
@@ -274,8 +274,8 @@ template_smq <- function(dataname,
     y$sort <- substitute(
       expr = {
         sorted_result <- result %>%
-          sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
-          sort_at_path(path = c("SMQ", "*", llt), scorefun = score_occurrences, na.pos = "last")
+          rtables::sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
+          rtables::sort_at_path(path = c("SMQ", "*", llt), scorefun = tern::score_occurrences, na.pos = "last")
       },
       env = list(llt = llt)
     )
@@ -411,7 +411,7 @@ tm_t_smq <- function(label,
                      total_label = default_total_label(),
                      sort_criteria = c("freq_desc", "alpha"),
                      drop_arm_levels = TRUE,
-                     na_level = default_na_str(),
+                     na_level = tern::default_na_str(),
                      smq_varlabel = "Standardized MedDRA Query",
                      baskets,
                      scopes,

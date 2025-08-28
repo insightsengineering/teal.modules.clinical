@@ -52,9 +52,8 @@
 #'
 #' @examples
 #' data <- within(teal_data(), {
-#'   library("tern")
-#'   ADSL <- tern_ex_adsl
-#'   ADTTE <- tern_ex_adtte
+#'   ADSL <- tern::tern_ex_adsl
+#'   ADTTE <- tern::tern_ex_adtte
 #' })
 #'
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
@@ -238,7 +237,8 @@ ui_t_glm_counts <- function(id, ...) {
     output = output,
     encoding = tags$div(
       ### Reporter
-      teal.reporter::simple_reporter_ui(ns("simple_reporter")),
+      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
+      tags$br(), tags$br(),
       ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::data_extract_ui(
@@ -428,7 +428,7 @@ srv_t_glm_counts <- function(id,
     ##  Preprocessing the data: user specified
     anl <- reactive({
       within(req(anl_q()), {
-        ANL <- df_explicit_na(ANL)
+        ANL <- tern::df_explicit_na(ANL)
       })
     })
     ## Add basic specification for the table
@@ -561,7 +561,7 @@ srv_t_glm_counts <- function(id,
         card$append_src(source_code_r())
         card
       }
-      teal.reporter::simple_reporter_srv("simple_reporter", reporter = reporter, card_fun = card_fun)
+      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
     }
   })
 }

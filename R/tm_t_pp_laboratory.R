@@ -19,30 +19,10 @@ template_laboratory <- function(dataname = "ANL",
                                 param = "PARAM",
                                 anrind = "ANRIND",
                                 timepoints = "ADY",
-                                aval = lifecycle::deprecated(),
                                 aval_var = "AVAL",
-                                avalu = lifecycle::deprecated(),
                                 avalu_var = "AVALU",
                                 patient_id = NULL,
                                 round_value = 0L) {
-  if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `template_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
-    )
-  }
-
-  if (lifecycle::is_present(avalu)) {
-    avalu_var <- avalu
-    warning(
-      "The `avalu` argument of `template_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `avalu_var` argument instead.",
-      call. = FALSE
-    )
-  }
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(paramcd)
   checkmate::assert_string(param)
@@ -70,7 +50,7 @@ template_laboratory <- function(dataname = "ANL",
           dplyr::mutate(aval_anrind = paste(aval_var, anrind)) %>%
           dplyr::select(-c(aval_var, anrind))
 
-        result <- labor_table_base %>%
+        table_data <- labor_table_base %>%
           as.data.frame() %>%
           stats::reshape(
             direction = "wide",
@@ -78,18 +58,19 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind",
             timevar = "INDEX"
           )
-        colnames(result)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        colnames(table_data)[-c(1:3)] <- unique(labor_table_base$INDEX)
 
-        result[[param_char]] <- clean_description(result[[param_char]])
+        table_data[[param_char]] <- teal.modules.clinical::clean_description(table_data[[param_char]])
 
-        table_listing <- rlistings::as_listing(
-          result,
+        table <- rlistings::as_listing(
+          table_data,
           key_cols = NULL,
-          default_formatting = list(all = fmt_config(align = "left"))
+          default_formatting = list(all = formatters::fmt_config(align = "left"))
         )
-        main_title(table_listing) <- paste("Patient ID:", patient_id)
+        rtables::main_title(table) <- paste("Patient ID:", patient_id)
+        table
 
-        table <- labor_table_base %>%
+        table_data_html <- labor_table_base %>%
           dplyr::mutate(aval_anrind_col = color_lab_values(aval_anrind)) %>%
           dplyr::select(-aval_anrind) %>%
           as.data.frame() %>%
@@ -99,21 +80,9 @@ template_laboratory <- function(dataname = "ANL",
             v.names = "aval_anrind_col",
             timevar = "INDEX"
           )
-        colnames(table)[-c(1:3)] <- unique(labor_table_base$INDEX)
-        table[[param_char]] <- clean_description(table[[param_char]])
 
-        table <- DT::datatable(
-          table,
-          escape = FALSE,
-          options = list(
-            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
-            scrollX = TRUE
-          )
-        )
-        table$dependencies <- c(
-          table$dependencies,
-          list(rmarkdown::html_dependency_bootstrap("default"))
-        )
+        colnames(table_data_html)[-c(1:3)] <- unique(labor_table_base$INDEX)
+        table_data_html[[param_char]] <- teal.modules.clinical::clean_description(table_data_html[[param_char]])
       },
       env = list(
         dataname = as.name(dataname),
@@ -144,6 +113,7 @@ template_laboratory <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_laboratory
+#' @inheritParams template_arguments
 #' @param param ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `PARAM` variable from `dataname`.
 #' @param timepoints ([teal.transform::choices_selected()])\cr object with all
@@ -250,27 +220,29 @@ tm_t_pp_laboratory <- function(label,
                                pre_output = NULL,
                                post_output = NULL,
                                transformators = list(),
-                               decorators = list()) {
-  if (lifecycle::is_present(aval)) {
-    aval_var <- aval
-    warning(
-      "The `aval` argument of `tm_t_pp_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `aval_var` argument instead.",
-      call. = FALSE
+                               decorators = lifecycle::deprecated()) {
+  if (lifecycle::is_present(decorators)) {
+    lifecycle::deprecate_warn(
+      when = "0.11.0",
+      what = "tm_t_pp_laboratory(decorators)",
+      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
     )
-  } else {
-    aval <- aval_var # resolves missing argument error
+  }
+
+  if (lifecycle::is_present(aval)) {
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_t_pp_laboratory(aval)",
+      with = "tm_t_pp_laboratory(aval_var)"
+    )
   }
 
   if (lifecycle::is_present(avalu)) {
-    avalu_var <- avalu
-    warning(
-      "The `avalu` argument of `tm_t_pp_laboratory()` is deprecated as of teal.modules.clinical 0.8.16. ",
-      "Please use the `avalu_var` argument instead.",
-      call. = FALSE
+    lifecycle::deprecate_stop(
+      when = "0.8.16",
+      what = "tm_t_pp_laboratory(avalu)",
+      with = "tm_t_pp_laboratory(avalu_var)"
     )
-  } else {
-    avalu <- avalu_var # resolves missing argument error
   }
 
   message("Initializing tm_t_pp_laboratory")
@@ -286,7 +258,6 @@ tm_t_pp_laboratory <- function(label,
   checkmate::assert_class(anrind, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -309,8 +280,7 @@ tm_t_pp_laboratory <- function(label,
         dataname = dataname,
         parentname = parentname,
         label = label,
-        patient_col = patient_col,
-        decorators = decorators
+        patient_col = patient_col
       )
     ),
     transformators = transformators,
@@ -385,8 +355,7 @@ ui_g_laboratory <- function(id, ...) {
         inputId = ns("round_value"),
         label = "Select number of decimal places for rounding:",
         choices = NULL
-      ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table"))
+      )
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -530,32 +499,34 @@ srv_g_laboratory <- function(id,
       obj %>% teal.code::eval_code(as.expression(labor_calls))
     })
 
-    # Decoration of raw table output.
-    decorated_table_q <- srv_decorate_teal_data(
-      id = "decorator",
-      data = all_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
-    )
-
     # Outputs to render.
     table_r <- reactive({
-      q <- decorated_table_q()
-      list(
-        html = q[["table"]],
-        listing = q[["table_listing"]]
+      q <- req(all_q())
+
+      table_html <- DT::datatable(
+        data = q[["table_data_html"]],
+        escape = FALSE,
+        options = list(
+          lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
+          scrollX = TRUE
+        )
       )
+      table_html$dependencies <- c(
+        table_html$dependencies,
+        list(rmarkdown::html_dependency_bootstrap("default"))
+      )
+      list(html = table_html, report = q[["table"]])
     })
 
     output$title <- renderText({
-      req(decorated_table_q())
-      paste("<h5><b>Patient ID:", decorated_table_q()[["pt_id"]], "</b></h5>")
+      req(all_q())
+      paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
     output$lab_values_table <- DT::renderDataTable(expr = table_r()$html)
 
     # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
+    source_code_r <- reactive(teal.code::get_code(req(all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,

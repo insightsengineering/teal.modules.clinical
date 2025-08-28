@@ -19,7 +19,7 @@ template_mult_events <- function(dataname,
                                  llt,
                                  add_total = TRUE,
                                  total_label = default_total_label(),
-                                 na_level = default_na_str(),
+                                 na_level = tern::default_na_str(),
                                  event_type = "event",
                                  drop_arm_levels = TRUE,
                                  basic_table_args = teal.widgets::basic_table_args()) {
@@ -68,7 +68,7 @@ template_mult_events <- function(dataname,
     data_list,
     substitute(
       expr = anl <- anl %>%
-        df_explicit_na(omit_columns = setdiff(names(anl), term_vars)),
+        tern::df_explicit_na(omit_columns = setdiff(names(anl), term_vars)),
       env = list(
         term_vars = term_vars
       )
@@ -89,14 +89,14 @@ template_mult_events <- function(dataname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(parentname = as.name(parentname), na_str = na_level)
     )
   )
 
   y$data <- bracket_expr(data_list)
 
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
@@ -133,7 +133,7 @@ template_mult_events <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      summarize_num_patients(
+      tern::summarize_num_patients(
         var = "USUBJID",
         count_by = seq_var,
         .stats = c("unique", "nonunique"),
@@ -150,8 +150,8 @@ template_mult_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_varlabels(dataname, llt, indent = 0L),
+        expr = tern::count_occurrences(vars = llt, .indent_mods = -1L) %>%
+          tern::append_varlabels(dataname, llt, indent = 0L),
         env = list(
           dataname = as.name(dataname), llt = llt
         )
@@ -204,7 +204,7 @@ template_mult_events <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = summarize_num_patients(
+        expr = tern::summarize_num_patients(
           var = "USUBJID",
           count_by = seq_var,
           .stats = c("unique", "nonunique"),
@@ -213,8 +213,8 @@ template_mult_events <- function(dataname,
             nonunique = nonunique_label
           )
         ) %>%
-          count_occurrences(vars = llt, .indent_mods = -1L) %>%
-          append_varlabels(dataname, llt, indent = indent_space),
+          tern::count_occurrences(vars = llt, .indent_mods = -1L) %>%
+          tern::append_varlabels(dataname, llt, indent = indent_space),
         env = list(
           dataname = as.name(dataname), llt = llt,
           unique_label = unique_label, nonunique_label = nonunique_label,
@@ -253,7 +253,7 @@ template_mult_events <- function(dataname,
     sort_list,
     substitute(
       expr = sorted_result <- result %>%
-        sort_at_path(path = pth, scorefun = score_occurrences),
+        rtables::sort_at_path(path = pth, scorefun = tern::score_occurrences),
       env = list(pth = pth)
     )
   )
@@ -368,7 +368,7 @@ tm_t_mult_events <- function(label,
                              llt,
                              add_total = TRUE,
                              total_label = default_total_label(),
-                             na_level = default_na_str(),
+                             na_level = tern::default_na_str(),
                              event_type = "event",
                              title_text = "Concomitant Medications",
                              drop_arm_levels = TRUE,

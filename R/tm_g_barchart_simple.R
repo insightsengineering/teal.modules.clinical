@@ -224,6 +224,7 @@ tm_g_barchart_simple <- function(x = NULL,
       fill = fill,
       x_facet = x_facet,
       y_facet = y_facet,
+      label = label,
       plot_height = plot_height,
       plot_width = plot_width,
       ggplot2_args = ggplot2_args,
@@ -241,13 +242,10 @@ ui_g_barchart_simple <- function(id, ...) {
   is_single_dataset_value <- teal.transform::is_single_dataset(args$x, args$fill, args$x_facet, args$y_facet)
 
   tagList(
-    singleton(
-      tags$head(includeCSS(system.file("css/custom.css", package = "teal.modules.clinical")))
-    ),
     teal.widgets::standard_layout(
       output = teal.widgets::white_small_well(
         teal.widgets::plot_with_settings_ui(id = ns("myplot")),
-        uiOutput(ns("table"), class = "overflow-y-scroll max-h-250")
+        uiOutput(ns("table"), style = "overflow-y: scroll; max-height: 250px;")
       ),
       encoding = tags$div(
         tags$label("Encodings", class = "text-primary"), tags$br(),
@@ -352,13 +350,13 @@ ui_g_barchart_simple <- function(id, ...) {
             )
           )
         )
-      )
-    ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
-    pre_output = args$pre_output,
-    post_output = args$post_output
+      ),
+      forms = tagList(
+        teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
+      ),
+      pre_output = args$pre_output,
+      post_output = args$post_output
+    )
   )
 }
 
@@ -369,6 +367,7 @@ srv_g_barchart_simple <- function(id,
                                   fill,
                                   x_facet,
                                   y_facet,
+                                  label,
                                   plot_height,
                                   plot_width,
                                   ggplot2_args,
@@ -502,7 +501,7 @@ srv_g_barchart_simple <- function(id,
       groupby_vars <- as.list(r_groupby_vars()) # so $ access works below
 
       y_lab <- substitute(
-        column_annotation_label(counts, y_name),
+        teal.modules.clinical::column_annotation_label(counts, y_name),
         list(y_name = get_n_name(groupby_vars))
       )
 
@@ -735,7 +734,11 @@ make_barchart_simple_call <- function(y_name,
   # add legend for fill
   if (!is.null(fill_name)) {
     plot_args <- c(plot_args, bquote(
-      ggplot2::guides(fill = ggplot2::guide_legend(title = column_annotation_label(counts, .(fill_name))))
+      ggplot2::guides(
+        fill = ggplot2::guide_legend(
+          title = teal.modules.clinical::column_annotation_label(counts, .(fill_name))
+        )
+      )
     ))
   }
 

@@ -25,7 +25,7 @@ template_shift_by_grade <- function(parentname,
                                     drop_arm_levels = TRUE,
                                     add_total = FALSE,
                                     total_label = default_total_label(),
-                                    na_level = default_na_str(),
+                                    na_level = tern::default_na_str(),
                                     code_missing_baseline = FALSE,
                                     basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
@@ -74,7 +74,7 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = dataname <- df_explicit_na(dataname, na_level = na_str),
+      expr = dataname <- tern::df_explicit_na(dataname, na_level = na_str),
       env = list(
         dataname = as.name("anl"),
         na_str = na_level
@@ -85,7 +85,7 @@ template_shift_by_grade <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- df_explicit_na(parentname, na_level = na_str),
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
       env = list(
         parentname = as.name(parentname),
         na_str = na_level
@@ -287,7 +287,7 @@ template_shift_by_grade <- function(parentname,
   y$data <- bracket_expr(data_list)
 
   # layout start
-  y$layout_prep <- quote(split_fun <- drop_split_levels)
+  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
 
   basic_table_args$title <- "Grade Summary Table"
   basic_table_args$subtitles <- paste("Worst Flag Variable:", worst_flag_var)
@@ -406,7 +406,7 @@ template_shift_by_grade <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_num_patients(
+      expr = tern::summarize_num_patients(
         var = id_var,
         .stats = c("unique_count")
       ),
@@ -427,13 +427,13 @@ template_shift_by_grade <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = count_occurrences(
+      expr = tern::count_occurrences(
         vars = count_var,
         denom = "n",
         drop = TRUE,
         .indent_mods = 4L
       ) %>%
-        append_varlabels(dataname, count_var, indent = indent),
+        tern::append_varlabels(dataname, count_var, indent = indent),
       env = list(
         count_var = count_var,
         dataname = as.name("anl"),
@@ -596,7 +596,7 @@ tm_t_shift_by_grade <- function(label,
                                 drop_arm_levels = TRUE,
                                 pre_output = NULL,
                                 post_output = NULL,
-                                na_level = default_na_str(),
+                                na_level = tern::default_na_str(),
                                 code_missing_baseline = FALSE,
                                 basic_table_args = teal.widgets::basic_table_args(),
                                 transformators = list(),
@@ -873,6 +873,61 @@ srv_t_shift_by_grade <- function(id,
         ),
         arm_var = input_arm_var
       )
+
+      # Additional validation for tm_t_shift_by_grade specific issues
+      # Check if worst flag filtering will result in non-empty dataset
+      if (input_worst_flag_var %in% names(anl_filtered) && length(input$worst_flag_indicator) > 0) {
+        available_worst_flag_values <- unique(anl_filtered[[input_worst_flag_var]])
+        teal::validate_in(
+          input$worst_flag_indicator,
+          available_worst_flag_values,
+          paste0(
+            "The selected worst flag indicator '", input$worst_flag_indicator,
+            "' is not found in the filtered data. Available values: ",
+            paste(available_worst_flag_values, collapse = ", ")
+          )
+        )
+
+        # Check if filtering by worst flag will result in any records
+        worst_flag_filtered_data <- anl_filtered[anl_filtered[[input_worst_flag_var]] == input$worst_flag_indicator, ]
+        validate(
+          shiny::need(
+            nrow(worst_flag_filtered_data) > 0,
+            paste0(
+              "No records found with worst flag indicator '", input$worst_flag_indicator,
+              "' in variable '", input_worst_flag_var, "'. Please check your data or filters."
+            )
+          )
+        )
+      }
+
+      # Check if selected PARAMCD values exist in the filtered dataset
+      if (length(input_paramcd) > 0 && input_paramcd_var %in% names(anl_filtered)) {
+        available_paramcd_values <- unique(anl_filtered[[input_paramcd_var]])
+        teal::validate_in(
+          input_paramcd,
+          available_paramcd_values,
+          paste0(
+            "The following selected lab parameters are not available in the filtered dataset: ",
+            paste(setdiff(input_paramcd, available_paramcd_values), collapse = ", "),
+            ". Available parameters: ",
+            paste(available_paramcd_values, collapse = ", ")
+          )
+        )
+
+        # Check if records exist for the selected PARAMCD values
+        paramcd_filtered_data <- anl_filtered[anl_filtered[[input_paramcd_var]] %in% input_paramcd, ]
+        validate(
+          shiny::need(
+            nrow(paramcd_filtered_data) > 0,
+            paste0(
+              "No records found for the selected lab parameters: ",
+              paste(input_paramcd, collapse = ", "),
+              ". Please check your data or filters."
+            )
+          )
+        )
+      }
     })
 
     # Generate r code for the analysis.

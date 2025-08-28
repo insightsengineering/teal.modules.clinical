@@ -24,8 +24,8 @@ template_coxreg_u <- function(dataname,
                               at = list(),
                               strata_var = NULL,
                               combine_comp_arms = FALSE,
-                              control = control_coxreg(),
-                              na_level = default_na_str(),
+                              control = tern::control_coxreg(),
+                              na_level = tern::default_na_str(),
                               append = FALSE,
                               basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
@@ -49,7 +49,7 @@ template_coxreg_u <- function(dataname,
     data_pipe <- add_expr(
       data_pipe,
       substitute_names(
-        expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = tern::combine_levels(x = arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -75,7 +75,7 @@ template_coxreg_u <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = df_explicit_na(na_level = na_lvl),
+      expr = tern::df_explicit_na(na_level = na_lvl),
       env = list(na_lvl = na_level)
     )
   )
@@ -136,7 +136,7 @@ template_coxreg_u <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_coxreg(
+      expr = tern::summarize_coxreg(
         variables = variables,
         control = control,
         at = at,
@@ -192,8 +192,8 @@ template_coxreg_m <- function(dataname,
                               at = list(),
                               strata_var = NULL,
                               combine_comp_arms = FALSE,
-                              control = control_coxreg(),
-                              na_level = default_na_str(),
+                              control = tern::control_coxreg(),
+                              na_level = tern::default_na_str(),
                               basic_table_args = teal.widgets::basic_table_args()) {
   y <- list()
   ref_arm_val <- paste(ref_arm, collapse = "/")
@@ -216,7 +216,7 @@ template_coxreg_m <- function(dataname,
     data_pipe <- add_expr(
       data_pipe,
       substitute_names(
-        expr = dplyr::mutate(arm_var = combine_levels(x = arm_var, levels = comp_arm)),
+        expr = dplyr::mutate(arm_var = tern::combine_levels(x = arm_var, levels = comp_arm)),
         names = list(arm_var = as.name(arm_var)),
         others = list(comp_arm = comp_arm)
       )
@@ -242,7 +242,7 @@ template_coxreg_m <- function(dataname,
   data_pipe <- add_expr(
     data_pipe,
     substitute(
-      expr = df_explicit_na(na_level = na_lvl),
+      expr = tern::df_explicit_na(na_level = na_lvl),
       env = list(na_lvl = na_level)
     )
   )
@@ -295,7 +295,7 @@ template_coxreg_m <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = summarize_coxreg(
+      expr = tern::summarize_coxreg(
         variables = variables,
         control = control,
         multivar = multivariate,
@@ -542,7 +542,7 @@ tm_t_coxreg <- function(label,
                           fixed = TRUE
                         ),
                         multivariate = TRUE,
-                        na_level = default_na_str(),
+                        na_level = tern::default_na_str(),
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                         pre_output = NULL,
                         post_output = NULL,
@@ -1140,7 +1140,7 @@ srv_t_coxreg <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,
-      title = "R Code for the Current (Multi-Variable) Cox proportional hazard regression model"
+      title = label
     )
 
     decorated_table_q

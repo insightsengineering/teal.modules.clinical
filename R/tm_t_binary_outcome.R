@@ -35,7 +35,7 @@ template_binary_outcome <- function(dataname,
                                     ),
                                     add_total = FALSE,
                                     total_label = default_total_label(),
-                                    na_level = default_na_str(),
+                                    na_level = tern::default_na_str(),
                                     denom = c("N_col", "n", "N_row"),
                                     basic_table_args = teal.widgets::basic_table_args()) {
   checkmate::assert_string(dataname)
@@ -87,7 +87,7 @@ template_binary_outcome <- function(dataname,
   y$data <- substitute(
     expr = {
       anl <- data_pipe
-      parentname <- arm_preparation %>% df_explicit_na(na_level = na_str)
+      parentname <- arm_preparation %>% tern::df_explicit_na(na_level = na_str)
     },
     env = list(
       data_pipe = pipe_expr(data_list),
@@ -150,7 +150,7 @@ template_binary_outcome <- function(dataname,
       substitute(
         rtables::split_cols_by(
           var = arm_var,
-          split_fun = add_overall_level(total_label, first = FALSE)
+          split_fun = rtables::add_overall_level(total_label, first = FALSE)
         ),
         env = list(
           arm_var = arm_var,
@@ -173,7 +173,7 @@ template_binary_outcome <- function(dataname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      estimate_proportion(
+      tern::estimate_proportion(
         vars = "is_rsp",
         conf_level = conf_level,
         method = method,
@@ -192,14 +192,14 @@ template_binary_outcome <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        expr = estimate_proportion_diff(
+        expr = tern::estimate_proportion_diff(
           vars = "is_rsp", show_labels = "visible",
           var_labels = "Unstratified Analysis",
           conf_level = conf_level,
           method = method_ci,
           table_names = "u_prop_diff"
         ) %>%
-          test_proportion_diff(
+          tern::test_proportion_diff(
             vars = "is_rsp",
             method = method_test,
             table_names = "u_test_diff"
@@ -216,7 +216,7 @@ template_binary_outcome <- function(dataname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = estimate_odds_ratio(
+          expr = tern::estimate_odds_ratio(
             vars = "is_rsp",
             conf_level = conf_level,
             table_names = "u_est_or"
@@ -230,7 +230,7 @@ template_binary_outcome <- function(dataname,
       layout_list <- add_expr(
         layout_list,
         substitute(
-          expr = estimate_proportion_diff(
+          expr = tern::estimate_proportion_diff(
             vars = "is_rsp", show_labels = "visible",
             var_labels = "Stratified Analysis",
             variables = list(strata = strata),
@@ -238,7 +238,7 @@ template_binary_outcome <- function(dataname,
             method = method_ci,
             table_names = "s_prop_diff"
           ) %>%
-            test_proportion_diff(
+            tern::test_proportion_diff(
               vars = "is_rsp",
               method = method_test,
               variables = list(strata = strata),
@@ -261,7 +261,7 @@ template_binary_outcome <- function(dataname,
       add_expr(
         layout_list,
         substitute(
-          expr = estimate_odds_ratio(
+          expr = tern::estimate_odds_ratio(
             vars = "is_rsp",
             variables = list(arm = arm_var, strata = strata),
             conf_level = conf_level,
@@ -279,7 +279,7 @@ template_binary_outcome <- function(dataname,
       add_expr(
         layout_list,
         substitute(
-          expr = estimate_odds_ratio(
+          expr = tern::estimate_odds_ratio(
             vars = "is_rsp",
             variables = list(arm = arm_var, strata = strata),
             conf_level = conf_level,
@@ -299,7 +299,7 @@ template_binary_outcome <- function(dataname,
     layout_list <- add_expr(
       layout_list,
       substitute(
-        estimate_multinomial_response(
+        tern::estimate_multinomial_response(
           var = aval_var,
           conf_level = conf_level,
           method = method
@@ -494,7 +494,7 @@ tm_t_binary_outcome <- function(label,
                                 ),
                                 add_total = FALSE,
                                 total_label = default_total_label(),
-                                na_level = default_na_str(),
+                                na_level = tern::default_na_str(),
                                 denom = c("N_col", "n", "N_row"),
                                 pre_output = NULL,
                                 post_output = NULL,

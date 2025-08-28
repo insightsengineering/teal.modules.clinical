@@ -29,14 +29,15 @@ template_basic_info <- function(dataname = "ANL",
           utils::head(1) %>%
           t()
 
-        key <- col_labels(dataname, fill = TRUE)[rownames(values)]
+        key <- teal.data::col_labels(dataname, fill = TRUE)[rownames(values)]
 
-        result <-
+        table_data <-
           data.frame(var = rownames(values), key = key, value = values) %>%
           dplyr::select(var, key, value) %>%
           dplyr::rename(` ` = var, `  ` = key, `   ` = value)
 
-        table <- DT::datatable(result)
+        table <- rtables::df_to_tt(table_data)
+        table
       }, env = list(
         dataname = as.name(dataname),
         vars = vars,
@@ -127,15 +128,23 @@ tm_t_pp_basic_info <- function(label,
                                pre_output = NULL,
                                post_output = NULL,
                                transformators = list(),
-                               decorators = list()) {
+                               decorators = lifecycle::deprecated()) {
   message("Initializing tm_t_pp_basic_info")
+
+  if (lifecycle::is_present(decorators)) {
+    lifecycle::deprecate_warn(
+      when = "0.11.0",
+      what = "tm_t_pp_laboratory(decorators)",
+      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
+    )
+  }
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(patient_col)
   checkmate::assert_class(vars, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  assert_decorators(decorators, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -152,8 +161,7 @@ tm_t_pp_basic_info <- function(label,
       list(
         dataname = dataname,
         label = label,
-        patient_col = patient_col,
-        decorators = decorators
+        patient_col = patient_col
       )
     ),
     transformators = transformators,
@@ -186,8 +194,7 @@ ui_t_basic_info <- function(id, ...) {
         label = "Select variable:",
         data_extract_spec = ui_args$vars,
         is_single_dataset = is_single_dataset_value
-      ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table")),
+      )
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
@@ -294,28 +301,28 @@ srv_t_basic_info <- function(id,
       obj %>% teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
-    decorated_table_q <- srv_decorate_teal_data(
-      id = "decorator",
-      data = all_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
-    )
+    table_r <- reactive({
+      q <- req(all_q())
+
+      list(
+        html = DT::datatable(
+          data = q[["table_data"]],
+          options = list(
+            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
+          )
+        ),
+        report = q[["table"]]
+      )
+    })
 
     output$title <- renderText({
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    table_r <- reactive(decorated_table_q()[["table"]])
-
-    output$basic_info_table <- DT::renderDataTable(
-      expr = table_r(),
-      options = list(
-        lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
-      )
-    )
+    output$basic_info_table <- DT::renderDataTable(table_r()[["html"]])
 
     # Render R code
-    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
+    source_code_r <- reactive(teal.code::get_code(req(all_q())))
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,

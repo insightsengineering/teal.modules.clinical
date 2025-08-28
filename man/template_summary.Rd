@@ -9,13 +9,12 @@ template_summary(
   parentname,
   arm_var,
   sum_vars,
-  show_labels = lifecycle::deprecated(),
   add_total = TRUE,
   total_label = default_total_label(),
   var_labels = character(),
   arm_var_labels = NULL,
   na.rm = FALSE,
-  na_level = default_na_str(),
+  na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
   denominator = c("N", "n", "omit"),
@@ -31,8 +30,6 @@ template_summary(
 \item{arm_var}{(\code{character})\cr variable names that can be used as \code{arm_var}.}
 
 \item{sum_vars}{(\code{character})\cr names of the variables that should be summarized.}
-
-\item{show_labels}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 

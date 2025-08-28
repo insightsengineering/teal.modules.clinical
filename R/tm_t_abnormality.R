@@ -31,7 +31,7 @@ template_abnormality <- function(parentname,
                                  total_label = default_total_label(),
                                  exclude_base_abn = FALSE,
                                  drop_arm_levels = TRUE,
-                                 na_level = default_na_str(),
+                                 na_level = tern::default_na_str(),
                                  basic_table_args = teal.widgets::basic_table_args(),
                                  tbl_title) {
   checkmate::assert_string(dataname)
@@ -82,7 +82,7 @@ template_abnormality <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      dataname <- df_explicit_na(dataname, na_level = na_level),
+      dataname <- tern::df_explicit_na(dataname, na_level = na_level),
       env = list(dataname = as.name("anl"), na_level = na_level)
     )
   )
@@ -90,7 +90,7 @@ template_abnormality <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      parentname <- df_explicit_na(parentname, na_level = na_level),
+      parentname <- tern::df_explicit_na(parentname, na_level = na_level),
       env = list(parentname = as.name(parentname), na_level = na_level)
     )
   )
@@ -103,7 +103,7 @@ template_abnormality <- function(parentname,
     prep_list,
     substitute(
       # Define the map for layout using helper function h_map_for_count_abnormal
-      map <- h_map_for_count_abnormal(
+      map <- tern::h_map_for_count_abnormal(
         df = dataname,
         variables = list(anl = grade, split_rows = by_vars),
         abnormal = abnormal,
@@ -137,7 +137,7 @@ template_abnormality <- function(parentname,
         expr = expr_basic_table_args %>%
           rtables::split_cols_by(
             var = arm_var,
-            split_fun = add_overall_level(total_label, first = FALSE)
+            split_fun = rtables::add_overall_level(total_label, first = FALSE)
           ),
         env = list(
           arm_var = arm_var,
@@ -169,7 +169,7 @@ template_abnormality <- function(parentname,
           by_var,
           split_label = split_label,
           label_pos = "topleft",
-          split_fun = trim_levels_to_map(map = map)
+          split_fun = rtables::trim_levels_to_map(map = map)
         ),
         env = list(
           by_var = by_var,
@@ -183,14 +183,14 @@ template_abnormality <- function(parentname,
   layout_list <- add_expr(
     layout_list,
     substitute(
-      expr = count_abnormal(
+      expr = tern::count_abnormal(
         var = grade,
         abnormal = abnormal,
         variables = list(id = id_var, baseline = baseline_var),
         .indent_mods = 4L,
         exclude_base_abn = exclude_base_abn
       ) %>%
-        append_varlabels(dataname, grade, indent = indent_space),
+        tern::append_varlabels(dataname, grade, indent = indent_space),
       env = list(
         grade = grade,
         abnormal = abnormal,
@@ -355,7 +355,7 @@ tm_t_abnormality <- function(label,
                              drop_arm_levels = TRUE,
                              pre_output = NULL,
                              post_output = NULL,
-                             na_level = default_na_str(),
+                             na_level = tern::default_na_str(),
                              basic_table_args = teal.widgets::basic_table_args(),
                              transformators = list(),
                              decorators = list()) {
