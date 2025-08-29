@@ -838,6 +838,12 @@ srv_t_events_byterm <- function(id,
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card("## Table"), teal.code::eval_code(obj, as.expression(unlist(my_calls))))
     })
 
+    table_renamed_q <- reactive({
+      req(table_q())
+      within(table_q(), {
+        table <- pruned_and_sorted_result
+      })
+
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
       data = table_renamed_q,
