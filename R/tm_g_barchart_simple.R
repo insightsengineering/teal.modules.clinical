@@ -595,7 +595,7 @@ srv_g_barchart_simple <- function(id,
     teal.widgets::verbatim_popup_srv(
       id = "rcode",
       verbatim_content = source_code_r,
-      title = "Bar Chart"
+      title = label
     )
 
     decorated_all_q_code
