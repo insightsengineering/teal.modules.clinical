@@ -61,44 +61,16 @@
 #' @examples
 #' library(dplyr)
 #'
-#' data <- teal_data()
-#' data <- within(data, {
-#'   ADSL <- tmc_ex_adsl %>%
+#' data <- within(teal_data(), {
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl %>%
 #'     mutate(
 #'       DTHFL = case_when(
 #'         !is.na(DTHDT) ~ "Y",
 #'         TRUE ~ ""
 #'       ) %>% with_label("Subject Death Flag")
 #'     )
-#'   ADAE <- tmc_ex_adae
+#'   ADAE <- teal.modules.clinical::tmc_ex_adae
 #'
-#'   .add_event_flags <- function(dat) {
-#'     dat <- dat %>%
-#'       mutate(
-#'         TMPFL_SER = AESER == "Y",
-#'         TMPFL_REL = AEREL == "Y",
-#'         TMPFL_GR5 = AETOXGR == "5",
-#'         TMP_SMQ01 = !is.na(SMQ01NAM),
-#'         TMP_SMQ02 = !is.na(SMQ02NAM),
-#'         TMP_CQ01 = !is.na(CQ01NAM)
-#'       )
-#'     column_labels <- list(
-#'       TMPFL_SER = "Serious AE",
-#'       TMPFL_REL = "Related AE",
-#'       TMPFL_GR5 = "Grade 5 AE",
-#'       TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
-#'       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-#'       TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
-#'     )
-#'     col_labels(dat)[names(column_labels)] <- as.character(column_labels)
-#'     dat
-#'   }
-#'
-#'   #' Generating user-defined event flags.
-#'   ADAE <- ADAE %>% .add_event_flags()
-#'
-#'   .ae_anl_vars <- names(ADAE)[startsWith(names(ADAE), "TMPFL_")]
-#'   .aesi_vars <- names(ADAE)[startsWith(names(ADAE), "TMP_")]
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
@@ -498,7 +470,6 @@ srv_t_events_gtsummary <- function(id,
 
     # The R-code corresponding to the analysis.
     table_pre_q <- reactive({
-
       #' count_dth (`logical`)\cr whether to show count of total deaths (based on `dthfl_var`). Defaults to `TRUE`.
       #' count_wd (`logical`)\cr whether to show count of patients withdrawn from study due to an adverse event
       #'   (based on `dcsreas_var`). Defaults to `TRUE`.
@@ -514,7 +485,7 @@ srv_t_events_gtsummary <- function(id,
 
       # TODO: Is this the right ADAM variable to check withdraw from study?
       flag_withdrawl_study <- any(grepl("WITHDRAWN", data()$ADAE$DCSREAS))
-
+      # gtsummary ####
       tdc <- within(
         data(),
         {
@@ -523,16 +494,16 @@ srv_t_events_gtsummary <- function(id,
           library("gtsummary")
           library("dplyr")
           selection_AEACN <- c("DRUG INTERRUPTED", "DOSE INCREASED", "DOSE REDUCED")
-          vars <- c("DTHFL") # , "AEWITHFL"
+          vars <- c("DTHFL", "AEWITHFL")
           # add variable labels, which will be used in the table below
           labels <- list(
             # Those that must be (DTHFL and AEWITHFL are given more descriptive titles)
             ae_count = "Total number of AEs",
             DTHFL = "Total number of deaths",
-            # AEWITHFL = "Total number of participants withdrawn from study due to an AE",
+            AEWITHFL = "Total number of participants withdrawn from study due to an AE",
             # Those that are calculated
             ae_any = "Total number of participants with at least one AE",
-            # ae_death = "AE with fatal outcome",
+            ae_death = "AE with fatal outcome",
             ae_serious = "Serious AE",
             ae_ser_withdraw = "Serious AE leading to withdrawal from treatment",
             ae_ser_acn = "Serious AE leading to dose modification/interruption",
@@ -548,9 +519,10 @@ srv_t_events_gtsummary <- function(id,
           # This one is dynamic and should be available
           df_table <- ADSL %>%
             select("USUBJID", by, vars) %>%
+            droplevels() %>%
             # recode Y/N/NA to TRUE/FALSE to summarize dichotomously below
             mutate(
-              across(!!!vars, ~ case_match(., "Y" ~ TRUE, .default = FALSE))
+              across(vars, ~ case_match(., "Y" ~ TRUE, .default = FALSE))
             ) %>%
             # create subject-level flags from ADAE data set
             dunlin::subject_level_flag(
@@ -576,7 +548,7 @@ srv_t_events_gtsummary <- function(id,
               # Severe AE (at greatest intensity)
               ae_sev = AESEV == "SEVERE",
               # AE with fatal outcome
-              # ae_death = AESDTH == "Y",
+              ae_death = AESDTH == "Y",
               # Serious AE
               ae_serious = AESER == "Y"
             ) %>%
