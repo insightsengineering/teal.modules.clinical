@@ -843,7 +843,7 @@ srv_t_events_byterm <- function(id,
       within(table_q(), {
         table <- pruned_and_sorted_result
       })
-
+    })
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
       data = table_renamed_q,

@@ -40,7 +40,7 @@ template_fit_mmrm <- function(parentname,
 
     data_list <- add_expr(
       data_list,
-      prepare_arm(dat
+      prepare_arm(
         dataname = dataname,
         arm_var = arm_var,
         ref_arm = ref_arm,
