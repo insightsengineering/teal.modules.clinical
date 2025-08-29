@@ -62,30 +62,6 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
-#' @section Decorating Module:
-#'
-#' This module generates the following objects, which can be modified in place using decorators:
-#' - `table` (`datatables` - output of `DT::datatable()`)
-#'
-#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
-#' The name of this list corresponds to the name of the output to which the decorator is applied.
-#' See code snippet below:
-#'
-#' ```
-#' tm_t_pp_basic_info(
-#'    ..., # arguments for module
-#'    decorators = list(
-#'      table = teal_transform_module(...) # applied only to `table` output
-#'    )
-#' )
-#' ```
-#'
-#' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-module-output", package = "teal.modules.clinical")`.
-#'
-#' To learn more please refer to the vignette
-#' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
-#'
 #' @inheritSection teal::example_module Reporting
 #'
 #' @examplesShinylive
@@ -138,7 +114,7 @@ tm_t_pp_basic_info <- function(label,
       details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
     )
   }
-
+  
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(patient_col)
@@ -210,8 +186,7 @@ srv_t_basic_info <- function(id,
                              dataname,
                              patient_col,
                              vars,
-                             label,
-                             decorators) {
+                             label) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
@@ -328,7 +303,6 @@ srv_t_basic_info <- function(id,
       verbatim_content = source_code_r,
       title = label
     )
-
-    decorated_table_q
+    all_q
   })
 }
