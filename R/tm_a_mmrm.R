@@ -40,7 +40,7 @@ template_fit_mmrm <- function(parentname,
 
     data_list <- add_expr(
       data_list,
-      prepare_arm(
+      prepare_arm(dat
         dataname = dataname,
         arm_var = arm_var,
         ref_arm = ref_arm,
@@ -1033,7 +1033,7 @@ srv_mmrm <- function(id,
     })
 
     anl_q <- reactive({
-      obj <- data()
+      obj <- data_with_tern_options_r()
       teal.reporter::teal_card(obj) <- 
         c(
           teal.reporter::teal_card("# Mixed Model Repeated Measurements (MMRM) Analysis"),
