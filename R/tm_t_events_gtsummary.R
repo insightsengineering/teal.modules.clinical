@@ -13,7 +13,7 @@
 #'   second variable will be nested under the first variable.
 #' @param dthfl_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as death flag variable.
-#'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
+#'   Records with `"Y"` are summarized in the table row for "Total number of deaths".
 #' @param dcsreas_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as study discontinuation
 #'   reason variable. Records with `"ADVERSE EVENTS"` are summarized in the table row for
@@ -134,44 +134,44 @@
 #'
 #' @export
 tm_t_events_gtsummary <- function(label,
-                                dataname,
-                                parentname = ifelse(
-                                  inherits(arm_var, "data_extract_spec"),
-                                  teal.transform::datanames_input(arm_var),
-                                  "ADSL"
-                                ),
-                                arm_var,
-                                flag_var_anl = NULL,
-                                flag_var_aesi = NULL,
-                                dthfl_var = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(parentname, "DTHFL"), "DTHFL",
-                                  fixed = TRUE
-                                ),
-                                dcsreas_var = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(parentname, "DCSREAS"), "DCSREAS",
-                                  fixed = TRUE
-                                ),
-                                llt = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(dataname, "AEDECOD"), "AEDECOD",
-                                  fixed = TRUE
-                                ),
-                                aeseq_var = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(dataname, "AESEQ"), "AESEQ",
-                                  fixed = TRUE
-                                ),
-                                add_total = TRUE,
-                                total_label = default_total_label(),
-                                na_level = tern::default_na_str(),
-                                count_dth = TRUE,
-                                count_wd = TRUE,
-                                count_subj = TRUE,
-                                count_pt = TRUE,
-                                count_events = TRUE,
-                                pre_output = NULL,
-                                post_output = NULL,
-                                basic_table_args = teal.widgets::basic_table_args(),
-                                transformators = list(),
-                                decorators = list()) {
+                                  dataname,
+                                  parentname = ifelse(
+                                    inherits(arm_var, "data_extract_spec"),
+                                    teal.transform::datanames_input(arm_var),
+                                    "ADSL"
+                                  ),
+                                  arm_var,
+                                  flag_var_anl = NULL,
+                                  flag_var_aesi = NULL,
+                                  dthfl_var = teal.transform::choices_selected(
+                                    teal.transform::variable_choices(parentname, "DTHFL"), "DTHFL",
+                                    fixed = TRUE
+                                  ),
+                                  dcsreas_var = teal.transform::choices_selected(
+                                    teal.transform::variable_choices(parentname, "DCSREAS"), "DCSREAS",
+                                    fixed = TRUE
+                                  ),
+                                  llt = teal.transform::choices_selected(
+                                    teal.transform::variable_choices(dataname, "AEDECOD"), "AEDECOD",
+                                    fixed = TRUE
+                                  ),
+                                  aeseq_var = teal.transform::choices_selected(
+                                    teal.transform::variable_choices(dataname, "AESEQ"), "AESEQ",
+                                    fixed = TRUE
+                                  ),
+                                  add_total = TRUE,
+                                  total_label = default_total_label(),
+                                  na_level = tern::default_na_str(),
+                                  count_dth = TRUE,
+                                  count_wd = TRUE,
+                                  count_subj = TRUE,
+                                  count_pt = TRUE,
+                                  count_events = TRUE,
+                                  pre_output = NULL,
+                                  post_output = NULL,
+                                  basic_table_args = teal.widgets::basic_table_args(),
+                                  transformators = list(),
+                                  decorators = list()) {
   message("Initializing tm_t_events_gtsummary")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
@@ -218,7 +218,7 @@ tm_t_events_gtsummary <- function(label,
 
   module(
     label = label,
-    ui = ui_t_events_summary,
+    ui = ui_t_events_gtsummary,
     ui_args = c(data_extract_list, args),
     server = srv_t_events_gtsummary,
     server_args = c(
@@ -239,7 +239,7 @@ tm_t_events_gtsummary <- function(label,
 }
 
 #' @keywords internal
-ui_t_events_summary <- function(id, ...) {
+ui_t_events_gtsummary <- function(id, ...) {
   ns <- NS(id)
   a <- list(...)
 
@@ -254,7 +254,7 @@ ui_t_events_summary <- function(id, ...) {
   )
 
   teal.widgets::standard_layout(
-    output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
+    output = gt::gt_output(ns("table")),
     encoding = tags$div(
       ### Reporter
       teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
@@ -364,25 +364,26 @@ ui_t_events_summary <- function(id, ...) {
   )
 }
 
+
 #' @keywords internal
 srv_t_events_gtsummary <- function(id,
-                                 data,
-                                 reporter,
-                                 filter_panel_api,
-                                 dataname,
-                                 parentname,
-                                 arm_var,
-                                 dthfl_var,
-                                 dcsreas_var,
-                                 flag_var_anl,
-                                 flag_var_aesi,
-                                 aeseq_var,
-                                 llt,
-                                 label,
-                                 total_label,
-                                 na_level,
-                                 basic_table_args,
-                                 decorators) {
+                                   data,
+                                   reporter,
+                                   filter_panel_api,
+                                   dataname,
+                                   parentname,
+                                   arm_var,
+                                   dthfl_var,
+                                   dcsreas_var,
+                                   flag_var_anl,
+                                   flag_var_aesi,
+                                   aeseq_var,
+                                   llt,
+                                   label,
+                                   total_label,
+                                   na_level,
+                                   basic_table_args,
+                                   decorators) {
   with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
   with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
@@ -496,150 +497,126 @@ srv_t_events_gtsummary <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-    table_q <- reactive({
-      validate_checks()
+    table_pre_q <- reactive({
 
-      input_flag_var_anl <- if (!is.null(flag_var_anl)) {
-        as.vector(merged$anl_input_r()$columns_source$flag_var_anl)
-      } else {
-        NULL
-      }
-      input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
-        as.vector(merged$anl_input_r()$columns_source$flag_var_aesi)
-      } else {
-        NULL
-      }
-      my_calls <- template_events_summary(
-        anl_name = "ANL",
-        parentname = "ANL_ADSL",
-        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
-        dthfl_var = as.vector(merged$anl_input_r()$columns_source$dthfl_var),
-        dcsreas_var = as.vector(merged$anl_input_r()$columns_source$dcsreas_var),
-        flag_var_anl = if (length(input_flag_var_anl) != 0) input_flag_var_anl else NULL,
-        flag_var_aesi = if (length(input_flag_var_aesi) != 0) input_flag_var_aesi else NULL,
-        aeseq_var = as.vector(merged$anl_input_r()$columns_source$aeseq_var),
-        llt = as.vector(merged$anl_input_r()$columns_source$llt),
-        add_total = input$add_total,
-        total_label = total_label,
-        na_level = na_level,
-        count_dth = input$count_dth,
-        count_wd = input$count_wd,
-        count_subj = input$count_subj,
-        count_pt = input$count_pt,
-        count_events = input$count_events
-      )
-      all_basic_table_args <- teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
+      #' count_dth (`logical`)\cr whether to show count of total deaths (based on `dthfl_var`). Defaults to `TRUE`.
+      #' count_wd (`logical`)\cr whether to show count of patients withdrawn from study due to an adverse event
+      #'   (based on `dcsreas_var`). Defaults to `TRUE`.
 
-      r <- reactive({
-        req(my_calls)
-        browser()
-        within(data, {
+      # If events variable:
+      #' count_subj (`logical`)\cr whether to show count of unique subjects (based on `USUBJID`).
+      #' count_pt (`logical`)\cr whether to show count of unique preferred terms (based on `llt`).
+      #' count_events (`logical`)\cr whether to show count of events (based on `aeseq_var`).
 
-          df_aet01 <-
-            adam_db$adsl |>
-            select("USUBJID", "TRT01A", "DTHFL", "AEWITHFL") |>
+      # If withdrawal:
+      # "AE leading to withdrawal from study"
+      # "AE leading to withdrawal from treatment"
+
+      # TODO: Is this the right ADAM variable to check withdraw from study?
+      flag_withdrawl_study <- any(grepl("WITHDRAWN", data()$ADAE$DCSREAS))
+
+      tdc <- within(
+        data(),
+        {
+          # Assuming the data we receive is already filtered
+          library("rlang")
+          library("gtsummary")
+          library("dplyr")
+          selection_AEACN <- c("DRUG INTERRUPTED", "DOSE INCREASED", "DOSE REDUCED")
+          vars <- c("DTHFL") # , "AEWITHFL"
+          # add variable labels, which will be used in the table below
+          labels <- list(
+            # Those that must be (DTHFL and AEWITHFL are given more descriptive titles)
+            ae_count = "Total number of AEs",
+            DTHFL = "Total number of deaths",
+            # AEWITHFL = "Total number of participants withdrawn from study due to an AE",
+            # Those that are calculated
+            ae_any = "Total number of participants with at least one AE",
+            # ae_death = "AE with fatal outcome",
+            ae_serious = "Serious AE",
+            ae_ser_withdraw = "Serious AE leading to withdrawal from treatment",
+            ae_ser_acn = "Serious AE leading to dose modification/interruption",
+            ae_sae_rel = "Related Serious AE",
+            ae_withdraw = "AE leading to withdrawal from treatment",
+            ae_acn = "AE leading to modification/interruption",
+            ae_rel = "Related AE",
+            ae_rel_withdraw = "Related AE leading to withdrawal from treatment",
+            ae_rel_acn = "Related AE leading to dose modication/interruption",
+            ae_sev = "Severe AE (at greatest intensity)"
+          )
+
+          # This one is dynamic and should be available
+          df_table <- ADSL %>%
+            select("USUBJID", by, vars) %>%
             # recode Y/N/NA to TRUE/FALSE to summarize dichotomously below
             mutate(
-              across(c(DTHFL, AEWITHFL), ~ case_match(., "Y" ~ TRUE, c("N", NA) ~ FALSE))
-            ) |>
+              across(!!!vars, ~ case_match(., "Y" ~ TRUE, .default = FALSE))
+            ) %>%
             # create subject-level flags from ADAE data set
             dunlin::subject_level_flag(
-              data_long = adam_db$adae,
+              data_long = ADAE,
               # Any AE
               ae_any = TRUE,
               # Serious AE leading to withdrawal from treatment
               ae_ser_withdraw = AESER == "Y" & AEACN == "DRUG WITHDRAWN",
               # Serious AE leading to dose modification/interruption
-              ae_ser_acn = AESER == "Y" & AEACN %in% c("DRUG INTERRUPTED", "DOSE INCREASED", "DOSE REDUCED"),
+              ae_ser_acn = AESER == "Y" & AEACN %in% selection_AEACN,
               # Related Serious AE
               ae_sae_rel = AESER == "Y" & AEREL == "Y",
               # AE Leading to withdrawal from treatment
               ae_withdraw = AEACN == "DRUG WITHDRAWN",
               # AE leading to modification/interruption
-              ae_acn = AEACN %in% c("DRUG INTERRUPTED", "DOSE INCREASED", "DOSE REDUCED"),
+              ae_acn = AEACN %in% selection_AEACN,
               # Related AE
               ae_rel = AEREL == "Y",
               # Related AE leading to withdrawal from treatment
               ae_rel_withdraw = AEREL == "Y" & AEACN == "DRUG WITHDRAWN",
               # Related AE leading to dose modification/interruption
-              ae_rel_acn = AEREL == "Y" & AEACN %in% c("DRUG INTERRUPTED", "DOSE INCREASED", "DOSE REDUCED"),
+              ae_rel_acn = AEREL == "Y" & AEACN %in% selection_AEACN,
               # Severe AE (at greatest intensity)
               ae_sev = AESEV == "SEVERE",
               # AE with fatal outcome
-              ae_death = AESDTH == "Y",
+              # ae_death = AESDTH == "Y",
               # Serious AE
               ae_serious = AESER == "Y"
-            ) |>
+            ) %>%
             # add number of AEs
             left_join(
-              summarise(adam_db$adae, .by = USUBJID, ae_count = n()),
+              summarise(ADAE, .by = USUBJID, ae_count = n()),
               by = "USUBJID",
               relationship = "one-to-one"
-            ) %>%
-            # add variable labels, which will be used in the table below
-            labelled::set_variable_labels(
-              ae_any = "Total number of participants with at least one AE",
-              ae_count = "Total number of AEs",
-              DTHFL = "Total number of deaths",
-              AEWITHFL = "Total number of participants withdrawn from study due to an AE",
-              ae_death = "AE with fatal outcome",
-              ae_serious = "Serious AE",
-              ae_ser_withdraw = "Serious AE leading to withdrawal from treatment",
-              ae_ser_acn = "Serious AE leading to dose modification/interruption",
-              ae_sae_rel = "Related Serious AE",
-              ae_withdraw = "AE leading to withdrawal from treatment",
-              ae_acn = "AE leading to modification/interruption",
-              ae_rel = "Related AE",
-              ae_rel_withdraw = "Related AE leading to withdrawal from treatment",
-              ae_rel_acn = "Related AE leading to dose modication/interruption",
-              ae_sev = "Severe AE (at greatest intensity)"
             )
 
-          # build AET01 ------------------------------------------------------------------
-          table <- df_aet01 %>%
-            tbl_roche_summary(
-              by = "TRT01A",
-              include = c(ae_any, ae_count, DTHFL, AEWITHFL, ae_death, ae_serious, ae_ser_withdraw,
-                          ae_ser_acn, ae_sae_rel, ae_withdraw, ae_acn, ae_rel, ae_rel_withdraw, ae_rel_acn, ae_sev),
-              statistic = ae_count ~ "{sum}",
-              type = ae_count ~ "continuous", # display the AE sum on a single row
-              nonmissing = "no"
-            ) %>%
-            add_variable_group_header(
-              header = "Total number of participants with at least one ",
-              variables = c(ae_death, ae_serious, ae_ser_withdraw, ae_ser_withdraw, ae_ser_acn,
-                            ae_sae_rel, ae_withdraw, ae_acn, ae_rel, ae_rel_withdraw, ae_rel_acn, ae_sev)
-            )
 
-        })
+          table <-  tbl_summary(
+            df_table,
+            label = labels,
+            include = names(labels),
+            by = by, # split table by group
+            missing = "no" # don't list missing data separately
+          ) %>%
+            gtsummary::modify_header(label = "**Variable**") %>%
+            bold_labels()
+        },
+        by = data_extract_vars$arm_var$select$selected
 
-      })
+      )
 
-      o <- r()
-
-      teal.code::eval_code(
-        merged$anl_q(),
-        as.expression(unlist(my_calls))
-      ) %>%
-        teal.code::eval_code(
-          substitute(
-            expr = {
-              rtables::main_title(table) <- title
-              rtables::main_footer(table) <- footer
-              rtables::prov_footer(table) <- p_footer
-              rtables::subtitles(table) <- subtitle
-            }, env = list(
-              title = `if`(is.null(all_basic_table_args$title), label, all_basic_table_args$title),
-              footer = `if`(is.null(all_basic_table_args$main_footer), "", all_basic_table_args$main_footer),
-              p_footer = `if`(is.null(all_basic_table_args$prov_footer), "", all_basic_table_args$prov_footer),
-              subtitle = `if`(is.null(all_basic_table_args$subtitles), "", all_basic_table_args$subtitles)
-            )
-          )
-        )
+      tdc
     })
 
-    # Outputs to render.
+    if (input$count_pt) {
+      table_q <- reactive({
+        req(table_pre_q())
+        within(table_pre_q(), {
+          table <- add_n(table, col_label = "All patients", last = TRUE)
+        })
+      })
+    } else {
+      table_q <- table_pre_q
+    }
 
+    # Outputs to render.
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
       data = table_q,
@@ -649,10 +626,10 @@ srv_t_events_gtsummary <- function(id,
 
     table_r <- reactive(decorated_table_q()[["table"]])
 
-    # TODO: FIXME table_with_settings_srv doesn't work for gt:
-    # 1. update to work with gt tables
-    # 2. change it for a different function
-    # 3. Do not keep this feature.
+    output$table <- gt::render_gt({
+      req(is(table_r(), "tbl_summary"))
+      gtsummary::as_gt(table_r())
+    })
     # teal.widgets::table_with_settings_srv(
     #   id = "table",
     #   table_r = table_r
