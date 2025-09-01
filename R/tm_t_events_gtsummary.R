@@ -419,16 +419,17 @@ srv_t_events_gtsummary <- function(id,
           library("rlang")
           library("gtsummary")
           library("dplyr")
+          library("crane")
           selection_AEACN <- c("DRUG INTERRUPTED", "DOSE INCREASED", "DOSE REDUCED")
           vars <- c(dthfl, dcsreas)
           # add variable labels, which will be used in the table below
           labels <- list(
             # Those that must be (DTHFL and AEWITHFL are given more descriptive titles)
+            ae_any = "Total number of participants with at least one AE",
             ae_count = "Total number of AEs",
             DTHFL = "Total number of deaths",
             AEWITHFL = "Total number of participants withdrawn from study due to an AE",
             # Those that are calculated
-            ae_any = "Total number of participants with at least one AE",
             ae_death = "AE with fatal outcome",
             ae_serious = "Serious AE",
             ae_ser_withdraw = "Serious AE leading to withdrawal from treatment",
@@ -484,17 +485,29 @@ srv_t_events_gtsummary <- function(id,
               by = "USUBJID",
               relationship = "one-to-one"
             )
-
-          table <-  tbl_summary(
+          table <- tbl_roche_summary(
             df_table,
-            label = labels,
-            include = names(labels),
-            type = ae_count ~ "continuous", # display the AE sum on a single row
             by = by, # Columns
-            missing = "no" # don't list missing data separately
-          ) %>%
-            gtsummary::modify_header(label = "**Variable**") %>%
-            bold_labels()
+            label = labels,
+            include = c(names(labels), vars),
+            statistic = ae_count ~ "{sum}",
+            type = ae_count ~ "continuous", # display the AE sum on a single row
+            nonmissing = "no") %>%
+            add_variable_group_header(
+              header = "Total number of participants with at least one ",
+              variables = c(ae_death, ae_serious, ae_ser_withdraw, ae_ser_withdraw, ae_ser_acn,
+                            ae_sae_rel, ae_withdraw, ae_acn, ae_rel, ae_rel_withdraw, ae_rel_acn, ae_sev)
+            )
+          # table <-  tbl_summary(
+          #   df_table,
+          #   label = labels,
+          #   include = names(labels),
+          #   type = ae_count ~ "continuous", # display the AE sum on a single row
+          #   by = by, # Columns
+          #   missing = "no" # don't list missing data separately
+          # ) %>%
+          #   gtsummary::modify_header(label = "**Variable**") %>%
+          #   bold_labels()
         },
         by = selector_list()$arm_var()$select,
         dthfl = selector_list()$dthfl_var()$select,
