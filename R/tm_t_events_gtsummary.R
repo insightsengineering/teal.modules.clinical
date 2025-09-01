@@ -120,7 +120,7 @@ tm_t_events_gtsummary <- function(label,
                                     fixed = TRUE
                                   ),
                                   dcsreas_var = teal.transform::choices_selected(
-                                    teal.transform::variable_choices(parentname, "DCSREAS"), "DCSREAS",
+                                    teal.transform::variable_choices("ADSL", "AEWITHFL"), "AEWITHFL",
                                     fixed = TRUE
                                   ),
                                   llt = teal.transform::choices_selected(
@@ -393,83 +393,9 @@ srv_t_events_gtsummary <- function(id,
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = Filter(Negate(is.null), list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
-    })
-
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
-    )
-
-    validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
-
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
-
-      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
-      input_dthfl_var <- as.vector(merged$anl_input_r()$columns_source$dthfl_var)
-      input_dcsreas_var <- as.vector(merged$anl_input_r()$columns_source$dcsreas_var)
-      input_flag_var_anl <- if (!is.null(flag_var_anl)) {
-        as.vector(merged$anl_input_r()$columns_source$flag_var_anl)
-      } else {
-        NULL
-      }
-      input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
-        as.vector(merged$anl_input_r()$columns_source$flag_var_aesi)
-      } else {
-        NULL
-      }
-      input_aeseq_var <- as.vector(merged$anl_input_r()$columns_source$aeseq_var)
-      input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
-
-      validate(
-        need(
-          is.factor(adsl_filtered[[input_arm_var[[1]]]]) && is.factor(anl_filtered[[input_arm_var[[1]]]]),
-          "The treatment variable selected must be a factor variable in all datasets used."
-        ),
-        if (length(input_arm_var) == 2) {
-          need(
-            is.factor(adsl_filtered[[input_arm_var[[2]]]]) && all(!adsl_filtered[[input_arm_var[[2]]]] %in% c(
-              "", NA
-            )),
-            "Please check nested treatment variable which needs to be a factor without NA or empty strings."
-          )
-        },
-        need(
-          identical(levels(adsl_filtered[[input_arm_var[[1]]]]), levels(anl_filtered[[input_arm_var[[1]]]])),
-          "The treatment variable selected must have the same levels across all datasets used."
-        )
-      )
-
-      # validate inputs
-      validate_standard_inputs(
-        adsl = adsl_filtered,
-        adslvars = c("USUBJID", "STUDYID", input_arm_var, input_dthfl_var, input_dcsreas_var),
-        anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", input_flag_var_anl, input_flag_var_aesi, input_aeseq_var, input_llt),
-        arm_var = input_arm_var[[1]]
-      )
-    })
-
     # The R-code corresponding to the analysis.
     table_pre_q <- reactive({
+      teal::validate_inputs(iv_r())
       #' count_dth (`logical`)\cr whether to show count of total deaths (based on `dthfl_var`). Defaults to `TRUE`.
       #' count_wd (`logical`)\cr whether to show count of patients withdrawn from study due to an adverse event
       #'   (based on `dcsreas_var`). Defaults to `TRUE`.
@@ -494,7 +420,7 @@ srv_t_events_gtsummary <- function(id,
           library("gtsummary")
           library("dplyr")
           selection_AEACN <- c("DRUG INTERRUPTED", "DOSE INCREASED", "DOSE REDUCED")
-          vars <- c("DTHFL", "AEWITHFL")
+          vars <- c(dthfl, dcsreas)
           # add variable labels, which will be used in the table below
           labels <- list(
             # Those that must be (DTHFL and AEWITHFL are given more descriptive titles)
@@ -559,34 +485,41 @@ srv_t_events_gtsummary <- function(id,
               relationship = "one-to-one"
             )
 
-
           table <-  tbl_summary(
             df_table,
             label = labels,
             include = names(labels),
-            by = by, # split table by group
+            type = ae_count ~ "continuous", # display the AE sum on a single row
+            by = by, # Columns
             missing = "no" # don't list missing data separately
           ) %>%
             gtsummary::modify_header(label = "**Variable**") %>%
             bold_labels()
         },
-        by = data_extract_vars$arm_var$select$selected
-
+        by = selector_list()$arm_var()$select,
+        dthfl = selector_list()$dthfl_var()$select,
+        dcsreas = selector_list()$dcsreas_var()$select
+        # llt = selector_list()$llt_var()$select
       )
-
+      browser(expr = is(tdc, "qenv.error"))
       tdc
     })
 
-    if (input$count_pt) {
-      table_q <- reactive({
+    table_q <- reactive({
+      if (input$add_total) {
         req(table_pre_q())
         within(table_pre_q(), {
-          table <- add_n(table, col_label = "All patients", last = TRUE)
-        })
-      })
-    } else {
-      table_q <- table_pre_q
-    }
+          table <- add_n(table, col_label = label,
+                         statistic = "{N_nonmiss} ({p_nonmiss}%)",
+                         last = TRUE)
+        },
+        label = sprintf("**%s**", total_label)
+        )
+
+      } else {
+        table_pre_q()
+      }
+    })
 
     # Outputs to render.
     decorated_table_q <- srv_decorate_teal_data(
