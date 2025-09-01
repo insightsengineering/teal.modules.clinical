@@ -523,10 +523,10 @@ srv_t_events_gtsummary <- function(id,
         req(table_pre_q())
         within(table_pre_q(), {
           table <- add_n(table, col_label = label,
-                         statistic = "{N_nonmiss} ({p_nonmiss}%)",
+                         statistic = "{N_obs} ({p_nonmiss}%)",
                          last = TRUE)
         },
-        label = sprintf("**%s**", total_label)
+        label = total_label
         )
 
       } else {
