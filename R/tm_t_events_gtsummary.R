@@ -416,7 +416,6 @@ srv_t_events_gtsummary <- function(id,
         data(),
         {
           # Assuming the data we receive is already filtered
-          library("rlang")
           library("gtsummary")
           library("dplyr")
           library("crane")
@@ -446,7 +445,7 @@ srv_t_events_gtsummary <- function(id,
           # This one is dynamic and should be available
           df_table <- ADSL %>%
             select("USUBJID", by, vars) %>%
-            droplevels() %>%
+            droplevels() %>% # Remove columns from filtered values
             # recode Y/N/NA to TRUE/FALSE to summarize dichotomously below
             mutate(
               across(vars, ~ case_match(., "Y" ~ TRUE, .default = FALSE))
