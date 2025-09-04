@@ -641,8 +641,7 @@ srv_g_ipp <- function(id,
     decorated_all_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      decorators = select_decorators(decorators, "plot")
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 
