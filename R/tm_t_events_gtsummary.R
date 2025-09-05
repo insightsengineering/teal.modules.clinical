@@ -491,12 +491,7 @@ srv_t_events_gtsummary <- function(id,
             include = c(names(labels), vars),
             statistic = ae_count ~ "{sum}",
             type = ae_count ~ "continuous", # display the AE sum on a single row
-            nonmissing = "no") %>%
-            add_variable_group_header(
-              header = "Total number of participants with at least one ",
-              variables = c(ae_death, ae_serious, ae_ser_withdraw, ae_ser_withdraw, ae_ser_acn,
-                            ae_sae_rel, ae_withdraw, ae_acn, ae_rel, ae_rel_withdraw, ae_rel_acn, ae_sev)
-            )
+            nonmissing = "no")
           # table <-  tbl_summary(
           #   df_table,
           #   label = labels,
@@ -520,15 +515,25 @@ srv_t_events_gtsummary <- function(id,
       if (input$add_total) {
         req(table_pre_q())
         within(table_pre_q(), {
-          table <- add_n(table, col_label = label,
-                         statistic = "{N_obs} ({p_nonmiss}%)",
-                         last = TRUE)
-        },
+          table <- add_overall(table,
+                               col_label = paste0(label, "\nN = {style_number(N)}"),
+                               last = TRUE) %>%
+            add_variable_group_header(
+                                      header = "Total number of participants with at least one ",
+                                      variables = c(ae_death, ae_serious, ae_ser_withdraw, ae_ser_withdraw, ae_ser_acn,
+                                                    ae_sae_rel, ae_withdraw, ae_acn, ae_rel, ae_rel_withdraw, ae_rel_acn, ae_sev))
+                                      },
         label = total_label
         )
 
       } else {
-        table_pre_q()
+        within(table_pre_q(), {
+          table <- add_variable_group_header(table,
+            header = "Total number of participants with at least one ",
+            variables = c(ae_death, ae_serious, ae_ser_withdraw, ae_ser_withdraw, ae_ser_acn,
+                          ae_sae_rel, ae_withdraw, ae_acn, ae_rel, ae_rel_withdraw, ae_rel_acn, ae_sev)
+          )
+        })
       }
     })
 
