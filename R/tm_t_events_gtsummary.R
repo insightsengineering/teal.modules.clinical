@@ -444,7 +444,7 @@ srv_t_events_gtsummary <- function(id,
 
           # This one is dynamic and should be available
           df_table <- ADSL %>%
-            select("USUBJID", by, vars) %>%
+            select("USUBJID", by, all_of(vars)) %>%
             droplevels() %>% # Remove columns from filtered values
             # recode Y/N/NA to TRUE/FALSE to summarize dichotomously below
             mutate(
@@ -513,7 +513,6 @@ srv_t_events_gtsummary <- function(id,
         dcsreas = selector_list()$dcsreas_var()$select
         # llt = selector_list()$llt_var()$select
       )
-      browser(expr = is(tdc, "qenv.error"))
       tdc
     })
 
