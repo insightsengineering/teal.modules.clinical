@@ -516,7 +516,8 @@ srv_t_events_gtsummary <- function(id,
         req(table_pre_q())
         within(table_pre_q(), {
           table <- add_overall(table,
-                               col_label = paste0(label, "\nN = {style_number(N)}"),
+                               # Two spaces before \n due to a bug on gtsummary: https://github.com/ddsjoberg/gtsummary/issues/2310
+                               col_label = paste0(label, "  \n(N = {style_number(N)})"),
                                last = TRUE) %>%
             add_variable_group_header(
                                       header = "Total number of participants with at least one ",
