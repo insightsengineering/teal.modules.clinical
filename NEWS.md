@@ -1,4 +1,10 @@
-# teal.modules.clinical 0.11.1.9001
+# teal.modules.clinical 0.11.1.9002
+
+### Enhancements
+* Added `xticks` parameter to `tm_g_km` module to allow users to specify x-axis tick positions programmatically.
+  When `xticks` is provided, the interactive input field is pre-populated with the specified values as a default.
+  Users can then modify these values interactively, and their changes will take precedence over the default.
+  When `xticks` is `NULL` (default), users can specify this interactively in the module.
 
 # teal.modules.clinical 0.11.1
 

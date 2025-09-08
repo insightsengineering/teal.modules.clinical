@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.11.1.9001
-Date: 2025-08-22
+Version: 0.11.1.9002
+Date: 2025-08-27
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
            comment = c(ORCID = "0000-0001-7566-2787")),
@@ -104,4 +104,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE, packages = c("roxy.shinylive"))
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
