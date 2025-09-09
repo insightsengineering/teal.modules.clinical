@@ -209,10 +209,10 @@ template_g_ipp <- function(dataname = "ANL",
 #' data <- teal_data()
 #' data <- within(data, {
 #'   library(dplyr)
-#'   ADSL <- tmc_ex_adsl %>%
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl %>%
 #'     slice(1:20) %>%
 #'     tern::df_explicit_na()
-#'   ADLB <- tmc_ex_adlb %>%
+#'   ADLB <- teal.modules.clinical::tmc_ex_adlb %>%
 #'     filter(USUBJID %in% ADSL$USUBJID) %>%
 #'     tern::df_explicit_na() %>%
 #'     filter(AVISIT != "SCREENING")

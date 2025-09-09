@@ -387,15 +387,15 @@ template_binary_outcome <- function(dataname,
 #' {{ next_example }}
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADRS <- tmc_ex_adrs %>%
 #'     mutate(
 #'       AVALC = d_onco_rsp_label(AVALC) %>%
-#'         with_label("Character Result/Finding")
+#'         formatters::with_label("Character Result/Finding")
 #'     ) %>%
 #'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #' })

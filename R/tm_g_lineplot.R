@@ -237,13 +237,13 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
-#' library(forcats)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADSL <- tmc_ex_adsl
-#'   ADLB <- tmc_ex_adlb %>%
+#'   library(dplyr)
+#'   library(forcats)
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
+#'   ADLB <- teal.modules.clinical::tmc_ex_adlb %>%
 #'     mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]

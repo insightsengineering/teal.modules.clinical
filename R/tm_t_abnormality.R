@@ -270,17 +270,17 @@ template_abnormality <- function(parentname,
 #' {{ next_example }}
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADSL <- tmc_ex_adsl
-#'   ADLB <- tmc_ex_adlb %>%
+#'   library(dplyr)
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
+#'   ADLB <- teal.modules.clinical::tmc_ex_adlb %>%
 #'     mutate(
 #'       ONTRTFL = case_when(
 #'         AVISIT %in% c("SCREENING", "BASELINE") ~ "",
 #'         TRUE ~ "Y"
-#'       ) %>% with_label("On Treatment Record Flag")
+#'       ) %>% formatters::with_label("On Treatment Record Flag")
 #'     )
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]

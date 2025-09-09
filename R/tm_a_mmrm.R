@@ -499,7 +499,6 @@ template_mmrm_plots <- function(fit_name,
 #' {{ next_example }}
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(
@@ -510,8 +509,9 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADSL <- tmc_ex_adsl
-#'   ADQS <- tmc_ex_adqs %>%
+#'   library(dplyr)
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
+#'   ADQS <- teal.modules.clinical::tmc_ex_adqs %>%
 #'     filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'     filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
 #'     mutate(

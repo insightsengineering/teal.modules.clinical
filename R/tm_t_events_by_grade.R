@@ -321,7 +321,7 @@ template_events_by_grade <- function(dataname,
       )
     )
   } else {
-    quote(cont_n_allcols)
+    quote(cont_n_allcols) # Fails examples as it is not prefixed
   }
   if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
@@ -816,14 +816,15 @@ template_events_col_by_grade <- function(dataname,
 #' {{ next_example }}
 #'
 #' @examples
-#' library(dplyr)
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADSL <- tmc_ex_adsl
-#'   .lbls_adae <- col_labels(tmc_ex_adae)
-#'   ADAE <- tmc_ex_adae %>%
+#'   library(dplyr)
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
+#'   .lbls_adae <- teal.data::col_labels(teal.modules.clinical::tmc_ex_adae)
+#'   ADAE <- teal.modules.clinical::tmc_ex_adae %>%
 #'     mutate_if(is.character, as.factor) #' be certain of having factors
-#'   col_labels(ADAE) <- .lbls_adae
+#'   teal.data::col_labels(ADAE) <- .lbls_adae
+#'   library(rtables)
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'

@@ -267,14 +267,14 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADSL <- tmc_ex_adsl
-#'   ADRS <- tmc_ex_adrs %>%
+#'   library(dplyr)
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
+#'   ADRS <- teal.modules.clinical::tmc_ex_adrs %>%
 #'     mutate(AVALC = d_onco_rsp_label(AVALC) %>%
-#'       with_label("Character Result/Finding")) %>%
+#'       formatters::with_label("Character Result/Finding")) %>%
 #'     filter(PARAMCD != "OVRINV" | AVISIT == "FOLLOW UP")
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]

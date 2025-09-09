@@ -209,12 +209,12 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADAE <- tmc_ex_adae
-#'   ADSL <- tmc_ex_adsl %>%
+#'   library(dplyr)
+#'   ADAE <- teal.modules.clinical::tmc_ex_adae
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl %>%
 #'     filter(USUBJID %in% ADAE$USUBJID)
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]

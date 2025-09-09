@@ -140,17 +140,17 @@ To learn more please refer to the vignette
 }
 
 \examples{
-library(dplyr)
 
 data <- teal_data()
 data <- within(data, {
-  ADSL <- tmc_ex_adsl
-  ADLB <- tmc_ex_adlb \%>\%
+  library(dplyr)
+  ADSL <- teal.modules.clinical::tmc_ex_adsl
+  ADLB <- teal.modules.clinical::tmc_ex_adlb \%>\%
     mutate(
       ONTRTFL = case_when(
         AVISIT \%in\% c("SCREENING", "BASELINE") ~ "",
         TRUE ~ "Y"
-      ) \%>\% with_label("On Treatment Record Flag")
+      ) \%>\% formatters::with_label("On Treatment Record Flag")
     )
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
@@ -200,8 +200,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lMIKh5OwLJToA8gBy9rYAYrUAvDqyonBRKRkUaxAb92UAagCSlc+209lTp2tglQDCWCcTm2z22AHEFHgdFD+qVKk5qmCXGAbAA-GFgKG4db3ezOHQYqEATShuJ0Nlm3zSmSi1Cg9Dg1F+mzutkYcBC8DIOiwcGIjH4On29IA5lCAvcAgBfAIAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImgqlar1cBoPANXk5ABdVwQCo1Op5YDAKHu6pQp0ut19QY6xLe30hgNBpRoVB1bLpW4lPI6E55HF3HR8IQiURp7MCYRiZMbBpRI0MiBERgwbjpDjk+mM6gF330au1+ukVh2BkibHkvJ23QnSMDQdZ+4sGBRTQsAsEDKKghiKLnETqOD8UsPU7LmRiAvzxi0fsXJcrkt+gqiQT0c6kRe-UpYACy2Mxr7f-3KErkmZ7iUG78uQQpjmA35klOGwAeSHT8BWRChK2Jz7KU1QIoBDz0Kwc4sPmJyXoeojrkyoHbruDzEauhE6CeZ70CIxoHrR7AVAMt73o+z5QgM-ylLYn5QgACq+pQftCvovG8QmonBMH3CBW7gT8fH9AJckFKJ4mSQpQE6KqcCoFENa6owBb4i4ikUth9z0FAG7ZBcJ6Lqxa7KWBVH3Ax54sVeGocf0XEPnAT4Qf02xYGCf6onZDyedubZgJF0XbLFBTGLQLRJScVnkvpDyiswupuQFZGbl55IlDRR4nL5TEXu5gUhiFPEQaUUUxRK8VKeRKnJZ1aUZdVJjZbldiONZe6FdOHY1nWqE6HQoikOw1BECkyXVJsADqn5ZKKGTJQAEs84InT15KtJIgi6lEDnnO0HYFuhmHTbBPQBAEtDGDo7DZOQagaNo1g2EUWaiFkECsKU6DsHGAAkgi0AUSPnIw2j+Eo0pKGA0pOkAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lMIKh5OwLJToA8gBy9rYAYrUAvDqyonBRKRkUaxAb92UAagCSlc+209lTp2tglQDCWCcTm2z22AHEFHgdFD+qVKk5qmCXGAbAA-GFgKG4db3ezOHQYqEATShuJ0Nlm3zSmSi1Cg9Dg1F+mzutkYcBC8DIOiwcGIjH4On29IA5lCAvcAgBfAIAKyI2SiAGs4KxRLlEjZkvw4MYoMJSFECPxaKImgqlar1cBoPANXk5ABdVwQCo1Op5YDAKHu6pQp0ut19QY6xLe30hgNBpRoVB1bLpW4lPI6E55HF3HR8IQiURp7MCYRiZMbBpRI0MiBERgwbjpDjk+mM6gF330au1+ukVh2BkibHkvJ23QnSMDQdZ+4sGBRTQsAsEDKKghiKLnETqOD8UsPU7LmRiAvzxi0fsXJcrkt+gqiQT0c6kRe-UpYACy2Mxr7f-3KErkmZ7iUG78uQQpjmA35klOGwAeSHT8BWRChK2Jz7KU1QIoBDz0Kwc4sPmJyXoeojrkyoHbruDzEauhE6CeZ70CIxoHrR7AVAMt73o+z5QgM-ylLYn5QgACq+pQftCvovG8QmonBMH3CBW7gT8fH9AJckFKJ4mSQpQE6KqcCoFENa6owBb4i4ikUth9z0FAG7ZBcJ6Lqxa7KWBVH3Ax54sVeGocf0XEPnAT4Qf02xYGCf6onZDyedubZgJF0XbLFBTGLQLRJScVnkvpDyiswupuQFZGbl55IlDRR4nL5TEXu5gUhiFPEQaUUUxRK8VKeRKnJZ1aUZdVJjZbldiONZe6FdOHY1nWqE6HQoikOw1BECkyXVJsADqn5ZKKGTJQAEs84InT15KtJIgi6lEDnnO0HYFuhmHTbBPQBAEtDGDo7DZOQagaNo1g2EUWaiFkECsKU6DsHGAAkgi0AUSPnIw2j+Eo0pKGA0pOkAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBz8qNSsjIoQGQCCACIAygAyPjp+vALCYhJSMtyIiKQwBP5wAB7+UPyi1Ok6FdUAQnUNfEIi4pIJ7dSd3b0DQ-zU9DoApAB8++MZMIJe5OynGToA8gBy9rYAYrUAvDqyonD+kbEUa4lW4g0oANQAkpUIbYDgl9l9rmBKgBhLBOJwPCEPADiCjwOnxU1KlSc1WxLjANgAfoSwPjcDcQfZnDpafiAJr4pk6GxHBHGIiMGCeciMUSdaJxfzUKD0ODUJF3Eq2RhwTzwMg6LBwYiMfg6F6ygDm+OKIOKAF9igArIgJfwAazgrFESU8UBsEX4cGMUGEpH8BH4tFEvTtDudruA0HgbrCcgAum4KjU6mFgMB8anqvjE8mIJMZt6PZns+VpnmC0o0Kg6itSECMmEdJ9kuN5s1RK2dJ3Fk3bt1-IG5RAhSK6KQODzZfLqD3s-Qx8LuDFWHY5SIGTywrHdJ9y5W8DyWDB-JoWD2CLF7QQxP4fiJ1HB+AOQRlr7exD2L4xaJvfk-GQxHYHMUlEQR6B+UgryRUosAAWQZOl4IQlFyjNORGWBd8dEfXVyANA8wFQ7kcNuLCT34fhhyILx50+F5SmqUlsNw+hWHPFhu0+IC71EB8FQIl833fPjv0+X9-3oEQgxvYC3SLcDIOg2D8WmFFSlsZD8QABXg0okIJbNIWhbSqUo8iQXw58iMRdSpk08yUj0gyjMs3CMmdOBUH8IUfUYHsWRcKzeTY996CgR8El+X8r3k-jBKfQjRJBKSALkr9FIrKZlKguAYOIqYHiwbEMKpcLcJswiFzAYrSoecqUmMWh+hfILHBC3CPPfY1mB9eKsqS4TXx5D8EoknR0pkwCJuy6Y8tU4jShKsqzUq99qva5bVsa7dQoyFq2rs4KeR6kFR3HbgezoURG2oIhIlq6o7gAdWQ+JjViWqAAkIRxH71p5AZJEEH1-Ein4hiXHsmJYrqKPGYpiloYwdHYBIxSgCxtGsGw0mBUR4ggVhSnQdhawAEkEWgUipn5GG0IolEtJQwEtRMgA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xH5RSUfUa7UA+h5e1kpB3oY6AO60pAAWtBDsYbg6IEo6OnRMLBz8qNSsjIoQGQCCACIAygAyPjp+vALCYhJSMtyIiKQwBP5wAB7+UPyi1Ok6FdUAQnUNfEIi4pIJ7dSd3b0DQ-zU9DoApAB8++MZMIJe5OynGToA8gBy9rYAYrUAvDqyonD+kbEUa4lW4g0oANQAkpUIbYDgl9l9rmBKgBhLBOJwPCEPADiCjwOnxU1KlSc1WxLjANgAfoSwPjcDcQfZnDpafiAJr4pk6GxHBHGIiMGCeciMUSdaJxfzUKD0ODUJF3Eq2RhwTzwMg6LBwYiMfg6F6ygDm+OKIOKAF9igArIgJfwAazgrFESU8UBsEX4cGMUGEpH8BH4tFEvTtDudruA0HgbrCcgAum4KjU6mFgMB8anqvjE8mIJMZt6PZns+VpnmC0o0Kg6itSECMmEdJ9kuN5s1RK2dJ3Fk3bt1-IG5RAhSK6KQODzZfLqD3s-Qx8LuDFWHY5SIGTywrHdJ9y5W8DyWDB-JoWD2CLF7QQxP4fiJ1HB+AOQRlr7exD2L4xaJvfk-GQxHYHMUlEQR6B+UgryRUosAAWQZOl4IQlFyjNORGWBd8dEfXVyANA8wFQ7kcNuLCT34fhhyILx50+F5SmqUlsNw+hWHPFhu0+IC71EB8FQIl833fPjv0+X9-3oEQgxvYC3SLcDIOg2D8WmFFSlsZD8QABXg0okIJbNIWhbSqUo8iQXw58iMRdSpk08yUj0gyjMs3CMmdOBUH8IUfUYHsWRcKzeTY996CgR8El+X8r3k-jBKfQjRJBKSALkr9FIrKZlKguAYOIqYHiwbEMKpcLcJswiFzAYrSoecqUmMWh+hfILHBC3CPPfY1mB9eKsqS4TXx5D8EoknR0pkwCJuy6Y8tU4jShKsqzUq99qva5bVsa7dQoyFq2rs4KeR6kFR3HbgezoURG2oIhIlq6o7gAdWQ+JjViWqAAkIRxH71p5AZJEEH1-Ein4hiXHsmJYrqKPGYpiloYwdHYBIxSgCxtGsGw0mBUR4ggVhSnQdhawAEkEWgUipn5GG0IolEtJQwEtRMgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }

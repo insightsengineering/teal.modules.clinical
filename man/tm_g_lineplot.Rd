@@ -154,13 +154,13 @@ To learn more please refer to the vignette
 
 \examples{
 library(nestcolor)
-library(dplyr)
-library(forcats)
 
 data <- teal_data()
 data <- within(data, {
-  ADSL <- tmc_ex_adsl
-  ADLB <- tmc_ex_adlb \%>\%
+  library(dplyr)
+  library(forcats)
+  ADSL <- teal.modules.clinical::tmc_ex_adsl
+  ADLB <- teal.modules.clinical::tmc_ex_adlb \%>\%
     mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
@@ -201,8 +201,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBbgyhHMYBsqSiQUr8UKRQ+kZc1AD6GVnW6ZnZhjoA7rSkABa0EOFluDogSjo6AIIAIgDKADI5OqQwBPlwAB75UPyi1O1d3f0AQkMjY5PT-NT0OgCkAHx7Cx0wglnk7J0AagCSvbe2OgC8zybq+YxwAfyqV3cPWwtG73R4AORaMAaciCAF8ggArIgNfIAazgrFETSyNgqv2MUGEpHyBH4tFEYyRKPRmOA0HgWKKUDkAF1XBAegMhkzgMAFGBOf1+Sy2Rylqs8WVefyeithaKlGhUEMGjV2AsmS8dEzcAs+EIRKItfrhGJ1RAOh0RvkAOb5KRwSJEUjmy2W6hQehwaha-n9Bq6AAK-lI-N1Frd2rK9N0bxl4rDJ0tNsYREEqHymhYWoItWRBDE+VE3rg6jg-FdkY6WcYtE9IhJeZkZsFLQI6oFWAAsmGdDLuwBhbq9mUD2ydQfDsAw8NVjr9ntgJMdOSzyOsHNNguiIslssV5eWmt1+gN3P5lvitsdm6dIV4PtgZadXouB-8gcACQA4iOwIGv1-adV0PecBWuO9+UPECIzdVAWFgTcLx3YsRH3SsqyzahBDgRtkKuK9H0DCdOi7Ic-2IrBSP5GC50fO9bCg2DLSCN1WJ0IIgloYwdHYBpyDUDRtGsGw2gjUR6ggVhOnQdglQAEkEWgWgU4tGG0GIIFhJQwFhFkgA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQ7sxs7Pyo1KyBbgyhHMYBsqSiQUr8UKRQ+kZc1AD6GVnW6ZnZhjoA7rSkABa0EOFluDogSjo6AIIAIgDKADI5OqQwBPlwAB75UPyi1O1d3f0AQkMjY5PT-NT0OgCkAHx7Cx0wglnk7J0AagCSvbe2OgC8zybq+YxwAfyqV3cPWwtG73R4AORaMAaciCAF8ggArIgNfIAazgrFETSyNgqv2MUGEpHyBH4tFEYyRKPRmOA0HgWKKUDkAF1XBAegMhkzgMAFGBOf1+Sy2Rylqs8WVefyeithaKlGhUEMGjV2AsmS8dEzcAs+EIRKItfrhGJ1RAOh0RvkAOb5KRwSJEUjmy2W6hQehwaha-n9Bq6AAK-lI-N1Frd2rK9N0bxl4rDJ0tNsYREEqHymhYWoItWRBDE+VE3rg6jg-FdkY6WcYtE9IhJeZkZsFLQI6oFWAAsmGdDLuwBhbq9mUD2ydQfDsAw8NVjr9ntgJMdOSzyOsHNNguiIslssV5eWmt1+gN3P5lvitsdm6dIV4PtgZadXouB-8gcACQA4iOwIGv1-adV0PecBWuO9+UPECIzdVAWFgTcLx3YsRH3SsqyzahBDgRtkKuK9H0DCdOi7Ic-2IrBSP5GC50fO9bCg2DLSCN1WJ0IIgloYwdHYBpyDUDRtGsGw2gjUR6ggVhOnQdglQAEkEWgWgU4tGG0GIIFhJQwFhFkgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHMYBsqSiQWUAggAiAMoAMpE60bwCwmISUjLciIikMAQxcAAeMVD8otQNfYMAQiNjfEIi4pK5s9Tzi8trG-zU9DoApAB8Lw1lMILh5OzdABqAEl+sDbDoALyQkzqGKMOABfiqAEgsG2IpA0HggByRRguTkQQAvkEAFZEXIxADWcFYonyyRsqWRxigwlIMQI-FoomWFKptPpwGg8AZBTkAF1XBA+kMRgVgMAFGA5YMVZLpbLegcFcklSq9vsNVqlGhUCNLqR2A0ClCdAVcA0TpNRPaXWcbRAymVFjEAOYxKRwGpEa1fH3UKD0ODUe0qwa5XQABX8pBVTu9PrKBVFuhhhp1xrwEbK-sYREEqBimhY9oIWUpBDEMVEsbg6jg-C92eztcYtGjIi5jZkYgBA0GRQINtVWAAshmdIaFwBhXpLw2r2zdNcbsBEzO9n0rxdgUs6ORH3useuj5uiVvtzvdi9lfuD+jDhtN8dG6ezkC3Tqngy5gPs3T9C4oEqquAASADim5gMm8FIQeV5vmBQEgRemFZtmqAsLAd6-o+bYiC+PbHjotbUIIcAjmRE4HEUKrJru3TzuuyEcVgXEqvhNHYYMtgqnhEZdJeShBLQxg6OwuTkGoGjaNYNglFmog5BArDdOg7DmgAJIItBFMZbaMNo9QQMSShgMSkpAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHMYBsqSiQWUAggAiAMoAMpE60bwCwmISUjLciIikMAQxcAAeMVD8otQNfYMAQiNjfEIi4pK5s9Tzi8trG-zU9DoApAB8Lw1lMILh5OzdABqAEl+sDbDoALyQkzqGKMOABfiqAEgsG2IpA0HggByRRguTkQQAvkEAFZEXIxADWcFYonyyRsqWRxigwlIMQI-FoomWFKptPpwGg8AZBTkAF1XBA+kMRgVgMAFGA5YMVZLpbLegcFcklSq9vsNVqlGhUCNLqR2A0ClCdAVcA0TpNRPaXWcbRAymVFjEAOYxKRwGpEa1fH3UKD0ODUe0qwa5XQABX8pBVTu9PrKBVFuhhhp1xrwEbK-sYREEqBimhY9oIWUpBDEMVEsbg6jg-C92eztcYtGjIi5jZkYgBA0GRQINtVWAAshmdIaFwBhXpLw2r2zdNcbsBEzO9n0rxdgUs6ORH3useuj5uiVvtzvdi9lfuD+jDhtN8dG6ezkC3Tqngy5gPs3T9C4oEqquAASADim5gMm8FIQeV5vmBQEgRemFZtmqAsLAd6-o+bYiC+PbHjotbUIIcAjmRE4HEUKrJru3TzuuyEcVgXEqvhNHYYMtgqnhEZdJeShBLQxg6OwuTkGoGjaNYNglFmog5BArDdOg7DmgAJIItBFMZbaMNo9QQMSShgMSkpAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }

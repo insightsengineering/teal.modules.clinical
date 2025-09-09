@@ -223,8 +223,9 @@ template_g_ci <- function(dataname,
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADSL <- tmc_ex_adsl
-#'   ADLB <- tmc_ex_adlb
+#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
+#'   ADLB <- teal.modules.clinical::tmc_ex_adlb
+#'   library(dplyr)
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
@@ -454,8 +455,7 @@ srv_g_ci <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
+      teal.code::eval_code(data(), as.expression(anl_inputs()$expr))
     })
 
     all_q <- reactive({
