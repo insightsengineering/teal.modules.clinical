@@ -291,9 +291,9 @@ template_g_km <- function(dataname = "ANL",
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(dplyr)
 #'   ADSL <- teal.modules.clinical::tmc_ex_adsl
 #'   ADTTE <- teal.modules.clinical::tmc_ex_adtte
-#'   library(dplyr)
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'

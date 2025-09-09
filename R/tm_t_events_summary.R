@@ -128,7 +128,6 @@ template_events_summary <- function(anl_name,
       )
     )
   )
-
   if (length(flag_var_anl) > 0) {
     data_list <- add_expr(
       data_list,
@@ -556,6 +555,7 @@ template_events_summary <- function(anl_name,
 #' data <- teal_data()
 #' data <- within(data, {
 #'   library(dplyr)
+#'   library(tern)
 #'   ADSL <- teal.modules.clinical::tmc_ex_adsl %>%
 #'     mutate(
 #'       DTHFL = case_when(

@@ -348,6 +348,8 @@ template_smq <- function(dataname,
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(dplyr)
+#'   library(rtables)
 #'   ADSL <- teal.modules.clinical::tmc_ex_adsl
 #'   ADAE <- teal.modules.clinical::tmc_ex_adae
 #'
@@ -364,8 +366,6 @@ template_smq <- function(dataname,
 #'     selected = .names_scopes,
 #'     fixed = TRUE
 #'   )
-#'   library(dplyr)
-#'   library(rtables)
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
