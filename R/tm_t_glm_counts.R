@@ -101,7 +101,7 @@
 #' )
 #'
 #' if (interactive()) {
-#'   shinyApp(ui = app$ui, server = app$server)
+#'   shinyApp(app$ui, app$server)
 #' }
 #' @export
 tm_t_glm_counts <- function(label = "Counts Module",
