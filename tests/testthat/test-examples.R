@@ -110,14 +110,6 @@ with_mocked_app_bindings <- function(code) {
   )
 }
 
-strict_exceptions <- c(
-  # https://github.com/r-lib/gtable/pull/94
-  "tm_g_barchart_simple.Rd",
-  "tm_g_ci.Rd",
-  "tm_g_ipp.Rd",
-  "tm_g_pp_adverse_events.Rd",
-  "tm_g_pp_vitals.Rd"
-)
 
 for (i in rd_files()) {
   testthat::test_that(
@@ -126,11 +118,6 @@ for (i in rd_files()) {
       testthat::skip_on_cran()
       testthat::skip("chromium")
       skip_if_too_deep(5)
-      if (basename(i) %in% strict_exceptions) {
-        op <- options()
-        withr::local_options(opts_partial_match_old)
-        withr::defer(options(op))
-      }
       with_mocked_app_bindings(
         # suppress warnings coming from saving qenv https://github.com/insightsengineering/teal.code/issues/194
         suppress_warnings(
