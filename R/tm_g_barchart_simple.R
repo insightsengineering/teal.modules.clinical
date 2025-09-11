@@ -598,7 +598,7 @@ srv_g_barchart_simple <- function(id,
       title = label
     )
 
-    decorated_all_q_code
+    set_chunk_dims(pws, decorated_all_q_code)
     ###
   })
 }

@@ -738,6 +738,6 @@ srv_g_therapy <- function(id,
       title = label
     )
 
-    decorated_all_q_plot
+    set_chunk_dims(pws, decorated_all_q_plot)
   })
 }

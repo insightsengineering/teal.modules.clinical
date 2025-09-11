@@ -1571,9 +1571,10 @@ srv_mmrm <- function(id,
       disabled = disable_r_code,
       title = label
     )
-    reactive({
+    
+    set_chunk_dims(pws, reactive({
       decorated_objs_q[[obj_ix_r()]]()
-    })
+    }))
     
   })
 }

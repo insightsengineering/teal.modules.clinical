@@ -537,6 +537,6 @@ srv_g_ci <- function(id,
       width = plot_width
     )
 
-    decorated_plot_q
+    set_chunk_dims(pws, decorated_plot_q)
   })
 }

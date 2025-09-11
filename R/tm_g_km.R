@@ -884,6 +884,6 @@ srv_g_km <- function(id,
       title = label
     )
 
-    decorated_all_q
+    set_chunk_dims(pws, decorated_all_q)
   })
 }

@@ -646,6 +646,6 @@ srv_g_adverse_events <- function(id,
       title = label
     )
 
-    decorated_all_q
+    set_chunk_dims(pws, decorated_all_q)
   })
 }
