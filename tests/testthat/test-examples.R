@@ -33,15 +33,6 @@ with_mocked_app_bindings <- function(code) {
   # workaround of https://github.com/rstudio/shinytest2/issues/381
   # change to `print(shiny__shinyApp(...))` and remove allow warning once fixed
   mocked_shinyApp <- function(ui, server, ...) { # nolint object_name_linter.
-    # functionBody(server) <- bquote({
-    #   pkgload::load_all(
-    #     .(normalizePath(file.path(testthat::test_path(), "..", ".."))),
-    #     export_all = FALSE,
-    #     attach_testthat = FALSE,
-    #     warn_conflicts = FALSE
-    #   )
-    #   .(functionBody(server))
-    # })
     print(do.call(shiny__shinyApp, append(x = list(ui = ui, server = server), list(...))))
   }
 
@@ -131,7 +122,6 @@ for (i in rd_files()) {
     paste0("example-", basename(i)),
     {
       testthat::skip_on_cran()
-      # testthat::skip("chromium")
       skip_if_too_deep(5)
       with_mocked_app_bindings(
         # suppress warnings coming from saving qenv https://github.com/insightsengineering/teal.code/issues/194
