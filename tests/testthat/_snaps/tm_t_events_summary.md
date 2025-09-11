@@ -34,7 +34,7 @@
       
       $layout_anl
       lyt_anl <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_overall_col(label = "All Patients") %>% count_patients_with_event(vars = "USUBJID", 
+          rtables::add_overall_col(label = "All Patients") %>% tern::count_patients_with_event(vars = "USUBJID", 
           filters = c(tmp_aefl = "Y"), denom = "N_col", .stats = "count_fraction", 
           .labels = c(count_fraction = "Total number of patients with at least one adverse event"), 
           .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>% 
@@ -85,7 +85,7 @@
       
       $layout_anl
       lyt_anl <- rtables::basic_table(show_colcounts = TRUE) %>% rtables::split_cols_by(var = "ARM") %>% 
-          rtables::add_overall_col(label = "All Patients") %>% count_patients_with_event(vars = "USUBJID", 
+          rtables::add_overall_col(label = "All Patients") %>% tern::count_patients_with_event(vars = "USUBJID", 
           filters = c(tmp_aefl = "Y"), denom = "N_col", .stats = "count_fraction", 
           .labels = c(count_fraction = "Total number of patients with at least one adverse event"), 
           .indent_mods = c(count_fraction = 0L), table_names = "total_pts_at_least_one") %>% 

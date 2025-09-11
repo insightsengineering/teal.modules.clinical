@@ -45,7 +45,7 @@
       $sort
       {
           sorted_result <- result %>% rtables::sort_at_path(path = c("SMQ"), 
-              scorefun = cont_n_allcols) %>% rtables::sort_at_path(path = c("SMQ", 
+              scorefun = rtables::cont_n_allcols) %>% rtables::sort_at_path(path = c("SMQ", 
               "*", "AEDECOD"), scorefun = tern::score_occurrences, 
               na.pos = "last")
       }
@@ -102,7 +102,7 @@
       $sort
       {
           sorted_result <- result %>% rtables::sort_at_path(path = c("SMQ"), 
-              scorefun = cont_n_allcols) %>% rtables::sort_at_path(path = c("SMQ", 
+              scorefun = rtables::cont_n_allcols) %>% rtables::sort_at_path(path = c("SMQ", 
               "*", "myAEDECOD"), scorefun = tern::score_occurrences, 
               na.pos = "last")
       }
