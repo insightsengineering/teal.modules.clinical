@@ -674,7 +674,7 @@ srv_t_smq <- function(id,
       )
 
       obj <- merged$anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), teal.reporter::teal_card("## Table"))
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
