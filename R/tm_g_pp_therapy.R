@@ -689,7 +689,7 @@ srv_g_therapy <- function(id,
           )
         )
       )
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot and Table")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table and Plot")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 

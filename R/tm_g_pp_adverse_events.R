@@ -580,7 +580,7 @@ srv_g_adverse_events <- function(id,
         ggplot2_args = ggplot2_args
       )
       obj <- anl_q2
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot and Table")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table and Plot")
       teal.code::eval_code(obj, as.expression(calls))
     })
 

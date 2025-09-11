@@ -784,7 +784,7 @@ srv_g_forest_rsp <- function(id,
         ggplot2_args = ggplot2_args
       )
       obj <- anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table and Plot")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
