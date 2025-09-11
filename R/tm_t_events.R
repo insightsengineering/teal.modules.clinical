@@ -835,7 +835,8 @@ srv_t_events_byterm <- function(id,
       )
 
       obj <- merged$anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card("## Table"), teal.code::eval_code(obj, as.expression(unlist(my_calls))))
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), teal.reporter::teal_card("## Table"))
+      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     table_renamed_q <- reactive({
