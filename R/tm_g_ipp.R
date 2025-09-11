@@ -41,7 +41,6 @@ template_g_ipp <- function(dataname = "ANL",
                            ggplot2_args = teal.widgets::ggplot2_args(),
                            suppress_legend = FALSE,
                            add_avalu = TRUE) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(paramcd)
   checkmate::assert_string(arm_var)

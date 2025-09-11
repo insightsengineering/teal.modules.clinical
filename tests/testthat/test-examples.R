@@ -106,7 +106,6 @@ with_mocked_app_bindings <- function(code) {
         }
       )
     }
-
   }
 
   # support both `shinyApp(...)` as well as prefixed `shiny::shinyApp(...)` calls
