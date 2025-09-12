@@ -818,13 +818,15 @@ template_events_col_by_grade <- function(dataname,
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
-#'   library(dplyr)
-#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
-#'   .lbls_adae <- teal.data::col_labels(teal.modules.clinical::tmc_ex_adae)
-#'   ADAE <- teal.modules.clinical::tmc_ex_adae %>%
-#'     mutate_if(is.character, as.factor) #' be certain of having factors
-#'   teal.data::col_labels(ADAE) <- .lbls_adae
+#'   library(teal.modules.clinical)
+#'   library(teal.data)
 #'   library(rtables)
+#'   library(dplyr)
+#'   ADSL <- tmc_ex_adsl
+#'   .lbls_adae <- col_labels(tmc_ex_adae)
+#'   ADAE <- tmc_ex_adae %>%
+#'     mutate_if(is.character, as.factor) #' be certain of having factors
+#'   col_labels(ADAE) <- .lbls_adae
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'

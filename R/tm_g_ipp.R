@@ -203,17 +203,18 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(tern)
 #'   library(dplyr)
-#'   ADSL <- teal.modules.clinical::tmc_ex_adsl %>%
+#'   ADSL <- tmc_ex_adsl %>%
 #'     slice(1:20) %>%
-#'     tern::df_explicit_na()
-#'   ADLB <- teal.modules.clinical::tmc_ex_adlb %>%
+#'     df_explicit_na()
+#'   ADLB <- tmc_ex_adlb %>%
 #'     filter(USUBJID %in% ADSL$USUBJID) %>%
-#'     tern::df_explicit_na() %>%
+#'     df_explicit_na() %>%
 #'     filter(AVISIT != "SCREENING")
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]

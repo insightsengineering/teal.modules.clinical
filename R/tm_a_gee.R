@@ -168,9 +168,10 @@ template_a_gee <- function(output_table,
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
 #'   library(dplyr)
-#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
-#'   ADQS <- teal.modules.clinical::tmc_ex_adqs %>%
+#'   ADSL <- tmc_ex_adsl
+#'   ADQS <- tmc_ex_adqs %>%
 #'     filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
 #'     mutate(
 #'       AVISIT = as.factor(AVISIT),

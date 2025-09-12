@@ -223,9 +223,10 @@ template_g_ci <- function(dataname,
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
-#'   ADLB <- teal.modules.clinical::tmc_ex_adlb
+#'   library(teal.modules.clinical)
 #'   library(dplyr)
+#'   ADSL <- tmc_ex_adsl
+#'   ADLB <- tmc_ex_adlb
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'

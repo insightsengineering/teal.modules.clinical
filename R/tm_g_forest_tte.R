@@ -271,10 +271,12 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
-#'   ADTTE <- teal.modules.clinical::tmc_ex_adtte
+#'   library(teal.modules.clinical)
+#'   library(formatters)
 #'   library(dplyr)
-#'   ADSL$RACE <- droplevels(ADSL$RACE) %>% formatters::with_label("Race")
+#'   ADSL <- tmc_ex_adsl
+#'   ADTTE <- tmc_ex_adtte
+#'   ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'

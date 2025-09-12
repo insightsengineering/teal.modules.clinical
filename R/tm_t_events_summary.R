@@ -554,16 +554,18 @@ template_events_summary <- function(anl_name,
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
 #'   library(dplyr)
 #'   library(tern)
-#'   ADSL <- teal.modules.clinical::tmc_ex_adsl %>%
+#'   library(formatters)
+#'   ADSL <- tmc_ex_adsl %>%
 #'     mutate(
 #'       DTHFL = case_when(
 #'         !is.na(DTHDT) ~ "Y",
 #'         TRUE ~ ""
-#'       ) %>% formatters::with_label("Subject Death Flag")
+#'       ) %>% with_label("Subject Death Flag")
 #'     )
-#'   ADAE <- teal.modules.clinical::tmc_ex_adae
+#'   ADAE <- tmc_ex_adae
 #'
 #'   .add_event_flags <- function(dat) {
 #'     dat <- dat %>%
@@ -579,9 +581,9 @@ template_events_summary <- function(anl_name,
 #'       TMPFL_SER = "Serious AE",
 #'       TMPFL_REL = "Related AE",
 #'       TMPFL_GR5 = "Grade 5 AE",
-#'       TMP_SMQ01 = tern::aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
-#'       TMP_SMQ02 = tern::aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
-#'       TMP_CQ01 = tern::aesi_label(dat[["CQ01NAM"]])
+#'       TMP_SMQ01 = aesi_label(dat[["SMQ01NAM"]], dat[["SMQ01SC"]]),
+#'       TMP_SMQ02 = aesi_label("Y.9.9.9.9/Z.9.9.9.9 AESI"),
+#'       TMP_CQ01 = aesi_label(dat[["CQ01NAM"]])
 #'     )
 #'     col_labels(dat)[names(column_labels)] <- as.character(column_labels)
 #'     dat

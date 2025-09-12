@@ -50,11 +50,13 @@
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(formatters)
 #'   library(dplyr)
-#'   ADSL <- teal.modules.clinical::tmc_ex_adsl %>%
+#'   ADSL <- tmc_ex_adsl %>%
 #'     mutate(ITTFL = factor("Y") %>%
-#'       formatters::with_label("Intent-To-Treat Population Flag"))
-#'   ADAE <- teal.modules.clinical::tmc_ex_adae %>%
+#'       with_label("Intent-To-Treat Population Flag"))
+#'   ADAE <- tmc_ex_adae %>%
 #'     filter(!((AETOXGR == 1) & (AESEV == "MILD") & (ARM == "A: Drug X")))
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]

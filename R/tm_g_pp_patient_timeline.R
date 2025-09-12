@@ -383,22 +383,23 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(formatters)
 #'   library(dplyr)
-#'   ADAE <- teal.modules.clinical::tmc_ex_adae
-#'   ADSL <- teal.modules.clinical::tmc_ex_adsl %>%
-#'     filter(USUBJID %in% ADAE$USUBJID)
+#'   ADAE <- tmc_ex_adae
+#'   ADSL <- filter(tmc_ex_adsl, USUBJID %in% ADAE$USUBJID)
 #'   ADCM <- tmc_ex_adcm %>%
 #'     mutate(
 #'       CMSTDY = case_when(
 #'         CMCAT == "medcl B" ~ 20,
 #'         CMCAT == "medcl C" ~ 150,
 #'         TRUE ~ 1
-#'       ) %>% formatters::with_label("Study Day of Start of Medication"),
+#'       ) %>% with_label("Study Day of Start of Medication"),
 #'       CMENDY = case_when(
 #'         CMCAT == "medcl B" ~ 700,
 #'         CMCAT == "medcl C" ~ 1000,
 #'         TRUE ~ 500
-#'       ) %>% formatters::with_label("Study Day of End of Medication"),
+#'       ) %>% with_label("Study Day of End of Medication"),
 #'       CMASTDTM = ASTDTM,
 #'       CMAENDTM = AENDTM
 #'     )

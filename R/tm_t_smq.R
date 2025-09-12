@@ -348,10 +348,11 @@ template_smq <- function(dataname,
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
 #'   library(dplyr)
 #'   library(rtables)
-#'   ADSL <- teal.modules.clinical::tmc_ex_adsl
-#'   ADAE <- teal.modules.clinical::tmc_ex_adae
+#'   ADSL <- tmc_ex_adsl
+#'   ADAE <- tmc_ex_adae
 #'
 #'   .names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
 #'   .names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
