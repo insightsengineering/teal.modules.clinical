@@ -509,7 +509,7 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' data <- teal_data()
 #' data <- within(data, {
-#'    library(teal.modules.clinical)
+#'   library(teal.modules.clinical)
 #'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADQS <- tmc_ex_adqs %>%

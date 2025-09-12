@@ -292,7 +292,7 @@ template_g_km <- function(dataname = "ANL",
 #' data <- teal_data()
 #' data <- within(data, {
 #'   library(dplyr)
-#'    library(teal.modules.clinical)
+#'   library(teal.modules.clinical)
 #'   ADSL <- tmc_ex_adsl
 #'   ADTTE <- tmc_ex_adtte
 #' })
