@@ -1109,7 +1109,11 @@ set_chunk_attrs <- function(teal_card,
       return(teal_card)
     }
 
-    if (length(inner_classes) > 0 && !checkmate::test_multi_class(teal_card[[current_ix]][[1]], inner_classes)) {
+    if (
+      length(inner_classes) > 0 &&
+        length(teal_card[[current_ix]]) >= 1 &&
+        !checkmate::test_multi_class(teal_card[[current_ix]][[1]], inner_classes)
+    ) {
       next
     }
 
