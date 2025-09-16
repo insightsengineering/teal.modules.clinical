@@ -613,7 +613,7 @@ srv_t_smq <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Adverse Events Table by Standardized MedDRA Query (SMQ)"),
           teal.reporter::teal_card(obj),

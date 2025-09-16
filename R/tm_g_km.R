@@ -761,7 +761,7 @@ srv_g_km <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Kaplan-Meier Plot"),
           teal.reporter::teal_card(obj),

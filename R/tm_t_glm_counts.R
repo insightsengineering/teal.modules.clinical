@@ -303,7 +303,7 @@ srv_t_glm_counts <- function(id,
   checkmate::assert_class(isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    
+
     # Input validation
     iv_arm_ref <- arm_ref_comp_observer(
       session,
@@ -339,7 +339,7 @@ srv_t_glm_counts <- function(id,
       data_extract = list_data_extract,
       anl_name = "ANL"
     )
-    
+
     output$helptext_ui <- renderUI({
       req(selector_list()$arm_var()$select)
       helpText("Multiple reference groups are automatically combined into a single group.")
@@ -365,7 +365,7 @@ srv_t_glm_counts <- function(id,
     ## Merge data
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Time To Count Table"),
           teal.reporter::teal_card(obj),

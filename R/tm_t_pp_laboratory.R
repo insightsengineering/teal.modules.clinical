@@ -432,7 +432,7 @@ srv_g_laboratory <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Patient Profile Laboratory Table"),
           teal.reporter::teal_card(obj),

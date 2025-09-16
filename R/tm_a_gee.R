@@ -504,7 +504,7 @@ srv_gee <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Generalized Estimating Equations (GEE) Analysis Table"),
           teal.reporter::teal_card(obj),

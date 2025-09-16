@@ -611,7 +611,7 @@ srv_g_forest_rsp <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Forest Response Plot"),
           teal.reporter::teal_card(obj),

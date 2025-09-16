@@ -533,7 +533,7 @@ srv_shift_by_arm_by_worst <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Shift by Arm by Worst Table"),
           teal.reporter::teal_card(obj),

@@ -324,7 +324,7 @@ srv_t_medical_history <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Patient Medical History Table"),
           teal.reporter::teal_card(obj),

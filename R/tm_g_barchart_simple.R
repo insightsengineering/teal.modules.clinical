@@ -431,7 +431,7 @@ srv_g_barchart_simple <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Barchart"),
           teal.reporter::teal_card(obj),

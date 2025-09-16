@@ -551,7 +551,7 @@ srv_t_logistic <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Logistic Regression"),
           teal.reporter::teal_card(obj),

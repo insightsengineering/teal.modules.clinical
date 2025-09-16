@@ -870,7 +870,7 @@ srv_t_tte <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Time To Event"),
           teal.reporter::teal_card(obj),

@@ -1034,7 +1034,7 @@ srv_mmrm <- function(id,
 
     anl_q <- reactive({
       obj <- data_with_tern_options_r()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Mixed Model Repeated Measurements (MMRM) Analysis"),
           teal.reporter::teal_card(obj),
@@ -1571,10 +1571,10 @@ srv_mmrm <- function(id,
       disabled = disable_r_code,
       title = label
     )
-    
+
     set_chunk_dims(pws, reactive({
       decorated_objs_q[[obj_ix_r()]]()
     }))
-    
+
   })
 }

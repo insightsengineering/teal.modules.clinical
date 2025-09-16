@@ -922,7 +922,7 @@ srv_t_events_summary <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Events Summary"),
           teal.reporter::teal_card(obj),

@@ -294,7 +294,7 @@ tm_t_shift_by_arm <- function(label,
                               transformators = list(),
                               decorators = list()) {
   if (lifecycle::is_present(base_var)) {
-    lifecycle::deprecate_stop( 
+    lifecycle::deprecate_stop(
       when = "0.8.16",
       what = "tm_t_shift_by_arm(base_var)",
       details = "Please use the `baseline_var` argument instead."
@@ -520,7 +520,7 @@ srv_shift_by_arm <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Shift by Arm Table"),
           teal.reporter::teal_card(obj),

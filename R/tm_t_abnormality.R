@@ -602,7 +602,7 @@ srv_t_abnormality <- function(id,
 
     anl_q <- reactive({
       obj <- data()
-      teal.reporter::teal_card(obj) <- 
+      teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card("# Abnormality Summary Table"),
           teal.reporter::teal_card(obj),
