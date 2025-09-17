@@ -296,13 +296,6 @@ srv_t_basic_info <- function(id,
 
     output$basic_info_table <- DT::renderDataTable(table_r()[["html"]])
 
-    # Render R code
-    source_code_r <- reactive(teal.code::get_code(req(all_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
     all_q
   })
 }

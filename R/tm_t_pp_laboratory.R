@@ -500,14 +500,6 @@ srv_g_laboratory <- function(id,
 
     output$lab_values_table <- DT::renderDataTable(expr = table_r()$html)
 
-    # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(all_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
-
     all_q
   })
 }

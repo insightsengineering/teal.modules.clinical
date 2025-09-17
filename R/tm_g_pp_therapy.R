@@ -730,14 +730,6 @@ srv_g_therapy <- function(id,
       width = plot_width
     )
 
-    # Render R code
-    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q_plot())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
-
     set_chunk_dims(pws, decorated_all_q_plot)
   })
 }

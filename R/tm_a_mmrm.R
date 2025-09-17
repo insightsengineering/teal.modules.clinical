@@ -1561,17 +1561,6 @@ srv_mmrm <- function(id,
       show_hide_signal = reactive(!show_plot_rv())
     )
 
-    # Show R code once button is pressed.
-    source_code_r <- reactive(
-      teal.code::get_code(req(decorated_objs_q[[obj_ix_r()]]()))
-    )
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      disabled = disable_r_code,
-      title = label
-    )
-
     set_chunk_dims(pws, reactive({
       decorated_objs_q[[obj_ix_r()]]()
     }))

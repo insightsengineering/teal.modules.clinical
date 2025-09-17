@@ -522,14 +522,6 @@ srv_g_ci <- function(id,
     # Outputs to render.
     plot_r <- reactive(decorated_plot_q()[["plot"]])
 
-    # Render R code
-    source_code_r <- reactive(teal.code::get_code(req(decorated_plot_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
-
     pws <- teal.widgets::plot_with_settings_srv(
       id = "myplot",
       plot_r = plot_r,

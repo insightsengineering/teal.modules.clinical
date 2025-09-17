@@ -641,14 +641,6 @@ srv_t_mult_events_byterm <- function(id,
 
     teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
 
-    # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
-
     decorated_table_q
   })
 }

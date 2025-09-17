@@ -1061,14 +1061,6 @@ srv_t_binary_outcome <- function(id,
       table_r = table_r
     )
 
-    # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
-
     decorated_all_q
   })
 }

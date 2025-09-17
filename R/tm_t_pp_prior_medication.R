@@ -369,14 +369,6 @@ srv_t_prior_medication <- function(id,
 
     output$prior_medication_table <- DT::renderDataTable(expr = table_r()$html)
 
-    # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(all_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
-
     all_q
   })
 }
