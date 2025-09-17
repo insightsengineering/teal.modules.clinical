@@ -399,9 +399,6 @@ ui_g_ci <- function(id, ...) {
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(args$decorators, "plot"))
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
-    ),
     pre_output = args$pre_output,
     post_output = args$post_output
   )

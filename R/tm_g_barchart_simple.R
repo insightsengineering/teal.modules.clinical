@@ -351,9 +351,6 @@ ui_g_barchart_simple <- function(id, ...) {
           )
         )
       ),
-      forms = tagList(
-        teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-      ),
       pre_output = args$pre_output,
       post_output = args$post_output
     )

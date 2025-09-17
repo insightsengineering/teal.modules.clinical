@@ -712,9 +712,6 @@ ui_g_patient_timeline <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )

@@ -537,9 +537,6 @@ ui_g_lineplot <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )

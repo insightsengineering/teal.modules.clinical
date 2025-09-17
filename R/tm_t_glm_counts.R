@@ -187,9 +187,6 @@ ui_t_glm_counts <- function(id, ...) {
   output <- teal.widgets::white_small_well(
     teal.widgets::table_with_settings_ui(ns("table"))
   )
-  forms <- tagList(
-    teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-  )
 
   compare_treatments <- tags$div(
     class = "arm-comp-box",
@@ -280,7 +277,6 @@ ui_t_glm_counts <- function(id, ...) {
       ),
       table_settings,
     ),
-    forms = forms,
     pre_output = a$pre_output,
     post_output = a$post_output
   )

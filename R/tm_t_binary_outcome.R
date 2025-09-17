@@ -760,9 +760,6 @@ ui_t_binary_outcome <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )

@@ -172,9 +172,6 @@ ui_t_basic_info <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
