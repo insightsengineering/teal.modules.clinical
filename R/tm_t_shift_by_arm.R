@@ -292,7 +292,7 @@ tm_t_shift_by_arm <- function(label,
                               transformators = list(),
                               decorators = list()) {
   if (lifecycle::is_present(base_var)) {
-    lifecycle::deprecate_stop( 
+    lifecycle::deprecate_stop(
       when = "0.8.16",
       what = "tm_t_shift_by_arm(base_var)",
       details = "Please use the `baseline_var` argument instead."

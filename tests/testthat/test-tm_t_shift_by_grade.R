@@ -160,4 +160,3 @@ testthat::test_that(
     testthat::expect_equal(nrow(data), 0)
   }
 )
-
