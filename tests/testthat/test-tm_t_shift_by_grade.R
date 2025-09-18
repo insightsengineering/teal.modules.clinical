@@ -113,7 +113,7 @@ testthat::test_that(
       id_var = "USUBJID",
       visit_var = "AVISIT",
       worst_flag_var = c("WGRLOVFL"),
-      worst_flag_indicator = "Y",  # Looking for "Y" but all are "N"
+      worst_flag_indicator = "Y", # Looking for "Y" but all are "N"
       anl_toxgrade_var = "ATOXGR",
       base_toxgrade_var = "BTOXGR",
       paramcd = "PARAMCD",
@@ -144,7 +144,7 @@ testthat::test_that(
       id_var = "USUBJID",
       visit_var = "AVISIT",
       worst_flag_var = c("WGRLOFL"),
-      worst_flag_indicator = "Y",  # Looking for "Y" but all are "NA"
+      worst_flag_indicator = "Y", # Looking for "Y" but all are "NA"
       anl_toxgrade_var = "ATOXGR",
       base_toxgrade_var = "BTOXGR",
       paramcd = "PARAMCD",
