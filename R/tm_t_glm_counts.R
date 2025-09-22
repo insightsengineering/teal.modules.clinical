@@ -207,6 +207,12 @@ ui_t_glm_counts <- function(id, ...) {
           "Combine all comparison groups?",
           value = FALSE
         ),
+        teal.transform::data_extract_ui(
+          id = ns("strata_var"),
+          label = "Stratify by",
+          data_extract_spec = a$strata_var,
+          is_single_dataset = is_single_dataset_value
+        ),
         checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       )
     )
