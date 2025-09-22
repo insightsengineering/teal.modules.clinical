@@ -321,7 +321,7 @@ template_events_by_grade <- function(dataname,
       )
     )
   } else {
-    quote(cont_n_allcols) # Fails examples as it is not prefixed
+    quote(rtables::cont_n_allcols)
   }
   if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
