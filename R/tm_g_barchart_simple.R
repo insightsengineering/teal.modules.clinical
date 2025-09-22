@@ -488,14 +488,16 @@ srv_g_barchart_simple <- function(id,
         )
 
       # dplyr::select loses labels
-      anl_q %>%
-        teal.code::eval_code(
-          teal.transform::get_anl_relabel_call(
-            columns_source = anl_inputs()$columns_source,
-            datasets = data_list,
-            anl_name = "counts"
-          )
-        )
+      relabel_call <- teal.transform::get_anl_relabel_call(
+        columns_source = anl_inputs()$columns_source,
+        datasets = data_list,
+        anl_name = "counts"
+      )
+      if (!is.null(relabel_call)) {
+        teal.code::eval_code(anl_q, relabel_call)
+      } else {
+        anl_q
+      }
     })
 
     all_q <- reactive({
