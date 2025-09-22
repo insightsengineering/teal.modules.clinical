@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.11.1.9002
+# teal.modules.clinical 0.11.1.9003
 
 ### Enhancements
 * Added `xticks` parameter to `tm_g_km` module to allow users to specify x-axis tick positions programmatically.
