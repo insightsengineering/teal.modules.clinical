@@ -47,10 +47,12 @@
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(formatters)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl %>%
 #'     mutate(ITTFL = factor("Y") %>%
 #'       with_label("Intent-To-Treat Population Flag"))

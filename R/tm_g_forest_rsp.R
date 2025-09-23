@@ -267,10 +267,12 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(formatters)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADRS <- tmc_ex_adrs %>%
 #'     mutate(AVALC = d_onco_rsp_label(AVALC) %>%

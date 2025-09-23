@@ -128,7 +128,6 @@ template_events_summary <- function(anl_name,
       )
     )
   )
-
   if (length(flag_var_anl) > 0) {
     data_list <- add_expr(
       data_list,
@@ -286,7 +285,7 @@ template_events_summary <- function(anl_name,
   layout_anl_list <- add_expr(
     layout_anl_list,
     quote(
-      expr = count_patients_with_event(
+      expr = tern::count_patients_with_event(
         vars = "USUBJID",
         filters = c("tmp_aefl" = "Y"),
         denom = "N_col",
@@ -553,10 +552,12 @@ template_events_summary <- function(anl_name,
 #' {{ next_example }}
 #'
 #' @examples
-#' library(dplyr)
-#'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(dplyr)
+#'   library(tern)
+#'   library(formatters)
 #'   ADSL <- tmc_ex_adsl %>%
 #'     mutate(
 #'       DTHFL = case_when(

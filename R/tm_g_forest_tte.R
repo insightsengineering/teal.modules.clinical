@@ -268,10 +268,12 @@ template_forest_tte <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(formatters)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADTTE <- tmc_ex_adtte
 #'   ADSL$RACE <- droplevels(ADSL$RACE) %>% with_label("Race")

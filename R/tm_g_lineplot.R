@@ -40,7 +40,6 @@ template_g_lineplot <- function(dataname = "ANL",
                                 title = "Line Plot",
                                 y_lab = "",
                                 ggplot2_args = teal.widgets::ggplot2_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(group_var)
   checkmate::assert_string(x)
@@ -237,11 +236,12 @@ template_g_lineplot <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
-#' library(forcats)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(dplyr)
+#'   library(forcats)
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb %>%
 #'     mutate(AVISIT == fct_reorder(AVISIT, AVISITN, min))

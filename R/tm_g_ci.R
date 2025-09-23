@@ -223,6 +223,8 @@ template_g_ci <- function(dataname,
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb
 #' })
@@ -454,8 +456,7 @@ srv_g_ci <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
+      teal.code::eval_code(data(), as.expression(anl_inputs()$expr))
     })
 
     all_q <- reactive({
