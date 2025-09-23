@@ -167,10 +167,11 @@ template_a_gee <- function(output_table,
 #' {{ next_example }}
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADQS <- tmc_ex_adqs %>%
 #'     filter(ABLFL != "Y" & ABLFL2 != "Y") %>%

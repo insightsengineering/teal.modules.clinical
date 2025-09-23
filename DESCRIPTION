@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.11.1.9002
-Date: 2025-08-27
+Version: 0.11.1.9005
+Date: 2025-09-23
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
            comment = c(ORCID = "0000-0001-7566-2787")),
@@ -32,7 +32,7 @@ URL: https://insightsengineering.github.io/teal.modules.clinical/,
 BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
-    R (>= 4.0),
+    R (>= 4.4.0),
     teal (>= 1.0.0.9003),
     teal.transform (>= 0.7.0),
     tern (>= 0.9.9)

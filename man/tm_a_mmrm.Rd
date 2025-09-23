@@ -157,7 +157,6 @@ To learn more please refer to the vignette
 }
 
 \examples{
-library(dplyr)
 
 arm_ref_comp <- list(
   ARMCD = list(
@@ -168,6 +167,8 @@ arm_ref_comp <- list(
 
 data <- teal_data()
 data <- within(data, {
+  library(teal.modules.clinical)
+  library(dplyr)
   ADSL <- tmc_ex_adsl
   ADQS <- tmc_ex_adqs \%>\%
     filter(ABLFL != "Y" & ABLFL2 != "Y") \%>\%

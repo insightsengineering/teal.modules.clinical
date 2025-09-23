@@ -272,10 +272,12 @@ template_abnormality <- function(parentname,
 #' {{ next_example }}
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(formatters)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADLB <- tmc_ex_adlb %>%
 #'     mutate(

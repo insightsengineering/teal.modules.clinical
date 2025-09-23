@@ -501,7 +501,6 @@ template_mmrm_plots <- function(fit_name,
 #' {{ next_example }}
 #'
 #' @examples
-#' library(dplyr)
 #'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(
@@ -512,6 +511,8 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADQS <- tmc_ex_adqs %>%
 #'     filter(ABLFL != "Y" & ABLFL2 != "Y") %>%

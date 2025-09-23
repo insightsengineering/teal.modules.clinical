@@ -321,7 +321,7 @@ template_events_by_grade <- function(dataname,
       )
     )
   } else {
-    quote(cont_n_allcols)
+    quote(rtables::cont_n_allcols)
   }
   if (one_term) {
     term_var <- ifelse(is.null(hlt), llt, hlt)
@@ -818,9 +818,12 @@ template_events_col_by_grade <- function(dataname,
 #' {{ next_example }}
 #'
 #' @examples
-#' library(dplyr)
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(teal.data)
+#'   library(rtables)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   .lbls_adae <- col_labels(tmc_ex_adae)
 #'   ADAE <- tmc_ex_adae %>%
