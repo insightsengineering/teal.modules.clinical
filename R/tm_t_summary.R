@@ -27,7 +27,6 @@ template_summary <- function(dataname,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_character(arm_var, min.len = 1, max.len = 2)
@@ -303,8 +302,8 @@ tm_t_summary <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(summarize_vars, "choices_selected")
+  checkmate::assert_class(arm_var, "variables")
+  checkmate::assert_class(summarize_vars, "variables")
   checkmate::assert_string(na_level)
   checkmate::assert_character(numeric_stats, min.len = 1)
   checkmate::assert_flag(drop_arm_levels)
@@ -320,42 +319,38 @@ tm_t_summary <- function(label,
   denominator <- match.arg(denominator)
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
-  args <- as.list(environment())
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
-    summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE, ordered = TRUE)
-  )
+  arm_var <- picks(datasets(parentname, parentname), arm_var) # multiple TRUE, ordered TRUE
+  summarize_vars <- picks(datasets(dataname, dataname), summarize_vars) # multiple TRUE ordered TRUE
+
+  args <- as.list(environment())
 
   module(
     label = label,
     server = srv_summary,
     ui = ui_summary,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        show_arm_var_labels = show_arm_var_labels,
-        total_label = total_label,
-        na_level = na_level,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_summary))],
+    server_args = args[names(args) %in% names(formals(srv_summary))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_summary <- function(id, ...) {
+ui_summary <- function(id,
+                       dataname,
+                       parentname,
+                       arm_var,
+                       summarize_vars,
+                       add_total,
+                       useNA,
+                       numeric_stats,
+                       denominator,
+                       drop_arm_levels,
+                       pre_output,
+                       post_output,
+                       decorators) {
   ns <- NS(id)
-  a <- list(...)
-
-  is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$summarize_vars)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
@@ -365,19 +360,14 @@ ui_summary <- function(id, ...) {
       tags$br(), tags$br(),
       ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "summarize_vars")]),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Column Variable(s)",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Column Variable(s)"),
+        teal.transform::module_input_ui(id = ns("arm_var"), spec = arm_var),
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      teal.transform::data_extract_ui(
-        id = ns("summarize_vars"),
-        label = "Summarize Variables",
-        data_extract_spec = a$summarize_vars,
-        is_single_dataset = is_single_dataset_value
+      checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
+      tags$div(
+        tags$label("Summarize Variables"),
+        teal.transform::module_input_ui(id = ns("summarize_vars"), spec = summarize_vars),
       ),
       bslib::accordion(
         open = TRUE,
@@ -387,7 +377,7 @@ ui_summary <- function(id, ...) {
             ns("useNA"),
             label = "Display NA counts",
             choices = c("ifany", "no"),
-            selected = a$useNA
+            selected = useNA
           ),
           checkboxGroupInput(
             ns("numeric_stats"),
@@ -402,15 +392,15 @@ ui_summary <- function(id, ...) {
               "25% and 75%-ile" = "quantiles",
               "Min - Max" = "range"
             ),
-            selected = a$numeric_stats
+            selected = numeric_stats
           ),
           radioButtons(
             ns("denominator"),
             label = "Denominator choice",
             choices = c("N", "n", "omit"),
-            selected = a$denominator
+            selected = denominator
           ),
-          if (a$dataname == a$parentname) {
+          if (dataname == parentname) {
             shinyjs::hidden(
               checkboxInput(
                 ns("drop_arm_levels"),
@@ -421,19 +411,19 @@ ui_summary <- function(id, ...) {
           } else {
             checkboxInput(
               ns("drop_arm_levels"),
-              label = sprintf("Drop columns not in filtered %s", a$dataname),
-              value = a$drop_arm_levels
+              label = sprintf("Drop columns not in filtered %s", dataname),
+              value = drop_arm_levels
             )
           }
         )
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table"))
     ),
     forms = tagList(
       teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -460,54 +450,49 @@ srv_summary <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
-      datasets = data,
-      select_validation_rule = list(
-        summarize_vars = shinyvalidate::sv_required("Please select a summarize variable"),
-        arm_var = ~ if (length(.) != 1 && length(.) != 2) {
-          "Please select 1 or 2 column variables"
-        }
-      )
+    # selector_list <- teal.transform::data_extract_multiple_srv(
+    #   data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
+    #   datasets = data,
+    #   select_validation_rule = list(
+    #     summarize_vars = shinyvalidate::sv_required("Please select a summarize variable"),
+    #     arm_var = ~ if (length(.) != 1 && length(.) != 2) {
+    #       "Please select 1 or 2 column variables"
+    #     }
+    #   )
+    # )
+
+    # iv_r <- reactive({
+    #   iv <- shinyvalidate::InputValidator$new()
+    #   iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
+    #   teal.transform::compose_and_enable_validators(iv, selector_list)
+    # })
+
+    selectors <- teal.transform::module_input_srv(
+      spec = list(
+        arm_var = arm_var,
+        summarize_vars = summarize_vars
+      ),
+      data = data
     )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
+    anl_selectors <- selectors
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      id = "anl_merge",
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      id = "adsl_merge",
-      datasets = data,
-      data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
-    )
+    # ↓ add usubjid to make sure it is included in a merged dataset (primary_keys are not included if not selected)
+    anl_selectors$usubjid <- picks(datasets(parentname, parentname), variables("USUBJID", "USUBJID"))
+    adsl_selectors <- selectors["arm_var"]
 
     anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
+      req(data())
+      isolate(data()) |>
+        teal.transform::qenv_merge_selectors(selectors = anl_selectors, output_name = "ANL") |>
+        teal.transform::qenv_merge_selectors(selectors = adsl_selectors, output_name = "ANL_ADSL")
     })
 
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
-    )
-
-    observeEvent(merged$anl_input_r()$columns_source$summarize_vars, {
+    observeEvent(map_merged(anl_selectors)$summarize_vars$variables, {
       choices_classes <- sapply(
-        names(merged$anl_input_r()$columns_source$summarize_vars),
+        map_merged(anl_selectors)$summarize_vars$variables,
         function(x) {
-          summarize_var_data <- data()[[summarize_vars$dataname]][[x]]
+          summarize_var_data <- data()[[dataname]][[x]]
           inherits(summarize_var_data, "numeric") |
             inherits(summarize_var_data, "integer")
         }
@@ -522,15 +507,15 @@ srv_summary <- function(id,
 
     # Validate inputs.
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
-      anl <- merged$anl_q()[["ANL"]]
+      # teal::validate_inputs(iv_r())
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
+      anl <- anl_q()[["ANL"]]
 
       # we take names of the columns source as they match names of the input data in merge_datasets
       # if we use $arm_var they might be renamed to <selector id>.arm_var
-      input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
-      input_summarize_vars <- names(merged$anl_input_r()$columns_source$summarize_vars)
+      input_arm_var <- map_merged(anl_selectors)$arm_var$variables
+      input_summarize_vars <- map_merged(anl_selectors)$summarize_vars$variables
 
       validate(
         need(
@@ -567,19 +552,19 @@ srv_summary <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
+      summarize_vars <- map_merged(anl_selectors)$summarize_vars$variables
       var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
 
       arm_var_labels <- NULL
       if (show_arm_var_labels) {
-        arm_vars <- merged$anl_input_r()$columns_source$arm_var
+        arm_vars <- map_merged(anl_selectors)$arm_var$variables
         arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
       }
 
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = merged$anl_input_r()$columns_source$arm_var,
+        arm_var = map_merged(anl_selectors)$arm_var$variables,
         sum_vars = summarize_vars,
         add_total = input$add_total,
         total_label = total_label,
@@ -593,7 +578,7 @@ srv_summary <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Decoration of table output.
