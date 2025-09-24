@@ -234,9 +234,6 @@ ui_t_prior_medication <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -368,14 +365,6 @@ srv_t_prior_medication <- function(id,
     })
 
     output$prior_medication_table <- DT::renderDataTable(expr = table_r()$html)
-
-    # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(all_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
 
     all_q
   })

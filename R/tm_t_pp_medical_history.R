@@ -250,9 +250,6 @@ ui_t_medical_history <- function(id, ...) {
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table"))
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -381,14 +378,6 @@ srv_t_medical_history <- function(id,
     teal.widgets::table_with_settings_srv(
       id = "table",
       table_r = table_r
-    )
-
-    # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
     )
 
     decorated_table_q
