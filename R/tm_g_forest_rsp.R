@@ -795,15 +795,16 @@ srv_g_forest_rsp <- function(id,
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
       expr = reactive({
-        substitute({
+        substitute(
           cowplot::plot_grid(
             table,
             plot,
             align = "h",
             axis = "tblr",
             rel_widths = c(1 - input_rel_width_forest / 100, input_rel_width_forest / 100)
-          )
-        }, env = list(input_rel_width_forest = input$rel_width_forest))
+          ),
+          env = list(input_rel_width_forest = input$rel_width_forest)
+        )
       }),
       expr_is_reactive = TRUE
     )
