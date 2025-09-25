@@ -492,7 +492,7 @@ srv_g_laboratory <- function(id,
         table_html$dependencies,
         list(rmarkdown::html_dependency_bootstrap("default"))
       )
-      list(html = table_html, report = q[["table"]])
+      table_html
     })
 
     output$title <- renderText({
@@ -500,7 +500,7 @@ srv_g_laboratory <- function(id,
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    output$lab_values_table <- DT::renderDataTable(expr = table_r()$html)
+    output$lab_values_table <- DT::renderDataTable(expr = table_r())
 
     # Render R code.
     source_code_r <- reactive(teal.code::get_code(req(all_q())))
