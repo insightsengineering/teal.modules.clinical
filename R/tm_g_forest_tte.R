@@ -730,10 +730,19 @@ srv_g_forest_tte <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = {
-        table
-        plot
-      }
+      expr = reactive({
+        substitute(
+          cowplot::plot_grid(
+            table,
+            plot,
+            align = "h",
+            axis = "tblr",
+            rel_widths = c(1 - input_rel_width_forest / 100, input_rel_width_forest / 100)
+          ),
+          env = list(input_rel_width_forest = input$rel_width_forest)
+        )
+      }),
+      expr_is_reactive = TRUE
     )
     plot_r <- reactive({
       cowplot::plot_grid(
