@@ -472,7 +472,7 @@ srv_g_laboratory <- function(id,
       )
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
       obj <- obj %>% teal.code::eval_code(as.expression(labor_calls))
-      teal_card(obj) <- head(teal_card(obj), -3) # removes table_data_html needed only for the display
+      teal.reporter::teal_card(obj) <- utils::head(teal.reporter::teal_card(obj), -3) # removes table_data_html needed only for the display
       obj
     })
 
