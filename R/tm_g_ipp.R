@@ -195,6 +195,7 @@ template_g_ipp <- function(dataname = "ANL",
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
@@ -400,10 +401,6 @@ ui_g_ipp <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-      tags$br(), tags$br(),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(
         a[c("arm_var", "aval_var", "avalu_var", "id_var", "visit_var", "paramcd", "baseline_var")]
@@ -489,8 +486,6 @@ ui_g_ipp <- function(id, ...) {
 #' @keywords internal
 srv_g_ipp <- function(id,
                       data,
-                      reporter,
-                      filter_panel_api,
                       dataname,
                       parentname,
                       arm_var,
@@ -505,8 +500,6 @@ srv_g_ipp <- function(id,
                       label,
                       ggplot2_args,
                       decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
@@ -555,8 +548,15 @@ srv_g_ipp <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card("# Individual Patient Plot"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      obj %>%
+        teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
 
@@ -632,15 +632,16 @@ srv_g_ipp <- function(id,
         ggplot2_args = ggplot2_args,
         add_avalu = input$add_avalu
       )
-      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
+      obj <- anl_q()
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot")
+      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.
     decorated_all_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      decorators = select_decorators(decorators, "plot")
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 
@@ -660,26 +661,6 @@ srv_g_ipp <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Individual Patient Plot",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Plot", "header3")
-        card$append_plot(plot_r(), dim = pws$dim())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    set_chunk_dims(pws, decorated_all_q)
   })
 }

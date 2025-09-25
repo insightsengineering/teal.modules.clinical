@@ -124,6 +124,8 @@ template_laboratory <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -281,10 +283,6 @@ ui_g_laboratory <- function(id, ...) {
       DT::DTOutput(outputId = ns("lab_values_table"))
     ),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-      tags$br(), tags$br(),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(ui_args[c("timepoints", "aval_var", "avalu_var", "param", "paramcd", "anrind")]),
       teal.widgets::optionalSelectInput(
@@ -346,8 +344,6 @@ ui_g_laboratory <- function(id, ...) {
 #' @keywords internal
 srv_g_laboratory <- function(id,
                              data,
-                             reporter,
-                             filter_panel_api,
                              dataname,
                              parentname,
                              patient_col,
@@ -358,8 +354,6 @@ srv_g_laboratory <- function(id,
                              paramcd,
                              anrind,
                              label) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
@@ -437,7 +431,14 @@ srv_g_laboratory <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card("# Patient Profile Laboratory Table"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      obj %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
@@ -457,7 +458,7 @@ srv_g_laboratory <- function(id,
         round_value = as.integer(input$round_value)
       )
 
-      teal.code::eval_code(
+      obj <- teal.code::eval_code(
         anl_q(),
         substitute(
           expr = {
@@ -468,8 +469,13 @@ srv_g_laboratory <- function(id,
             patient_id = patient_id()
           )
         )
-      ) %>%
-        teal.code::eval_code(as.expression(labor_calls))
+      )
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+      obj <- obj %>% teal.code::eval_code(as.expression(labor_calls))
+      # removes table_data_html needed only for the display
+      teal.reporter::teal_card(obj) <- utils::head(teal.reporter::teal_card(obj), -3)
+
+      obj
     })
 
     # Outputs to render.
@@ -488,7 +494,7 @@ srv_g_laboratory <- function(id,
         table_html$dependencies,
         list(rmarkdown::html_dependency_bootstrap("default"))
       )
-      list(html = table_html, report = q[["table"]])
+      table_html
     })
 
     output$title <- renderText({
@@ -496,7 +502,7 @@ srv_g_laboratory <- function(id,
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    output$lab_values_table <- DT::renderDataTable(expr = table_r()$html)
+    output$lab_values_table <- DT::renderDataTable(expr = table_r())
 
     # Render R code.
     source_code_r <- reactive(teal.code::get_code(req(all_q())))
@@ -506,26 +512,6 @@ srv_g_laboratory <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Patient Profile Laboratory Table",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r()$report)
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    all_q
   })
 }

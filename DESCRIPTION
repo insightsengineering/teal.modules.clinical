@@ -32,8 +32,8 @@ URL: https://insightsengineering.github.io/teal.modules.clinical/,
 BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
-    R (>= 4.4.0),
-    teal (>= 1.0.0),
+    R (>= 4.4),
+    teal (>= 1.0.0.9003),
     teal.transform (>= 0.7.0),
     tern (>= 0.9.9)
 Imports:
@@ -60,7 +60,7 @@ Imports:
     teal.code (>= 0.7.0),
     teal.data (>= 0.8.0),
     teal.logger (>= 0.4.0),
-    teal.reporter (>= 0.5.0),
+    teal.reporter (>= 0.5.0.9001),
     teal.widgets (>= 0.5.0),
     tern.gee (>= 0.1.5),
     tern.mmrm (>= 0.3.3),
@@ -82,6 +82,9 @@ Suggests:
 VignetteBuilder:
     knitr,
     rmarkdown
+Remotes:
+    insightsengineering/teal.reporter,
+    insightsengineering/teal
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,

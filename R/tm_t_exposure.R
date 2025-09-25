@@ -251,6 +251,8 @@ template_exposure <- function(parentname,
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -426,10 +428,6 @@ ui_t_exposure <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-      tags$br(), tags$br(),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c(
         "paramcd", "col_by_var", "row_by_var", "id_var", "parcat", "aval_var", "avalu_var"
@@ -497,8 +495,6 @@ ui_t_exposure <- function(id, ...) {
 #' @keywords internal
 srv_t_exposure <- function(id,
                            data,
-                           reporter,
-                           filter_panel_api,
                            dataname,
                            parentname,
                            paramcd,
@@ -515,8 +511,6 @@ srv_t_exposure <- function(id,
                            total_row_label,
                            basic_table_args = basic_table_args,
                            decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
@@ -578,7 +572,14 @@ srv_t_exposure <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card("# Exposure"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      obj %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(as.expression(adsl_inputs()$expr))
     })
@@ -660,7 +661,9 @@ srv_t_exposure <- function(id,
         avalu_var = input_avalu_var,
         basic_table_args = basic_table_args
       )
-      teal.code::eval_code(merged$anl_q(), as.expression(unlist(my_calls)))
+      obj <- merged$anl_q()
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     # Outputs to render.
@@ -685,27 +688,6 @@ srv_t_exposure <- function(id,
       verbatim_content = source_code_r,
       title = label
     )
-
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Exposure for Risk Management Plan Table",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    decorated_table_q
   })
 }

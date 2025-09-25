@@ -37,6 +37,8 @@
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @details
 #' * Teal module for [tern::summarize_glm_count()] analysis, that summarizes results of a
 #' Poisson negative binomial regression.
@@ -228,10 +230,6 @@ ui_t_glm_counts <- function(id, ...) {
   teal.widgets::standard_layout(
     output = output,
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-      tags$br(), tags$br(),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::data_extract_ui(
         ns("arm_var"),
@@ -276,14 +274,14 @@ ui_t_glm_counts <- function(id, ...) {
       ),
       table_settings,
     ),
-    forms = forms
+    forms = forms,
+    pre_output = a$pre_output,
+    post_output = a$post_output
   )
 }
 
 srv_t_glm_counts <- function(id,
                              data,
-                             filter_panel_api,
-                             reporter,
                              dataname,
                              parentname,
                              arm_var,
@@ -295,11 +293,11 @@ srv_t_glm_counts <- function(id,
                              label,
                              basic_table_args,
                              decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+
     # Input validation
     iv_arm_ref <- arm_ref_comp_observer(
       session,
@@ -335,6 +333,7 @@ srv_t_glm_counts <- function(id,
       data_extract = list_data_extract,
       anl_name = "ANL"
     )
+
     output$helptext_ui <- renderUI({
       req(selector_list()$arm_var()$select)
       helpText("Multiple reference groups are automatically combined into a single group.")
@@ -347,30 +346,27 @@ srv_t_glm_counts <- function(id,
         iv$add_validator(iv_arm_ref)
       }
 
-      iv$add_rule("conf_level_coxph", shinyvalidate::sv_required("Please choose a hazard ratio confidence level"))
+      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
-        "conf_level_coxph", shinyvalidate::sv_between(
+        "conf_level", shinyvalidate::sv_between(
           0, 1,
-          message_fmt = "Hazard ratio confidence level must between 0 and 1"
+          message_fmt = "Confidence level must be between 0 and 1"
         )
-      )
-      iv$add_rule("conf_level_survfit", shinyvalidate::sv_required("Please choose a KM confidence level"))
-      iv$add_rule(
-        "conf_level_survfit", shinyvalidate::sv_between(
-          0, 1,
-          message_fmt = "KM confidence level must between 0 and 1"
-        )
-      )
-      iv$add_rule(
-        "probs_survfit",
-        ~ if (!is.null(.) && .[1] == .[2]) "KM Estimate Percentiles cannot have a range of size 0"
       )
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
     ## Merge data
     anl_q <- reactive({
-      teal.code::eval_code(data(), as.expression(adsl_merge_inputs()$expr))
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card("# Time To Count Table"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      obj %>%
+        teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
     })
 
     validate_checks <- reactive({
@@ -535,25 +531,6 @@ srv_t_glm_counts <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Time To Count Table",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
-    }
+    decorated_table_q
   })
 }
