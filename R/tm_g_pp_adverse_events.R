@@ -202,6 +202,8 @@ template_adverse_events <- function(dataname = "ANL",
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -209,13 +211,13 @@ template_adverse_events <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(dplyr)
 #'   ADAE <- tmc_ex_adae
-#'   ADSL <- tmc_ex_adsl %>%
-#'     filter(USUBJID %in% ADAE$USUBJID)
+#'   ADSL <- filter(tmc_ex_adsl, USUBJID %in% ADAE$USUBJID)
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
@@ -368,10 +370,6 @@ ui_g_adverse_events <- function(id, ...) {
       teal.widgets::plot_with_settings_ui(id = ns("chart"))
     ),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-      tags$br(), tags$br(),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(ui_args[c(
         "aeterm", "tox_grade", "causality", "outcome",
@@ -452,8 +450,6 @@ ui_g_adverse_events <- function(id, ...) {
 #' @keywords internal
 srv_g_adverse_events <- function(id,
                                  data,
-                                 filter_panel_api,
-                                 reporter,
                                  dataname,
                                  parentname,
                                  patient_col,
@@ -469,8 +465,6 @@ srv_g_adverse_events <- function(id,
                                  label,
                                  ggplot2_args,
                                  decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
@@ -540,10 +534,16 @@ srv_g_adverse_events <- function(id,
       selector_list = selector_list
     )
 
-    anl_q <- reactive(
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
-    )
+    anl_q <- reactive({
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card("# Patient Profile Adverse Events"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
+    })
 
     all_q <- reactive({
       teal::validate_inputs(iv_r())
@@ -579,8 +579,9 @@ srv_g_adverse_events <- function(id,
         font_size = input[["font_size"]],
         ggplot2_args = ggplot2_args
       )
-
-      teal.code::eval_code(anl_q2, as.expression(calls))
+      obj <- anl_q2
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table and Plot")
+      teal.code::eval_code(obj, as.expression(calls))
     })
 
     output$title <- renderText({
@@ -645,28 +646,6 @@ srv_g_adverse_events <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Patient Profile Adverse Events Plot",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r()[["report"]])
-        card$append_text("Plot", "header3")
-        card$append_plot(plot_r(), dim = pws$dim())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    set_chunk_dims(pws, decorated_all_q)
   })
 }

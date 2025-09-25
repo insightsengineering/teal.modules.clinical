@@ -458,10 +458,6 @@ ui_g_therapy <- function(id, ...) {
       teal.widgets::plot_with_settings_ui(id = ns("therapy_plot"))
     ),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-      tags$br(), tags$br(),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(ui_args[c(
         "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
@@ -557,8 +553,6 @@ ui_g_therapy <- function(id, ...) {
 #' @keywords internal
 srv_g_therapy <- function(id,
                           data,
-                          reporter,
-                          filter_panel_api,
                           dataname,
                           parentname,
                           patient_col,
@@ -577,8 +571,6 @@ srv_g_therapy <- function(id,
                           label,
                           ggplot2_args,
                           decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
@@ -644,8 +636,14 @@ srv_g_therapy <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card("# Patient Profile Therapy"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      teal.code::eval_code(obj, as.expression(anl_inputs()$expr))
     })
 
     merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
@@ -679,7 +677,7 @@ srv_g_therapy <- function(id,
         ggplot2_args = ggplot2_args
       )
 
-      teal.code::eval_code(
+      obj <- teal.code::eval_code(
         merged$anl_q(),
         substitute(
           expr = {
@@ -690,8 +688,9 @@ srv_g_therapy <- function(id,
             patient_id = patient_id()
           )
         )
-      ) %>%
-        teal.code::eval_code(as.expression(unlist(my_calls)))
+      )
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table and Plot")
+      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     output$title <- renderText({
@@ -739,28 +738,6 @@ srv_g_therapy <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Patient Profile Therapy",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r()[["report"]])
-        card$append_text("Plot", "header3")
-        card$append_plot(plot_r(), dim = pws$dim())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    set_chunk_dims(pws, decorated_all_q_plot)
   })
 }

@@ -260,6 +260,8 @@ template_forest_rsp <- function(dataname = "ANL",
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -267,10 +269,12 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(formatters)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADRS <- tmc_ex_adrs %>%
 #'     mutate(AVALC = d_onco_rsp_label(AVALC) %>%
@@ -448,10 +452,6 @@ ui_g_forest_rsp <- function(id, ...) {
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-      tags$br(), tags$br(),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
       teal.transform::data_extract_ui(
@@ -538,8 +538,6 @@ ui_g_forest_rsp <- function(id, ...) {
 #' @keywords internal
 srv_g_forest_rsp <- function(id,
                              data,
-                             reporter,
-                             filter_panel_api,
                              dataname,
                              parentname,
                              arm_var,
@@ -556,8 +554,6 @@ srv_g_forest_rsp <- function(id,
                              default_responses,
                              ggplot2_args,
                              decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
@@ -616,7 +612,14 @@ srv_g_forest_rsp <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card("# Forest Response Plot"),
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's code")
+        )
+      obj %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_inputs()$expr))
     })
@@ -782,18 +785,28 @@ srv_g_forest_rsp <- function(id,
         font_size = input$font_size,
         ggplot2_args = ggplot2_args
       )
-
-      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
+      obj <- anl_q()
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table and Plot")
+      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     decorated_all_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = {
-        table
-        plot
-      }
+      expr = reactive({
+        substitute(
+          cowplot::plot_grid(
+            table,
+            plot,
+            align = "h",
+            axis = "tblr",
+            rel_widths = c(1 - input_rel_width_forest / 100, input_rel_width_forest / 100)
+          ),
+          env = list(input_rel_width_forest = input$rel_width_forest)
+        )
+      }),
+      expr_is_reactive = TRUE
     )
 
     plot_r <- reactive({
@@ -821,26 +834,6 @@ srv_g_forest_rsp <- function(id,
       title = label
     )
 
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Forest Response Plot",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Plot", "header3")
-        card$append_plot(plot_r(), dim = pws$dim())
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    set_chunk_dims(pws, decorated_all_q)
   })
 }

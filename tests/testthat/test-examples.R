@@ -33,15 +33,6 @@ with_mocked_app_bindings <- function(code) {
   # workaround of https://github.com/rstudio/shinytest2/issues/381
   # change to `print(shiny__shinyApp(...))` and remove allow warning once fixed
   mocked_shinyApp <- function(ui, server, ...) { # nolint object_name_linter.
-    functionBody(server) <- bquote({
-      pkgload::load_all(
-        .(normalizePath(file.path(testthat::test_path(), "..", ".."))),
-        export_all = FALSE,
-        attach_testthat = FALSE,
-        warn_conflicts = FALSE
-      )
-      .(functionBody(server))
-    })
     print(do.call(shiny__shinyApp, append(x = list(ui = ui, server = server), list(...))))
   }
 
@@ -91,6 +82,21 @@ with_mocked_app_bindings <- function(code) {
     if (!is.null(err_el <- app_driver$get_html(".shiny-input-container.has-error:not(.shiny-output-error-validation)"))) { # nolint line_length_linter.
       stop(sprintf("shinyvalidate error is observed:\n%s", err_el))
     }
+
+    # Check if the teal app has content is empty
+    if (identical(trimws(app_driver$get_text("#teal-main_ui_container")), "")) {
+      tryCatch(
+        app_driver$wait_for_idle(duration = 2000), # wait 2 seconds for session to disconnect
+        error = function(err) {
+          stop(
+            sprintf(
+              "Teal Application is empty. An Error may have occured:\n%s",
+              paste0(subset(app_driver$get_logs(), location == "shiny")[["message"]], collapse = "\n")
+            )
+          )
+        }
+      )
+    }
   }
 
   # support both `shinyApp(...)` as well as prefixed `shiny::shinyApp(...)` calls
@@ -110,27 +116,13 @@ with_mocked_app_bindings <- function(code) {
   )
 }
 
-strict_exceptions <- c(
-  # https://github.com/r-lib/gtable/pull/94
-  "tm_g_barchart_simple.Rd",
-  "tm_g_ci.Rd",
-  "tm_g_ipp.Rd",
-  "tm_g_pp_adverse_events.Rd",
-  "tm_g_pp_vitals.Rd"
-)
 
 for (i in rd_files()) {
   testthat::test_that(
     paste0("example-", basename(i)),
     {
       testthat::skip_on_cran()
-      testthat::skip("chromium")
       skip_if_too_deep(5)
-      if (basename(i) %in% strict_exceptions) {
-        op <- options()
-        withr::local_options(opts_partial_match_old)
-        withr::defer(options(op))
-      }
       with_mocked_app_bindings(
         # suppress warnings coming from saving qenv https://github.com/insightsengineering/teal.code/issues/194
         suppress_warnings(
