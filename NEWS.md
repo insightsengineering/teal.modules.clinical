@@ -1,6 +1,7 @@
 # teal.modules.clinical 0.11.1.9006
 
 ### Enhancements
+* Modules return a `teal_report` object that contains the data, code and report. All the reporter buttons were removed from the modules' UI in favor of the framework level reporter buttons (#1376).
 * Added `xticks` parameter to `tm_g_km` module to allow users to specify x-axis tick positions programmatically.
   When `xticks` is provided, the interactive input field is pre-populated with the specified values as a default.
   Users can then modify these values interactively, and their changes will take precedence over the default.
