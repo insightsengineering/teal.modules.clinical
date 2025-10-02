@@ -6,7 +6,7 @@ articles:
   generate_tmc_test_data: generate_tmc_test_data.html
   quickstart_substitute: quickstart_substitute.html
   teal-modules-clinical: teal-modules-clinical.html
-last_built: 2025-09-25T09:21Z
+last_built: 2025-10-02T08:35Z
 urls:
   reference: https://insightsengineering.github.io/teal.modules.clinical/reference
   article: https://insightsengineering.github.io/teal.modules.clinical/articles
