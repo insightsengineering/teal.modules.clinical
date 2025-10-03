@@ -412,8 +412,6 @@ template_tte <- function(dataname = "ANL",
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
-#' @inheritSection teal::example_module Reporting
-#'
 #' @details
 #' * The core functionality of this module is based on [tern::coxph_pairwise()], [tern::surv_timepoint()],
 #'   and [tern::surv_time()] from the `tern` package.

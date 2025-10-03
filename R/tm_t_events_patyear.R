@@ -217,8 +217,6 @@ template_events_patyear <- function(dataname,
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
-#' @inheritSection teal::example_module Reporting
-#'
 #'
 #' @examples
 #' library(dplyr)

@@ -70,8 +70,6 @@ template_prior_medication <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
-#' @inheritSection teal::example_module Reporting
-#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
