@@ -537,9 +537,6 @@ ui_g_lineplot <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -695,14 +692,6 @@ srv_g_lineplot <- function(id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
-    )
-
-    # Render R code
-    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
     )
 
     set_chunk_dims(pws, decorated_all_q)

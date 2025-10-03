@@ -333,9 +333,6 @@ ui_g_laboratory <- function(id, ...) {
         choices = NULL
       )
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -503,14 +500,6 @@ srv_g_laboratory <- function(id,
     })
 
     output$lab_values_table <- DT::renderDataTable(expr = table_r())
-
-    # Render R code.
-    source_code_r <- reactive(teal.code::get_code(req(all_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
 
     all_q
   })

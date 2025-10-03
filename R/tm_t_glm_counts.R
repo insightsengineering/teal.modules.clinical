@@ -187,9 +187,6 @@ ui_t_glm_counts <- function(id, ...) {
   output <- teal.widgets::white_small_well(
     teal.widgets::table_with_settings_ui(ns("table"))
   )
-  forms <- tagList(
-    teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-  )
 
   compare_treatments <- tags$div(
     class = "arm-comp-box",
@@ -274,7 +271,6 @@ ui_t_glm_counts <- function(id, ...) {
       ),
       table_settings,
     ),
-    forms = forms,
     pre_output = a$pre_output,
     post_output = a$post_output
   )
@@ -522,14 +518,6 @@ srv_t_glm_counts <- function(id,
     table_r <- reactive(decorated_table_q()[["table"]])
 
     teal.widgets::table_with_settings_srv(id = "table", table_r = table_r)
-
-    # Render R code
-    source_code_r <- reactive(teal.code::get_code(req(decorated_table_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
 
     decorated_table_q
   })

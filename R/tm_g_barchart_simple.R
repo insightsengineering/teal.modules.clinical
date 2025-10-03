@@ -353,9 +353,6 @@ ui_g_barchart_simple <- function(id, ...) {
           )
         )
       ),
-      forms = tagList(
-        teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-      ),
       pre_output = args$pre_output,
       post_output = args$post_output
     )
@@ -594,15 +591,8 @@ srv_g_barchart_simple <- function(id,
       width = plot_width
     )
 
-    # Render R code
-    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q_code())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
-
     set_chunk_dims(pws, decorated_all_q_code)
+    ###
   })
 }
 

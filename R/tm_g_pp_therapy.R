@@ -542,9 +542,6 @@ ui_g_therapy <- function(id, ...) {
         )
       )
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -728,14 +725,6 @@ srv_g_therapy <- function(id,
       plot_r = plot_r,
       height = plot_height,
       width = plot_width
-    )
-
-    # Render R code
-    source_code_r <- reactive(teal.code::get_code(req(decorated_all_q_plot())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
     )
 
     set_chunk_dims(pws, decorated_all_q_plot)

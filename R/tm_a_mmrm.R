@@ -886,9 +886,6 @@ ui_mmrm <- function(id, ...) {
             )
           )
         )
-      ),
-      forms = tagList(
-        teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
       )
     ),
     pre_output = a$pre_output,
@@ -921,9 +918,6 @@ srv_mmrm <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    # Reactive responsible for sending a disable/enable signal
-    # to show R code and debug info buttons
-    disable_r_code <- reactiveVal(FALSE)
 
     observeEvent(input[[extract_input("cov_var", dataname)]], {
       # update covariates as actual variables
@@ -1155,8 +1149,7 @@ srv_mmrm <- function(id,
     })
 
     # Event handler:
-    # When the "Fit Model" button is clicked, hide initial message, show title, disable model fit and enable
-    # show R code buttons.
+    # When the "Fit Model" button is clicked, hide initial message, show title, disable model fit button.
     shinyjs::onclick("button_start", {
       state$input <- mmrm_inputs_reactive()
       shinyjs::hide("null_input_msg")
@@ -1164,17 +1157,14 @@ srv_mmrm <- function(id,
       success <- try(mmrm_fit(), silent = TRUE)
       if (!inherits(success, "try-error")) {
         shinyjs::show("mmrm_title")
-        disable_r_code(FALSE)
       } else {
         shinyjs::hide("mmrm_title")
-        # show R code and debug info buttons will have already been hidden by disable_r_code
       }
     })
 
     # all the inputs and data that can be out of sync with the fitted model
     mmrm_inputs_reactive <- reactive({
       shinyjs::disable("button_start")
-      disable_r_code(TRUE)
       teal::validate_inputs(iv_r())
       encoding_inputs <- lapply(
         sync_inputs,
@@ -1243,9 +1233,7 @@ srv_mmrm <- function(id,
     # disable the show R code button and show warning message
     observeEvent(mmrm_inputs_reactive(), {
       shinyjs::enable("button_start")
-      disable_r_code(TRUE)
       if (!state_has_changed()) {
-        disable_r_code(FALSE)
         shinyjs::disable("button_start")
       }
     })
@@ -1562,19 +1550,9 @@ srv_mmrm <- function(id,
       show_hide_signal = reactive(!show_plot_rv())
     )
 
-    # Show R code once button is pressed.
-    source_code_r <- reactive(
-      teal.code::get_code(req(decorated_objs_q[[obj_ix_r()]]()))
-    )
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      disabled = disable_r_code,
-      title = label
-    )
-
     set_chunk_dims(pws, reactive({
       decorated_objs_q[[obj_ix_r()]]()
     }))
+
   })
 }
