@@ -30,7 +30,6 @@ template_logistic <- function(dataname,
                               responder_val = c("CR", "PR"),
                               at = NULL,
                               basic_table_args = teal.widgets::basic_table_args()) {
-
   # Common assertion no matter if arm_var is NULL or not.
   checkmate::assert_string(dataname)
   checkmate::assert_string(aval_var)

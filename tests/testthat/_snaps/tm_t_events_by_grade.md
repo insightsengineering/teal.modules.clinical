@@ -161,8 +161,9 @@
       $sort
       {
           pruned_and_sorted_result <- pruned_result %>% rtables::sort_at_path(path = "AEBODSYS", 
-              scorefun = cont_n_allcols, decreasing = TRUE) %>% rtables::sort_at_path(path = c("AEBODSYS", 
-              "*", "AEDECOD"), scorefun = cont_n_allcols, decreasing = TRUE)
+              scorefun = rtables::cont_n_allcols, decreasing = TRUE) %>% 
+              rtables::sort_at_path(path = c("AEBODSYS", "*", "AEDECOD"), 
+                  scorefun = rtables::cont_n_allcols, decreasing = TRUE)
       }
       
 

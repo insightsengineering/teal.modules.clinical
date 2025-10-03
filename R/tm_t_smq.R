@@ -274,7 +274,7 @@ template_smq <- function(dataname,
     y$sort <- substitute(
       expr = {
         sorted_result <- result %>%
-          rtables::sort_at_path(path = c("SMQ"), scorefun = cont_n_allcols) %>%
+          rtables::sort_at_path(path = c("SMQ"), scorefun = rtables::cont_n_allcols) %>%
           rtables::sort_at_path(path = c("SMQ", "*", llt), scorefun = tern::score_occurrences, na.pos = "last")
       },
       env = list(llt = llt)
@@ -350,6 +350,9 @@ template_smq <- function(dataname,
 #' @examples
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(dplyr)
+#'   library(rtables)
 #'   ADSL <- tmc_ex_adsl
 #'   ADAE <- tmc_ex_adae
 #'

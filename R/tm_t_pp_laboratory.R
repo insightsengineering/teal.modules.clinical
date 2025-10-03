@@ -468,7 +468,11 @@ srv_g_laboratory <- function(id,
         )
       )
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
-      obj %>% teal.code::eval_code(as.expression(labor_calls))
+      obj <- obj %>% teal.code::eval_code(as.expression(labor_calls))
+      # removes table_data_html needed only for the display
+      teal.reporter::teal_card(obj) <- utils::head(teal.reporter::teal_card(obj), -3)
+
+      obj
     })
 
     # Outputs to render.
@@ -487,7 +491,7 @@ srv_g_laboratory <- function(id,
         table_html$dependencies,
         list(rmarkdown::html_dependency_bootstrap("default"))
       )
-      list(html = table_html, report = q[["table"]])
+      table_html
     })
 
     output$title <- renderText({
@@ -495,7 +499,7 @@ srv_g_laboratory <- function(id,
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    output$lab_values_table <- DT::renderDataTable(expr = table_r()$html)
+    output$lab_values_table <- DT::renderDataTable(expr = table_r())
 
     all_q
   })

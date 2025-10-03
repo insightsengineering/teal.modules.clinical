@@ -41,7 +41,6 @@ template_g_ipp <- function(dataname = "ANL",
                            ggplot2_args = teal.widgets::ggplot2_args(),
                            suppress_legend = FALSE,
                            add_avalu = TRUE) {
-
   checkmate::assert_string(dataname)
   checkmate::assert_string(paramcd)
   checkmate::assert_string(arm_var)
@@ -205,17 +204,18 @@ template_g_ipp <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(tern)
 #'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl %>%
 #'     slice(1:20) %>%
-#'     tern::df_explicit_na()
+#'     df_explicit_na()
 #'   ADLB <- tmc_ex_adlb %>%
 #'     filter(USUBJID %in% ADSL$USUBJID) %>%
-#'     tern::df_explicit_na() %>%
+#'     df_explicit_na() %>%
 #'     filter(AVISIT != "SCREENING")
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]

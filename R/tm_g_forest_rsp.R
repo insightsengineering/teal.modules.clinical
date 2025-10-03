@@ -269,10 +269,12 @@ template_forest_rsp <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(formatters)
+#'   library(dplyr)
 #'   ADSL <- tmc_ex_adsl
 #'   ADRS <- tmc_ex_adrs %>%
 #'     mutate(AVALC = d_onco_rsp_label(AVALC) %>%
@@ -789,10 +791,19 @@ srv_g_forest_rsp <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = {
-        table
-        plot
-      }
+      expr = reactive({
+        substitute(
+          cowplot::plot_grid(
+            table,
+            plot,
+            align = "h",
+            axis = "tblr",
+            rel_widths = c(1 - input_rel_width_forest / 100, input_rel_width_forest / 100)
+          ),
+          env = list(input_rel_width_forest = input$rel_width_forest)
+        )
+      }),
+      expr_is_reactive = TRUE
     )
 
     plot_r <- reactive({

@@ -381,13 +381,14 @@ template_patient_timeline <- function(dataname = "ANL",
 #'
 #' @examples
 #' library(nestcolor)
-#' library(dplyr)
 #'
 #' data <- teal_data()
 #' data <- within(data, {
+#'   library(teal.modules.clinical)
+#'   library(formatters)
+#'   library(dplyr)
 #'   ADAE <- tmc_ex_adae
-#'   ADSL <- tmc_ex_adsl %>%
-#'     filter(USUBJID %in% ADAE$USUBJID)
+#'   ADSL <- filter(tmc_ex_adsl, USUBJID %in% ADAE$USUBJID)
 #'   ADCM <- tmc_ex_adcm %>%
 #'     mutate(
 #'       CMSTDY = case_when(
