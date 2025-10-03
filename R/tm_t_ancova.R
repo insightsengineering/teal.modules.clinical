@@ -449,6 +449,8 @@ template_ancova <- function(dataname = "ANL",
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @details
 #' When a single endpoint is selected, both unadjusted and adjusted comparison are provided. This modules
 #' expects that the analysis data has the following variables:
