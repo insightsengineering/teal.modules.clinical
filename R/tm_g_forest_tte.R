@@ -620,7 +620,7 @@ srv_g_forest_tte <- function(id,
         c(
           teal.reporter::teal_card("# Forest Survival Plot"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
@@ -718,7 +718,7 @@ srv_g_forest_tte <- function(id,
         ggplot2_args = ggplot2_args
       )
       obj <- anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table and Plot")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table and Plot")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 

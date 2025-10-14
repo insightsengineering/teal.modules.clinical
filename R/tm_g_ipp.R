@@ -550,7 +550,7 @@ srv_g_ipp <- function(id,
         c(
           teal.reporter::teal_card("# Individual Patient Plot"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
@@ -630,7 +630,7 @@ srv_g_ipp <- function(id,
         add_avalu = input$add_avalu
       )
       obj <- anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 

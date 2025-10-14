@@ -533,7 +533,7 @@ srv_shift_by_arm_by_worst <- function(id,
         c(
           teal.reporter::teal_card("# Shift by Arm by Worst Table"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
@@ -613,7 +613,7 @@ srv_shift_by_arm_by_worst <- function(id,
       )
 
       obj <- merged$anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 

@@ -317,7 +317,7 @@ srv_t_prior_medication <- function(id,
         c(
           teal.reporter::teal_card("# Patient Prior Medication Table"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
@@ -346,7 +346,7 @@ srv_t_prior_medication <- function(id,
             )
           )
         )
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       obj %>% teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 

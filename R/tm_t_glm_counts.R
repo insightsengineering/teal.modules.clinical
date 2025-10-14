@@ -359,7 +359,7 @@ srv_t_glm_counts <- function(id,
         c(
           teal.reporter::teal_card("# Time To Count Table"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
         teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
