@@ -44,7 +44,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Module initializes in teal without er
 
   testthat::expect_match(
     app_driver$get_attr(
-      app_driver$active_module_element("vitals_plot-plot_main > img"),
+      app_driver$namespaces(TRUE)$module("vitals_plot-plot_main > img"),
       "src"
     ),
     "data:image/png;base64,"
@@ -115,7 +115,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting patient_id column throws 
   app_driver$set_active_module_input("patient_id", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("patient_id_input > div > span"),
+    app_driver$namespaces(TRUE)$module("patient_id_input > div > span"),
     "Please select a patient."
   )
   app_driver$expect_validation_error()
@@ -137,7 +137,7 @@ testthat::test_that(
     # Expecting validation error on empty PARAMCD levels input
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text("paramcd_levels > div > span"),
+      app_driver$namespaces(TRUE)$module("paramcd_levels > div > span"),
       "Please select PARAMCD variable levels."
     )
 
@@ -169,7 +169,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting paramcd throws validation
   app_driver$set_active_module_input("paramcd-dataset_ADVS_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("paramcd-dataset_ADVS_singleextract-select_input > div > span"),
+    app_driver$namespaces(TRUE)$module("paramcd-dataset_ADVS_singleextract-select_input > div > span"),
     "Please select PARAMCD variable."
   )
   app_driver$expect_validation_error()
@@ -199,7 +199,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting xaxis column throws valid
   app_driver$set_active_module_input("xaxis-dataset_ADVS_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("xaxis-dataset_ADVS_singleextract-select_input > div > span"),
+    app_driver$namespaces(TRUE)$module("xaxis-dataset_ADVS_singleextract-select_input > div > span"),
     "Please select Vitals x-axis variable."
   )
   app_driver$expect_validation_error()
@@ -229,7 +229,7 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting aval_var column throws va
   app_driver$set_active_module_input("aval_var-dataset_ADVS_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("aval_var-dataset_ADVS_singleextract-select_input > div > span"),
+    app_driver$namespaces(TRUE)$module("aval_var-dataset_ADVS_singleextract-select_input > div > span"),
     "Please select AVAL variable."
   )
   app_driver$expect_validation_error()

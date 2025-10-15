@@ -73,7 +73,7 @@ testthat::test_that(
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
     testthat::expect_true(
-      app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+      app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
     )
     app_driver$stop()
   }
@@ -148,7 +148,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of arm_var throws va
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "A treatment variable is required"
   )
   app_driver$stop()
@@ -181,7 +181,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of paramcd throws va
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADLB_singleextract-filter1-vals_input .shiny-validation-message"
     ),
     "A laboratory parameter is required"
@@ -216,7 +216,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "worst_flag_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"
     ),
     "A worst treatment flag is required"

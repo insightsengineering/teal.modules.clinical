@@ -63,7 +63,7 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
     timeout = 30000
   )
   if (fit_model) {
-    app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
   }
   app_driver
@@ -88,7 +88,7 @@ testthat::test_that(
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
 
-    null_text <- app_driver$active_module_element_text("null_input_msg")
+    null_text <- app_driver$namespaces(TRUE)$module("null_input_msg")
 
     testthat::expect_match(null_text, "Please first specify 'Model Settings' and press 'Fit Model'")
 
@@ -170,7 +170,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
 
-    app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
     app_driver$expect_no_validation_error()
 
@@ -192,7 +192,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
 
-    app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
     app_driver$expect_no_validation_error()
 
@@ -235,7 +235,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
 
-    app_driver$click(selector = app_driver$active_module_element("button_start"))
+    app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
     app_driver$expect_no_validation_error()
 
@@ -280,7 +280,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$active_module_element_text(
+        app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("aval_var", "ADQS", "select_input")
@@ -316,7 +316,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$active_module_element_text(
+        app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("paramcd", "ADQS", "filter1-vals_input")
@@ -352,7 +352,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$active_module_element_text(
+        app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("visit_var", "ADQS", "select_input")
@@ -388,7 +388,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$active_module_element_text(
+        app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("arm_var", "ADSL", "select_input")
@@ -424,7 +424,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$active_module_element_text(
+        app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("id_var", "ADQS", "select_input")
@@ -460,7 +460,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$active_module_element_text(
+        app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             "conf_level_input"
@@ -532,7 +532,7 @@ for (func in output_functions) {
         }
 
         app_driver$set_active_module_input(input_name, input_list[[input_name]])
-        app_driver$click(selector = app_driver$active_module_element("button_start"))
+        app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
         app_driver$wait_for_idle()
         app_driver$expect_no_validation_error()
 

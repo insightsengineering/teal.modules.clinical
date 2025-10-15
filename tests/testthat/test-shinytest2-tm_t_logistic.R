@@ -59,7 +59,7 @@ testthat::test_that("e2e - tm_t_logistic: Module initializes in teal without err
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -135,7 +135,7 @@ testthat::test_that("e2e - tm_t_logistic: Deselection of paramcd throws validati
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADRS_singleextract-filter1-vals_input .shiny-validation-message"
     ),
     "`Select Endpoint` field is empty"
@@ -170,7 +170,7 @@ testthat::test_that("e2e - tm_t_logistic: Deselection of arm_var throws validati
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -203,7 +203,7 @@ testthat::test_that("e2e - tm_t_logistic: Deselection of cov_var throws validati
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("cov_var-dataset_ADRS_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("cov_var-dataset_ADRS_singleextract-select_input .shiny-validation-message"),
     "`Covariates` field is empty"
   )
   app_driver$stop()

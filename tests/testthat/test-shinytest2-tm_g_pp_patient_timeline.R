@@ -180,10 +180,10 @@ testthat::test_that(
 
     testthat::expect_true(
       all(
-        app_driver$is_visible(app_driver$active_module_element("aerelday_start-dataset_ADAE_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("aerelday_end-dataset_ADAE_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("dsrelday_start-dataset_ADCM_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("dsrelday_end-dataset_ADCM_singleextract-select"))
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("aerelday_start-dataset_ADAE_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("aerelday_end-dataset_ADAE_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("dsrelday_start-dataset_ADCM_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("dsrelday_end-dataset_ADCM_singleextract-select"))
       )
     )
 
@@ -191,10 +191,10 @@ testthat::test_that(
 
     testthat::expect_false(
       any(
-        app_driver$is_visible(app_driver$active_module_element("aerelday_start-dataset_ADAE_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("aerelday_end-dataset_ADAE_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("dsrelday_start-dataset_ADCM_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("dsrelday_end-dataset_ADCM_singleextract-select"))
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("aerelday_start-dataset_ADAE_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("aerelday_end-dataset_ADAE_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("dsrelday_start-dataset_ADCM_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("dsrelday_end-dataset_ADCM_singleextract-select"))
       )
     )
 
@@ -212,10 +212,10 @@ testthat::test_that(
 
     testthat::expect_false(
       any(
-        app_driver$is_visible(app_driver$active_module_element("aetime_start-dataset_ADAE_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("aetime_end-dataset_ADAE_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("dstime_start-dataset_ADCM_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("dstime_end-dataset_ADCM_singleextract-select"))
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select"))
       )
     )
 
@@ -223,10 +223,10 @@ testthat::test_that(
 
     testthat::expect_true(
       all(
-        app_driver$is_visible(app_driver$active_module_element("aetime_start-dataset_ADAE_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("aetime_end-dataset_ADAE_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("dstime_start-dataset_ADCM_singleextract-select")),
-        app_driver$is_visible(app_driver$active_module_element("dstime_end-dataset_ADCM_singleextract-select"))
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select")),
+        app_driver$is_visible(app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select"))
       )
     )
 
@@ -260,7 +260,7 @@ testthat::test_that("e2e - tm_g_pp_patient_timeline: Deselecting patient_id colu
   app_driver$set_active_module_input("patient_id", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("patient_timeline_plot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("patient_id_input > div > span"),
+    app_driver$namespaces(TRUE)$module("patient_id_input > div > span"),
     "Please select a patient"
   )
   app_driver$expect_validation_error()
@@ -363,7 +363,7 @@ testthat::test_that(
     app_driver$set_active_module_input("aetime_start-dataset_ADAE_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$active_module_element_text("aetime_start-dataset_ADAE_singleextract-select_input > div > span"),
+      app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select_input > div > span"),
       "Please add AE start date."
     )
     app_driver$expect_validation_error()
@@ -401,7 +401,7 @@ testthat::test_that(
     app_driver$set_active_module_input("aetime_end-dataset_ADAE_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$active_module_element_text("aetime_end-dataset_ADAE_singleextract-select_input > div > span"),
+      app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select_input > div > span"),
       "Please add AE end date."
     )
     app_driver$expect_validation_error()
@@ -437,7 +437,7 @@ testthat::test_that(
     app_driver$set_active_module_input("aerelday_start-dataset_ADAE_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$active_module_element_text("aerelday_start-dataset_ADAE_singleextract-select_input > div > span"),
+      app_driver$namespaces(TRUE)$module("aerelday_start-dataset_ADAE_singleextract-select_input > div > span"),
       "Please add AE start date."
     )
     app_driver$expect_validation_error()
@@ -473,7 +473,7 @@ testthat::test_that(
     app_driver$set_active_module_input("aerelday_end-dataset_ADAE_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$active_module_element_text("aerelday_end-dataset_ADAE_singleextract-select_input > div > span"),
+      app_driver$namespaces(TRUE)$module("aerelday_end-dataset_ADAE_singleextract-select_input > div > span"),
       "Please add AE end date."
     )
     app_driver$expect_validation_error()
@@ -511,7 +511,7 @@ testthat::test_that(
     app_driver$set_active_module_input("dstime_start-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$active_module_element_text("dstime_start-dataset_ADCM_singleextract-select_input > div > span"),
+      app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select_input > div > span"),
       "Please add Medication start date."
     )
     app_driver$expect_validation_error()
@@ -549,7 +549,7 @@ testthat::test_that(
     app_driver$set_active_module_input("dstime_end-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$active_module_element_text("dstime_end-dataset_ADCM_singleextract-select_input > div > span"),
+      app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select_input > div > span"),
       "Please add Medication end date."
     )
     app_driver$expect_validation_error()
@@ -585,7 +585,7 @@ testthat::test_that(
     app_driver$set_active_module_input("dsrelday_start-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$active_module_element_text("dsrelday_start-dataset_ADCM_singleextract-select_input > div > span"),
+      app_driver$namespaces(TRUE)$module("dsrelday_start-dataset_ADCM_singleextract-select_input > div > span"),
       "Please add Medication start date."
     )
     app_driver$expect_validation_error()
@@ -621,7 +621,7 @@ testthat::test_that(
     app_driver$set_active_module_input("dsrelday_end-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$active_module_element_text("dsrelday_end-dataset_ADCM_singleextract-select_input > div > span"),
+      app_driver$namespaces(TRUE)$module("dsrelday_end-dataset_ADCM_singleextract-select_input > div > span"),
       "Please add Medication end date."
     )
     app_driver$expect_validation_error()

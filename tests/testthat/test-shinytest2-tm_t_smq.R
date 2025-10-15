@@ -62,7 +62,7 @@ testthat::test_that("e2e - tm_t_smq: Module initializes in teal without errors a
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -126,7 +126,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation er
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "At least one treatment variable is required"
   )
   app_driver$stop()
@@ -156,7 +156,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of paramcd throws validation er
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("llt-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("llt-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
     "A low level term variable is required"
   )
   app_driver$stop()
@@ -189,7 +189,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of worst_flag throws validation
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("baskets-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("baskets-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
     "At least one basket is required"
   )
   app_driver$stop()

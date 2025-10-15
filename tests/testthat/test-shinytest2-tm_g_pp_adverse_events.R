@@ -62,7 +62,7 @@ testthat::test_that(
     app_driver$expect_no_validation_error()
     testthat::expect_match(app_driver$get_active_module_plot_output("chart"), "data:image/png;base64,")
     testthat::expect_true(
-      app_driver$is_visible(app_driver$active_module_element("table"))
+      app_driver$is_visible(app_driver$namespaces(TRUE)$module("table"))
     )
     app_driver$stop()
   }
@@ -159,7 +159,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select a patient"
     )
     app_driver$stop()
@@ -203,7 +203,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AETERM variable."
     )
     app_driver$stop()
@@ -247,7 +247,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AETOXGR variable."
     )
     app_driver$stop()
@@ -291,7 +291,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AEREL variable."
     )
     app_driver$stop()
@@ -335,7 +335,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AEOUT variable."
     )
     app_driver$stop()
@@ -379,7 +379,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AEACN variable."
     )
     app_driver$stop()
@@ -423,7 +423,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select ASTDY variable."
     )
     app_driver$stop()

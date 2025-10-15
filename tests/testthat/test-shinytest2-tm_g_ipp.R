@@ -156,7 +156,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting arm_var column throws validatio
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-filter1-vals", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-filter1-vals_input > div > span"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-filter1-vals_input > div > span"),
     "Please select Arm filter."
   )
   app_driver$expect_validation_error()
@@ -186,7 +186,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting paramcd throws validation error
   app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("paramcd-dataset_ADLB_singleextract-filter1-vals_input > div > span"),
+    app_driver$namespaces(TRUE)$module("paramcd-dataset_ADLB_singleextract-filter1-vals_input > div > span"),
     "Please select Parameter filter."
   )
   app_driver$expect_validation_error()
@@ -216,7 +216,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting visit_var throws validation err
   app_driver$set_active_module_input("visit_var-dataset_ADLB_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("visit_var-dataset_ADLB_singleextract-select_input > div > span"),
+    app_driver$namespaces(TRUE)$module("visit_var-dataset_ADLB_singleextract-select_input > div > span"),
     "A Timepoint Variable must be selected"
   )
   app_driver$expect_validation_error()
@@ -246,7 +246,7 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting aval_var throws validation erro
   app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("aval_var-dataset_ADLB_singleextract-select_input > div > span"),
+    app_driver$namespaces(TRUE)$module("aval_var-dataset_ADLB_singleextract-select_input > div > span"),
     "A Parameter values over Time must be selected"
   )
   app_driver$expect_validation_error()

@@ -77,7 +77,7 @@ testthat::test_that("e2e - tm_t_exposure: Module initializes in teal without err
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -142,7 +142,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd throws validati
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADEX_singleextract-filter1-vals_input .shiny-validation-message"
     ),
     "Please select a parameter value."
@@ -177,7 +177,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of parcat throws validatio
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "parcat-dataset_ADEX_singleextract-filter1-vals_input .shiny-validation-message"
     ),
     "Please select a parameter category value."
@@ -250,7 +250,7 @@ testthat::test_that("e2e - tm_t_exposure: Deselection of row_by_var throws valid
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "row_by_var-dataset_ADEX_singleextract-select_input .shiny-validation-message"
     ),
     "Please select a row by variable."
