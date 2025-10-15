@@ -22,63 +22,65 @@ app_driver_tm_g_forest_rsp <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = modules(
-      tm_g_forest_rsp(
-        label = "Forest Response",
-        dataname = "ADRS",
-        parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
-          "ARMCD"
-        ),
-        arm_ref_comp = arm_ref_comp,
-        paramcd = teal.transform::choices_selected(
-          teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
-          "INVET"
-        ),
-        aval_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADRS"]], "AVALC"),
-          "AVALC",
-          fixed = TRUE
-        ),
-        subgroup_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
-          c("BMRKR2", "SEX")
-        ),
-        strata_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
-          "STRATA2"
-        ),
-        fixed_symbol_size = TRUE,
-        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, 2), 0.95, keep_order = TRUE),
-        plot_height = c(600L, 200L, 2000L),
-        default_responses = list(
-          BESRSPI = list(
-            rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-            levels = c(
-              "Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
-              "Progressive Disease (PD)", "Not Evaluable (NE)"
+    teal::init(
+      data = data,
+      modules = modules(
+        tm_g_forest_rsp(
+          label = "Forest Response",
+          dataname = "ADRS",
+          parentname = "ADSL",
+          arm_var = teal.transform::choices_selected(
+            teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
+            "ARMCD"
+          ),
+          arm_ref_comp = arm_ref_comp,
+          paramcd = teal.transform::choices_selected(
+            teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
+            "INVET"
+          ),
+          aval_var = teal.transform::choices_selected(
+            teal.transform::variable_choices(data[["ADRS"]], "AVALC"),
+            "AVALC",
+            fixed = TRUE
+          ),
+          subgroup_var = teal.transform::choices_selected(
+            teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
+            c("BMRKR2", "SEX")
+          ),
+          strata_var = teal.transform::choices_selected(
+            teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
+            "STRATA2"
+          ),
+          fixed_symbol_size = TRUE,
+          conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, 2), 0.95, keep_order = TRUE),
+          plot_height = c(600L, 200L, 2000L),
+          default_responses = list(
+            BESRSPI = list(
+              rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+              levels = c(
+                "Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
+                "Progressive Disease (PD)", "Not Evaluable (NE)"
+              )
+            ),
+            INVET = list(
+              rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+              levels = c(
+                "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+                "Progressive Disease (PD)", "Stable Disease (SD)"
+              )
+            ),
+            OVRINV = list(
+              rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+              levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
             )
           ),
-          INVET = list(
-            rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-            levels = c(
-              "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
-              "Progressive Disease (PD)", "Stable Disease (SD)"
-            )
-          ),
-          OVRINV = list(
-            rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
-            levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
-          )
-        ),
-        plot_width = c(1500L, 800L, 3000L),
-        rel_width_forest = c(25L, 0L, 100L),
-        font_size = c(15L, 1L, 30L),
-        pre_output = NULL,
-        post_output = NULL,
-        ggplot2_args = teal.widgets::ggplot2_args()
+          plot_width = c(1500L, 800L, 3000L),
+          rel_width_forest = c(25L, 0L, 100L),
+          font_size = c(15L, 1L, 30L),
+          pre_output = NULL,
+          post_output = NULL,
+          ggplot2_args = teal.widgets::ggplot2_args()
+        )
       )
     )
   )
@@ -91,7 +93,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Module initializes in teal without e
   app_driver <- app_driver_tm_g_forest_rsp()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(app_driver$is_visible(app_driver$active_module_element("myplot-plot_main")))
+  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main")))
 
   app_driver$stop()
 })
@@ -175,7 +177,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting arm_var throws validatio
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -199,7 +201,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting paramcd throws validatio
   app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
     "Please select Endpoint filter"
   )
   app_driver$stop()
@@ -223,7 +225,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting responders throws valida
   app_driver$set_active_module_input("responders", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
     "`Responders` field is empty"
   )
   app_driver$stop()
@@ -247,7 +249,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting a non-factors column in su
   app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", c("SEX", "AGE"))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
     "Not all subgroup variables are factors"
   )
   app_driver$stop()
@@ -304,13 +306,13 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting 
   app_driver$set_active_module_input("conf_level", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
     "Please choose a confidence level between 0 and 1"
   )
   app_driver$set_active_module_input("conf_level", 2)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot_out_main"),
+    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
     "Please choose a confidence level between 0 and 1"
   )
   app_driver$stop()

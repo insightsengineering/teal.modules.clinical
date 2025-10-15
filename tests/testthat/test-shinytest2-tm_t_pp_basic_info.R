@@ -6,17 +6,19 @@ app_driver_tm_t_pp_basic_info <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_pp_basic_info(
-      label = "Basic Info",
-      dataname = "ADSL",
-      patient_col = "USUBJID",
-      vars = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]]),
-        selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
-      ),
-      pre_output = NULL,
-      post_output = NULL
+    teal::init(
+      data = data,
+      modules = tm_t_pp_basic_info(
+        label = "Basic Info",
+        dataname = "ADSL",
+        patient_col = "USUBJID",
+        vars = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]]),
+          selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
+        ),
+        pre_output = NULL,
+        post_output = NULL
+      )
     )
   )
 }
@@ -28,7 +30,7 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Module initializes in teal withou
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("basic_info_table"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("basic_info_table"))
   )
   app_driver$stop()
 })
@@ -80,13 +82,13 @@ testthat::test_that(
     app_driver$set_active_module_input("patient_id", NULL)
     testthat::expect_false(
       app_driver$is_visible(
-        app_driver$active_module_element("basic_info_table"),
+        app_driver$namespaces(TRUE)$module("basic_info_table"),
         visibility_property = TRUE
       )
     )
     app_driver$expect_validation_error()
     testthat::expect_equal(
-      app_driver$active_module_element_text("patient_id_input .shiny-validation-message"),
+      app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message"),
       "Please select a patient"
     )
     app_driver$stop()
@@ -122,13 +124,13 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of cov_var throws val
   app_driver$set_active_module_input("vars-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_false(
     app_driver$is_visible(
-      app_driver$active_module_element("basic_info_table"),
+      app_driver$namespaces(TRUE)$module("basic_info_table"),
       visibility_property = TRUE
     )
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("vars-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("vars-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Please select basic info variables"
   )
   app_driver$stop()
