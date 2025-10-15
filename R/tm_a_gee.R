@@ -570,7 +570,7 @@ srv_gee <- function(id,
       )
 
       obj <- merged$anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), paste("## ", table_type, "Table"))
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), paste("### ", table_type, "Table"))
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
