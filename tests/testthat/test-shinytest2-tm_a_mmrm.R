@@ -25,38 +25,40 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
 
   app_driver <- init_teal_app_driver(
-    data = data,
-    modules = tm_a_mmrm(
-      label = "MMRM",
-      dataname = "ADQS",
-      parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-        teal.transform::datanames_input(arm_var), "ADSL"
-      ),
-      aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
-      id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-      arm_var = arm_var,
-      visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = choices_selected(
-        choices = value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-        selected = "FKSI-FWB"
-      ),
-      cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
-      method = teal.transform::choices_selected(c(
-        "Satterthwaite", "Kenward-Roger",
-        "Kenward-Roger-Linear"
-      ), "Satterthwaite", keep_order = TRUE),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
-        keep_order =
-          TRUE
-      ),
-      plot_height = c(700L, 200L, 2000L),
-      plot_width = NULL,
-      total_label = default_total_label(),
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args(),
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_a_mmrm(
+        label = "MMRM",
+        dataname = "ADQS",
+        parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+          teal.transform::datanames_input(arm_var), "ADSL"
+        ),
+        aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
+        id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
+        arm_var = arm_var,
+        visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+        arm_ref_comp = arm_ref_comp,
+        paramcd = choices_selected(
+          choices = value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
+          selected = "FKSI-FWB"
+        ),
+        cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
+        method = teal.transform::choices_selected(c(
+          "Satterthwaite", "Kenward-Roger",
+          "Kenward-Roger-Linear"
+        ), "Satterthwaite", keep_order = TRUE),
+        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
+          keep_order =
+            TRUE
+        ),
+        plot_height = c(700L, 200L, 2000L),
+        plot_width = NULL,
+        total_label = default_total_label(),
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args(),
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     ),
     timeout = 30000
   )

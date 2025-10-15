@@ -13,30 +13,32 @@ app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length.
   teal.data::join_keys(data) <- keys
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_pp_prior_medication(
-      label = "Prior Medication",
-      dataname = "ADCM",
-      parentname = "ADSL",
-      patient_col = "USUBJID",
-      atirel = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("ATIREL", "SEX")),
-        selected = "ATIREL"
-      ),
-      cmdecod = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD", "RACE")),
-        selected = "CMDECOD"
-      ),
-      cmindc = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("CMINDC", "SEX")),
-        selected = "CMINDC"
-      ),
-      cmstdy = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("ASTDY", "AGE")),
-        selected = "ASTDY"
-      ),
-      pre_output = NULL,
-      post_output = NULL
+    teal::init(
+      data = data,
+      modules = tm_t_pp_prior_medication(
+        label = "Prior Medication",
+        dataname = "ADCM",
+        parentname = "ADSL",
+        patient_col = "USUBJID",
+        atirel = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("ATIREL", "SEX")),
+          selected = "ATIREL"
+        ),
+        cmdecod = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD", "RACE")),
+          selected = "CMDECOD"
+        ),
+        cmindc = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMINDC", "SEX")),
+          selected = "CMINDC"
+        ),
+        cmstdy = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("ASTDY", "AGE")),
+          selected = "ASTDY"
+        ),
+        pre_output = NULL,
+        post_output = NULL
+      )
     )
   )
 }

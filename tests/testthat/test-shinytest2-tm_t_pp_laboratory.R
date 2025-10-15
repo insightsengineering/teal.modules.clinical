@@ -7,38 +7,40 @@ app_driver_tm_t_pp_laboratory <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_pp_laboratory(
-      label = "Vitals",
-      dataname = "ADLB",
-      parentname = "ADSL",
-      patient_col = "USUBJID",
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], c("PARAMCD", "STUDYID")),
-        selected = "PARAMCD"
-      ),
-      param = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], c("PARAM", "SEX")),
-        selected = "PARAM"
-      ),
-      timepoints = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], c("ADY", "AGE")),
-        selected = "ADY"
-      ),
-      anrind = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], c("ANRIND", "AGEU")),
-        selected = "ANRIND"
-      ),
-      aval_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], c("AVAL", "AGE")),
-        selected = "AVAL"
-      ),
-      avalu_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], c("AVALU", "SEX")),
-        selected = "AVALU"
-      ),
-      pre_output = NULL,
-      post_output = NULL
+    teal::init(
+      data = data,
+      modules = tm_t_pp_laboratory(
+        label = "Vitals",
+        dataname = "ADLB",
+        parentname = "ADSL",
+        patient_col = "USUBJID",
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], c("PARAMCD", "STUDYID")),
+          selected = "PARAMCD"
+        ),
+        param = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], c("PARAM", "SEX")),
+          selected = "PARAM"
+        ),
+        timepoints = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], c("ADY", "AGE")),
+          selected = "ADY"
+        ),
+        anrind = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], c("ANRIND", "AGEU")),
+          selected = "ANRIND"
+        ),
+        aval_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], c("AVAL", "AGE")),
+          selected = "AVAL"
+        ),
+        avalu_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], c("AVALU", "SEX")),
+          selected = "AVALU"
+        ),
+        pre_output = NULL,
+        post_output = NULL
+      )
     )
   )
 }

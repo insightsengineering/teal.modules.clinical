@@ -9,43 +9,45 @@ app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length.
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_pp_adverse_events(
-      label = "Adverse Events",
-      dataname = "ADAE",
-      parentname = "ADSL",
-      patient_col = "USUBJID",
-      plot_height = c(600L, 200L, 2000L),
-      aeterm = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AETERM", "AGEU")),
-        selected = "AETERM"
-      ),
-      tox_grade = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AETOXGR", "COUNTRY")),
-        selected = "AETOXGR"
-      ),
-      causality = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AEREL", "ACTARM")),
-        selected = "AEREL"
-      ),
-      outcome = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AEOUT", "SITEID")),
-        selected = "AEOUT"
-      ),
-      action = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AEACN", "SMQ01NAM")),
-        selected = "AEACN"
-      ),
-      time = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("ASTDY", "AGE")),
-        selected = "ASTDY"
-      ),
-      decod = NULL,
-      font_size = c(12L, 12L, 25L),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_pp_adverse_events(
+        label = "Adverse Events",
+        dataname = "ADAE",
+        parentname = "ADSL",
+        patient_col = "USUBJID",
+        plot_height = c(600L, 200L, 2000L),
+        aeterm = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AETERM", "AGEU")),
+          selected = "AETERM"
+        ),
+        tox_grade = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AETOXGR", "COUNTRY")),
+          selected = "AETOXGR"
+        ),
+        causality = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AEREL", "ACTARM")),
+          selected = "AEREL"
+        ),
+        outcome = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AEOUT", "SITEID")),
+          selected = "AEOUT"
+        ),
+        action = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AEACN", "SMQ01NAM")),
+          selected = "AEACN"
+        ),
+        time = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("ASTDY", "AGE")),
+          selected = "ASTDY"
+        ),
+        decod = NULL,
+        font_size = c(12L, 12L, 25L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }

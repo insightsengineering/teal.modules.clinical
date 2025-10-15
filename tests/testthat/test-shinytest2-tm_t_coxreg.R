@@ -19,39 +19,41 @@ app_driver_tm_t_coxreg <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_coxreg(
-      label = "Cox Reg.",
-      dataname = "ADTTE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"), "OS"
-      ),
-      strata_var = teal.transform::choices_selected(
-        c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
-      ),
-      cov_var = teal.transform::choices_selected(
-        c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
-      ),
-      multivariate = TRUE,
-      aval_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "AVAL"), "AVAL",
-        fixed = TRUE
-      ),
-      cnsr_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "CNSR"), "CNSR",
-        fixed = TRUE
-      ),
-      na_level = default_na_str(),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
-        keep_order =
-          TRUE
-      ),
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_coxreg(
+        label = "Cox Reg.",
+        dataname = "ADTTE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+        arm_ref_comp = arm_ref_comp,
+        paramcd = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"), "OS"
+        ),
+        strata_var = teal.transform::choices_selected(
+          c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
+        ),
+        cov_var = teal.transform::choices_selected(
+          c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
+        ),
+        multivariate = TRUE,
+        aval_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "AVAL"), "AVAL",
+          fixed = TRUE
+        ),
+        cnsr_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "CNSR"), "CNSR",
+          fixed = TRUE
+        ),
+        na_level = default_na_str(),
+        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
+          keep_order =
+            TRUE
+        ),
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

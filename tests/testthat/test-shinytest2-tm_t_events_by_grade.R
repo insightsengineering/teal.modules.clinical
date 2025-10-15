@@ -12,38 +12,40 @@ app_driver_tm_t_events_by_grade <- function() { # nolint: object_length.
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_events_by_grade(
-      label = "Adverse Events by Grade Table",
-      dataname = "ADAE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
-        selected = c("AEDECOD")
-      ),
-      hlt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
-        selected = "AEBODSYS"
-      ),
-      grade = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AETOXGR", "AESEV")),
-        selected = "AETOXGR"
-      ),
-      grading_groups = list(
-        `Any Grade (%)` = c("1", "2", "3", "4", "5"), `Grade 1-2 (%)` =
-          c("1", "2"), `Grade 3-4 (%)` = c("3", "4"), `Grade 5 (%)` = "5"
-      ),
-      col_by_grade = FALSE,
-      prune_freq = 0,
-      prune_diff = 0,
-      add_total = TRUE,
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      drop_arm_levels = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_events_by_grade(
+        label = "Adverse Events by Grade Table",
+        dataname = "ADAE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+        llt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
+          selected = c("AEDECOD")
+        ),
+        hlt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
+          selected = "AEBODSYS"
+        ),
+        grade = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AETOXGR", "AESEV")),
+          selected = "AETOXGR"
+        ),
+        grading_groups = list(
+          `Any Grade (%)` = c("1", "2", "3", "4", "5"), `Grade 1-2 (%)` =
+            c("1", "2"), `Grade 3-4 (%)` = c("3", "4"), `Grade 5 (%)` = "5"
+        ),
+        col_by_grade = FALSE,
+        prune_freq = 0,
+        prune_diff = 0,
+        add_total = TRUE,
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        drop_arm_levels = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

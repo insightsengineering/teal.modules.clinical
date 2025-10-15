@@ -22,29 +22,31 @@ app_driver_tm_t_glm_counts <- function() { # nolint: object_length.
   ADTTE <- data[["ADTTE"]]
   # Initialize the teal app
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_glm_counts(
-      dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices("ADTTE", c("ARM", "ARMCD", "ACTARMCD")),
-        "ARMCD"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      aval_var = choices_selected(
-        variable_choices("ADTTE", "AVAL"),
-        "AVAL"
-      ),
-      strata_var = choices_selected(
-        variable_choices("ADSL", "SEX"),
-        NULL
-      ),
-      offset_var = choices_selected(
-        variable_choices("ADSL", "AGE"),
-        NULL
-      ),
-      cov_var = choices_selected(
-        variable_choices("ADTTE", "SITEID"),
-        NULL
+    teal::init(
+      data = data,
+      modules = tm_t_glm_counts(
+        dataname = "ADTTE",
+        arm_var = choices_selected(
+          variable_choices("ADTTE", c("ARM", "ARMCD", "ACTARMCD")),
+          "ARMCD"
+        ),
+        arm_ref_comp = arm_ref_comp,
+        aval_var = choices_selected(
+          variable_choices("ADTTE", "AVAL"),
+          "AVAL"
+        ),
+        strata_var = choices_selected(
+          variable_choices("ADSL", "SEX"),
+          NULL
+        ),
+        offset_var = choices_selected(
+          variable_choices("ADSL", "AGE"),
+          NULL
+        ),
+        cov_var = choices_selected(
+          variable_choices("ADTTE", "SITEID"),
+          NULL
+        )
       )
     )
   )

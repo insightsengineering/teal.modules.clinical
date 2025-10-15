@@ -13,51 +13,53 @@ app_driver_tm_g_ipp <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_ipp(
-      label = "Individual Patient Plot",
-      dataname = "ADLB",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADLB"]], "ARMCD"),
-        "ARM A"
-      ),
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADLB"]], "PARAMCD"),
-        "ALT"
-      ),
-      aval_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], c("AVAL", "CHG")),
-        "AVAL"
-      ),
-      avalu_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], c("AVALU")),
-        "AVALU",
-        fixed = TRUE
-      ),
-      id_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], c("USUBJID")),
-        "USUBJID",
-        fixed = TRUE
-      ),
-      visit_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], c("AVISIT", "ATOXGR")),
-        "AVISIT"
-      ),
-      baseline_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], c("BASE")),
-        "BASE",
-        fixed = TRUE
-      ),
-      add_baseline_hline = FALSE,
-      separate_by_obs = FALSE,
-      suppress_legend = FALSE,
-      add_avalu = TRUE,
-      plot_height = c(1200L, 400L, 5000L),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_ipp(
+        label = "Individual Patient Plot",
+        dataname = "ADLB",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADLB"]], "ARMCD"),
+          "ARM A"
+        ),
+        paramcd = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADLB"]], "PARAMCD"),
+          "ALT"
+        ),
+        aval_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], c("AVAL", "CHG")),
+          "AVAL"
+        ),
+        avalu_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], c("AVALU")),
+          "AVALU",
+          fixed = TRUE
+        ),
+        id_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], c("USUBJID")),
+          "USUBJID",
+          fixed = TRUE
+        ),
+        visit_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], c("AVISIT", "ATOXGR")),
+          "AVISIT"
+        ),
+        baseline_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], c("BASE")),
+          "BASE",
+          fixed = TRUE
+        ),
+        add_baseline_hline = FALSE,
+        separate_by_obs = FALSE,
+        suppress_legend = FALSE,
+        add_avalu = TRUE,
+        plot_height = c(1200L, 400L, 5000L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }

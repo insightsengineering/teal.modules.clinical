@@ -7,33 +7,35 @@ app_driver_tm_t_events <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_events(
-      label = "Adverse Event Table",
-      dataname = "ADAE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
-        selected = c("AEDECOD")
-      ),
-      hlt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
-        selected = "AEBODSYS"
-      ),
-      add_total = TRUE,
-      event_type = "adverse event",
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      sort_criteria = c("freq_desc", "alpha"),
-      sort_freq_col = default_total_label(),
-      prune_freq = 0,
-      prune_diff = 0,
-      drop_arm_levels = TRUE,
-      incl_overall_sum = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_events(
+        label = "Adverse Event Table",
+        dataname = "ADAE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+        llt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
+          selected = c("AEDECOD")
+        ),
+        hlt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
+          selected = "AEBODSYS"
+        ),
+        add_total = TRUE,
+        event_type = "adverse event",
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        sort_criteria = c("freq_desc", "alpha"),
+        sort_freq_col = default_total_label(),
+        prune_freq = 0,
+        prune_diff = 0,
+        drop_arm_levels = TRUE,
+        incl_overall_sum = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

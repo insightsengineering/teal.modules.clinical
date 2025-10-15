@@ -7,7 +7,7 @@ init_teal_app_driver <- function(...) {
   testthat::with_mocked_bindings(
     {
       TealAppDriver <- getFromNamespace("TealAppDriver", "teal") # nolint: object_name.
-      TealAppDriver$new(teal::init(...))
+      TealAppDriver$new(...)
     },
     shinyApp = function(ui, server, ...) {
       functionBody(server) <- bquote({

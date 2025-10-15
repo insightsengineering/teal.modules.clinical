@@ -28,58 +28,60 @@ app_driver_tm_g_pp_therapy <- function() {
   teal.data::join_keys(data)["ADCM", "ADCM"] <- adcm_keys
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_pp_therapy(
-      label = "Therapy (e2e)",
-      dataname = "ADCM",
-      parentname = "ADSL",
-      patient_col = "USUBJID",
-      atirel = choices_selected(
-        choices = variable_choices("ADCM", c("ATIREL", "ATIREL2")),
-        selected = "ATIREL2"
-      ),
-      cmdecod = choices_selected(
-        choices = variable_choices("ADCM", c("CMDECOD", "CMDECOD2")),
-        selected = "CMDECOD2"
-      ),
-      cmindc = choices_selected(
-        choices = variable_choices("ADCM", c("CMINDC", "CMINDC2")),
-        selected = "CMINDC2"
-      ),
-      cmdose = choices_selected(
-        choices = variable_choices("ADCM", c("CMDOSE", "CMDOSE2")),
-        selected = "CMDOSE2"
-      ),
-      cmtrt = choices_selected(
-        choices = variable_choices("ADCM", c("CMTRT", "CMTRT2")),
-        selected = "CMTRT"
-      ),
-      cmdosu = choices_selected(
-        choices = variable_choices("ADCM", c("CMDOSU", "CMDOSU2")),
-        selected = "CMDOSU2"
-      ),
-      cmroute = choices_selected(
-        choices = variable_choices("ADCM", c("CMROUTE", "CMROUTE2")),
-        selected = "CMROUTE2"
-      ),
-      cmdosfrq = choices_selected(
-        choices = variable_choices("ADCM", c("CMDOSFRQ", "CMDOSFRQ2")),
-        selected = "CMDOSFRQ2"
-      ),
-      cmstdy = choices_selected(
-        choices = variable_choices("ADCM", c("ASTDY", "ASTDY2")),
-        selected = "ASTDY2"
-      ),
-      cmendy = choices_selected(
-        choices = variable_choices("ADCM", c("AENDY", "AENDY2")),
-        selected = "AENDY2"
-      ),
-      font_size = c(12L, 1L, 30L),
-      plot_height = c(500L, 300L, 2000L),
-      plot_width = c(1000L, 700L, 2000L),
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_pp_therapy(
+        label = "Therapy (e2e)",
+        dataname = "ADCM",
+        parentname = "ADSL",
+        patient_col = "USUBJID",
+        atirel = choices_selected(
+          choices = variable_choices("ADCM", c("ATIREL", "ATIREL2")),
+          selected = "ATIREL2"
+        ),
+        cmdecod = choices_selected(
+          choices = variable_choices("ADCM", c("CMDECOD", "CMDECOD2")),
+          selected = "CMDECOD2"
+        ),
+        cmindc = choices_selected(
+          choices = variable_choices("ADCM", c("CMINDC", "CMINDC2")),
+          selected = "CMINDC2"
+        ),
+        cmdose = choices_selected(
+          choices = variable_choices("ADCM", c("CMDOSE", "CMDOSE2")),
+          selected = "CMDOSE2"
+        ),
+        cmtrt = choices_selected(
+          choices = variable_choices("ADCM", c("CMTRT", "CMTRT2")),
+          selected = "CMTRT"
+        ),
+        cmdosu = choices_selected(
+          choices = variable_choices("ADCM", c("CMDOSU", "CMDOSU2")),
+          selected = "CMDOSU2"
+        ),
+        cmroute = choices_selected(
+          choices = variable_choices("ADCM", c("CMROUTE", "CMROUTE2")),
+          selected = "CMROUTE2"
+        ),
+        cmdosfrq = choices_selected(
+          choices = variable_choices("ADCM", c("CMDOSFRQ", "CMDOSFRQ2")),
+          selected = "CMDOSFRQ2"
+        ),
+        cmstdy = choices_selected(
+          choices = variable_choices("ADCM", c("ASTDY", "ASTDY2")),
+          selected = "ASTDY2"
+        ),
+        cmendy = choices_selected(
+          choices = variable_choices("ADCM", c("AENDY", "AENDY2")),
+          selected = "AENDY2"
+        ),
+        font_size = c(12L, 1L, 30L),
+        plot_height = c(500L, 300L, 2000L),
+        plot_width = c(1000L, 700L, 2000L),
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }

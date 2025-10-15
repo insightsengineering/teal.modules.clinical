@@ -27,59 +27,61 @@ app_driver_tm_g_pp_patient_timeline <- function() { # nolint object_length.
   teal.data::join_keys(data)["ADAE", "ADCM"] <- c("STUDYID", "USUBJID")
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_pp_patient_timeline(
-      label = "Patient Timeline",
-      dataname_adae = "ADAE",
-      dataname_adcm = "ADCM",
-      parentname = "ADSL",
-      patient_col = "USUBJID",
-      plot_height = c(600L, 200L, 2000L),
-      cmdecod = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD", "CMCAT")),
-        selected = "CMDECOD"
-      ),
-      aeterm = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AESOC")),
-        selected = "AETERM"
-      ),
-      aetime_start = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("ASTDTM", "TRTSDTM")),
-        selected = "ASTDTM"
-      ),
-      aetime_end = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AENDTM", "EOSDT")),
-        selected = "AENDTM"
-      ),
-      dstime_start = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("CMASTDTM", "TRTEDTM")),
-        selected = "CMASTDTM"
-      ),
-      dstime_end = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("CMAENDTM", "TRTEDTM")),
-        selected = "CMAENDTM"
-      ),
-      aerelday_start = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("ASTDY", "AENDY")),
-        selected = "ASTDY"
-      ),
-      aerelday_end = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AENDY", "ASTDY")),
-        selected = "AENDY"
-      ),
-      dsrelday_start = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("ASTDY", "AENDY")),
-        selected = "ASTDY"
-      ),
-      dsrelday_end = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("AENDY", "ASTDY")),
-        selected = "AENDY"
-      ),
-      font_size = c(12L, 12L, 25L),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_pp_patient_timeline(
+        label = "Patient Timeline",
+        dataname_adae = "ADAE",
+        dataname_adcm = "ADCM",
+        parentname = "ADSL",
+        patient_col = "USUBJID",
+        plot_height = c(600L, 200L, 2000L),
+        cmdecod = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD", "CMCAT")),
+          selected = "CMDECOD"
+        ),
+        aeterm = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AESOC")),
+          selected = "AETERM"
+        ),
+        aetime_start = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("ASTDTM", "TRTSDTM")),
+          selected = "ASTDTM"
+        ),
+        aetime_end = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AENDTM", "EOSDT")),
+          selected = "AENDTM"
+        ),
+        dstime_start = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMASTDTM", "TRTEDTM")),
+          selected = "CMASTDTM"
+        ),
+        dstime_end = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMAENDTM", "TRTEDTM")),
+          selected = "CMAENDTM"
+        ),
+        aerelday_start = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("ASTDY", "AENDY")),
+          selected = "ASTDY"
+        ),
+        aerelday_end = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AENDY", "ASTDY")),
+          selected = "AENDY"
+        ),
+        dsrelday_start = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("ASTDY", "AENDY")),
+          selected = "ASTDY"
+        ),
+        dsrelday_end = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("AENDY", "ASTDY")),
+          selected = "AENDY"
+        ),
+        font_size = c(12L, 12L, 25L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }

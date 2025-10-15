@@ -7,26 +7,28 @@ app_driver_tm_t_pp_medical_history <- function() { # nolint: object_length.
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_pp_medical_history(
-      label = "Medical History",
-      dataname = "ADMH",
-      parentname = "ADSL",
-      patient_col = "USUBJID",
-      mhterm = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADMH"]], c("MHTERM", "STUDYID")),
-        selected = "MHTERM"
-      ),
-      mhbodsys = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADMH"]], c("MHBODSYS", "EOSSTT")),
-        selected = "MHBODSYS"
-      ),
-      mhdistat = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADMH"]], c("MHDISTAT", "STUDYID")),
-        selected = "MHDISTAT"
-      ),
-      pre_output = NULL,
-      post_output = NULL
+    teal::init(
+      data = data,
+      modules = tm_t_pp_medical_history(
+        label = "Medical History",
+        dataname = "ADMH",
+        parentname = "ADSL",
+        patient_col = "USUBJID",
+        mhterm = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADMH"]], c("MHTERM", "STUDYID")),
+          selected = "MHTERM"
+        ),
+        mhbodsys = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADMH"]], c("MHBODSYS", "EOSSTT")),
+          selected = "MHBODSYS"
+        ),
+        mhdistat = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADMH"]], c("MHDISTAT", "STUDYID")),
+          selected = "MHDISTAT"
+        ),
+        pre_output = NULL,
+        post_output = NULL
+      )
     )
   )
 }

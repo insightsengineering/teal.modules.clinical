@@ -9,30 +9,32 @@ app_driver_tm_t_mult_events <- function() {
   teal.data::join_keys(data) <- keys
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_mult_events(
-      label = "Concomitant Medications by Medication Class and Preferred Name",
-      dataname = "ADCM",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-      seq_var = teal.transform::choices_selected("CMSEQ", selected = "CMSEQ", fixed = TRUE),
-      hlt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("ATC1", "ATC2", "ATC3", "ATC4")),
-        selected = c("ATC1", "ATC2", "ATC3", "ATC4")
-      ),
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD")),
-        selected = c("CMDECOD")
-      ),
-      add_total = TRUE,
-      event_type = "treatment",
-      title_text = "Concom. Meds",
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      drop_arm_levels = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_mult_events(
+        label = "Concomitant Medications by Medication Class and Preferred Name",
+        dataname = "ADCM",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+        seq_var = teal.transform::choices_selected("CMSEQ", selected = "CMSEQ", fixed = TRUE),
+        hlt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("ATC1", "ATC2", "ATC3", "ATC4")),
+          selected = c("ATC1", "ATC2", "ATC3", "ATC4")
+        ),
+        llt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD")),
+          selected = c("CMDECOD")
+        ),
+        add_total = TRUE,
+        event_type = "treatment",
+        title_text = "Concom. Meds",
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        drop_arm_levels = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

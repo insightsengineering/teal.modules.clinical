@@ -11,43 +11,45 @@ app_driver_tm_t_events_patyear <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_events_patyear(
-      label = "AE Rate Adjusted for Patient-Years At Risk Table",
-      dataname = "ADAETTE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "SEX")),
-        selected = "ARMCD"
-      ),
-      add_total = TRUE,
-      events_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAETTE"]], "n_events"),
-        selected = "n_events",
-        fixed = TRUE
-      ),
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADAETTE"]], "PARAMCD", "PARAM"),
-        selected = "AETTE1"
-      ),
-      conf_level = teal.transform::choices_selected(
-        c(2, 0.95, 0.9, 0.8), 0.95,
-        keep_order = TRUE
-      ),
-      aval_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVAL"),
-        selected = "AVAL", fixed = TRUE
-      ),
-      avalu_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVALU"),
-        selected = "AVALU", fixed = TRUE
-      ),
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      drop_arm_levels = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_events_patyear(
+        label = "AE Rate Adjusted for Patient-Years At Risk Table",
+        dataname = "ADAETTE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "SEX")),
+          selected = "ARMCD"
+        ),
+        add_total = TRUE,
+        events_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAETTE"]], "n_events"),
+          selected = "n_events",
+          fixed = TRUE
+        ),
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADAETTE"]], "PARAMCD", "PARAM"),
+          selected = "AETTE1"
+        ),
+        conf_level = teal.transform::choices_selected(
+          c(2, 0.95, 0.9, 0.8), 0.95,
+          keep_order = TRUE
+        ),
+        aval_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVAL"),
+          selected = "AVAL", fixed = TRUE
+        ),
+        avalu_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVALU"),
+          selected = "AVALU", fixed = TRUE
+        ),
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        drop_arm_levels = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

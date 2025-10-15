@@ -22,63 +22,65 @@ app_driver_tm_g_forest_rsp <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = modules(
-      tm_g_forest_rsp(
-        label = "Forest Response",
-        dataname = "ADRS",
-        parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
-          "ARMCD"
-        ),
-        arm_ref_comp = arm_ref_comp,
-        paramcd = teal.transform::choices_selected(
-          teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
-          "INVET"
-        ),
-        aval_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADRS"]], "AVALC"),
-          "AVALC",
-          fixed = TRUE
-        ),
-        subgroup_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
-          c("BMRKR2", "SEX")
-        ),
-        strata_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
-          "STRATA2"
-        ),
-        fixed_symbol_size = TRUE,
-        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, 2), 0.95, keep_order = TRUE),
-        plot_height = c(600L, 200L, 2000L),
-        default_responses = list(
-          BESRSPI = list(
-            rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-            levels = c(
-              "Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
-              "Progressive Disease (PD)", "Not Evaluable (NE)"
+    teal::init(
+      data = data,
+      modules = modules(
+        tm_g_forest_rsp(
+          label = "Forest Response",
+          dataname = "ADRS",
+          parentname = "ADSL",
+          arm_var = teal.transform::choices_selected(
+            teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
+            "ARMCD"
+          ),
+          arm_ref_comp = arm_ref_comp,
+          paramcd = teal.transform::choices_selected(
+            teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
+            "INVET"
+          ),
+          aval_var = teal.transform::choices_selected(
+            teal.transform::variable_choices(data[["ADRS"]], "AVALC"),
+            "AVALC",
+            fixed = TRUE
+          ),
+          subgroup_var = teal.transform::choices_selected(
+            teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
+            c("BMRKR2", "SEX")
+          ),
+          strata_var = teal.transform::choices_selected(
+            teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
+            "STRATA2"
+          ),
+          fixed_symbol_size = TRUE,
+          conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, 2), 0.95, keep_order = TRUE),
+          plot_height = c(600L, 200L, 2000L),
+          default_responses = list(
+            BESRSPI = list(
+              rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+              levels = c(
+                "Complete Response (CR)", "Partial Response (PR)", "Stable Disease (SD)",
+                "Progressive Disease (PD)", "Not Evaluable (NE)"
+              )
+            ),
+            INVET = list(
+              rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+              levels = c(
+                "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+                "Progressive Disease (PD)", "Stable Disease (SD)"
+              )
+            ),
+            OVRINV = list(
+              rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+              levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
             )
           ),
-          INVET = list(
-            rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-            levels = c(
-              "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
-              "Progressive Disease (PD)", "Stable Disease (SD)"
-            )
-          ),
-          OVRINV = list(
-            rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
-            levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
-          )
-        ),
-        plot_width = c(1500L, 800L, 3000L),
-        rel_width_forest = c(25L, 0L, 100L),
-        font_size = c(15L, 1L, 30L),
-        pre_output = NULL,
-        post_output = NULL,
-        ggplot2_args = teal.widgets::ggplot2_args()
+          plot_width = c(1500L, 800L, 3000L),
+          rel_width_forest = c(25L, 0L, 100L),
+          font_size = c(15L, 1L, 30L),
+          pre_output = NULL,
+          post_output = NULL,
+          ggplot2_args = teal.widgets::ggplot2_args()
+        )
       )
     )
   )

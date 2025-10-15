@@ -6,17 +6,19 @@ app_driver_tm_t_pp_basic_info <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_pp_basic_info(
-      label = "Basic Info",
-      dataname = "ADSL",
-      patient_col = "USUBJID",
-      vars = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]]),
-        selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
-      ),
-      pre_output = NULL,
-      post_output = NULL
+    teal::init(
+      data = data,
+      modules = tm_t_pp_basic_info(
+        label = "Basic Info",
+        dataname = "ADSL",
+        patient_col = "USUBJID",
+        vars = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]]),
+          selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
+        ),
+        pre_output = NULL,
+        post_output = NULL
+      )
     )
   )
 }

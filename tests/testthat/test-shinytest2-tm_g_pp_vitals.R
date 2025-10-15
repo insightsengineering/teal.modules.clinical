@@ -6,29 +6,31 @@ app_driver_tm_g_pp_vitals <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_pp_vitals(
-      label = "Vitals",
-      dataname = "ADVS",
-      parentname = "ADSL",
-      patient_col = "USUBJID",
-      plot_height = c(600L, 200L, 2000L),
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADVS"]], c("PARAMCD", "PARAM")),
-        selected = "PARAMCD"
-      ),
-      xaxis = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADVS"]], c("ADY", "BMRKR1")),
-        selected = "ADY"
-      ),
-      aval_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADVS"]], c("AVAL", "BASE2")),
-        selected = "AVAL"
-      ),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_pp_vitals(
+        label = "Vitals",
+        dataname = "ADVS",
+        parentname = "ADSL",
+        patient_col = "USUBJID",
+        plot_height = c(600L, 200L, 2000L),
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADVS"]], c("PARAMCD", "PARAM")),
+          selected = "PARAMCD"
+        ),
+        xaxis = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADVS"]], c("ADY", "BMRKR1")),
+          selected = "ADY"
+        ),
+        aval_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADVS"]], c("AVAL", "BASE2")),
+          selected = "AVAL"
+        ),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }

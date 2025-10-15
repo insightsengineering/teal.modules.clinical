@@ -41,52 +41,54 @@ app_driver_tm_t_events_summary <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_events_summary(
-      label = "Adverse Events Summary",
-      dataname = "ADAE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices("ADSL", c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      flag_var_anl = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices("ADAE", data[[".ae_anl_vars"]]),
-        selected = data[[".ae_anl_vars"]][1],
-        keep_order = TRUE,
-        fixed = FALSE
-      ),
-      flag_var_aesi = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices("ADAE", data[[".aesi_vars"]]),
-        selected = data[[".aesi_vars"]][1],
-        keep_order = TRUE,
-        fixed = FALSE
-      ),
-      dthfl_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], "DTHFL"),
-        selected = "DTHFL", fixed = TRUE
-      ),
-      dcsreas_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], "DCSREAS"),
-        selected = "DCSREAS", fixed = TRUE
-      ),
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], "AEDECOD"),
-        selected = "AEDECOD", fixed = TRUE
-      ),
-      aeseq_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], "AESEQ"),
-        selected = "AESEQ", fixed = TRUE
-      ),
-      add_total = TRUE,
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      count_subj = TRUE,
-      count_pt = TRUE,
-      count_events = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_events_summary(
+        label = "Adverse Events Summary",
+        dataname = "ADAE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices("ADSL", c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
+        flag_var_anl = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices("ADAE", data[[".ae_anl_vars"]]),
+          selected = data[[".ae_anl_vars"]][1],
+          keep_order = TRUE,
+          fixed = FALSE
+        ),
+        flag_var_aesi = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices("ADAE", data[[".aesi_vars"]]),
+          selected = data[[".aesi_vars"]][1],
+          keep_order = TRUE,
+          fixed = FALSE
+        ),
+        dthfl_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], "DTHFL"),
+          selected = "DTHFL", fixed = TRUE
+        ),
+        dcsreas_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], "DCSREAS"),
+          selected = "DCSREAS", fixed = TRUE
+        ),
+        llt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], "AEDECOD"),
+          selected = "AEDECOD", fixed = TRUE
+        ),
+        aeseq_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], "AESEQ"),
+          selected = "AESEQ", fixed = TRUE
+        ),
+        add_total = TRUE,
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        count_subj = TRUE,
+        count_pt = TRUE,
+        count_events = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

@@ -7,66 +7,68 @@ app_driver_tm_g_ci <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_ci(
-      label = "Confidence Interval Plot",
-      x_var = teal.transform::data_extract_spec(
-        dataname = "ADSL",
-        select = teal.transform::select_spec(
-          choices = c("ARMCD", "BMRKR2"),
-          selected = c("ARMCD"),
-          multiple = FALSE,
-          fixed = FALSE
-        )
-      ),
-      y_var = teal.transform::data_extract_spec(
-        dataname = "ADLB",
-        filter = list(
-          teal.transform::filter_spec(
-            vars = "PARAMCD",
-            choices = c("ALT", "CRP", "IGA"),
-            selected = "ALT",
+    teal::init(
+      data = data,
+      modules = tm_g_ci(
+        label = "Confidence Interval Plot",
+        x_var = teal.transform::data_extract_spec(
+          dataname = "ADSL",
+          select = teal.transform::select_spec(
+            choices = c("ARMCD", "BMRKR2"),
+            selected = c("ARMCD"),
             multiple = FALSE,
-            label = "Select lab:"
-          ),
-          teal.transform::filter_spec(
-            vars = "AVISIT",
-            choices = c(
-              "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
-              "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
-            ),
-            selected = "SCREENING",
-            multiple = FALSE,
-            label = "Select visit:"
+            fixed = FALSE
           )
         ),
-        select = teal.transform::select_spec(
-          label = "Analyzed Value",
-          choices = c("AVAL", "CHG", "CHG2"),
-          selected = "AVAL",
-          multiple = FALSE,
-          fixed = FALSE
-        )
-      ),
-      color = teal.transform::data_extract_spec(
-        dataname = "ADSL",
-        select = teal.transform::select_spec(
-          label = "Color by variable",
-          choices = c("SEX", "STRATA1", "STRATA2"),
-          selected = c("STRATA1"),
-          multiple = FALSE,
-          fixed = FALSE
-        )
-      ),
-      stat = c("mean", "median"),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
-        keep_order = TRUE
-      ),
-      plot_height = c(700L, 200L, 2000L),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+        y_var = teal.transform::data_extract_spec(
+          dataname = "ADLB",
+          filter = list(
+            teal.transform::filter_spec(
+              vars = "PARAMCD",
+              choices = c("ALT", "CRP", "IGA"),
+              selected = "ALT",
+              multiple = FALSE,
+              label = "Select lab:"
+            ),
+            teal.transform::filter_spec(
+              vars = "AVISIT",
+              choices = c(
+                "SCREENING", "BASELINE", "WEEK 1 DAY 8", "WEEK 2 DAY 15",
+                "WEEK 3 DAY 22", "WEEK 4 DAY 29", "WEEK 5 DAY 36"
+              ),
+              selected = "SCREENING",
+              multiple = FALSE,
+              label = "Select visit:"
+            )
+          ),
+          select = teal.transform::select_spec(
+            label = "Analyzed Value",
+            choices = c("AVAL", "CHG", "CHG2"),
+            selected = "AVAL",
+            multiple = FALSE,
+            fixed = FALSE
+          )
+        ),
+        color = teal.transform::data_extract_spec(
+          dataname = "ADSL",
+          select = teal.transform::select_spec(
+            label = "Color by variable",
+            choices = c("SEX", "STRATA1", "STRATA2"),
+            selected = c("STRATA1"),
+            multiple = FALSE,
+            fixed = FALSE
+          )
+        ),
+        stat = c("mean", "median"),
+        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
+          keep_order = TRUE
+        ),
+        plot_height = c(700L, 200L, 2000L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }

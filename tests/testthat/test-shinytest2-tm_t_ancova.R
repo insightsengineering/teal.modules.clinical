@@ -17,42 +17,44 @@ app_driver_tm_t_ancova <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_ancova(
-      label = "ANCOVA Table",
-      dataname = "ADQS",
-      parentname = "ADSL",
-      avisit = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADQS"]], "AVISIT"),
-        selected = "WEEK 1 DAY 8"
-      ),
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ACTARMCD", "ARMCD")),
-        selected = "ARMCD"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      aval_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADQS"]], c("CHG", "AVAL")),
-        selected = "CHG"
-      ),
-      cov_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADQS"]], c("BASE", "STRATA1", "SEX")),
-        selected = "STRATA1"
-      ),
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-        selected = "FKSI-FWB"
-      ),
-      interact_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADQS"]], c("BASE", "STRATA1", "SEX")),
-        selected = "STRATA1"
-      ),
-      conf_level = teal.transform::choices_selected(c(2, 0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-      include_interact = FALSE,
-      interact_y = FALSE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_ancova(
+        label = "ANCOVA Table",
+        dataname = "ADQS",
+        parentname = "ADSL",
+        avisit = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADQS"]], "AVISIT"),
+          selected = "WEEK 1 DAY 8"
+        ),
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ACTARMCD", "ARMCD")),
+          selected = "ARMCD"
+        ),
+        arm_ref_comp = arm_ref_comp,
+        aval_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADQS"]], c("CHG", "AVAL")),
+          selected = "CHG"
+        ),
+        cov_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADQS"]], c("BASE", "STRATA1", "SEX")),
+          selected = "STRATA1"
+        ),
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
+          selected = "FKSI-FWB"
+        ),
+        interact_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADQS"]], c("BASE", "STRATA1", "SEX")),
+          selected = "STRATA1"
+        ),
+        conf_level = teal.transform::choices_selected(c(2, 0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+        include_interact = FALSE,
+        interact_y = FALSE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

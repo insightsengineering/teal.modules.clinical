@@ -23,54 +23,56 @@ app_driver_tm_g_km <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_km(
-      label = "Kaplan-Meier Plot",
-      dataname = "ADTTE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
-      ),
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
-        "OS"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      strata_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("SEX", "BMRKR2")),
-        "SEX"
-      ),
-      facet_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("SEX", "BMRKR2")),
-        NULL
-      ),
-      time_unit_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "VALUE_UNIT"),
-        "VALUE_UNIT",
-        fixed = TRUE
-      ),
-      aval_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "ANALYSIS_VAL"),
-        "ANALYSIS_VAL",
-        fixed = TRUE
-      ),
-      cnsr_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "CENSORING"),
-        "CENSORING",
-        fixed = TRUE
-      ),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
-      conf_type = teal.transform::choices_selected(c("plain", "log", "log-log", "none"), "log", keep_order = TRUE),
-      font_size = c(11L, 1L, 30),
-      control_annot_surv_med = control_surv_med_annot(),
-      control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
-      legend_pos = c(0.9, 0.5),
-      rel_height_plot = c(80L, 0L, 100L),
-      plot_height = c(800L, 400L, 5000L),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL
+    teal::init(
+      data = data,
+      modules = tm_g_km(
+        label = "Kaplan-Meier Plot",
+        dataname = "ADTTE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "ACTARMCD")),
+          "ARM"
+        ),
+        paramcd = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
+          "OS"
+        ),
+        arm_ref_comp = arm_ref_comp,
+        strata_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("SEX", "BMRKR2")),
+          "SEX"
+        ),
+        facet_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("SEX", "BMRKR2")),
+          NULL
+        ),
+        time_unit_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "VALUE_UNIT"),
+          "VALUE_UNIT",
+          fixed = TRUE
+        ),
+        aval_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "ANALYSIS_VAL"),
+          "ANALYSIS_VAL",
+          fixed = TRUE
+        ),
+        cnsr_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "CENSORING"),
+          "CENSORING",
+          fixed = TRUE
+        ),
+        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
+        conf_type = teal.transform::choices_selected(c("plain", "log", "log-log", "none"), "log", keep_order = TRUE),
+        font_size = c(11L, 1L, 30),
+        control_annot_surv_med = control_surv_med_annot(),
+        control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+        legend_pos = c(0.9, 0.5),
+        rel_height_plot = c(80L, 0L, 100L),
+        plot_height = c(800L, 400L, 5000L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL
+      )
     )
   )
 }

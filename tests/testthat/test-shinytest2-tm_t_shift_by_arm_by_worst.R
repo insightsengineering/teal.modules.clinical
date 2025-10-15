@@ -7,43 +7,45 @@ app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length.
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_shift_by_arm_by_worst(
-      label = "Shift by Arm Table",
-      dataname = "ADEG",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADEG"]], "PARAMCD"),
-        selected = "ECGINTP"
-      ),
-      worst_flag_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADEG"]], c("WORS02FL", "WORS01FL")),
-        selected = "WORS02FL"
-      ),
-      worst_flag = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADEG"]], "WORS02FL"),
-        selected = "Y", fixed = TRUE
-      ),
-      aval_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADEG"]], c("REGION1", "AVALC")),
-        selected = "REGION1"
-      ),
-      baseline_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADEG"]], c("AVISIT", "BASEC")),
-        selected = "AVISIT"
-      ),
-      useNA = "ifany",
-      treatment_flag = teal.transform::choices_selected("Y"),
-      na_level = default_na_str(),
-      add_total = FALSE,
-      total_label = default_total_label(),
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_shift_by_arm_by_worst(
+        label = "Shift by Arm Table",
+        dataname = "ADEG",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
+        paramcd = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADEG"]], "PARAMCD"),
+          selected = "ECGINTP"
+        ),
+        worst_flag_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADEG"]], c("WORS02FL", "WORS01FL")),
+          selected = "WORS02FL"
+        ),
+        worst_flag = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADEG"]], "WORS02FL"),
+          selected = "Y", fixed = TRUE
+        ),
+        aval_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADEG"]], c("REGION1", "AVALC")),
+          selected = "REGION1"
+        ),
+        baseline_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADEG"]], c("AVISIT", "BASEC")),
+          selected = "AVISIT"
+        ),
+        useNA = "ifany",
+        treatment_flag = teal.transform::choices_selected("Y"),
+        na_level = default_na_str(),
+        add_total = FALSE,
+        total_label = default_total_label(),
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

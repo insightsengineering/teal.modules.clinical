@@ -18,55 +18,57 @@ app_driver_tm_g_forest_tte <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_forest_tte(
-      label = "Forest Survival (e2e)",
-      dataname = "ADTTE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
-        "ARMCD"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
-        "OS"
-      ),
-      subgroup_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
-        c("BMRKR2", "SEX")
-      ),
-      strata_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
-        "STRATA2"
-      ),
-      aval_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "AVAL"),
-        "AVAL",
-        fixed = TRUE
-      ),
-      cnsr_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "CNSR"),
-        "CNSR",
-        fixed = TRUE
-      ),
-      conf_level = teal.transform::choices_selected(
-        c(0.95, 0.9, 0.8), 0.95,
-        keep_order = TRUE
-      ),
-      time_unit_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "AVALU"),
-        "AVALU",
-        fixed = TRUE
-      ),
-      fixed_symbol_size = FALSE,
-      plot_height = c(500L, 300L, 2000L),
-      plot_width = c(1000L, 700L, 2000L),
-      rel_width_forest = c(25L, 0L, 100L),
-      font_size = c(12L, 1L, 30L),
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_forest_tte(
+        label = "Forest Survival (e2e)",
+        dataname = "ADTTE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
+          "ARMCD"
+        ),
+        arm_ref_comp = arm_ref_comp,
+        paramcd = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
+          "OS"
+        ),
+        subgroup_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
+          c("BMRKR2", "SEX")
+        ),
+        strata_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
+          "STRATA2"
+        ),
+        aval_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "AVAL"),
+          "AVAL",
+          fixed = TRUE
+        ),
+        cnsr_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "CNSR"),
+          "CNSR",
+          fixed = TRUE
+        ),
+        conf_level = teal.transform::choices_selected(
+          c(0.95, 0.9, 0.8), 0.95,
+          keep_order = TRUE
+        ),
+        time_unit_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "AVALU"),
+          "AVALU",
+          fixed = TRUE
+        ),
+        fixed_symbol_size = FALSE,
+        plot_height = c(500L, 300L, 2000L),
+        plot_width = c(1000L, 700L, 2000L),
+        rel_width_forest = c(25L, 0L, 100L),
+        font_size = c(12L, 1L, 30L),
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }

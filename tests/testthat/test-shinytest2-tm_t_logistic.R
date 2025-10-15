@@ -20,32 +20,34 @@ app_driver_tm_t_logistic <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_logistic(
-      label = "Logistic Regression",
-      parentname = "ADSL",
-      dataname = "ADRS",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
-        selected = "BESRSPI"
-      ),
-      cov_var = teal.transform::choices_selected(
-        choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
-        selected = "SEX"
-      ),
-      conf_level = teal.transform::choices_selected(c(2, 0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-      avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(
-        data[["ADRS"]],
-        "AVALC"
-      ), "AVALC", fixed = TRUE),
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_logistic(
+        label = "Logistic Regression",
+        parentname = "ADSL",
+        dataname = "ADRS",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
+        arm_ref_comp = arm_ref_comp,
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
+          selected = "BESRSPI"
+        ),
+        cov_var = teal.transform::choices_selected(
+          choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
+          selected = "SEX"
+        ),
+        conf_level = teal.transform::choices_selected(c(2, 0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+        avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(
+          data[["ADRS"]],
+          "AVALC"
+        ), "AVALC", fixed = TRUE),
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

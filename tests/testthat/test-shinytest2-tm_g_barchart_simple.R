@@ -13,98 +13,100 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_barchart_simple(
-      label = "ADAE Analysis (e2e)",
-      x = teal.transform::data_extract_spec(
-        dataname = "ADSL",
-        select = teal.transform::select_spec(
-          choices = teal.transform::variable_choices(
-            "ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
-          ),
-          selected = "ACTARM",
-          multiple = FALSE
-        )
-      ),
-      fill = list(
-        teal.transform::data_extract_spec(
+    teal::init(
+      data = data,
+      modules = tm_g_barchart_simple(
+        label = "ADAE Analysis (e2e)",
+        x = teal.transform::data_extract_spec(
           dataname = "ADSL",
           select = teal.transform::select_spec(
             choices = teal.transform::variable_choices(
               "ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
             ),
-            selected = "SEX",
+            selected = "ACTARM",
             multiple = FALSE
           )
         ),
-        teal.transform::data_extract_spec(
-          dataname = "ADAE",
-          select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
-            selected = NULL,
-            multiple = FALSE
-          )
-        )
-      ),
-      x_facet = list(
-        teal.transform::data_extract_spec(
-          dataname = "ADAE",
-          select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
-            selected = "AETOXGR",
-            multiple = FALSE
-          )
-        ),
-        teal.transform::data_extract_spec(
-          dataname = "ADSL",
-          select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices(
-              "ADSL",
-              c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
-            ),
-            selected = NULL,
-            multiple = FALSE
-          )
-        )
-      ),
-      y_facet = list(
-        data_extract_spec(
-          dataname = "ADAE",
-          select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices(
-              "ADAE",
-              c("AETOXGR", "AESEV", "AESER")
-            ),
-            selected = "AESEV",
-            multiple = FALSE
+        fill = list(
+          teal.transform::data_extract_spec(
+            dataname = "ADSL",
+            select = teal.transform::select_spec(
+              choices = teal.transform::variable_choices(
+                "ADSL", c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+              ),
+              selected = "SEX",
+              multiple = FALSE
+            )
+          ),
+          teal.transform::data_extract_spec(
+            dataname = "ADAE",
+            select = teal.transform::select_spec(
+              choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
+              selected = NULL,
+              multiple = FALSE
+            )
           )
         ),
-        data_extract_spec(
-          dataname = "ADSL",
-          select = teal.transform::select_spec(
-            choices = teal.transform::variable_choices(
-              "ADSL",
-              c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
-            ),
-            selected = NULL,
-            multiple = FALSE
+        x_facet = list(
+          teal.transform::data_extract_spec(
+            dataname = "ADAE",
+            select = teal.transform::select_spec(
+              choices = teal.transform::variable_choices("ADAE", c("AETOXGR", "AESEV", "AESER")),
+              selected = "AETOXGR",
+              multiple = FALSE
+            )
+          ),
+          teal.transform::data_extract_spec(
+            dataname = "ADSL",
+            select = teal.transform::select_spec(
+              choices = teal.transform::variable_choices(
+                "ADSL",
+                c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+              ),
+              selected = NULL,
+              multiple = FALSE
+            )
           )
-        )
-      ),
-      plot_options = list(
-        stacked = TRUE,
-        label_bars = FALSE,
-        rotate_bar_labels = TRUE,
-        rotate_x_label = TRUE,
-        rotate_y_label = TRUE,
-        flip_axis = TRUE,
-        show_n = FALSE
-      ),
-      plot_height = c(600L, 200L, 2000L),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+        ),
+        y_facet = list(
+          data_extract_spec(
+            dataname = "ADAE",
+            select = teal.transform::select_spec(
+              choices = teal.transform::variable_choices(
+                "ADAE",
+                c("AETOXGR", "AESEV", "AESER")
+              ),
+              selected = "AESEV",
+              multiple = FALSE
+            )
+          ),
+          data_extract_spec(
+            dataname = "ADSL",
+            select = teal.transform::select_spec(
+              choices = teal.transform::variable_choices(
+                "ADSL",
+                c("ARM", "ACTARM", "SEX", "RACE", "ITTFL", "SAFFL", "STRATA2")
+              ),
+              selected = NULL,
+              multiple = FALSE
+            )
+          )
+        ),
+        plot_options = list(
+          stacked = TRUE,
+          label_bars = FALSE,
+          rotate_bar_labels = TRUE,
+          rotate_x_label = TRUE,
+          rotate_y_label = TRUE,
+          flip_axis = TRUE,
+          show_n = FALSE
+        ),
+        plot_height = c(600L, 200L, 2000L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }

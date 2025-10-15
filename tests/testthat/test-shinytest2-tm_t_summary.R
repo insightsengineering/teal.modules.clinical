@@ -6,29 +6,31 @@ app_driver_tm_t_summary <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_summary(
-      label = "Demographic Table",
-      dataname = "ADSL",
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-      add_total = TRUE,
-      summarize_vars = teal.transform::choices_selected(
-        c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
-        c("SEX", "RACE")
-      ),
-      useNA = "ifany",
-      parentname = "ADSL",
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      numeric_stats = c(
-        "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
-        "range", "geom_mean"
-      ),
-      denominator = c("N", "n", "omit"),
-      drop_arm_levels = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_summary(
+        label = "Demographic Table",
+        dataname = "ADSL",
+        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+        add_total = TRUE,
+        summarize_vars = teal.transform::choices_selected(
+          c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
+          c("SEX", "RACE")
+        ),
+        useNA = "ifany",
+        parentname = "ADSL",
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        numeric_stats = c(
+          "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
+          "range", "geom_mean"
+        ),
+        denominator = c("N", "n", "omit"),
+        drop_arm_levels = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

@@ -9,46 +9,48 @@ app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_leng
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_abnormality_by_worst_grade(
-      label = "Laboratory Test Results with Highest Grade Post-Baseline",
-      dataname = "ADLB",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
-        selected = "ARM"
+    teal::init(
+      data = data,
+      modules = tm_t_abnormality_by_worst_grade(
+        label = "Laboratory Test Results with Highest Grade Post-Baseline",
+        dataname = "ADLB",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
+        id_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
+          selected = "USUBJID", fixed = TRUE
+        ),
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADLB"]], "PARAMCD", "PARAM"),
+          selected = c("ALT", "CRP", "IGA")
+        ),
+        add_total = FALSE,
+        atoxgr_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], subset = "ATOXGR"),
+          selected = "ATOXGR", fixed = TRUE
+        ),
+        worst_high_flag_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], subset = "WGRHIFL"),
+          selected = "WGRHIFL", fixed = TRUE
+        ),
+        worst_low_flag_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], subset = "WGRLOFL"),
+          selected = "WGRLOFL", fixed = TRUE
+        ),
+        worst_flag_indicator = teal.transform::choices_selected("Y"),
+        total_label = default_total_label(),
+        drop_arm_levels = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
       ),
-      id_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
-        selected = "USUBJID", fixed = TRUE
-      ),
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADLB"]], "PARAMCD", "PARAM"),
-        selected = c("ALT", "CRP", "IGA")
-      ),
-      add_total = FALSE,
-      atoxgr_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "ATOXGR"),
-        selected = "ATOXGR", fixed = TRUE
-      ),
-      worst_high_flag_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "WGRHIFL"),
-        selected = "WGRHIFL", fixed = TRUE
-      ),
-      worst_low_flag_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "WGRLOFL"),
-        selected = "WGRLOFL", fixed = TRUE
-      ),
-      worst_flag_indicator = teal.transform::choices_selected("Y"),
-      total_label = default_total_label(),
-      drop_arm_levels = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
-    ),
-    filter = teal::teal_slices(
-      teal_slice("ADSL", "SAFFL", selected = "Y"),
-      teal_slice("ADLB", "ONTRTFL", selected = "Y")
+      filter = teal::teal_slices(
+        teal_slice("ADSL", "SAFFL", selected = "Y"),
+        teal_slice("ADLB", "ONTRTFL", selected = "Y")
+      )
     )
   )
 }

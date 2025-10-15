@@ -18,25 +18,27 @@ app_driver_tm_a_gee <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_a_gee(
-      label = "GEE",
-      dataname = "ADQS",
-      parentname = "ADSL",
-      aval_var = teal.transform::choices_selected("AVALBIN", fixed = TRUE),
-      id_var = teal.transform::choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-      visit_var = teal.transform::choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-        selected = "FKSI-FWB"
-      ),
-      cov_var = teal.transform::choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
-      arm_ref_comp = NULL,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_a_gee(
+        label = "GEE",
+        dataname = "ADQS",
+        parentname = "ADSL",
+        aval_var = teal.transform::choices_selected("AVALBIN", fixed = TRUE),
+        id_var = teal.transform::choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
+        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+        visit_var = teal.transform::choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
+          selected = "FKSI-FWB"
+        ),
+        cov_var = teal.transform::choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
+        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
+        arm_ref_comp = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }

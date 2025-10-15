@@ -21,34 +21,36 @@ app_driver_tm_t_smq <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_smq(
-      label = "Adverse Events by SMQ Table",
-      dataname = "ADAE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "SEX")),
-        selected = "ARM"
-      ),
-      id_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], subset = "USUBJID"),
-        selected = "USUBJID", fixed = TRUE
-      ),
-      add_total = FALSE,
-      total_label = default_total_label(),
-      sort_criteria = c("freq_desc", "alpha"),
-      drop_arm_levels = TRUE,
-      na_level = default_na_str(),
-      smq_varlabel = "Standardized MedDRA Query",
-      baskets = data[[".cs_baskets"]],
-      scopes = data[[".cs_scopes"]],
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], subset = c("AEDECOD", "SEX")),
-        selected = "AEDECOD"
-      ),
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_smq(
+        label = "Adverse Events by SMQ Table",
+        dataname = "ADAE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "SEX")),
+          selected = "ARM"
+        ),
+        id_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], subset = "USUBJID"),
+          selected = "USUBJID", fixed = TRUE
+        ),
+        add_total = FALSE,
+        total_label = default_total_label(),
+        sort_criteria = c("freq_desc", "alpha"),
+        drop_arm_levels = TRUE,
+        na_level = default_na_str(),
+        smq_varlabel = "Standardized MedDRA Query",
+        baskets = data[[".cs_baskets"]],
+        scopes = data[[".cs_scopes"]],
+        llt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], subset = c("AEDECOD", "SEX")),
+          selected = "AEDECOD"
+        ),
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }
