@@ -573,7 +573,6 @@ srv_events_patyear <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Events Patient Year"),
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )

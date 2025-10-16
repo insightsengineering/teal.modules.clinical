@@ -749,7 +749,6 @@ srv_t_events_byterm <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Events by Term Table"),
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )

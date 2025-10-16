@@ -1031,7 +1031,6 @@ srv_mmrm <- function(id,
       obj <- data_with_tern_options_r()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Mixed Model Repeated Measurements (MMRM) Analysis"),
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )

@@ -518,7 +518,6 @@ srv_shift_by_arm <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Shift by Arm Table"),
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )

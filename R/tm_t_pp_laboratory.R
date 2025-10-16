@@ -431,7 +431,6 @@ srv_g_laboratory <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Patient Profile Laboratory Table"),
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )

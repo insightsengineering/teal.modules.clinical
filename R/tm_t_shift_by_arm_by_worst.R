@@ -531,7 +531,6 @@ srv_shift_by_arm_by_worst <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Shift by Arm by Worst Table"),
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )

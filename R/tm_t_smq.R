@@ -615,7 +615,6 @@ srv_t_smq <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Adverse Events Table by Standardized MedDRA Query (SMQ)"),
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )

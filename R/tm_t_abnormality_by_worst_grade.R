@@ -592,7 +592,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Laboratory Test Results Table"),
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
