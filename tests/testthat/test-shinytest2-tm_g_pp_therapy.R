@@ -28,58 +28,60 @@ app_driver_tm_g_pp_therapy <- function() {
   teal.data::join_keys(data)["ADCM", "ADCM"] <- adcm_keys
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_pp_therapy(
-      label = "Therapy (e2e)",
-      dataname = "ADCM",
-      parentname = "ADSL",
-      patient_col = "USUBJID",
-      atirel = choices_selected(
-        choices = variable_choices("ADCM", c("ATIREL", "ATIREL2")),
-        selected = "ATIREL2"
-      ),
-      cmdecod = choices_selected(
-        choices = variable_choices("ADCM", c("CMDECOD", "CMDECOD2")),
-        selected = "CMDECOD2"
-      ),
-      cmindc = choices_selected(
-        choices = variable_choices("ADCM", c("CMINDC", "CMINDC2")),
-        selected = "CMINDC2"
-      ),
-      cmdose = choices_selected(
-        choices = variable_choices("ADCM", c("CMDOSE", "CMDOSE2")),
-        selected = "CMDOSE2"
-      ),
-      cmtrt = choices_selected(
-        choices = variable_choices("ADCM", c("CMTRT", "CMTRT2")),
-        selected = "CMTRT"
-      ),
-      cmdosu = choices_selected(
-        choices = variable_choices("ADCM", c("CMDOSU", "CMDOSU2")),
-        selected = "CMDOSU2"
-      ),
-      cmroute = choices_selected(
-        choices = variable_choices("ADCM", c("CMROUTE", "CMROUTE2")),
-        selected = "CMROUTE2"
-      ),
-      cmdosfrq = choices_selected(
-        choices = variable_choices("ADCM", c("CMDOSFRQ", "CMDOSFRQ2")),
-        selected = "CMDOSFRQ2"
-      ),
-      cmstdy = choices_selected(
-        choices = variable_choices("ADCM", c("ASTDY", "ASTDY2")),
-        selected = "ASTDY2"
-      ),
-      cmendy = choices_selected(
-        choices = variable_choices("ADCM", c("AENDY", "AENDY2")),
-        selected = "AENDY2"
-      ),
-      font_size = c(12L, 1L, 30L),
-      plot_height = c(500L, 300L, 2000L),
-      plot_width = c(1000L, 700L, 2000L),
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_pp_therapy(
+        label = "Therapy (e2e)",
+        dataname = "ADCM",
+        parentname = "ADSL",
+        patient_col = "USUBJID",
+        atirel = choices_selected(
+          choices = variable_choices("ADCM", c("ATIREL", "ATIREL2")),
+          selected = "ATIREL2"
+        ),
+        cmdecod = choices_selected(
+          choices = variable_choices("ADCM", c("CMDECOD", "CMDECOD2")),
+          selected = "CMDECOD2"
+        ),
+        cmindc = choices_selected(
+          choices = variable_choices("ADCM", c("CMINDC", "CMINDC2")),
+          selected = "CMINDC2"
+        ),
+        cmdose = choices_selected(
+          choices = variable_choices("ADCM", c("CMDOSE", "CMDOSE2")),
+          selected = "CMDOSE2"
+        ),
+        cmtrt = choices_selected(
+          choices = variable_choices("ADCM", c("CMTRT", "CMTRT2")),
+          selected = "CMTRT"
+        ),
+        cmdosu = choices_selected(
+          choices = variable_choices("ADCM", c("CMDOSU", "CMDOSU2")),
+          selected = "CMDOSU2"
+        ),
+        cmroute = choices_selected(
+          choices = variable_choices("ADCM", c("CMROUTE", "CMROUTE2")),
+          selected = "CMROUTE2"
+        ),
+        cmdosfrq = choices_selected(
+          choices = variable_choices("ADCM", c("CMDOSFRQ", "CMDOSFRQ2")),
+          selected = "CMDOSFRQ2"
+        ),
+        cmstdy = choices_selected(
+          choices = variable_choices("ADCM", c("ASTDY", "ASTDY2")),
+          selected = "ASTDY2"
+        ),
+        cmendy = choices_selected(
+          choices = variable_choices("ADCM", c("AENDY", "AENDY2")),
+          selected = "AENDY2"
+        ),
+        font_size = c(12L, 1L, 30L),
+        plot_height = c(500L, 300L, 2000L),
+        plot_width = c(1000L, 700L, 2000L),
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }
@@ -95,10 +97,10 @@ testthat::test_that("e2e - tm_g_pp_therapy: Module initializes in teal without e
   app_driver$expect_no_validation_error()
 
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("therapy_plot-plot_out_main"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("therapy_plot-plot_out_main"))
   )
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("therapy_table"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("therapy_table"))
   )
 
   app_driver$stop()
@@ -156,7 +158,7 @@ test_different_selection <- function(input_name, input_id, new_value) {
       app_driver <- app_driver_tm_g_pp_therapy()
       plot_before <- list(
         app_driver$get_active_module_plot_output("therapy_plot"),
-        app_driver$active_module_element_text("therapy_table")
+        app_driver$namespaces(TRUE)$module("therapy_table")
       )
       app_driver$set_active_module_input(input_id, new_value)
       testthat::expect_false(
@@ -164,7 +166,7 @@ test_different_selection <- function(input_name, input_id, new_value) {
           plot_before,
           list(
             app_driver$get_active_module_plot_output("therapy_plot"),
-            app_driver$active_module_element_text("therapy_table")
+            app_driver$namespaces(TRUE)$module("therapy_table")
           )
         )
       )
@@ -214,7 +216,7 @@ test_delection_validation <- function(input_name, input_id, deselect_message) {
     app_driver$set_active_module_input(input_id, NULL)
     app_driver$expect_validation_error()
     testthat::expect_equal(
-      app_driver$active_module_element_text(
+      app_driver$namespaces(TRUE)$module(
         sprintf(
           "%s_input .shiny-validation-message",
           input_id

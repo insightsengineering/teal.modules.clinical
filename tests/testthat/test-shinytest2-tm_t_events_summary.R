@@ -41,52 +41,54 @@ app_driver_tm_t_events_summary <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_events_summary(
-      label = "Adverse Events Summary",
-      dataname = "ADAE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices("ADSL", c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      flag_var_anl = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices("ADAE", data[[".ae_anl_vars"]]),
-        selected = data[[".ae_anl_vars"]][1],
-        keep_order = TRUE,
-        fixed = FALSE
-      ),
-      flag_var_aesi = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices("ADAE", data[[".aesi_vars"]]),
-        selected = data[[".aesi_vars"]][1],
-        keep_order = TRUE,
-        fixed = FALSE
-      ),
-      dthfl_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], "DTHFL"),
-        selected = "DTHFL", fixed = TRUE
-      ),
-      dcsreas_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], "DCSREAS"),
-        selected = "DCSREAS", fixed = TRUE
-      ),
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], "AEDECOD"),
-        selected = "AEDECOD", fixed = TRUE
-      ),
-      aeseq_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], "AESEQ"),
-        selected = "AESEQ", fixed = TRUE
-      ),
-      add_total = TRUE,
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      count_subj = TRUE,
-      count_pt = TRUE,
-      count_events = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_events_summary(
+        label = "Adverse Events Summary",
+        dataname = "ADAE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices("ADSL", c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
+        flag_var_anl = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices("ADAE", data[[".ae_anl_vars"]]),
+          selected = data[[".ae_anl_vars"]][1],
+          keep_order = TRUE,
+          fixed = FALSE
+        ),
+        flag_var_aesi = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices("ADAE", data[[".aesi_vars"]]),
+          selected = data[[".aesi_vars"]][1],
+          keep_order = TRUE,
+          fixed = FALSE
+        ),
+        dthfl_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], "DTHFL"),
+          selected = "DTHFL", fixed = TRUE
+        ),
+        dcsreas_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], "DCSREAS"),
+          selected = "DCSREAS", fixed = TRUE
+        ),
+        llt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], "AEDECOD"),
+          selected = "AEDECOD", fixed = TRUE
+        ),
+        aeseq_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], "AESEQ"),
+          selected = "AESEQ", fixed = TRUE
+        ),
+        add_total = TRUE,
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        count_subj = TRUE,
+        count_pt = TRUE,
+        count_events = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }
@@ -98,7 +100,7 @@ testthat::test_that("e2e - tm_t_events_summary: Module initializes in teal witho
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -161,7 +163,7 @@ testthat::test_that("e2e - tm_t_events_summary: Deselection of arm_var throws va
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Please select exactly 1 or 2 treatment variables"
   )
   app_driver$stop()

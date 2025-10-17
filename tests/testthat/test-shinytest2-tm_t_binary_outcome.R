@@ -17,72 +17,74 @@ app_driver_tm_t_binary_outcome <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_binary_outcome(
-      label = "Responders",
-      dataname = "ADRS",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD", "ACTARMCD")),
-        selected = "ARM"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
-        selected = "BESRSPI"
-      ),
-      strata_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADRS"]], c("SEX", "BMRKR2", "RACE")),
-        selected = "RACE"
-      ),
-      aval_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(
-          data[["ADRS"]], c("AVALC", "SEX")
+    teal::init(
+      data = data,
+      modules = tm_t_binary_outcome(
+        label = "Responders",
+        dataname = "ADRS",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD", "ACTARMCD")),
+          selected = "ARM"
         ),
-        selected = "AVALC",
-        fixed = FALSE
-      ),
-      conf_level = teal.transform::choices_selected(
-        c(2, 0.95, 0.9, 0.8), 0.95,
-        keep_order = TRUE
-      ),
-      default_responses = list(
-        BESRSPI = list(
-          rsp = c("Complete Response (CR)", "Partial Response (PR)"),
-          levels = c(
-            "Complete Response (CR)", "Partial Response (PR)",
-            "Stable Disease (SD)", "Progressive Disease (PD)"
+        arm_ref_comp = arm_ref_comp,
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
+          selected = "BESRSPI"
+        ),
+        strata_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADRS"]], c("SEX", "BMRKR2", "RACE")),
+          selected = "RACE"
+        ),
+        aval_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(
+            data[["ADRS"]], c("AVALC", "SEX")
+          ),
+          selected = "AVALC",
+          fixed = FALSE
+        ),
+        conf_level = teal.transform::choices_selected(
+          c(2, 0.95, 0.9, 0.8), 0.95,
+          keep_order = TRUE
+        ),
+        default_responses = list(
+          BESRSPI = list(
+            rsp = c("Complete Response (CR)", "Partial Response (PR)"),
+            levels = c(
+              "Complete Response (CR)", "Partial Response (PR)",
+              "Stable Disease (SD)", "Progressive Disease (PD)"
+            )
+          ),
+          INVET = list(
+            rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
+            levels = c(
+              "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
+              "Progressive Disease (PD)", "Stable Disease (SD)"
+            )
+          ),
+          OVRINV = list(
+            rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
+            levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
           )
         ),
-        INVET = list(
-          rsp = c("Stable Disease (SD)", "Not Evaluable (NE)"),
-          levels = c(
-            "Complete Response (CR)", "Not Evaluable (NE)", "Partial Response (PR)",
-            "Progressive Disease (PD)", "Stable Disease (SD)"
-          )
-        ),
-        OVRINV = list(
-          rsp = c("Progressive Disease (PD)", "Stable Disease (SD)"),
-          levels = c("Progressive Disease (PD)", "Stable Disease (SD)", "Not Evaluable (NE)")
-        )
-      ),
-      rsp_table = FALSE,
-      control = list(global = list(
-        method = "waldcc",
-        conf_level = 0.95
-      ), unstrat = list(
-        method_ci = "waldcc",
-        method_test = "schouten", odds = TRUE
-      ), strat = list(
-        method_ci = "cmh", method_test =
-          "cmh"
-      )),
-      add_total = FALSE,
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+        rsp_table = FALSE,
+        control = list(global = list(
+          method = "waldcc",
+          conf_level = 0.95
+        ), unstrat = list(
+          method_ci = "waldcc",
+          method_test = "schouten", odds = TRUE
+        ), strat = list(
+          method_ci = "cmh", method_test =
+            "cmh"
+        )),
+        add_total = FALSE,
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }
@@ -94,7 +96,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Module initializes in teal witho
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -194,7 +196,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of paramcd throws va
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADRS_singleextract-filter1-vals_input .shiny-validation-message"
     ),
     "Please select a filter."
@@ -262,7 +264,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var throws va
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Treatment variable must be selected"
   )
   app_driver$stop()

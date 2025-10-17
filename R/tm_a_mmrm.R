@@ -1552,6 +1552,5 @@ srv_mmrm <- function(id,
     set_chunk_dims(pws, reactive({
       decorated_objs_q[[obj_ix_r()]]()
     }))
-
   })
 }
