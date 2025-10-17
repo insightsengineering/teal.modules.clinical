@@ -1,4 +1,4 @@
-# teal.modules.clinical 0.11.1.9010
+# teal.modules.clinical 0.11.1.9011
 
 ### Enhancements
 * Modules return a `teal_report` object that contains the data, code and report. All the reporter buttons were removed from the modules' UI in favor of the framework level reporter buttons (#1376).
