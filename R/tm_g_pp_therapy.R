@@ -636,9 +636,8 @@ srv_g_therapy <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Patient Profile Therapy"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       teal.code::eval_code(obj, as.expression(anl_inputs()$expr))
     })
@@ -686,7 +685,7 @@ srv_g_therapy <- function(id,
           )
         )
       )
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table and Plot")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table and Plot")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 

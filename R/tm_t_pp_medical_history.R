@@ -323,9 +323,8 @@ srv_t_medical_history <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Patient Medical History Table"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>% teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
@@ -360,7 +359,7 @@ srv_t_medical_history <- function(id,
           )
         )
       )
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       obj %>% teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 

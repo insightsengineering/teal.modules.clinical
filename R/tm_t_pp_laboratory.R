@@ -431,9 +431,8 @@ srv_g_laboratory <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Patient Profile Laboratory Table"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
@@ -467,7 +466,7 @@ srv_g_laboratory <- function(id,
           )
         )
       )
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       obj <- obj %>% teal.code::eval_code(as.expression(labor_calls))
       # removes table_data_html needed only for the display
       teal.reporter::teal_card(obj) <- utils::head(teal.reporter::teal_card(obj), -3)

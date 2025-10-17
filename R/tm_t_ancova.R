@@ -791,9 +791,8 @@ srv_ancova <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# ANCOVA"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
@@ -976,7 +975,7 @@ srv_ancova <- function(id,
         basic_table_args = basic_table_args
       )
       obj <- merged$anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 

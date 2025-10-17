@@ -830,9 +830,8 @@ srv_g_patient_timeline <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Patient Profile Timeline"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
     })
@@ -937,7 +936,7 @@ srv_g_patient_timeline <- function(id,
         )
       )
       obj <- qenv
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
       teal.code::eval_code(object = obj, as.expression(patient_timeline_calls))
     })
 

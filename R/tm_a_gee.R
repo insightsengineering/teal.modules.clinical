@@ -504,9 +504,8 @@ srv_gee <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Generalized Estimating Equations (GEE) Analysis Table"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
@@ -570,7 +569,7 @@ srv_gee <- function(id,
       )
 
       obj <- merged$anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), paste("## ", table_type, "Table"))
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), paste("### ", table_type, "Table"))
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 

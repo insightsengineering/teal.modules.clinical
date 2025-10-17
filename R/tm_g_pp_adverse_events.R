@@ -535,9 +535,8 @@ srv_g_adverse_events <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Patient Profile Adverse Events"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
     })
@@ -577,7 +576,7 @@ srv_g_adverse_events <- function(id,
         ggplot2_args = ggplot2_args
       )
       obj <- anl_q2
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table and Plot")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table and Plot")
       teal.code::eval_code(obj, as.expression(calls))
     })
 

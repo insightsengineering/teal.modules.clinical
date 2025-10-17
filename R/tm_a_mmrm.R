@@ -1031,9 +1031,8 @@ srv_mmrm <- function(id,
       obj <- data_with_tern_options_r()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Mixed Model Repeated Measurements (MMRM) Analysis"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
@@ -1402,7 +1401,7 @@ srv_mmrm <- function(id,
       )
 
       obj <- qenv
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(mmrm_table))
     })
 
@@ -1474,7 +1473,7 @@ srv_mmrm <- function(id,
         ggplot2_args = ggplot2_args
       )
       obj <- qenv
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Plot")
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
       teal.code::eval_code(obj, as.expression(mmrm_plot_expr))
     })
 

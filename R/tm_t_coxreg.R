@@ -859,9 +859,8 @@ srv_t_coxreg <- function(id,
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
-          teal.reporter::teal_card("# Cox Regression Table"),
           teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's code")
+          teal.reporter::teal_card("## Module's output(s)")
         )
       teal.code::eval_code(obj, as.expression(anl_inputs()$expr))
     })
@@ -1062,7 +1061,7 @@ srv_t_coxreg <- function(id,
           paramcd, multivariate, all_basic_table_args
         )
         obj <- merged$anl_q()
-        teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+        teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
         teal.code::eval_code(obj, as.expression(expr))
       } else {
         main_title <- paste("Cox Regression for", paramcd)
@@ -1076,7 +1075,7 @@ srv_t_coxreg <- function(id,
         )
 
         obj <- merged$anl_q()
-        teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "## Table")
+        teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
         obj %>%
           teal.code::eval_code(quote(table <- list())) %>%
           teal.code::eval_code(
