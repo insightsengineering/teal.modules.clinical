@@ -22,29 +22,31 @@ app_driver_tm_t_glm_counts <- function() { # nolint: object_length.
   ADTTE <- data[["ADTTE"]]
   # Initialize the teal app
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_glm_counts(
-      dataname = "ADTTE",
-      arm_var = choices_selected(
-        variable_choices("ADTTE", c("ARM", "ARMCD", "ACTARMCD")),
-        "ARMCD"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      aval_var = choices_selected(
-        variable_choices("ADTTE", "AVAL"),
-        "AVAL"
-      ),
-      strata_var = choices_selected(
-        variable_choices("ADSL", "SEX"),
-        NULL
-      ),
-      offset_var = choices_selected(
-        variable_choices("ADSL", "AGE"),
-        NULL
-      ),
-      cov_var = choices_selected(
-        variable_choices("ADTTE", "SITEID"),
-        NULL
+    teal::init(
+      data = data,
+      modules = tm_t_glm_counts(
+        dataname = "ADTTE",
+        arm_var = choices_selected(
+          variable_choices("ADTTE", c("ARM", "ARMCD", "ACTARMCD")),
+          "ARMCD"
+        ),
+        arm_ref_comp = arm_ref_comp,
+        aval_var = choices_selected(
+          variable_choices("ADTTE", "AVAL"),
+          "AVAL"
+        ),
+        strata_var = choices_selected(
+          variable_choices("ADSL", "SEX"),
+          NULL
+        ),
+        offset_var = choices_selected(
+          variable_choices("ADSL", "AGE"),
+          NULL
+        ),
+        cov_var = choices_selected(
+          variable_choices("ADTTE", "SITEID"),
+          NULL
+        )
       )
     )
   )
@@ -58,7 +60,7 @@ testthat::test_that(
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
     testthat::expect_true(
-      app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+      app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
     )
     app_driver$stop()
   }

@@ -15,47 +15,49 @@ app_driver_tm_t_abnormality <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_abnormality(
-      label = "Abnormality Table",
-      dataname = "ADLB",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      add_total = FALSE,
-      by_vars = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("LBCAT", "PARAM", "AVISIT")),
-        selected = c("LBCAT", "PARAM"),
-        keep_order = TRUE
-      ),
-      baseline_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "BNRIND"),
-        selected = "BNRIND", fixed = TRUE
-      ),
-      grade = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], subset = "ANRIND"),
-        selected = "ANRIND",
-        fixed = TRUE
-      ),
-      abnormal = list(low = "LOW", high = "HIGH"),
-      id_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
-        selected = "USUBJID", fixed = TRUE
-      ),
-      exclude_base_abn = FALSE,
-      treatment_flag_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "ONTRTFL"),
-        selected = "ONTRTFL", fixed = TRUE
-      ),
-      treatment_flag = teal.transform::choices_selected("Y"),
-      total_label = default_total_label(),
-      drop_arm_levels = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      na_level = default_na_str(),
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_abnormality(
+        label = "Abnormality Table",
+        dataname = "ADLB",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
+        add_total = FALSE,
+        by_vars = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("LBCAT", "PARAM", "AVISIT")),
+          selected = c("LBCAT", "PARAM"),
+          keep_order = TRUE
+        ),
+        baseline_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], subset = "BNRIND"),
+          selected = "BNRIND", fixed = TRUE
+        ),
+        grade = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], subset = "ANRIND"),
+          selected = "ANRIND",
+          fixed = TRUE
+        ),
+        abnormal = list(low = "LOW", high = "HIGH"),
+        id_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
+          selected = "USUBJID", fixed = TRUE
+        ),
+        exclude_base_abn = FALSE,
+        treatment_flag_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], subset = "ONTRTFL"),
+          selected = "ONTRTFL", fixed = TRUE
+        ),
+        treatment_flag = teal.transform::choices_selected("Y"),
+        total_label = default_total_label(),
+        drop_arm_levels = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        na_level = default_na_str(),
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }
@@ -68,7 +70,7 @@ testthat::test_that("e2e - tm_t_abnormality: Module initializes in teal without 
   app_driver$expect_no_validation_error()
 
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -135,7 +137,7 @@ testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation err
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Please select a treatment variable."
   )
   app_driver$stop()
@@ -168,7 +170,7 @@ testthat::test_that("e2e - tm_t_abnormality: Deselection of by_vars throws valid
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("by_vars-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("by_vars-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
     "Please select a Row By Variable."
   )
   app_driver$stop()
