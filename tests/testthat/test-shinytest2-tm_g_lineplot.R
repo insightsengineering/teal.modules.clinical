@@ -11,51 +11,53 @@ app_driver_tm_g_lineplot <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_lineplot(
-      label = "Line Plot",
-      dataname = "ADLB",
-      parentname = "ADSL",
-      group_var = teal.transform::choices_selected(
-        teal.transform::variable_choices("ADSL", c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
-      ),
-      x = teal.transform::choices_selected(teal.transform::variable_choices(
-        "ADLB",
-        "AVISIT"
-      ), "AVISIT", fixed = TRUE),
-      y = teal.transform::choices_selected(
-        teal.transform::variable_choices("ADLB", c("AVAL", "BASE", "CHG", "PCHG")),
-        "AVAL"
-      ),
-      y_unit = teal.transform::choices_selected(teal.transform::variable_choices(
-        "ADLB",
-        "AVALU"
-      ), "AVALU", fixed = TRUE),
-      paramcd = teal.transform::choices_selected(teal.transform::variable_choices(
-        "ADLB",
-        "PARAMCD"
-      ), "PARAMCD", fixed = TRUE),
-      param = teal.transform::choices_selected(
-        teal.transform::value_choices("ADLB", "PARAMCD", "PARAM"),
-        "ALT"
-      ),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
-        keep_order =
-          TRUE
-      ),
-      interval = "mean_ci",
-      mid = "mean",
-      whiskers = c("mean_ci_lwr", "mean_ci_upr"),
-      table = c("n", "mean_sd", "median", "range"),
-      mid_type = "pl",
-      mid_point_size = c(2, 1, 5),
-      table_font_size = c(4, 2, 6),
-      plot_height = c(1000L, 200L, 4000L),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_lineplot(
+        label = "Line Plot",
+        dataname = "ADLB",
+        parentname = "ADSL",
+        group_var = teal.transform::choices_selected(
+          teal.transform::variable_choices("ADSL", c("ARM", "ARMCD", "ACTARMCD")),
+          "ARM"
+        ),
+        x = teal.transform::choices_selected(teal.transform::variable_choices(
+          "ADLB",
+          "AVISIT"
+        ), "AVISIT", fixed = TRUE),
+        y = teal.transform::choices_selected(
+          teal.transform::variable_choices("ADLB", c("AVAL", "BASE", "CHG", "PCHG")),
+          "AVAL"
+        ),
+        y_unit = teal.transform::choices_selected(teal.transform::variable_choices(
+          "ADLB",
+          "AVALU"
+        ), "AVALU", fixed = TRUE),
+        paramcd = teal.transform::choices_selected(teal.transform::variable_choices(
+          "ADLB",
+          "PARAMCD"
+        ), "PARAMCD", fixed = TRUE),
+        param = teal.transform::choices_selected(
+          teal.transform::value_choices("ADLB", "PARAMCD", "PARAM"),
+          "ALT"
+        ),
+        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
+          keep_order =
+            TRUE
+        ),
+        interval = "mean_ci",
+        mid = "mean",
+        whiskers = c("mean_ci_lwr", "mean_ci_upr"),
+        table = c("n", "mean_sd", "median", "range"),
+        mid_type = "pl",
+        mid_point_size = c(2, 1, 5),
+        table_font_size = c(4, 2, 6),
+        plot_height = c(1000L, 200L, 4000L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     ),
     timeout = 30000
   )
@@ -70,7 +72,7 @@ testthat::test_that("e2e - tm_g_lineplot: Module initializes in teal without err
   app_driver$expect_no_validation_error()
 
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("myplot-plot_main"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main"))
   )
 
   app_driver$stop()
@@ -133,7 +135,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation er
   app_driver$set_active_module_input("param-dataset_ADLB_singleextract-filter1-vals", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("param-dataset_ADLB_singleextract-filter1-vals_input > div > span"),
+    app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-filter1-vals_input > div > span"),
     "Please select Biomarker filter."
   )
   app_driver$expect_validation_error()
@@ -166,7 +168,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting group_var throws validatio
   app_driver$set_active_module_input("group_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "group_var-dataset_ADSL_singleextract-select_input > div > span"
     ),
     "Please select a treatment variable"
@@ -198,7 +200,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.
   app_driver$set_active_module_input("y-dataset_ADLB_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "y-dataset_ADLB_singleextract-select_input > div > span"
     ),
     "Please select an analysis variable"
@@ -230,7 +232,7 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting conf_level validation erro
   app_driver$set_active_module_input("conf_level", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$active_module_element_text("conf_level_input > div > span"),
+    app_driver$namespaces(TRUE)$module("conf_level_input > div > span"),
     "Please choose a confidence level"
   )
   app_driver$expect_validation_error()

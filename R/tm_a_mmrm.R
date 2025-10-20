@@ -493,6 +493,8 @@ template_mmrm_plots <- function(fit_name,
 #' To learn more please refer to the vignette
 #' `vignette("transform-module-output", package = "teal")` or the [`teal::teal_transform_module()`] documentation.
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -673,10 +675,6 @@ ui_mmrm <- function(id,
         teal.widgets::plot_with_settings_ui(id = ns("mmrm_plot"))
       ),
       encoding = tags$div(
-        ### Reporter
-        teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-        tags$br(), tags$br(),
-        ###
         tags$label("Encodings", class = "text-primary"), tags$br(),
         bslib::accordion(
           open = TRUE,
@@ -864,9 +862,6 @@ ui_mmrm <- function(id,
             )
           )
         )
-      ),
-      forms = tagList(
-        teal.widgets::verbatim_popup_ui(ns("rcode"), "Show R code")
       )
     ),
     pre_output = pre_output,
@@ -877,8 +872,6 @@ ui_mmrm <- function(id,
 #' @keywords internal
 srv_mmrm <- function(id,
                      data,
-                     reporter,
-                     filter_panel_api,
                      dataname,
                      parentname,
                      arm_var,
@@ -895,16 +888,11 @@ srv_mmrm <- function(id,
                      basic_table_args,
                      ggplot2_args,
                      decorators) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    # Reactive responsible for sending a disable/enable signal
-    # to show R code and debug info buttons
-    disable_r_code <- reactiveVal(FALSE)
 
     selectors <- teal.transform::module_input_srv(
       spec = list(
@@ -984,8 +972,13 @@ srv_mmrm <- function(id,
     })
 
     anl_q <- reactive({
-      req(data_with_tern_options_r())
-      data_with_tern_options_r() |>
+      obj <- data_with_tern_options_r()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's output(s)")
+        )
+      obj %>%
         within(
           expr = dataname <- dplyr::filter(dataname, paramcd_var %in% paramcd_val),
           dataname = str2lang(selectors$paramcd()$datasets$selected),
@@ -1105,8 +1098,7 @@ srv_mmrm <- function(id,
     })
 
     # Event handler:
-    # When the "Fit Model" button is clicked, hide initial message, show title, disable model fit and enable
-    # show R code buttons.
+    # When the "Fit Model" button is clicked, hide initial message, show title, disable model fit button.
     shinyjs::onclick("button_start", {
       state$input <- mmrm_inputs_reactive()
       shinyjs::hide("null_input_msg")
@@ -1114,10 +1106,8 @@ srv_mmrm <- function(id,
       success <- try(mmrm_fit(), silent = TRUE)
       if (!inherits(success, "try-error")) {
         shinyjs::show("mmrm_title")
-        disable_r_code(FALSE)
       } else {
         shinyjs::hide("mmrm_title")
-        # show R code and debug info buttons will have already been hidden by disable_r_code
       }
     })
 
@@ -1193,9 +1183,7 @@ srv_mmrm <- function(id,
     # disable the show R code button and show warning message
     observeEvent(mmrm_inputs_reactive(), {
       shinyjs::enable("button_start")
-      disable_r_code(TRUE)
       if (!state_has_changed()) {
-        disable_r_code(FALSE)
         shinyjs::disable("button_start")
       }
     })
@@ -1344,7 +1332,9 @@ srv_mmrm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(qenv, as.expression(mmrm_table))
+      obj <- qenv
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
+      teal.code::eval_code(obj, as.expression(mmrm_table))
     })
 
     # Endpoint:
@@ -1414,7 +1404,9 @@ srv_mmrm <- function(id,
         diagnostic_plot = diagnostic_args,
         ggplot2_args = ggplot2_args
       )
-      teal.code::eval_code(qenv, as.expression(mmrm_plot_expr))
+      obj <- qenv
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
+      teal.code::eval_code(obj, as.expression(mmrm_plot_expr))
     })
 
     decorated_tables_q <- lapply(
@@ -1489,47 +1481,8 @@ srv_mmrm <- function(id,
       show_hide_signal = reactive(!show_plot_rv())
     )
 
-    # Show R code once button is pressed.
-    source_code_r <- reactive(
-      teal.code::get_code(req(decorated_objs_q[[obj_ix_r()]]()))
-    )
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      disabled = disable_r_code,
-      title = label
-    )
-
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Mixed Model Repeated Measurements (MMRM) Analysis",
-          label = label,
-          description = paste(
-            "Mixed Models procedure analyzes results from repeated measures designs",
-            "in which the outcome is continuous and measured at fixed time points"
-          ),
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        if (!is.null(table_r())) {
-          card$append_text("Table", "header3")
-          card$append_table(table_r())
-        }
-        if (!is.null(plot_r())) {
-          card$append_text("Plot", "header3")
-          card$append_plot(plot_r(), dim = pws$dim())
-        }
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    set_chunk_dims(pws, reactive({
+      decorated_objs_q[[obj_ix_r()]]()
+    }))
   })
 }

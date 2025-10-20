@@ -62,6 +62,8 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @inherit module_arguments return
 #'
+#' @inheritSection teal::example_module Reporting
+#'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
 #' interactive <- function() TRUE
@@ -155,10 +157,6 @@ ui_t_basic_info <- function(id, ...) {
       DT::DTOutput(outputId = ns("basic_info_table"))
     ),
     encoding = tags$div(
-      ### Reporter
-      teal.reporter::add_card_button_ui(ns("add_reporter"), label = "Add Report Card"),
-      tags$br(), tags$br(),
-      ###
       tags$label("Encodings", class = "text-primary"), tags$br(),
       teal.transform::datanames_input(ui_args[c("vars")]),
       teal.widgets::optionalSelectInput(
@@ -174,9 +172,6 @@ ui_t_basic_info <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       )
     ),
-    forms = tagList(
-      teal.widgets::verbatim_popup_ui(ns("rcode"), button_label = "Show R code")
-    ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
   )
@@ -185,14 +180,10 @@ ui_t_basic_info <- function(id, ...) {
 #' @keywords internal
 srv_t_basic_info <- function(id,
                              data,
-                             reporter,
-                             filter_panel_api,
                              dataname,
                              patient_col,
                              vars,
                              label) {
-  with_reporter <- !missing(reporter) && inherits(reporter, "Reporter")
-  with_filter <- !missing(filter_panel_api) && inherits(filter_panel_api, "FilterPanelAPI")
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
@@ -247,7 +238,13 @@ srv_t_basic_info <- function(id,
     )
 
     anl_q <- reactive({
-      data() %>%
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's output(s)")
+        )
+      obj %>%
         teal.code::eval_code(as.expression(anl_inputs()$expr))
     })
 
@@ -259,7 +256,7 @@ srv_t_basic_info <- function(id,
         patient_id = patient_id()
       )
 
-      teal.code::eval_code(
+      obj <- teal.code::eval_code(
         anl_q(),
         substitute(
           expr = {
@@ -270,8 +267,9 @@ srv_t_basic_info <- function(id,
             patient_id = patient_id()
           )
         )
-      ) %>%
-        teal.code::eval_code(as.expression(unlist(my_calls)))
+      )
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
+      obj %>% teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
     table_r <- reactive({
@@ -294,34 +292,6 @@ srv_t_basic_info <- function(id,
 
     output$basic_info_table <- DT::renderDataTable(table_r()[["html"]])
 
-    # Render R code
-    source_code_r <- reactive(teal.code::get_code(req(all_q())))
-    teal.widgets::verbatim_popup_srv(
-      id = "rcode",
-      verbatim_content = source_code_r,
-      title = label
-    )
-
-    ### REPORTER
-    if (with_reporter) {
-      card_fun <- function(comment, label) {
-        card <- teal::report_card_template(
-          title = "Patient Profile Basic Info Table",
-          label = label,
-          with_filter = with_filter,
-          filter_panel_api = filter_panel_api
-        )
-        card$append_text("Table", "header3")
-        card$append_table(table_r()[["report"]])
-        if (!comment == "") {
-          card$append_text("Comment", "header3")
-          card$append_text(comment)
-        }
-        card$append_src(source_code_r())
-        card
-      }
-      teal.reporter::add_card_button_srv("add_reporter", reporter = reporter, card_fun = card_fun)
-    }
-    ###
+    all_q
   })
 }

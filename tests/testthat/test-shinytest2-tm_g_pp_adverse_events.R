@@ -9,43 +9,45 @@ app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length.
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_pp_adverse_events(
-      label = "Adverse Events",
-      dataname = "ADAE",
-      parentname = "ADSL",
-      patient_col = "USUBJID",
-      plot_height = c(600L, 200L, 2000L),
-      aeterm = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AETERM", "AGEU")),
-        selected = "AETERM"
-      ),
-      tox_grade = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AETOXGR", "COUNTRY")),
-        selected = "AETOXGR"
-      ),
-      causality = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AEREL", "ACTARM")),
-        selected = "AEREL"
-      ),
-      outcome = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AEOUT", "SITEID")),
-        selected = "AEOUT"
-      ),
-      action = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("AEACN", "SMQ01NAM")),
-        selected = "AEACN"
-      ),
-      time = choices_selected(
-        choices = variable_choices(data[["ADAE"]], c("ASTDY", "AGE")),
-        selected = "ASTDY"
-      ),
-      decod = NULL,
-      font_size = c(12L, 12L, 25L),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_pp_adverse_events(
+        label = "Adverse Events",
+        dataname = "ADAE",
+        parentname = "ADSL",
+        patient_col = "USUBJID",
+        plot_height = c(600L, 200L, 2000L),
+        aeterm = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AETERM", "AGEU")),
+          selected = "AETERM"
+        ),
+        tox_grade = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AETOXGR", "COUNTRY")),
+          selected = "AETOXGR"
+        ),
+        causality = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AEREL", "ACTARM")),
+          selected = "AEREL"
+        ),
+        outcome = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AEOUT", "SITEID")),
+          selected = "AEOUT"
+        ),
+        action = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("AEACN", "SMQ01NAM")),
+          selected = "AEACN"
+        ),
+        time = choices_selected(
+          choices = variable_choices(data[["ADAE"]], c("ASTDY", "AGE")),
+          selected = "ASTDY"
+        ),
+        decod = NULL,
+        font_size = c(12L, 12L, 25L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }
@@ -60,7 +62,7 @@ testthat::test_that(
     app_driver$expect_no_validation_error()
     testthat::expect_match(app_driver$get_active_module_plot_output("chart"), "data:image/png;base64,")
     testthat::expect_true(
-      app_driver$is_visible(app_driver$active_module_element("table"))
+      app_driver$is_visible(app_driver$namespaces(TRUE)$module("table"))
     )
     app_driver$stop()
   }
@@ -157,7 +159,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select a patient"
     )
     app_driver$stop()
@@ -201,7 +203,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AETERM variable."
     )
     app_driver$stop()
@@ -245,7 +247,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AETOXGR variable."
     )
     app_driver$stop()
@@ -289,7 +291,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AEREL variable."
     )
     app_driver$stop()
@@ -333,7 +335,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AEOUT variable."
     )
     app_driver$stop()
@@ -377,7 +379,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select AEACN variable."
     )
     app_driver$stop()
@@ -421,7 +423,7 @@ testthat::test_that(
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$active_module_element_text(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
       "Please select ASTDY variable."
     )
     app_driver$stop()

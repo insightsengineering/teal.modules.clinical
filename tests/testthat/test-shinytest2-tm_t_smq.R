@@ -21,34 +21,36 @@ app_driver_tm_t_smq <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_smq(
-      label = "Adverse Events by SMQ Table",
-      dataname = "ADAE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "SEX")),
-        selected = "ARM"
-      ),
-      id_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], subset = "USUBJID"),
-        selected = "USUBJID", fixed = TRUE
-      ),
-      add_total = FALSE,
-      total_label = default_total_label(),
-      sort_criteria = c("freq_desc", "alpha"),
-      drop_arm_levels = TRUE,
-      na_level = default_na_str(),
-      smq_varlabel = "Standardized MedDRA Query",
-      baskets = data[[".cs_baskets"]],
-      scopes = data[[".cs_scopes"]],
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], subset = c("AEDECOD", "SEX")),
-        selected = "AEDECOD"
-      ),
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_smq(
+        label = "Adverse Events by SMQ Table",
+        dataname = "ADAE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "SEX")),
+          selected = "ARM"
+        ),
+        id_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], subset = "USUBJID"),
+          selected = "USUBJID", fixed = TRUE
+        ),
+        add_total = FALSE,
+        total_label = default_total_label(),
+        sort_criteria = c("freq_desc", "alpha"),
+        drop_arm_levels = TRUE,
+        na_level = default_na_str(),
+        smq_varlabel = "Standardized MedDRA Query",
+        baskets = data[[".cs_baskets"]],
+        scopes = data[[".cs_scopes"]],
+        llt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], subset = c("AEDECOD", "SEX")),
+          selected = "AEDECOD"
+        ),
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }
@@ -60,7 +62,7 @@ testthat::test_that("e2e - tm_t_smq: Module initializes in teal without errors a
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -124,7 +126,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation er
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "At least one treatment variable is required"
   )
   app_driver$stop()
@@ -154,7 +156,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of paramcd throws validation er
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("llt-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("llt-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
     "A low level term variable is required"
   )
   app_driver$stop()
@@ -187,7 +189,7 @@ testthat::test_that("e2e - tm_t_smq: Deselection of worst_flag throws validation
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("baskets-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("baskets-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
     "At least one basket is required"
   )
   app_driver$stop()

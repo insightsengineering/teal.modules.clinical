@@ -23,54 +23,56 @@ app_driver_tm_g_km <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_km(
-      label = "Kaplan-Meier Plot",
-      dataname = "ADTTE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "ACTARMCD")),
-        "ARM"
-      ),
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
-        "OS"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      strata_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("SEX", "BMRKR2")),
-        "SEX"
-      ),
-      facet_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("SEX", "BMRKR2")),
-        NULL
-      ),
-      time_unit_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "VALUE_UNIT"),
-        "VALUE_UNIT",
-        fixed = TRUE
-      ),
-      aval_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "ANALYSIS_VAL"),
-        "ANALYSIS_VAL",
-        fixed = TRUE
-      ),
-      cnsr_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "CENSORING"),
-        "CENSORING",
-        fixed = TRUE
-      ),
-      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
-      conf_type = teal.transform::choices_selected(c("plain", "log", "log-log", "none"), "log", keep_order = TRUE),
-      font_size = c(11L, 1L, 30),
-      control_annot_surv_med = control_surv_med_annot(),
-      control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
-      legend_pos = c(0.9, 0.5),
-      rel_height_plot = c(80L, 0L, 100L),
-      plot_height = c(800L, 400L, 5000L),
-      plot_width = NULL,
-      pre_output = NULL,
-      post_output = NULL
+    teal::init(
+      data = data,
+      modules = tm_g_km(
+        label = "Kaplan-Meier Plot",
+        dataname = "ADTTE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "ACTARMCD")),
+          "ARM"
+        ),
+        paramcd = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
+          "OS"
+        ),
+        arm_ref_comp = arm_ref_comp,
+        strata_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("SEX", "BMRKR2")),
+          "SEX"
+        ),
+        facet_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("SEX", "BMRKR2")),
+          NULL
+        ),
+        time_unit_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "VALUE_UNIT"),
+          "VALUE_UNIT",
+          fixed = TRUE
+        ),
+        aval_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "ANALYSIS_VAL"),
+          "ANALYSIS_VAL",
+          fixed = TRUE
+        ),
+        cnsr_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "CENSORING"),
+          "CENSORING",
+          fixed = TRUE
+        ),
+        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8, -1), 0.95, keep_order = TRUE),
+        conf_type = teal.transform::choices_selected(c("plain", "log", "log-log", "none"), "log", keep_order = TRUE),
+        font_size = c(11L, 1L, 30),
+        control_annot_surv_med = control_surv_med_annot(),
+        control_annot_coxph = control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+        legend_pos = c(0.9, 0.5),
+        rel_height_plot = c(80L, 0L, 100L),
+        plot_height = c(800L, 400L, 5000L),
+        plot_width = NULL,
+        pre_output = NULL,
+        post_output = NULL
+      )
     )
   )
 }
@@ -197,13 +199,13 @@ testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation erro
   app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADTTE_singleextract-filter1-vals_input .shiny-validation-message"
     ),
     "An endpoint is required"
   )
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot-with-settings"),
+    app_driver$namespaces(TRUE)$module("myplot-plot-with-settings"),
     "An endpoint is required"
   )
   app_driver$stop()
@@ -216,7 +218,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation erro
   app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
     ),
     "Treatment variable must be selected"
@@ -270,17 +272,17 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison s
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
 
-  app_driver$is_visible(app_driver$active_module_element("pval_method_coxph"))
-  app_driver$is_visible(app_driver$active_module_element("ties_coxph"))
+  app_driver$is_visible(app_driver$namespaces(TRUE)$module("pval_method_coxph"))
+  app_driver$is_visible(app_driver$namespaces(TRUE)$module("ties_coxph"))
 
   testthat::expect_equal(app_driver$get_active_module_input("pval_method_coxph"), "log-rank")
   testthat::expect_equal(
-    app_driver$active_module_element_text("pval_method_coxph-label"),
+    app_driver$namespaces(TRUE)$module("pval_method_coxph-label"),
     "p-value method for Coxph (Hazard Ratio)"
   )
   testthat::expect_equal(app_driver$get_active_module_input("ties_coxph"), "exact")
   testthat::expect_equal(
-    app_driver$active_module_element_text("ties_coxph-label"),
+    app_driver$namespaces(TRUE)$module("ties_coxph-label"),
     "Ties for Coxph (Hazard Ratio)"
   )
 
@@ -334,14 +336,14 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional p
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
 
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("xticks")))
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("yval")))
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("font_size")))
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("rel_height_plot")))
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("show_ci_ribbon")))
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("show_km_table")))
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("conf_level")))
-  testthat::expect_false(app_driver$is_visible(app_driver$active_module_element("xlab")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("xticks")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("yval")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("font_size")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("rel_height_plot")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("show_ci_ribbon")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("show_km_table")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("conf_level")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("xlab")))
 
   testthat::expect_equal(app_driver$get_active_module_input("xticks"), "")
   testthat::expect_equal(app_driver$get_active_module_input("yval"), "Survival probability")
@@ -354,13 +356,13 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional p
   testthat::expect_equal(app_driver$get_active_module_input("xlab"), "Time")
 
   testthat::expect_equal(
-    app_driver$active_module_element_text("xticks-label"),
+    app_driver$namespaces(TRUE)$module("xticks-label"),
     "Specify break intervals for x-axis e.g. 0 ; 500"
   )
-  testthat::expect_match(app_driver$active_module_element_text("yval-label"), "Value on y-axis", fixed = FALSE)
-  testthat::expect_equal(app_driver$active_module_element_text("font_size-label"), "Table Font Size")
-  testthat::expect_equal(app_driver$active_module_element_text("rel_height_plot-label"), "Relative Height of Plot (%)")
-  testthat::expect_equal(app_driver$active_module_element_text("xlab-label"), "X-axis label")
+  testthat::expect_match(app_driver$namespaces(TRUE)$module("yval-label"), "Value on y-axis", fixed = FALSE)
+  testthat::expect_equal(app_driver$namespaces(TRUE)$module("font_size-label"), "Table Font Size")
+  testthat::expect_equal(app_driver$namespaces(TRUE)$module("rel_height_plot-label"), "Relative Height of Plot (%)")
+  testthat::expect_equal(app_driver$namespaces(TRUE)$module("xlab-label"), "X-axis label")
 
   app_driver$stop()
 })
@@ -400,7 +402,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation e
   app_driver$set_active_module_input("conf_level", -1)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text("myplot-plot-with-settings"),
+    app_driver$namespaces(TRUE)$module("myplot-plot-with-settings"),
     "Confidence level must be between 0 and 1."
   )
   app_driver$stop()

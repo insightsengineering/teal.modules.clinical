@@ -11,43 +11,45 @@ app_driver_tm_t_events_patyear <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_events_patyear(
-      label = "AE Rate Adjusted for Patient-Years At Risk Table",
-      dataname = "ADAETTE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "SEX")),
-        selected = "ARMCD"
-      ),
-      add_total = TRUE,
-      events_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAETTE"]], "n_events"),
-        selected = "n_events",
-        fixed = TRUE
-      ),
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADAETTE"]], "PARAMCD", "PARAM"),
-        selected = "AETTE1"
-      ),
-      conf_level = teal.transform::choices_selected(
-        c(2, 0.95, 0.9, 0.8), 0.95,
-        keep_order = TRUE
-      ),
-      aval_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVAL"),
-        selected = "AVAL", fixed = TRUE
-      ),
-      avalu_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVALU"),
-        selected = "AVALU", fixed = TRUE
-      ),
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      drop_arm_levels = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_events_patyear(
+        label = "AE Rate Adjusted for Patient-Years At Risk Table",
+        dataname = "ADAETTE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "SEX")),
+          selected = "ARMCD"
+        ),
+        add_total = TRUE,
+        events_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAETTE"]], "n_events"),
+          selected = "n_events",
+          fixed = TRUE
+        ),
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADAETTE"]], "PARAMCD", "PARAM"),
+          selected = "AETTE1"
+        ),
+        conf_level = teal.transform::choices_selected(
+          c(2, 0.95, 0.9, 0.8), 0.95,
+          keep_order = TRUE
+        ),
+        aval_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVAL"),
+          selected = "AVAL", fixed = TRUE
+        ),
+        avalu_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVALU"),
+          selected = "AVALU", fixed = TRUE
+        ),
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        drop_arm_levels = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }
@@ -59,7 +61,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Module initializes in teal witho
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("patyear_table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("patyear_table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -135,7 +137,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd throws va
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADAETTE_singleextract-filter1-vals_input .shiny-validation-message"
     ),
     "A Event Type Parameter is required"
@@ -173,7 +175,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws va
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Please select exactly 1 or 2 treatment variables"
   )
   app_driver$stop()

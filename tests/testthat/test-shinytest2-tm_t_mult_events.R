@@ -9,30 +9,32 @@ app_driver_tm_t_mult_events <- function() {
   teal.data::join_keys(data) <- keys
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_mult_events(
-      label = "Concomitant Medications by Medication Class and Preferred Name",
-      dataname = "ADCM",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-      seq_var = teal.transform::choices_selected("CMSEQ", selected = "CMSEQ", fixed = TRUE),
-      hlt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("ATC1", "ATC2", "ATC3", "ATC4")),
-        selected = c("ATC1", "ATC2", "ATC3", "ATC4")
-      ),
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD")),
-        selected = c("CMDECOD")
-      ),
-      add_total = TRUE,
-      event_type = "treatment",
-      title_text = "Concom. Meds",
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      drop_arm_levels = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_mult_events(
+        label = "Concomitant Medications by Medication Class and Preferred Name",
+        dataname = "ADCM",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+        seq_var = teal.transform::choices_selected("CMSEQ", selected = "CMSEQ", fixed = TRUE),
+        hlt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("ATC1", "ATC2", "ATC3", "ATC4")),
+          selected = c("ATC1", "ATC2", "ATC3", "ATC4")
+        ),
+        llt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADCM"]], c("CMDECOD")),
+          selected = c("CMDECOD")
+        ),
+        add_total = TRUE,
+        event_type = "treatment",
+        title_text = "Concom. Meds",
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        drop_arm_levels = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }
@@ -44,7 +46,7 @@ testthat::test_that("e2e - tm_t_mult_events: Module initializes in teal without 
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -104,7 +106,7 @@ testthat::test_that("e2e - tm_t_mult_events: Deselection of arm_var throws valid
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Please select a treatment variable"
   )
   app_driver$stop()
@@ -155,7 +157,7 @@ testthat::test_that("e2e - tm_t_mult_events: Deselection of llt throws validatio
   app_driver$set_active_module_input("llt-dataset_ADCM_singleextract-select", NULL)
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("llt-dataset_ADCM_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("llt-dataset_ADCM_singleextract-select_input .shiny-validation-message"),
     "Please select a \"LOW LEVEL TERM\" variable"
   )
   app_driver$stop()

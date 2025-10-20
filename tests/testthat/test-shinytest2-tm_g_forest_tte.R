@@ -18,55 +18,57 @@ app_driver_tm_g_forest_tte <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_g_forest_tte(
-      label = "Forest Survival (e2e)",
-      dataname = "ADTTE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
-        "ARMCD"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
-        "OS"
-      ),
-      subgroup_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
-        c("BMRKR2", "SEX")
-      ),
-      strata_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
-        "STRATA2"
-      ),
-      aval_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "AVAL"),
-        "AVAL",
-        fixed = TRUE
-      ),
-      cnsr_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "CNSR"),
-        "CNSR",
-        fixed = TRUE
-      ),
-      conf_level = teal.transform::choices_selected(
-        c(0.95, 0.9, 0.8), 0.95,
-        keep_order = TRUE
-      ),
-      time_unit_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADTTE"]], "AVALU"),
-        "AVALU",
-        fixed = TRUE
-      ),
-      fixed_symbol_size = FALSE,
-      plot_height = c(500L, 300L, 2000L),
-      plot_width = c(1000L, 700L, 2000L),
-      rel_width_forest = c(25L, 0L, 100L),
-      font_size = c(12L, 1L, 30L),
-      pre_output = NULL,
-      post_output = NULL,
-      ggplot2_args = teal.widgets::ggplot2_args()
+    teal::init(
+      data = data,
+      modules = tm_g_forest_tte(
+        label = "Forest Survival (e2e)",
+        dataname = "ADTTE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD")),
+          "ARMCD"
+        ),
+        arm_ref_comp = arm_ref_comp,
+        paramcd = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"),
+          "OS"
+        ),
+        subgroup_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], names(data[["ADSL"]])),
+          c("BMRKR2", "SEX")
+        ),
+        strata_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADSL"]], c("STRATA1", "STRATA2")),
+          "STRATA2"
+        ),
+        aval_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "AVAL"),
+          "AVAL",
+          fixed = TRUE
+        ),
+        cnsr_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "CNSR"),
+          "CNSR",
+          fixed = TRUE
+        ),
+        conf_level = teal.transform::choices_selected(
+          c(0.95, 0.9, 0.8), 0.95,
+          keep_order = TRUE
+        ),
+        time_unit_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADTTE"]], "AVALU"),
+          "AVALU",
+          fixed = TRUE
+        ),
+        fixed_symbol_size = FALSE,
+        plot_height = c(500L, 300L, 2000L),
+        plot_width = c(1000L, 700L, 2000L),
+        rel_width_forest = c(25L, 0L, 100L),
+        font_size = c(12L, 1L, 30L),
+        pre_output = NULL,
+        post_output = NULL,
+        ggplot2_args = teal.widgets::ggplot2_args()
+      )
     )
   )
 }
@@ -80,7 +82,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without e
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("myplot-plot_out_main"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("myplot-plot_out_main"))
   )
 
   app_driver$stop()
@@ -168,7 +170,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd filter throws
   app_driver$set_active_module_input(input_id, character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       sprintf(
         "%s_input .shiny-validation-message",
         input_id
@@ -201,7 +203,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd var throws va
   app_driver$set_active_module_input(input_id, character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       sprintf(
         "%s_input .shiny-validation-message",
         input_id
@@ -224,7 +226,7 @@ testthat::test_that(
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_validation_error()
     testthat::expect_match(
-      app_driver$active_module_element_text(
+      app_driver$namespaces(TRUE)$module(
         sprintf("%s_input .shiny-validation-message", input_id)
       ),
       "Please choose a confidence level"

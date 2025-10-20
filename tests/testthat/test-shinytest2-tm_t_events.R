@@ -7,33 +7,35 @@ app_driver_tm_t_events <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_events(
-      label = "Adverse Event Table",
-      dataname = "ADAE",
-      parentname = "ADSL",
-      arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
-      llt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
-        selected = c("AEDECOD")
-      ),
-      hlt = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
-        selected = "AEBODSYS"
-      ),
-      add_total = TRUE,
-      event_type = "adverse event",
-      total_label = default_total_label(),
-      na_level = default_na_str(),
-      sort_criteria = c("freq_desc", "alpha"),
-      sort_freq_col = default_total_label(),
-      prune_freq = 0,
-      prune_diff = 0,
-      drop_arm_levels = TRUE,
-      incl_overall_sum = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_events(
+        label = "Adverse Event Table",
+        dataname = "ADAE",
+        parentname = "ADSL",
+        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD"), "ARM"),
+        llt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AETERM", "AEDECOD")),
+          selected = c("AEDECOD")
+        ),
+        hlt = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADAE"]], c("AEBODSYS", "AESOC")),
+          selected = "AEBODSYS"
+        ),
+        add_total = TRUE,
+        event_type = "adverse event",
+        total_label = default_total_label(),
+        na_level = default_na_str(),
+        sort_criteria = c("freq_desc", "alpha"),
+        sort_freq_col = default_total_label(),
+        prune_freq = 0,
+        prune_diff = 0,
+        drop_arm_levels = TRUE,
+        incl_overall_sum = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }
@@ -45,7 +47,7 @@ testthat::test_that("e2e - tm_t_events: Module initializes in teal without error
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -119,7 +121,7 @@ testthat::test_that("e2e - tm_t_events: Deselection of arm_var throws validation
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Please select 1 or 2 treatment variable values"
   )
   app_driver$stop()

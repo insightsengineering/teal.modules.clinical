@@ -7,58 +7,60 @@ app_driver_tm_t_shift_by_grade <- function() {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_shift_by_grade(
-      label = "Grade Laboratory Abnormality Table",
-      dataname = "ADLB",
-      parentname = "ADSL",
-      visit_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "AVISIT"),
-        selected = "AVISIT", fixed = TRUE
-      ),
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADLB"]], "PARAMCD", "PARAM"),
-        selected = "ALT"
-      ),
-      worst_flag_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(
-          data[["ADLB"]],
-          subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")
+    teal::init(
+      data = data,
+      modules = tm_t_shift_by_grade(
+        label = "Grade Laboratory Abnormality Table",
+        dataname = "ADLB",
+        parentname = "ADSL",
+        visit_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], subset = "AVISIT"),
+          selected = "AVISIT", fixed = TRUE
         ),
-        selected = c("WGRLOVFL")
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADLB"]], "PARAMCD", "PARAM"),
+          selected = "ALT"
+        ),
+        worst_flag_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(
+            data[["ADLB"]],
+            subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")
+          ),
+          selected = c("WGRLOVFL")
+        ),
+        worst_flag_indicator = teal.transform::choices_selected(
+          teal.transform::value_choices(data[["ADLB"]], "WGRLOVFL"),
+          selected = "Y", fixed = TRUE
+        ),
+        anl_toxgrade_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("ATOXGR")),
+          selected = c("ATOXGR"),
+          fixed = TRUE
+        ),
+        base_toxgrade_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("BTOXGR")),
+          selected = c("BTOXGR"),
+          fixed = TRUE
+        ),
+        id_var = teal.transform::choices_selected(
+          teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
+          selected = "USUBJID", fixed = TRUE
+        ),
+        add_total = FALSE,
+        total_label = default_total_label(),
+        drop_arm_levels = TRUE,
+        pre_output = NULL,
+        post_output = NULL,
+        na_level = default_na_str(),
+        code_missing_baseline = FALSE,
+        basic_table_args = teal.widgets::basic_table_args()
       ),
-      worst_flag_indicator = teal.transform::choices_selected(
-        teal.transform::value_choices(data[["ADLB"]], "WGRLOVFL"),
-        selected = "Y", fixed = TRUE
-      ),
-      anl_toxgrade_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("ATOXGR")),
-        selected = c("ATOXGR"),
-        fixed = TRUE
-      ),
-      base_toxgrade_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADLB"]], subset = c("BTOXGR")),
-        selected = c("BTOXGR"),
-        fixed = TRUE
-      ),
-      id_var = teal.transform::choices_selected(
-        teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
-        selected = "USUBJID", fixed = TRUE
-      ),
-      add_total = FALSE,
-      total_label = default_total_label(),
-      drop_arm_levels = TRUE,
-      pre_output = NULL,
-      post_output = NULL,
-      na_level = default_na_str(),
-      code_missing_baseline = FALSE,
-      basic_table_args = teal.widgets::basic_table_args()
-    ),
-    filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
+      filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
+    )
   )
 }
 
@@ -71,7 +73,7 @@ testthat::test_that(
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
     testthat::expect_true(
-      app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+      app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
     )
     app_driver$stop()
   }
@@ -146,7 +148,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of arm_var throws va
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "A treatment variable is required"
   )
   app_driver$stop()
@@ -179,7 +181,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of paramcd throws va
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADLB_singleextract-filter1-vals_input .shiny-validation-message"
     ),
     "A laboratory parameter is required"
@@ -214,7 +216,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "worst_flag_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"
     ),
     "A worst treatment flag is required"
@@ -235,41 +237,43 @@ app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_len
   ADLB <- data[["ADLB"]]
 
   init_teal_app_driver(
-    data = data,
-    modules = modules(
-      tm_t_shift_by_grade(
-        label = "Grade Laboratory Abnormality Table",
-        dataname = "ADLB",
-        arm_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-          selected = "ARM"
-        ),
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::value_choices(ADLB, "PARAMCD", "PARAM"),
-          selected = "ALT"
-        ),
-        worst_flag_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(ADLB, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
-          selected = "WGRLOFL"
-        ),
-        worst_flag_indicator = teal.transform::choices_selected(
-          teal.transform::value_choices(ADLB, "WGRLOVFL"),
-          selected = "Y", fixed = TRUE
-        ),
-        anl_toxgrade_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(ADLB, subset = c("ATOXGR")),
-          selected = c("ATOXGR"),
-          fixed = TRUE
-        ),
-        base_toxgrade_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(ADLB, subset = c("BTOXGR")),
-          selected = c("BTOXGR"),
-          fixed = TRUE
-        ),
-        add_total = FALSE
-      )
-    ),
-    filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
+    teal::init(
+      data = data,
+      modules = modules(
+        tm_t_shift_by_grade(
+          label = "Grade Laboratory Abnormality Table",
+          dataname = "ADLB",
+          arm_var = teal.transform::choices_selected(
+            choices = teal.transform::variable_choices(ADSL, subset = c("ARM", "ARMCD")),
+            selected = "ARM"
+          ),
+          paramcd = teal.transform::choices_selected(
+            choices = teal.transform::value_choices(ADLB, "PARAMCD", "PARAM"),
+            selected = "ALT"
+          ),
+          worst_flag_var = teal.transform::choices_selected(
+            choices = teal.transform::variable_choices(ADLB, subset = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+            selected = "WGRLOFL"
+          ),
+          worst_flag_indicator = teal.transform::choices_selected(
+            teal.transform::value_choices(ADLB, "WGRLOVFL"),
+            selected = "Y", fixed = TRUE
+          ),
+          anl_toxgrade_var = teal.transform::choices_selected(
+            choices = teal.transform::variable_choices(ADLB, subset = c("ATOXGR")),
+            selected = c("ATOXGR"),
+            fixed = TRUE
+          ),
+          base_toxgrade_var = teal.transform::choices_selected(
+            choices = teal.transform::variable_choices(ADLB, subset = c("BTOXGR")),
+            selected = c("BTOXGR"),
+            fixed = TRUE
+          ),
+          add_total = FALSE
+        )
+      ),
+      filter = teal::teal_slices(teal_slice("ADSL", "SAFFL", selected = "Y"))
+    )
   )
 }
 

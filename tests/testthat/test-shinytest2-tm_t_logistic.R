@@ -20,32 +20,34 @@ app_driver_tm_t_logistic <- function() {
   )
 
   init_teal_app_driver(
-    data = data,
-    modules = tm_t_logistic(
-      label = "Logistic Regression",
-      parentname = "ADSL",
-      dataname = "ADRS",
-      arm_var = teal.transform::choices_selected(
-        choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      arm_ref_comp = arm_ref_comp,
-      paramcd = teal.transform::choices_selected(
-        choices = teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
-        selected = "BESRSPI"
-      ),
-      cov_var = teal.transform::choices_selected(
-        choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
-        selected = "SEX"
-      ),
-      conf_level = teal.transform::choices_selected(c(2, 0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-      avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(
-        data[["ADRS"]],
-        "AVALC"
-      ), "AVALC", fixed = TRUE),
-      pre_output = NULL,
-      post_output = NULL,
-      basic_table_args = teal.widgets::basic_table_args()
+    teal::init(
+      data = data,
+      modules = tm_t_logistic(
+        label = "Logistic Regression",
+        parentname = "ADSL",
+        dataname = "ADRS",
+        arm_var = teal.transform::choices_selected(
+          choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
+        arm_ref_comp = arm_ref_comp,
+        paramcd = teal.transform::choices_selected(
+          choices = teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
+          selected = "BESRSPI"
+        ),
+        cov_var = teal.transform::choices_selected(
+          choices = c("SEX", "AGE", "BMRKR1", "BMRKR2"),
+          selected = "SEX"
+        ),
+        conf_level = teal.transform::choices_selected(c(2, 0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+        avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(
+          data[["ADRS"]],
+          "AVALC"
+        ), "AVALC", fixed = TRUE),
+        pre_output = NULL,
+        post_output = NULL,
+        basic_table_args = teal.widgets::basic_table_args()
+      )
     )
   )
 }
@@ -57,7 +59,7 @@ testthat::test_that("e2e - tm_t_logistic: Module initializes in teal without err
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$active_module_element("table-table-with-settings"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   )
   app_driver$stop()
 })
@@ -133,7 +135,7 @@ testthat::test_that("e2e - tm_t_logistic: Deselection of paramcd throws validati
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text(
+    app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADRS_singleextract-filter1-vals_input .shiny-validation-message"
     ),
     "`Select Endpoint` field is empty"
@@ -168,7 +170,7 @@ testthat::test_that("e2e - tm_t_logistic: Deselection of arm_var throws validati
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -201,7 +203,7 @@ testthat::test_that("e2e - tm_t_logistic: Deselection of cov_var throws validati
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$active_module_element_text("cov_var-dataset_ADRS_singleextract-select_input .shiny-validation-message"),
+    app_driver$namespaces(TRUE)$module("cov_var-dataset_ADRS_singleextract-select_input .shiny-validation-message"),
     "`Covariates` field is empty"
   )
   app_driver$stop()
