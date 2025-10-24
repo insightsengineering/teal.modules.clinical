@@ -11,20 +11,21 @@
 #'
 #' @keywords internal
 control_tte <- function(
-    surv_time = list(
-      conf_level = 0.95,
-      conf_type = "plain",
-      quantiles = c(0.25, 0.75)
-    ),
-    coxph = list(
-      pval_method = "log-rank",
-      ties = "efron",
-      conf_level = 0.95
-    ),
-    surv_timepoint = tern::control_surv_timepoint(
-      conf_level = 0.95,
-      conf_type = c("plain", "none", "log", "log-log")
-    )) {
+  surv_time = list(
+    conf_level = 0.95,
+    conf_type = "plain",
+    quantiles = c(0.25, 0.75)
+  ),
+  coxph = list(
+    pval_method = "log-rank",
+    ties = "efron",
+    conf_level = 0.95
+  ),
+  surv_timepoint = tern::control_surv_timepoint(
+    conf_level = 0.95,
+    conf_type = c("plain", "none", "log", "log-log")
+  )
+) {
   list(
     surv_time = do.call("control_surv_time", surv_time, envir = getNamespace("tern")),
     coxph = do.call("control_coxph", coxph, envir = getNamespace("tern")),
