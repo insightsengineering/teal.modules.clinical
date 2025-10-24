@@ -636,7 +636,6 @@ ui_t_events_byterm <- function(id, ...) {
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
