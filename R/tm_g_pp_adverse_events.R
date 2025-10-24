@@ -428,14 +428,16 @@ ui_g_adverse_events <- function(id, ...) {
         )
       ),
       ui_decorate_teal_data(ns("d_plot"), decorators = select_decorators(ui_args$decorators, "plot")),
-      bslib::accordion_panel(
-        title = "Plot settings",
+      bslib::accordion(
         open = TRUE,
-        teal.widgets::optionalSliderInputValMinMax(
-          ns("font_size"),
-          "Font Size",
-          ui_args$font_size,
-          ticks = FALSE, step = 1
+        bslib::accordion_panel(
+          title = "Plot settings",
+          teal.widgets::optionalSliderInputValMinMax(
+            ns("font_size"),
+            "Font Size",
+            ui_args$font_size,
+            ticks = FALSE, step = 1
+          )
         )
       )
     ),
