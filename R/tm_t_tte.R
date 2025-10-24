@@ -714,43 +714,45 @@ ui_t_tte <- function(id, ...) {
           )
         )
       ),
-      bslib::accordion_panel(
-        "Additional table settings",
+      bslib::accordion(
         open = TRUE,
-        teal.widgets::optionalSelectInput(
-          inputId = ns("conf_level_survfit"),
-          label = HTML(
-            paste(
-              "Confidence Level for ",
-              tags$span(class = "text-primary", "Survfit"),
-              " (KM Median Estimate & Event Free Rate)",
-              sep = ""
-            )
+        bslib::accordion_panel(
+          "Additional table settings",
+          teal.widgets::optionalSelectInput(
+            inputId = ns("conf_level_survfit"),
+            label = HTML(
+              paste(
+                "Confidence Level for ",
+                tags$span(class = "text-primary", "Survfit"),
+                " (KM Median Estimate & Event Free Rate)",
+                sep = ""
+              )
+            ),
+            a$conf_level_survfit$choices,
+            a$conf_level_survfit$selected,
+            multiple = FALSE,
+            fixed = a$conf_level_survfit$fixed
           ),
-          a$conf_level_survfit$choices,
-          a$conf_level_survfit$selected,
-          multiple = FALSE,
-          fixed = a$conf_level_survfit$fixed
-        ),
-        radioButtons(
-          ns("conf_type_survfit"),
-          "Confidence Level Type for Survfit",
-          choices = c("plain", "log", "log-log"),
-          selected = "plain"
-        ),
-        sliderInput(
-          inputId = ns("probs_survfit"),
-          label = "KM Estimate Percentiles",
-          min = 0.01,
-          max = 0.99,
-          value = c(0.25, 0.75),
-          width = "100%"
-        ),
-        teal.transform::data_extract_ui(
-          id = ns("time_unit_var"),
-          label = "Time Unit Variable",
-          data_extract_spec = a$time_unit_var,
-          is_single_dataset = is_single_dataset_value
+          radioButtons(
+            ns("conf_type_survfit"),
+            "Confidence Level Type for Survfit",
+            choices = c("plain", "log", "log-log"),
+            selected = "plain"
+          ),
+          sliderInput(
+            inputId = ns("probs_survfit"),
+            label = "KM Estimate Percentiles",
+            min = 0.01,
+            max = 0.99,
+            value = c(0.25, 0.75),
+            width = "100%"
+          ),
+          teal.transform::data_extract_ui(
+            id = ns("time_unit_var"),
+            label = "Time Unit Variable",
+            data_extract_spec = a$time_unit_var,
+            is_single_dataset = is_single_dataset_value
+          )
         )
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
