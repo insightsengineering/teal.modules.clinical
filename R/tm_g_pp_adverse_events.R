@@ -631,7 +631,7 @@ srv_g_adverse_events <- function(id,
     output$table <- DT::renderDataTable(table_r()[["html"]])
 
     decorated_all_q <- reactive(
-      c(table_q(), decorated_all_q_plot(), verbose = FALSE)
+      suppressWarnings(c(table_q(), decorated_all_q_plot()))
     )
 
     set_chunk_dims(pws, decorated_all_q)
