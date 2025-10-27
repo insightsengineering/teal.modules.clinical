@@ -631,7 +631,7 @@ srv_g_adverse_events <- function(id,
     output$table <- DT::renderDataTable(table_r()[["html"]])
 
     decorated_all_q <- reactive(
-      suppressWarnings(c(table_q(), decorated_all_q_plot()))
+      suppressWarnings(c(table_q(), decorated_all_q_plot())) # warning becuase of https://github.com/insightsengineering/teal.modules.clinical/issues/1427
     )
 
     set_chunk_dims(pws, decorated_all_q)
