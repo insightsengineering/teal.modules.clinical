@@ -633,7 +633,7 @@ srv_g_adverse_events <- function(id,
     output$table <- DT::renderDataTable(table_r()[["html"]])
 
     decorated_all_q <- reactive(
-# warning because of https://github.com/insightsengineering/teal.modules.clinical/issues/1427 # nolint: line_length_linter.
+      suppressWarnings(c(table_q(), decorated_all_q_plot())) # warning because of https://github.com/insightsengineering/teal.modules.clinical/issues/1427 # nolint: line_length_linter.
     )
 
     set_chunk_dims(pws, decorated_all_q)
