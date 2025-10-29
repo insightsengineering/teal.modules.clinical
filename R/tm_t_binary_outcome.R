@@ -721,44 +721,46 @@ ui_t_binary_outcome <- function(id, ...) {
         checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      bslib::accordion_panel(
-        "Additional table settings",
+      bslib::accordion(
         open = TRUE,
-        teal.widgets::optionalSelectInput(
-          inputId = ns("prop_ci_method"),
-          label = "Method for Proportion CI",
-          choices = c(
-            "Wald, without correction" = "wald",
-            "Wald, with correction" = "waldcc",
-            "Clopper-Pearson" = "clopper-pearson",
-            "Wilson" = "wilson",
-            "Wilson, with correction" = "wilsonc",
-            "Jeffreys" = "jeffreys",
-            "Agresti-Coull" = "agresti-coull"
+        bslib::accordion_panel(
+          "Additional table settings",
+          teal.widgets::optionalSelectInput(
+            inputId = ns("prop_ci_method"),
+            label = "Method for Proportion CI",
+            choices = c(
+              "Wald, without correction" = "wald",
+              "Wald, with correction" = "waldcc",
+              "Clopper-Pearson" = "clopper-pearson",
+              "Wilson" = "wilson",
+              "Wilson, with correction" = "wilsonc",
+              "Jeffreys" = "jeffreys",
+              "Agresti-Coull" = "agresti-coull"
+            ),
+            selected = a$control$global$method,
+            multiple = FALSE,
+            fixed = FALSE
           ),
-          selected = a$control$global$method,
-          multiple = FALSE,
-          fixed = FALSE
+          teal.widgets::optionalSelectInput(
+            inputId = ns("conf_level"),
+            label = "Confidence Level",
+            a$conf_level$choices,
+            a$conf_level$selected,
+            multiple = FALSE,
+            fixed = a$conf_level$fixed
+          ),
+          bslib::input_switch(
+            id = ns("show_rsp_cat"),
+            label = "Show All Response Categories",
+            value = ifelse(a$rsp_table, TRUE, FALSE)
+          )
         ),
-        teal.widgets::optionalSelectInput(
-          inputId = ns("conf_level"),
-          label = "Confidence Level",
-          a$conf_level$choices,
-          a$conf_level$selected,
-          multiple = FALSE,
-          fixed = a$conf_level$fixed
-        ),
-        bslib::input_switch(
-          id = ns("show_rsp_cat"),
-          label = "Show All Response Categories",
-          value = ifelse(a$rsp_table, TRUE, FALSE)
+        teal.transform::data_extract_ui(
+          id = ns("aval_var"),
+          label = "Analysis Variable",
+          data_extract_spec = a$aval_var,
+          is_single_dataset = is_single_dataset_value
         )
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
       )
     ),
     pre_output = a$pre_output,

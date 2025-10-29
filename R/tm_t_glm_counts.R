@@ -211,17 +211,21 @@ ui_t_glm_counts <- function(id, ...) {
     )
   )
 
-  table_settings <- bslib::accordion_panel(
-    "Additional table settings",
-    teal.widgets::optionalSelectInput(
-      inputId = ns("conf_level"),
-      label = "Confidence Level",
-      choices = c(0.8, 0.9, 0.95),
-      selected = 0.95,
-      multiple = FALSE,
-      fixed = FALSE
-    ),
+  table_settings <- shiny::tagList(
     ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
+    bslib::accordion(
+      bslib::accordion_panel(
+        "Additional table settings",
+        teal.widgets::optionalSelectInput(
+          inputId = ns("conf_level"),
+          label = "Confidence Level",
+          choices = c(0.8, 0.9, 0.95),
+          selected = 0.95,
+          multiple = FALSE,
+          fixed = FALSE
+        ),
+      )
+    )
   )
 
   teal.widgets::standard_layout(
@@ -269,7 +273,7 @@ ui_t_glm_counts <- function(id, ...) {
         "Rate method",
         choices = a$rate_mean_method
       ),
-      table_settings,
+      table_settings
     ),
     pre_output = a$pre_output,
     post_output = a$post_output
