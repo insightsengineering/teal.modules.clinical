@@ -51,19 +51,27 @@ template_summary <- function(dataname,
   # Data processing
   data_list <- list()
 
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl <- df %>%
-        tern::df_explicit_na(omit_columns = c(arm_vars, sum_vars), na_level = na_str),
-      env = list(
-        df = as.name(dataname),
-        sum_vars = sum_vars,
-        arm_vars = arm_vars,
-        na_str = na_level
+  if (!na.rm) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = anl <- tern::df_explicit_na(df, omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_level),
+        env = list(
+          df = as.name(dataname),
+          sum_vars = sum_vars,
+          na_level = na_level
+        )
       )
     )
-  )
+  } else {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = anl <- df,
+        env = list(df = as.name(dataname))
+      )
+    )
+  }
 
   prepare_arm_levels_call <- lapply(arm_var, function(x) {
     prepare_arm_levels(
@@ -556,8 +564,8 @@ srv_summary <- function(id,
       var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
 
       arm_var_labels <- NULL
+      arm_vars <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       if (show_arm_var_labels) {
-        arm_vars <- as.vector(merged$anl_input_r()$columns_source$arm_var)
         arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
       }
 

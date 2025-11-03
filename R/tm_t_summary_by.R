@@ -56,19 +56,34 @@ template_summary_by <- function(parentname,
 
   # Data processing
   data_list <- list()
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl <- tern::df_explicit_na(df, omit_columns = c(by_vars, sum_vars), na_level = na_str),
-      env = list(
-        df = as.name(dataname),
-        by_vars = by_vars,
-        sum_vars = sum_vars,
-        na_str = na_level
+  if (!na.rm) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = anl <- tern::df_explicit_na(df,
+          omit_columns = setdiff(
+            names(df),
+            c(by_vars, sum_vars)
+          ),
+          na_level = na_str
+        ),
+        env = list(
+          df = as.name(dataname),
+          by_vars = by_vars,
+          sum_vars = sum_vars,
+          na_str = na_level
+        )
       )
     )
-  )
+  } else {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = anl <- df,
+        env = list(df = as.name(dataname))
+      )
+    )
+  }
 
   prepare_arm_levels_call <- lapply(arm_var, function(x) {
     prepare_arm_levels(
@@ -79,14 +94,15 @@ template_summary_by <- function(parentname,
     )
   })
   data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = parentname <- tern::df_explicit_na(parentname, omit_columns = c(sum_vars, arm_var), na_level = na_str),
-      env = list(parentname = as.name(parentname), na_str = na_level, arm_var = arm_var, sum_vars = sum_vars)
+  if (!na.rm) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = parentname <- tern::df_explicit_na(parentname, omit_columns = c(sum_vars, arm_var), na_level = na_level),
+        env = list(parentname = as.name(parentname), na_level = na_level, arm_var = arm_var, sum_vars = sum_vars)
+      )
     )
-  )
+  }
 
   y$data <- bracket_expr(data_list)
 
