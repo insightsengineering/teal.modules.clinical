@@ -98,8 +98,8 @@ template_summary_by <- function(parentname,
     data_list <- add_expr(
       data_list,
       substitute(
-        expr = parentname <- tern::df_explicit_na(parentname, omit_columns = c(sum_vars, arm_var), na_level = na_level),
-        env = list(parentname = as.name(parentname), na_level = na_level, arm_var = arm_var, sum_vars = sum_vars)
+        expr = parentname <- tern::df_explicit_na(parentname, na_level = na_level),
+        env = list(parentname = as.name(parentname), na_level = na_level)
       )
     )
   }
