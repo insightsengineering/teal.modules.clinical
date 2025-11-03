@@ -55,10 +55,11 @@ template_summary <- function(dataname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        tern::df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_str),
+        tern::df_explicit_na(omit_columns = c(arm_vars, sum_vars), na_level = na_str),
       env = list(
         df = as.name(dataname),
         sum_vars = sum_vars,
+        arm_vars = arm_vars,
         na_str = na_level
       )
     )
@@ -73,18 +74,6 @@ template_summary <- function(dataname,
     )
   })
   data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
-      env = list(
-        parentname = as.name(parentname),
-        na_str = na_level
-      )
-    )
-  )
-
   y$data <- bracket_expr(data_list)
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
@@ -563,12 +552,12 @@ srv_summary <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
+      summarize_vars <- as.vector(merged$anl_input_r()$columns_source$summarize_vars)
       var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
 
       arm_var_labels <- NULL
       if (show_arm_var_labels) {
-        arm_vars <- merged$anl_input_r()$columns_source$arm_var
+        arm_vars <- as.vector(merged$anl_input_r()$columns_source$arm_var)
         arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
       }
 

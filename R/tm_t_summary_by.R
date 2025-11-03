@@ -60,8 +60,7 @@ template_summary_by <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = anl <- df %>%
-        tern::df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_str),
+      expr = anl <- tern::df_explicit_na(df, omit_columns = c(by_vars, sum_vars), na_level = na_str),
       env = list(
         df = as.name(dataname),
         by_vars = by_vars,
@@ -84,15 +83,14 @@ template_summary_by <- function(parentname,
   data_list <- add_expr(
     data_list,
     substitute(
-      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
-      env = list(parentname = as.name(parentname), na_str = na_level)
+      expr = parentname <- tern::df_explicit_na(parentname, omit_columns = c(sum_vars, arm_var), na_level = na_str),
+      env = list(parentname = as.name(parentname), na_str = na_level, arm_var = arm_var, sum_vars = sum_vars)
     )
   )
 
   y$data <- bracket_expr(data_list)
 
   # Build layout
-  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
   if (row_groups) {
     y$layout_cfun <- quote(
       cfun_unique <- function(x, labelstr = "", .N_col) { # nolint: object_name.
@@ -172,7 +170,7 @@ template_summary_by <- function(parentname,
         rtables::split_rows_by(
           by_var,
           split_label = split_label,
-          split_fun = split_fun,
+          split_fun = rtables::drop_split_levels,
           label_pos = "topleft"
         ),
         env = list(
