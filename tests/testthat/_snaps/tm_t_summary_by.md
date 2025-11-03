@@ -5,7 +5,7 @@
     Output
       $data
       {
-          anl <- adlb %>% tern::df_explicit_na(omit_columns = setdiff(names(adlb), 
+          anl <- tern::df_explicit_na(adlb, omit_columns = setdiff(names(adlb), 
               c("AVISIT", "AVAL")), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -14,18 +14,15 @@
           adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
-      $layout_prep
-      split_fun <- rtables::drop_split_levels
-      
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL by AVISIT") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% rtables::split_rows_by("AVISIT", 
           split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
-          split_fun = split_fun, label_pos = "topleft") %>% tern::analyze_vars(vars = "AVAL", 
-          na.rm = FALSE, na_str = "<Missing>", denom = "N_col", .stats = c("n", 
-              "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
-              "range", "count_fraction"))
+          split_fun = rtables::drop_split_levels, label_pos = "topleft") %>% 
+          tern::analyze_vars(vars = "AVAL", na.rm = FALSE, na_str = "<Missing>", 
+              denom = "N_col", .stats = c("n", "mean_sd", "mean_ci", 
+                  "median", "median_ci", "quantiles", "range", "count_fraction"))
       
       $table
       {
@@ -40,7 +37,7 @@
     Output
       $data
       {
-          anl <- adlb %>% tern::df_explicit_na(omit_columns = setdiff(names(adlb), 
+          anl <- tern::df_explicit_na(adlb, omit_columns = setdiff(names(adlb), 
               c("AVISIT", c("AVAL", "CHG"))), na_level = "<Missing>")
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(adsl[["ARM"]])
@@ -48,17 +45,14 @@
           adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
-      $layout_prep
-      split_fun <- rtables::drop_split_levels
-      
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL, CHG by AVISIT") %>% 
           rtables::split_cols_by("ARM") %>% rtables::split_rows_by("AVISIT", 
           split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
-          split_fun = split_fun, label_pos = "topleft") %>% split_cols_by_multivar(vars = c("AVAL", 
-          "CHG")) %>% summarize_colvars(vars = c("AVAL", "CHG"), na.rm = FALSE, 
-          denom = "N_col", .stats = c("n", "mean_sd", "mean_ci", "median", 
-              "median_ci", "quantiles", "range", "count_fraction"), 
+          split_fun = rtables::drop_split_levels, label_pos = "topleft") %>% 
+          split_cols_by_multivar(vars = c("AVAL", "CHG")) %>% summarize_colvars(vars = c("AVAL", 
+          "CHG"), na.rm = FALSE, denom = "N_col", .stats = c("n", "mean_sd", 
+          "mean_ci", "median", "median_ci", "quantiles", "range", "count_fraction"), 
           na_str = "<Missing>")
       
       $table
@@ -74,7 +68,7 @@
     Output
       $data
       {
-          anl <- adsl %>% tern::df_explicit_na(omit_columns = setdiff(names(adsl), 
+          anl <- tern::df_explicit_na(adsl, omit_columns = setdiff(names(adsl), 
               c(c("SEX", "COUNTRY"), "AVAL")), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -82,9 +76,6 @@
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
           adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
-      
-      $layout_prep
-      split_fun <- rtables::drop_split_levels
       
       $layout_cfun
       cfun_unique <- function(x, labelstr = "", .N_col) {
@@ -96,12 +87,13 @@
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL by SEX, COUNTRY") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::split_rows_by("SEX", split_label = teal.data::col_labels(adsl, 
-              fill = FALSE)[["SEX"]], split_fun = split_fun, label_pos = "topleft") %>% 
-          rtables::summarize_row_groups(var = "USUBJID", cfun = cfun_unique, 
-              na_str = "<Missing>") %>% rtables::split_rows_by("COUNTRY", 
+              fill = FALSE)[["SEX"]], split_fun = rtables::drop_split_levels, 
+              label_pos = "topleft") %>% rtables::summarize_row_groups(var = "USUBJID", 
+          cfun = cfun_unique, na_str = "<Missing>") %>% rtables::split_rows_by("COUNTRY", 
           split_label = teal.data::col_labels(adsl, fill = FALSE)[["COUNTRY"]], 
-          split_fun = split_fun, label_pos = "topleft") %>% rtables::summarize_row_groups(var = "USUBJID", 
-          cfun = cfun_unique, na_str = "<Missing>")
+          split_fun = rtables::drop_split_levels, label_pos = "topleft") %>% 
+          rtables::summarize_row_groups(var = "USUBJID", cfun = cfun_unique, 
+              na_str = "<Missing>")
       
       $table
       {
@@ -116,7 +108,7 @@
     Output
       $data
       {
-          anl <- adlb %>% tern::df_explicit_na(omit_columns = setdiff(names(adlb), 
+          anl <- tern::df_explicit_na(adlb, omit_columns = setdiff(names(adlb), 
               c("AVISIT", "AVAL")), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -125,17 +117,14 @@
           adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
-      $layout_prep
-      split_fun <- rtables::drop_split_levels
-      
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL by AVISIT") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% rtables::split_rows_by("AVISIT", 
           split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
-          split_fun = split_fun, label_pos = "topleft") %>% tern::analyze_vars(vars = "AVAL", 
-          na.rm = FALSE, na_str = "<Missing>", denom = "N_col", .stats = c("n", 
-              "count_fraction"))
+          split_fun = rtables::drop_split_levels, label_pos = "topleft") %>% 
+          tern::analyze_vars(vars = "AVAL", na.rm = FALSE, na_str = "<Missing>", 
+              denom = "N_col", .stats = c("n", "count_fraction"))
       
       $table
       {
@@ -150,7 +139,7 @@
     Output
       $data
       {
-          anl <- adlb %>% tern::df_explicit_na(omit_columns = setdiff(names(adlb), 
+          anl <- tern::df_explicit_na(adlb, omit_columns = setdiff(names(adlb), 
               c("AVISIT", "AVAL")), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -159,18 +148,15 @@
           adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
-      $layout_prep
-      split_fun <- rtables::drop_split_levels
-      
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL by AVISIT") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% rtables::split_rows_by("AVISIT", 
           split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
-          split_fun = split_fun, label_pos = "topleft") %>% tern::analyze_vars(vars = "AVAL", 
-          na.rm = FALSE, na_str = "<Missing>", denom = "N_col", .stats = c("n", 
-              "mean_sd", "mean_ci", "median", "median_ci", "quantiles", 
-              "range", "count_fraction"))
+          split_fun = rtables::drop_split_levels, label_pos = "topleft") %>% 
+          tern::analyze_vars(vars = "AVAL", na.rm = FALSE, na_str = "<Missing>", 
+              denom = "N_col", .stats = c("n", "mean_sd", "mean_ci", 
+                  "median", "median_ci", "quantiles", "range", "count_fraction"))
       
       $table
       {

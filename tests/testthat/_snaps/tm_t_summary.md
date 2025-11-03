@@ -5,13 +5,12 @@
     Output
       $data
       {
-          anl <- adrs %>% tern::df_explicit_na(omit_columns = setdiff(names(adrs), 
+          anl <- tern::df_explicit_na(adrs, omit_columns = setdiff(names(adrs), 
               c(c("RACE", "COUNTRY", "AGE"))), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
-          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -35,12 +34,10 @@
     Output
       $data
       {
-          anl <- adrs %>% tern::df_explicit_na(omit_columns = setdiff(names(adrs), 
-              c("RACE")), na_level = "<Missing>")
+          anl <- adrs
           adsl <- adsl %>% dplyr::mutate(ARMCD = droplevels(ARMCD))
           arm_levels <- levels(adsl[["ARMCD"]])
           anl <- anl %>% dplyr::mutate(ARMCD = factor(ARMCD, levels = arm_levels))
-          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -65,7 +62,7 @@
     Output
       $data
       {
-          anl <- adrs %>% tern::df_explicit_na(omit_columns = setdiff(names(adrs), 
+          anl <- tern::df_explicit_na(adrs, omit_columns = setdiff(names(adrs), 
               c(c("RACE", "COUNTRY", "AGE"))), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -75,7 +72,6 @@
           arm_levels <- levels(anl[["STRATA1"]])
           adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
-          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -100,7 +96,7 @@
     Output
       $data
       {
-          anl <- adrs %>% tern::df_explicit_na(omit_columns = setdiff(names(adrs), 
+          anl <- tern::df_explicit_na(adrs, omit_columns = setdiff(names(adrs), 
               c(c("RACE", "COUNTRY", "AGE"))), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -110,7 +106,6 @@
           arm_levels <- levels(anl[["STRATA1"]])
           adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
-          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -136,7 +131,7 @@
     Output
       $data
       {
-          anl <- adrs %>% tern::df_explicit_na(omit_columns = setdiff(names(adrs), 
+          anl <- tern::df_explicit_na(adrs, omit_columns = setdiff(names(adrs), 
               c(c("RACE", "COUNTRY", "AGE"))), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -146,7 +141,6 @@
           arm_levels <- levels(anl[["STRATA1"]])
           adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
-          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -170,7 +164,7 @@
     Output
       $data
       {
-          anl <- adrs %>% tern::df_explicit_na(omit_columns = setdiff(names(adrs), 
+          anl <- tern::df_explicit_na(adrs, omit_columns = setdiff(names(adrs), 
               c(c("RACE", "COUNTRY", "AGE"))), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -180,7 +174,6 @@
           arm_levels <- levels(anl[["SEX"]])
           adsl <- adsl %>% dplyr::filter(SEX %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(SEX = droplevels(SEX))
-          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
