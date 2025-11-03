@@ -394,12 +394,14 @@ ui_g_vitals <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "plot")),
-      bslib::accordion_panel(
-        title = "Plot settings",
+      bslib::accordion(
         open = TRUE,
-        teal.widgets::optionalSliderInputValMinMax(
-          ns("font_size"), "Font Size", ui_args$font_size,
-          ticks = FALSE, step = 1
+        bslib::accordion_panel(
+          title = "Plot settings",
+          teal.widgets::optionalSliderInputValMinMax(
+            ns("font_size"), "Font Size", ui_args$font_size,
+            ticks = FALSE, step = 1
+          )
         )
       )
     ),

@@ -636,42 +636,44 @@ ui_t_events_byterm <- function(id, ...) {
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
-      bslib::accordion_panel(
-        "Additional table settings",
+      bslib::accordion(
         open = TRUE,
-        checkboxInput(
-          ns("drop_arm_levels"),
-          label = "Drop columns not in filtered analysis dataset",
-          value = a$drop_arm_levels
-        ),
-        selectInput(
-          inputId = ns("sort_criteria"),
-          label = "Sort Criteria",
-          choices = c(
-            "Decreasing frequency" = "freq_desc",
-            "Alphabetically" = "alpha"
+        bslib::accordion_panel(
+          "Additional table settings",
+          checkboxInput(
+            ns("drop_arm_levels"),
+            label = "Drop columns not in filtered analysis dataset",
+            value = a$drop_arm_levels
           ),
-          selected = a$sort_criteria,
-          multiple = FALSE
-        ),
-        helpText(tags$strong("Pruning Options:")),
-        numericInput(
-          inputId = ns("prune_freq"),
-          label = "Minimum Incidence Rate(%) in any of the treatment groups",
-          value = a$prune_freq,
-          min = 0,
-          max = 100,
-          step = 1,
-          width = "100%"
-        ),
-        numericInput(
-          inputId = ns("prune_diff"),
-          label = "Minimum Difference Rate(%) between any of the treatment groups",
-          value = a$prune_diff,
-          min = 0,
-          max = 100,
-          step = 1,
-          width = "100%"
+          selectInput(
+            inputId = ns("sort_criteria"),
+            label = "Sort Criteria",
+            choices = c(
+              "Decreasing frequency" = "freq_desc",
+              "Alphabetically" = "alpha"
+            ),
+            selected = a$sort_criteria,
+            multiple = FALSE
+          ),
+          helpText(tags$strong("Pruning Options:")),
+          numericInput(
+            inputId = ns("prune_freq"),
+            label = "Minimum Incidence Rate(%) in any of the treatment groups",
+            value = a$prune_freq,
+            min = 0,
+            max = 100,
+            step = 1,
+            width = "100%"
+          ),
+          numericInput(
+            inputId = ns("prune_diff"),
+            label = "Minimum Difference Rate(%) between any of the treatment groups",
+            value = a$prune_diff,
+            min = 0,
+            max = 100,
+            step = 1,
+            width = "100%"
+          )
         )
       )
     ),

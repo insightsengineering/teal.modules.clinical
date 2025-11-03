@@ -428,14 +428,16 @@ ui_g_adverse_events <- function(id, ...) {
         )
       ),
       ui_decorate_teal_data(ns("d_plot"), decorators = select_decorators(ui_args$decorators, "plot")),
-      bslib::accordion_panel(
-        title = "Plot settings",
+      bslib::accordion(
         open = TRUE,
-        teal.widgets::optionalSliderInputValMinMax(
-          ns("font_size"),
-          "Font Size",
-          ui_args$font_size,
-          ticks = FALSE, step = 1
+        bslib::accordion_panel(
+          title = "Plot settings",
+          teal.widgets::optionalSliderInputValMinMax(
+            ns("font_size"),
+            "Font Size",
+            ui_args$font_size,
+            ticks = FALSE, step = 1
+          )
         )
       )
     ),
@@ -631,7 +633,7 @@ srv_g_adverse_events <- function(id,
     output$table <- DT::renderDataTable(table_r()[["html"]])
 
     decorated_all_q <- reactive(
-# warning because of https://github.com/insightsengineering/teal.modules.clinical/issues/1427 # nolint: line_length_linter.
+      suppressWarnings(c(table_q(), decorated_all_q_plot())) # warning because of https://github.com/insightsengineering/teal.modules.clinical/issues/1427 # nolint: line_length_linter.
     )
 
     set_chunk_dims(pws, decorated_all_q)
