@@ -806,7 +806,6 @@ srv_ancova <- function(id,
     )
 
 
-
     output$helptext_ui <- renderUI({
       if (length(selector_list()$arm_var()$select) != 0) {
         helpText("Multiple reference groups are automatically combined into a single group.")
