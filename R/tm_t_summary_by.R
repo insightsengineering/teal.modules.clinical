@@ -124,9 +124,11 @@ template_summary_by <- function(parentname,
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(show_colcounts = TRUE,
-                                                    title = table_title,
-                                                    main_footer = "N represents the number of unique subject IDs such that the variable has NA values.")
+      module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
+        title = table_title,
+        main_footer = "N represents the number of unique subject IDs such that the variable has NA values."
+      )
     )
   )
 
