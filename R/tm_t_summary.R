@@ -147,7 +147,7 @@ template_summary <- function(dataname,
           vars = sum_vars,
           var_labels = sum_var_labels,
           show_labels = "visible",
-          na.rm = na.rm,
+          na_rm = na.rm,
           na_str = na_level,
           denom = denom,
           .stats = stats
