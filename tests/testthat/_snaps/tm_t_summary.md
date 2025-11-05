@@ -14,7 +14,7 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           tern::analyze_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
               na.rm = FALSE, na_str = "<Missing>", denom = "N_col", 
@@ -41,10 +41,10 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
           rtables::split_cols_by("ARMCD") %>% rtables::add_overall_col("All Patients") %>% 
           tern::analyze_vars(vars = "RACE", var_labels = c(RACE = "Race"), 
-              show_labels = "visible", na.rm = TRUE, na_str = "<Missing>", 
+              show_labels = "visible", na_rm = TRUE, na_str = "<Missing>", 
               denom = "N_col", .stats = c("n", "mean_sd", "mean_ci", 
                   "median", "median_ci", "quantiles", "range", "geom_mean", 
                   "count"))
@@ -75,7 +75,7 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::split_cols_by("STRATA1", split_fun = rtables::drop_split_levels) %>% 
           tern::analyze_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
@@ -109,7 +109,7 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::split_cols_by("STRATA1", split_fun = rtables::drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% tern::analyze_vars(vars = c("RACE", 
@@ -144,7 +144,7 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::split_cols_by("STRATA1", split_fun = rtables::drop_split_levels) %>% 
           tern::analyze_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
@@ -177,7 +177,7 @@
       }
       
       $layout
-      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "n represents the number of unique subject IDs such that the variable has non-NA values.") %>% 
+      lyt <- rtables::basic_table(show_colcounts = TRUE, main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::split_cols_by("SEX", split_fun = rtables::drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% tern::analyze_vars(vars = c("RACE", 
