@@ -89,7 +89,10 @@ template_summary <- function(dataname,
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
         show_colcounts = TRUE,
-        main_footer = sprintf("N represents the number of unique subject IDs such that the variable has NA (%s) values.", na_level)
+        main_footer = sprintf(
+          "N represents the number of unique subject IDs such that the variable has NA (%s) values.",
+          na_level
+        )
       )
     )
   )
