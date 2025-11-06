@@ -16,7 +16,7 @@
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL by AVISIT", 
-          main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
+          main_footer = "N represents the number of unique subject IDs such that the variable has NA (<Missing>) values.") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% rtables::split_rows_by("AVISIT", 
           split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
@@ -48,7 +48,7 @@
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL, CHG by AVISIT", 
-          main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
+          main_footer = "N represents the number of unique subject IDs such that the variable has NA (<Missing>) values.") %>% 
           rtables::split_cols_by("ARM") %>% rtables::split_rows_by("AVISIT", 
           split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
           split_fun = rtables::drop_split_levels, label_pos = "topleft") %>% 
@@ -87,7 +87,7 @@
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL by SEX, COUNTRY", 
-          main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
+          main_footer = "N represents the number of unique subject IDs such that the variable has NA (<Missing>) values.") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::split_rows_by("SEX", split_label = teal.data::col_labels(adsl, 
               fill = FALSE)[["SEX"]], split_fun = rtables::drop_split_levels, 
@@ -122,7 +122,7 @@
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL by AVISIT", 
-          main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
+          main_footer = "N represents the number of unique subject IDs such that the variable has NA (<Missing>) values.") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% rtables::split_rows_by("AVISIT", 
           split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
@@ -154,7 +154,7 @@
       
       $layout
       lyt <- rtables::basic_table(show_colcounts = TRUE, title = "Summary Table for AVAL by AVISIT", 
-          main_footer = "N represents the number of unique subject IDs such that the variable has NA values.") %>% 
+          main_footer = "N represents the number of unique subject IDs such that the variable has NA (<Missing>) values.") %>% 
           rtables::split_cols_by("ARM", split_fun = rtables::drop_split_levels) %>% 
           rtables::add_overall_col("All Patients") %>% rtables::split_rows_by("AVISIT", 
           split_label = teal.data::col_labels(adlb, fill = FALSE)[["AVISIT"]], 
