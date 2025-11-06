@@ -8,6 +8,9 @@
   When `xticks` is `NULL` (default), users can specify this interactively in the module.
 * Updated `R` version dependency from 4.0 to 4.4.0, as upstream dependency `tern` requires this.
 
+### Bug fixes
+* Modules `tm_t_summary` and `tm_t_summary_by` now display and hide missing values (#1437).
+
 # teal.modules.clinical 0.11.1
 
 ### Enhancements
