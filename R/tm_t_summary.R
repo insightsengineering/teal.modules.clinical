@@ -84,16 +84,24 @@ template_summary <- function(dataname,
   data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
   y$data <- bracket_expr(data_list)
 
-  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
-    teal.widgets::resolve_basic_table_args(
-      user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(
-        show_colcounts = TRUE,
-        main_footer = sprintf(
+  # Only add the footer about NA if needed
+  if (na.rm) {
+    module_table_args <- teal.widgets::basic_table_args(
+      show_colcounts = TRUE,
+      main_footer =
+        sprintf(
           "N represents the number of unique subject IDs such that the variable has NA (%s) values.",
           na_level
         )
-      )
+    )
+  } else {
+    module_table_args <- teal.widgets::basic_table_args(show_colcounts = TRUE)
+  }
+
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = module_table_args
     )
   )
 

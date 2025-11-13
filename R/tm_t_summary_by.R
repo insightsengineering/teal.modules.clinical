@@ -121,17 +121,25 @@ template_summary_by <- function(parentname,
 
   table_title <- paste("Summary Table for", paste(sum_vars, collapse = ", "), "by", paste(by_vars, collapse = ", "))
 
-  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
-    teal.widgets::resolve_basic_table_args(
-      user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(
-        show_colcounts = TRUE,
-        title = table_title,
-        main_footer = sprintf(
+  # Only add the footer about NA if needed
+  if (na.rm) {
+    module_table_args <- teal.widgets::basic_table_args(
+      show_colcounts = TRUE,
+      title = table_title,
+      main_footer =
+        sprintf(
           "N represents the number of unique subject IDs such that the variable has NA (%s) values.",
           na_level
         )
-      )
+    )
+  } else {
+    module_table_args <- teal.widgets::basic_table_args(show_colcounts = TRUE, title = table_title)
+  }
+
+  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
+    teal.widgets::resolve_basic_table_args(
+      user_table = basic_table_args,
+      module_table = module_table_args
     )
   )
 
