@@ -51,18 +51,27 @@ template_summary <- function(dataname,
   # Data processing
   data_list <- list()
 
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl <- df %>%
-        tern::df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_str),
-      env = list(
-        df = as.name(dataname),
-        sum_vars = sum_vars,
-        na_str = na_level
+  if (!na.rm) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = anl <- tern::df_explicit_na(df, omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_level),
+        env = list(
+          df = as.name(dataname),
+          sum_vars = sum_vars,
+          na_level = na_level
+        )
       )
     )
-  )
+  } else {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = anl <- df,
+        env = list(df = as.name(dataname))
+      )
+    )
+  }
 
   prepare_arm_levels_call <- lapply(arm_var, function(x) {
     prepare_arm_levels(
@@ -73,28 +82,26 @@ template_summary <- function(dataname,
     )
   })
   data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
-      env = list(
-        parentname = as.name(parentname),
-        na_str = na_level
-      )
-    )
-  )
-
   y$data <- bracket_expr(data_list)
+
+  # Only add the footer about NA if needed
+  if (na.rm) {
+    module_table_args <- teal.widgets::basic_table_args(
+      show_colcounts = TRUE,
+      main_footer =
+        sprintf(
+          "N represents the number of unique subject IDs such that the variable has NA (%s) values.",
+          na_level
+        )
+    )
+  } else {
+    module_table_args <- teal.widgets::basic_table_args(show_colcounts = TRUE)
+  }
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(
-        show_colcounts = TRUE,
-        main_footer =
-          "n represents the number of unique subject IDs such that the variable has non-NA values."
-      )
+      module_table = module_table_args
     )
   )
 
@@ -150,7 +157,7 @@ template_summary <- function(dataname,
           vars = sum_vars,
           var_labels = sum_var_labels,
           show_labels = "visible",
-          na.rm = na.rm,
+          na_rm = na.rm,
           na_str = na_level,
           denom = denom,
           .stats = stats
@@ -563,12 +570,12 @@ srv_summary <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      summarize_vars <- merged$anl_input_r()$columns_source$summarize_vars
+      summarize_vars <- as.vector(merged$anl_input_r()$columns_source$summarize_vars)
       var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
 
       arm_var_labels <- NULL
+      arm_vars <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       if (show_arm_var_labels) {
-        arm_vars <- merged$anl_input_r()$columns_source$arm_var
         arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
       }
 

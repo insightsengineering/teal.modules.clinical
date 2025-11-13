@@ -1113,7 +1113,6 @@ srv_t_coxreg <- function(id,
     })
 
 
-
     decorated_table_q <- srv_decorate_teal_data(
       id = "decorator",
       data = all_q,

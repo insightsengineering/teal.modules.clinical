@@ -56,20 +56,34 @@ template_summary_by <- function(parentname,
 
   # Data processing
   data_list <- list()
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = anl <- df %>%
-        tern::df_explicit_na(omit_columns = setdiff(names(df), c(by_vars, sum_vars)), na_level = na_str),
-      env = list(
-        df = as.name(dataname),
-        by_vars = by_vars,
-        sum_vars = sum_vars,
-        na_str = na_level
+  if (!na.rm) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = anl <- tern::df_explicit_na(df,
+          omit_columns = setdiff(
+            names(df),
+            c(by_vars, sum_vars)
+          ),
+          na_level = na_str
+        ),
+        env = list(
+          df = as.name(dataname),
+          by_vars = by_vars,
+          sum_vars = sum_vars,
+          na_str = na_level
+        )
       )
     )
-  )
+  } else {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = anl <- df,
+        env = list(df = as.name(dataname))
+      )
+    )
+  }
 
   prepare_arm_levels_call <- lapply(arm_var, function(x) {
     prepare_arm_levels(
@@ -80,19 +94,19 @@ template_summary_by <- function(parentname,
     )
   })
   data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
-      env = list(parentname = as.name(parentname), na_str = na_level)
+  if (!na.rm) {
+    data_list <- add_expr(
+      data_list,
+      substitute(
+        expr = parentname <- tern::df_explicit_na(parentname, na_level = na_level),
+        env = list(parentname = as.name(parentname), na_level = na_level)
+      )
     )
-  )
+  }
 
   y$data <- bracket_expr(data_list)
 
   # Build layout
-  y$layout_prep <- quote(split_fun <- rtables::drop_split_levels)
   if (row_groups) {
     y$layout_cfun <- quote(
       cfun_unique <- function(x, labelstr = "", .N_col) { # nolint: object_name.
@@ -107,10 +121,25 @@ template_summary_by <- function(parentname,
 
   table_title <- paste("Summary Table for", paste(sum_vars, collapse = ", "), "by", paste(by_vars, collapse = ", "))
 
+  # Only add the footer about NA if needed
+  if (na.rm) {
+    module_table_args <- teal.widgets::basic_table_args(
+      show_colcounts = TRUE,
+      title = table_title,
+      main_footer =
+        sprintf(
+          "N represents the number of unique subject IDs such that the variable has NA (%s) values.",
+          na_level
+        )
+    )
+  } else {
+    module_table_args <- teal.widgets::basic_table_args(show_colcounts = TRUE, title = table_title)
+  }
+
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(show_colcounts = TRUE, title = table_title)
+      module_table = module_table_args
     )
   )
 
@@ -172,7 +201,7 @@ template_summary_by <- function(parentname,
         rtables::split_rows_by(
           by_var,
           split_label = split_label,
-          split_fun = split_fun,
+          split_fun = rtables::drop_split_levels,
           label_pos = "topleft"
         ),
         env = list(
