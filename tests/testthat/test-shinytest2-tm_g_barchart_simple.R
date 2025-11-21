@@ -208,12 +208,12 @@ testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws valid
   app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       sprintf(
         "%s .shiny-validation-message",
         ns_des_input("x", "ADSL", "select_input")
       )
-    ),
+    )),
     "^Please select an x-variable$"
   )
   app_driver$stop()
@@ -285,22 +285,22 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
       app_driver$expect_validation_error()
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("x", "ADSL", "select_input")
           )
-        ),
+        )),
         "^Duplicated value: ACTARM$"
       )
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input(input_id, "ADSL", "select_input")
           )
-        ),
+        )),
         "^Duplicated value: ACTARM$"
       )
       app_driver$stop()
