@@ -173,7 +173,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting arm_var throws validatio
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -195,7 +195,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting paramcd throws validatio
   app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
     "Please select Endpoint filter"
   )
   app_driver$stop()
@@ -217,7 +217,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting responders throws valida
   app_driver$set_active_module_input("responders", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
     "`Responders` field is empty"
   )
   app_driver$stop()
@@ -239,7 +239,7 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting a non-factors column in su
   app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", c("SEX", "AGE"))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
     "Not all subgroup variables are factors"
   )
   app_driver$stop()
@@ -291,13 +291,13 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting 
   app_driver$set_active_module_input("conf_level", NULL)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
     "Please choose a confidence level between 0 and 1"
   )
   app_driver$set_active_module_input("conf_level", 2)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module("myplot-plot_out_main"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot_out_main")),
     "Please choose a confidence level between 0 and 1"
   )
   app_driver$stop()

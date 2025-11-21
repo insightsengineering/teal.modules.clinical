@@ -133,9 +133,9 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd throws va
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADAETTE_singleextract-filter1-vals_input .shiny-validation-message"
-    ),
+    )),
     "A Event Type Parameter is required"
   )
   app_driver$stop()
@@ -169,7 +169,7 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws va
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")),
     "Please select exactly 1 or 2 treatment variables"
   )
   app_driver$stop()

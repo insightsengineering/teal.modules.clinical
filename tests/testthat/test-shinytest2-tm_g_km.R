@@ -191,13 +191,13 @@ testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation erro
   app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADTTE_singleextract-filter1-vals_input .shiny-validation-message"
-    ),
+    )),
     "An endpoint is required"
   )
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module("myplot-plot-with-settings"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot-with-settings")),
     "An endpoint is required"
   )
   app_driver$stop()
@@ -209,9 +209,9 @@ testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation erro
   app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), character(0))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
-    ),
+    )),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -264,12 +264,12 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison s
 
   testthat::expect_equal(app_driver$get_active_module_input("pval_method_coxph"), "log-rank")
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("pval_method_coxph-label"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("pval_method_coxph-label")),
     "p-value method for Coxph (Hazard Ratio)"
   )
   testthat::expect_equal(app_driver$get_active_module_input("ties_coxph"), "exact")
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("ties_coxph-label"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("ties_coxph-label")),
     "Ties for Coxph (Hazard Ratio)"
   )
 
@@ -338,13 +338,13 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional p
   testthat::expect_equal(app_driver$get_active_module_input("xlab"), "Time")
 
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("xticks-label"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("xticks-label")),
     "Specify break intervals for x-axis e.g. 0 ; 500"
   )
-  testthat::expect_match(app_driver$namespaces(TRUE)$module("yval-label"), "Value on y-axis", fixed = FALSE)
-  testthat::expect_equal(app_driver$namespaces(TRUE)$module("font_size-label"), "Table Font Size")
-  testthat::expect_equal(app_driver$namespaces(TRUE)$module("rel_height_plot-label"), "Relative Height of Plot (%)")
-  testthat::expect_equal(app_driver$namespaces(TRUE)$module("xlab-label"), "X-axis label")
+  testthat::expect_match(app_driver$get_text(app_driver$namespaces(TRUE)$module("yval-label")), "Value on y-axis", fixed = FALSE)
+  testthat::expect_equal(app_driver$get_text(app_driver$namespaces(TRUE)$module("font_size-label")), "Table Font Size")
+  testthat::expect_equal(app_driver$get_text(app_driver$namespaces(TRUE)$module("rel_height_plot-label")), "Relative Height of Plot (%)")
+  testthat::expect_equal(app_driver$get_text(app_driver$namespaces(TRUE)$module("xlab-label")), "X-axis label")
 
   app_driver$stop()
 })
@@ -382,7 +382,7 @@ testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation e
   app_driver$set_active_module_input("conf_level", -1)
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module("myplot-plot-with-settings"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("myplot-plot-with-settings")),
     "Confidence level must be between 0 and 1."
   )
   app_driver$stop()

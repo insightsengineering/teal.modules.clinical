@@ -133,7 +133,7 @@ testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation err
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")),
     "Please select a treatment variable."
   )
   app_driver$stop()
@@ -164,7 +164,7 @@ testthat::test_that("e2e - tm_t_abnormality: Deselection of by_vars throws valid
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("by_vars-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("by_vars-dataset_ADLB_singleextract-select_input .shiny-validation-message")),
     "Please select a Row By Variable."
   )
   app_driver$stop()

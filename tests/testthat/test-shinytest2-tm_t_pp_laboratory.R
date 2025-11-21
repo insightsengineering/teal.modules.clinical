@@ -133,7 +133,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws 
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message")),
     "Please select a patient"
   )
   app_driver$stop()
@@ -170,7 +170,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd throws val
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("paramcd-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("paramcd-dataset_ADLB_singleextract-select_input .shiny-validation-message")),
     "Please select PARAMCD variable."
   )
   app_driver$stop()
@@ -209,7 +209,7 @@ testthat::test_that(
     )
     app_driver$expect_validation_error()
     testthat::expect_equal(
-      app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-select_input .shiny-validation-message")),
       "Please select PARAM variable."
     )
     app_driver$stop()
@@ -247,9 +247,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints throws 
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "timepoints-dataset_ADLB_singleextract-select_input .shiny-validation-message"
-    ),
+    )),
     "Please select timepoints variable."
   )
   app_driver$stop()
@@ -286,9 +286,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu throws valid
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "avalu_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"
-    ),
+    )),
     "Please select AVALU variable."
   )
   app_driver$stop()
@@ -325,7 +325,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var throws va
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("aval_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("aval_var-dataset_ADLB_singleextract-select_input .shiny-validation-message")),
     "Please select AVAL variable."
   )
   app_driver$stop()
@@ -362,7 +362,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of arind throws valid
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("anrind-dataset_ADLB_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("anrind-dataset_ADLB_singleextract-select_input .shiny-validation-message")),
     "Please select ANRIND variable."
   )
   app_driver$stop()

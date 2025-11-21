@@ -87,7 +87,7 @@ testthat::test_that(
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
 
-    null_text <- app_driver$namespaces(TRUE)$module("null_input_msg")
+    null_text <- app_driver$get_text(app_driver$namespaces(TRUE)$module("null_input_msg"))
 
     testthat::expect_match(null_text, "Please first specify 'Model Settings' and press 'Fit Model'")
 

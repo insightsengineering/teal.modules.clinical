@@ -102,7 +102,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of patient_id th
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message")),
     "Please select a patient"
   )
   app_driver$stop()
@@ -133,7 +133,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhterm throws
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("mhterm-dataset_ADMH_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("mhterm-dataset_ADMH_singleextract-select_input .shiny-validation-message")),
     "Please select MHTERM variable."
   )
   app_driver$stop()
@@ -164,7 +164,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhbodsys thro
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("mhbodsys-dataset_ADMH_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("mhbodsys-dataset_ADMH_singleextract-select_input .shiny-validation-message")),
     "Please select MHBODSYS variable."
   )
   app_driver$stop()
@@ -195,7 +195,7 @@ testthat::test_that("e2e - tm_t_pp_medical_history: Deselection of mhdistat thro
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("mhdistat-dataset_ADMH_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("mhdistat-dataset_ADMH_singleextract-select_input .shiny-validation-message")),
     "Please select MHDISTAT variable."
   )
   app_driver$stop()

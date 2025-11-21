@@ -98,7 +98,7 @@ testthat::test_that(
 
     testthat::expect_equal(app_driver$get_active_module_input("cor_struct"), "unstructured")
 
-    radio_buttons <- app_driver$namespaces(TRUE)$module("output_table")
+    radio_buttons <- app_driver$get_text(app_driver$namespaces(TRUE)$module("output_table"))
     testthat::expect_match(
       radio_buttons,
       "Output Type.*LS means.*Covariance.*Coefficients",
@@ -133,7 +133,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation err
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("id_var-dataset_ADQS_singleextract-select_input > div > span"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("id_var-dataset_ADQS_singleextract-select_input > div > span")),
     "A Subject identifier is required"
   )
   app_driver$stop()
@@ -162,7 +162,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation er
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input > div > span"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input > div > span")),
     "A treatment variable is required"
   )
   app_driver$stop()
@@ -194,7 +194,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of visit_var throws validation 
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("visit_var-dataset_ADQS_singleextract-select_input > div > span"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("visit_var-dataset_ADQS_singleextract-select_input > div > span")),
     "A visit variable is required"
   )
   app_driver$stop()
@@ -222,7 +222,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of paramcd throws validation er
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("paramcd-dataset_ADQS_singleextract-filter1-vals_input > div > span"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("paramcd-dataset_ADQS_singleextract-filter1-vals_input > div > span")),
     "An endpoint is required"
   )
   app_driver$stop()
@@ -266,7 +266,7 @@ testthat::test_that("e2e - tm_a_gee: Selection of conf_level out of [0,1] range 
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("conf_level_input > div > span"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("conf_level_input > div > span")),
     "Confidence level must be between 0 and 1"
   )
   app_driver$stop()
@@ -279,7 +279,7 @@ testthat::test_that("e2e - tm_a_gee: Deselection of conf_level throws validation
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("conf_level_input > div > span"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("conf_level_input > div > span")),
     "Please choose a confidence level"
   )
   app_driver$stop()

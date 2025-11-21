@@ -130,7 +130,7 @@ testthat::test_that("e2e - tm_t_events_by_grade: Deselection of arm_var throws v
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")),
     "A treatment variable is required"
   )
   app_driver$stop()
@@ -233,7 +233,7 @@ testthat::test_that("e2e - tm_t_events_by_grade: Deselection of grade throws val
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("grade-dataset_ADAE_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("grade-dataset_ADAE_singleextract-select_input .shiny-validation-message")),
     "An event grade is required"
   )
   app_driver$stop()
