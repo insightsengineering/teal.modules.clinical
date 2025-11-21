@@ -58,7 +58,6 @@ app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_leng
 testthat::test_that(
   "e2e - tm_t_abnormality_by_worst_grade: Module initializes in teal without errors and produces table output.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     app_driver$expect_no_shiny_error()
@@ -75,7 +74,6 @@ testthat::test_that(
   "e2e - tm_t_abnormality_by_worst_grade: Starts with specified label, arm_var, paramcd, id_var, atoxgr_var,
   worst_high_flag_var, worst_low_flag_var, worst_flag_indicator, add_total, drop_arm_levels.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
 
@@ -120,7 +118,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_abnormality_by_worst_grade: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -139,7 +136,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_abnormality_by_worst_grade: Selecting paramcd changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -156,7 +152,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -170,7 +165,6 @@ testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of arm_v
 })
 
 testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
   app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", NULL)
@@ -188,7 +182,6 @@ testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of param
 testthat::test_that(
   "e2e - tm_t_abnormality_by_worst_grade: Changing add_total changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -208,7 +201,6 @@ testthat::test_that(
   "e2e - tm_t_abnormality_by_worst_grade: Changing drop_arm_levels does not change the table
   and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")

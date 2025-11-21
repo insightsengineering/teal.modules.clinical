@@ -64,7 +64,6 @@ app_driver_tm_g_lineplot <- function() {
 }
 
 testthat::test_that("e2e - tm_g_lineplot: Module initializes in teal without errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_lineplot()
@@ -82,7 +81,6 @@ testthat::test_that(
   "e2e - tm_g_lineplot: Starts with specified label, param, group_var, y, x, mid, interval, incl_screen,
     plot_settings and table_settings.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
 
     app_driver <- app_driver_tm_g_lineplot()
@@ -113,7 +111,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_lineplot: Selecting param changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -129,7 +126,6 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting param changes plot and doesn
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("param-dataset_ADLB_singleextract-filter1-vals", NULL)
@@ -145,7 +141,6 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation er
 testthat::test_that(
   "e2e - tm_g_lineplot: Selecting group_var changes plot and doesn't throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_lineplot()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -162,7 +157,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting group_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("group_var-dataset_ADSL_singleextract-select", NULL)
@@ -178,7 +172,6 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting group_var throws validatio
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Selecting y changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -194,7 +187,6 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting y changes plot and doesn't t
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("y-dataset_ADLB_singleextract-select", NULL)
@@ -210,7 +202,6 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Selecting conf_level changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -226,7 +217,6 @@ testthat::test_that("e2e - tm_g_lineplot: Selecting conf_level changes plot and 
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting conf_level validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("conf_level", NULL)

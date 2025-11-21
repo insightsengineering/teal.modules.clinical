@@ -74,7 +74,6 @@ app_driver_tm_g_ci <- function() {
 }
 
 testthat::test_that("e2e - tm_g_ci: Module initializes in teal without errors and produces plot output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$expect_no_shiny_error()
@@ -86,7 +85,6 @@ testthat::test_that("e2e - tm_g_ci: Module initializes in teal without errors an
 testthat::test_that(
   "e2e - tm_g_ci: Module initializes with specified label, x_var, y_var, ADLB filters, color, conf_level and stat.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_ci()
     testthat::expect_equal(
@@ -142,7 +140,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_ci: Selecting x_var column changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -158,7 +155,6 @@ testthat::test_that("e2e - tm_g_ci: Selecting x_var column changes plot and does
 })
 
 testthat::test_that("e2e - tm_g_ci: Deselecting x_var column throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("x_var-dataset_ADSL_singleextract-select", character(0))
@@ -172,7 +168,6 @@ testthat::test_that("e2e - tm_g_ci: Deselecting x_var column throws validation e
 })
 
 testthat::test_that("e2e - tm_g_ci: Selecting y_var column changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -188,7 +183,6 @@ testthat::test_that("e2e - tm_g_ci: Selecting y_var column changes plot and does
 })
 
 testthat::test_that("e2e - tm_g_ci: Deselecting y_var column throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-select", character(0))
@@ -204,7 +198,6 @@ testthat::test_that("e2e - tm_g_ci: Deselecting y_var column throws validation e
 testthat::test_that(
   "e2e - tm_g_ci: Selecting PARAMCD filter value changes plot and doesn't throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_ci()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -221,7 +214,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter value throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter1-vals", character(0))
@@ -235,7 +227,6 @@ testthat::test_that("e2e - tm_g_ci: Deselecting PARAMCD filter value throws vali
 })
 
 testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -246,7 +237,6 @@ testthat::test_that("e2e - tm_g_ci: Selecting AVISIT filter value doesn't throw 
 })
 
 testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter value throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   app_driver$set_active_module_input("y_var-dataset_ADLB_singleextract-filter2-vals", character(0))
@@ -260,7 +250,6 @@ testthat::test_that("e2e - tm_g_ci: Deselecting AVISIT filter value throws valid
 })
 
 testthat::test_that("e2e - tm_g_ci: Selecting color column changes plot output and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -271,7 +260,6 @@ testthat::test_that("e2e - tm_g_ci: Selecting color column changes plot output a
 })
 
 testthat::test_that("e2e - tm_g_ci: Deselecting color column changes plot output and doesn't throw validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -282,7 +270,6 @@ testthat::test_that("e2e - tm_g_ci: Deselecting color column changes plot output
 })
 
 testthat::test_that("e2e - tm_g_ci: Selecting confidence interval value changes plot and doesn't throw any errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -294,7 +281,6 @@ testthat::test_that("e2e - tm_g_ci: Selecting confidence interval value changes 
 
 
 testthat::test_that("e2e - tm_g_ci: Selecting statistic to use changes a plot and doesn't throw any errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ci()
   plot_before <- app_driver$get_active_module_plot_output("myplot")

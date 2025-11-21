@@ -46,7 +46,6 @@ app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length.
 testthat::test_that(
   "e2e - tm_t_pp_prior_medication: Module initializes in teal without errors and produces table output.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
     app_driver$expect_no_shiny_error()
@@ -61,7 +60,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_pp_prior_medication: Starts with specified label, patient_id, cmdecod, atirel, cmindc, cmstdy.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
     testthat::expect_equal(
@@ -95,7 +93,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_pp_prior_medication: Selecting patient_id changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
@@ -112,7 +109,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of patient_id throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("patient_id", NULL)
@@ -127,7 +123,6 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of patient_id t
 testthat::test_that(
   "e2e - tm_t_pp_prior_medication: Selecting cmdecod changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
@@ -144,7 +139,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmdecod throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("cmdecod-dataset_ADCM_singleextract-select", NULL)
@@ -159,7 +153,6 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmdecod thro
 testthat::test_that(
   "e2e - tm_t_pp_prior_medication: Selecting atirel changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
@@ -176,7 +169,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("atirel-dataset_ADCM_singleextract-select", NULL)
@@ -191,7 +183,6 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of atirel throw
 testthat::test_that(
   "e2e - tm_t_pp_prior_medication: Selecting cmindc changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
@@ -208,7 +199,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("cmindc-dataset_ADCM_singleextract-select", NULL)
@@ -223,7 +213,6 @@ testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmindc throw
 testthat::test_that(
   "e2e - tm_t_pp_prior_medication: Selecting cmstdy changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_prior_medication()
     table_before <- app_driver$get_active_module_table_output("prior_medication_table")
@@ -240,7 +229,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_pp_prior_medication: Deselection of cmstdy throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_prior_medication()
   app_driver$set_active_module_input("cmstdy-dataset_ADCM_singleextract-select", NULL)

@@ -56,7 +56,6 @@ app_driver_tm_t_smq <- function() {
 }
 
 testthat::test_that("e2e - tm_t_smq: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$expect_no_shiny_error()
@@ -70,7 +69,6 @@ testthat::test_that("e2e - tm_t_smq: Module initializes in teal without errors a
 testthat::test_that(
   "e2e - tm_t_smq: Starts with specified label, arm_var, llt, baskets, sort_criteria, add_total, drop_arm_levels.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()
     testthat::expect_equal(
@@ -102,7 +100,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_smq: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -119,7 +116,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -133,7 +129,6 @@ testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation er
 })
 
 testthat::test_that("e2e - tm_t_smq: Selecting paramcd changes the table and does not throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -149,7 +144,6 @@ testthat::test_that("e2e - tm_t_smq: Selecting paramcd changes the table and doe
 })
 
 testthat::test_that("e2e - tm_t_smq: Deselection of paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$set_active_module_input("llt-dataset_ADAE_singleextract-select", NULL)
@@ -165,7 +159,6 @@ testthat::test_that("e2e - tm_t_smq: Deselection of paramcd throws validation er
 testthat::test_that(
   "e2e - tm_t_smq: Selecting worst_flag changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -182,7 +175,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_smq: Deselection of worst_flag throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$set_active_module_input("baskets-dataset_ADAE_singleextract-select", NULL)

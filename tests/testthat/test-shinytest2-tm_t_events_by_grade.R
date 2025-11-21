@@ -53,7 +53,6 @@ app_driver_tm_t_events_by_grade <- function() { # nolint: object_length.
 testthat::test_that(
   "e2e - tm_t_events_by_grade: Module initializes in teal without errors and produces table output.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     app_driver$expect_no_shiny_error()
@@ -69,7 +68,6 @@ testthat::test_that(
   "e2e - tm_t_events_by_grade: Starts with specified label, arm_var, hlt, llt,
   grade, prune_freq, prune_diff, add_total, col_by_grade, drop_arm_levels.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     testthat::expect_equal(
@@ -110,7 +108,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events_by_grade: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -127,7 +124,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_events_by_grade: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_by_grade()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -143,7 +139,6 @@ testthat::test_that("e2e - tm_t_events_by_grade: Deselection of arm_var throws v
 testthat::test_that(
   "e2e - tm_t_events_by_grade: Selecting hlt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -162,7 +157,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events_by_grade: Deselection of hlt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -181,7 +175,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events_by_grade: Selecting llt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -200,7 +193,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events_by_grade: Deselection of llt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -219,7 +211,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events_by_grade: Selecting grade changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -236,7 +227,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_events_by_grade: Deselection of grade throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_by_grade()
   app_driver$set_active_module_input("grade-dataset_ADAE_singleextract-select", NULL)

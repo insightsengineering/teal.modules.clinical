@@ -81,7 +81,6 @@ output_functions <- c(
 testthat::test_that(
   "e2e - tm_a_mmrm: Module initializes in teal without errors and displays a message to click 'Fit Model'.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
 
     app_driver <- app_driver_tm_a_mmrm(FALSE)
@@ -101,7 +100,6 @@ testthat::test_that(
   visit_var, cov_var, arm_var, buckets, combine_comp_arms, id_var, cor_struct,
   weights_emmeans, conf_level, method, parallel and output_function.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm(FALSE)
 
@@ -149,7 +147,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default selection.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
   app_driver$expect_no_validation_error()
@@ -166,7 +163,6 @@ testthat::test_that(
   "e2e - tm_a_mmrm: Function t_mmrm_lsmeans selection shows output settings; changing
   settings throws no validation errors and verify visibility of generated tables.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
 
@@ -188,7 +184,6 @@ testthat::test_that(
   "e2e - tm_a_mmrm: Function g_mmrm_lsmeans selection shows output settings; changing
   settings throws no validation errors and verify visibility of generated plots.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
 
@@ -231,7 +226,6 @@ testthat::test_that(
   "e2e - tm_a_mmrm: Function g_mmrm_diagnostic selection shows output settings; changing
   settings throws no validation errors and verify visibility of generated plots.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
 
@@ -263,7 +257,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -299,7 +292,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -335,7 +327,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -371,7 +362,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -407,7 +397,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -443,7 +432,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -511,7 +499,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function

@@ -51,7 +51,6 @@ app_driver_tm_t_shift_by_arm <- function() {
 }
 
 testthat::test_that("e2e - tm_t_shift_by_arm: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm()
   app_driver$expect_no_shiny_error()
@@ -66,7 +65,6 @@ testthat::test_that(
   "e2e - tm_t_shift_by_arm: Starts with specified label, arm_varparamcd, visit_var,
   useNA, treatment_flag_var, add_total.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm()
     testthat::expect_equal(
@@ -101,7 +99,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_shift_by_arm: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -118,7 +115,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -134,7 +130,6 @@ testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of arm_var throws vali
 testthat::test_that(
   "e2e - tm_t_shift_by_arm: Selecting paramcd changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -151,7 +146,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm()
   app_driver$set_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals", NULL)
@@ -169,7 +163,6 @@ testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of paramcd throws vali
 testthat::test_that(
   "e2e - tm_t_shift_by_arm: Selecting visit_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -186,7 +179,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of visit_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm()
   app_driver$set_active_module_input("visit_var-dataset_ADEG_singleextract-filter1-vals", NULL)

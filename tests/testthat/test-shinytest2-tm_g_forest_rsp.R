@@ -87,7 +87,6 @@ app_driver_tm_g_forest_rsp <- function() {
 }
 
 testthat::test_that("e2e - tm_g_forest_rsp: Module initializes in teal without errors and produces plot output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_forest_rsp()
@@ -103,7 +102,6 @@ testthat::test_that(
   label, arm_var, paramcd, aval_var, responders, subgroup_var, strata_var,
   conf_level, fixed_symbol_size, rel_width_forest, font_size.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
 
     app_driver <- app_driver_tm_g_forest_rsp()
@@ -160,7 +158,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting arm_var changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -171,7 +168,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting arm_var changes plot and d
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -184,7 +180,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting arm_var throws validatio
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting paramcd changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -195,7 +190,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting paramcd changes plot and d
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
@@ -208,7 +202,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting paramcd throws validatio
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting responders changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -219,7 +212,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting responders changes plot an
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting responders throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   app_driver$set_active_module_input("responders", NULL)
@@ -232,7 +224,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting responders throws valida
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting subgroup_var changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -243,7 +234,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting subgroup_var changes plot 
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting a non-factors column in subgroup_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   app_driver$set_active_module_input("subgroup_var-dataset_ADSL_singleextract-select", c("SEX", "AGE"))
@@ -256,7 +246,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting a non-factors column in su
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting subgroup_var changes plot and doesn't throw validation errors.", { # nolint: line_length
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -267,7 +256,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting subgroup_var changes plo
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting strata_var changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -278,7 +266,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting strata_var changes plot an
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting strata_var changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -289,7 +276,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting strata_var changes plot 
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Selecting conf_level changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -300,7 +286,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Selecting conf_level changes plot an
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting outside the range of 0-1 throws validation error.", { # nolint: line_length
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   app_driver$set_active_module_input("conf_level", NULL)
@@ -319,7 +304,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Deselecting conf_level or selecting 
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Unsetting fixed_symbol_size changes plot and doesn't throw validation errors.", { # nolint: line_length
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -330,7 +314,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Unsetting fixed_symbol_size changes 
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Changing rel_width_forest changes plot and doesn't throw validation errors.", { # nolint: line_length
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -341,7 +324,6 @@ testthat::test_that("e2e - tm_g_forest_rsp: Changing rel_width_forest changes pl
 })
 
 testthat::test_that("e2e - tm_g_forest_rsp: Changing font_size changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_rsp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")

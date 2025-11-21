@@ -78,7 +78,6 @@ app_driver_tm_g_km <- function() {
 }
 
 testthat::test_that("e2e - tm_g_km: Module initializes in teal without errors and produces plot output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$expect_no_shiny_error()
@@ -94,7 +93,6 @@ testthat::test_that("e2e - tm_g_km: Module initializes in teal without errors an
 testthat::test_that(
   "e2e - tm_g_km: Starts with specified paramcd, aval_var, cnsr_var, facet_var, arm_var, compare_arms, strata_var.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_km()
 
@@ -138,7 +136,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_km: Changing {paramcd} changes the plot without errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -149,7 +146,6 @@ testthat::test_that("e2e - tm_g_km: Changing {paramcd} changes the plot without 
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {facet_var} changes the plot without errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -160,7 +156,6 @@ testthat::test_that("e2e - tm_g_km: Changing {facet_var} changes the plot withou
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {arm_var} changes the plot without errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -171,7 +166,6 @@ testthat::test_that("e2e - tm_g_km: Changing {arm_var} changes the plot without 
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {compare_arms} changes the plot without errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -182,7 +176,6 @@ testthat::test_that("e2e - tm_g_km: Changing {compare_arms} changes the plot wit
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {strata_var} changes the plot without errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -193,7 +186,6 @@ testthat::test_that("e2e - tm_g_km: Changing {strata_var} changes the plot witho
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", character(0))
@@ -212,7 +204,6 @@ testthat::test_that("e2e - tm_g_km: Deselecting {paramcd} throws validation erro
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), character(0))
@@ -227,7 +218,6 @@ testthat::test_that("e2e - tm_g_km: Deselecting {arm_var} throws validation erro
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {compare_arms} sets it to FALSE.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("compare_arms", NULL)
@@ -237,7 +227,6 @@ testthat::test_that("e2e - tm_g_km: Deselecting {compare_arms} sets it to FALSE.
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {strata_var} does not throw errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input(ns_des_input("strata_var", "ADSL", "select"), character(0))
@@ -248,7 +237,6 @@ testthat::test_that("e2e - tm_g_km: Deselecting {strata_var} does not throw erro
 # groups ----------------------------------------------------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_km: Starts with specified groups.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
 
@@ -268,7 +256,6 @@ testthat::test_that("e2e - tm_g_km: Starts with specified groups.", {
 # comparison settings ---------------------------------------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison settings.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
 
@@ -290,7 +277,6 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison s
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {pval_method_coxph} changes the plot without errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -301,7 +287,6 @@ testthat::test_that("e2e - tm_g_km: Changing {pval_method_coxph} changes the plo
 })
 
 testthat::test_that("e2e - tm_g_km: Changing {ties_coxph} changes the plot without errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -312,7 +297,6 @@ testthat::test_that("e2e - tm_g_km: Changing {ties_coxph} changes the plot witho
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {pval_method_coxph} gives no validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("pval_method_coxph", character(0))
@@ -321,7 +305,6 @@ testthat::test_that("e2e - tm_g_km: Deselecting {pval_method_coxph} gives no val
 })
 
 testthat::test_that("e2e - tm_g_km: Deselecting {ties_coxph} gives no validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("ties_coxph", character(0))
@@ -332,7 +315,6 @@ testthat::test_that("e2e - tm_g_km: Deselecting {ties_coxph} gives no validation
 # plot settings ---------------------------------------------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_km: Starts with specified collapsed additional plot settings.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
 
@@ -374,7 +356,6 @@ test_that_plot_settings <- function(input_id, new_value) {
       input_id
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_km()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -396,7 +377,6 @@ test_that_plot_settings("conf_level", 0.8)
 test_that_plot_settings("xlab", "Time2")
 
 testthat::test_that("e2e - tm_g_km: Deselecting {conf_level} throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
   app_driver$set_active_module_input("conf_level", -1)

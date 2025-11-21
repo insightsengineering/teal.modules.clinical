@@ -41,7 +41,6 @@ app_driver_tm_t_events <- function() {
 }
 
 testthat::test_that("e2e - tm_t_events: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events()
   app_driver$expect_no_shiny_error()
@@ -56,7 +55,6 @@ testthat::test_that(
   "e2e - tm_t_events: Starts with specified label, arm_var, hlt, llt, sort_criteria,
   prune_freq, prune_diff, add_total, drop_arm_levels.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
 
@@ -97,7 +95,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -114,7 +111,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_events: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -130,7 +126,6 @@ testthat::test_that("e2e - tm_t_events: Deselection of arm_var throws validation
 testthat::test_that(
   "e2e - tm_t_events: Selecting hlt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -149,7 +144,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events: Deselection of hlt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -168,7 +162,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events: Selecting llt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -187,7 +180,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events: Deselection of llt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")

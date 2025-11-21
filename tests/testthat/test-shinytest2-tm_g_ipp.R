@@ -65,7 +65,6 @@ app_driver_tm_g_ipp <- function() {
 }
 
 testthat::test_that("e2e - tm_g_ipp: Module initializes in teal without errors and produces plot output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$expect_no_shiny_error()
@@ -82,7 +81,6 @@ testthat::test_that(
   label, parentname, arm_var, paramcd, id_var, visit_var, aval_var, avalu_var, baseline_var
   add_baseline_hline, separate_by_obs, suppress_legend, add_avalu.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_ipp()
     testthat::expect_equal(
@@ -134,7 +132,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_ipp: Selecting arm_var changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -150,7 +147,6 @@ testthat::test_that("e2e - tm_g_ipp: Selecting arm_var changes plot and doesn't 
 })
 
 testthat::test_that("e2e - tm_g_ipp: Deselecting arm_var column throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-filter1-vals", NULL)
@@ -164,7 +160,6 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting arm_var column throws validatio
 })
 
 testthat::test_that("e2e - tm_g_ipp: Selecting paramcd changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -180,7 +175,6 @@ testthat::test_that("e2e - tm_g_ipp: Selecting paramcd changes plot and doesn't 
 })
 
 testthat::test_that("e2e - tm_g_ipp: Deselecting paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", NULL)
@@ -194,7 +188,6 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting paramcd throws validation error
 })
 
 testthat::test_that("e2e - tm_g_ipp: Selecting visit_var changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -210,7 +203,6 @@ testthat::test_that("e2e - tm_g_ipp: Selecting visit_var changes plot and doesn'
 })
 
 testthat::test_that("e2e - tm_g_ipp: Deselecting visit_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$set_active_module_input("visit_var-dataset_ADLB_singleextract-select", NULL)
@@ -224,7 +216,6 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting visit_var throws validation err
 })
 
 testthat::test_that("e2e - tm_g_ipp: Selecting aval_var changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -240,7 +231,6 @@ testthat::test_that("e2e - tm_g_ipp: Selecting aval_var changes plot and doesn't
 })
 
 testthat::test_that("e2e - tm_g_ipp: Deselecting aval_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", NULL)
@@ -254,7 +244,6 @@ testthat::test_that("e2e - tm_g_ipp: Deselecting aval_var throws validation erro
 })
 
 testthat::test_that("e2e - tm_g_ipp: Changing add_baseline_hline changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -269,7 +258,6 @@ testthat::test_that("e2e - tm_g_ipp: Changing add_baseline_hline changes plot an
   app_driver$stop()
 })
 testthat::test_that("e2e - tm_g_ipp: Changing separate_by_obs changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -285,7 +273,6 @@ testthat::test_that("e2e - tm_g_ipp: Changing separate_by_obs changes plot and d
 })
 
 testthat::test_that("e2e - tm_g_ipp: Changing suppress_legend changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -301,7 +288,6 @@ testthat::test_that("e2e - tm_g_ipp: Changing suppress_legend changes plot and d
 })
 
 testthat::test_that("e2e - tm_g_ipp: Changing add_avalu changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_ipp()
   plot_before <- app_driver$get_active_module_plot_output("myplot")

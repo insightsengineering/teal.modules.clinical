@@ -76,7 +76,6 @@ app_driver_tm_g_forest_tte <- function() {
 # Initialization --------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without errors and produces output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_tte()
   app_driver$expect_no_shiny_error()
@@ -92,7 +91,6 @@ testthat::test_that(
   "e2e - tm_g_forest_tte: Starts with specified label, paramcd, arm_var, buckets,
     paramcd, subgroup_var, strata_var and plot settings.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
 
@@ -151,7 +149,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_g_forest_tte: Selection of 'paramcd' changes the element and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -163,7 +160,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd filter throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_tte()
   input_id <- ns_des_input("paramcd", "ADTTE", "filter1-vals")
@@ -184,7 +180,6 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd filter throws
 testthat::test_that(
   "e2e - tm_g_forest_tte: Selection of 'arm_var' changes the element and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
@@ -196,7 +191,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_forest_tte()
   input_id <- ns_des_input("arm_var", "ADSL", "select")
@@ -217,7 +211,6 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd var throws va
 testthat::test_that(
   "e2e - tm_g_forest_tte: Selecting conf_level does not throw validation errors and changes a plot.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_forest_tte()
     input_id <- "conf_level"

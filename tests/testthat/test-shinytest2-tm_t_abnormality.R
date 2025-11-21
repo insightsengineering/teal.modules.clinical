@@ -63,7 +63,6 @@ app_driver_tm_t_abnormality <- function() {
 }
 
 testthat::test_that("e2e - tm_t_abnormality: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
   app_driver$expect_no_shiny_error()
@@ -79,7 +78,6 @@ testthat::test_that(
   "e2e - tm_t_abnormality: Starts with specified label, arm_var, by_vars,
   add_total, exclude_base_abn, drop_arm_levels.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
 
@@ -113,7 +111,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_abnormality: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -130,7 +127,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -146,7 +142,6 @@ testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation err
 testthat::test_that(
   "e2e - tm_t_abnormality: Selecting by_vars changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -163,7 +158,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_abnormality: Deselection of by_vars throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
   app_driver$set_active_module_input("by_vars-dataset_ADLB_singleextract-select", NULL)
@@ -179,7 +173,6 @@ testthat::test_that("e2e - tm_t_abnormality: Deselection of by_vars throws valid
 testthat::test_that(
   "e2e - tm_t_abnormality: Changing add_total changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -198,7 +191,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_abnormality: Changing exclude_base_abn changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -217,7 +209,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_abnormality: Changing drop_arm_levels does not change the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")

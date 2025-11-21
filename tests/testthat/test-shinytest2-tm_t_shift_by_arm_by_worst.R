@@ -53,7 +53,6 @@ app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length.
 testthat::test_that(
   "e2e - tm_t_shift_by_arm_by_worst: Module initializes in teal without errors and produces table output.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     app_driver$expect_no_shiny_error()
@@ -69,7 +68,6 @@ testthat::test_that(
   "e2e - tm_t_shift_by_arm_by_worst: Starts with specified label, arm_var, paramcd, worst_flag_var,
   aval_var, baseline_var, useNA, treatment_flag_var, add_total.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
 
@@ -114,7 +112,6 @@ testthat::test_that(
   "e2e - tm_t_shift_by_arm_by_worst: Selecting arm_var changes the table
   and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -131,7 +128,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -147,7 +143,6 @@ testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of arm_var th
 testthat::test_that(
   "e2e - tm_t_shift_by_arm_by_worst: Selecting paramcd changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -164,7 +159,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("paramcd-dataset_ADEG_singleextract-filter1-vals", NULL)
@@ -183,7 +177,6 @@ testthat::test_that(
   "e2e - tm_t_shift_by_arm_by_worst: Selecting worst_flag changes the table
   and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -200,7 +193,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of worst_flag throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("worst_flag_var-dataset_ADEG_singleextract-select", NULL)
@@ -219,7 +211,6 @@ testthat::test_that(
   "e2e - tm_t_shift_by_arm_by_worst: Selecting aval_var changes the table
   and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -236,7 +227,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of aval_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("aval_var-dataset_ADEG_singleextract-select", NULL)
@@ -253,7 +243,6 @@ testthat::test_that(
   "e2e - tm_t_shift_by_arm_by_worst: Selecting baseline_var changes the table
   and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -270,7 +259,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of baseline_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
   app_driver$set_active_module_input("baseline_var-dataset_ADEG_singleextract-select", NULL)

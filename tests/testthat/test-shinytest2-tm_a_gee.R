@@ -44,7 +44,6 @@ app_driver_tm_a_gee <- function() {
 }
 
 testthat::test_that("e2e - tm_a_gee: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_a_gee()
@@ -58,7 +57,6 @@ testthat::test_that(
   "e2e - tm_a_gee: Starts with specified label, id_var, arm_var, visit_var, paramcd, cov_var,
   conf_level and conf_struct.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_gee()
 
@@ -113,7 +111,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_a_gee: Selection of id_var does not change the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_gee()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -130,7 +127,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   app_driver$set_active_module_input(ns_des_input("id_var", "ADQS", "select"), character(0))
@@ -144,7 +140,6 @@ testthat::test_that("e2e - tm_a_gee: Deselection of id_var throws validation err
 })
 
 testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and does not throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
 
@@ -161,7 +156,6 @@ testthat::test_that("e2e - tm_a_gee: Change in arm_var changes the table and doe
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   app_driver$set_active_module_input(ns_des_input("arm_var", "ADSL", "select"), character(0))
@@ -177,7 +171,6 @@ testthat::test_that("e2e - tm_a_gee: Deselection of arm_var throws validation er
 testthat::test_that(
   "e2e - tm_a_gee: Selection of visit_var does not change the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_gee()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -194,7 +187,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_a_gee: Deselection of visit_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   app_driver$set_active_module_input(ns_des_input("visit_var", "ADQS", "select"), character(0))
@@ -209,7 +201,6 @@ testthat::test_that("e2e - tm_a_gee: Deselection of visit_var throws validation 
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and does not throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -225,7 +216,6 @@ testthat::test_that("e2e - tm_a_gee: Selection of paramcd changes the table and 
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   app_driver$set_active_module_input(ns_des_input("paramcd", "ADQS", "filter1-vals"), character(0))
@@ -239,7 +229,6 @@ testthat::test_that("e2e - tm_a_gee: Deselection of paramcd throws validation er
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and does not throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -255,7 +244,6 @@ testthat::test_that("e2e - tm_a_gee: Selection of cov_var changes the table and 
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of conf_level changes the table and does not throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -271,7 +259,6 @@ testthat::test_that("e2e - tm_a_gee: Selection of conf_level changes the table a
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of conf_level out of [0,1] range throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -286,7 +273,6 @@ testthat::test_that("e2e - tm_a_gee: Selection of conf_level out of [0,1] range 
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of conf_level throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   app_driver$set_active_module_input("conf_level", character(0))
@@ -300,7 +286,6 @@ testthat::test_that("e2e - tm_a_gee: Deselection of conf_level throws validation
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of cor_struct changes the table and does not throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -316,7 +301,6 @@ testthat::test_that("e2e - tm_a_gee: Selection of cor_struct changes the table a
 })
 
 testthat::test_that("e2e - tm_a_gee: Deselection of cor_struct does not throw validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   app_driver$set_active_module_input("cor_struct", character(0), wait_ = FALSE) # not waiting because of a warning
@@ -325,7 +309,6 @@ testthat::test_that("e2e - tm_a_gee: Deselection of cor_struct does not throw va
 })
 
 testthat::test_that("e2e - tm_a_gee: Selection of output_table changes the table and doesn't throw validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_gee()
   table_before <- app_driver$get_active_module_table_output("table-table-with-settings")

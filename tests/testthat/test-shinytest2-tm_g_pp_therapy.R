@@ -89,7 +89,6 @@ app_driver_tm_g_pp_therapy <- function() {
 # Initialization --------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_pp_therapy: Module initializes in teal without errors and produces output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_pp_therapy()
@@ -110,7 +109,6 @@ testthat::test_that(
   "e2e - tm_g_pp_therapy: Starts with specified label, paramcd, arm_var, buckets,
   paramcd, subgroup_var, strata_var and plot settings.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
 
@@ -153,7 +151,6 @@ test_different_selection <- function(input_name, input_id, new_value) {
       input_name
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_pp_therapy()
       plot_before <- list(
@@ -190,7 +187,6 @@ test_different_selection("cmendy", ns_des_input("cmendy", "ADCM", "select"), "AE
 testthat::test_that(
   "e2e - tm_g_pp_therapy: Changing font_size changes the plot and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
     plot_before <- app_driver$get_active_module_plot_output("therapy_plot")
@@ -210,7 +206,6 @@ test_delection_validation <- function(input_name, input_id, deselect_message) {
     deselect_message <- sprintf("Please select %s variable.", toupper(input_name))
   }
   testthat::test_that(sprintf("e2e - tm_g_pp_therapy: Deselection of %s throws validation error.", input_name), {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
     app_driver$set_active_module_input(input_id, NULL)
