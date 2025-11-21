@@ -273,12 +273,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("aval_var", "ADQS", "select_input")
           )
-        ),
+        )),
         "Analysis Variable' field is not selected"
       )
       app_driver$expect_validation_error()
@@ -308,12 +308,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("paramcd", "ADQS", "filter1-vals_input")
           )
-        ),
+        )),
         "Select Endpoint' field is not selected"
       )
       app_driver$expect_validation_error()
@@ -343,12 +343,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("visit_var", "ADQS", "select_input")
           )
-        ),
+        )),
         "Visit Variable' field is not selected"
       )
       app_driver$expect_validation_error()
@@ -378,12 +378,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("arm_var", "ADSL", "select_input")
           )
-        ),
+        )),
         "Treatment variable must be selected"
       )
       app_driver$expect_validation_error()
@@ -413,12 +413,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("id_var", "ADQS", "select_input")
           )
-        ),
+        )),
         "Subject Identifier' field is not selected"
       )
       app_driver$expect_validation_error()
@@ -448,12 +448,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             "conf_level_input"
           )
-        ),
+        )),
         "Confidence Level' field is not selected"
       )
       app_driver$expect_validation_error()

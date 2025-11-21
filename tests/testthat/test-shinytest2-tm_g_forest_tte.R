@@ -166,12 +166,12 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd filter throws
   app_driver$set_active_module_input(input_id, character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       sprintf(
         "%s_input .shiny-validation-message",
         input_id
       )
-    ),
+    )),
     "Please select Endpoint filter."
   )
   app_driver$stop()
@@ -197,12 +197,12 @@ testthat::test_that("e2e - tm_g_forest_tte: Deselection of paramcd var throws va
   app_driver$set_active_module_input(input_id, character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       sprintf(
         "%s_input .shiny-validation-message",
         input_id
       )
-    ),
+    )),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -219,9 +219,9 @@ testthat::test_that(
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_validation_error()
     testthat::expect_match(
-      app_driver$namespaces(TRUE)$module(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(
         sprintf("%s_input .shiny-validation-message", input_id)
-      ),
+      )),
       "Please choose a confidence level"
     )
     app_driver$stop()
