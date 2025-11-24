@@ -71,7 +71,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary_by()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("#teal-teal_modules-active_module_id * .teal-modules-tree * .nav-link"),
       "Summary by Row Groups Table"
     )
     testthat::expect_equal(
