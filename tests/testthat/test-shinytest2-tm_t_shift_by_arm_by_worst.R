@@ -72,7 +72,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
 
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "Shift by Arm Table"
     )
     testthat::expect_equal(
@@ -133,8 +133,9 @@ testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of arm_var th
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
+  selector <- "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
     "A treatment variable is required"
   )
   app_driver$stop()
@@ -232,8 +233,9 @@ testthat::test_that("e2e - tm_t_shift_by_arm_by_worst: Deselection of aval_var t
   app_driver$set_active_module_input("aval_var-dataset_ADEG_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
+  selector <- "aval_var-dataset_ADEG_singleextract-select_input .shiny-validation-message"
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("aval_var-dataset_ADEG_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
     "An analysis range indicator required"
   )
   app_driver$stop()
