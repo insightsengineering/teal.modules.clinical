@@ -72,7 +72,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
 
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "Shift by Arm Table"
     )
     testthat::expect_equal(
