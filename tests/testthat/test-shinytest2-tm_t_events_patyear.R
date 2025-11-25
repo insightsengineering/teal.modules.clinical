@@ -72,7 +72,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_module_id * .teal-modules-tree * .nav-link"),
+      app_driver$get_text("a.nav-link.active"),
       "AE Rate Adjusted for Patient-Years At Risk Table"
     )
     testthat::expect_equal(
