@@ -118,7 +118,6 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting patient_id column throws 
   app_driver$stop()
 })
 
-#fails
 testthat::test_that(
   "e2e - tm_g_pp_vitals: Selecting valid paramcd and paramcd_levels_vals changes plot
   and doesn't throw validation errors.",
@@ -171,7 +170,6 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting paramcd throws validation
   app_driver$stop()
 })
 
-#fails
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting xaxis changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
@@ -200,7 +198,6 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting xaxis column throws valid
   app_driver$stop()
 })
 
-#fails
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting aval_var changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
