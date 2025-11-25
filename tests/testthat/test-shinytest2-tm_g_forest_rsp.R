@@ -107,7 +107,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_g_forest_rsp()
 
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "Forest Response"
     )
 
