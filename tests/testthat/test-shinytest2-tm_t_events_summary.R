@@ -158,8 +158,9 @@ testthat::test_that("e2e - tm_t_events_summary: Deselection of arm_var throws va
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
+  selector <- "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
     "Please select exactly 1 or 2 treatment variables"
   )
   app_driver$stop()
