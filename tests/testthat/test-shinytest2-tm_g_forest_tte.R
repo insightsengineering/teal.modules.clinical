@@ -1,7 +1,7 @@
 app_driver_tm_g_forest_tte <- function() {
   data <- within(teal.data::teal_data(), {
     ADSL <- teal.modules.clinical::tmc_ex_adsl
-    ADSL$RACE <- with_label(droplevels(ADSL$RACE), "Race")
+    ADSL$RACE <- formatters::with_label(droplevels(ADSL$RACE), "Race")
     ADTTE <- teal.modules.clinical::tmc_ex_adtte
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
@@ -80,8 +80,9 @@ testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without e
   app_driver <- app_driver_tm_g_forest_tte()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
+  app_driver$wait_for_idle()
   testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("myplot-plot_out_main"))
+    app_driver$is_visible('#teal-teal_modules-nav-forest_survival__e2e_-module-myplot-plot_main')
   )
 
   app_driver$stop()
@@ -95,7 +96,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_g_forest_tte()
 
     testthat::expect_identical(
-      trimws(app_driver$get_text("#teal-teal_modules-active_tab .active")),
+      app_driver$get_text("a.nav-link.active"),
       "Forest Survival (e2e)"
     )
 
