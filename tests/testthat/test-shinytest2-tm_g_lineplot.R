@@ -1,6 +1,7 @@
 app_driver_tm_g_lineplot <- function() {
   data <- within(teal.data::teal_data(), {
     require(nestcolor)
+    require(dplyr)
     ADSL <- teal.modules.clinical::tmc_ex_adsl
 
     ADLB <- dplyr::mutate(
@@ -85,7 +86,7 @@ testthat::test_that(
 
     app_driver <- app_driver_tm_g_lineplot()
 
-    testthat::expect_equal(trimws(app_driver$get_text("#teal-teal_modules-active_tab .active")), "Line Plot")
+    testthat::expect_equal(trimws(app_driver$get_text("a.nav-link.active")), "Line Plot")
     testthat::expect_equal(app_driver$get_active_module_input("param-dataset_ADLB_singleextract-filter1-vals"), "ALT")
     testthat::expect_equal(app_driver$get_active_module_input("group_var-dataset_ADSL_singleextract-select"), "ARM")
     testthat::expect_equal(app_driver$get_active_module_input("y-dataset_ADLB_singleextract-select"), "AVAL")
@@ -113,13 +114,13 @@ testthat::test_that(
 testthat::test_that("e2e - tm_g_lineplot: Selecting param changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
+  app_driver$wait_for_idle()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("param-dataset_ADLB_singleextract-filter1-vals", "CRP")
+  app_driver$wait_for_idle()
+  plot_after <- app_driver$get_active_module_plot_output("myplot")
   testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_plot_output("myplot")
-    )
+    identical(plot_before, plot_after)
   )
   app_driver$expect_no_validation_error()
   app_driver$stop()
@@ -143,13 +144,13 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_lineplot()
+    app_driver$wait_for_idle()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input("group_var-dataset_ADSL_singleextract-select", "ARMCD")
+    app_driver$wait_for_idle()
+    plot_after <- app_driver$get_active_module_plot_output("myplot")
     testthat::expect_false(
-      identical(
-        plot_before,
-        app_driver$get_active_module_plot_output("myplot")
-      )
+      identical(plot_before, plot_after)
     )
     app_driver$expect_no_validation_error()
     app_driver$stop()
@@ -174,13 +175,13 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting group_var throws validatio
 testthat::test_that("e2e - tm_g_lineplot: Selecting y changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
+  app_driver$wait_for_idle()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("y-dataset_ADLB_singleextract-select", "BASE")
+  app_driver$wait_for_idle()
+  plot_after <- app_driver$get_active_module_plot_output("myplot")
   testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_plot_output("myplot")
-    )
+    identical(plot_before, plot_after)
   )
   app_driver$expect_no_validation_error()
   app_driver$stop()
@@ -204,13 +205,13 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.
 testthat::test_that("e2e - tm_g_lineplot: Selecting conf_level changes plot and doesn't throw validation errors.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
+  app_driver$wait_for_idle()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("conf_level", "0.8")
+  app_driver$wait_for_idle()
+  plot_after <- app_driver$get_active_module_plot_output("myplot")
   testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_plot_output("myplot")
-    )
+    identical(plot_before, plot_after)
   )
   app_driver$expect_no_validation_error()
   app_driver$stop()
