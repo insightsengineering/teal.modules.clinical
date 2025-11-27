@@ -38,7 +38,7 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Starts with specified label, pati
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
   testthat::expect_equal(
-    app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+    app_driver$get_text("a.nav-link.active"),
     "Basic Info"
   )
   testthat::expect_equal(
