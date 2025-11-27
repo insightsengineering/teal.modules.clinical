@@ -82,7 +82,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without e
   app_driver$expect_no_validation_error()
   app_driver$wait_for_idle()
   testthat::expect_true(
-    app_driver$is_visible('#teal-teal_modules-nav-forest_survival__e2e_-module-myplot-plot_main')
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main"))
   )
 
   app_driver$stop()
