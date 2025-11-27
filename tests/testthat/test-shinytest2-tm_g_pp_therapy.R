@@ -96,7 +96,7 @@ testthat::test_that("e2e - tm_g_pp_therapy: Module initializes in teal without e
   app_driver$expect_no_validation_error()
 
   testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("therapy_plot-plot_out_main"))
+    app_driver$is_visible(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main"))
   )
   testthat::expect_true(
     app_driver$is_visible(app_driver$namespaces(TRUE)$module("therapy_table"))
@@ -113,7 +113,7 @@ testthat::test_that(
     app_driver <- app_driver_tm_g_pp_therapy()
 
     testthat::expect_equal(
-      trimws(app_driver$get_text("#teal-teal_modules-active_tab .active")),
+      trimws(app_driver$get_text("a.nav-link.active")),
       "Therapy (e2e)"
     )
 
@@ -155,7 +155,7 @@ test_different_selection <- function(input_name, input_id, new_value) {
       app_driver <- app_driver_tm_g_pp_therapy()
       plot_before <- list(
         app_driver$get_active_module_plot_output("therapy_plot"),
-        app_driver$namespaces(TRUE)$module("therapy_table")
+        app_driver$get_active_module_table_output("therapy_table")
       )
       app_driver$set_active_module_input(input_id, new_value)
       testthat::expect_false(
@@ -163,7 +163,7 @@ test_different_selection <- function(input_name, input_id, new_value) {
           plot_before,
           list(
             app_driver$get_active_module_plot_output("therapy_plot"),
-            app_driver$namespaces(TRUE)$module("therapy_table")
+            app_driver$get_active_module_table_output("therapy_table")
           )
         )
       )
@@ -211,12 +211,12 @@ test_delection_validation <- function(input_name, input_id, deselect_message) {
     app_driver$set_active_module_input(input_id, NULL)
     app_driver$expect_validation_error()
     testthat::expect_equal(
-      app_driver$namespaces(TRUE)$module(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(
         sprintf(
           "%s_input .shiny-validation-message",
           input_id
         )
-      ),
+      )),
       deselect_message
     )
     app_driver$stop()
