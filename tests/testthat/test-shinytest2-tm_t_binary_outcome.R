@@ -221,11 +221,17 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of responders throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
+  testthat::expect_false(
+    identical(
+      app_driver$get_text(".shiny-validation-message"),
+      "`Responders` field is empty"
+    )
+  )
   app_driver$set_active_module_input("responders", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("responders_input .shiny-validation-message")),
+    app_driver$get_text(".shiny-validation-message"),
     "`Responders` field is empty"
   )
   app_driver$stop()
