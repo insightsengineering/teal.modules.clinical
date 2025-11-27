@@ -199,9 +199,7 @@ testthat::test_that(
       app_driver$is_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
     )
 
-    plot_selector <- app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main > img")
-    testthat::expect_true(app_driver$is_visible(plot_selector))
-    plot_before <- app_driver$get_attr(plot_selector, "src")
+    plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot_before, "data:image/png;base64,")
 
     app_driver$set_active_module_input("g_mmrm_lsmeans_select", "estimates")
@@ -222,7 +220,7 @@ testthat::test_that(
     app_driver$expect_no_validation_error()
     app_driver$wait_for_idle()
 
-    plot <- app_driver$get_attr(plot_selector, "src")
+    plot <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
@@ -249,16 +247,14 @@ testthat::test_that(
       app_driver$is_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
     )
 
-    plot_selector <- app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main > img")
-    testthat::expect_true(app_driver$is_visible(plot_selector))
-    plot_before <- app_driver$get_attr(plot_selector, "src")
+    plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot_before, "data:image/png;base64,")
 
     app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
     app_driver$expect_no_validation_error()
     app_driver$wait_for_idle()
 
-    plot <- app_driver$get_attr(plot_selector, "src")
+    plot <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
@@ -527,9 +523,7 @@ for (func in output_functions) {
           app_driver$is_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
         )
 
-        plot_selector <- app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main > img")
-        testthat::expect_true(app_driver$is_visible(plot_selector))
-        plot_before <- app_driver$get_attr(plot_selector, "src")
+        plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
       } else {
         table_before <- app_driver$get_active_module_table_output("mmrm_table-table-with-settings")
       }
@@ -547,7 +541,7 @@ for (func in output_functions) {
 
         # Check output based on function type (plot or table)
         if (grepl("^g_", func)) {
-          plot_after <- app_driver$get_attr(plot_selector, "src")
+          plot_after <- app_driver$get_active_module_plot_output("mmrm_plot")
           testthat::expect_false(
             identical(plot_before, plot_after)
           )
