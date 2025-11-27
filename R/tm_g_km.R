@@ -569,7 +569,7 @@ ui_g_km <- function(id, ...) {
         )
       ),
       bslib::accordion(
-        open = TRUE,
+        open = FALSE,
         bslib::accordion_panel(
           title = "Additional plot settings",
           textInput(

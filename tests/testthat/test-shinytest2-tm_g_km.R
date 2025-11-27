@@ -314,18 +314,18 @@ testthat::test_that("e2e - tm_g_km: Deselecting {ties_coxph} gives no validation
 
 # plot settings ---------------------------------------------------------------------------------------------------
 
-testthat::test_that("e2e - tm_g_km: Starts with uncollapsed additional plot settings.", {
+testthat::test_that("e2e - tm_g_km: Starts with collapsed additional plot settings.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
 
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("xticks")))
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("yval")))
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("font_size")))
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("rel_height_plot")))
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("show_ci_ribbon")))
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("show_km_table")))
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("conf_level")))
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("xlab")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("xticks")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("yval")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("font_size")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("rel_height_plot")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("show_ci_ribbon")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("show_km_table")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("conf_level")))
+  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("xlab")))
 
   testthat::expect_equal(app_driver$get_active_module_input("xticks"), "")
   testthat::expect_equal(app_driver$get_active_module_input("yval"), "Survival probability")
