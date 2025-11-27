@@ -231,7 +231,7 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of responders throws
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(".shiny-validation-message"), # it works because is the only validation message present
+    app_driver$get_text(".shiny-validation-message"),
     "`Responders` field is empty"
   )
   app_driver$stop()
