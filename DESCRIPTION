@@ -84,6 +84,7 @@ VignetteBuilder:
     rmarkdown
 Remotes:
     insightsengineering/teal@bring_tests,
+    insightsengineering/teal.transform@fix_pipe,
     insightsengineering/teal.reporter
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
