@@ -1,0 +1,343 @@
+# teal Module: Kaplan-Meier Plot
+
+This module produces a `ggplot`-style Kaplan-Meier plot for data with
+ADaM structure.
+
+## Usage
+
+``` r
+tm_g_km(
+  label,
+  dataname,
+  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
+    teal.transform::datanames_input(arm_var), "ADSL"),
+  arm_var,
+  arm_ref_comp = NULL,
+  paramcd,
+  strata_var,
+  facet_var,
+  time_unit_var =
+    teal.transform::choices_selected(teal.transform::variable_choices(dataname, "AVALU"),
+    "AVALU", fixed = TRUE),
+  aval_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "AVAL"), "AVAL", fixed = TRUE),
+  cnsr_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
+    "CNSR"), "CNSR", fixed = TRUE),
+  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
+    TRUE),
+  conf_type = teal.transform::choices_selected(c("plain", "log", "log-log"), "plain",
+    TRUE),
+  font_size = c(11L, 1L, 30),
+  xticks = NULL,
+  control_annot_surv_med = tern::control_surv_med_annot(),
+  control_annot_coxph = tern::control_coxph_annot(x = 0.27, y = 0.35, w = 0.3),
+  legend_pos = c(0.9, 0.5),
+  rel_height_plot = c(80L, 0L, 100L),
+  plot_height = c(800L, 400L, 5000L),
+  plot_width = NULL,
+  pre_output = NULL,
+  post_output = NULL,
+  transformators = list(),
+  decorators = list()
+)
+```
+
+## Arguments
+
+- label:
+
+  (`character`)  
+  menu item label of the module in the teal app.
+
+- dataname:
+
+  (`character`)  
+  analysis data used in teal module.
+
+- parentname:
+
+  (`character`)  
+  parent analysis data used in teal module, usually this refers to
+  `ADSL`.
+
+- arm_var:
+
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  object with all available choices and preselected option for variable
+  names that can be used as `arm_var`. It defines the grouping variable
+  in the results table.
+
+- arm_ref_comp:
+
+  (`list`) optional,  
+  if specified it must be a named list with each element corresponding
+  to an arm variable in `ADSL` and the element must be another list
+  (possibly with delayed
+  [`teal.transform::variable_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/variable_choices.html)
+  or delayed
+  [`teal.transform::value_choices()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/value_choices.html)
+  with the elements named `ref` and `comp` that the defined the default
+  reference and comparison arms when the arm variable is changed.
+
+- paramcd:
+
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  object with all available choices and preselected option for the
+  parameter code variable from `dataname`.
+
+- strata_var:
+
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  names of the variables for stratified analysis.
+
+- facet_var:
+
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  object with all available choices and preselected option for names of
+  variable that can be used for plot faceting.
+
+- time_unit_var:
+
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  object with all available choices and pre-selected option for the time
+  unit variable.
+
+- aval_var:
+
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  object with all available choices and pre-selected option for the
+  analysis variable.
+
+- cnsr_var:
+
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  object with all available choices and preselected option for the
+  censoring variable.
+
+- conf_level:
+
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  object with all available choices and pre-selected option for the
+  confidence level, each within range of (0, 1).
+
+- conf_type:
+
+  (`string`)  
+  confidence interval type for median survival time CI. Options are
+  "plain" (default), "log", "log-log".
+
+- font_size:
+
+  (`numeric`)  
+  numeric vector of length 3 of current, minimum and maximum font size
+  values.
+
+- xticks:
+
+  (`numeric` or `NULL`)  
+  numeric vector of tick positions or a single number with spacing for
+  the x-axis. If `NULL` (default), users can specify this interactively
+  in the module. If provided, the interactive input field is
+  pre-populated with the specified values as a default. Users can then
+  modify these values interactively, and their changes will take
+  precedence over the default.
+
+- control_annot_surv_med:
+
+  (`list`)  
+  parameters to control the position and size of the annotation table
+  added to the plot when `annot_surv_med = TRUE`, specified using the
+  [`control_surv_med_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
+  function. Parameter options are: `x`, `y`, `w`, `h`, and `fill`. See
+  [`control_surv_med_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
+  for details.
+
+- control_annot_coxph:
+
+  (`list`)  
+  parameters to control the position and size of the annotation table
+  added to the plot when `annot_coxph = TRUE`, specified using the
+  [`control_coxph_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
+  function. Parameter options are: `x`, `y`, `w`, `h`, `fill`, and
+  `ref_lbls`. See
+  [`control_coxph_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
+  for details.
+
+- legend_pos:
+
+  (`numeric(2)` or `NULL`)  
+  vector containing x- and y-coordinates, respectively, for the legend
+  position relative to the KM plot area. If `NULL` (default), the legend
+  is positioned in the bottom right corner of the plot, or the middle
+  right of the plot if needed to prevent overlapping.
+
+- rel_height_plot:
+
+  (`proportion`)  
+  proportion of total figure height to allocate to the Kaplan-Meier
+  plot. Relative height of patients at risk table is then
+  `1 - rel_height_plot`. If `annot_at_risk = FALSE` or `as_list = TRUE`,
+  this parameter is ignored.
+
+- plot_height:
+
+  (`numeric`) optional  
+  vector of length three with `c(value, min, max)`. Specifies the height
+  of the main plot and renders a slider on the plot to interactively
+  adjust the plot height.
+
+- plot_width:
+
+  (`numeric`) optional  
+  vector of length three with `c(value, min, max)`. Specifies the width
+  of the main plot and renders a slider on the plot to interactively
+  adjust the plot width.
+
+- pre_output:
+
+  (`shiny.tag`) optional,  
+  with text placed before the output to put the output into context. For
+  example a title.
+
+- post_output:
+
+  (`shiny.tag`) optional,  
+  with text placed after the output to put the output into context. For
+  example the
+  [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
+  elements are useful.
+
+- transformators:
+
+  (`list` of `teal_transform_module`) that will be applied to transform
+  module's data input. To learn more check
+  [`vignette("transform-input-data", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-input-data.html).
+
+- decorators:
+
+  **\[experimental\]** (named `list` of lists of
+  `teal_transform_module`) optional, decorator for tables or plots
+  included in the module output reported. The decorators are applied to
+  the respective output objects.
+
+  See section "Decorating Module" below for more details.
+
+## Value
+
+a `teal_module` object.
+
+## Decorating Module
+
+This module generates the following objects, which can be modified in
+place using decorators:
+
+- `plot` (`ggplot`)
+
+A Decorator is applied to the specific output using a named list of
+`teal_transform_module` objects. The name of this list corresponds to
+the name of the output to which the decorator is applied. See code
+snippet below:
+
+    tm_g_km(
+       ..., # arguments for module
+       decorators = list(
+         plot = teal_transform_module(...) # applied only to `plot` output
+       )
+    )
+
+For additional details and examples of decorators, refer to the vignette
+[`vignette("decorate-module-output", package = "teal.modules.clinical")`](https://insightsengineering.github.io/teal.modules.clinical/articles/decorate-module-output.md).
+
+To learn more please refer to the vignette
+[`vignette("transform-module-output", package = "teal")`](https://insightsengineering.github.io/teal/latest-tag/articles/transform-module-output.html)
+or the
+[`teal::teal_transform_module()`](https://insightsengineering.github.io/teal/latest-tag/reference/teal_transform_module.html)
+documentation.
+
+## Reporting
+
+This module returns an object of class `teal_module`, that contains a
+`server` function. Since the server function returns a `teal_report`
+object, this makes this module reportable, which means that the
+reporting functionality will be turned on automatically by the `teal`
+framework.
+
+For more information on reporting in `teal`, see the vignettes:
+
+- [`vignette("reportable-shiny-application", package = "teal.reporter")`](https://insightsengineering.github.io/teal.reporter/latest-tag/articles/reportable-shiny-application.html)
+
+- `vignette("adding-support-for-reporting-to-custom-modules", package = "teal")`
+
+## See also
+
+The [TLG
+Catalog](https://insightsengineering.github.io/tlg-catalog/stable/)
+where additional example apps implementing this module can be found.
+
+## Examples in Shinylive
+
+- example-1:
+
+  [Open in
+  Shinylive](https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsOEMaWLUijIoQSvxQpFD6RlzUAPqh4dYhYRGGOgDutKQAFrQQ7PFQuDogSjo67sxs+ajUrIGl5QyVHNG8AsJiElIy8g0AggAiAMoAMpE6pDAEMXAAHjFQ-KLU-QO2tk7jk9NzC-yk5EoAvkEAVkS5MQDWcKyi+ck2qfxwxlDCpDEE-LSi0+eXG53YDQeD3ApyAC6rggg1G4wKwGACjAcJGKMh0Nhaw2COSSJRg3WLjAmJhLBgMUYry+RBgqHGdFEpHY-QAwrY+lgALJsgY6AC8jWZrIgZTK1OMgp0hJ5OgAQijcA0ysR6dKCKzUXK+kqZdruTo2SigmU5MqxTouYahUyWSqdJLpSj5YgdAAFahQAhwehEJUOtUMoWawlugaMQQAcx0AA09Si2W62XT6LkwpZgmBTTogkElGgGalcplRWUCtKChaynwhCJRNLax17g7JjEo9cYGXxWUvfQ4NRnWAANJoL0QAzcuC0VQe-ykAOWnsFUG6IWEnEk6s9nQUmKaFgarIXH2iGKiAdwdRwfjdnc6A+MWhQegiL7HmRidhooqhg0Jg0+QAvoOWtIDs3NB0e1lbkUSg3Ntx7VAWFgb4jxPMRz0va9b3gsoD2oQQ4HfDD7iJDYihRd0uT6XkBgA6isFok1EJ3FEAHkhjgpdxUgniyj3SVaXVIVBJpINWLKZlmHCfdDxDD9TywkQcLvHdH2fV9iIIRSvx-HQ-yGJx4zwfV5W5LBhywAAmE0+PvMoUSMkz4Psnc3h9T5H3Qz8zwvFTyFw-jxQ0l83x00jv2GEZfy1ZyAPMyybLsyTxQAOQcEZ0WCtye1mDQCCuBsQ3YAAGIoAGZyp0AA2aqAE5qoARms5qAFZmoADlKnMzQaPMlFoKV2Fycg1A0bRrBsEpLVEHIIFYPp0HYQsABJBFoIo1ovRhtHqCAjiUMAjkhIA)
+
+## Examples
+
+``` r
+library(nestcolor)
+
+data <- teal_data()
+data <- within(data, {
+  library(dplyr)
+  library(teal.modules.clinical)
+  ADSL <- tmc_ex_adsl
+  ADTTE <- tmc_ex_adtte
+})
+join_keys(data) <- default_cdisc_join_keys[names(data)]
+
+ADSL <- data[["ADSL"]]
+ADTTE <- data[["ADTTE"]]
+
+arm_ref_comp <- list(
+  ACTARMCD = list(
+    ref = "ARM B",
+    comp = c("ARM A", "ARM C")
+  ),
+  ARM = list(
+    ref = "B: Placebo",
+    comp = c("A: Drug X", "C: Combination")
+  )
+)
+
+app <- init(
+  data = data,
+  modules = modules(
+    tm_g_km(
+      label = "Kaplan-Meier Plot",
+      dataname = "ADTTE",
+      arm_var = choices_selected(
+        variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
+        "ARM"
+      ),
+      paramcd = choices_selected(
+        value_choices(ADTTE, "PARAMCD", "PARAM"),
+        "OS"
+      ),
+      arm_ref_comp = arm_ref_comp,
+      strata_var = choices_selected(
+        variable_choices(ADSL, c("SEX", "BMRKR2")),
+        "SEX"
+      ),
+      facet_var = choices_selected(
+        variable_choices(ADSL, c("SEX", "BMRKR2")),
+        NULL
+      ),
+      xticks = c(0, 30, 60, 90, 120, 150, 180)
+    )
+  )
+)
+#> Initializing tm_g_km
+if (interactive()) {
+  shinyApp(app$ui, app$server)
+}
+```

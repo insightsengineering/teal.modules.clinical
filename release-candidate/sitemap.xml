@@ -42,6 +42,8 @@
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/prepare_arm.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/prepare_arm_levels.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/select_decorators.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/set_chunk_attrs.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/set_chunk_dims.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/split_choices.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/split_col_expr.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/split_interactions.html</loc></url>
@@ -110,6 +112,7 @@
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_events_patyear.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_events_summary.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_exposure.html</loc></url>
+<url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_glm_counts.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_logistic.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_mult_events.html</loc></url>
 <url><loc>https://insightsengineering.github.io/teal.modules.clinical/reference/tm_t_pp_basic_info.html</loc></url>
