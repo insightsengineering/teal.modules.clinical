@@ -259,8 +259,8 @@ testthat::test_that("e2e - tm_g_km: Starts with specified collapsed comparison s
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
 
-  app_driver$is_visible(app_driver$namespaces(TRUE)$module("pval_method_coxph"))
-  app_driver$is_visible(app_driver$namespaces(TRUE)$module("ties_coxph"))
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("pval_method_coxph"))
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("ties_coxph"))
 
   testthat::expect_equal(app_driver$get_active_module_input("pval_method_coxph"), "log-rank")
   testthat::expect_equal(
@@ -318,14 +318,14 @@ testthat::test_that("e2e - tm_g_km: Starts with collapsed additional plot settin
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_km()
 
-  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("xticks")))
-  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("yval")))
-  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("font_size")))
-  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("rel_height_plot")))
-  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("show_ci_ribbon")))
-  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("show_km_table")))
-  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("conf_level")))
-  testthat::expect_false(app_driver$is_visible(app_driver$namespaces(TRUE)$module("xlab")))
+  app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("xticks"))
+  app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("yval"))
+  app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("font_size"))
+  app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("rel_height_plot"))
+  app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("show_ci_ribbon"))
+  app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("show_km_table"))
+  app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("conf_level"))
+  app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("xlab"))
 
   testthat::expect_equal(app_driver$get_active_module_input("xticks"), "")
   testthat::expect_equal(app_driver$get_active_module_input("yval"), "Survival probability")

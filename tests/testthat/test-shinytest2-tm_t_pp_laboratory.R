@@ -51,9 +51,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Module initializes in teal withou
   app_driver$wait_for_idle()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("lab_values_table"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("lab_values_table"))
   app_driver$stop()
 })
 
@@ -128,11 +126,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("patient_id", NULL)
-  testthat::expect_false(
-    app_driver$is_visible(
-      app_driver$namespaces(TRUE)$module("lab_values_table"),
-      visibility_property = TRUE
-    )
+  app_driver$expect_hidden(
+    app_driver$namespaces(TRUE)$module("lab_values_table"),
+    visibility_property = TRUE
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
@@ -167,11 +163,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd throws val
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_false(
-    app_driver$is_visible(
-      app_driver$namespaces(TRUE)$module("lab_values_table"),
-      visibility_property = TRUE
-    )
+  app_driver$expect_hidden(
+    app_driver$namespaces(TRUE)$module("lab_values_table"),
+    visibility_property = TRUE
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
@@ -208,11 +202,9 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
     app_driver$set_active_module_input("param-dataset_ADLB_singleextract-select", NULL)
-    testthat::expect_false(
-      app_driver$is_visible(
-        app_driver$namespaces(TRUE)$module("lab_values_table"),
-        visibility_property = TRUE
-      )
+    app_driver$expect_hidden(
+      app_driver$namespaces(TRUE)$module("lab_values_table"),
+      visibility_property = TRUE
     )
     app_driver$expect_validation_error()
     testthat::expect_equal(
@@ -248,11 +240,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints throws 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_false(
-    app_driver$is_visible(
-      app_driver$namespaces(TRUE)$module("lab_values_table"),
-      visibility_property = TRUE
-    )
+  app_driver$expect_hidden(
+    app_driver$namespaces(TRUE)$module("lab_values_table"),
+    visibility_property = TRUE
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
@@ -289,11 +279,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu throws valid
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_false(
-    app_driver$is_visible(
-      app_driver$namespaces(TRUE)$module("lab_values_table"),
-      visibility_property = TRUE
-    )
+  app_driver$expect_hidden(
+    app_driver$namespaces(TRUE)$module("lab_values_table"),
+    visibility_property = TRUE
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
@@ -330,11 +318,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var throws va
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_false(
-    app_driver$is_visible(
-      app_driver$namespaces(TRUE)$module("lab_values_table"),
-      visibility_property = TRUE
-    )
+  app_driver$expect_hidden(
+    app_driver$namespaces(TRUE)$module("lab_values_table"),
+    visibility_property = TRUE
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
@@ -369,11 +355,9 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of arind throws valid
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
   app_driver$set_active_module_input("anrind-dataset_ADLB_singleextract-select", NULL)
-  testthat::expect_false(
-    app_driver$is_visible(
-      app_driver$namespaces(TRUE)$module("lab_values_table"),
-      visibility_property = TRUE
-    )
+  app_driver$expect_hidden(
+    app_driver$namespaces(TRUE)$module("lab_values_table"),
+    visibility_property = TRUE
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(

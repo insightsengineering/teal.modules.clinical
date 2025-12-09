@@ -195,9 +195,7 @@ testthat::test_that(
     app_driver$expect_no_validation_error()
     app_driver$wait_for_idle()
 
-    testthat::expect_true(
-      app_driver$is_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
-    )
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
 
     plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot_before, "data:image/png;base64,")
@@ -243,9 +241,7 @@ testthat::test_that(
     app_driver$expect_no_validation_error()
     app_driver$wait_for_idle()
 
-    testthat::expect_true(
-      app_driver$is_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
-    )
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
 
     plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot_before, "data:image/png;base64,")
@@ -519,9 +515,7 @@ for (func in output_functions) {
       app_driver$wait_for_idle()
 
       if (grepl("^g_", func)) {
-        testthat::expect_true(
-          app_driver$is_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
-        )
+        app_driver$expect_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
 
         plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
       } else {
