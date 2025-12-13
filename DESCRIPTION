@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.12.0
-Date: 2025-12-02
+Version: 0.12.0.9000
+Date: 2025-12-13
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
            comment = c(ORCID = "0000-0001-7566-2787")),
