@@ -80,7 +80,7 @@ Suggests:
     testthat (>= 3.2.3),
     withr (>= 3.0.0)
 Remotes:
-    insightsengineering/teal@visibility_feat@bring_tests
+    insightsengineering/teal
 VignetteBuilder:
     knitr,
     rmarkdown

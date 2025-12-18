@@ -16,7 +16,7 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
     teal::init(
       data = data,
       modules = tm_g_barchart_simple(
-        label = "ADAE Analysis (e2e)",
+        label = "ADAE Analysis (e-2-e)",
         x = teal.transform::data_extract_spec(
           dataname = "ADSL",
           select = teal.transform::select_spec(
@@ -142,7 +142,7 @@ testthat::test_that(
 
     testthat::expect_equal(
       app_driver$get_text("a.nav-link.active"),
-      "ADAE Analysis (e2e)"
+      "ADAE Analysis (e-2-e)"
     )
 
     testthat::expect_equal(

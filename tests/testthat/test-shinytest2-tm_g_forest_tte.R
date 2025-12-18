@@ -21,7 +21,7 @@ app_driver_tm_g_forest_tte <- function() {
     teal::init(
       data = data,
       modules = tm_g_forest_tte(
-        label = "Forest Survival (e2e)",
+        label = "Forest Survival (e-2-e)",
         dataname = "ADTTE",
         parentname = "ADSL",
         arm_var = teal.transform::choices_selected(
@@ -95,7 +95,7 @@ testthat::test_that(
 
     testthat::expect_identical(
       app_driver$get_text("a.nav-link.active"),
-      "Forest Survival (e2e)"
+      "Forest Survival (-e-2e)"
     )
 
     testthat::expect_identical(

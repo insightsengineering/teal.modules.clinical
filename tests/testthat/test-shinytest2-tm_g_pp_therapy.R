@@ -31,7 +31,7 @@ app_driver_tm_g_pp_therapy <- function() {
     teal::init(
       data = data,
       modules = tm_g_pp_therapy(
-        label = "Therapy (e2e)",
+        label = "Therapy (e-2-e)",
         dataname = "ADCM",
         parentname = "ADSL",
         patient_col = "USUBJID",
@@ -110,7 +110,7 @@ testthat::test_that(
 
     testthat::expect_equal(
       trimws(app_driver$get_text("a.nav-link.active")),
-      "Therapy (e2e)"
+      "Therapy (e-2-e)"
     )
 
     testthat::expect_equal(app_driver$get_active_module_input("patient_id"), "AB12345-CHN-11-id-2")
