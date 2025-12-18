@@ -197,16 +197,16 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_patient_timeline()
 
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select")),
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select")),
-    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select")),
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select"))
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select"))
+    app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select"))
     app_driver$expect_hidden(app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select"))
 
     app_driver$set_active_module_input("relday_x_axis", FALSE)
 
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select")),
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select")),
-    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select")),
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select"))
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select"))
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select"))
     app_driver$expect_visible(app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select"))
 
     app_driver$stop()
