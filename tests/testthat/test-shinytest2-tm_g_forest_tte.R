@@ -95,7 +95,7 @@ testthat::test_that(
 
     testthat::expect_identical(
       app_driver$get_text("a.nav-link.active"),
-      "Forest Survival (-e-2e)"
+      "Forest Survival (e-2-e)"
     )
 
     testthat::expect_identical(
