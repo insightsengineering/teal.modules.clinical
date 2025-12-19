@@ -220,7 +220,9 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of aval_var throws validatio
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("aval_var-dataset_ADQS_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("aval_var-dataset_ADQS_singleextract-select_input .shiny-validation-message")
+    ),
     "Analysis variable cannot be empty."
   )
   app_driver$stop()
@@ -251,7 +253,9 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of arm_var throws validation
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
+    ),
     "Treatment variable must be selected"
   )
   app_driver$stop()

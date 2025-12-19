@@ -351,7 +351,9 @@ testthat::test_that(
     app_driver$set_active_module_input("aetime_start-dataset_ADAE_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select_input > div > span")),
+      app_driver$get_text(
+        app_driver$namespaces(TRUE)$module("aetime_start-dataset_ADAE_singleextract-select_input > div > span")
+      ),
       "Please add AE start date."
     )
     app_driver$expect_validation_error()
@@ -387,7 +389,9 @@ testthat::test_that(
     app_driver$set_active_module_input("aetime_end-dataset_ADAE_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select_input > div > span")),
+      app_driver$get_text(
+        app_driver$namespaces(TRUE)$module("aetime_end-dataset_ADAE_singleextract-select_input > div > span")
+      ),
       "Please add AE end date."
     )
     app_driver$expect_validation_error()
@@ -421,7 +425,9 @@ testthat::test_that(
     app_driver$set_active_module_input("aerelday_start-dataset_ADAE_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("aerelday_start-dataset_ADAE_singleextract-select_input > div > span")),
+      app_driver$get_text(
+        app_driver$namespaces(TRUE)$module("aerelday_start-dataset_ADAE_singleextract-select_input > div > span")
+      ),
       "Please add AE start date."
     )
     app_driver$expect_validation_error()
@@ -455,7 +461,9 @@ testthat::test_that(
     app_driver$set_active_module_input("aerelday_end-dataset_ADAE_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("aerelday_end-dataset_ADAE_singleextract-select_input > div > span")),
+      app_driver$get_text(
+        app_driver$namespaces(TRUE)$module("aerelday_end-dataset_ADAE_singleextract-select_input > div > span")
+      ),
       "Please add AE end date."
     )
     app_driver$expect_validation_error()
@@ -491,7 +499,9 @@ testthat::test_that(
     app_driver$set_active_module_input("dstime_start-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select_input > div > span")),
+      app_driver$get_text(
+        app_driver$namespaces(TRUE)$module("dstime_start-dataset_ADCM_singleextract-select_input > div > span")
+      ),
       "Please add Medication start date."
     )
     app_driver$expect_validation_error()
@@ -527,7 +537,9 @@ testthat::test_that(
     app_driver$set_active_module_input("dstime_end-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select_input > div > span")),
+      app_driver$get_text(
+        app_driver$namespaces(TRUE)$module("dstime_end-dataset_ADCM_singleextract-select_input > div > span")
+      ),
       "Please add Medication end date."
     )
     app_driver$expect_validation_error()
@@ -561,7 +573,9 @@ testthat::test_that(
     app_driver$set_active_module_input("dsrelday_start-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("dsrelday_start-dataset_ADCM_singleextract-select_input > div > span")),
+      app_driver$get_text(
+        app_driver$namespaces(TRUE)$module("dsrelday_start-dataset_ADCM_singleextract-select_input > div > span")
+      ),
       "Please add Medication start date."
     )
     app_driver$expect_validation_error()
@@ -595,7 +609,9 @@ testthat::test_that(
     app_driver$set_active_module_input("dsrelday_end-dataset_ADCM_singleextract-select", NULL)
     testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
     testthat::expect_identical(
-      app_driver$get_text(app_driver$namespaces(TRUE)$module("dsrelday_end-dataset_ADCM_singleextract-select_input > div > span")),
+      app_driver$get_text(
+        app_driver$namespaces(TRUE)$module("dsrelday_end-dataset_ADCM_singleextract-select_input > div > span")
+      ),
       "Please add Medication end date."
     )
     app_driver$expect_validation_error()

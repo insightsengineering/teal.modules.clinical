@@ -102,7 +102,9 @@ testthat::test_that("e2e - tm_t_mult_events: Deselection of arm_var throws valid
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
+    ),
     "Please select a treatment variable"
   )
   app_driver$stop()
@@ -150,7 +152,9 @@ testthat::test_that("e2e - tm_t_mult_events: Deselection of llt throws validatio
   app_driver$set_active_module_input("llt-dataset_ADCM_singleextract-select", NULL)
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("llt-dataset_ADCM_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("llt-dataset_ADCM_singleextract-select_input .shiny-validation-message")
+    ),
     "Please select a \"LOW LEVEL TERM\" variable"
   )
   app_driver$stop()

@@ -365,6 +365,6 @@ test_that_plot_settings(
   FALSE,
   setup_fun = function(app_driver) {
     app_driver$set_active_module_input("label_bars", TRUE)
-    return(NULL)
+    NULL
   }
 )

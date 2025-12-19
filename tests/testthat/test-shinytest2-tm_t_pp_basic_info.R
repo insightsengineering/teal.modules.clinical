@@ -124,7 +124,9 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of cov_var throws val
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("vars-dataset_ADSL_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("vars-dataset_ADSL_singleextract-select_input .shiny-validation-message")
+    ),
     "Please select basic info variables"
   )
   app_driver$stop()

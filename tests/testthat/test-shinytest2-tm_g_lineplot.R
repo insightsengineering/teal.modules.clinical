@@ -132,7 +132,9 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation er
   app_driver$set_active_module_input("param-dataset_ADLB_singleextract-filter1-vals", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-filter1-vals_input > div > span")),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-filter1-vals_input > div > span")
+    ),
     "Please select Biomarker filter."
   )
   app_driver$expect_validation_error()
