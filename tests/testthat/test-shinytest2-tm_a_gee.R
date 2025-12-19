@@ -3,16 +3,16 @@ app_driver_tm_a_gee <- function() {
   data <- within(data, {
     library(dplyr)
     ADSL <- tmc_ex_adsl
-    ADQS <- tmc_ex_adqs %>%
-      filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
+    ADQS <- tmc_ex_adqs |>
+      filter(ABLFL != "Y" & ABLFL2 != "Y") |>
       mutate(
         AVISIT = as.factor(AVISIT),
-        AVISITN = rank(AVISITN) %>%
-          as.factor() %>%
-          as.numeric() %>%
+        AVISITN = rank(AVISITN) |>
+          as.factor() |>
+          as.numeric() |>
           as.factor(),
         AVALBIN = AVAL < 50 # Just as an example to get a binary endpoint.
-      ) %>%
+      ) |>
       droplevels()
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
