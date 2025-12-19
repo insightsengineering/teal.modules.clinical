@@ -120,7 +120,11 @@ testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation er
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module(
+        "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
+      )
+    ),
     "At least one treatment variable is required"
   )
   app_driver$stop()
@@ -148,7 +152,11 @@ testthat::test_that("e2e - tm_t_smq: Deselection of paramcd throws validation er
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("llt-dataset_ADAE_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module(
+        "llt-dataset_ADAE_singleextract-select_input .shiny-validation-message"
+      )
+    ),
     "A low level term variable is required"
   )
   app_driver$stop()
@@ -179,7 +187,11 @@ testthat::test_that("e2e - tm_t_smq: Deselection of worst_flag throws validation
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("baskets-dataset_ADAE_singleextract-select_input .shiny-validation-message")),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module(
+        "baskets-dataset_ADAE_singleextract-select_input .shiny-validation-message"
+      )
+    ),
     "At least one basket is required"
   )
   app_driver$stop()

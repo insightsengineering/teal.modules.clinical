@@ -310,7 +310,7 @@ cs_to_des_select <- function(cs, dataname, multiple = FALSE, ordered = FALSE, la
       select = cs_to_select_spec(cs, multiple = multiple, ordered = ordered, label = label)
     )
   } else {
-    return(cs)
+    cs
   }
 }
 
@@ -359,7 +359,7 @@ cs_to_des_filter <- function(cs, dataname, multiple = FALSE, include_vars = FALS
       select = select
     )
   } else {
-    return(cs)
+    cs
   }
 }
 
@@ -891,7 +891,7 @@ as_numeric_from_comma_sep_str <- function(input_string, sep = ",") {
   } else {
     split_as_numeric <- NULL
   }
-  return(split_as_numeric)
+  split_as_numeric
 }
 
 #' Default string for total column label
@@ -1094,7 +1094,7 @@ set_chunk_attrs <- function(teal_card,
     return(teal_card)
   }
 
-  for (ix in seq_len(length(teal_card))) {
+  for (ix in seq_along(teal_card)) {
     if (ix > n) {
       break
     }
