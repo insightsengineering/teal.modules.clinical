@@ -1,3 +1,22 @@
+# Setup timeout options for shinytest2 if none are set in options nor on environment variables
+withr::local_options(
+  list(
+    shinytest2.timeout = getOption(
+      "shinytest2.timeout",
+      default = Sys.getenv("SHINYTEST2_TIMEOUT", unset = 30 * 1000)
+    ),
+    shinytest2.load_timeout = getOption(
+      "shinytest2.load_timeout",
+      default = Sys.getenv("SHINYTEST2_LOAD_TIMEOUT", unset = 60 * 1000)
+    ),
+    shinytest2.duration = getOption(
+      "shinytest2.duration",
+      default = Sys.getenv("SHINYTEST2_DURATION", unset = 1.5 * 1000)
+    )
+  ),
+  .local_envir = testthat::test_env()
+)
+
 app_driver_tm_t_pp_laboratory <- function() {
   data <- teal.data::teal_data()
   data <- within(data, {
@@ -145,11 +164,9 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
     app_driver$wait_for_idle()
-    app_driver$get_screenshot("~/remove_me_before_debugging.png")
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", "STUDYID")
     app_driver$wait_for_idle()
-    app_driver$get_screenshot("~/remove_me_after_debugging.png")
     testthat::expect_snapshot_failure(
       testthat::expect_identical(
         table_before,
