@@ -342,7 +342,11 @@ testthat::test_that("e2e - tm_g_km: Starts with collapsed additional plot settin
     "Specify break intervals for x-axis e.g. 0 ; 500"
   )
   testthat::expect_match(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module("yval-label")), "Value on y-axis", fixed = FALSE
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("yval-label")
+    ),
+    "Value on y-axis",
+    fixed = FALSE
   )
   testthat::expect_equal(app_driver$get_text(app_driver$namespaces(TRUE)$module("font_size-label")), "Table Font Size")
   testthat::expect_equal(
