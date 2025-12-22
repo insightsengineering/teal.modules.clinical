@@ -309,7 +309,6 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", "AGE")
     app_driver$wait_for_idle()
-    app
     testthat::expect_snapshot_failure(
       testthat::expect_identical(
         table_before,
