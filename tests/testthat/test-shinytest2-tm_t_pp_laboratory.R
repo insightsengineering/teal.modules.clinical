@@ -111,8 +111,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
     app_driver$wait_for_idle()
-    testthat::expect_false(
-      identical(
+    testthat::expect_snapshot_failure(
+      testthat::expect_identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -145,11 +145,13 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
     app_driver$wait_for_idle()
+    app_driver$get_screenshot("~/remove_me_before_debugging.png")
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", "STUDYID")
     app_driver$wait_for_idle()
-    testthat::expect_false(
-      identical(
+    app_driver$get_screenshot("~/remove_me_after_debugging.png")
+    testthat::expect_snapshot_failure(
+      testthat::expect_identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -187,8 +189,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("param-dataset_ADLB_singleextract-select", "SEX")
     app_driver$wait_for_idle()
-    testthat::expect_false(
-      identical(
+    testthat::expect_snapshot_failure(
+      testthat::expect_identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -229,8 +231,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", "AGE")
     app_driver$wait_for_idle()
-    testthat::expect_false(
-      identical(
+    testthat::expect_snapshot_failure(
+      testthat::expect_identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -268,8 +270,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", "SEX")
     app_driver$wait_for_idle()
-    testthat::expect_false(
-      identical(
+    testthat::expect_snapshot_failure(
+      testthat::expect_identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -307,8 +309,9 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", "AGE")
     app_driver$wait_for_idle()
-    testthat::expect_false(
-      identical(
+    app
+    testthat::expect_snapshot_failure(
+      testthat::expect_identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -337,8 +340,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var throws va
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting arind changes the table
-  and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting arind changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
@@ -346,8 +348,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("anrind-dataset_ADLB_singleextract-select", "AGEU")
     app_driver$wait_for_idle()
-    testthat::expect_false(
-      identical(
+    testthat::expect_snapshot_failure(
+      testthat::expect_identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
