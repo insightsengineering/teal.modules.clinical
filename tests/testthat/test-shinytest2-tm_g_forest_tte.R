@@ -21,7 +21,7 @@ app_driver_tm_g_forest_tte <- function() {
     teal::init(
       data = data,
       modules = tm_g_forest_tte(
-        label = "Forest Survival (e2e)",
+        label = "Forest Survival (e-2-e)",
         dataname = "ADTTE",
         parentname = "ADSL",
         arm_var = teal.transform::choices_selected(
@@ -81,9 +81,7 @@ testthat::test_that("e2e - tm_g_forest_tte: Module initializes in teal without e
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   app_driver$wait_for_idle()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main"))
 
   app_driver$stop()
 })
@@ -97,7 +95,7 @@ testthat::test_that(
 
     testthat::expect_identical(
       app_driver$get_text("a.nav-link.active"),
-      "Forest Survival (e2e)"
+      "Forest Survival (e-2-e)"
     )
 
     testthat::expect_identical(

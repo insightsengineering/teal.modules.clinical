@@ -71,9 +71,7 @@ testthat::test_that("e2e - tm_g_lineplot: Module initializes in teal without err
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
 
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main"))
 
   app_driver$stop()
 })

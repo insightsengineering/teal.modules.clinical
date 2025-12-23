@@ -16,7 +16,7 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
     teal::init(
       data = data,
       modules = tm_g_barchart_simple(
-        label = "ADAE Analysis (e2e)",
+        label = "ADAE Analysis (e-2-e)",
         x = teal.transform::data_extract_spec(
           dataname = "ADSL",
           select = teal.transform::select_spec(
@@ -127,7 +127,7 @@ testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal with
 
   # Table is rendered asynchronously, wait a bit more
   app_driver$wait_for_idle()
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("table > table")))
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table > table"))
 
   app_driver$stop()
 })
@@ -142,7 +142,7 @@ testthat::test_that(
 
     testthat::expect_equal(
       app_driver$get_text("a.nav-link.active"),
-      "ADAE Analysis (e2e)"
+      "ADAE Analysis (e-2-e)"
     )
 
     testthat::expect_equal(

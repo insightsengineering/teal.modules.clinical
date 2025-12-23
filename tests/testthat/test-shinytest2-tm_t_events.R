@@ -45,9 +45,7 @@ testthat::test_that("e2e - tm_t_events: Module initializes in teal without error
   app_driver <- app_driver_tm_t_events()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   app_driver$stop()
 })
 

@@ -60,9 +60,7 @@ testthat::test_that(
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
     testthat::expect_match(app_driver$get_active_module_plot_output("chart"), "data:image/png;base64,")
-    testthat::expect_true(
-      app_driver$is_visible(app_driver$namespaces(TRUE)$module("table"))
-    )
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table"))
     app_driver$stop()
   }
 )

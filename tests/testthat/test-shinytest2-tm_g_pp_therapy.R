@@ -31,7 +31,7 @@ app_driver_tm_g_pp_therapy <- function() {
     teal::init(
       data = data,
       modules = tm_g_pp_therapy(
-        label = "Therapy (e2e)",
+        label = "Therapy (e-2-e)",
         dataname = "ADCM",
         parentname = "ADSL",
         patient_col = "USUBJID",
@@ -95,12 +95,8 @@ testthat::test_that("e2e - tm_g_pp_therapy: Module initializes in teal without e
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
 
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main"))
-  )
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("therapy_table"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main"))
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("therapy_table"))
 
   app_driver$stop()
 })
@@ -114,7 +110,7 @@ testthat::test_that(
 
     testthat::expect_equal(
       trimws(app_driver$get_text("a.nav-link.active")),
-      "Therapy (e2e)"
+      "Therapy (e-2-e)"
     )
 
     testthat::expect_equal(app_driver$get_active_module_input("patient_id"), "AB12345-CHN-11-id-2")
