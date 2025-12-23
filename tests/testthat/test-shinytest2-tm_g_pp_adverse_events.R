@@ -55,15 +55,12 @@ app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length.
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Module initializes in teal without any errors and produces the plot and table.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
     testthat::expect_match(app_driver$get_active_module_plot_output("chart"), "data:image/png;base64,")
-    testthat::expect_true(
-      app_driver$is_visible(app_driver$namespaces(TRUE)$module("table"))
-    )
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table"))
     app_driver$stop()
   }
 )
@@ -72,11 +69,10 @@ testthat::test_that(
   "e2e tm_g_pp_adverse_events - Module initializes with specific label, patient_id, aeterm,
   tox_grade, causality, outcome, action, time, decod.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "Adverse Events"
     )
 
@@ -126,7 +122,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Selecting patient_id doesn't throw errors and changes the plot and table.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
@@ -152,14 +147,13 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Deselecting patient_id throw validation error",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     input_id <- "patient_id"
-    app_driver$set_active_module_input(input_id, "")
+    app_driver$set_active_module_input(input_id, NULL)
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
       "Please select a patient"
     )
     app_driver$stop()
@@ -169,7 +163,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Selecting aeterm column doesn't throw errors and changes the plot and table.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
@@ -196,14 +189,13 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Deselecting aeterm column throw validation error",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     input_id <- "aeterm-dataset_ADAE_singleextract-select"
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
       "Please select AETERM variable."
     )
     app_driver$stop()
@@ -213,7 +205,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Selecting tox_grade column doesn't throw errors and changes the plot and table.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
@@ -240,14 +231,13 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Deselecting tox_grade column throw validation error",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     input_id <- "tox_grade-dataset_ADAE_singleextract-select"
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
       "Please select AETOXGR variable."
     )
     app_driver$stop()
@@ -257,7 +247,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Selecting causality column doesn't throw errors and changes the plot and table.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
@@ -284,14 +273,13 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Deselecting causality column throw validation error",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     input_id <- "causality-dataset_ADAE_singleextract-select"
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
       "Please select AEREL variable."
     )
     app_driver$stop()
@@ -301,7 +289,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Selecting outcome column doesn't throw errors and changes the plot and table.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
@@ -328,14 +315,13 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Deselecting outcome column throw validation error",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     input_id <- "outcome-dataset_ADAE_singleextract-select"
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
       "Please select AEOUT variable."
     )
     app_driver$stop()
@@ -345,7 +331,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Selecting action column doesn't throw errors and changes the plot and table.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
@@ -372,14 +357,13 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Deselecting action column throw validation error",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     input_id <- "action-dataset_ADAE_singleextract-select"
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
       "Please select AEACN variable."
     )
     app_driver$stop()
@@ -389,7 +373,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Selecting time column doesn't throw errors and changes the plot and table.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     plot_before <- app_driver$get_active_module_plot_output("chart")
@@ -416,14 +399,13 @@ testthat::test_that(
 testthat::test_that(
   "e2e tm_g_pp_adverse_events - Deselecting time column throw validation error",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_adverse_events()
     input_id <- "time-dataset_ADAE_singleextract-select"
     app_driver$set_active_module_input(input_id, "")
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id)),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(sprintf("%s_input .shiny-validation-message", input_id))),
       "Please select ASTDY variable."
     )
     app_driver$stop()

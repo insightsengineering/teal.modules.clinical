@@ -747,7 +747,7 @@ make_barchart_simple_call <- function(y_name,
   if (isTRUE(rotate_y_label)) ggplot2_args$theme[["axis.text.y"]] <- quote(ggplot2::element_text(angle = 45, hjust = 1))
   if (!is.null(x_name)) {
     ggplot2_args$labs[["x"]] <- substitute(
-      expr = column_annotation_label(counts, x_name),
+      expr = teal.modules.clinical::column_annotation_label(counts, x_name),
       env = list(x_name = x_name)
     )
   } else {

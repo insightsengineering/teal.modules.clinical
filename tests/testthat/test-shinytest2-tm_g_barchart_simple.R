@@ -16,7 +16,7 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
     teal::init(
       data = data,
       modules = tm_g_barchart_simple(
-        label = "ADAE Analysis (e2e)",
+        label = "ADAE Analysis (e-2-e)",
         x = teal.transform::data_extract_spec(
           dataname = "ADSL",
           select = teal.transform::select_spec(
@@ -114,17 +114,20 @@ app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
 # Initialization --------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_barchart_simple: Module initializes in teal without errors and produces output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_barchart_simple()
+  app_driver$wait_for_idle()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("myplot-plot_out_main"))
+  testthat::expect_match(
+    app_driver$get_active_module_plot_output("myplot"),
+    "data:image/png;base64,"
   )
 
-  testthat::expect_true(app_driver$is_visible(app_driver$namespaces(TRUE)$module("table")))
+  # Table is rendered asynchronously, wait a bit more
+  app_driver$wait_for_idle()
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table > table"))
 
   app_driver$stop()
 })
@@ -133,13 +136,13 @@ testthat::test_that(
   "e2e - tm_g_barchart_simple: Starts with specified label, id_var, arm_var, visit_var,
   paramcd, cov_var, conf_level and conf_struct.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
+    app_driver$wait_for_idle()
 
     testthat::expect_equal(
-      trimws(app_driver$get_text("#teal-teal_modules-active_tab .active")),
-      "ADAE Analysis (e2e)"
+      app_driver$get_text("a.nav-link.active"),
+      "ADAE Analysis (e-2-e)"
     )
 
     testthat::expect_equal(
@@ -194,11 +197,12 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_g_barchart_simple: Selection of 'x' changes the element and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_barchart_simple()
+    app_driver$wait_for_idle()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), "RACE")
+    app_driver$wait_for_idle()
     testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
     app_driver$expect_no_validation_error()
     app_driver$stop()
@@ -206,18 +210,18 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_barchart_simple: Deselection of 'x' throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_barchart_simple()
+  app_driver$wait_for_idle()
   app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), character(0L))
   app_driver$expect_validation_error()
   testthat::expect_match(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       sprintf(
-        "%s .shiny-validation-message",
-        ns_des_input("x", "ADSL", "select_input")
+        "%s_input .shiny-validation-message",
+        ns_des_input("x", "ADSL", "select")
       )
-    ),
+    )),
     "^Please select an x-variable$"
   )
   app_driver$stop()
@@ -232,14 +236,18 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       input_id
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
+      app_driver$wait_for_idle()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(sprintf("%s-dataset", input_id), new_dataset)
+      app_driver$wait_for_idle()
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       testthat::expect_null(app_driver$get_active_module_input(ns_des_input(input_id, new_dataset, "select")))
+      # Wait for UI to update with new dataset options before setting value
+      app_driver$wait_for_idle()
       app_driver$set_active_module_input(ns_des_input(input_id, new_dataset, "select"), new_value)
+      app_driver$wait_for_idle()
       testthat::expect_identical(
         app_driver$get_active_module_input(ns_des_input(input_id, new_dataset, "select")),
         new_value
@@ -256,11 +264,12 @@ test_dataset_selection <- function(input_id, new_dataset, new_value) {
       input_id
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
+      app_driver$wait_for_idle()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(sprintf("%s-dataset", input_id), character(0L))
+      app_driver$wait_for_idle()
       testthat::expect_null(app_driver$get_active_module_input(input_id))
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
@@ -282,32 +291,33 @@ for (input_id in c("fill", "x_facet", "y_facet")) {
       input_id
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
+      app_driver$wait_for_idle()
       app_driver$set_active_module_input(ns_des_input("x", "ADSL", "select"), "ACTARM", wait_ = FALSE)
       app_driver$set_active_module_input(sprintf("%s-dataset", input_id), "ADSL", wait_ = FALSE)
       app_driver$set_active_module_input(ns_des_input(input_id, "ADSL", "select"), "ACTARM")
+      app_driver$wait_for_idle()
 
       app_driver$expect_validation_error()
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("x", "ADSL", "select_input")
+            "%s_input .shiny-validation-message",
+            ns_des_input("x", "ADSL", "select")
           )
-        ),
+        )),
         "^Duplicated value: ACTARM$"
       )
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input(input_id, "ADSL", "select_input")
+            "%s_input .shiny-validation-message",
+            ns_des_input(input_id, "ADSL", "select")
           )
-        ),
+        )),
         "^Duplicated value: ACTARM$"
       )
       app_driver$stop()
@@ -324,12 +334,14 @@ test_that_plot_settings <- function(input_id, new_value, setup_fun = function(ap
       input_id
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_barchart_simple()
+      app_driver$wait_for_idle()
       setup_fun(app_driver)
+      app_driver$wait_for_idle()
       plot_before <- app_driver$get_active_module_plot_output("myplot")
       app_driver$set_active_module_input(input_id, new_value)
+      app_driver$wait_for_idle()
       testthat::expect_false(identical(plot_before, app_driver$get_active_module_plot_output("myplot")))
       app_driver$expect_no_validation_error()
       app_driver$stop()
@@ -351,5 +363,8 @@ test_that_plot_settings("show_n", TRUE)
 test_that_plot_settings(
   "rotate_bar_labels",
   FALSE,
-  setup_fun = function(app_driver) app_driver$set_active_module_input("label_bars", TRUE)
+  setup_fun = function(app_driver) {
+    app_driver$set_active_module_input("label_bars", TRUE)
+    NULL
+  }
 )

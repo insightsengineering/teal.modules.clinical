@@ -55,14 +55,11 @@ app_driver_tm_t_events_patyear <- function() {
 }
 
 testthat::test_that("e2e - tm_t_events_patyear: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_patyear()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("patyear_table-table-with-settings"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("patyear_table-table-with-settings"))
   app_driver$stop()
 })
 
@@ -70,11 +67,10 @@ testthat::test_that(
   "e2e - tm_t_events_patyear: Starts with specified label, arm_var, paramcd, conf_level,
   conf_method, num_pt_year, input_time_unit, add_total, drop_arm_levels.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "AE Rate Adjusted for Patient-Years At Risk Table"
     )
     testthat::expect_equal(
@@ -110,7 +106,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_events_patyear: Selecting paramcd changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
@@ -127,7 +122,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_patyear()
   app_driver$set_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals", NULL)
@@ -137,9 +131,9 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd throws va
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADAETTE_singleextract-filter1-vals_input .shiny-validation-message"
-    ),
+    )),
     "A Event Type Parameter is required"
   )
   app_driver$stop()
@@ -148,7 +142,6 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd throws va
 testthat::test_that(
   "e2e - tm_t_events_patyear: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
@@ -165,7 +158,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_patyear()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
@@ -174,8 +166,9 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws va
     data.frame()
   )
   app_driver$expect_validation_error()
+  selector <- "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
     "Please select exactly 1 or 2 treatment variables"
   )
   app_driver$stop()
@@ -184,7 +177,6 @@ testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws va
 testthat::test_that(
   "e2e - tm_t_events_patyear: Selecting 2 variables as arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")

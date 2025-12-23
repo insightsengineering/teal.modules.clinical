@@ -75,14 +75,11 @@ app_driver_tm_t_tte <- function() {
 }
 
 testthat::test_that("e2e - tm_t_tte: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   app_driver$stop()
 })
 
@@ -91,11 +88,10 @@ testthat::test_that(
   strata_var, time_points, pval_method_coxph, ties_coxph, conf_level_coxph,
   conf_level_survfit, conf_type_survfit, probs_survfit, compare_arms, combine_comp_arms.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "Time To Event Table"
     )
     testthat::expect_equal(
@@ -158,7 +154,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_tte: Selecting paramcd changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -175,16 +170,15 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_tte: Deselection of paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
   app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADTTE_singleextract-filter1-vals_input .shiny-validation-message"
-    ),
+    )),
     "An endpoint is required"
   )
   app_driver$stop()
@@ -193,7 +187,6 @@ testthat::test_that("e2e - tm_t_tte: Deselection of paramcd throws validation er
 testthat::test_that(
   "e2e - tm_t_tte: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -210,16 +203,15 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_tte: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
-    ),
+    )),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -228,7 +220,6 @@ testthat::test_that("e2e - tm_t_tte: Deselection of arm_var throws validation er
 testthat::test_that(
   "e2e - tm_t_tte: Selecting strata_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -247,7 +238,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_tte: Deselection of strata_var changes the table and throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")

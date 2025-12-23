@@ -53,7 +53,7 @@ with_mocked_app_bindings <- function(code) {
       }
     )
     on.exit(app_driver$stop(), add = TRUE)
-    app_driver$wait_for_idle(timeout = 20000)
+    app_driver$wait_for_idle(timeout = 30000)
 
     # Simple testing
     ## warning in the app does not invoke a warning in the test
@@ -118,20 +118,17 @@ with_mocked_app_bindings <- function(code) {
 
 
 for (i in rd_files()) {
-  testthat::test_that(
-    paste0("example-", basename(i)),
-    {
-      testthat::skip_on_cran()
-      skip_if_too_deep(5)
-      with_mocked_app_bindings(
-        # suppress warnings coming from saving qenv https://github.com/insightsengineering/teal.code/issues/194
-        suppress_warnings(
-          testthat::expect_no_error(
-            pkgload::run_example(i, run_donttest = TRUE, run_dontrun = FALSE, quiet = TRUE)
-          ),
-          "may not be available when loading"
-        )
+  testthat::test_that(sprintf("example-%s", basename(i)), {
+    testthat::skip_on_cran()
+    skip_if_too_deep(5)
+    with_mocked_app_bindings(
+      # suppress warnings coming from saving qenv https://github.com/insightsengineering/teal.code/issues/194
+      suppress_warnings(
+        testthat::expect_no_error(
+          pkgload::run_example(i, run_donttest = TRUE, run_dontrun = FALSE, quiet = TRUE)
+        ),
+        "may not be available when loading"
       )
-    }
-  )
+    )
+  })
 }

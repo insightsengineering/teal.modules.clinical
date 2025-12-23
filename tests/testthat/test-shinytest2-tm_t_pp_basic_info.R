@@ -24,23 +24,19 @@ app_driver_tm_t_pp_basic_info <- function() {
 }
 
 testthat::test_that("e2e - tm_t_pp_basic_info: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("basic_info_table"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("basic_info_table"))
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_t_pp_basic_info: Starts with specified label, patient_id, vars.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
   testthat::expect_equal(
-    app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+    app_driver$get_text("a.nav-link.active"),
     "Basic Info"
   )
   testthat::expect_equal(
@@ -57,7 +53,6 @@ testthat::test_that("e2e - tm_t_pp_basic_info: Starts with specified label, pati
 testthat::test_that(
   "e2e - tm_t_pp_basic_info: Selecting patient_id changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_basic_info()
     table_before <- app_driver$get_active_module_table_output("basic_info_table")
@@ -76,19 +71,16 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_pp_basic_info: Deselection of patient_id throws validation error and table is not visible.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_basic_info()
     app_driver$set_active_module_input("patient_id", NULL)
-    testthat::expect_false(
-      app_driver$is_visible(
-        app_driver$namespaces(TRUE)$module("basic_info_table"),
-        visibility_property = TRUE
-      )
+    app_driver$expect_hidden(
+      app_driver$namespaces(TRUE)$module("basic_info_table"),
+      visibility_property = TRUE
     )
     app_driver$expect_validation_error()
     testthat::expect_equal(
-      app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message"),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message")),
       "Please select a patient"
     )
     app_driver$stop()
@@ -98,7 +90,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_pp_basic_info: Selecting cov_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_basic_info()
     table_before <- app_driver$get_active_module_table_output("basic_info_table")
@@ -118,19 +109,18 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_pp_basic_info: Deselection of cov_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_basic_info()
   app_driver$set_active_module_input("vars-dataset_ADSL_singleextract-select", NULL)
-  testthat::expect_false(
-    app_driver$is_visible(
-      app_driver$namespaces(TRUE)$module("basic_info_table"),
-      visibility_property = TRUE
-    )
+  app_driver$expect_hidden(
+    app_driver$namespaces(TRUE)$module("basic_info_table"),
+    visibility_property = TRUE
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("vars-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("vars-dataset_ADSL_singleextract-select_input .shiny-validation-message")
+    ),
     "Please select basic info variables"
   )
   app_driver$stop()
