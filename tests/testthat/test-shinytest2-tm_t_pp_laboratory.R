@@ -130,8 +130,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
     app_driver$wait_for_idle()
-    testthat::expect_snapshot_failure(
-      testthat::expect_identical(
+    testthat::expect_false(
+      identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -167,8 +167,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", "STUDYID")
     app_driver$wait_for_idle()
-    testthat::expect_snapshot_failure(
-      testthat::expect_identical(
+    testthat::expect_false(
+      identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -188,9 +188,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd throws val
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("paramcd-dataset_ADLB_singleextract-select_input .shiny-validation-message")
-    ),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("paramcd-dataset_ADLB_singleextract-select_input .shiny-validation-message")),
     "Please select PARAMCD variable."
   )
   app_driver$stop()
@@ -206,8 +204,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("param-dataset_ADLB_singleextract-select", "SEX")
     app_driver$wait_for_idle()
-    testthat::expect_snapshot_failure(
-      testthat::expect_identical(
+    testthat::expect_false(
+      identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -229,9 +227,7 @@ testthat::test_that(
     )
     app_driver$expect_validation_error()
     testthat::expect_equal(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-select_input .shiny-validation-message")
-      ),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-select_input .shiny-validation-message")),
       "Please select PARAM variable."
     )
     app_driver$stop()
@@ -248,8 +244,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", "AGE")
     app_driver$wait_for_idle()
-    testthat::expect_snapshot_failure(
-      testthat::expect_identical(
+    testthat::expect_false(
+      identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -287,8 +283,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", "SEX")
     app_driver$wait_for_idle()
-    testthat::expect_snapshot_failure(
-      testthat::expect_identical(
+    testthat::expect_false(
+      identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -326,8 +322,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", "AGE")
     app_driver$wait_for_idle()
-    testthat::expect_snapshot_failure(
-      testthat::expect_identical(
+    testthat::expect_false(
+      identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -347,16 +343,15 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var throws va
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("aval_var-dataset_ADLB_singleextract-select_input .shiny-validation-message")
-    ),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("aval_var-dataset_ADLB_singleextract-select_input .shiny-validation-message")),
     "Please select AVAL variable."
   )
   app_driver$stop()
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting arind changes the table and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting arind changes the table
+  and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
@@ -364,8 +359,8 @@ testthat::test_that(
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("anrind-dataset_ADLB_singleextract-select", "AGEU")
     app_driver$wait_for_idle()
-    testthat::expect_snapshot_failure(
-      testthat::expect_identical(
+    testthat::expect_false(
+      identical(
         table_before,
         app_driver$get_active_module_table_output("lab_values_table", which = 2)
       )
@@ -385,9 +380,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of arind throws valid
   )
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("anrind-dataset_ADLB_singleextract-select_input .shiny-validation-message")
-    ),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("anrind-dataset_ADLB_singleextract-select_input .shiny-validation-message")),
     "Please select ANRIND variable."
   )
   app_driver$stop()
