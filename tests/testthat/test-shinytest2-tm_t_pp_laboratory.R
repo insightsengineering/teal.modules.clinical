@@ -350,8 +350,7 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var throws va
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting arind changes the table
-  and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting arind changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
