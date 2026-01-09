@@ -1,264 +1,263 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="(unknown)" timestamp="2026-01-09T13:01:17Z" hostname="ea80101d3c53">
+  <testsuite name="(unknown)" timestamp="2026-01-09T13:00:18Z" hostname="1055f62bea1c">
     <testcase time="0.00700000000000012" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-examples.R:1:1')"/>
     </testcase>
-    <testcase time="0.0569999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0589999999999997" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-facet_grid_formula.R:1:1')"/>
     </testcase>
-    <testcase time="0.0350000000000001" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0380000000000003" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_a_gee.R:1:1')"/>
     </testcase>
-    <testcase time="0.0139999999999998" classname="character(0)" name="_unnamed_">
+    <testcase time="0.016" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_a_mmrm.R:1:1')"/>
     </testcase>
-    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999997" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_barchart_simple.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_ci.R:1:1')"/>
     </testcase>
-    <testcase time="0.0139999999999998" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_forest_rsp.R:1:1')"/>
     </testcase>
-    <testcase time="0.0130000000000003" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0139999999999998" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_forest_tte.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0139999999999998" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_ipp.R:1:1')"/>
     </testcase>
-    <testcase time="0.0139999999999998" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_km.R:1:1')"/>
     </testcase>
-    <testcase time="0.0170000000000003" classname="character(0)" name="_unnamed_">
+    <testcase time="0.016" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_lineplot.R:1:1')"/>
     </testcase>
-    <testcase time="0.0139999999999998" classname="character(0)" name="_unnamed_">
+    <testcase time="0.02" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_pp_adverse_events.R:1:1')"/>
     </testcase>
-    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0169999999999999" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_pp_patient_timeline.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_pp_therapy.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_g_pp_vitals.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.016" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_abnormality.R:1:1')"/>
     </testcase>
-    <testcase time="0.012" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999997" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_abnormality_by_worst_grade.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.016" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_ancova.R:1:1')"/>
     </testcase>
-    <testcase time="0.0130000000000003" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_binary_outcome.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_coxreg.R:1:1')"/>
     </testcase>
-    <testcase time="0.0169999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0209999999999999" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_events.R:1:1')"/>
     </testcase>
-    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
+    <testcase time="0.016" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_events_by_grade.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.016" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_events_patyear.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_events_summary.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0159999999999996" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_exposure.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.016" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_logistic.R:1:1')"/>
     </testcase>
-    <testcase time="0.012" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_mult_events.R:1:1')"/>
     </testcase>
-    <testcase time="0.0130000000000003" classname="character(0)" name="_unnamed_">
+    <testcase time="0.016" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_pp_basic_info.R:1:1')"/>
     </testcase>
   </testsuite>
-  <testsuite name="shinytest2-tm_t_pp_laboratory" timestamp="2026-01-09T13:01:17Z" hostname="ea80101d3c53" tests="44" skipped="44" failures="0" errors="0" time="2.314">
-    <testcase time="0.276" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Module_initializes_in_teal_without_errors_and_produces_table_output.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:69:3')"/>
-    </testcase>
-    <testcase time="0.131" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:82:5')"/>
-    </testcase>
-    <testcase time="0.118" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_patient_id_changes_the_table_and_does_not_throw_validation_errors.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:128:5')"/>
-    </testcase>
-    <testcase time="0.105" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_patient_id_throws_validation_error.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:146:3')"/>
-    </testcase>
-    <testcase time="0.104" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_paramcd_changes_the_table_and_does_not_throw_validation_errors.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:165:5')"/>
-    </testcase>
-    <testcase time="0.1" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_paramcd_throws_validation_error.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:183:3')"/>
-    </testcase>
-    <testcase time="0.104" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_param_changes_the_table_and_does_not_throw_validation_errors.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:202:5')"/>
-    </testcase>
-    <testcase time="0.105" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_param_throws_validation_error.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:222:5')"/>
-    </testcase>
-    <testcase time="0.103" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_timepoints_changes_the_table_and_does_not_throw_validation_errors.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:242:5')"/>
-    </testcase>
-    <testcase time="0.105" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_timepoints_throws_validation_error.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:260:3')"/>
-    </testcase>
-    <testcase time="0.0990000000000002" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_avalu_changes_the_table_and_does_not_throw_validation_errors.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:281:5')"/>
-    </testcase>
-    <testcase time="0.105" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_avalu_throws_validation_error.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:299:3')"/>
-    </testcase>
-    <testcase time="0.105" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_aval_var_changes_the_table_and_does_not_throw_validation_errors.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:320:5')"/>
-    </testcase>
-    <testcase time="0.106" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_aval_var_throws_validation_error.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:338:3')"/>
-    </testcase>
-    <testcase time="0.106" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_arind_changes_the_table_and_does_not_throw_validation_errors.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:356:5')"/>
-    </testcase>
-    <testcase time="0.105" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_arind_throws_validation_error.">
-      <skipped message="Reason: On CRAN ('test-shinytest2-tm_t_pp_laboratory.R:374:3')"/>
-    </testcase>
-    <testcase time="0.0169999999999995" classname="character(0)" name="_unnamed_">
+  <testsuite name="shinytest2-tm_t_pp_laboratory" timestamp="2026-01-09T13:00:19Z" hostname="1055f62bea1c" tests="75" skipped="28" failures="0" errors="0" time="215.764">
+    <testcase time="12.575" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Module_initializes_in_teal_without_errors_and_produces_table_output."/>
+    <testcase time="0.00700000000000145" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Module_initializes_in_teal_without_errors_and_produces_table_output."/>
+    <testcase time="2.186" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Module_initializes_in_teal_without_errors_and_produces_table_output."/>
+    <testcase time="11.005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value."/>
+    <testcase time="0.0120000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value."/>
+    <testcase time="0.0529999999999973" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value."/>
+    <testcase time="0.0530000000000008" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value."/>
+    <testcase time="0.0530000000000008" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value."/>
+    <testcase time="0.0530000000000008" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value."/>
+    <testcase time="0.0529999999999973" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value."/>
+    <testcase time="0.0530000000000008" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value."/>
+    <testcase time="0.0530000000000008" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Starts_with_specified_label_patient_id_paramcd_param_timepoints_aval_var_avalu_var_anrind_round_value."/>
+    <testcase time="13.009" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_patient_id_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_patient_id_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="13.821" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_patient_id_throws_validation_error."/>
+    <testcase time="0.0069999999999979" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_patient_id_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_patient_id_throws_validation_error."/>
+    <testcase time="13.272" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_paramcd_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_paramcd_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="13.864" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_paramcd_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_paramcd_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_paramcd_throws_validation_error."/>
+    <testcase time="13.056" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_param_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_param_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="13.822" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_param_throws_validation_error."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_param_throws_validation_error."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_param_throws_validation_error."/>
+    <testcase time="13.395" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_timepoints_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_timepoints_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="13.925" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_timepoints_throws_validation_error."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_timepoints_throws_validation_error."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_timepoints_throws_validation_error."/>
+    <testcase time="13.014" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_avalu_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_avalu_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="13.751" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_avalu_throws_validation_error."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_avalu_throws_validation_error."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_avalu_throws_validation_error."/>
+    <testcase time="13.171" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_aval_var_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_aval_var_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="13.811" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_aval_var_throws_validation_error."/>
+    <testcase time="0.00699999999997658" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_aval_var_throws_validation_error."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_aval_var_throws_validation_error."/>
+    <testcase time="13.183" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_arind_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Selecting_arind_changes_the_table_and_does_not_throw_validation_errors."/>
+    <testcase time="13.877" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_arind_throws_validation_error."/>
+    <testcase time="0.007000000000005" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_arind_throws_validation_error."/>
+    <testcase time="0.00600000000000023" classname="shinytest2_tm_t_pp_laboratory" name="e2e_tm_t_pp_laboratory_Deselection_of_arind_throws_validation_error."/>
+    <testcase time="0.114999999999981" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_pp_medical_history.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000148" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_pp_prior_medication.R:1:1')"/>
     </testcase>
-    <testcase time="0.0130000000000008" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0219999999999914" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_shift_by_arm.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000148" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_shift_by_arm_by_worst.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0159999999999911" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_shift_by_grade.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0159999999999911" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_smq.R:1:1')"/>
     </testcase>
-    <testcase time="0.0170000000000003" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0160000000000196" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_summary.R:1:1')"/>
     </testcase>
-    <testcase time="0.0139999999999993" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999864" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_summary_by.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999864" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-shinytest2-tm_t_tte.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000148" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-string_ops.R:1:1')"/>
     </testcase>
-    <testcase time="0.0120000000000005" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999864" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-substitute_names.R:1:1')"/>
     </testcase>
-    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0160000000000196" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_a_gee.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999864" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_a_mmrm.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0160000000000196" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_g_ci.R:1:1')"/>
     </testcase>
-    <testcase time="0.0179999999999998" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0159999999999911" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_g_forest_rsp.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0159999999999911" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_g_forest_tte.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0159999999999911" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_g_ipp.R:1:1')"/>
     </testcase>
-    <testcase time="0.0130000000000008" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000148" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_g_km.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999864" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_g_lineplot.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0150000000000148" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_abnormality.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0169999999999959" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_abnormality_by_worst_grade.R:1:1')"/>
     </testcase>
-    <testcase time="0.0190000000000001" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0169999999999959" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_ancova.R:1:1')"/>
     </testcase>
-    <testcase time="0.0139999999999993" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0169999999999959" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_binary_outcome.R:1:1')"/>
     </testcase>
-    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0160000000000196" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_coxreg.R:1:1')"/>
     </testcase>
-    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0180000000000007" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_events.R:1:1')"/>
     </testcase>
-    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0169999999999959" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_events_by_grade.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0169999999999959" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_events_patyear.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0229999999999961" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_events_summary.R:1:1')"/>
     </testcase>
-    <testcase time="0.0179999999999998" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0169999999999959" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_exposure.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0160000000000196" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_glm_counts.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999864" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_logisitic.R:1:1')"/>
     </testcase>
-    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0180000000000007" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_mult_events.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.01400000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_pp_medical_history.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0159999999999911" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_shift_by_arm.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.01400000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_shift_by_arm_by_worst.R:1:1')"/>
     </testcase>
-    <testcase time="0.0130000000000008" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0180000000000007" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_shift_by_grade.R:1:1')"/>
     </testcase>
-    <testcase time="0.0179999999999998" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999864" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_smq.R:1:1')"/>
     </testcase>
-    <testcase time="0.0139999999999993" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0159999999999911" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_summary.R:1:1')"/>
     </testcase>
-    <testcase time="0.0140000000000002" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0160000000000196" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_summary_by.R:1:1')"/>
     </testcase>
-    <testcase time="0.0129999999999999" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0149999999999864" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-tm_t_tte.R:1:1')"/>
     </testcase>
-    <testcase time="0.0150000000000006" classname="character(0)" name="_unnamed_">
+    <testcase time="0.0169999999999959" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-utils.R:1:1')"/>
     </testcase>
-    <testcase time="0.0119999999999996" classname="character(0)" name="_unnamed_">
+    <testcase time="0.01400000000001" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: CI test ('test-validate_standard_inputs.R:1:1')"/>
     </testcase>
   </testsuite>
