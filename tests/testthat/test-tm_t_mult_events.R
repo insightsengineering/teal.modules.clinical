@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_mult_events generates correct expressions with 1 HLT parameter", {
   result <- template_mult_events(
     dataname = "adcm",

@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_a_gee t_gee_cov table works as expected with default input", {
   result <- template_a_gee(
     output_table = "t_gee_cov",

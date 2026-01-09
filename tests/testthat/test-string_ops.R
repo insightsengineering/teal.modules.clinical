@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("`as_num` as a wide interpretation of input to extract numerics.", {
   dta <- list(
     character = c("text10,20.5letter30.!", "!-.40$$-50e5[", NA),

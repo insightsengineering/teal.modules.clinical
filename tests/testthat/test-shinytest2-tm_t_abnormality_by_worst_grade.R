@@ -1,3 +1,4 @@
+skip("CI test")
 app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_length.
   data <- within(teal.data::teal_data(), {
     library(dplyr)

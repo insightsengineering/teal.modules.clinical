@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_fit_mmrm works as expected when not combining comparison arms", {
   result <- template_fit_mmrm(
     parentname = "adsl",

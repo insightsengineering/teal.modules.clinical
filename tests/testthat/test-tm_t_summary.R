@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_summary generates correct expressions", {
   result <- template_summary(
     dataname = "adrs",

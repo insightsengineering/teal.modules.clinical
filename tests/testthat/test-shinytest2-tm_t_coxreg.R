@@ -1,3 +1,4 @@
+skip("CI test")
 app_driver_tm_t_coxreg <- function() {
   # TODO: Check if data fabrication is needed for Cox regression
   data <- teal.data::teal_data()

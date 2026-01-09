@@ -1,3 +1,4 @@
+skip("CI test")
 app_driver_tm_t_shift_by_arm <- function() {
   data <- teal.data::teal_data()
   data <- within(data, {

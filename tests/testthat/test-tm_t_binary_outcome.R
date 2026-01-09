@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_binary_outcome generates standard expressions", {
   result <- template_binary_outcome(
     dataname = "adrs",

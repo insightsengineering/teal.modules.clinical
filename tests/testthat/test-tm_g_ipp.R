@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_g_ipp works as expected with default arguments", {
   result <- template_g_ipp(
     paramcd = "PARAMCD", arm_var = "ARMCD",

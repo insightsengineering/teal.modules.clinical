@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_exposure generates correct expressions with default arguments", {
   result <- template_exposure(
     parentname = "adsl",

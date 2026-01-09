@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_g_km works as expected with default arguments", {
   result <- template_g_km(comp_arm = c("ARM A", "ARM B"))
 

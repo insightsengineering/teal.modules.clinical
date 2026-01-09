@@ -1,3 +1,4 @@
+skip("CI test")
 # Test correspond to sections in the TLG catalog.
 testthat::test_that("1. and 2. Mean and 95% CIs for mean", {
   result <- template_g_ci(

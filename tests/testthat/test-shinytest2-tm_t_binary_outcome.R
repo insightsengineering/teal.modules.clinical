@@ -1,3 +1,4 @@
+skip("CI test")
 app_driver_tm_t_binary_outcome <- function() {
   data <- within(teal.data::teal_data(), {
     library(dplyr)

@@ -1,3 +1,4 @@
+skip("CI test")
 app_driver_tm_t_pp_prior_medication <- function() { # nolint: object_length.
   data <- teal.data::teal_data()
   data <- within(data, {

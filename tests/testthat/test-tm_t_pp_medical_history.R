@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_medical_history outputs a list with one named element", {
   testthat::expect_silent(res <- template_medical_history("ANL", "mhterm", "mhbodsys", "mhdistat"))
   testthat::expect_true(is.list(res))

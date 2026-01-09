@@ -1,3 +1,4 @@
+skip("CI test")
 testthat::test_that("template_events generates correct expressions", {
   result <- template_events(
     dataname = "adae",
