@@ -1,4 +1,3 @@
-skip("CI test")
 app_driver_tm_g_pp_adverse_events <- function() { # nolint: object_length.
   data <- within(teal.data::teal_data(), {
     library(nestcolor)

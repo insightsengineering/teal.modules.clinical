@@ -1,4 +1,3 @@
-skip("CI test")
 # this test requires a `man` directory in the `tests/testthat` directory
 # (presumably symlinked to the package root `man` directory to avoid duplication)
 # this also requires `devtools::document()` to be run before running the tests

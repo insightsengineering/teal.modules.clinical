@@ -1,4 +1,3 @@
-skip("CI test")
 app_driver_tm_g_pp_vitals <- function() {
   data <- within(teal.data::teal_data(), {
     ADSL <- teal.data::rADSL

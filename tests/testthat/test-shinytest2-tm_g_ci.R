@@ -1,4 +1,3 @@
-skip("CI test")
 app_driver_tm_g_ci <- function() {
   data <- teal.data::teal_data()
   data <- within(data, {

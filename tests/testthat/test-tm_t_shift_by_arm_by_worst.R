@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_shift_by_arm generates correct expressions with default arguments", {
   result <- template_shift_by_arm_by_worst(
     parentname = "adsl",

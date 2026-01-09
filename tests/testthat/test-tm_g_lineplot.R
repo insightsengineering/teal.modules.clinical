@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_g_lineplot works as expected with default arguments", {
   result <- template_g_lineplot()
 

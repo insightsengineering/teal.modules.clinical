@@ -1,4 +1,3 @@
-skip("CI test")
 app_driver_tm_g_barchart_simple <- function() { # nolint: object_length.
   data <- within(teal.data::teal_data(), {
     ADSL <- dplyr::mutate(

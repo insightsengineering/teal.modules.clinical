@@ -1,4 +1,3 @@
-skip("CI test")
 app_driver_tm_t_events_by_grade <- function() { # nolint: object_length.
   data <- teal.data::teal_data()
   data <- within(data, {

@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_events_patyear generates standard expressions", {
   result <- template_events_patyear(
     dataname = "adaette",

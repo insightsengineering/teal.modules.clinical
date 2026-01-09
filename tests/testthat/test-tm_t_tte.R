@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_tte produces healthy standard output", {
   result <- template_tte(
     dataname = "ANL",

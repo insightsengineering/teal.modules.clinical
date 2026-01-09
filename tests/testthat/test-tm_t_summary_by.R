@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_summary_by generates correct expressions", {
   result <- template_summary_by(
     parentname = "adsl",

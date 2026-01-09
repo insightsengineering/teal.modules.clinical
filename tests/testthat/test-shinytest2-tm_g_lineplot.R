@@ -1,4 +1,3 @@
-skip("CI test")
 app_driver_tm_g_lineplot <- function() {
   data <- within(teal.data::teal_data(), {
     require(nestcolor)

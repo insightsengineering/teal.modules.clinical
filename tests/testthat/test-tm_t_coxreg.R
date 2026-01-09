@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_coxreg generates correct univariate cox regression expressions", {
   result <- template_coxreg_u(
     dataname = "adrs",

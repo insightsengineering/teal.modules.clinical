@@ -1,4 +1,3 @@
-skip("CI test")
 app_driver_tm_t_glm_counts <- function() { # nolint: object_length.
   data <- within(teal_data(), {
     library("tern")

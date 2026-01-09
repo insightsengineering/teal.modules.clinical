@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_abnormality generates correct expressions with default arguments", {
   result <- template_abnormality(
     dataname = "adlb",

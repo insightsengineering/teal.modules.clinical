@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("substitute_q works as expected", {
   result <- substitute_q(
     qexpr = quote(a <- c + d),

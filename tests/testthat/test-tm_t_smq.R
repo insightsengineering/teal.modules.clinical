@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_smq generates correct expressions with default arguments", {
   result <- template_smq(
     parentname = "adsl",

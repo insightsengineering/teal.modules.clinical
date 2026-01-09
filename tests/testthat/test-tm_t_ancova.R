@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_ancova generates expressions with multiple endpoints", {
   result <- template_ancova(
     dataname = "adqs",

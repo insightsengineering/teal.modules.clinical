@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("validate_arm throws shiny error if arm_vec is not a factor", {
   testthat::expect_error(
     validate_arm(1:10),

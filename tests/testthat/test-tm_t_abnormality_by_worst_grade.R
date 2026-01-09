@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_abnormality_by_worst_grade generates correct expressions with default arguments", {
   result <- template_abnormality_by_worst_grade(
     parentname = "adsl",

@@ -1,4 +1,3 @@
-skip("CI test")
 testthat::test_that("template_logistic generates correct expressions", {
   result <- template_logistic(
     dataname = "ANL",

@@ -1,4 +1,3 @@
-skip("CI test")
 app_driver_tm_g_km <- function() {
   data <- within(teal.data::teal_data(), {
     library(dplyr)

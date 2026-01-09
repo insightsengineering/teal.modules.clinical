@@ -1,4 +1,3 @@
-skip("CI test")
 app_driver_tm_g_pp_therapy <- function() {
   data <- within(teal.data::teal_data(), {
     ADCM <- teal.modules.clinical::tmc_ex_adcm
