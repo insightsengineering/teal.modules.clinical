@@ -80,8 +80,8 @@ Suggests:
     testthat (>= 3.2.3),
     withr (>= 3.0.0)
 Remotes:
-    insightsengineering/teal@bring_tests,
-    insightsengineering/teal.reporter@bring_tests
+    insightsengineering/teal
+    insightsengineering/teal.reporter
 VignetteBuilder:
     knitr,
     rmarkdown
