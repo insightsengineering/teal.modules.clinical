@@ -1,5 +1,3 @@
-testthat::skip("Slow CI machine prevents this test from succeding")
-
 # Setup timeout options for shinytest2 if none are set in options nor on environment variables
 withr::local_options(
   list(
