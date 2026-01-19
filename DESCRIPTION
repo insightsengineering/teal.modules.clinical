@@ -1,7 +1,7 @@
 Package: teal.modules.clinical
 Title: 'teal' Modules for Standard Clinical Outputs
-Version: 0.12.0.9002
-Date: 2025-12-15
+Version: 0.12.0.9003
+Date: 2026-01-19
 Authors@R: c(
     person("Joe", "Zhu", , "joe.zhu@roche.com", role = "aut",
            comment = c(ORCID = "0000-0001-7566-2787")),
@@ -79,12 +79,12 @@ Suggests:
     styler (>= 1.10.3),
     testthat (>= 3.2.3),
     withr (>= 3.0.0)
-Remotes:
-    insightsengineering/teal,
-    insightsengineering/teal.reporter
 VignetteBuilder:
     knitr,
     rmarkdown
+Remotes:
+    insightsengineering/teal,
+    insightsengineering/teal.reporter
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
