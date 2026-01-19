@@ -81,14 +81,13 @@ output_functions <- c(
 testthat::test_that(
   "e2e - tm_a_mmrm: Module initializes in teal without errors and displays a message to click 'Fit Model'.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
 
     app_driver <- app_driver_tm_a_mmrm(FALSE)
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
 
-    null_text <- app_driver$namespaces(TRUE)$module("null_input_msg")
+    null_text <- app_driver$get_text(app_driver$namespaces(TRUE)$module("null_input_msg"))
 
     testthat::expect_match(null_text, "Please first specify 'Model Settings' and press 'Fit Model'")
 
@@ -101,11 +100,10 @@ testthat::test_that(
   visit_var, cov_var, arm_var, buckets, combine_comp_arms, id_var, cor_struct,
   weights_emmeans, conf_level, method, parallel and output_function.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm(FALSE)
 
-    testthat::expect_equal(app_driver$get_text("#teal-teal_modules-active_tab .active"), "MMRM")
+    testthat::expect_equal(app_driver$get_text("a.nav-link.active"), "MMRM")
 
     testthat::expect_equal(app_driver$get_active_module_input("aval_var-dataset_ADQS_singleextract-select"), "AVAL")
 
@@ -149,7 +147,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default selection.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
   app_driver$expect_no_validation_error()
@@ -166,7 +163,6 @@ testthat::test_that(
   "e2e - tm_a_mmrm: Function t_mmrm_lsmeans selection shows output settings; changing
   settings throws no validation errors and verify visibility of generated tables.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
 
@@ -188,7 +184,6 @@ testthat::test_that(
   "e2e - tm_a_mmrm: Function g_mmrm_lsmeans selection shows output settings; changing
   settings throws no validation errors and verify visibility of generated plots.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
 
@@ -198,6 +193,9 @@ testthat::test_that(
 
     app_driver$set_active_module_input("output_function", "g_mmrm_lsmeans", wait_ = FALSE)
     app_driver$expect_no_validation_error()
+    app_driver$wait_for_idle()
+
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
 
     plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot_before, "data:image/png;base64,")
@@ -218,6 +216,7 @@ testthat::test_that(
 
     app_driver$set_active_module_input("g_mmrm_lsmeans_contrasts_show_pval", TRUE)
     app_driver$expect_no_validation_error()
+    app_driver$wait_for_idle()
 
     plot <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot, "data:image/png;base64,")
@@ -231,7 +230,6 @@ testthat::test_that(
   "e2e - tm_a_mmrm: Function g_mmrm_diagnostic selection shows output settings; changing
   settings throws no validation errors and verify visibility of generated plots.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
 
@@ -241,12 +239,16 @@ testthat::test_that(
 
     app_driver$set_active_module_input("output_function", "g_mmrm_diagnostic", wait_ = FALSE)
     app_driver$expect_no_validation_error()
+    app_driver$wait_for_idle()
+
+    app_driver$expect_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
 
     plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot_before, "data:image/png;base64,")
 
     app_driver$set_active_module_input("g_mmrm_diagnostic_type", "q-q-residual")
     app_driver$expect_no_validation_error()
+    app_driver$wait_for_idle()
 
     plot <- app_driver$get_active_module_plot_output("mmrm_plot")
     testthat::expect_match(plot, "data:image/png;base64,")
@@ -263,7 +265,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -280,12 +281,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("aval_var", "ADQS", "select_input")
           )
-        ),
+        )),
         "Analysis Variable' field is not selected"
       )
       app_driver$expect_validation_error()
@@ -299,7 +300,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -316,12 +316,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("paramcd", "ADQS", "filter1-vals_input")
           )
-        ),
+        )),
         "Select Endpoint' field is not selected"
       )
       app_driver$expect_validation_error()
@@ -335,7 +335,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -352,12 +351,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("visit_var", "ADQS", "select_input")
           )
-        ),
+        )),
         "Visit Variable' field is not selected"
       )
       app_driver$expect_validation_error()
@@ -371,7 +370,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -388,12 +386,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("arm_var", "ADSL", "select_input")
           )
-        ),
+        )),
         "Treatment variable must be selected"
       )
       app_driver$expect_validation_error()
@@ -407,7 +405,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -424,12 +421,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             ns_des_input("id_var", "ADQS", "select_input")
           )
-        ),
+        )),
         "Subject Identifier' field is not selected"
       )
       app_driver$expect_validation_error()
@@ -443,7 +440,6 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
@@ -460,12 +456,12 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$namespaces(TRUE)$module(
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(
           sprintf(
             "%s .shiny-validation-message",
             "conf_level_input"
           )
-        ),
+        )),
         "Confidence Level' field is not selected"
       )
       app_driver$expect_validation_error()
@@ -511,15 +507,16 @@ for (func in output_functions) {
       func
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
-
+      app_driver$wait_for_idle()
 
       if (grepl("^g_", func)) {
+        app_driver$expect_visible(app_driver$namespaces(TRUE)$module("mmrm_plot-plot_main"))
+
         plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
       } else {
         table_before <- app_driver$get_active_module_table_output("mmrm_table-table-with-settings")
@@ -538,13 +535,11 @@ for (func in output_functions) {
 
         # Check output based on function type (plot or table)
         if (grepl("^g_", func)) {
+          plot_after <- app_driver$get_active_module_plot_output("mmrm_plot")
           testthat::expect_false(
-            identical(
-              plot_before,
-              app_driver$get_active_module_plot_output("mmrm_plot")
-            )
+            identical(plot_before, plot_after)
           )
-          plot_before <- app_driver$get_active_module_plot_output("mmrm_plot")
+          plot_before <- plot_after
         } else {
           testthat::expect_false(
             identical(

@@ -36,7 +36,6 @@ app_driver_tm_g_pp_vitals <- function() {
 }
 
 testthat::test_that("e2e - tm_g_pp_vitals: Module initializes in teal without errors and produces plot output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   app_driver$expect_no_shiny_error()
@@ -56,12 +55,11 @@ testthat::test_that(
   "e2e - tm_g_pp_vitals: Starts with specified label, patient_id, paramcd, xaxis, aval_var, font_size,
   parentname, patient_col.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_vitals()
 
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "Vitals"
     )
     testthat::expect_equal(
@@ -93,7 +91,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting patient_id changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   plot_before <- app_driver$get_active_module_plot_output("vitals_plot")
@@ -109,13 +106,12 @@ testthat::test_that("e2e - tm_g_pp_vitals: Selecting patient_id changes plot and
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Deselecting patient_id column throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   app_driver$set_active_module_input("patient_id", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
   testthat::expect_identical(
-    app_driver$namespaces(TRUE)$module("patient_id_input > div > span"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_id_input > div > span")),
     "Please select a patient."
   )
   app_driver$expect_validation_error()
@@ -126,7 +122,6 @@ testthat::test_that(
   "e2e - tm_g_pp_vitals: Selecting valid paramcd and paramcd_levels_vals changes plot
   and doesn't throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_vitals()
     plot_before <- app_driver$get_active_module_plot_output("vitals_plot")
@@ -137,7 +132,7 @@ testthat::test_that(
     # Expecting validation error on empty PARAMCD levels input
     app_driver$expect_validation_error()
     testthat::expect_identical(
-      app_driver$namespaces(TRUE)$module("paramcd_levels > div > span"),
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("paramcd_levels > div > span")),
       "Please select PARAMCD variable levels."
     )
 
@@ -163,13 +158,14 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_pp_vitals: Deselecting paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   app_driver$set_active_module_input("paramcd-dataset_ADVS_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
   testthat::expect_identical(
-    app_driver$namespaces(TRUE)$module("paramcd-dataset_ADVS_singleextract-select_input > div > span"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("paramcd-dataset_ADVS_singleextract-select_input > div > span")
+    ),
     "Please select PARAMCD variable."
   )
   app_driver$expect_validation_error()
@@ -177,7 +173,6 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting paramcd throws validation
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting xaxis changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   plot_before <- app_driver$get_active_module_plot_output("vitals_plot")
@@ -193,13 +188,14 @@ testthat::test_that("e2e - tm_g_pp_vitals: Selecting xaxis changes plot and does
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Deselecting xaxis column throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   app_driver$set_active_module_input("xaxis-dataset_ADVS_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
   testthat::expect_identical(
-    app_driver$namespaces(TRUE)$module("xaxis-dataset_ADVS_singleextract-select_input > div > span"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("xaxis-dataset_ADVS_singleextract-select_input > div > span")
+    ),
     "Please select Vitals x-axis variable."
   )
   app_driver$expect_validation_error()
@@ -207,7 +203,6 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting xaxis column throws valid
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Selecting aval_var changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   plot_before <- app_driver$get_active_module_plot_output("vitals_plot")
@@ -223,13 +218,14 @@ testthat::test_that("e2e - tm_g_pp_vitals: Selecting aval_var changes plot and d
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Deselecting aval_var column throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   app_driver$set_active_module_input("aval_var-dataset_ADVS_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("vitals_plot"), character(0))
   testthat::expect_identical(
-    app_driver$namespaces(TRUE)$module("aval_var-dataset_ADVS_singleextract-select_input > div > span"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("aval_var-dataset_ADVS_singleextract-select_input > div > span")
+    ),
     "Please select AVAL variable."
   )
   app_driver$expect_validation_error()
@@ -237,7 +233,6 @@ testthat::test_that("e2e - tm_g_pp_vitals: Deselecting aval_var column throws va
 })
 
 testthat::test_that("e2e - tm_g_pp_vitals: Changing font_size changes plot and doesn't throw validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_pp_vitals()
   plot_before <- app_driver$get_active_module_plot_output("vitals_plot")

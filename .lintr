@@ -4,5 +4,6 @@ linters: linters_with_defaults(
   object_name_linter = object_name_linter(
     styles = c("snake_case", "symbols"),
     regexes = c(ANL = "^ANL_?[0-9A-Z_]*$", ADaM = "^r?AD[A-Z]{2,3}_?[0-9]*$")
-  )
+  ),
+  pipe_consistency_linter = NULL
   )

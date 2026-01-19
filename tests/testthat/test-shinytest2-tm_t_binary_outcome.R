@@ -90,14 +90,11 @@ app_driver_tm_t_binary_outcome <- function() {
 }
 
 testthat::test_that("e2e - tm_t_binary_outcome: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   app_driver$stop()
 })
 
@@ -106,12 +103,11 @@ testthat::test_that(
   buckets, u_diff_ci, u_diff_test, strata_var, s_diff_ci, prop_ci_method, conf_level,
   aval_var, compare_arms, combine_comp_arms, u_odds_ratio, show_rsp_cat.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
 
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "Responders"
     )
     testthat::expect_equal(
@@ -172,7 +168,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_binary_outcome: Selecting paramcd changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -189,16 +184,15 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
   app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADRS_singleextract-filter1-vals_input .shiny-validation-message"
-    ),
+    )),
     "Please select a filter."
   )
   app_driver$stop()
@@ -207,7 +201,6 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of paramcd throws va
 testthat::test_that(
   "e2e - tm_t_binary_outcome: Selecting responders changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -224,14 +217,19 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of responders throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
+  testthat::expect_false(
+    identical(
+      app_driver$get_text(".shiny-validation-message"),
+      "`Responders` field is empty"
+    )
+  )
   app_driver$set_active_module_input("responders", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$get_text("#teal-teal_modules-responders .shiny-validation-message"),
+    app_driver$get_text(".shiny-validation-message"),
     "`Responders` field is empty"
   )
   app_driver$stop()
@@ -240,7 +238,6 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of responders throws
 testthat::test_that(
   "e2e - tm_t_binary_outcome: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -257,14 +254,15 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
+    ),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -273,7 +271,6 @@ testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var throws va
 testthat::test_that(
   "e2e - tm_t_binary_outcome: Selecting strata_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -293,7 +290,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_binary_outcome: Deselection of strata_var changes the table and does not throw validation errors.", # nolint line_length_linter
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")

@@ -31,7 +31,7 @@ app_driver_tm_g_pp_therapy <- function() {
     teal::init(
       data = data,
       modules = tm_g_pp_therapy(
-        label = "Therapy (e2e)",
+        label = "Therapy (e-2-e)",
         dataname = "ADCM",
         parentname = "ADSL",
         patient_col = "USUBJID",
@@ -89,19 +89,14 @@ app_driver_tm_g_pp_therapy <- function() {
 # Initialization --------------------------------------------------------------
 
 testthat::test_that("e2e - tm_g_pp_therapy: Module initializes in teal without errors and produces output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_pp_therapy()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
 
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("therapy_plot-plot_out_main"))
-  )
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("therapy_table"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("therapy_plot-plot_main"))
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("therapy_table"))
 
   app_driver$stop()
 })
@@ -110,13 +105,12 @@ testthat::test_that(
   "e2e - tm_g_pp_therapy: Starts with specified label, paramcd, arm_var, buckets,
   paramcd, subgroup_var, strata_var and plot settings.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
 
     testthat::expect_equal(
-      trimws(app_driver$get_text("#teal-teal_modules-active_tab .active")),
-      "Therapy (e2e)"
+      trimws(app_driver$get_text("a.nav-link.active")),
+      "Therapy (e-2-e)"
     )
 
     testthat::expect_equal(app_driver$get_active_module_input("patient_id"), "AB12345-CHN-11-id-2")
@@ -153,12 +147,11 @@ test_different_selection <- function(input_name, input_id, new_value) {
       input_name
     ),
     {
-      testthat::skip("chromium")
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_g_pp_therapy()
       plot_before <- list(
         app_driver$get_active_module_plot_output("therapy_plot"),
-        app_driver$namespaces(TRUE)$module("therapy_table")
+        app_driver$get_active_module_table_output("therapy_table")
       )
       app_driver$set_active_module_input(input_id, new_value)
       testthat::expect_false(
@@ -166,7 +159,7 @@ test_different_selection <- function(input_name, input_id, new_value) {
           plot_before,
           list(
             app_driver$get_active_module_plot_output("therapy_plot"),
-            app_driver$namespaces(TRUE)$module("therapy_table")
+            app_driver$get_active_module_table_output("therapy_table")
           )
         )
       )
@@ -190,7 +183,6 @@ test_different_selection("cmendy", ns_des_input("cmendy", "ADCM", "select"), "AE
 testthat::test_that(
   "e2e - tm_g_pp_therapy: Changing font_size changes the plot and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
     plot_before <- app_driver$get_active_module_plot_output("therapy_plot")
@@ -210,18 +202,17 @@ test_delection_validation <- function(input_name, input_id, deselect_message) {
     deselect_message <- sprintf("Please select %s variable.", toupper(input_name))
   }
   testthat::test_that(sprintf("e2e - tm_g_pp_therapy: Deselection of %s throws validation error.", input_name), {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_pp_therapy()
     app_driver$set_active_module_input(input_id, NULL)
     app_driver$expect_validation_error()
     testthat::expect_equal(
-      app_driver$namespaces(TRUE)$module(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module(
         sprintf(
           "%s_input .shiny-validation-message",
           input_id
         )
-      ),
+      )),
       deselect_message
     )
     app_driver$stop()

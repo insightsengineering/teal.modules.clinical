@@ -40,25 +40,21 @@ app_driver_tm_t_mult_events <- function() {
 }
 
 testthat::test_that("e2e - tm_t_mult_events: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_mult_events()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   app_driver$stop()
 })
 
 testthat::test_that(
   "e2e - tm_t_mult_events: Starts with specified label, arm_var, hlt, llt, add_total, drop_arm_levels.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_mult_events()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "Concomitant Medications by Medication Class and Preferred Name"
     )
     testthat::expect_equal(
@@ -82,7 +78,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_mult_events: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_mult_events()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -99,14 +94,15 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_mult_events: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_mult_events()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
+    ),
     "Please select a treatment variable"
   )
   app_driver$stop()
@@ -115,7 +111,6 @@ testthat::test_that("e2e - tm_t_mult_events: Deselection of arm_var throws valid
 testthat::test_that(
   "e2e - tm_t_mult_events: Selecting hlt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_mult_events()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -134,7 +129,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_mult_events: Deselection of hlt changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_mult_events()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -151,13 +145,14 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_mult_events: Deselection of llt throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_mult_events()
   app_driver$set_active_module_input("llt-dataset_ADCM_singleextract-select", NULL)
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("llt-dataset_ADCM_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("llt-dataset_ADCM_singleextract-select_input .shiny-validation-message")
+    ),
     "Please select a \"LOW LEVEL TERM\" variable"
   )
   app_driver$stop()

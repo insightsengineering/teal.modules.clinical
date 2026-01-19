@@ -1,6 +1,7 @@
 app_driver_tm_g_lineplot <- function() {
   data <- within(teal.data::teal_data(), {
     require(nestcolor)
+    require(dplyr)
     ADSL <- teal.modules.clinical::tmc_ex_adsl
 
     ADLB <- dplyr::mutate(
@@ -64,16 +65,13 @@ app_driver_tm_g_lineplot <- function() {
 }
 
 testthat::test_that("e2e - tm_g_lineplot: Module initializes in teal without errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
 
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
 
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("myplot-plot_main"))
 
   app_driver$stop()
 })
@@ -82,12 +80,11 @@ testthat::test_that(
   "e2e - tm_g_lineplot: Starts with specified label, param, group_var, y, x, mid, interval, incl_screen,
     plot_settings and table_settings.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
 
     app_driver <- app_driver_tm_g_lineplot()
 
-    testthat::expect_equal(trimws(app_driver$get_text("#teal-teal_modules-active_tab .active")), "Line Plot")
+    testthat::expect_equal(trimws(app_driver$get_text("a.nav-link.active")), "Line Plot")
     testthat::expect_equal(app_driver$get_active_module_input("param-dataset_ADLB_singleextract-filter1-vals"), "ALT")
     testthat::expect_equal(app_driver$get_active_module_input("group_var-dataset_ADSL_singleextract-select"), "ARM")
     testthat::expect_equal(app_driver$get_active_module_input("y-dataset_ADLB_singleextract-select"), "AVAL")
@@ -113,29 +110,29 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_lineplot: Selecting param changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
+  app_driver$wait_for_idle()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("param-dataset_ADLB_singleextract-filter1-vals", "CRP")
+  app_driver$wait_for_idle()
+  plot_after <- app_driver$get_active_module_plot_output("myplot")
   testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_plot_output("myplot")
-    )
+    identical(plot_before, plot_after)
   )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("param-dataset_ADLB_singleextract-filter1-vals", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-filter1-vals_input > div > span"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-filter1-vals_input > div > span")
+    ),
     "Please select Biomarker filter."
   )
   app_driver$expect_validation_error()
@@ -145,16 +142,15 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting param throws validation er
 testthat::test_that(
   "e2e - tm_g_lineplot: Selecting group_var changes plot and doesn't throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_g_lineplot()
+    app_driver$wait_for_idle()
     plot_before <- app_driver$get_active_module_plot_output("myplot")
     app_driver$set_active_module_input("group_var-dataset_ADSL_singleextract-select", "ARMCD")
+    app_driver$wait_for_idle()
+    plot_after <- app_driver$get_active_module_plot_output("myplot")
     testthat::expect_false(
-      identical(
-        plot_before,
-        app_driver$get_active_module_plot_output("myplot")
-      )
+      identical(plot_before, plot_after)
     )
     app_driver$expect_no_validation_error()
     app_driver$stop()
@@ -162,15 +158,14 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting group_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("group_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "group_var-dataset_ADSL_singleextract-select_input > div > span"
-    ),
+    )),
     "Please select a treatment variable"
   )
   app_driver$expect_validation_error()
@@ -178,31 +173,29 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting group_var throws validatio
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Selecting y changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
+  app_driver$wait_for_idle()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("y-dataset_ADLB_singleextract-select", "BASE")
+  app_driver$wait_for_idle()
+  plot_after <- app_driver$get_active_module_plot_output("myplot")
   testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_plot_output("myplot")
-    )
+    identical(plot_before, plot_after)
   )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("y-dataset_ADLB_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "y-dataset_ADLB_singleextract-select_input > div > span"
-    ),
+    )),
     "Please select an analysis variable"
   )
   app_driver$expect_validation_error()
@@ -210,29 +203,27 @@ testthat::test_that("e2e - tm_g_lineplot: Deselecting y throws validation error.
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Selecting conf_level changes plot and doesn't throw validation errors.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
+  app_driver$wait_for_idle()
   plot_before <- app_driver$get_active_module_plot_output("myplot")
   app_driver$set_active_module_input("conf_level", "0.8")
+  app_driver$wait_for_idle()
+  plot_after <- app_driver$get_active_module_plot_output("myplot")
   testthat::expect_false(
-    identical(
-      plot_before,
-      app_driver$get_active_module_plot_output("myplot")
-    )
+    identical(plot_before, plot_after)
   )
   app_driver$expect_no_validation_error()
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_g_lineplot: Deselecting conf_level validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_g_lineplot()
   app_driver$set_active_module_input("conf_level", NULL)
   testthat::expect_identical(app_driver$get_active_module_plot_output("myplot"), character(0))
   testthat::expect_identical(
-    app_driver$namespaces(TRUE)$module("conf_level_input > div > span"),
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("conf_level_input > div > span")),
     "Please choose a confidence level"
   )
   app_driver$expect_validation_error()

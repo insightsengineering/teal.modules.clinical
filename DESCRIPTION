@@ -79,6 +79,9 @@ Suggests:
     styler (>= 1.10.3),
     testthat (>= 3.2.3),
     withr (>= 3.0.0)
+Remotes:
+    insightsengineering/teal,
+    insightsengineering/teal.reporter
 VignetteBuilder:
     knitr,
     rmarkdown

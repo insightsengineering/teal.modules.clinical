@@ -60,14 +60,11 @@ app_driver_tm_t_ancova <- function() {
 }
 
 testthat::test_that("e2e - tm_t_ancova: Module initializes in teal without errors and produces table output.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_ancova()
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
-  testthat::expect_true(
-    app_driver$is_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
-  )
+  app_driver$expect_visible(app_driver$namespaces(TRUE)$module("table-table-with-settings"))
   app_driver$stop()
 })
 
@@ -75,12 +72,11 @@ testthat::test_that(
   "e2e - tm_t_ancova: Starts with specified label, avisit, paramcd, aval_var, aval_var,
   arm_var, buckets, combine_comp_arms, interact_var, cov_var, conf_level, include_interact.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_ancova()
 
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text("a.nav-link.active"),
       "ANCOVA Table"
     )
     testthat::expect_equal(
@@ -131,7 +127,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_ancova: Selecting avisit changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_ancova()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -151,16 +146,15 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_ancova: Deselection of avisit throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_ancova()
   app_driver$set_active_module_input("avisit-dataset_ADQS_singleextract-filter1-vals", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "avisit-dataset_ADQS_singleextract-filter1-vals_input .shiny-validation-message"
-    ),
+    )),
     "`Analysis Visit` field cannot be empty."
   )
   app_driver$stop()
@@ -169,7 +163,6 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of avisit throws validation 
 testthat::test_that(
   "e2e - tm_t_ancova: Selecting paramcd changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_ancova()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -186,16 +179,15 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_ancova: Deselection of paramcd throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_ancova()
   app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module(
       "paramcd-dataset_ADQS_singleextract-filter1-vals_input .shiny-validation-message"
-    ),
+    )),
     "`Select Endpoint` is not selected."
   )
   app_driver$stop()
@@ -204,7 +196,6 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of paramcd throws validation
 testthat::test_that(
   "e2e - tm_t_ancova: Selecting aval_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_ancova()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -221,14 +212,15 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_ancova: Deselection of aval_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_ancova()
   app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("aval_var-dataset_ADQS_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("aval_var-dataset_ADQS_singleextract-select_input .shiny-validation-message")
+    ),
     "Analysis variable cannot be empty."
   )
   app_driver$stop()
@@ -237,7 +229,6 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of aval_var throws validatio
 testthat::test_that(
   "e2e - tm_t_ancova: Selecting arm_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_ancova()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -254,14 +245,15 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_ancova: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_ancova()
   app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   testthat::expect_equal(
-    app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"),
+    app_driver$get_text(
+      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
+    ),
     "Treatment variable must be selected"
   )
   app_driver$stop()
@@ -270,7 +262,6 @@ testthat::test_that("e2e - tm_t_ancova: Deselection of arm_var throws validation
 testthat::test_that(
   "e2e - tm_t_ancova: Selecting cov_var changes the table and does not throw validation errors.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_ancova()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -289,7 +280,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_ancova: Deselection of cov_var changes table and doesn't throw validation error.",
   {
-    testthat::skip("chromium")
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_ancova()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
