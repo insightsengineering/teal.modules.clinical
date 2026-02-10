@@ -43,7 +43,7 @@ template_abnormality <- function(parentname,
   checkmate::assert_string(grade)
   checkmate::assert_string(baseline_var)
   checkmate::assert_string(treatment_flag_var)
-  checkmate::assert_string(treatment_flag)
+  checkmate::assert_character(treatment_flag)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(exclude_base_abn)
@@ -58,7 +58,7 @@ template_abnormality <- function(parentname,
     data_list,
     substitute(
       expr = anl <- df %>%
-        dplyr::filter(treatment_flag_var == treatment_flag & !is.na(grade) & grade != na_level),
+        dplyr::filter(treatment_flag_var %in% treatment_flag & !is.na(grade) & grade != na_level),
       env = list(
         df = as.name(dataname),
         grade = as.name(grade),
@@ -501,8 +501,8 @@ ui_t_abnormality <- function(id, ...) {
           teal.widgets::optionalSelectInput(
             ns("treatment_flag"),
             label = "Value Indicating On Treatment",
-            multiple = FALSE,
-            fixed_on_single = TRUE
+            multiple = TRUE,
+            fixed_on_single = FALSE
           )
         )
       )
@@ -581,9 +581,11 @@ srv_t_abnormality <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("treatment_flag", shinyvalidate::sv_required(
-        "Please select indicator value for on treatment records."
-      ))
+      iv$add_rule("treatment_flag", function(value) {
+        if (length(value) == 0) {
+          "Please select at least one indicator value for on treatment records."
+        }
+      })
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
