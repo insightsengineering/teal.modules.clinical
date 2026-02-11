@@ -1011,13 +1011,17 @@ check_decorators <- function(x, names = NULL) { # nolint: object_name.
   if (!is.null(names) && isTRUE(check_message)) {
     if (length(names(x)) != length(unique(names(x)))) {
       check_message <- sprintf(
-        "The `decorators` must contain unique names from these names: %s.",
-        paste(names, collapse = ", ")
+        "The `decorators` must contain unique names from these names: %s",
+        paste(sQuote(names), collapse = ", ")
       )
-    } else if (!all(unique(names(x)) %in% names)) {
+    } else if (!all(unique(names(x)) %in% c("default", names))) {
       check_message <- sprintf(
-        "The `decorators` must be a named list from these names: %s.",
-        paste(names, collapse = ", ")
+        paste0(
+          "The `decorators` must be a named list with:\n",
+          " * 'default' for decorating all objects and/or\n",
+          " * A name from these: %s"
+        ),
+        paste(sQuote(names), collapse = ", ")
       )
     }
   }
