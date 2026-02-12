@@ -3,7 +3,12 @@ linters: linters_with_defaults(
   object_usage_linter = NULL,
   object_name_linter = object_name_linter(
     styles = c("snake_case", "symbols"),
-    regexes = c(ANL = "^ANL_?[0-9A-Z_]*$", ADaM = "^r?AD[A-Z]{2,3}_?[0-9]*$")
+    regexes = c(
+      ANL = "^ANL_?[0-9A-Z_]*$",
+      ADaM = "^r?AD[A-Z]{2,5}_?[0-9]*$",
+      column_names = "^AVAL$|^USUBJID$|^PARAM$|^PARAMCD$"
+    )
   ),
+  indentation_linter = NULL,
   pipe_consistency_linter = NULL
   )
