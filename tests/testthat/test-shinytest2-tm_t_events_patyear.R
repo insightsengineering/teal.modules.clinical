@@ -3,7 +3,7 @@ app_driver_tm_t_events_patyear <- function() {
   data <- within(data, {
     library(dplyr)
     ADSL <- tmc_ex_adsl
-    ADAETTE <- tmc_ex_adaette %>% # nolint object_name
+    ADAETTE <- tmc_ex_adaette %>%
       filter(PARAMCD %in% c("AETTE1", "AETTE2", "AETTE3")) %>%
       mutate(is_event = CNSR == 0) %>%
       mutate(n_events = as.integer(is_event))
