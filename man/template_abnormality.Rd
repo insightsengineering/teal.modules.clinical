@@ -45,8 +45,7 @@ name of the variable specifying baseline abnormality grade.}
 
 \item{treatment_flag_var}{(\code{character})\cr name of the on treatment flag variable.}
 
-\item{treatment_flag}{(\code{character})\cr name of the value indicating on treatment
-records in \code{treatment_flag_var}.}
+\item{treatment_flag}{(\code{character}) vector of one or more treatments flags}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 

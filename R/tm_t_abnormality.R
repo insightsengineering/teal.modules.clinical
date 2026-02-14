@@ -9,6 +9,7 @@
 #' @param abnormal (`named list`)\cr indicating abnormality direction and grades.
 #' @param baseline_var (`character`)\cr
 #'   name of the variable specifying baseline abnormality grade.
+#' @param treatment_flag (`character`) vector of one or more treatments flags
 #' @param na_level (`character`)\cr the NA level in the input dataset, defaults to `"<Missing>"`.
 #' @param tbl_title (`character`)\cr Title with label of variables from by bars
 #'
@@ -43,7 +44,7 @@ template_abnormality <- function(parentname,
   checkmate::assert_string(grade)
   checkmate::assert_string(baseline_var)
   checkmate::assert_string(treatment_flag_var)
-  checkmate::assert_string(treatment_flag)
+  checkmate::assert_character(treatment_flag, null.ok = TRUE)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(exclude_base_abn)
@@ -56,17 +57,29 @@ template_abnormality <- function(parentname,
 
   data_list <- add_expr(
     data_list,
-    substitute(
-      expr = anl <- df %>%
-        dplyr::filter(treatment_flag_var == treatment_flag & !is.na(grade) & grade != na_level),
-      env = list(
-        df = as.name(dataname),
-        grade = as.name(grade),
-        treatment_flag_var = as.name(treatment_flag_var),
-        treatment_flag = treatment_flag,
-        na_level = na_level
+    if (length(treatment_flag) == 0) {
+      substitute(
+        expr = anl <- df %>%
+          dplyr::filter(!is.na(grade) & grade != na_level),
+        env = list(
+          df = as.name(dataname),
+          grade = as.name(grade),
+          na_level = na_level
+        )
       )
-    )
+    } else {
+      substitute(
+        expr = anl <- df %>%
+          dplyr::filter(treatment_flag_var %in% treatment_flag & !is.na(grade) & grade != na_level),
+        env = list(
+          df = as.name(dataname),
+          grade = as.name(grade),
+          treatment_flag_var = as.name(treatment_flag_var),
+          treatment_flag = treatment_flag,
+          na_level = na_level
+        )
+      )
+    }
   )
 
   data_list <- add_expr(
@@ -116,13 +129,23 @@ template_abnormality <- function(parentname,
 
   y$layout_prep <- bracket_expr(prep_list)
 
+  # Prepare footer message
+  footer_message <- if (length(treatment_flag) == 0) {
+    c(
+      "Variables without observed abnormalities are excluded.",
+      "Showing all data since no treatment filter is selected."
+    )
+  } else {
+    "Variables without observed abnormalities are excluded."
+  }
+
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
       module_table = teal.widgets::basic_table_args(
         show_colcounts = TRUE,
         title = tbl_title,
-        main_footer = "Variables without observed abnormalities are excluded."
+        main_footer = footer_message
       )
     )
   )
@@ -501,8 +524,8 @@ ui_t_abnormality <- function(id, ...) {
           teal.widgets::optionalSelectInput(
             ns("treatment_flag"),
             label = "Value Indicating On Treatment",
-            multiple = FALSE,
-            fixed_on_single = TRUE
+            multiple = TRUE,
+            fixed_on_single = FALSE
           )
         )
       )
@@ -581,9 +604,6 @@ srv_t_abnormality <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("treatment_flag", shinyvalidate::sv_required(
-        "Please select indicator value for on treatment records."
-      ))
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
