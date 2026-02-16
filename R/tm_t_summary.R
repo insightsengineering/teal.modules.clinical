@@ -282,6 +282,9 @@ template_summary <- function(dataname,
 #'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
 #'         c("SEX", "RACE")
 #'       ),
+#'       numeric_formats = list(
+#'         "mean_ci" = "(xx.x, xx.x)"
+#'       ),
 #'       useNA = "ifany"
 #'     )
 #'   )
