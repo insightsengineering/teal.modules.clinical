@@ -58,3 +58,23 @@ testthat::test_that("template_abnormality generates correct expressions with cus
   res <- testthat::expect_silent(result)
   testthat::expect_snapshot(res)
 })
+
+testthat::test_that("template_abnormality generates correct expressions with multiple treatment_flag values", {
+  result <- template_abnormality(
+    dataname = "adlb",
+    parentname = "adsl",
+    arm_var = "ARM",
+    id_var = "USUBJID",
+    by_vars = c("AVISIT", "PARAM"),
+    abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
+    grade = "ANRIND",
+    treatment_flag = c("", "Y"),
+    add_total = FALSE,
+    exclude_base_abn = FALSE,
+    drop_arm_levels = TRUE,
+    tbl_title = "my_title"
+  )
+
+  res <- testthat::expect_silent(result)
+  testthat::expect_snapshot(res)
+})
