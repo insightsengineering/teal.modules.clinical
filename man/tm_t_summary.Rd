@@ -18,6 +18,7 @@ tm_t_summary(
   na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
+  numeric_formats = NULL,
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
   pre_output = NULL,
@@ -59,6 +60,9 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 
 \item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
 statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
+
+\item{numeric_formats}{(named \code{list} or \code{NULL})\cr format patterns for numeric statistics. Names should match the
+statistics in \code{numeric_stats}. If \code{NULL}, defaults from \code{\link[tern:analyze_variables]{tern::analyze_vars()}} are used.}
 
 \item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option \code{n}, the number of non-missing
@@ -163,6 +167,9 @@ app <- init(
         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
         c("SEX", "RACE")
       ),
+      numeric_formats = list(
+        "mean_ci" = "(xx.x, xx.x)"
+      ),
       useNA = "ifany"
     )
   )
@@ -179,8 +186,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROyRwAivpgLQNIQKwEpptiNzYtiaE6OwyKqFAFjaNYNhXDGoihhhNToOwirAoItAXExCSMNojDYhiShgBi0JAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROyRwAivpgLQNIQKwEpptiNzYtiaE6OwyKqFAFjaNYNhXDGoihhhNToOwirAoItAXExCSMNojDYhiShgBi0JAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROECOqoMirMYRCMM6pBLh6IykBaE43BK8DFAytASr6YDsB8HwYB8FzUbRihgHB46xskcAIhRtA0hArASmm2I3Ni2LcTo7DIqoUAWNo1g2FcMaiKGvE1Og7CKsCgi0Bc6kJIw2iMNiGJKGAGLQkAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpQGIdABUZxULKBokOkTGOqQAFrrkoqQ6sqK6RoIJOgAGTgDyAMoAIgCaqTpQEPxpOQDCWVhOAIJZhZostFD0IqJhRDr8cHwQMczkOjC0oqK0EADmXQFQGEr8M-pGXNQA+gukUNbzi4Y6AO60EePsG1C4OiBKOjo1OVkAMkthMASrcAAeq1D8otTXt3uDwAJJlcnlgABGAC6zwAcjVVuNyBNVKslABfRQQABWRHGqwA1nBWKJTjMbHtusYoMJSKsCPwRm88QTiaTgNB4GSznJoa4IHdHs8zsBgAowEKHhLofyIEo0KhnuMjuwAWcdABeaabXAAvhCNpaoYCYRiNUQG43UgwVb00SCGAwFgcAFWnTUFpwajGiU5HpECbMVDhGR2FoiCV6y3unXFWC6bUSqVRt1Wli2xqMY0EcL4ghiVYJETqOD8dgENWSrAAWSjOmTtfKOQlcgujbrYDbaZuP34dqImx92vszmjsZ0DqdTQAXnBVln2trc-nC8W4KXyz2rZWJVknAANesSrA1couPANsAAIRrWAA0lgAEzHsBg-KvipVWpZV81ADiF7djGE67mA+5HpeJ5nkB27AROECOqoMirMYRCMM6pBLh6IykBaE43BK8DFAytASr6YDsB8HwYB8FzUbRihgHB46xskcAIhRtA0hArASmm2I3Ni2LcTo7DIqoUAWNo1g2FcMaiKGvE1Og7CKsCgi0Bc6kJIw2iMNiGJKGAGLQkAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }

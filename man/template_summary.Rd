@@ -17,6 +17,7 @@ template_summary(
   na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles",
     "range", "geom_mean"),
+  numeric_formats = NULL,
   denominator = c("N", "n", "omit"),
   drop_arm_levels = TRUE,
   basic_table_args = teal.widgets::basic_table_args()
@@ -50,6 +51,9 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 
 \item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
 statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
+
+\item{numeric_formats}{(named \code{list} or \code{NULL})\cr format patterns for numeric statistics. Names should match the
+statistics in \code{numeric_stats}. If \code{NULL}, defaults from \code{\link[tern:analyze_variables]{tern::analyze_vars()}} are used.}
 
 \item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option \code{n}, the number of non-missing

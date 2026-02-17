@@ -1,4 +1,7 @@
-# teal.modules.clinical 0.12.0.9006
+# teal.modules.clinical 0.12.0.9007
+
+### Enhancements
+* Added `numeric_formats` argument to `tm_t_summary` to customize formatting of numeric statistics.
 
 # teal.modules.clinical 0.12.0
 

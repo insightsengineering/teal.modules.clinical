@@ -19,7 +19,7 @@
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
           na_str = "<Missing>", denom = "N_col", .stats = c("n", "mean_sd", 
               "mean_ci", "median", "median_ci", "quantiles", "range", 
-              "geom_mean", "count_fraction"))
+              "geom_mean", "count_fraction"), .formats = NULL)
       
       $table
       {
@@ -47,7 +47,7 @@
               show_labels = "visible", na_rm = TRUE, na_str = "<Missing>", 
               denom = "N_col", .stats = c("n", "mean_sd", "mean_ci", 
                   "median", "median_ci", "quantiles", "range", "geom_mean", 
-                  "count"))
+                  "count"), .formats = NULL)
       
       $table
       {
@@ -81,7 +81,7 @@
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
           na_str = "<Missing>", denom = "N_col", .stats = c("n", "mean_sd", 
               "mean_ci", "median", "median_ci", "quantiles", "range", 
-              "geom_mean", "count_fraction"))
+              "geom_mean", "count_fraction"), .formats = NULL)
       
       $table
       {
@@ -115,7 +115,8 @@
           tern::analyze_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
               na.rm = FALSE, na_str = "<Missing>", denom = "N_col", 
               .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", 
-                  "quantiles", "range", "geom_mean", "count_fraction"))
+                  "quantiles", "range", "geom_mean", "count_fraction"), 
+              .formats = NULL)
       
       $table
       {
@@ -147,7 +148,8 @@
           split_fun = rtables::drop_split_levels) %>% rtables::split_cols_by("STRATA1", 
           split_fun = rtables::drop_split_levels) %>% tern::analyze_vars(vars = c("RACE", 
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
-          na_str = "<Missing>", denom = "N_col", .stats = c("n", "count_fraction"))
+          na_str = "<Missing>", denom = "N_col", .stats = c("n", "median", 
+              "count_fraction"), .formats = list(median = "xx.x"))
       
       $table
       {
@@ -181,8 +183,9 @@
           tern::analyze_vars(vars = c("RACE", "COUNTRY", "AGE"), show_labels = "visible", 
               na.rm = FALSE, na_str = "<Missing>", denom = "N_col", 
               .stats = c("n", "mean_sd", "mean_ci", "median", "median_ci", 
-                  "quantiles", "range", "geom_mean", "count_fraction")) %>% 
-          rtables::append_topleft(c("Arm", "Sex", ""))
+                  "quantiles", "range", "geom_mean", "count_fraction"), 
+              .formats = NULL) %>% rtables::append_topleft(c("Arm", 
+          "Sex", ""))
       
       $table
       {
