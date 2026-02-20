@@ -9,10 +9,12 @@ select_decorators(decorators, scope)
 \arguments{
 \item{decorators}{(named \code{list}) of list decorators to subset.}
 
-\item{scope}{(\code{character}) a character vector of decorator names to include.}
+\item{scope}{(\code{character(1)}) a decorator name to include.}
 }
 \value{
-Subsetted list with all decorators to include.
+List of \code{teal_transform_module} objects with
+subset of decorators list with all decorators to include.
+It flattens the first level of the decorators list.
 It can be an empty list if none of the scope exists in \code{decorators} argument.
 }
 \description{
