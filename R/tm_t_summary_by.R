@@ -487,8 +487,6 @@ tm_t_summary_by <- function(label,
   categorical_stats_choices <- c("n", "count", "count_fraction", "count_fraction_fixed_dp", "fraction", "n_blq")
   categorical_stats <- match.arg(categorical_stats, categorical_stats_choices, several.ok = TRUE)
 
-  numeric_stats <- unique(c(numeric_stats, categorical_stats))
-
   assert_decorators(decorators, "table")
 
   args <- c(as.list(environment()))
@@ -608,6 +606,19 @@ ui_summary_by <- function(id, ...) {
             ),
             selected = a$numeric_stats
           ),
+          checkboxGroupInput(
+            ns("categorical_stats"),
+            label = "Choose the statistics to display for categorical variables",
+            choices = c(
+              "n" = "n",
+              "Count" = "count",
+              "Count (Fraction)" = "count_fraction",
+              "Count (Fraction with fixed decimal places)" = "count_fraction_fixed_dp",
+              "Fraction" = "fraction",
+              "Number of values below the limit of quantification (BLQ)" = "n_blq"
+            ),
+            selected = a$categorical_stats
+          ),
           if (a$dataname == a$parentname) {
             shinyjs::hidden(
               checkboxInput(
@@ -690,7 +701,13 @@ srv_summary_by <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
+      iv$add_rule("numeric_stats", ~ if (length(.) == 0 && length(input$categorical_stats) == 0) {
+        "Please select at least one statistic to display."
+      })
+      iv$add_rule("categorical_stats", ~ if (length(.) == 0 && length(input$numeric_stats) == 0) {
+        "Please select at least one statistic to display."
+      })
+
       teal.transform::compose_and_enable_validators(iv, selector_list)
     })
 
@@ -770,7 +787,7 @@ srv_summary_by <- function(id,
         id_var = as.vector(merged$anl_input_r()$columns_source$id_var),
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
-        numeric_stats = input$numeric_stats,
+        numeric_stats = unique(c(input$numeric_stats, input$categorical_stats)),
         denominator = input$denominator,
         add_total = input$add_total,
         total_label = total_label,
@@ -780,7 +797,6 @@ srv_summary_by <- function(id,
         drop_zero_levels = input$drop_zero_levels,
         basic_table_args = basic_table_args
       )
-
       obj <- merged$anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))

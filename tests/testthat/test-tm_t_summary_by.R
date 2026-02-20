@@ -103,46 +103,71 @@ testthat::describe("template_summary_by rtables output for different statistics"
     ADLB <- teal.modules.clinical::tmc_ex_adlb
     ADLB$AVALC <- ifelse(abs(rnorm(nrow(ADLB))) >= 0.5, "Y", "N")
     ADLB <- teal.data::col_relabel(ADLB, AVALC = "Analysis Value Category")
-    ADLB <- dplyr::inner_join(x = ADLB, y = ADSL[, c("STUDYID", "USUBJID"), drop = FALSE], by = c("STUDYID", "USUBJID"))
-    ANL_1 <- ADSL %>% dplyr::select(STUDYID, USUBJID, ARM)
-    ANL_2 <- ADLB %>% dplyr::select(STUDYID, USUBJID, PARAMCD, AVISIT, AVAL, AVALC)
-    ANL_3 <- ADLB %>% dplyr::filter(PARAMCD == "ALT") %>% dplyr::select(STUDYID, USUBJID, PARAMCD, AVISIT)
-    ANL <- ANL_1
-    ANL <- dplyr::inner_join(ANL, ANL_2, by = c("STUDYID", "USUBJID"))
-    ANL <- dplyr::inner_join(ANL, ANL_3, by = c("STUDYID", "USUBJID", "PARAMCD", "AVISIT"))
-    ANL <- ANL %>%
-      teal.data::col_relabel(
-        ARM = "Description of Planned Arm",
-        USUBJID = "Unique Subject Identifier",
-        AVAL = "Analysis Value",
-        AVALC = "Analysis Value Category",
-        AVISIT = "Analysis Visit",
-        PARAMCD = "Parameter Code"
-      )
-    ANL_ADSL_1 <- ADSL %>% dplyr::select(STUDYID, USUBJID, ARM)
-    ANL_ADSL <- ANL_ADSL_1
-    ANL_ADSL <- ANL_ADSL %>% teal.data::col_relabel(ARM = "Description of Planned Arm")
   })
-  it("adds count to the statistics", {
-    result <- template_summary_by(
-      parentname = "ADSL",
-      dataname = "ADLB",
-      arm_var = "ARM",
-      id_var = "USUBJID",
-      sum_vars = c("AVALC"),
-      add_total = TRUE,
-      by_vars = c("AVISIT"),
-      na.rm = FALSE,
-      numeric_stats = c("count"),
-      denominator = "N",
-      drop_arm_levels = TRUE,
-      drop_zero_levels = FALSE
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[c("ADSL", "ADLB")]
+
+  mod <- tm_t_summary_by(
+    label = "Summary by Row Groups",
+    dataname = "ADLB",
+    parentname = "ADSL",
+    arm_var = choices_selected("ARM", fixed = TRUE),
+    by_vars = choices_selected("AVISIT", fixed = TRUE),
+    summarize_vars = choices_selected("AVALC", fixed = TRUE),
+    categorical_stats = "count"
+  )
+
+  it("adds 'fraction' to the statistics", {
+    shiny::testServer(
+      mod$server,
+      args = c(list(id = "test_data", data = reactive(data)), mod$server_args),
+      expr = {
+        session$setInputs(
+          "arm_var-dataset_ADSL_singleextract-select" = "ARM",
+          "by_vars-dataset_ADLB_singleextract-select" = "AVISIT",
+          "summarize_vars-dataset_ADLB_singleextract-select" = "AVALC",
+          "paramcd-dataset_ADLB_singleextract-filter1-vals" = "ALT",
+          "id_var-dataset_ADLB_singleextract-select" = "USUBJID",
+          "paramcd-dataset_ADLB_singleextract-filter1-col" = "PARAMCD",
+          drop_zero_levels = TRUE,
+          add_total = TRUE,
+          row_groups = FALSE,
+          parallel_vars = FALSE,
+          drop_arm_levels = TRUE,
+          useNA = "ifany",
+          denominator = "omit",
+          categorical_stats = "fraction"
+        )
+        testthat::expect_all_true(
+          c("fraction.N", "fraction.Y") %in% rtables::as_result_df(session$returned()$table)$row_name
+        )
+      }
     )
-
-    teal.code::eval_code(data, as.expression(unname(result)))
-    res <- testthat::expect_silent(result)
-
-    testthat::expect_snapshot(res)
   })
-  it("adds n to the statistics", {})
+  it("adds 'count' to the statistics", {
+    shiny::testServer(
+      mod$server,
+      args = c(list(id = "test_data", data = reactive(data)), mod$server_args),
+      expr = {
+        session$setInputs(
+          "arm_var-dataset_ADSL_singleextract-select" = "ARM",
+          "by_vars-dataset_ADLB_singleextract-select" = "AVISIT",
+          "summarize_vars-dataset_ADLB_singleextract-select" = "AVALC",
+          "paramcd-dataset_ADLB_singleextract-filter1-vals" = "ALT",
+          "id_var-dataset_ADLB_singleextract-select" = "USUBJID",
+          "paramcd-dataset_ADLB_singleextract-filter1-col" = "PARAMCD",
+          drop_zero_levels = TRUE,
+          add_total = TRUE,
+          row_groups = FALSE,
+          parallel_vars = FALSE,
+          drop_arm_levels = TRUE,
+          useNA = "ifany",
+          denominator = "omit",
+          categorical_stats = "count"
+        )
+        testthat::expect_all_true(
+          c("count.N", "count.Y") %in% rtables::as_result_df(session$returned()$table)$row_name
+        )
+      }
+    )
+  })
 })
