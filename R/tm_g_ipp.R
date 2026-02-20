@@ -142,16 +142,6 @@ template_g_ipp <- function(dataname = "ANL",
     )
   }
 
-  graph_list <- add_expr(
-    graph_list,
-    quote(grid::grid.newpage())
-  )
-
-  graph_list <- add_expr(
-    graph_list,
-    quote(grid::grid.draw(plot))
-  )
-
   y$graph <- bracket_expr(graph_list)
 
   y
@@ -650,5 +640,5 @@ srv_g_ipp <- function(id,
     )
 
     set_chunk_dims(pws, decorated_all_q)
-  })
+      })
 }

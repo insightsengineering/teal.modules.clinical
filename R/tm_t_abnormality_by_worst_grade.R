@@ -700,7 +700,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "table"),
-      expr = table
+      expr = quote(table)
     )
 
     # Outputs to render.

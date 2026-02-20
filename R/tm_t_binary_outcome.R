@@ -1049,7 +1049,7 @@ srv_t_binary_outcome <- function(id,
       id = "decorator",
       data = table_q,
       decorators = select_decorators(decorators, "table"),
-      expr = table
+      expr = quote(table)
     )
 
     # Outputs to render.

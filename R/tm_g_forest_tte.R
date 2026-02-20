@@ -737,8 +737,7 @@ srv_g_forest_tte <- function(id,
           ),
           env = list(input_rel_width_forest = input$rel_width_forest)
         )
-      }),
-      expr_is_reactive = TRUE
+      })
     )
     plot_r <- reactive({
       cowplot::plot_grid(

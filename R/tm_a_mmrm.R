@@ -1486,8 +1486,7 @@ srv_mmrm <- function(id,
           id = sprintf("d_%s", output_function),
           data = table_q,
           decorators = select_decorators(decorators, output_function),
-          expr = reactive(bquote(.(as.name(output_function)))),
-          expr_is_reactive = TRUE
+          expr = reactive(bquote(.(as.name(output_function))))
         )
       }
     )
@@ -1501,8 +1500,7 @@ srv_mmrm <- function(id,
             id = sprintf("d_%s", output_function),
             data = plot_q,
             decorators = select_decorators(decorators, output_function),
-            expr = reactive(bquote(.(as.name(output_function)))),
-            expr_is_reactive = TRUE
+            expr = reactive(bquote(.(as.name(output_function))))
           )
         }
       )

@@ -629,7 +629,7 @@ srv_t_mult_events_byterm <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "table"),
-      expr = table
+      expr = quote(table)
     )
 
     # Outputs to render.

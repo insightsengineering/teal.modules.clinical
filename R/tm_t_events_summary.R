@@ -1052,7 +1052,7 @@ srv_t_events_summary <- function(id,
       id = "decorator",
       data = table_q,
       decorators = select_decorators(decorators, "table"),
-      expr = table
+      expr = quote(table)
     )
 
     table_r <- reactive(decorated_table_q()[["table"]])

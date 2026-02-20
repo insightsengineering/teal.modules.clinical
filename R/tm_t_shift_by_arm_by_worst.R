@@ -621,7 +621,7 @@ srv_shift_by_arm_by_worst <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "table"),
-      expr = table
+      expr = quote(table)
     )
 
     # Outputs to render.

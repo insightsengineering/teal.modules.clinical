@@ -703,7 +703,7 @@ srv_t_abnormality <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "table"),
-      expr = table
+      expr = quote(table)
     )
 
     # Outputs to render.

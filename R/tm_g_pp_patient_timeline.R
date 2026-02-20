@@ -946,7 +946,7 @@ srv_g_patient_timeline <- function(id,
       "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      expr = quote(plot)
     )
 
     plot_r <- reactive(decorated_all_q()[["plot"]])

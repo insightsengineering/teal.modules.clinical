@@ -515,7 +515,7 @@ srv_t_glm_counts <- function(id,
       id = "decorator",
       data = table_out,
       decorators = select_decorators(decorators, "table"),
-      expr = table
+      expr = quote(table)
     )
 
     table_r <- reactive(decorated_table_q()[["table"]])

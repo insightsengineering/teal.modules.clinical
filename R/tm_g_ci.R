@@ -511,7 +511,7 @@ srv_g_ci <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      expr = quote(plot)
     )
     # Outputs to render.
     plot_r <- reactive(decorated_plot_q()[["plot"]])

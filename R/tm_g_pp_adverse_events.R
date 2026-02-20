@@ -603,7 +603,7 @@ srv_g_adverse_events <- function(id,
       "d_plot",
       data = plot_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      expr = quote(plot)
     )
 
     plot_r <- reactive({

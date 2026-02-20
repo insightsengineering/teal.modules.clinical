@@ -985,7 +985,7 @@ srv_t_tte <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "table"),
-      expr = table
+      expr = quote(table)
     )
 
     table_r <- reactive(decorated_table_q()[["table"]])

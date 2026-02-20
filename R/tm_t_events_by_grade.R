@@ -1240,7 +1240,7 @@ srv_t_events_by_grade <- function(id,
       id = "decorator",
       data = table_renamed_q,
       decorators = select_decorators(decorators, "table"),
-      expr = table
+      expr = quote(table)
     )
     # Outputs to render.
     table_r <- reactive({

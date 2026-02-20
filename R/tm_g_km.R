@@ -858,7 +858,7 @@ srv_g_km <- function(id,
       id = "decorator",
       data = all_q,
       decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      expr = quote(plot)
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 

@@ -951,10 +951,6 @@ interactive <- NULL
 #' Wrappers around `srv_transform_teal_data` that allows to decorate the data
 #' @inheritParams teal::srv_transform_teal_data
 #' @param expr (`expression` or `reactive`) to evaluate on the output of the decoration.
-#' When an expression it must be inline code. See [within()]
-#' Default is `NULL` which won't evaluate any appending code.
-#' @param expr_is_reactive (`logical(1)`) whether `expr` is a reactive expression
-#' that skips defusing the argument.
 #' @details
 #' `srv_decorate_teal_data` is a wrapper around `srv_transform_teal_data` that
 #' allows to decorate the data with additional expressions.
@@ -962,15 +958,11 @@ interactive <- NULL
 #' first.
 #'
 #' @keywords internal
-srv_decorate_teal_data <- function(id, data, decorators, expr, expr_is_reactive = FALSE) {
+srv_decorate_teal_data <- function(id, data, decorators, expr) {
   checkmate::assert_class(data, classes = "reactive")
   checkmate::assert_list(decorators, "teal_transform_module")
-  checkmate::assert_flag(expr_is_reactive)
 
-  missing_expr <- missing(expr)
-  if (!missing_expr && !expr_is_reactive) {
-    expr <- dplyr::enexpr(expr) # Using dplyr re-export to avoid adding rlang to Imports
-  }
+  no_expr <- missing(expr)
 
   moduleServer(id, function(input, output, session) {
     decorated_output <- srv_transform_teal_data("inner", data = data, transformators = decorators)
@@ -982,12 +974,11 @@ srv_decorate_teal_data <- function(id, data, decorators, expr, expr_is_reactive 
       } else {
         # ensure original errors are displayed and `eval_code` is never executed with NULL
         req(data(), decorated_output())
-        if (missing_expr) {
+        if (no_expr) {
           decorated_output()
-        } else if (expr_is_reactive) {
-          teal.code::eval_code(decorated_output(), expr())
         } else {
-          teal.code::eval_code(decorated_output(), expr)
+          expr_r <- if (is.reactive(expr)) expr else reactive(expr)
+          teal.code::eval_code(decorated_output(), expr_r())
         }
       }
     })
@@ -1071,7 +1062,9 @@ assert_decorators <- checkmate::makeAssertionFunction(check_decorators)
 #' @param scope (`character`) a character vector of decorator names to include.
 #' @param decorators (named `list`) of list decorators to subset.
 #'
-#' @return Subsetted list with all decorators to include.
+#' @return List of `teal_transform_module` objects with
+#' subset of decorators list with all decorators to include.
+#' It flattens the first level of the decorators list.
 #' It can be an empty list if none of the scope exists in `decorators` argument.
 #' @keywords internal
 select_decorators <- function(decorators, scope) {
