@@ -950,7 +950,7 @@ srv_t_events_summary <- function(id,
       } else {
         NULL
       }
-      input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
+      input_flag_var_aesi <- if (!is.null(flag_var_aesi)) {
         as.vector(merged$anl_input_r()$columns_source$flag_var_aesi)
       } else {
         NULL
@@ -996,7 +996,7 @@ srv_t_events_summary <- function(id,
       } else {
         NULL
       }
-      input_flag_var_aesi <- if (!is.null(flag_var_anl)) {
+      input_flag_var_aesi <- if (!is.null(flag_var_aesi)) {
         as.vector(merged$anl_input_r()$columns_source$flag_var_aesi)
       } else {
         NULL
