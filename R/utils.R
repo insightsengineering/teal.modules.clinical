@@ -1059,7 +1059,7 @@ assert_decorators <- checkmate::makeAssertionFunction(check_decorators)
 
 #' Subset decorators based on the scope
 #'
-#' @param scope (`character`) a character vector of decorator names to include.
+#' @param scope (`character(1)`) a decorator name to include.
 #' @param decorators (named `list`) of list decorators to subset.
 #'
 #' @return List of `teal_transform_module` objects with
@@ -1068,19 +1068,13 @@ assert_decorators <- checkmate::makeAssertionFunction(check_decorators)
 #' It can be an empty list if none of the scope exists in `decorators` argument.
 #' @keywords internal
 select_decorators <- function(decorators, scope) {
-  checkmate::assert_character(scope, null.ok = TRUE)
+  checkmate::assert_string(scope, null.ok = FALSE)
   if (scope %in% names(decorators)) {
-    Reduce(
-      function(result, x) {
-        if (is.list(x) && all(vapply(x, checkmate::test_class, classes = "teal_transform_module", logical(1L)))) {
-          c(result, x)
-        } else {
-          c(result, list(x))
-        }
-      },
-      x = decorators[names(decorators) %in% scope],
-      init = list()
-    )
+    result  <- decorators[[scope]]
+    if (inherits(result, "teal_transform_module")) {
+      result <- list(result)
+    }
+    result
   } else {
     list()
   }
