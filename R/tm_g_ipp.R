@@ -640,5 +640,5 @@ srv_g_ipp <- function(id,
     )
 
     set_chunk_dims(pws, decorated_all_q)
-      })
+  })
 }
