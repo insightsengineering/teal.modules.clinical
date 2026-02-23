@@ -376,7 +376,7 @@ testthat::describe("Module with decorators:", {
     )
   }
 
-  it("one default decorator executes successfully", {
+  it("single default decorator executes successfully", {
     data <- reactive(within(teal.data::teal_data(), ADSL <- tmc_ex_adsl))
     mod <- local_module(decorators = list(plot = teal_transform_module()))
 
