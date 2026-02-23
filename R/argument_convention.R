@@ -65,8 +65,6 @@
 #' @param na.rm (`logical`)\cr whether `NA` values should be removed prior to analysis.
 #' @param numeric_stats (`character`)\cr names of statistics to display for numeric summary variables. Available
 #'   statistics are `n`, `mean_sd`, `mean_ci`, `median`, `median_ci`, `quantiles`, `range`, and `geom_mean`.
-#' @param categorical_stats (`character`)\cr names of statistics to display for non-numeric summary variables. Available
-#'   statistics are `n`, `count`, `count_fraction`, `count_fraction_fixed_dp`, `fraction` and `n_blq`.
 #' @param paramcd (`character`)\cr name of the parameter code variable.
 #' @param parentname (`character`)\cr parent analysis data used in teal module, usually this refers to `ADSL`.
 #' @param patient_id (`character`)\cr patient ID.
@@ -205,6 +203,8 @@ NULL
 #'   value indicating worst grade.
 #' @param worst_flag_var ([teal.transform::choices_selected()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as worst flag variable.
+#' @param categorical_stats (`character`)\cr names of statistics to display for non-numeric summary variables. Available
+#'   statistics are `n`, `count`, `count_fraction`, `count_fraction_fixed_dp`, `fraction` and `n_blq`.
 #' @param decorators `r lifecycle::badge("experimental")`
 #' (named `list` of lists of `teal_transform_module`) optional,
 #' decorator for tables or plots included in the module output reported.

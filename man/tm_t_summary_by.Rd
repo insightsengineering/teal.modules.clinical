@@ -79,6 +79,9 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
 statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
+\item{categorical_stats}{(\code{character})\cr names of statistics to display for non-numeric summary variables. Available
+statistics are \code{n}, \code{count}, \code{count_fraction}, \code{count_fraction_fixed_dp}, \code{fraction} and \code{n_blq}.}
+
 \item{denominator}{(\code{character})\cr chooses how percentages are calculated. With option \code{N}, the reference
 population from the column total is used as the denominator. With option \code{n}, the number of non-missing
 records in this row and column intersection is used as the denominator. If \code{omit} is chosen, then the

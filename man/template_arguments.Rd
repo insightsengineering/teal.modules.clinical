@@ -96,9 +96,6 @@ default \code{na_level} to apply in all modules, run \code{set_default_na_str("n
 \item{numeric_stats}{(\code{character})\cr names of statistics to display for numeric summary variables. Available
 statistics are \code{n}, \code{mean_sd}, \code{mean_ci}, \code{median}, \code{median_ci}, \code{quantiles}, \code{range}, and \code{geom_mean}.}
 
-\item{categorical_stats}{(\code{character})\cr names of statistics to display for non-numeric summary variables. Available
-statistics are \code{n}, \code{count}, \code{count_fraction}, \code{count_fraction_fixed_dp}, \code{fraction} and \code{n_blq}.}
-
 \item{paramcd}{(\code{character})\cr name of the parameter code variable.}
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
