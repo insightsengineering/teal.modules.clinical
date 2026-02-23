@@ -350,7 +350,8 @@ testthat::test_that("default_total_label works properly", {
 testthat::describe("Module with decorators:", {
   # We test it with tm_gtsummary as it requires decorators to be useful to users
   local_module <- function(...) {
-    tm_g_barchart_simple(data_extract_spec(
+    tm_g_barchart_simple(
+      data_extract_spec(
         dataname = "ADSL",
         select = select_spec(
           choices = variable_choices(
@@ -431,27 +432,27 @@ testthat::describe("Module with decorators:", {
 
 
   it("first decorator failure is handled with multiple passed", {
-      data <- reactive(within(teal.data::teal_data(), ADSL <- tmc_ex_adsl))
-      mod <- local_module(
-        decorators = list(
-          plot = list(
-            teal_transform_module(server = function(id, data) {
-              reactive(stop("manual stop"))
-            }),
-            teal_transform_module()
-          )
+    data <- reactive(within(teal.data::teal_data(), ADSL <- tmc_ex_adsl))
+    mod <- local_module(
+      decorators = list(
+        plot = list(
+          teal_transform_module(server = function(id, data) {
+            reactive(stop("manual stop"))
+          }),
+          teal_transform_module()
         )
       )
+    )
 
-      shiny::testServer(
-        mod$server,
-        args = c(list(id = "test_data", data = data), mod$server_args),
-        {
-          set_shared_inputs(session)
-          testthat::expect_error(decorated_all_q_code(), class = "shiny.silent.error")
-        }
-      )
-    })
+    shiny::testServer(
+      mod$server,
+      args = c(list(id = "test_data", data = data), mod$server_args),
+      {
+        set_shared_inputs(session)
+        testthat::expect_error(decorated_all_q_code(), class = "shiny.silent.error")
+      }
+    )
+  })
 
   it("last decorator failure is handled with multiple passed", {
     data <- reactive(within(teal.data::teal_data(), ADSL <- tmc_ex_adsl))

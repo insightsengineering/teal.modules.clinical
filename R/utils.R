@@ -1070,7 +1070,7 @@ assert_decorators <- checkmate::makeAssertionFunction(check_decorators)
 select_decorators <- function(decorators, scope) {
   checkmate::assert_string(scope, null.ok = FALSE)
   if (scope %in% names(decorators)) {
-    result  <- decorators[[scope]]
+    result <- decorators[[scope]]
     if (inherits(result, "teal_transform_module")) {
       result <- list(result)
     }
