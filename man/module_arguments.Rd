@@ -134,6 +134,9 @@ value indicating worst grade.}
 \item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
 with all available choices and preselected option for variable names that can be used as worst flag variable.}
 
+\item{categorical_stats}{(\code{character})\cr names of statistics to display for non-numeric summary variables. Available
+statistics are \code{n}, \code{count}, \code{count_fraction}, \code{count_fraction_fixed_dp}, \code{fraction} and \code{n_blq}.}
+
 \item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 (named \code{list} of lists of \code{teal_transform_module}) optional,
 decorator for tables or plots included in the module output reported.
