@@ -263,6 +263,13 @@ modules that are used repeatedly to express an analysis.
   object with all available choices and preselected option for variable
   names that can be used as worst flag variable.
 
+- categorical_stats:
+
+  (`character`)  
+  names of statistics to display for non-numeric summary variables.
+  Available statistics are `n`, `count`, `count_fraction`,
+  `count_fraction_fixed_dp`, `fraction` and `n_blq`.
+
 - decorators:
 
   **\[experimental\]** (named `list` of lists of

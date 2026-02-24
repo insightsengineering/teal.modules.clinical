@@ -23,6 +23,7 @@ tm_t_summary_by(
   useNA = c("ifany", "no"),
   na_level = tern::default_na_str(),
   numeric_stats = c("n", "mean_sd", "median", "range"),
+  categorical_stats = c("n", "count"),
   denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed =
     TRUE),
   drop_arm_levels = TRUE,
@@ -127,6 +128,13 @@ tm_t_summary_by(
   names of statistics to display for numeric summary variables.
   Available statistics are `n`, `mean_sd`, `mean_ci`, `median`,
   `median_ci`, `quantiles`, `range`, and `geom_mean`.
+
+- categorical_stats:
+
+  (`character`)  
+  names of statistics to display for non-numeric summary variables.
+  Available statistics are `n`, `count`, `count_fraction`,
+  `count_fraction_fixed_dp`, `fraction` and `n_blq`.
 
 - denominator:
 

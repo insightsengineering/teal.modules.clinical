@@ -1,6 +1,6 @@
 # Changelog
 
-## teal.modules.clinical 0.12.0.9007
+## teal.modules.clinical 0.12.0.9010
 
 #### Enhancements
 
