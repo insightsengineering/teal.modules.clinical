@@ -407,7 +407,7 @@ tm_g_km <- function(label,
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -532,7 +532,7 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
+      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         bslib::accordion(
@@ -854,10 +854,10 @@ srv_g_km <- function(id,
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
-    decorated_all_q <- srv_decorate_teal_data(
+    decorated_all_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "plot"),
+      transformators = select_decorators(decorators, "plot"),
       expr = quote(plot)
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])

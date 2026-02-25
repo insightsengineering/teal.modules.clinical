@@ -383,7 +383,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname),
@@ -480,7 +480,7 @@ ui_t_abnormality_by_worst_grade <- function(id, ...) { # nolint: object_length.
         data_extract_spec = a$worst_high_flag_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
+      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -696,10 +696,10 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
-    decorated_table_q <- srv_decorate_teal_data(
+    decorated_table_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "table"),
+      transformators = select_decorators(decorators, "table"),
       expr = quote(table)
     )
 

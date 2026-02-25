@@ -391,7 +391,7 @@ tm_g_forest_tte <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
 
@@ -493,7 +493,7 @@ ui_g_forest_tte <- function(id, ...) {
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
+      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -722,10 +722,10 @@ srv_g_forest_tte <- function(id,
     })
 
     # Outputs to render.
-    decorated_all_q <- srv_decorate_teal_data(
+    decorated_all_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "plot"),
+      transformators = select_decorators(decorators, "plot"),
       expr = reactive({
         substitute(
           cowplot::plot_grid(

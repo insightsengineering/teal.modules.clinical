@@ -621,7 +621,7 @@ tm_t_shift_by_grade <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -733,7 +733,7 @@ ui_t_shift_by_grade <- function(id, ...) {
           )
         )
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
+      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -955,10 +955,10 @@ srv_t_shift_by_grade <- function(id,
     })
 
     # Decoration of table output.
-    decorated_table_q <- srv_decorate_teal_data(
+    decorated_table_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "table"),
+      transformators = select_decorators(decorators, "table"),
       expr = quote(table)
     )
 

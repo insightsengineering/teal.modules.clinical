@@ -202,7 +202,7 @@ tm_g_barchart_simple <- function(x = NULL,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, names = "plot")
+  teal::assert_decorators(decorators, names = "plot")
 
   plot_options <- utils::modifyList(
     list(stacked = FALSE), # default
@@ -284,7 +284,7 @@ ui_g_barchart_simple <- function(id, ...) {
             is_single_dataset = is_single_dataset_value
           )
         },
-        ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(args$decorators, "plot")),
+        ui_transform_teal_data(ns("decorator"), transformators = select_decorators(args$decorators, "plot")),
         bslib::accordion(
           open = TRUE,
           bslib::accordion_panel(
@@ -547,10 +547,10 @@ srv_g_barchart_simple <- function(id,
       teal.code::eval_code(obj, code = plot_call)
     })
 
-    decorated_all_q_code <- srv_decorate_teal_data(
+    decorated_all_q_code <- teal::srv_transform_teal_data(
       "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "plot"),
+      transformators = select_decorators(decorators, "plot"),
       expr = quote(plot)
     )
 
