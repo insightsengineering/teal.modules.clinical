@@ -13,6 +13,9 @@ object with interaction terms}
 }
 \value{
 a \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}} object.
+When \code{x} is a \code{delayed_choices_selected} object (created with delayed data),
+it is returned unchanged because the actual choices are not available
+until data is resolved at runtime.
 }
 \description{
 Split \code{choices_selected} objects with interactions into
@@ -23,5 +26,8 @@ uses the regex \verb{\\\\*|:} to perform the split.
 }
 \examples{
 split_choices(choices_selected(choices = c("x:y", "a*b"), selected = all_choices()))
+
+# Also works with delayed data - returns the object unchanged
+split_choices(choices_selected(variable_choices("ADSL")))
 
 }
