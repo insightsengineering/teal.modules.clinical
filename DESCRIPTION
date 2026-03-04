@@ -34,7 +34,7 @@ BugReports:
 Depends:
     R (>= 4.4),
     teal (>= 1.0.0.9003),
-    teal.picks (>= 0.1.0),
+    teal.transform (>= 0.7.0),
     tern (>= 0.9.9)
 Imports:
     broom (>= 0.7.10),
@@ -84,7 +84,7 @@ VignetteBuilder:
     rmarkdown
 Remotes:
     insightsengineering/teal@redesign_extraction@main,
-    insightsengineering/teal.picks@redesign_extraction@main,
+    insightsengineering/teal.transform@redesign_extraction@main,
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
