@@ -435,13 +435,24 @@ split_col_expr <- function(compare, combine, ref, arm_var) {
 #' @note uses the regex `\\*|:` to perform the split.
 #'
 #' @return  a [teal.transform::choices_selected()] object.
+#'   When `x` is a `delayed_choices_selected` object (created with delayed data),
+#'   it is returned unchanged because the actual choices are not available
+#'   until data is resolved at runtime.
 #'
 #' @examples
 #' split_choices(choices_selected(choices = c("x:y", "a*b"), selected = all_choices()))
 #'
+#' # Also works with delayed data - returns the object unchanged
+#' split_choices(choices_selected(variable_choices("ADSL")))
+#'
 #' @export
 split_choices <- function(x) {
   checkmate::assert_class(x, "choices_selected")
+
+  if (inherits(x, "delayed_choices_selected")) {
+    return(x)
+  }
+
   checkmate::assert_character(x$choices, min.len = 1)
 
   split_x <- x

@@ -341,6 +341,27 @@ testthat::test_that("as_numeric_from_comma_sep_str respects sep argument", {
   testthat::expect_equal(as_numeric_from_comma_sep_str("3 %% 4   %% 154.32", sep = "%%"), c(3, 4, 154.32))
 })
 
+# split_choices ----
+
+
+testthat::test_that("split_choices returns delayed_choices_selected unchanged", {
+  cs <- teal.transform::choices_selected(
+    choices = teal.transform::variable_choices("ADSL"),
+    selected = NULL
+  )
+  testthat::expect_true(inherits(cs, "delayed_choices_selected"))
+  result <- split_choices(cs)
+
+  testthat::expect_identical(result, cs)
+})
+
+testthat::test_that("split_choices rejects non-choices_selected input", {
+  testthat::expect_error(
+    split_choices("not_choices_selected"),
+    "Must inherit from class 'choices_selected'"
+  )
+})
+
 testthat::test_that("default_total_label works properly", {
   testthat::expect_silent(set_default_total_label("Total Pts"))
   testthat::expect_equal(default_total_label(), "Total Pts")

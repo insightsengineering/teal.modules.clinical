@@ -137,8 +137,8 @@ testthat::describe("template_summary_by rtables output for different statistics"
           denominator = "omit",
           categorical_stats = "fraction"
         )
-        testthat::expect_all_true(
-          c("fraction.N", "fraction.Y") %in% rtables::as_result_df(session$returned()$table)$row_name
+        testthat::expect_true(
+          all(c("fraction.N", "fraction.Y") %in% rtables::as_result_df(session$returned()$table)$row_name)
         )
       }
     )
@@ -164,8 +164,8 @@ testthat::describe("template_summary_by rtables output for different statistics"
           denominator = "omit",
           categorical_stats = "count"
         )
-        testthat::expect_all_true(
-          c("count.N", "count.Y") %in% rtables::as_result_df(session$returned()$table)$row_name
+        testthat::expect_true(
+          all(c("count.N", "count.Y") %in% rtables::as_result_df(session$returned()$table)$row_name)
         )
       }
     )
