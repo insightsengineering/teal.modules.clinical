@@ -580,6 +580,39 @@ tm_a_mmrm <- function(label,
                       ggplot2_args = teal.widgets::ggplot2_args(),
                       transformators = list(),
                       decorators = list()) {
+  UseMethod("tm_a_mmrm", aval_var)
+}
+
+#' @export
+tm_a_mmrm.default <- function(label,
+                      dataname,
+                      parentname = ifelse(
+                        inherits(arm_var, "data_extract_spec"),
+                        teal.transform::datanames_input(arm_var),
+                        "ADSL"
+                      ),
+                      aval_var,
+                      id_var,
+                      arm_var,
+                      visit_var,
+                      cov_var,
+                      arm_ref_comp = NULL,
+                      paramcd,
+                      method = teal.transform::choices_selected(
+                        c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
+                        "Satterthwaite",
+                        keep_order = TRUE
+                      ),
+                      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                      plot_height = c(700L, 200L, 2000L),
+                      plot_width = NULL,
+                      total_label = default_total_label(),
+                      pre_output = NULL,
+                      post_output = NULL,
+                      basic_table_args = teal.widgets::basic_table_args(),
+                      ggplot2_args = teal.widgets::ggplot2_args(),
+                      transformators = list(),
+                      decorators = list()) {
   message("Initializing tm_a_mmrm")
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
@@ -634,9 +667,9 @@ tm_a_mmrm <- function(label,
 
   module(
     label = label,
-    server = srv_mmrm,
-    ui = ui_mmrm,
-    ui_args = c(data_extract_list, args),
+    server = srv_mmrm.default,
+    ui = ui_mmrm.default,
+    ui_args = c(data_extract_list, args[!names(args) %in% names(data_extract_list)]),
     server_args = c(
       data_extract_list,
       list(
@@ -658,7 +691,7 @@ tm_a_mmrm <- function(label,
 }
 
 #' @keywords internal
-ui_mmrm <- function(id, ...) {
+ui_mmrm.default <- function(id, ...) {
   a <- list(...) # module args
   ns <- NS(id)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -893,8 +926,7 @@ ui_mmrm <- function(id, ...) {
   )
 }
 
-#' @keywords internal
-srv_mmrm <- function(id,
+srv_mmrm.default <- function(id,
                      data,
                      dataname,
                      parentname,
@@ -1034,6 +1066,7 @@ srv_mmrm <- function(id,
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
+      browser()
       obj %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_merge_inputs()$expr))
