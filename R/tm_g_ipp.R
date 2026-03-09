@@ -627,7 +627,11 @@ srv_g_ipp <- function(id,
     decorated_all_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      transformators = select_decorators(decorators, "plot")
+      transformators = select_decorators(decorators, "plot"),
+      expr = quote({
+        grid::grid.newpage()
+        grid::grid.draw(plot)
+      })
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 
