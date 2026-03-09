@@ -284,7 +284,7 @@ ui_g_barchart_simple <- function(id, ...) {
             is_single_dataset = is_single_dataset_value
           )
         },
-        ui_transform_teal_data(ns("decorator"), transformators = select_decorators(args$decorators, "plot")),
+        teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(args$decorators, "plot")),
         bslib::accordion(
           open = TRUE,
           bslib::accordion_panel(

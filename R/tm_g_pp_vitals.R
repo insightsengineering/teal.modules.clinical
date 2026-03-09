@@ -393,7 +393,7 @@ ui_g_vitals <- function(id, ...) {
         data_extract_spec = ui_args$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

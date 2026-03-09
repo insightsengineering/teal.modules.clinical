@@ -248,7 +248,7 @@ ui_t_medical_history <- function(id, ...) {
         data_extract_spec = ui_args$mhdistat,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "table"))
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "table"))
     ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output

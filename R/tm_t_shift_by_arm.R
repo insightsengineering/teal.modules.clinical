@@ -414,7 +414,7 @@ ui_shift_by_arm <- function(id, ...) {
         choices = c("ifany", "no"),
         selected = a$useNA
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

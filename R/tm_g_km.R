@@ -532,7 +532,7 @@ ui_g_km <- function(id, ...) {
           )
         )
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
         bslib::accordion(

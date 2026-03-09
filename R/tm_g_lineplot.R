@@ -461,7 +461,7 @@ ui_g_lineplot <- function(id, ...) {
         "Include screening visit",
         value = TRUE
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

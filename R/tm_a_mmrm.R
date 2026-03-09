@@ -802,27 +802,27 @@ ui_mmrm <- function(id, ...) {
         # Decorators ---
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_lsmeans"),
-          ui_transform_teal_data(ns("d_lsmeans_table"), select_decorators(a$decorators, "lsmeans_table"))
+          teal::ui_transform_teal_data(ns("d_lsmeans_table"), select_decorators(a$decorators, "lsmeans_table"))
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "g_mmrm_lsmeans"),
-          ui_transform_teal_data(ns("d_lsmeans_plot"), select_decorators(a$decorators, "lsmeans_plot"))
+          teal::ui_transform_teal_data(ns("d_lsmeans_plot"), select_decorators(a$decorators, "lsmeans_plot"))
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_cov"),
-          ui_transform_teal_data(ns("d_covariance_table"), select_decorators(a$decorators, "covariance_table"))
+          teal::ui_transform_teal_data(ns("d_covariance_table"), select_decorators(a$decorators, "covariance_table"))
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_fixed"),
-          ui_transform_teal_data(ns("d_fixed_effects_table"), select_decorators(a$decorators, "fixed_effects_table"))
+          teal::ui_transform_teal_data(ns("d_fixed_effects_table"), select_decorators(a$decorators, "fixed_effects_table"))
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_diagnostic"),
-          ui_transform_teal_data(ns("d_diagnostic_table"), select_decorators(a$decorators, "diagnostic_table"))
+          teal::ui_transform_teal_data(ns("d_diagnostic_table"), select_decorators(a$decorators, "diagnostic_table"))
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "g_mmrm_diagnostic"),
-          ui_transform_teal_data(ns("d_diagnostic_plot"), select_decorators(a$decorators, "diagnostic_plot"))
+          teal::ui_transform_teal_data(ns("d_diagnostic_plot"), select_decorators(a$decorators, "diagnostic_plot"))
         ),
         # End of Decorators ---
         conditionalPanel(

@@ -635,7 +635,7 @@ ui_t_events_byterm <- function(id, ...) {
         is_single_dataset = is_single_dataset_value
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = a$add_total),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

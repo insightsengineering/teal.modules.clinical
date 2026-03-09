@@ -493,7 +493,7 @@ ui_g_forest_tte <- function(id, ...) {
         data_extract_spec = a$strata_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

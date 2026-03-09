@@ -395,7 +395,7 @@ ui_g_ci <- function(id, ...) {
         choices = c("mean", "median"),
         selected = args$stat
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(args$decorators, "plot"))
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(args$decorators, "plot"))
     ),
     pre_output = args$pre_output,
     post_output = args$post_output

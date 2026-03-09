@@ -986,7 +986,7 @@ ui_t_events_by_grade <- function(id, ...) {
         "Display grade groupings in nested columns",
         value = a$col_by_grade
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

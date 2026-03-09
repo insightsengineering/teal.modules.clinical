@@ -445,7 +445,7 @@ ui_t_logistic <- function(id, ...) {
         multiple = FALSE,
         fixed = a$conf_level$fixed
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table"))
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table"))
     ),
     pre_output = a$pre_output,
     post_output = a$post_output

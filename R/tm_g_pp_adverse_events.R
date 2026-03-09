@@ -427,7 +427,7 @@ ui_g_adverse_events <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      ui_transform_teal_data(ns("d_plot"), transformators = select_decorators(ui_args$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("d_plot"), transformators = select_decorators(ui_args$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

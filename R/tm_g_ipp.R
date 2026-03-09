@@ -437,7 +437,7 @@ ui_g_ipp <- function(id, ...) {
         data_extract_spec = a$baseline_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

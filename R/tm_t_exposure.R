@@ -458,7 +458,7 @@ ui_t_exposure <- function(id, ...) {
       ),
       checkboxInput(ns("add_total_row"), "Add Total row", value = a$add_total_row),
       checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

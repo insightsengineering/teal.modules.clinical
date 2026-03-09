@@ -487,7 +487,7 @@ ui_t_abnormality <- function(id, ...) {
         "Exclude subjects whose baseline grade is the same as abnormal grade",
         value = a$exclude_base_abn
       ),
-      ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
