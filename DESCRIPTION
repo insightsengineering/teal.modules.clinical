@@ -33,7 +33,7 @@ BugReports:
     https://github.com/insightsengineering/teal.modules.clinical/issues
 Depends:
     R (>= 4.4),
-    teal (>= 1.1),
+    teal (>= 1.1.0.9029),
     teal.transform (>= 0.7.0),
     tern (>= 0.9.9)
 Imports:
