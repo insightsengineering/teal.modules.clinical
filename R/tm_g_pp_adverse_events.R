@@ -602,7 +602,7 @@ srv_g_adverse_events <- function(id,
     decorated_all_q_plot <- teal::srv_transform_teal_data(
       "d_plot",
       data = plot_q,
-      decorators = select_decorators(decorators, "plot"),
+      transformators = select_decorators(decorators, "plot"),
       expr = quote(plot)
     )
 
