@@ -464,6 +464,20 @@ split_choices <- function(x) {
   split_x
 }
 
+split_choices.variables <- function(x) {
+  checkmate::assert_class(x, "variables")
+  if (!checkmate::test_character(x$choices, min.len = 1) ||
+    !checkmate::test_character(x$selected, min.len = 1)) {
+    return(x)
+  }
+
+  split_x <- x
+  split_x$choices <- split_interactions(x$choices)
+  split_x$selected <- split_interactions(x$selected)
+
+  split_x
+}
+
 #' Extracts html id for `data_extract_ui`
 #'
 #' The `data_extract_ui` is located under extended html id. We could not use `ns("original id")`
@@ -512,8 +526,6 @@ extract_input <- function(varname, dataname, filter = FALSE) {
 split_interactions <- function(x, by = "\\*|:") {
   if (length(x) >= 1) {
     unique(unlist(strsplit(x, split = by)))
-  } else {
-    NULL
   }
 }
 

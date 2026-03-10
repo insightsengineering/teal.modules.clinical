@@ -10,6 +10,7 @@ tm_a_mmrm.variables <- function(
   cov_var = teal.picks::variables(),
   arm_ref_comp = NULL,
   paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
+  paramcd_values = teal.picks::values(tidyselect::everything()),
   method = teal.picks::values(
     c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
     "Satterthwaite"
@@ -35,6 +36,7 @@ tm_a_mmrm.variables <- function(
   checkmate::assert_class(visit_var, "variables")
   checkmate::assert_class(cov_var, "variables")
   checkmate::assert_class(paramcd, "variables")
+  checkmate::assert_class(paramcd_values, "values")
   checkmate::assert_class(method, "values")
   checkmate::assert_class(conf_level, "values")
   checkmate::assert_numeric(
@@ -89,8 +91,9 @@ tm_a_mmrm.variables <- function(
   aval_var <- picks(datasets(dataname, dataname), aval_var)
   id_var <- picks(datasets(dataname, dataname), id_var)
   arm_var <- picks(datasets(parentname, parentname), arm_var)
-  paramcd <- picks(datasets(dataname, dataname), paramcd, values())
+  paramcd <- picks(datasets(dataname, dataname), paramcd, paramcd_values)
   visit_var <- picks(datasets(dataname, dataname), visit_var)
+  split_covariates = picks(datasets(dataname, dataname), split_choices.variables(cov_var))
   cov_var <- picks(datasets(dataname, dataname), cov_var)
 
   args <- as.list(environment())
@@ -141,6 +144,12 @@ ui_mmrm.picks <- function(id, ...) {
             tags$div(
               tags$label("Covariates"),
               teal.picks::picks_ui(ns("cov_var"), a$cov_var)
+            ),
+            # shinyjs::hidden(
+              tagList(
+                tags$label("Split Covariates"),
+                teal.picks::picks_ui(ns("split_covariates"), a$split_covariates)
+              # )
             ),
             tags$div(
               tags$label("Select Treatment Variable"),
@@ -379,6 +388,7 @@ srv_mmrm.picks <- function(
   id_var,
   visit_var,
   cov_var,
+  split_covariates,
   aval_var,
   arm_ref_comp,
   label,
@@ -398,32 +408,30 @@ srv_mmrm.picks <- function(
       namespace = "teal.modules.clinical"
     )
 
-    # observeEvent(input[[extract_input("cov_var", dataname)]], {
-    #   # update covariates as actual variables
-    #   split_interactions_values <- split_interactions(input[[extract_input("cov_var", dataname)]])
-    #   arm_var_value <- input[[extract_input("arm_var", parentname)]]
-    #   arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
-    #   if (arm_in_cov) {
-    #     split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
-    #   } else {
-    #     split_covariates_selected <- split_interactions_values
-    #   }
-    #   teal.widgets::updateOptionalSelectInput(
-    #     session,
-    #     inputId = extract_input("split_covariates", dataname),
-    #     selected = split_covariates_selected
-    #   )
-    # })
+    observeEvent(input[["cov_var-variables-selected"]], {
+      # update covariates as actual variables
+      split_interactions_values <- split_interactions(input[["cov_var-variables-selected"]])
+      arm_var_value <- input[["arm_var-variables-selected"]]
+      arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
+      if (arm_in_cov) {
+        split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
+      } else {
+        split_covariates_selected <- split_interactions_values
+      }
+      rv_temp <- selectors$split_covariates()
+      rv_temp$variables$selected <- split_covariates_selected
+      selectors$split_covariates(rv_temp)
+    }, ignoreNULL = FALSE)
 
-    # arm_ref_comp_iv <- arm_ref_comp_observer(
-    #   session,
-    #   input,
-    #   output,
-    #   id_arm_var = extract_input("arm_var", parentname), # From UI.
-    #   data = reactive(data()[[parentname]]),
-    #   arm_ref_comp = arm_ref_comp,
-    #   module = "tm_mmrm"
-    # )
+    arm_ref_comp_iv <- arm_ref_comp_observer(
+      session,
+      input,
+      output,
+      id_arm_var = "arm_var-variables-selected", # From UI.
+      data = reactive(data()[[parentname]]),
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_mmrm"
+    )
 
     selectors <- teal.picks::picks_srv(
       picks = list(
@@ -432,7 +440,8 @@ srv_mmrm.picks <- function(
         id_var = id_var,
         visit_var = visit_var,
         cov_var = cov_var,
-        aval_var = aval_var
+        aval_var = aval_var,
+        split_covariates = split_covariates
       ),
       data = data
     )
@@ -678,7 +687,7 @@ srv_mmrm.picks <- function(
       any(c(is.character(equal_ADSL), is.character(equal_dataname), true_means_change))
     })
 
-        # Event handler:
+    # Event handler:
     # These trigger when we are out of sync and then enable the start button and
     # disable the show R code button and show warning message
     observeEvent(mmrm_inputs_reactive(), {
@@ -690,67 +699,315 @@ srv_mmrm.picks <- function(
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- reactive({
-      # adsl_filtered <- anl_q()[[parentname]]
-      # anl_filtered <- anl_q()[[dataname]]
-      # anl_data <- anl_q()[["ANL"]]
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
+      anl_data <- anl_q()[["ANL"]]
 
-      # anl_m_inputs <- anl_inputs()
-      # if (!is.null(input[[extract_input("arm_var", parentname)]])) {
-      #   input_arm_var <- as.vector(anl_m_inputs$columns_source$arm_var)
-      # } else {
-      #   input_arm_var <- NULL
-      # }
-      # input_visit_var <- as.vector(anl_m_inputs$columns_source$visit_var)
+      anl_m_inputs <- anl_inputs$variables()
+      input_arm_var <- anl_m_inputs$arm_var
+      input_visit_var <- anl_m_inputs$visit_var
 
-      # input_aval_var <- as.vector(anl_m_inputs$columns_source$aval_var)
-      # input_id_var <- as.vector(anl_m_inputs$columns_source$id_var)
-      # input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_aval_var <- anl_m_inputs$aval_var
+      input_id_var <- anl_m_inputs$id_var
+      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
 
-      # # Split the existing covariate strings in their variable parts, to allow "A*B" and "A:B" notations.
-      # input_cov_var <- as.vector(anl_m_inputs$columns_source$split_covariates)
-      # covariate_parts <- split_interactions(input_cov_var)
+      # Split the existing covariate strings in their variable parts, to allow "A*B" and "A:B" notations.
+      input_cov_var <- anl_m_inputs$split_covariates
+      covariate_parts <- split_interactions(input_cov_var)
 
-      # all_x_vars <- c(input_arm_var, input_visit_var, covariate_parts)
+      all_x_vars <- c(input_arm_var, input_visit_var, covariate_parts)
 
-      # all_x_vars_in_adsl <- intersect(
-      #   all_x_vars,
-      #   colnames(adsl_filtered)
-      # )
-      # all_x_vars_in_anl <- setdiff(
-      #   all_x_vars,
-      #   all_x_vars_in_adsl
-      # )
+      all_x_vars_in_adsl <- intersect(all_x_vars, colnames(adsl_filtered) )
+      all_x_vars_in_anl <- setdiff(all_x_vars, all_x_vars_in_adsl)
 
-      # adslvars <- unique(c("USUBJID", "STUDYID", input_arm_var, input_id_var, all_x_vars_in_adsl))
-      # anlvars <- unique(c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_visit_var, all_x_vars_in_anl))
+      adslvars <- unique(c("USUBJID", "STUDYID", input_arm_var, input_id_var, all_x_vars_in_adsl))
+      anlvars <- unique(c("USUBJID", "STUDYID", input_paramcd, input_aval_var, input_visit_var, all_x_vars_in_anl))
 
-      # validate_standard_inputs(
-      #   adsl = adsl_filtered,
-      #   adslvars = adslvars,
-      #   anl = anl_filtered,
-      #   anlvars = anlvars,
-      #   arm_var = input_arm_var,
-      #   ref_arm = unlist(input$buckets$Ref),
-      #   comp_arm = unlist(input$buckets$Comp),
-      #   min_nrow = 10,
-      #   need_arm = FALSE
-      # )
+      validate_standard_inputs(
+        adsl = adsl_filtered,
+        adslvars = adslvars,
+        anl = anl_filtered,
+        anlvars = anlvars,
+        arm_var = input_arm_var,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
+        min_nrow = 10,
+        need_arm = FALSE
+      )
 
-      # Map(
-      #   function(visit_df, visit_name) {
-      #     dup <- any(duplicated(visit_df[[input_id_var]]))
-      #     validate(need(!dup, paste("Duplicated subject ID found at", visit_name)))
-      #   },
-      #   split(anl_data, anl_data[[input_visit_var]]),
-      #   levels(anl_data[[input_visit_var]])
-      # )
+      Map(
+        function(visit_df, visit_name) {
+          dup <- any(duplicated(visit_df[[input_id_var]]))
+          validate(need(!dup, paste("Duplicated subject ID found at", visit_name)))
+        },
+        split(anl_data, anl_data[[input_visit_var]]),
+        visit_name = levels(anl_data[[input_visit_var]])
+      )
     })
 
-    observe({
-      adsl_merge_inputs$data()
-      browser()
+    # Connector:
+    # Fit the MMRM, once the user clicks on the start button.
+    mmrm_fit <- eventReactive(input$button_start, {
+      qenv <- anl_q()
+      anl_m_inputs <- anl_inputs$variables()
+
+      my_calls <- template_fit_mmrm(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        aval_var = anl_m_inputs$aval_var,
+        arm_var = anl_m_inputs$arm_var,
+        ref_arm = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp),
+        combine_comp_arms = input$combine_comp_arms,
+        id_var = anl_m_inputs$id_var,
+        visit_var = anl_m_inputs$visit_var,
+        cov_var = anl_m_inputs$cov_var,
+        conf_level = as.numeric(input$conf_level),
+        method = as.character(input$method),
+        cor_struct = input$cor_struct,
+        weights_emmeans = input$weights_emmeans,
+        parallel = input$parallel
+      )
+      teal.code::eval_code(qenv, as.expression(unlist(my_calls)))
     })
 
-    adsl_merge_inputs$data
+    output$mmrm_title <- renderText({
+      new_inputs <- try(state_has_changed(), silent = TRUE)
+      # No message needed here because it will be displayed by either plots or tables output
+      validate(need(!inherits(new_inputs, "try-error") && !new_inputs, character(0)))
+
+      # Input on output type.
+      output_function <- input$output_function
+      g_mmrm_diagnostic_type <- input$g_mmrm_diagnostic_type
+      g_mmrm_lsmeans_select <- input$g_mmrm_lsmeans_select
+
+      output_title <- switch(output_function,
+        "t_mmrm_cov" = "Residual Covariance Matrix Estimate",
+        "t_mmrm_diagnostic" = "Model Fit Statistics",
+        "t_mmrm_fixed" = "Fixed Effects Estimates",
+        "t_mmrm_lsmeans" = "LS Means and Contrasts Estimates",
+        "g_mmrm_diagnostic" = switch(g_mmrm_diagnostic_type,
+          "fit-residual" = "Marginal Fitted Values vs. Residuals",
+          "q-q-residual" = "Q-Q Normal Plot for Standardized Residuals"
+        ),
+        "g_mmrm_lsmeans" = if (setequal(g_mmrm_lsmeans_select, c("estimates", "contrasts"))) {
+          "LS Means Estimates and Contrasts"
+        } else if (identical(g_mmrm_lsmeans_select, "estimates")) {
+          "LS Means Estimates"
+        } else {
+          "LS Means Contrasts"
+        }
+      )
+      output_title
+    })
+
+    table_q <- reactive({
+      validate(
+        need(
+          !state_has_changed(),
+          "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
+        )
+      )
+      # Input on output type.
+      output_function <- input$output_function
+
+      # If the output is not a table, stop here.
+      if (!isTRUE(grepl("^t_", output_function))) {
+        return(NULL)
+      }
+      # Get the fit stack while evaluating the fit code at the same time.
+      qenv <- mmrm_fit()
+      fit <- qenv[["fit"]]
+
+      anl_m_inputs <- anl_inputs$variables()
+
+      ANL <- qenv[["ANL"]]
+      ANL_ADSL <- qenv[["ANL_ADSL"]]
+      paramcd <- anl_m_inputs$paramcd
+
+      basic_table_args$subtitles <- paste0(
+        "Analysis Variable: ", anl_m_inputs$aval_var,
+        ",  Endpoint: ", paste(selectors$paramcd()$values$selected, collapse = ", "),
+        ifelse(is.null(fit$vars$covariates), "", paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", ")))
+      )
+      basic_table_args$main_footer <- c(
+        paste("Weights for LS Means:", input$weights_emmeans),
+        paste("Correlation Structure:", input$cor_struct),
+        paste("Adjustment Method:", input$method)
+      )
+
+      mmrm_table <- template_mmrm_tables(
+        parentname = "ANL_ADSL",
+        dataname = "ANL",
+        fit_name = "fit",
+        arm_var = anl_m_inputs$arm_var,
+        ref_arm = unlist(input$buckets$Ref),
+        visit_var = anl_m_inputs$visit_var,
+        paramcd = paramcd,
+        show_relative = input$t_mmrm_lsmeans_show_relative,
+        table_type = output_function,
+        total_label = total_label,
+        basic_table_args = basic_table_args
+      )
+
+      obj <- qenv
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
+      teal.code::eval_code(obj, as.expression(mmrm_table))
+    })
+
+    # Endpoint:
+    # Plot outputs.
+    plot_q <- reactive({
+      validate(
+        need(
+          !state_has_changed(),
+          "Inputs changed and no longer reflect the fitted model. Press `Fit Model` button again to re-fit model."
+        )
+      )
+      # Input on output type.
+      output_function <- input$output_function
+
+      # Stop here if the output is not a plot.
+      if (!isTRUE(grepl("^g_", output_function))) {
+        return(NULL)
+      }
+
+      qenv <- mmrm_fit()
+      fit <- qenv[["fit"]]
+
+      ggplot2_args[["lsmeans"]] <- teal.widgets::ggplot2_args(
+        labs <- list(
+          subtitle = paste0(
+            "Endpoint: ", fit$fit$data$PARAMCD[1],
+            ifelse(is.null(fit$vars$covariates), "",
+              paste(",  Covariates:", paste(fit$vars$covariates, collapse = ", "))
+            )
+          ),
+          caption = paste(
+            paste("Weights for LS Means:", input$weights_emmeans),
+            paste("Correlation Structure:", input$cor_struct),
+            paste("Adjustment Method:", input$method),
+            sep = "\n"
+          )
+        )
+      )
+
+      ggplot2_args[["default"]] <- teal.widgets::ggplot2_args(
+        labs <- list(
+          subtitle = paste0(
+            "Analysis Variable: ", fit$vars$response,
+            ",  Endpoint: ", fit$fit$data$PARAMCD[1]
+          )
+        )
+      )
+
+      lsmeans_args <- if (output_function == "g_mmrm_lsmeans") {
+        list(
+          select = input$g_mmrm_lsmeans_select,
+          width = input$g_mmrm_lsmeans_width,
+          show_pval = input$g_mmrm_lsmeans_contrasts_show_pval
+        )
+      }
+
+      diagnostic_args <- if (output_function == "g_mmrm_diagnostic") {
+        list(
+          type = input$g_mmrm_diagnostic_type,
+          z_threshold = input$g_mmrm_diagnostic_z_threshold
+        )
+      }
+
+      mmrm_plot_expr <- template_mmrm_plots(
+        fit_name = "fit",
+        lsmeans_plot = lsmeans_args,
+        diagnostic_plot = diagnostic_args,
+        ggplot2_args = ggplot2_args
+      )
+      obj <- qenv
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
+      teal.code::eval_code(obj, as.expression(mmrm_plot_expr))
+    })
+
+    decorated_tables_q <- lapply(
+      stats::setNames(
+        nm = c("lsmeans_table", "diagnostic_table", "fixed_effects_table", "covariance_table")
+      ),
+      function(output_function) {
+        srv_decorate_teal_data(
+          id = sprintf("d_%s", output_function),
+          data = table_q,
+          decorators = select_decorators(decorators, output_function),
+          expr = reactive(bquote(.(as.name(output_function)))),
+          expr_is_reactive = TRUE
+        )
+      }
+    )
+
+    decorated_objs_q <- c(
+      decorated_tables_q,
+      lapply(
+        stats::setNames(nm = c("lsmeans_plot", "diagnostic_plot")),
+        function(output_function) {
+          srv_decorate_teal_data(
+            id = sprintf("d_%s", output_function),
+            data = plot_q,
+            decorators = select_decorators(decorators, output_function),
+            expr = reactive(bquote(.(as.name(output_function)))),
+            expr_is_reactive = TRUE
+          )
+        }
+      )
+    )
+
+    obj_ix_r <- reactive({
+      switch(input$output_function,
+        t_mmrm_lsmeans = "lsmeans_table",
+        t_mmrm_diagnostic = "diagnostic_table",
+        t_mmrm_fixed = "fixed_effects_table",
+        t_mmrm_cov = "covariance_table",
+        g_mmrm_lsmeans = "lsmeans_plot",
+        g_mmrm_diagnostic = "diagnostic_plot"
+      )
+    })
+
+    plot_r <- reactive({
+      if (is.null(plot_q())) {
+        NULL
+      } else {
+        decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
+      }
+    })
+
+    table_r <- reactive({
+      if (is.null(table_q())) {
+        NULL
+      } else {
+        decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
+      }
+    })
+
+    pws <- teal.widgets::plot_with_settings_srv(
+      id = "mmrm_plot",
+      plot_r = plot_r,
+      height = plot_height,
+      width = plot_width,
+      show_hide_signal = reactive(show_plot_rv())
+    )
+
+    teal.widgets::table_with_settings_srv(
+      id = "mmrm_table",
+      table_r = table_r,
+      show_hide_signal = reactive(!show_plot_rv())
+    )
+
+    # observe({
+    #   adsl_merge_inputs$data()
+    #   mmrm_fit()
+    # })
+
+    # adsl_merge_inputs$data
+
+    set_chunk_dims(pws, reactive({
+      decorated_objs_q[[obj_ix_r()]]()
+    }))
   })
 }

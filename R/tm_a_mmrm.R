@@ -579,7 +579,8 @@ tm_a_mmrm <- function(label,
                       basic_table_args = teal.widgets::basic_table_args(),
                       ggplot2_args = teal.widgets::ggplot2_args(),
                       transformators = list(),
-                      decorators = list()) {
+                      decorators = list(),
+                      ...) {
   UseMethod("tm_a_mmrm", aval_var)
 }
 
@@ -1066,7 +1067,7 @@ srv_mmrm.default <- function(id,
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      browser()
+
       obj %>%
         teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
         teal.code::eval_code(code = as.expression(adsl_merge_inputs()$expr))
