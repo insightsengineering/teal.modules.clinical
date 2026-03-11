@@ -1,31 +1,30 @@
 #' @export
-tm_a_mmrm.variables <- function(
-  label,
-  dataname,
-  parentname = "ADSL",
-  aval_var = teal.picks::variables(c("AVAL", "CHG")),
-  id_var = teal.picks::variables(c("USUBJID", "SUBJID")),
-  arm_var = teal.picks::variables(c("ARM", "ARMCD")),
-  visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
-  cov_var = teal.picks::variables(),
-  arm_ref_comp = NULL,
-  paramcd = teal.picks::variables(c("PARAMCD", "PARAM")),
-  paramcd_values = teal.picks::values(tidyselect::everything()),
-  method = teal.picks::values(
-    c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
-    "Satterthwaite"
-  ),
-  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
-  plot_height = c(700L, 200L, 2000L),
-  plot_width = NULL,
-  total_label = default_total_label(),
-  pre_output = NULL,
-  post_output = NULL,
-  basic_table_args = teal.widgets::basic_table_args(),
-  ggplot2_args = teal.widgets::ggplot2_args(),
-  transformators = list(),
-  decorators = list()
-) {
+tm_a_mmrm.variables <- function(label,
+                                dataname,
+                                parentname = "ADSL",
+                                aval_var = teal.picks::variables(c("AVAL", "CHG")),
+                                id_var = teal.picks::variables(c("USUBJID", "SUBJID")),
+                                arm_var = teal.picks::variables(c("ARM", "ARMCD")),
+                                visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
+                                cov_var = teal.picks::variables(),
+                                arm_ref_comp = NULL,
+                                paramcd = lifecycle::deprecated(),
+                                paramcd_var = teal.picks::variables(c("PARAMCD", "PARAM")),
+                                paramcd_values = teal.picks::values(tidyselect::everything()),
+                                method = teal.picks::values(
+                                  c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
+                                  "Satterthwaite"
+                                ),
+                                conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
+                                plot_height = c(700L, 200L, 2000L),
+                                plot_width = NULL,
+                                total_label = default_total_label(),
+                                pre_output = NULL,
+                                post_output = NULL,
+                                basic_table_args = teal.widgets::basic_table_args(),
+                                ggplot2_args = teal.widgets::ggplot2_args(),
+                                transformators = list(),
+                                decorators = list()) {
   message("Initializing tm_a_mmrm")
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
@@ -35,35 +34,26 @@ tm_a_mmrm.variables <- function(
   checkmate::assert_class(arm_var, "variables")
   checkmate::assert_class(visit_var, "variables")
   checkmate::assert_class(cov_var, "variables")
-  checkmate::assert_class(paramcd, "variables")
+  if (!missing(paramcd)) {
+    lifecycle::deprecate_warn(
+      when = "0.13.0",
+      what = "tm_a_mmrm(paramcd)",
+      details = "Use of paramcd was removed in `tm_a_mmrm` module usage with teal.picks"
+    )
+  }
+  checkmate::assert_class(paramcd_var, "variables")
   checkmate::assert_class(paramcd_values, "values")
   checkmate::assert_class(method, "values")
   checkmate::assert_class(conf_level, "values")
+  checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_height,
-    len = 3,
-    any.missing = FALSE,
-    finite = TRUE
+    plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height"
   )
   checkmate::assert_numeric(
-    plot_height[1],
-    lower = plot_height[2],
-    upper = plot_height[3],
-    .var.name = "plot_height"
+    plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE
   )
   checkmate::assert_numeric(
-    plot_width,
-    len = 3,
-    any.missing = FALSE,
-    null.ok = TRUE,
-    finite = TRUE
-  )
-  checkmate::assert_numeric(
-    plot_width[1],
-    lower = plot_width[2],
-    upper = plot_width[3],
-    null.ok = TRUE,
-    .var.name = "plot_width"
+    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -87,11 +77,10 @@ tm_a_mmrm.variables <- function(
     )
   )
 
-  # todo: force single selection to relevant selector-variables
   aval_var <- picks(datasets(dataname, dataname), aval_var)
   id_var <- picks(datasets(dataname, dataname), id_var)
   arm_var <- picks(datasets(parentname, parentname), arm_var)
-  paramcd <- picks(datasets(dataname, dataname), paramcd, paramcd_values)
+  paramcd <- picks(datasets(dataname, dataname), paramcd_var, paramcd_values)
   visit_var <- picks(datasets(dataname, dataname), visit_var)
   split_covariates = picks(datasets(dataname, dataname), split_choices.variables(cov_var))
   cov_var <- picks(datasets(dataname, dataname), cov_var)
@@ -110,7 +99,7 @@ tm_a_mmrm.variables <- function(
 
 #' @keywords internal
 ui_mmrm.picks <- function(id, ...) {
-  a <- list(...) # module args
+  a <- rlang::dots_list(...) # module args
   ns <- NS(id)
   fixed <- attr(a$method, "fixed", exact = TRUE)
 
@@ -145,11 +134,11 @@ ui_mmrm.picks <- function(id, ...) {
               tags$label("Covariates"),
               teal.picks::picks_ui(ns("cov_var"), a$cov_var)
             ),
-            # shinyjs::hidden(
+            shinyjs::hidden(
               tagList(
                 tags$label("Split Covariates"),
                 teal.picks::picks_ui(ns("split_covariates"), a$split_covariates)
-              # )
+              )
             ),
             tags$div(
               tags$label("Select Treatment Variable"),
@@ -376,52 +365,32 @@ ui_mmrm.picks <- function(id, ...) {
 }
 
 #' @keywords internal
-srv_mmrm.picks <- function(
-  id,
-  data,
-  reporter,
-  filter_panel_api,
-  dataname,
-  parentname,
-  arm_var,
-  paramcd,
-  id_var,
-  visit_var,
-  cov_var,
-  split_covariates,
-  aval_var,
-  arm_ref_comp,
-  label,
-  total_label,
-  plot_height,
-  plot_width,
-  basic_table_args,
-  ggplot2_args,
-  decorators
-) {
+srv_mmrm.picks <- function(id,
+                           data,
+                           reporter,
+                           filter_panel_api,
+                           dataname,
+                           parentname,
+                           arm_var,
+                           paramcd,
+                           id_var,
+                           visit_var,
+                           cov_var,
+                           split_covariates,
+                           aval_var,
+                           arm_ref_comp,
+                           label,
+                           total_label,
+                           plot_height,
+                           plot_width,
+                           basic_table_args,
+                           ggplot2_args,
+                           decorators) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
-    teal.logger::log_shiny_input_changes(
-      input,
-      namespace = "teal.modules.clinical"
-    )
-
-    observeEvent(input[["cov_var-variables-selected"]], {
-      # update covariates as actual variables
-      split_interactions_values <- split_interactions(input[["cov_var-variables-selected"]])
-      arm_var_value <- input[["arm_var-variables-selected"]]
-      arm_in_cov <- length(intersect(split_interactions_values, arm_var_value)) >= 1L
-      if (arm_in_cov) {
-        split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
-      } else {
-        split_covariates_selected <- split_interactions_values
-      }
-      rv_temp <- selectors$split_covariates()
-      rv_temp$variables$selected <- split_covariates_selected
-      selectors$split_covariates(rv_temp)
-    }, ignoreNULL = FALSE)
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
     arm_ref_comp_iv <- arm_ref_comp_observer(
       session,
@@ -446,6 +415,20 @@ srv_mmrm.picks <- function(
       data = data
     )
 
+    observeEvent(selectors$cov_var()$variables$selected, {
+      # update covariates as actual variables
+      split_interactions_values <- split_interactions(selectors$cov_var()$variables$selected)
+      arm_var_value <- selectors$arm_var()$variables$selected
+      if (length(intersect(split_interactions_values, arm_var_value)) >= 1L) {
+        split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
+      } else {
+        split_covariates_selected <- split_interactions_values
+      }
+      rv_value <- selectors$split_covariates()
+      rv_value$variables$selected <- split_covariates_selected
+      selectors$split_covariates(rv_value)
+    }, ignoreNULL = FALSE)
+
     validated_q <- reactive({
       obj <- req(data())
       validate_input(
@@ -468,6 +451,26 @@ srv_mmrm.picks <- function(
         condition = !is.null(selectors$id_var()$variables$selected),
         message = "A subject identifier must be selected."
       )
+      selected_visit <- selectors$visit_var()$variables$selected
+      if (selected_visit > 0) { # Interactive covariates and visit variable must include same visit variable
+        selected_covr <- selectors$cov_var()$variables$selected
+        checks <- list(
+          list(cov = "BASE:AVISIT",  invalid_visit = "AVISITN", valid_visit = "AVISIT"),
+          list(cov = "BASE:AVISITN", invalid_visit = "AVISIT",  valid_visit = "AVISITN")
+        )
+        vapply(checks, FUN.VALUE = logical(1L), function(x) {
+          validate_input(
+            inputId = "cov_var-variables-selected",
+            condition = !(x$cov %in% selected_covr) || !(x$invalid_visit %in% selected_visit),
+            message = paste0(
+              "'", x$cov, "' is not a valid covariate when '", x$invalid_visit,
+              "' is selected as visit variable. Please deselect '", x$cov,
+              "' as a covariate or change visit variable to '", x$valid_visit, "'."
+            )
+          )
+          TRUE
+        })
+      }
       teal.reporter::teal_card(obj) <- c(
         teal.reporter::teal_card("# MMR Plot"),
         teal.reporter::teal_card(obj),
@@ -761,7 +764,7 @@ srv_mmrm.picks <- function(
         combine_comp_arms = input$combine_comp_arms,
         id_var = anl_m_inputs$id_var,
         visit_var = anl_m_inputs$visit_var,
-        cov_var = anl_m_inputs$cov_var,
+        cov_var = selectors$cov_var()$variables$selected,
         conf_level = as.numeric(input$conf_level),
         method = as.character(input$method),
         cor_struct = input$cor_struct,
