@@ -1554,19 +1554,13 @@ srv_mmrm.default <- function(id,
     })
 
     plot_r <- reactive({
-      if (is.null(plot_q())) {
-        NULL
-      } else {
-        decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
-      }
+      req(!is.null(plot_q()))
+      decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
     })
 
     table_r <- reactive({
-      if (is.null(table_q())) {
-        NULL
-      } else {
-        decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
-      }
+      req(!is.null(table_q()))
+      decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
     })
 
     pws <- teal.widgets::plot_with_settings_srv(

@@ -973,19 +973,13 @@ srv_mmrm.picks <- function(id,
     })
 
     plot_r <- reactive({
-      if (is.null(plot_q())) {
-        NULL
-      } else {
-        decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
-      }
+      req(!is.null(plot_q()))
+      decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
     })
 
     table_r <- reactive({
-      if (is.null(table_q())) {
-        NULL
-      } else {
-        decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
-      }
+      req(!is.null(table_q()))
+      decorated_objs_q[[obj_ix_r()]]()[[obj_ix_r()]]
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
@@ -1001,13 +995,6 @@ srv_mmrm.picks <- function(id,
       table_r = table_r,
       show_hide_signal = reactive(!show_plot_rv())
     )
-
-    # observe({
-    #   adsl_merge_inputs$data()
-    #   mmrm_fit()
-    # })
-
-    # adsl_merge_inputs$data
 
     set_chunk_dims(pws, reactive({
       decorated_objs_q[[obj_ix_r()]]()
