@@ -553,21 +553,24 @@ template_mmrm_plots <- function(fit_name,
 #' @export
 tm_a_mmrm <- function(label,
                       dataname,
-                      parentname = "ADSL",
-                      aval_var = teal.picks::variables(c("AVAL", "CHG")),
-                      id_var = teal.picks::variables(c("USUBJID", "SUBJID")),
-                      arm_var = teal.picks::variables(c("ARM", "ARMCD")),
-                      visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
-                      cov_var = teal.picks::variables(),
-                      arm_ref_comp = NULL,
-                      paramcd = lifecycle::deprecated(),
-                      paramcd_var = teal.picks::variables(c("PARAMCD", "PARAM")),
-                      paramcd_values = teal.picks::values(tidyselect::everything()),
-                      method = teal.picks::values(
-                        c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
-                        "Satterthwaite"
+                      parentname = ifelse(
+                        inherits(arm_var, "data_extract_spec"),
+                        teal.transform::datanames_input(arm_var),
+                        "ADSL"
                       ),
-                      conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
+                      aval_var,
+                      id_var,
+                      arm_var,
+                      visit_var,
+                      cov_var,
+                      arm_ref_comp = NULL,
+                      paramcd,
+                      method = teal.transform::choices_selected(
+                        c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
+                        "Satterthwaite",
+                        keep_order = TRUE
+                      ),
+                      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                       plot_height = c(700L, 200L, 2000L),
                       plot_width = NULL,
                       total_label = default_total_label(),
