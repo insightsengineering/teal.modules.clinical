@@ -814,7 +814,9 @@ ui_mmrm <- function(id, ...) {
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_fixed"),
-          teal::ui_transform_teal_data(ns("d_fixed_effects_table"), select_decorators(a$decorators, "fixed_effects_table"))
+          teal::ui_transform_teal_data(
+            ns("d_fixed_effects_table"), select_decorators(a$decorators, "fixed_effects_table")
+          )
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_diagnostic"),
