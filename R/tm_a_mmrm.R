@@ -553,17 +553,13 @@ template_mmrm_plots <- function(fit_name,
 #' @export
 tm_a_mmrm <- function(label,
                       dataname,
-                      parentname = ifelse(
-                        inherits(arm_var, "data_extract_spec"),
-                        teal.transform::datanames_input(arm_var),
-                        "ADSL"
-                      ),
-                      aval_var,
+                      parentname,
+                      aval_var = teal.picks::variables(c("AVAL", "CHG")),
                       id_var,
                       arm_var,
                       visit_var,
                       cov_var,
-                      arm_ref_comp = NULL,
+                      arm_ref_comp,
                       paramcd,
                       method = teal.transform::choices_selected(
                         c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),

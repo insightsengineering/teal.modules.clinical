@@ -2,7 +2,7 @@
 tm_a_mmrm.variables <- function(label,
                                 dataname,
                                 parentname = "ADSL",
-                                aval_var = teal.picks::variables(c("AVAL", "CHG")),
+                                aval_var,
                                 id_var = teal.picks::variables(c("USUBJID", "SUBJID")),
                                 arm_var = teal.picks::variables(c("ARM", "ARMCD")),
                                 visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
