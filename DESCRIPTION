@@ -62,7 +62,7 @@ Imports:
     teal.logger (>= 0.4.0),
     teal.picks,
     tidyselect (>= 1.2.0),
-    teal.reporter (>= 0.5.0.9001),
+    teal.reporter (>= 0.6.0),
     teal.widgets (>= 0.5.0),
     tern.gee (>= 0.1.5),
     tern.mmrm (>= 0.3.3),
@@ -86,8 +86,8 @@ VignetteBuilder:
     rmarkdown
 Remotes:
     insightsengineering/teal@redesign_extraction@main,
-    insightsengineering/teal.picks@main,
-    insightsengineering/teal.transform@redesign_extraction@main,
+    insightsengineering/teal.picks@redesign_extraction@main,
+    insightsengineering/teal.transform,
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
