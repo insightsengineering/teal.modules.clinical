@@ -7,20 +7,18 @@
 tm_t_smq(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
-  arm_var,
-  id_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    subset = "USUBJID"), selected = "USUBJID", fixed = TRUE),
-  llt,
+  parentname = "ADSL",
+  arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+  id_var = variables(choices = "USUBJID", selected = "USUBJID", fixed = TRUE),
+  llt = variables(choices = "AEDECOD", selected = "AEDECOD"),
   add_total = TRUE,
   total_label = default_total_label(),
   sort_criteria = c("freq_desc", "alpha"),
   drop_arm_levels = TRUE,
   na_level = tern::default_na_str(),
   smq_varlabel = "Standardized MedDRA Query",
-  baskets,
-  scopes,
+  baskets = variables(choices = starts_with("SMQ") | starts_with("CQ")),
+  scopes = variables(choices = ends_with("SC")),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
@@ -155,17 +153,6 @@ data <- within(data, {
 
   .names_baskets <- grep("^(SMQ|CQ).*NAM$", names(ADAE), value = TRUE)
   .names_scopes <- grep("^SMQ.*SC$", names(ADAE), value = TRUE)
-
-  .cs_baskets <- choices_selected(
-    choices = variable_choices(ADAE, subset = .names_baskets),
-    selected = .names_baskets
-  )
-
-  .cs_scopes <- choices_selected(
-    choices = variable_choices(ADAE, subset = .names_scopes),
-    selected = .names_scopes,
-    fixed = TRUE
-  )
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
@@ -175,17 +162,11 @@ app <- init(
     tm_t_smq(
       label = "Adverse Events by SMQ Table",
       dataname = "ADAE",
-      arm_var = choices_selected(
-        choices = variable_choices(data[["ADSL"]], subset = c("ARM", "SEX")),
-        selected = "ARM"
-      ),
+      arm_var = variables(choices = any_of(c("ARM", "ARMCD", "SEX"))),
       add_total = FALSE,
-      baskets = data[[".cs_baskets"]],
-      scopes = data[[".cs_scopes"]],
-      llt = choices_selected(
-        choices = variable_choices(data[["ADAE"]], subset = c("AEDECOD")),
-        selected = "AEDECOD"
-      )
+      baskets = variables(choices = starts_with("SMQ") | starts_with("CQ")),
+      scopes = variables(choices = ends_with("SC")),
+      llt = variables(choices = "AEDECOD", selected = "AEDECOD")
     )
   )
 )
@@ -201,9 +182,9 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNkTUalZGRQgMrKqORk96EVFGjIBBABEAZQAZbx1SGAI-OAAPPyh+UWpygd6nMYmp2fn3OFcmnQxoeFE-eihRAGs4UlExgHNGOFR2BTAAPXZBgFkARQAfADCvzkGAAVAA5XrfAAkbxSxzE7FWTjkKU03EEugAvHZHKjykdYGI-KJiKgxA8ni83u8fr9wYNAXC8DpEaJkf01midBjqFidLj7M5GoSCKdzlcbndwgQYkQZCTRHAROo4PxXgcMnKFQRKbiMYxaFBOnA-DrFRyUSlRIJ6MrSILDuyzhdrrc0eUMsrVeR+E6iSdXVLbuVRQcJKcyUQKTKjBa9VGVXA1RqvToE-reSxjabzfLLZy1ja7Q6Ay7o7HPVqdD6U37y8So+SxLh08ZaDN1U7hS4Do0AL6NABWCogfmurA5SRs4X4cGMUGEpHN-FoZL8o-iE7gU+A7MSoTkAF19mhUGN4tFNRkkk6km2DnwhF0nc-Chz0xM-CvRDAAI43hkwHUCaKpOm8vT8NojDKjoTjaGQdz0KwOj0nYJoiPC6a3qEiIQWAKLYTWGQsDAfiGk6mZJr66pAcBwHUU6hq5iI+a6kiSTAMAkFDMMbzHseJb2jcVGvIRWDfPCOhvIMTgABpvHI1YMQxdapgRvSSW8OE6CpqkLPwP5EJ41BOgAYr0wxyY+qk6JK7p3LiXE8WAkbBo5AlCbplZZi5bzub5ohebZqnUNQjq4tRpLJqm9GqUxBo5phZrUYenjcbxawhbWpaiVF4lrP0TiAgA8v0Sn6XZ6kNrikFOMVZUVWAuk9MBbWNI0tDGDo7DxOQagaNo1g2GkByiHEECsL06DsOeMKCLQKTzcqjAwYOShgAOx5AA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNkTUalZGRQgMrKqORk96EVFGjIBBABEAZQAZbx1SGAI-OAAPPyh+UWpygd6nMYmp2fn3OFcmnQxoeFE-eihRAGs4UlExgHNGOFR2BTAAPXZBgFkARQAfADCvzkGAAVAA5XrfAAkbxSxzE7FWTjkKU03EEugAvHZHKjykdYGI-KJiKgxA8ni83u8fr9wYNAXC8DpEaJkf01midBjqFidLj7M5GoSCKdzlcbndwgQYkQZCTRHAROo4PxXgcMnKFQRKbiMYxaFBOnA-DrFRyUSlRIJ6MrSILDuyzhdrrc0eUMsrVeR+E6iSdXVLbuVRQcJKcyUQKTKjBa9VGVXA1RqvToE-reSxjabzfLLZy1ja7Q6Ay7o7HPVqdD6U37y8So+SxLh08ZaDN1U7hS4Do0AL6NABWCogfmurA5SRs4X4cGMUGEpHN-FoZL8o-iE7gU+A7MSoTkAF19mhUGN4tFNRkkk6km2DnwhF0nc-Chz0xM-CvRDAAI43hkwHUCaKpOm8vT8NojDKjoTjaGQdz0KwOj0nYJoiPC6a3qEiIQWAKLYTWGQsDAfiGk6mZJr66pAcBwHUU6hq5iI+a6kiSTAMAkFDMMbzHseJb2jcVGvIRWDfPCOhvIMTgABpvHI1YMQxdapgRvSSW8OE6CpqkLPwP5EJ41BOgAYr0wxyY+qk6JK7p3LiXE8WAkbBo5AlCbplZZi5bzub5ohebZqnUNQjq4tRpLJqm9GqUxBo5phZrUYenjcbxawhbWpaiVF4lrP0TiAgA8v0Sn6XZ6kNrikFOMVZUVWAuk9MBbWNI0tDGDo7DxOQagaNo1g2GkByiHEECsL06DsOeMKCLQKTzcqjAwYOShgAOx5AA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
-    \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNkTUalZGRQgMrKqORk96EVFGjIBBABEAZQAZbx1SGAI-OAAPPyh+UWpygd6nMYmp2fn3OFcmnQxoeFE-eihRAGs4UlExgHNGOFR2BTAAPXZBgFkARQAfADCvzkGAAVAA5XrfAAkbxSxzE7FWTjkKU03EEugAvHZHKjykdYGI-KJiKgxA8ni83u8fr9wYNAXC8DpEaJkf01midBjqFidLj7M5GgBfRoAKyI8T811YHKSNnC-DgxigwlIfgI-FoZL8UplctEwHZiVCcgAuvs0KgxvFoq8DklBTokrhynwhF0XZ7ChzyhkJn5NaIYABHR0ZKOZKD0ODUF1vXr8bSMUS6JzaMh3eisHT0uyxkTwgNRpKIxNgFElg7RlgwPwYxgupu0ItIggxaUESm4qAQVh+IjGdgEV5VrDfeE6JOTwH9advQZOAAabzkG-dtajC34waIngTuIAYr1hsut9GMucrjc7rjW+2OZ3u72dKJPO1TlFYuP6eudH+d9P1uPwfxicdgXXNFSwyMkiApe9eRYNtOg7LsZDfChFjA6IIKXQFoMvK9qGoUgWxQp9RwwnskKTJx+icQEAHkF1ZdMRHUOB+ErNZGJYtieijITGkaWhjB0dh4nINQNG0awbDSA5RDiAdenQdgbRhQRaBSLT00YVMxSUMBRQtIA}{Open in Shinylive}
+    \if{html}{\out{<script type="text/javascript">$(function() {  var if_pkgdown = [...document.scripts].filter(x => x.src.includes("pkgdown.js")).length > 0;  if (if_pkgdown) {    $("iframe.iframe_shinylive").css("width", "150\%");  }});</script>}}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHTomFg5fXgFhMQkpGXl0zIZmNkTUalZGRQgMrKqORk96EVFGjIBBABEAZQAZbx1SGAI-OAAPPyh+UWpygd6nMYmp2fn3OFcmnQxoeFE-eihRAGs4UlExgHNGOFR2BTAAPXZBgFkARQAfADCvzkGAAVAA5XrfAAkbxSxzE7FWTjkKU03EEugAvHZHKjykdYGI-KJiKgxA8ni83u8fr9wYNAXC8DpEaJkf01midBjqFidLj7M5GgBfRoAKyI8T811YHKSNnC-DgxigwlIfgI-FoZL8UplctEwHZiVCcgAuvs0KgxvFoq8DklBTokrhynwhF0XZ7ChzyhkJn5NaIYABHR0ZKOZKD0ODUF1vXr8bSMUS6JzaMh3eisHT0uyxkTwgNRpKIxNgFElg7RlgwPwYxgupu0ItIggxaUESm4qAQVh+IjGdgEV5VrDfeE6JOTwH9advQZOAAabzkG-dtajC34waIngTuIAYr1hsut9GMucrjc7rjW+2OZ3u72dKJPO1TlFYuP6eudH+d9P1uPwfxicdgXXNFSwyMkiApe9eRYNtOg7LsZDfChFjA6IIKXQFoMvK9qGoUgWxQp9RwwnskKTJx+icQEAHkF1ZdMRHUOB+ErNZGJYtieijITGkaWhjB0dh4nINQNG0awbDSA5RDiAdenQdgbRhQRaBSLT00YVMxSUMBRQtIA" style="height: 800px; width: 100\%; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: relative; z-index: 1"></iframe>}}
   }
 }
 }

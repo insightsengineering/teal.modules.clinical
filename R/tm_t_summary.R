@@ -5,8 +5,6 @@
 #' @inheritParams template_arguments
 #' @param arm_var_labels (`character` or `NULL`)\cr vector of column variable labels to display, of the same length as
 #'   `arm_var`. If `NULL`, no labels will be displayed.
-#' @param numeric_formats (named `list` or `NULL`)\cr format patterns for numeric statistics. Names should match the
-#'   statistics in `numeric_stats`. If `NULL`, defaults from [tern::analyze_vars()] are used.
 #'
 #' @inherit template_arguments return
 #'
@@ -26,7 +24,6 @@ template_summary <- function(dataname,
                              numeric_stats = c(
                                "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                              ),
-                             numeric_formats = NULL,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
@@ -42,12 +39,10 @@ template_summary <- function(dataname,
   checkmate::assert_string(na_level)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_character(numeric_stats, min.len = 1)
-  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
-  checkmate::assert_subset(numeric_stats, allowed_numeric_stats)
-  checkmate::assert_list(numeric_formats, names = "unique", null.ok = TRUE)
-  if (!is.null(numeric_formats)) {
-    checkmate::assert_subset(names(numeric_formats), allowed_numeric_stats)
-  }
+  checkmate::assert_subset(
+    numeric_stats,
+    c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
+  )
 
   denominator <- match.arg(denominator)
 
@@ -56,27 +51,18 @@ template_summary <- function(dataname,
   # Data processing
   data_list <- list()
 
-  if (!na.rm) {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = anl <- tern::df_explicit_na(df, omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_level),
-        env = list(
-          df = as.name(dataname),
-          sum_vars = sum_vars,
-          na_level = na_level
-        )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = anl <- df %>%
+        tern::df_explicit_na(omit_columns = setdiff(names(df), c(sum_vars)), na_level = na_str),
+      env = list(
+        df = as.name(dataname),
+        sum_vars = sum_vars,
+        na_str = na_level
       )
     )
-  } else {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = anl <- df,
-        env = list(df = as.name(dataname))
-      )
-    )
-  }
+  )
 
   prepare_arm_levels_call <- lapply(arm_var, function(x) {
     prepare_arm_levels(
@@ -87,26 +73,28 @@ template_summary <- function(dataname,
     )
   })
   data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
-  y$data <- bracket_expr(data_list)
 
-  # Only add the footer about NA if needed
-  if (na.rm) {
-    module_table_args <- teal.widgets::basic_table_args(
-      show_colcounts = TRUE,
-      main_footer =
-        sprintf(
-          "N represents the number of unique subject IDs such that the variable has NA (%s) values.",
-          na_level
-        )
+  data_list <- add_expr(
+    data_list,
+    substitute(
+      expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
+      env = list(
+        parentname = as.name(parentname),
+        na_str = na_level
+      )
     )
-  } else {
-    module_table_args <- teal.widgets::basic_table_args(show_colcounts = TRUE)
-  }
+  )
+
+  y$data <- bracket_expr(data_list)
 
   parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
     teal.widgets::resolve_basic_table_args(
       user_table = basic_table_args,
-      module_table = module_table_args
+      module_table = teal.widgets::basic_table_args(
+        show_colcounts = TRUE,
+        main_footer =
+          "n represents the number of unique subject IDs such that the variable has non-NA values."
+      )
     )
   )
 
@@ -151,8 +139,7 @@ template_summary <- function(dataname,
     stats = c(
       numeric_stats,
       ifelse(denominator == "omit", "count", "count_fraction")
-    ),
-    formats = numeric_formats
+    )
   )
 
   layout_list <- add_expr(
@@ -163,11 +150,10 @@ template_summary <- function(dataname,
           vars = sum_vars,
           var_labels = sum_var_labels,
           show_labels = "visible",
-          na_rm = na.rm,
+          na.rm = na.rm,
           na_str = na_level,
           denom = denom,
-          .stats = stats,
-          .formats = formats
+          .stats = stats
         ),
         env = env_sum_vars
       )
@@ -179,8 +165,7 @@ template_summary <- function(dataname,
           na.rm = na.rm,
           na_str = na_level,
           denom = denom,
-          .stats = stats,
-          .formats = formats
+          .stats = stats
         ),
         env = env_sum_vars
       )
@@ -282,9 +267,6 @@ template_summary <- function(dataname,
 #'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
 #'         c("SEX", "RACE")
 #'       ),
-#'       numeric_formats = list(
-#'         "mean_ci" = "(xx.x, xx.x)"
-#'       ),
 #'       useNA = "ifany"
 #'     )
 #'   )
@@ -296,11 +278,7 @@ template_summary <- function(dataname,
 #' @export
 tm_t_summary <- function(label,
                          dataname,
-                         parentname = ifelse(
-                           inherits(arm_var, "data_extract_spec"),
-                           teal.transform::datanames_input(arm_var),
-                           "ADSL"
-                         ),
+                         parentname = "ADSL",
                          arm_var,
                          summarize_vars,
                          add_total = TRUE,
@@ -311,7 +289,6 @@ tm_t_summary <- function(label,
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                          ),
-                         numeric_formats = NULL,
                          denominator = c("N", "n", "omit"),
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
@@ -323,16 +300,10 @@ tm_t_summary <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(summarize_vars, "choices_selected")
+  checkmate::assert_class(arm_var, "variables")
+  checkmate::assert_class(summarize_vars, "variables")
   checkmate::assert_string(na_level)
-  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
   checkmate::assert_character(numeric_stats, min.len = 1)
-  checkmate::assert_subset(numeric_stats, allowed_numeric_stats)
-  checkmate::assert_list(numeric_formats, names = "unique", null.ok = TRUE)
-  if (!is.null(numeric_formats)) {
-    checkmate::assert_subset(names(numeric_formats), allowed_numeric_stats)
-  }
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -346,61 +317,51 @@ tm_t_summary <- function(label,
   denominator <- match.arg(denominator)
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
-  args <- as.list(environment())
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
-    summarize_vars = cs_to_des_select(summarize_vars, dataname = dataname, multiple = TRUE, ordered = TRUE)
-  )
+  arm_var <- picks(datasets(parentname, parentname), arm_var) # multiple TRUE, ordered TRUE
+  summarize_vars <- picks(datasets(dataname, dataname), summarize_vars) # multiple TRUE ordered TRUE
+
+  args <- as.list(environment())
 
   module(
     label = label,
     server = srv_summary,
     ui = ui_summary,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        show_arm_var_labels = show_arm_var_labels,
-        total_label = total_label,
-        na_level = na_level,
-        numeric_formats = numeric_formats,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_summary))],
+    server_args = args[names(args) %in% names(formals(srv_summary))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_summary <- function(id, ...) {
+ui_summary <- function(id,
+                       dataname,
+                       parentname,
+                       arm_var,
+                       summarize_vars,
+                       add_total,
+                       useNA,
+                       numeric_stats,
+                       denominator,
+                       drop_arm_levels,
+                       pre_output,
+                       post_output,
+                       decorators) {
   ns <- NS(id)
-  a <- list(...)
-
-  is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$summarize_vars)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "summarize_vars")]),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Column Variable(s)",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Column Variable(s)"),
+        module_input_ui(id = ns("arm_var"), spec = arm_var),
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      teal.transform::data_extract_ui(
-        id = ns("summarize_vars"),
-        label = "Summarize Variables",
-        data_extract_spec = a$summarize_vars,
-        is_single_dataset = is_single_dataset_value
+      checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
+      tags$div(
+        tags$label("Summarize Variables"),
+        module_input_ui(id = ns("summarize_vars"), spec = summarize_vars),
       ),
       bslib::accordion(
         open = TRUE,
@@ -410,7 +371,7 @@ ui_summary <- function(id, ...) {
             ns("useNA"),
             label = "Display NA counts",
             choices = c("ifany", "no"),
-            selected = a$useNA
+            selected = useNA
           ),
           checkboxGroupInput(
             ns("numeric_stats"),
@@ -425,15 +386,15 @@ ui_summary <- function(id, ...) {
               "25% and 75%-ile" = "quantiles",
               "Min - Max" = "range"
             ),
-            selected = a$numeric_stats
+            selected = numeric_stats
           ),
           radioButtons(
             ns("denominator"),
             label = "Denominator choice",
             choices = c("N", "n", "omit"),
-            selected = a$denominator
+            selected = denominator
           ),
-          if (a$dataname == a$parentname) {
+          if (dataname == parentname) {
             shinyjs::hidden(
               checkboxInput(
                 ns("drop_arm_levels"),
@@ -444,16 +405,16 @@ ui_summary <- function(id, ...) {
           } else {
             checkboxInput(
               ns("drop_arm_levels"),
-              label = sprintf("Drop columns not in filtered %s", a$dataname),
-              value = a$drop_arm_levels
+              label = sprintf("Drop columns not in filtered %s", dataname),
+              value = drop_arm_levels
             )
           }
         )
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table"))
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -468,7 +429,6 @@ srv_summary <- function(id,
                         show_arm_var_labels,
                         total_label,
                         na_level,
-                        numeric_formats,
                         drop_arm_levels,
                         label,
                         basic_table_args,
@@ -477,36 +437,36 @@ srv_summary <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
-      datasets = data,
-      select_validation_rule = list(
-        summarize_vars = shinyvalidate::sv_required("Please select a summarize variable"),
-        arm_var = ~ if (length(.) != 1 && length(.) != 2) {
-          "Please select 1 or 2 column variables"
-        }
-      )
+    # selector_list <- teal.transform::data_extract_multiple_srv(
+    #   data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
+    #   datasets = data,
+    #   select_validation_rule = list(
+    #     summarize_vars = shinyvalidate::sv_required("Please select a summarize variable"),
+    #     arm_var = ~ if (length(.) != 1 && length(.) != 2) {
+    #       "Please select 1 or 2 column variables"
+    #     }
+    #   )
+    # )
+
+    # iv_r <- reactive({
+    #   iv <- shinyvalidate::InputValidator$new()
+    #   iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
+    #   teal.transform::compose_and_enable_validators(iv, selector_list)
+    # })
+
+    selectors <- module_input_srv(
+      spec = list(
+        arm_var = arm_var,
+        summarize_vars = summarize_vars
+      ),
+      data = data
     )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
+    anl_selectors <- selectors
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      id = "anl_merge",
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      id = "adsl_merge",
-      datasets = data,
-      data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
-    )
+    # ↓ add usubjid to make sure it is included in a merged dataset (primary_keys are not included if not selected)
+    anl_selectors$usubjid <- picks(datasets(parentname, parentname), variables("USUBJID", "USUBJID"))
+    adsl_selectors <- selectors["arm_var"]
 
     anl_q <- reactive({
       obj <- data()
@@ -516,21 +476,15 @@ srv_summary <- function(id,
           teal.reporter::teal_card("## Module's output(s)")
         )
       obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
+        qenv_merge_selectors(selectors = anl_selectors, output_name = "ANL") |>
+        qenv_merge_selectors(selectors = adsl_selectors, output_name = "ANL_ADSL")
     })
 
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
-    )
-
-    observeEvent(merged$anl_input_r()$columns_source$summarize_vars, {
+    observeEvent(map_merged(anl_selectors)$summarize_vars$variables, {
       choices_classes <- sapply(
-        names(merged$anl_input_r()$columns_source$summarize_vars),
+        map_merged(anl_selectors)$summarize_vars$variables,
         function(x) {
-          summarize_var_data <- data()[[summarize_vars$dataname]][[x]]
+          summarize_var_data <- data()[[dataname]][[x]]
           inherits(summarize_var_data, "numeric") |
             inherits(summarize_var_data, "integer")
         }
@@ -545,15 +499,15 @@ srv_summary <- function(id,
 
     # Validate inputs.
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
-      anl <- merged$anl_q()[["ANL"]]
+      # teal::validate_inputs(iv_r())
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
+      anl <- anl_q()[["ANL"]]
 
       # we take names of the columns source as they match names of the input data in merge_datasets
       # if we use $arm_var they might be renamed to <selector id>.arm_var
-      input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
-      input_summarize_vars <- names(merged$anl_input_r()$columns_source$summarize_vars)
+      input_arm_var <- map_merged(anl_selectors)$arm_var$variables
+      input_summarize_vars <- map_merged(anl_selectors)$summarize_vars$variables
 
       validate(
         need(
@@ -590,19 +544,19 @@ srv_summary <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      summarize_vars <- as.vector(merged$anl_input_r()$columns_source$summarize_vars)
+      summarize_vars <- map_merged(anl_selectors)$summarize_vars$variables
       var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
 
       arm_var_labels <- NULL
-      arm_vars <- as.vector(merged$anl_input_r()$columns_source$arm_var)
       if (show_arm_var_labels) {
+        arm_vars <- map_merged(anl_selectors)$arm_var$variables
         arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
       }
 
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = merged$anl_input_r()$columns_source$arm_var,
+        arm_var = map_merged(anl_selectors)$arm_var$variables,
         sum_vars = summarize_vars,
         add_total = input$add_total,
         total_label = total_label,
@@ -611,15 +565,12 @@ srv_summary <- function(id,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         numeric_stats = input$numeric_stats,
-        numeric_formats = numeric_formats,
         denominator = input$denominator,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
 
-      obj <- merged$anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
-      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
+      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
     })
 
     # Decoration of table output.

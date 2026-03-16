@@ -7,9 +7,11 @@
 
 #' @import shiny
 #' @import teal
+#' @import teal.picks
 #' @import teal.transform
 #' @import tern
 #' @importFrom dplyr %>% .data
+#' @importFrom tidyselect any_of starts_with ends_with everything contains matches where
 
 # We need this to avoid R CMD check warning about missing global definitions.
 utils::globalVariables(c(
