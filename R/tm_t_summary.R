@@ -437,22 +437,6 @@ srv_summary <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    # selector_list <- teal.transform::data_extract_multiple_srv(
-    #   data_extract = list(arm_var = arm_var, summarize_vars = summarize_vars),
-    #   datasets = data,
-    #   select_validation_rule = list(
-    #     summarize_vars = shinyvalidate::sv_required("Please select a summarize variable"),
-    #     arm_var = ~ if (length(.) != 1 && length(.) != 2) {
-    #       "Please select 1 or 2 column variables"
-    #     }
-    #   )
-    # )
-
-    # iv_r <- reactive({
-    #   iv <- shinyvalidate::InputValidator$new()
-    #   iv$add_rule("numeric_stats", shinyvalidate::sv_required("Please select at least one statistic to display."))
-    #   teal.transform::compose_and_enable_validators(iv, selector_list)
-    # })
 
     selectors <- picks_srv(id = "",
       picks = list(
@@ -500,7 +484,6 @@ srv_summary <- function(id,
 
     # Validate inputs.
     validate_checks <- reactive({
-      # teal::validate_inputs(iv_r())
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]

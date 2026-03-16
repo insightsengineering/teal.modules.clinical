@@ -691,37 +691,6 @@ srv_t_events_byterm <- function(id,
       data = data
     )
 
-    # selector_list <- teal.transform::data_extract_multiple_srv(
-    #   data_extract = list(arm_var = arm_var, hlt = hlt, llt = llt),
-    #   datasets = data,
-    #   select_validation_rule = list(
-    #     arm_var = ~ if (length(.) != 1 && length(.) != 2) {
-    #       "Please select 1 or 2 treatment variable values"
-    #     },
-    #     hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0) {
-    #       "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-    #     },
-    #     llt = ~ if (length(selector_list()$hlt()$select) + length(.) == 0) {
-    #       "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-    #     }
-    #   )
-    # )
-
-    # iv_r <- reactive({
-    #   iv <- shinyvalidate::InputValidator$new()
-    #   iv$add_rule("prune_freq", shinyvalidate::sv_required("Please provide an Incidence Rate between 0 and 100 (%)."))
-    #   iv$add_rule(
-    #     "prune_freq",
-    #     shinyvalidate::sv_between(0, 100, message_fmt = "Please provide an Incidence Rate between 0 and 100 (%).")
-    #   )
-    #   iv$add_rule("prune_diff", shinyvalidate::sv_required("Please provide a Difference Rate between 0 and 100 (%)."))
-    #   iv$add_rule(
-    #     "prune_diff",
-    #     shinyvalidate::sv_between(0, 100, message_fmt = "Please provide a Difference Rate between 0 and 100 (%).")
-    #   )
-    #   teal.transform::compose_and_enable_validators(iv, selector_list)
-    # })
-
     anl_selectors <- selectors
     adsl_selectors <- selectors["arm_var"]
 
@@ -739,8 +708,6 @@ srv_t_events_byterm <- function(id,
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({
-      # teal::validate_inputs(iv_r())
-
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
@@ -776,7 +743,6 @@ srv_t_events_byterm <- function(id,
 
     # The R-code corresponding to the analysis.
     table_q <- reactive({
-      # validate_checks()
       ANL <- anl_q()[["ANL"]]
 
       input_hlt <- map_merged(anl_selectors)$hlt$variables
