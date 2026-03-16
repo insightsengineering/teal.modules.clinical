@@ -725,17 +725,18 @@ srv_t_events_byterm <- function(id,
     anl_selectors <- selectors
     adsl_selectors <- selectors["arm_var"]
 
-    anl_q <- reactive({
+    data_with_card <- reactive({
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      obj %>%
-        qenv_merge_selectors(selectors = anl_selectors, output_name = "ANL") |>
-        qenv_merge_selectors(selectors = adsl_selectors, output_name = "ANL_ADSL")
+      obj
     })
+    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
+    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({
       # teal::validate_inputs(iv_r())

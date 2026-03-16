@@ -465,20 +465,21 @@ srv_summary <- function(id,
     anl_selectors <- selectors
 
     # ↓ add usubjid to make sure it is included in a merged dataset (primary_keys are not included if not selected)
-    anl_selectors$usubjid <- picks(datasets(parentname, parentname), variables("USUBJID", "USUBJID"))
+    anl_selectors$usubjid <- reactive(picks(datasets(parentname, parentname), variables("USUBJID", "USUBJID")))
     adsl_selectors <- selectors["arm_var"]
 
-    anl_q <- reactive({
+    data_with_card <- reactive({
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      obj %>%
-        qenv_merge_selectors(selectors = anl_selectors, output_name = "ANL") |>
-        qenv_merge_selectors(selectors = adsl_selectors, output_name = "ANL_ADSL")
+      obj
     })
+    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
+    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    anl_q <- merged_adsl_anl$data
 
     observeEvent(map_merged(anl_selectors)$summarize_vars$variables, {
       choices_classes <- sapply(
