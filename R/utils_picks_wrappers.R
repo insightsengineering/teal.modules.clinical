@@ -1,19 +1,4 @@
-# Internal wrappers bridging the teal.picks API while teal.transform wrapper functions are in development.
-# These functions wrap picks_ui, picks_srv, merge_srv and .qenv_merge
-# to provide a consistent interface for modules migrated from teal.transform.
-
-#' @keywords internal
-module_input_ui <- function(id, spec) {
-  # spec is a picks() object created in the tm_* function
-  picks_ui(id, spec)
-}
-
-#' @keywords internal
-module_input_srv <- function(spec, data) {
-  # spec is a named list of picks() objects
-  # returns a named list of reactive picks (the result of picks_srv for each element)
-  picks_srv(id = "", picks = spec, data = data)
-}
+# Internal helpers bridging the teal.picks API.
 
 #' @keywords internal
 #' Applies .qenv_merge to a teal_data object using a named list of selectors.

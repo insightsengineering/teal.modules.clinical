@@ -356,12 +356,12 @@ ui_summary <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Column Variable(s)"),
-        module_input_ui(id = ns("arm_var"), spec = arm_var),
+        picks_ui(ns("arm_var"), arm_var),
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
       tags$div(
         tags$label("Summarize Variables"),
-        module_input_ui(id = ns("summarize_vars"), spec = summarize_vars),
+        picks_ui(ns("summarize_vars"), summarize_vars),
       ),
       bslib::accordion(
         open = TRUE,
@@ -454,8 +454,8 @@ srv_summary <- function(id,
     #   teal.transform::compose_and_enable_validators(iv, selector_list)
     # })
 
-    selectors <- module_input_srv(
-      spec = list(
+    selectors <- picks_srv(id = "",
+      picks = list(
         arm_var = arm_var,
         summarize_vars = summarize_vars
       ),

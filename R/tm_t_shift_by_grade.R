@@ -640,28 +640,28 @@ ui_t_shift_by_grade <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Treatment Variable"),
-        module_input_ui(id = ns("arm_var"), spec = arm_var)
+        picks_ui(ns("arm_var"), arm_var)
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
       tags$div(
         tags$label("Select Lab Parameter"),
-        module_input_ui(id = ns("paramcd"), spec = paramcd)
+        picks_ui(ns("paramcd"), paramcd)
       ),
       tags$div(
         tags$label("Worst flag variable"),
-        module_input_ui(id = ns("worst_flag_var"), spec = worst_flag_var)
+        picks_ui(ns("worst_flag_var"), worst_flag_var)
       ),
       tags$div(
         tags$label("Analysis Visit"),
-        module_input_ui(id = ns("visit_var"), spec = visit_var)
+        picks_ui(ns("visit_var"), visit_var)
       ),
       tags$div(
         tags$label("Analysis toxicity grade"),
-        module_input_ui(id = ns("anl_toxgrade_var"), spec = anl_toxgrade_var)
+        picks_ui(ns("anl_toxgrade_var"), anl_toxgrade_var)
       ),
       tags$div(
         tags$label("Baseline toxicity grade"),
-        module_input_ui(id = ns("base_toxgrade_var"), spec = base_toxgrade_var)
+        picks_ui(ns("base_toxgrade_var"), base_toxgrade_var)
       ),
       bslib::accordion(
         open = TRUE,
@@ -684,7 +684,7 @@ ui_t_shift_by_grade <- function(id,
         open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
-          module_input_ui(id = ns("id_var"), spec = id_var),
+          picks_ui(ns("id_var"), id_var),
           teal.widgets::optionalSelectInput(
             ns("worst_flag_indicator"),
             label = "Value Indicating Worst Grade",
@@ -727,8 +727,8 @@ srv_t_shift_by_grade <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- module_input_srv(
-      spec = list(
+    selectors <- picks_srv(id = "",
+      picks = list(
         arm_var = arm_var,
         visit_var = visit_var,
         paramcd = paramcd,

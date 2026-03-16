@@ -566,19 +566,19 @@ ui_t_tte <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Endpoint"),
-        module_input_ui(id = ns("paramcd"), spec = paramcd)
+        picks_ui(ns("paramcd"), paramcd)
       ),
       tags$div(
         tags$label("Analysis Variable"),
-        module_input_ui(id = ns("aval_var"), spec = aval_var)
+        picks_ui(ns("aval_var"), aval_var)
       ),
       tags$div(
         tags$label("Censor Variable"),
-        module_input_ui(id = ns("cnsr_var"), spec = cnsr_var)
+        picks_ui(ns("cnsr_var"), cnsr_var)
       ),
       tags$div(
         tags$label("Select Treatment Variable"),
-        module_input_ui(id = ns("arm_var"), spec = arm_var)
+        picks_ui(ns("arm_var"), arm_var)
       ),
       tags$div(
         class = "arm-comp-box",
@@ -599,7 +599,7 @@ ui_t_tte <- function(id,
             ),
             tags$div(
               tags$label("Stratify by"),
-              module_input_ui(id = ns("strata_var"), spec = strata_var)
+              picks_ui(ns("strata_var"), strata_var)
             )
           )
         )
@@ -617,7 +617,7 @@ ui_t_tte <- function(id,
       ),
       tags$div(
         tags$label("Event Description Variable"),
-        module_input_ui(id = ns("event_desc_var"), spec = event_desc_var)
+        picks_ui(ns("event_desc_var"), event_desc_var)
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
@@ -700,7 +700,7 @@ ui_t_tte <- function(id,
         ),
         tags$div(
           tags$label("Time Unit Variable"),
-          module_input_ui(id = ns("time_unit_var"), spec = time_unit_var)
+          picks_ui(ns("time_unit_var"), time_unit_var)
         )
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
@@ -734,8 +734,8 @@ srv_t_tte <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- module_input_srv(
-      spec = list(
+    selectors <- picks_srv(id = "",
+      picks = list(
         arm_var = arm_var,
         paramcd = paramcd,
         aval_var = aval_var,

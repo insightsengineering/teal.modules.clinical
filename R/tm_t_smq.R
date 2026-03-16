@@ -457,16 +457,16 @@ ui_t_smq <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Treatment Variable"),
-        module_input_ui(id = ns("arm_var"), spec = arm_var)
+        picks_ui(ns("arm_var"), arm_var)
       ),
       tags$div(
         tags$label("Select the low level term"),
-        module_input_ui(id = ns("llt"), spec = llt)
+        picks_ui(ns("llt"), llt)
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
       tags$div(
         tags$label("Select the SMQXXNAM/CQXXNAM baskets"),
-        module_input_ui(id = ns("baskets"), spec = baskets)
+        picks_ui(ns("baskets"), baskets)
       ),
       ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
       bslib::accordion(
@@ -480,11 +480,11 @@ ui_t_smq <- function(id,
           ),
           tags$div(
             tags$label("Subject Identifier"),
-            module_input_ui(id = ns("id_var"), spec = id_var)
+            picks_ui(ns("id_var"), id_var)
           ),
           tags$div(
             tags$label("Scope variables available"),
-            module_input_ui(id = ns("scopes"), spec = scopes)
+            picks_ui(ns("scopes"), scopes)
           ),
           selectInput(
             inputId = ns("sort_criteria"),
@@ -524,8 +524,8 @@ srv_t_smq <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- module_input_srv(
-      spec = list(
+    selectors <- picks_srv(id = "",
+      picks = list(
         arm_var = arm_var,
         llt = llt,
         id_var = id_var,
