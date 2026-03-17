@@ -333,8 +333,8 @@ tm_t_summary <- function(label,
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
 
-  arm_var <- picks(datasets(parentname, parentname), arm_var) # multiple TRUE, ordered TRUE
-  summarize_vars <- picks(datasets(dataname, dataname), summarize_vars) # multiple TRUE ordered TRUE
+  arm_var <- picks(datasets(parentname, parentname), arm_var)
+  summarize_vars <- picks(datasets(dataname, dataname), summarize_vars)
 
   args <- as.list(environment())
 
