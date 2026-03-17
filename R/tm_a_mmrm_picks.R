@@ -1,30 +1,30 @@
 #' @export
-tm_a_mmrm.variables <- function(label,
-                                dataname,
-                                parentname = "ADSL",
-                                aval_var,
-                                id_var = teal.picks::variables(c("USUBJID", "SUBJID")),
-                                arm_var = teal.picks::variables(c("ARM", "ARMCD")),
-                                visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
-                                cov_var = teal.picks::variables(),
-                                arm_ref_comp = NULL,
-                                paramcd = lifecycle::deprecated(),
-                                paramcd_var = teal.picks::variables(c("PARAMCD", "PARAM")),
-                                paramcd_values = teal.picks::values(tidyselect::everything()),
-                                method = teal.picks::values(
-                                  c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
-                                  "Satterthwaite"
-                                ),
-                                conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
-                                plot_height = c(700L, 200L, 2000L),
-                                plot_width = NULL,
-                                total_label = default_total_label(),
-                                pre_output = NULL,
-                                post_output = NULL,
-                                basic_table_args = teal.widgets::basic_table_args(),
-                                ggplot2_args = teal.widgets::ggplot2_args(),
-                                transformators = list(),
-                                decorators = list()) {
+tm_a_mmrm.default <- function(label,
+                              dataname,
+                              parentname = "ADSL",
+                              aval_var = teal.picks::variables(c("AVAL", "CHG")),
+                              id_var = teal.picks::variables(c("USUBJID", "SUBJID")),
+                              arm_var = teal.picks::variables(c("ARM", "ARMCD")),
+                              visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
+                              cov_var = teal.picks::variables(selected = NULL),
+                              arm_ref_comp = NULL,
+                              paramcd = lifecycle::deprecated(),
+                              paramcd_var = teal.picks::variables(c("PARAMCD", "PARAM")),
+                              paramcd_values = teal.picks::values(tidyselect::everything()),
+                              method = teal.picks::values(
+                                c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
+                                "Satterthwaite"
+                              ),
+                              conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
+                              plot_height = c(700L, 200L, 2000L),
+                              plot_width = NULL,
+                              total_label = default_total_label(),
+                              pre_output = NULL,
+                              post_output = NULL,
+                              basic_table_args = teal.widgets::basic_table_args(),
+                              ggplot2_args = teal.widgets::ggplot2_args(),
+                              transformators = list(),
+                              decorators = list()) {
   message("Initializing tm_a_mmrm")
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
@@ -90,7 +90,7 @@ tm_a_mmrm.variables <- function(label,
     label = label,
     server = srv_mmrm.picks,
     ui = ui_mmrm.picks,
-    ui_args = args,
+    ui_args = args[names(args) %in% names(formals(ui_mmrm.picks))],
     server_args = args[names(args) %in% names(formals(srv_mmrm.picks))],
     transformators = transformators,
     datanames = c(dataname, parentname)
@@ -98,10 +98,21 @@ tm_a_mmrm.variables <- function(label,
 }
 
 #' @keywords internal
-ui_mmrm.picks <- function(id, ...) {
-  a <- rlang::dots_list(...) # module args
+ui_mmrm.picks <- function(id,
+                          aval_var,
+                          paramcd,
+                          visit_var,
+                          cov_var,
+                          split_covariates,
+                          arm_var,
+                          id_var,
+                          method,
+                          conf_level,
+                          decorators,
+                          pre_output,
+                          post_output) {
   ns <- NS(id)
-  fixed <- attr(a$method, "fixed", exact = TRUE)
+  fixed <- attr(method, "fixed", exact = TRUE)
 
   tagList(
     teal.widgets::standard_layout(
@@ -120,29 +131,29 @@ ui_mmrm.picks <- function(id, ...) {
             title = "Model Settings",
             tags$div(
               tags$label("Analysis Variable"),
-              teal.picks::picks_ui(ns("aval_var"), a$aval_var),
+              teal.picks::picks_ui(ns("aval_var"), aval_var),
             ),
             tags$div(
               tags$label("Select Endpoint"),
-              teal.picks::picks_ui(ns("paramcd"), a$paramcd)
+              teal.picks::picks_ui(ns("paramcd"), paramcd)
             ),
             tags$div(
               tags$label("Visit Variable"),
-              teal.picks::picks_ui(ns("visit_var"), a$visit_var)
+              teal.picks::picks_ui(ns("visit_var"), visit_var)
             ),
             tags$div(
               tags$label("Covariates"),
-              teal.picks::picks_ui(ns("cov_var"), a$cov_var)
+              teal.picks::picks_ui(ns("cov_var"), cov_var)
             ),
             shinyjs::hidden(
               tagList(
                 tags$label("Split Covariates"),
-                teal.picks::picks_ui(ns("split_covariates"), a$split_covariates)
+                teal.picks::picks_ui(ns("split_covariates"), split_covariates)
               )
             ),
             tags$div(
               tags$label("Select Treatment Variable"),
-              teal.picks::picks_ui(ns("arm_var"), a$arm_var)
+              teal.picks::picks_ui(ns("arm_var"), arm_var)
             ),
             #
             shinyjs::hidden(uiOutput(ns("arms_buckets"))),
@@ -161,7 +172,7 @@ ui_mmrm.picks <- function(id, ...) {
             ),
             tags$div(
               tags$label("Subject Identifier"),
-              teal.picks::picks_ui(ns("id_var"), a$id_var)
+              teal.picks::picks_ui(ns("id_var"), id_var)
             ),
             selectInput(
               ns("weights_emmeans"),
@@ -179,18 +190,18 @@ ui_mmrm.picks <- function(id, ...) {
             teal.widgets::optionalSelectInput(
               ns("method"),
               "Adjustment Method",
-              a$method$choices,
-              a$method$selected,
+              method$choices,
+              method$selected,
               multiple = FALSE,
-              fixed = attr(a$method, "fixed", exact = TRUE)
+              fixed = attr(method, "fixed", exact = TRUE)
             ),
             teal.widgets::optionalSelectInput(
               ns("conf_level"),
               "Confidence Level",
-              a$conf_level$choices,
-              a$conf_level$selected,
+              conf_level$choices,
+              conf_level$selected,
               multiple = FALSE,
-              fixed = attr(a$conf_level, "fixed", exact = TRUE)
+              fixed = attr(conf_level, "fixed", exact = TRUE)
             ),
             checkboxInput(
               ns("parallel"),
@@ -229,7 +240,7 @@ ui_mmrm.picks <- function(id, ...) {
           ),
           ui_decorate_teal_data(
             ns("d_lsmeans_table"),
-            select_decorators(a$decorators, "lsmeans_table")
+            select_decorators(decorators, "lsmeans_table")
           )
         ),
         conditionalPanel(
@@ -240,7 +251,7 @@ ui_mmrm.picks <- function(id, ...) {
           ),
           ui_decorate_teal_data(
             ns("d_lsmeans_plot"),
-            select_decorators(a$decorators, "lsmeans_plot")
+            select_decorators(decorators, "lsmeans_plot")
           )
         ),
         conditionalPanel(
@@ -251,7 +262,7 @@ ui_mmrm.picks <- function(id, ...) {
           ),
           ui_decorate_teal_data(
             ns("d_covariance_table"),
-            select_decorators(a$decorators, "covariance_table")
+            select_decorators(decorators, "covariance_table")
           )
         ),
         conditionalPanel(
@@ -262,7 +273,7 @@ ui_mmrm.picks <- function(id, ...) {
           ),
           ui_decorate_teal_data(
             ns("d_fixed_effects_table"),
-            select_decorators(a$decorators, "fixed_effects_table")
+            select_decorators(decorators, "fixed_effects_table")
           )
         ),
         conditionalPanel(
@@ -273,7 +284,7 @@ ui_mmrm.picks <- function(id, ...) {
           ),
           ui_decorate_teal_data(
             ns("d_diagnostic_table"),
-            select_decorators(a$decorators, "diagnostic_table")
+            select_decorators(decorators, "diagnostic_table")
           )
         ),
         conditionalPanel(
@@ -284,7 +295,7 @@ ui_mmrm.picks <- function(id, ...) {
           ),
           ui_decorate_teal_data(
             ns("d_diagnostic_plot"),
-            select_decorators(a$decorators, "diagnostic_plot")
+            select_decorators(decorators, "diagnostic_plot")
           )
         ),
         # End of Decorators ---
@@ -359,8 +370,8 @@ ui_mmrm.picks <- function(id, ...) {
         )
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
