@@ -711,10 +711,10 @@ srv_t_events_byterm <- function(id,
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
-      input_arm_var <- map_merged(anl_selectors)$arm_var$variables
+      input_arm_var <- anl_selectors$arm_var()$variables$selected
       input_level_term <- c(
-        map_merged(anl_selectors)$hlt$variables,
-        map_merged(anl_selectors)$llt$variables
+        anl_selectors$hlt()$variables$selected,
+        anl_selectors$llt()$variables$selected
       )
 
       validate(
@@ -745,15 +745,15 @@ srv_t_events_byterm <- function(id,
     table_q <- reactive({
       ANL <- anl_q()[["ANL"]]
 
-      input_hlt <- map_merged(anl_selectors)$hlt$variables
-      input_llt <- map_merged(anl_selectors)$llt$variables
+      input_hlt <- anl_selectors$hlt()$variables$selected
+      input_llt <- anl_selectors$llt()$variables$selected
       label_hlt <- if (length(input_hlt) != 0) attributes(ANL[[input_hlt]])$label else NULL
       label_llt <- if (length(input_llt) != 0) attributes(ANL[[input_llt]])$label else NULL
 
       my_calls <- template_events(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = map_merged(anl_selectors)$arm_var$variables,
+        arm_var = anl_selectors$arm_var()$variables$selected,
         hlt = if (length(input_hlt) != 0) input_hlt else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         label_hlt = label_hlt,

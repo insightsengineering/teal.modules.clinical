@@ -761,7 +761,7 @@ srv_t_tte <- function(id,
     )
 
     output$helptext_ui <- renderUI({
-      req(map_merged(selectors)$arm_var$variables)
+      req(selectors$arm_var()$variables$selected)
       helpText("Multiple reference groups are automatically combined into a single group.")
     })
 
@@ -787,13 +787,13 @@ srv_t_tte <- function(id,
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
 
-      input_arm_var <- map_merged(anl_selectors)$arm_var$variables
-      input_strata_var <- map_merged(anl_selectors)$strata_var$variables
-      input_aval_var <- map_merged(anl_selectors)$aval_var$variables
-      input_cnsr_var <- map_merged(anl_selectors)$cnsr_var$variables
-      input_event_desc <- map_merged(anl_selectors)$event_desc_var$variables
-      input_time_unit_var <- map_merged(anl_selectors)$time_unit_var$variables
-      input_paramcd_var <- map_merged(anl_selectors)$paramcd$variables
+      input_arm_var <- anl_selectors$arm_var()$variables$selected
+      input_strata_var <- anl_selectors$strata_var()$variables$selected
+      input_aval_var <- anl_selectors$aval_var()$variables$selected
+      input_cnsr_var <- anl_selectors$cnsr_var()$variables$selected
+      input_event_desc <- anl_selectors$event_desc_var()$variables$selected
+      input_time_unit_var <- anl_selectors$time_unit_var()$variables$selected
+      input_paramcd_var <- anl_selectors$paramcd()$variables$selected
 
       # validate inputs
       validate_args <- list(
@@ -833,23 +833,23 @@ srv_t_tte <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      input_strata_var <- map_merged(anl_selectors)$strata_var$variables
+      input_strata_var <- anl_selectors$strata_var()$variables$selected
 
       my_calls <- template_tte(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = map_merged(anl_selectors)$arm_var$variables,
-        paramcd = map_merged(anl_selectors)$paramcd$variables,
+        arm_var = anl_selectors$arm_var()$variables$selected,
+        paramcd = anl_selectors$paramcd()$variables$selected,
         ref_arm = unlist(input$buckets$Ref),
         comp_arm = unlist(input$buckets$Comp),
         compare_arm = input$compare_arms,
         combine_comp_arms = input$combine_comp_arms && input$compare_arms,
-        aval_var = map_merged(anl_selectors)$aval_var$variables,
-        cnsr_var = map_merged(anl_selectors)$cnsr_var$variables,
+        aval_var = anl_selectors$aval_var()$variables$selected,
+        cnsr_var = anl_selectors$cnsr_var()$variables$selected,
         strata_var = if (length(input_strata_var) != 0) input_strata_var else NULL,
         time_points = as.numeric(input$time_points),
-        time_unit_var = map_merged(anl_selectors)$time_unit_var$variables,
-        event_desc_var = map_merged(anl_selectors)$event_desc_var$variables,
+        time_unit_var = anl_selectors$time_unit_var()$variables$selected,
+        event_desc_var = anl_selectors$event_desc_var()$variables$selected,
         control = control_tte(
           coxph = tern::control_coxph(
             pval_method = input$pval_method_coxph,

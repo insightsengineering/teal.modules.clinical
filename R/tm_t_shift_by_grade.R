@@ -760,13 +760,13 @@ srv_t_shift_by_grade <- function(id,
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
-      input_arm_var <- map_merged(anl_selectors)$arm_var$variables
-      input_id_var <- map_merged(anl_selectors)$id_var$variables
-      input_visit_var <- map_merged(anl_selectors)$visit_var$variables
-      input_paramcd_var <- map_merged(anl_selectors)$paramcd$variables
-      input_worst_flag_var <- map_merged(anl_selectors)$worst_flag_var$variables
-      input_anl_toxgrade_var <- map_merged(anl_selectors)$anl_toxgrade_var$variables
-      input_base_toxgrade_var <- map_merged(anl_selectors)$base_toxgrade_var$variables
+      input_arm_var <- anl_selectors$arm_var()$variables$selected
+      input_id_var <- anl_selectors$id_var()$variables$selected
+      input_visit_var <- anl_selectors$visit_var()$variables$selected
+      input_paramcd_var <- anl_selectors$paramcd()$variables$selected
+      input_worst_flag_var <- anl_selectors$worst_flag_var()$variables$selected
+      input_anl_toxgrade_var <- anl_selectors$anl_toxgrade_var()$variables$selected
+      input_base_toxgrade_var <- anl_selectors$base_toxgrade_var()$variables$selected
 
       validate_standard_inputs(
         adsl = adsl_filtered,
@@ -787,14 +787,14 @@ srv_t_shift_by_grade <- function(id,
       my_calls <- template_shift_by_grade(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = map_merged(anl_selectors)$arm_var$variables,
-        visit_var = map_merged(anl_selectors)$visit_var$variables,
-        id_var = map_merged(anl_selectors)$id_var$variables,
-        worst_flag_var = map_merged(anl_selectors)$worst_flag_var$variables,
+        arm_var = anl_selectors$arm_var()$variables$selected,
+        visit_var = anl_selectors$visit_var()$variables$selected,
+        id_var = anl_selectors$id_var()$variables$selected,
+        worst_flag_var = anl_selectors$worst_flag_var()$variables$selected,
         worst_flag_indicator = input$worst_flag_indicator,
-        anl_toxgrade_var = map_merged(anl_selectors)$anl_toxgrade_var$variables,
-        base_toxgrade_var = map_merged(anl_selectors)$base_toxgrade_var$variables,
-        paramcd = map_merged(anl_selectors)$paramcd$variables,
+        anl_toxgrade_var = anl_selectors$anl_toxgrade_var()$variables$selected,
+        base_toxgrade_var = anl_selectors$base_toxgrade_var()$variables$selected,
+        paramcd = anl_selectors$paramcd()$variables$selected,
         drop_arm_levels = input$drop_arm_levels,
         add_total = input$add_total,
         total_label = total_label,

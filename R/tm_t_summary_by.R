@@ -644,11 +644,11 @@ srv_summary_by <- function(id,
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
-      input_arm_var <- map_merged(anl_selectors)$arm_var$variables
-      input_id_var <- map_merged(anl_selectors)$id_var$variables
-      input_by_vars <- map_merged(anl_selectors)$by_vars$variables
-      input_summarize_vars <- map_merged(anl_selectors)$summarize_vars$variables
-      input_paramcd_var <- if (!is.null(paramcd)) map_merged(anl_selectors)$paramcd$variables else NULL
+      input_arm_var <- anl_selectors$arm_var()$variables$selected
+      input_id_var <- anl_selectors$id_var()$variables$selected
+      input_by_vars <- anl_selectors$by_vars()$variables$selected
+      input_summarize_vars <- anl_selectors$summarize_vars()$variables$selected
+      input_paramcd_var <- if (!is.null(paramcd)) anl_selectors$paramcd()$variables$selected else NULL
 
       validate_standard_inputs(
         adsl = adsl_filtered,
@@ -669,17 +669,17 @@ srv_summary_by <- function(id,
     # Generate r code for the analysis.
     all_q <- reactive({
       validate_checks()
-      input_summarize_vars <- map_merged(anl_selectors)$summarize_vars$variables
+      input_summarize_vars <- anl_selectors$summarize_vars()$variables$selected
       var_labels <- teal.data::col_labels(anl_q()[[dataname]][, input_summarize_vars, drop = FALSE])
 
       my_calls <- template_summary_by(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = map_merged(anl_selectors)$arm_var$variables,
+        arm_var = anl_selectors$arm_var()$variables$selected,
         sum_vars = input_summarize_vars,
-        by_vars = map_merged(anl_selectors)$by_vars$variables,
+        by_vars = anl_selectors$by_vars()$variables$selected,
         var_labels = var_labels,
-        id_var = map_merged(anl_selectors)$id_var$variables,
+        id_var = anl_selectors$id_var()$variables$selected,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         numeric_stats = unique(c(input$numeric_stats, input$categorical_stats)),

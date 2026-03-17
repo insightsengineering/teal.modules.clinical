@@ -481,9 +481,9 @@ srv_summary <- function(id,
     merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
     anl_q <- merged_adsl_anl$data
 
-    observeEvent(map_merged(anl_selectors)$summarize_vars$variables, {
+    observeEvent(anl_selectors$summarize_vars()$variables$selected, {
       choices_classes <- sapply(
-        map_merged(anl_selectors)$summarize_vars$variables,
+        anl_selectors$summarize_vars()$variables$selected,
         function(x) {
           summarize_var_data <- data()[[dataname]][[x]]
           inherits(summarize_var_data, "numeric") |
@@ -506,8 +506,8 @@ srv_summary <- function(id,
 
       # we take names of the columns source as they match names of the input data in merge_datasets
       # if we use $arm_var they might be renamed to <selector id>.arm_var
-      input_arm_var <- map_merged(anl_selectors)$arm_var$variables
-      input_summarize_vars <- map_merged(anl_selectors)$summarize_vars$variables
+      input_arm_var <- anl_selectors$arm_var()$variables$selected
+      input_summarize_vars <- anl_selectors$summarize_vars()$variables$selected
 
       validate(
         need(
@@ -544,19 +544,19 @@ srv_summary <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      summarize_vars <- map_merged(anl_selectors)$summarize_vars$variables
+      summarize_vars <- anl_selectors$summarize_vars()$variables$selected
       var_labels <- teal.data::col_labels(data()[[dataname]][, summarize_vars, drop = FALSE])
 
       arm_var_labels <- NULL
       if (show_arm_var_labels) {
-        arm_vars <- map_merged(anl_selectors)$arm_var$variables
+        arm_vars <- anl_selectors$arm_var()$variables$selected
         arm_var_labels <- teal.data::col_labels(data()[[dataname]][, arm_vars, drop = FALSE], fill = TRUE)
       }
 
       my_calls <- template_summary(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = map_merged(anl_selectors)$arm_var$variables,
+        arm_var = anl_selectors$arm_var()$variables$selected,
         sum_vars = summarize_vars,
         add_total = input$add_total,
         total_label = total_label,

@@ -555,11 +555,11 @@ srv_t_smq <- function(id,
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
-      input_arm_var <- map_merged(anl_selectors)$arm_var$variables
-      input_id_var <- map_merged(anl_selectors)$id_var$variables
-      input_baskets <- map_merged(anl_selectors)$baskets$variables
-      input_scopes <- map_merged(anl_selectors)$scopes$variables
-      input_llt <- map_merged(anl_selectors)$llt$variables
+      input_arm_var <- anl_selectors$arm_var()$variables$selected
+      input_id_var <- anl_selectors$id_var()$variables$selected
+      input_baskets <- anl_selectors$baskets()$variables$selected
+      input_scopes <- anl_selectors$scopes()$variables$selected
+      input_llt <- anl_selectors$llt()$variables$selected
 
       validate_standard_inputs(
         adsl = adsl_filtered,
@@ -580,15 +580,15 @@ srv_t_smq <- function(id,
       my_calls <- template_smq(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = map_merged(anl_selectors)$arm_var$variables,
-        llt = map_merged(anl_selectors)$llt$variables,
+        arm_var = anl_selectors$arm_var()$variables$selected,
+        llt = anl_selectors$llt()$variables$selected,
         add_total = input$add_total,
         total_label = total_label,
         sort_criteria = input$sort_criteria,
         drop_arm_levels = input$drop_arm_levels,
-        baskets = map_merged(anl_selectors)$baskets$variables,
+        baskets = anl_selectors$baskets()$variables$selected,
         na_level = na_level,
-        id_var = map_merged(anl_selectors)$id_var$variables,
+        id_var = anl_selectors$id_var()$variables$selected,
         basic_table_args = basic_table_args
       )
 
