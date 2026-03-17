@@ -533,16 +533,14 @@ template_mmrm_plots <- function(fit_name,
 #'     tm_a_mmrm(
 #'       label = "MMRM",
 #'       dataname = "ADQS",
-#'       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
-#'       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+#'       aval_var = variables(c("AVAL", "CHG"), "AVAL"),
+#'       id_var = variables(c("USUBJID", "SUBJID"), "USUBJID"),
+#'       arm_var = variables(c("ARM", "ARMCD"), "ARM"),
+#'       visit_var = variables(c("AVISIT", "AVISITN"), "AVISIT"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         choices = value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-#'         selected = "FKSI-FWB"
-#'       ),
-#'       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
+#'       paramcd_var = variables("PARAMCD"),
+#'       paramcd_values = values(selected = "FKSI-FWB"),
+#'       cov_var = variables(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
 #'     )
 #'   )
 #' )
