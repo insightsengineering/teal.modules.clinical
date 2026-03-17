@@ -399,6 +399,7 @@ tm_t_summary_by <- function(label,
                             useNA = c("ifany", "no"), # nolint: object_name.
                             na_level = tern::default_na_str(),
                             numeric_stats = c("n", "mean_sd", "median", "range"),
+                            categorical_stats = c("n", "count"),
                             denominator = teal.transform::choices_selected(c("n", "N", "omit"), "omit", fixed = TRUE),
                             drop_arm_levels = TRUE,
                             drop_zero_levels = TRUE,
@@ -427,12 +428,16 @@ tm_t_summary_by <- function(label,
   checkmate::assert_flag(row_groups)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_character(numeric_stats, min.len = 1)
+  checkmate::assert_character(categorical_stats, min.len = 1)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
 
   numeric_stats_choices <- c("n", "mean_sd", "mean_ci", "geom_mean", "median", "median_ci", "quantiles", "range")
   numeric_stats <- match.arg(numeric_stats, numeric_stats_choices, several.ok = TRUE)
+
+  categorical_stats_choices <- c("n", "count", "count_fraction", "count_fraction_fixed_dp", "fraction", "n_blq")
+  categorical_stats <- match.arg(categorical_stats, categorical_stats_choices, several.ok = TRUE)
 
   assert_decorators(decorators, "table")
 
@@ -472,6 +477,7 @@ ui_summary_by <- function(id,
                            useNA,
                            denominator,
                            numeric_stats,
+                           categorical_stats,
                            drop_arm_levels,
                            drop_zero_levels,
                            pre_output,
@@ -538,6 +544,19 @@ ui_summary_by <- function(id,
               "Min - Max" = "range"
             ),
             selected = numeric_stats
+          ),
+          checkboxGroupInput(
+            ns("categorical_stats"),
+            label = "Choose the statistics to display for categorical variables",
+            choices = c(
+              "n" = "n",
+              "Count" = "count",
+              "Count (Fraction)" = "count_fraction",
+              "Count (Fraction with fixed decimal places)" = "count_fraction_fixed_dp",
+              "Fraction" = "fraction",
+              "Number of values below the limit of quantification (BLQ)" = "n_blq"
+            ),
+            selected = categorical_stats
           ),
           if (dataname == parentname) {
             shinyjs::hidden(
@@ -663,7 +682,7 @@ srv_summary_by <- function(id,
         id_var = map_merged(anl_selectors)$id_var$variables,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
-        numeric_stats = input$numeric_stats,
+        numeric_stats = unique(c(input$numeric_stats, input$categorical_stats)),
         denominator = input$denominator,
         add_total = input$add_total,
         total_label = total_label,

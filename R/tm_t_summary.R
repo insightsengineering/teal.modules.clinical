@@ -5,6 +5,8 @@
 #' @inheritParams template_arguments
 #' @param arm_var_labels (`character` or `NULL`)\cr vector of column variable labels to display, of the same length as
 #'   `arm_var`. If `NULL`, no labels will be displayed.
+#' @param numeric_formats (named `list` or `NULL`)\cr format patterns for numeric statistics. Names should match the
+#'   statistics in `numeric_stats`. If `NULL`, defaults from [tern::analyze_vars()] are used.
 #'
 #' @inherit template_arguments return
 #'
@@ -24,6 +26,7 @@ template_summary <- function(dataname,
                              numeric_stats = c(
                                "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                              ),
+                             numeric_formats = NULL,
                              denominator = c("N", "n", "omit"),
                              drop_arm_levels = TRUE,
                              basic_table_args = teal.widgets::basic_table_args()) {
@@ -39,10 +42,12 @@ template_summary <- function(dataname,
   checkmate::assert_string(na_level)
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_character(numeric_stats, min.len = 1)
-  checkmate::assert_subset(
-    numeric_stats,
-    c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
-  )
+  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
+  checkmate::assert_subset(numeric_stats, allowed_numeric_stats)
+  checkmate::assert_list(numeric_formats, names = "unique", null.ok = TRUE)
+  if (!is.null(numeric_formats)) {
+    checkmate::assert_subset(names(numeric_formats), allowed_numeric_stats)
+  }
 
   denominator <- match.arg(denominator)
 
@@ -139,7 +144,8 @@ template_summary <- function(dataname,
     stats = c(
       numeric_stats,
       ifelse(denominator == "omit", "count", "count_fraction")
-    )
+    ),
+    formats = numeric_formats
   )
 
   layout_list <- add_expr(
@@ -153,7 +159,8 @@ template_summary <- function(dataname,
           na.rm = na.rm,
           na_str = na_level,
           denom = denom,
-          .stats = stats
+          .stats = stats,
+          .formats = formats
         ),
         env = env_sum_vars
       )
@@ -165,7 +172,8 @@ template_summary <- function(dataname,
           na.rm = na.rm,
           na_str = na_level,
           denom = denom,
-          .stats = stats
+          .stats = stats,
+          .formats = formats
         ),
         env = env_sum_vars
       )
@@ -289,6 +297,7 @@ tm_t_summary <- function(label,
                          numeric_stats = c(
                            "n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean"
                          ),
+                         numeric_formats = NULL,
                          denominator = c("N", "n", "omit"),
                          drop_arm_levels = TRUE,
                          pre_output = NULL,
@@ -303,7 +312,13 @@ tm_t_summary <- function(label,
   checkmate::assert_class(arm_var, "variables")
   checkmate::assert_class(summarize_vars, "variables")
   checkmate::assert_string(na_level)
+  allowed_numeric_stats <- c("n", "mean_sd", "mean_ci", "median", "median_ci", "quantiles", "range", "geom_mean")
   checkmate::assert_character(numeric_stats, min.len = 1)
+  checkmate::assert_subset(numeric_stats, allowed_numeric_stats)
+  checkmate::assert_list(numeric_formats, names = "unique", null.ok = TRUE)
+  if (!is.null(numeric_formats)) {
+    checkmate::assert_subset(names(numeric_formats), allowed_numeric_stats)
+  }
   checkmate::assert_flag(drop_arm_levels)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -429,6 +444,7 @@ srv_summary <- function(id,
                         show_arm_var_labels,
                         total_label,
                         na_level,
+                        numeric_formats,
                         drop_arm_levels,
                         label,
                         basic_table_args,
@@ -549,6 +565,7 @@ srv_summary <- function(id,
         na.rm = ifelse(input$useNA == "ifany", FALSE, TRUE),
         na_level = na_level,
         numeric_stats = input$numeric_stats,
+        numeric_formats = numeric_formats,
         denominator = input$denominator,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
