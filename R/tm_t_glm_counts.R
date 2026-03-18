@@ -212,7 +212,7 @@ ui_t_glm_counts <- function(id, ...) {
   )
 
   table_settings <- shiny::tagList(
-    teal::ui_transform_teal_data(ns("decorator"), decotransformatorsrators = select_decorators(a$decorators, "table")),
+    teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
     bslib::accordion(
       bslib::accordion_panel(
         "Additional table settings",
