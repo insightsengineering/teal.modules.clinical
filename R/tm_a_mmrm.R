@@ -533,16 +533,14 @@ template_mmrm_plots <- function(fit_name,
 #'     tm_a_mmrm(
 #'       label = "MMRM",
 #'       dataname = "ADQS",
-#'       aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
-#'       id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+#'       aval_var = variables(c("AVAL", "CHG"), 1L),
+#'       id_var = variables(c("USUBJID", "SUBJID"), 1L),
+#'       arm_var = variables(c("ARM", "ARMCD"), 1L),
+#'       visit_var = variables(c("AVISIT", "AVISITN"), 1L),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         choices = value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-#'         selected = "FKSI-FWB"
-#'       ),
-#'       cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
+#'       paramcd_var = variables("PARAMCD"),
+#'       paramcd_values = values(selected = "FKSI-FWB"),
+#'       cov_var = variables(c("BASE", "AGE", "SEX", teal.picks::interaction_var("BASE:AVISIT")), NULL)
 #'     )
 #'   )
 #' )
@@ -554,62 +552,58 @@ template_mmrm_plots <- function(fit_name,
 tm_a_mmrm <- function(label,
                       dataname,
                       parentname,
-                      aval_var = teal.picks::variables(c("AVAL", "CHG")),
+                      aval_var,
                       id_var,
                       arm_var,
                       visit_var,
                       cov_var,
                       arm_ref_comp,
                       paramcd,
-                      method = teal.transform::choices_selected(
-                        c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
-                        "Satterthwaite",
-                        keep_order = TRUE
-                      ),
-                      conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                      plot_height = c(700L, 200L, 2000L),
-                      plot_width = NULL,
-                      total_label = default_total_label(),
-                      pre_output = NULL,
-                      post_output = NULL,
-                      basic_table_args = teal.widgets::basic_table_args(),
-                      ggplot2_args = teal.widgets::ggplot2_args(),
-                      transformators = list(),
-                      decorators = list(),
+                      method,
+                      conf_level,
+                      plot_height,
+                      plot_width,
+                      total_label,
+                      pre_output,
+                      post_output,
+                      basic_table_args,
+                      ggplot2_args,
+                      transformators,
+                      decorators,
                       ...) {
   UseMethod("tm_a_mmrm", aval_var)
 }
 
 #' @export
-tm_a_mmrm.default <- function(label,
-                              dataname,
-                              parentname = ifelse(
-                                inherits(arm_var, "data_extract_spec"),
-                                teal.transform::datanames_input(arm_var),
-                                "ADSL"
-                              ),
-                              aval_var,
-                              id_var,
-                              arm_var,
-                              visit_var,
-                              cov_var,
-                              arm_ref_comp = NULL,
-                              paramcd,
-                              method = teal.transform::choices_selected(
-                                c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
-                                "Satterthwaite",
-                                keep_order = TRUE
-                              ),
-                              conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                              plot_height = c(700L, 200L, 2000L),
-                              plot_width = NULL,
-                              total_label = default_total_label(),
-                              pre_output = NULL,
-                              post_output = NULL,
-                              basic_table_args = teal.widgets::basic_table_args(),
-                              ggplot2_args = teal.widgets::ggplot2_args(),
-                              transformators = list(),
-                              decorators = list()) {
+tm_a_mmrm.choices_selected <- function(label,
+                                       dataname,
+                                       parentname = ifelse(
+                                         inherits(arm_var, "data_extract_spec"),
+                                         teal.transform::datanames_input(arm_var),
+                                         "ADSL"
+                                       ),
+                                       aval_var,
+                                       id_var,
+                                       arm_var,
+                                       visit_var,
+                                       cov_var,
+                                       arm_ref_comp = NULL,
+                                       paramcd,
+                                       method = teal.transform::choices_selected(
+                                         c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
+                                         "Satterthwaite",
+                                         keep_order = TRUE
+                                       ),
+                                       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                       plot_height = c(700L, 200L, 2000L),
+                                       plot_width = NULL,
+                                       total_label = default_total_label(),
+                                       pre_output = NULL,
+                                       post_output = NULL,
+                                       basic_table_args = teal.widgets::basic_table_args(),
+                                       ggplot2_args = teal.widgets::ggplot2_args(),
+                                       transformators = list(),
+                                       decorators = list()) {
   message("Initializing tm_a_mmrm")
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
@@ -664,8 +658,8 @@ tm_a_mmrm.default <- function(label,
 
   module(
     label = label,
-    server = srv_mmrm.default,
-    ui = ui_mmrm.default,
+    server = srv_mmrm.choices_selected,
+    ui = ui_mmrm.choices_selected,
     ui_args = c(data_extract_list, args[!names(args) %in% names(data_extract_list)]),
     server_args = c(
       data_extract_list,
@@ -688,8 +682,8 @@ tm_a_mmrm.default <- function(label,
 }
 
 #' @keywords internal
-ui_mmrm.default <- function(id, ...) {
-  a <- list(...) # module args
+ui_mmrm.choices_selected <- function(id, ...) {
+  a <- rlang::dots_list(...) # module args
   ns <- NS(id)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
@@ -923,25 +917,25 @@ ui_mmrm.default <- function(id, ...) {
   )
 }
 
-srv_mmrm.default <- function(id,
-                     data,
-                     dataname,
-                     parentname,
-                     arm_var,
-                     paramcd,
-                     id_var,
-                     visit_var,
-                     cov_var,
-                     split_covariates,
-                     aval_var,
-                     arm_ref_comp,
-                     label,
-                     total_label,
-                     plot_height,
-                     plot_width,
-                     basic_table_args,
-                     ggplot2_args,
-                     decorators) {
+srv_mmrm.choices_selected <- function(id,
+                                      data,
+                                      dataname,
+                                      parentname,
+                                      arm_var,
+                                      paramcd,
+                                      id_var,
+                                      visit_var,
+                                      cov_var,
+                                      split_covariates,
+                                      aval_var,
+                                      arm_ref_comp,
+                                      label,
+                                      total_label,
+                                      plot_height,
+                                      plot_width,
+                                      basic_table_args,
+                                      ggplot2_args,
+                                      decorators) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(isolate(data()), "teal_data")
 
