@@ -771,7 +771,9 @@ srv_t_events_byterm <- function(id,
         basic_table_args = basic_table_args
       )
 
-      teal.code::eval_code(anl_q(), as.expression(unlist(my_calls)))
+      obj <- anl_q()
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
+      teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
     table_renamed_q <- reactive({
