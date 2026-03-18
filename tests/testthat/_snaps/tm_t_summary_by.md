@@ -5,7 +5,7 @@
     Output
       $data
       {
-          anl <- adlb %>% tern::df_explicit_na(omit_columns = setdiff(names(adlb), 
+          anl <- tern::df_explicit_na(adlb, omit_columns = setdiff(names(adlb), 
               c("AVISIT", "AVAL")), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -40,7 +40,7 @@
     Output
       $data
       {
-          anl <- adlb %>% tern::df_explicit_na(omit_columns = setdiff(names(adlb), 
+          anl <- tern::df_explicit_na(adlb, omit_columns = setdiff(names(adlb), 
               c("AVISIT", c("AVAL", "CHG"))), na_level = "<Missing>")
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(adsl[["ARM"]])
@@ -74,7 +74,7 @@
     Output
       $data
       {
-          anl <- adsl %>% tern::df_explicit_na(omit_columns = setdiff(names(adsl), 
+          anl <- tern::df_explicit_na(adsl, omit_columns = setdiff(names(adsl), 
               c(c("SEX", "COUNTRY"), "AVAL")), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -116,7 +116,7 @@
     Output
       $data
       {
-          anl <- adlb %>% tern::df_explicit_na(omit_columns = setdiff(names(adlb), 
+          anl <- tern::df_explicit_na(adlb, omit_columns = setdiff(names(adlb), 
               c("AVISIT", "AVAL")), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
@@ -150,7 +150,7 @@
     Output
       $data
       {
-          anl <- adlb %>% tern::df_explicit_na(omit_columns = setdiff(names(adlb), 
+          anl <- tern::df_explicit_na(adlb, omit_columns = setdiff(names(adlb), 
               c("AVISIT", "AVAL")), na_level = "<Missing>")
           anl <- anl %>% dplyr::mutate(ARM = droplevels(ARM))
           arm_levels <- levels(anl[["ARM"]])
