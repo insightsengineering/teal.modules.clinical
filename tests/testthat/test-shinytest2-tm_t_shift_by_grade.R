@@ -43,8 +43,7 @@ app_driver_tm_t_shift_by_grade <- function() {
 
 testthat::test_that(
   "e2e - tm_t_shift_by_grade: Module initializes in teal without errors and produces table output.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade()
     app_driver$expect_no_shiny_error()
@@ -59,8 +58,7 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_shift_by_grade: Starts with specified label, arm_var, paramcd, worst_flag_var, anl_toxgrade_var,
   base_toxgrade_var, worst_flag_indicator, add_total, drop_arm_levels, code_missing_baseline.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade()
     testthat::expect_equal(
@@ -100,8 +98,7 @@ testthat::test_that(
 
 testthat::test_that(
   "e2e - tm_t_shift_by_grade: Selecting arm_var changes the table and does not throw validation errors.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -117,8 +114,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
+testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_grade()
   app_driver$set_active_module_input("arm_var-variables-selected", NULL)
@@ -129,8 +125,7 @@ testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of arm_var throws va
 
 testthat::test_that(
   "e2e - tm_t_shift_by_grade: Selecting paramcd values changes the table and does not throw validation errors.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -148,8 +143,7 @@ testthat::test_that(
 
 testthat::test_that(
   "e2e - tm_t_shift_by_grade: Selecting worst_flag changes the table and does not throw validation errors.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -165,8 +159,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws validation error.", {
-  testthat::skip("chromium")
+testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_grade()
   app_driver$set_active_module_input("worst_flag_var-variables-selected", NULL)
@@ -213,8 +206,7 @@ app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_len
 
 testthat::test_that(
   "e2e - tm_t_shift_by_grade: Invalid worst flag indicator shows validation error instead of hanging",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade_invalid_data()
     app_driver$expect_validation_error()

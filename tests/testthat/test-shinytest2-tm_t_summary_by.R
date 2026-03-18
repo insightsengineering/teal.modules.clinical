@@ -38,8 +38,7 @@ app_driver_tm_t_summary_by <- function() {
 
 testthat::test_that(
   "e2e - tm_t_summary_by: Module initializes in teal without errors and produces table output.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary_by()
     app_driver$expect_no_shiny_error()
@@ -54,8 +53,7 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_summary_by: Starts with specified label, arm_var, paramcd, by_vars, summarize_vars,
   useNA, numeric_stats, add_total, parallel_vars, row_groups, drop_zero_levels.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary_by()
     testthat::expect_equal(
@@ -92,8 +90,7 @@ testthat::test_that(
 
 testthat::test_that(
   "e2e - tm_t_summary_by: Selecting arm_var changes the table and does not throw validation errors.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary_by()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -109,8 +106,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_summary_by: Deselection of arm_var throws validation error.", {
-  testthat::skip("chromium")
+testthat::test_that("e2e - tm_t_summary_by: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_summary_by()
   app_driver$set_active_module_input("arm_var-variables-selected", NULL)
@@ -121,8 +117,7 @@ testthat::test_that("e2e - tm_t_summary_by: Deselection of arm_var throws valida
 
 testthat::test_that(
   "e2e - tm_t_summary_by: Selecting paramcd values changes the table and does not throw validation errors.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary_by()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -140,8 +135,7 @@ testthat::test_that(
 
 testthat::test_that(
   "e2e - tm_t_summary_by: Selecting by_vars changes the table and does not throw validation errors.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary_by()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -159,8 +153,7 @@ testthat::test_that(
 
 testthat::test_that(
   "e2e - tm_t_summary_by: Deselecting by_vars changes the table and does not throw validation errors.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary_by()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -178,8 +171,7 @@ testthat::test_that(
 
 testthat::test_that(
   "e2e - tm_t_summary_by: Selecting summarize_vars changes the table and does not throw validation errors.",
-  {
-    testthat::skip("chromium")
+  {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary_by()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -195,8 +187,7 @@ testthat::test_that(
   }
 )
 
-testthat::test_that("e2e - tm_t_summary_by: Deselection of summarize_vars throws validation error.", {
-  testthat::skip("chromium")
+testthat::test_that("e2e - tm_t_summary_by: Deselection of summarize_vars throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_summary_by()
   app_driver$set_active_module_input("summarize_vars-variables-selected", NULL)
