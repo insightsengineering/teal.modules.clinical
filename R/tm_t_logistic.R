@@ -301,33 +301,51 @@ template_logistic <- function(dataname,
 #' @export
 tm_t_logistic <- function(label,
                           dataname,
-                          parentname = ifelse(
-                            inherits(arm_var, "data_extract_spec"),
-                            teal.transform::datanames_input(arm_var),
-                            "ADSL"
-                          ),
+                          parentname = "ADSL",
                           arm_var = NULL,
                           arm_ref_comp = NULL,
-                          paramcd,
-                          cov_var = NULL,
-                          avalc_var = teal.transform::choices_selected(
-                            teal.transform::variable_choices(dataname, "AVALC"), "AVALC",
-                            fixed = TRUE
-                          ),
-                          conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                          paramcd_var = teal.picks::variables("PARAMCD"),
+                          paramcd_value = teal.picks::values(),
+                          cov_var = teal.picks::variables(selected = NULL),
+                          avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
+                          conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
                           pre_output = NULL,
                           post_output = NULL,
                           basic_table_args = teal.widgets::basic_table_args(),
                           transformators = list(),
-                          decorators = list()) {
+                          decorators = list(),
+                          paramcd) {
   message("Initializing tm_t_logistic")
+
+  # Compatibility layer for new picks
+  for (arg in c("arm_var", "cov_var", "avalc_var")) {
+    if (inherits(get(arg), "choices_selected")) {
+      assign(arg, teal.picks::as.picks(get(arg)))
+    }
+  }
+  if (missing(paramcd)) {
+    paramcd <- teal.picks::picks(
+      datasets(dataname), variables = paramcd_var, values = paramcd_value
+    )
+  } else {
+    if (!missing(paramcd_var) || !missing(paramcd_value)) {
+      stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_value`, not both.")
+    }
+    paramcd <- teal.picks::as.picks(paramcd)
+  }
+  if (inherits(conf_level, "choices_selected")) {
+    conf_level <- teal.picks::as.picks(conf_level)
+    class(conf_level) <- gsub("variables", "values", class(conf_level), fixed = TRUE)
+  }
+  # End of compatibility
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(cov_var, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(avalc_var, "choices_selected")
+  checkmate::assert_class(arm_var, "variables", null.ok = TRUE)
+  checkmate::assert_class(paramcd, "variables")
+  checkmate::assert_class(cov_var, "variables", null.ok = TRUE)
+  checkmate::assert_class(avalc_var, "variables")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
@@ -335,72 +353,43 @@ tm_t_logistic <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   assert_decorators(decorators, "table")
 
-  args <- as.list(environment())
+  if (!is.null(arm_var)) {
+    arm_var <- teal.picks::picks(datasets(dataname), arm_var)
+  }
+  paramcd <- teal.picks::picks(datasets(dataname), paramcd)
+  cov_var <- teal.picks::picks(datasets(dataname), cov_var)
+  avalc_var <- teal.picks::picks(datasets(dataname), avalc_var)
 
-  data_extract_list <- list(
-    arm_var = `if`(is.null(arm_var), NULL, cs_to_des_select(arm_var, dataname = parentname)),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    cov_var = cs_to_des_select(cov_var, dataname = dataname, multiple = TRUE),
-    avalc_var = cs_to_des_select(avalc_var, dataname = dataname)
-  )
+  args <- as.list(environment())
 
   module(
     label = label,
     server = srv_t_logistic,
     ui = ui_t_logistic,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        arm_ref_comp = arm_ref_comp,
-        label = label,
-        dataname = dataname,
-        parentname = parentname,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% formals(ui_t_logistic)],
+    server_args = args[names(args) %in% formals(srv_t_logistic)],
     transformators = transformators,
     datanames = teal.transform::get_extract_datanames(data_extract_list)
   )
 }
 
 #' @keywords internal
-ui_t_logistic <- function(id, ...) {
-  a <- list(...)
-  if (!is.null(a$arm_var)) {
-    is_single_dataset_value <- teal.transform::is_single_dataset(
-      a$arm_var,
-      a$paramcd,
-      a$avalc_var,
-      a$cov_var
-    )
-  } else {
-    is_single_dataset_value <- teal.transform::is_single_dataset(
-      a$paramcd,
-      a$avalc_var,
-      a$cov_var
-    )
-  }
-
+ui_t_logistic <- function(id,
+                          arm_var,
+                          paramcd,
+                          avalc_var,
+                          cov_var,
+                          conf_level,
+                          pre_output,
+                          post_output,
+                          decorators) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::table_with_settings_ui(ns("table")),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "avalc_var", "cov_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("avalc_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$avalc_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      teal.picks::picks_ui("paramcd", paramcd),
+      teal.picks::picks_ui("avalc_var", paramcd),
       selectInput(
         ns("responders"),
         "Responders",
@@ -408,14 +397,9 @@ ui_t_logistic <- function(id, ...) {
         selected = c("CR", "PR"),
         multiple = TRUE
       ),
-      if (!is.null(a$arm_var)) {
+      if (!is.null(arm_var)) {
         tags$div(
-          teal.transform::data_extract_ui(
-            id = ns("arm_var"),
-            label = "Select Treatment Variable",
-            data_extract_spec = a$arm_var,
-            is_single_dataset = is_single_dataset_value
-          ),
+          teal.picks::picks_ui("arm_var", arm_var),
           uiOutput(ns("arms_buckets")),
           checkboxInput(
             ns("combine_comp_arms"),
@@ -424,12 +408,7 @@ ui_t_logistic <- function(id, ...) {
           )
         )
       },
-      teal.transform::data_extract_ui(
-        id = ns("cov_var"),
-        label = "Covariates",
-        data_extract_spec = a$cov_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      teal.picks::picks_ui("avalc_var", avalc_var),
       uiOutput(ns("interaction_variable")),
       uiOutput(ns("interaction_input")),
       teal.widgets::optionalSelectInput(
@@ -440,15 +419,15 @@ ui_t_logistic <- function(id, ...) {
           " (Hazard Ratio)",
           sep = ""
         ),
-        a$conf_level$choices,
-        a$conf_level$selected,
+        conf_level$choices,
+        conf_level$selected,
         multiple = FALSE,
-        fixed = a$conf_level$fixed
+        fixed = conf_level$fixed
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table"))
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -475,29 +454,65 @@ srv_t_logistic <- function(id,
       session,
       input,
       output,
-      id_arm_var = extract_input("arm_var", parentname),
+      id_arm_var =  "arm_var-variables-selected",
       data = reactive(data()[[parentname]]),
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_logistic"
     )
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
+    selectors <- teal.picks::picks_srv(
+      picks = list(
         arm_var = arm_var,
         paramcd = paramcd,
         avalc_var = avalc_var,
         cov_var = cov_var
       ),
-      datasets = data,
-      select_validation_rule = list(
-        arm_var = shinyvalidate::sv_required("Treatment Variable is empty"),
-        avalc_var = shinyvalidate::sv_required("Analysis variable is empty"),
-        cov_var = shinyvalidate::sv_required("`Covariates` field is empty")
-      ),
-      filter_validation_rule = list(
-        paramcd = shinyvalidate::sv_required("`Select Endpoint` field is empty")
-      )
+      datasets = data
     )
+
+    validated_q <- reactive({
+      obj <- req(data())
+      validate_input(
+        inputId = "arm_var-variables-selected",
+        condition = !is.null(selectors$arm_var()$variables$selected),
+        message = "Treatment Variable is empty."
+      )
+      validate_input(
+        inputId = "avalc_var-variables-selected",
+        condition = !is.null(selectors$avalc_var()$variables$selected),
+        message = "Analysis variable is empty"
+      )
+      validate_input(
+        inputId = "cov_var-variables-selected",
+        condition = !is.null(selectors$cov_var()$variables$selected),
+        message = "`Covariates` field is empty"
+      )
+      validate_input(
+        inputId = "paramcd-values-selected",
+        condition = !is.null(selectors$paramcd()$values$selected),
+        message = "`Select Endpoint` field is empty"
+      )
+      validate_input(
+        inputId = "conf_level",
+        condition = !is.null(input$conf_level),
+        message = "Please choose a confidence level."
+      )
+      validate_input(
+        inputId = "conf_level",
+        condition = is.numeric(input$conf_level) && input$conf_level > 0 && input$conf_level < 1,
+        message = "Confidence level must be a number between 0 and 1."
+      )
+      validate_input(
+        inputId = "responders",
+        condition = !is.null(input$responders) && length(input$responders) > 0,
+        message = "`Responders` field is empty"
+      )
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card("# Logistics table"),
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's code")
+      )
+    })
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
