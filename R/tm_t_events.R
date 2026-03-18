@@ -574,7 +574,16 @@ tm_t_events <- function(label,
 
   data_extract_list <- list(
     arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
-    hlt = cs_to_des_select(hlt, dataname = dataname),
+    hlt = teal.transform::data_extract_spec(
+      dataname = dataname,
+      select = teal.transform::select_spec(
+        choices = variable_choices(dataname, c("AEBODSYS", "AESOC")),
+        selected = "AEBODSYS",
+        multiple = TRUE,
+        always_selected = NULL,
+        fixed = FALSE
+      )
+    ),
     llt = cs_to_des_select(llt, dataname = dataname)
   )
 
@@ -711,9 +720,6 @@ srv_t_events_byterm <- function(id,
         arm_var = ~ if (length(.) != 1 && length(.) != 2) {
           "Please select 1 or 2 treatment variable values"
         },
-        hlt = ~ if (length(selector_list()$llt()$select) + length(.) == 0) {
-          "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
-        },
         llt = ~ if (length(selector_list()$hlt()$select) + length(.) == 0) {
           "Please select at least one of \"LOW LEVEL TERM\" or \"HIGH LEVEL TERM\" variables."
         }
@@ -808,14 +814,14 @@ srv_t_events_byterm <- function(id,
 
       input_hlt <- as.vector(merged$anl_input_r()$columns_source$hlt)
       input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
-      label_hlt <- if (length(input_hlt) != 0) attributes(ANL[[input_hlt]])$label else NULL
+      label_hlt <- if (length(input_hlt) != 0) attributes(ANL[[input_hlt[1]]])$label else NULL
       label_llt <- if (length(input_llt) != 0) attributes(ANL[[input_llt]])$label else NULL
 
       my_calls <- template_events(
         dataname = "ANL",
         parentname = "ANL_ADSL",
         arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
-        hlt = if (length(input_hlt) != 0) input_hlt else NULL,
+        hlt = if (length(input_hlt) != 0) input_hlt[1] else NULL,
         llt = if (length(input_llt) != 0) input_llt else NULL,
         label_hlt = label_hlt,
         label_llt = label_llt,
