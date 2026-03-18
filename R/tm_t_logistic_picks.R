@@ -1,203 +1,3 @@
-#' Template: Logistic Regression
-#'
-#' Creates a valid expression to generate a logistic regression table.
-#'
-#' @inheritParams template_arguments
-#' @inheritParams tern::tidy.glm
-#' @param arm_var (`character`)\cr variable names that can be used as `arm_var`. To fit a logistic model with no
-#'   arm/treatment variable, set to `NULL`.
-#' @param topleft (`character`)\cr text to use as top-left annotation in the table.
-#' @param interaction_var (`character`)\cr names of the variables that can be used for interaction variable selection.
-#' @param responder_val (`character`)\cr values of the responder variable corresponding with a successful response.
-#' @param label_paramcd (`character`)\cr label of response parameter value to print in the table title.
-#'
-#' @inherit template_arguments return
-#'
-#' @seealso [tm_t_logistic()]
-#'
-#' @keywords internal
-template_logistic <- function(dataname,
-                              arm_var,
-                              aval_var,
-                              label_paramcd,
-                              cov_var,
-                              interaction_var,
-                              ref_arm,
-                              comp_arm,
-                              topleft = "Logistic Regression",
-                              conf_level = 0.95,
-                              combine_comp_arms = FALSE,
-                              responder_val = c("CR", "PR"),
-                              at = NULL,
-                              basic_table_args = teal.widgets::basic_table_args()) {
-  # Common assertion no matter if arm_var is NULL or not.
-  checkmate::assert_string(dataname)
-  checkmate::assert_string(aval_var)
-  checkmate::assert_string(label_paramcd, null.ok = TRUE)
-  checkmate::assert_string(topleft, null.ok = TRUE)
-  checkmate::assert_character(cov_var, null.ok = TRUE)
-  checkmate::assert_string(interaction_var, null.ok = TRUE)
-
-  y <- list()
-
-  data_pipe <- list()
-  data_list <- list()
-
-  # Conditional assertion depends on if arm_var isn't NULL.
-  if (!is.null(arm_var)) {
-    checkmate::assert_string(arm_var)
-    checkmate::assert_flag(combine_comp_arms)
-
-    ref_arm_val <- paste(ref_arm, collapse = "/")
-
-    y$arm_lab <- substitute(
-      expr = arm_var_lab <- teal.data::col_labels(anl[arm_var], fill = FALSE),
-      env = list(anl = as.name(dataname), arm_var = arm_var)
-    )
-
-    # Start to build data when arm_var is not NULL.
-    data_pipe <- add_expr(
-      data_pipe,
-      prepare_arm(
-        dataname = dataname,
-        arm_var = arm_var,
-        ref_arm = ref_arm,
-        comp_arm = comp_arm,
-        ref_arm_val = ref_arm_val
-      )
-    )
-
-    if (combine_comp_arms) {
-      data_pipe <- add_expr(
-        data_pipe,
-        substitute_names(
-          expr = dplyr::mutate(arm_var = tern::combine_levels(x = arm_var, levels = comp_arm)),
-          names = list(arm_var = as.name(arm_var)),
-          others = list(comp_arm = comp_arm)
-        )
-      )
-    }
-
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = ANL <- data_pipe,
-        env = list(data_pipe = pipe_expr(data_pipe))
-      )
-    )
-  }
-
-  data_list <- add_expr(
-    data_list,
-    substitute(
-      expr = ANL <- df %>%
-        dplyr::mutate(Response = aval_var %in% responder_val) %>%
-        tern::df_explicit_na(na_level = "_NA_"),
-      env = list(df = as.name("ANL"), aval_var = as.name(aval_var), responder_val = responder_val)
-    )
-  )
-
-  y$data <- bracket_expr(data_list)
-
-  if (!is.null(arm_var)) {
-    y$relabel <- substitute(
-      expr = teal.data::col_labels(ANL[arm_var]) <- arm_var_lab,
-      env = list(arm_var = arm_var)
-    )
-  }
-
-  model_list <- list()
-  model_list <- if (is.null(interaction_var)) {
-    add_expr(
-      model_list,
-      substitute(
-        expr = tern::fit_logistic(
-          ANL,
-          variables = list(response = "Response", arm = arm_var, covariates = cov_var)
-        ),
-        env = list(arm_var = arm_var, cov_var = cov_var)
-      )
-    )
-  } else {
-    add_expr(
-      model_list,
-      substitute(
-        expr = tern::fit_logistic(
-          ANL,
-          variables = list(
-            response = "Response", arm = arm_var, covariates = cov_var,
-            interaction = interaction_var
-          )
-        ),
-        env = list(arm_var = arm_var, cov_var = cov_var, interaction_var = interaction_var)
-      )
-    )
-  }
-
-  model_list <- if (is.null(interaction_var)) {
-    add_expr(
-      model_list,
-      substitute(
-        expr = broom::tidy(conf_level = conf_level),
-        env = list(conf_level = conf_level)
-      )
-    )
-  } else {
-    add_expr(
-      model_list,
-      substitute(
-        expr = broom::tidy(conf_level = conf_level, at = at),
-        env = list(conf_level = conf_level, at = at)
-      )
-    )
-  }
-
-  model_list <- add_expr(model_list, quote(tern::df_explicit_na(na_level = "_NA_")))
-
-  y$model <- substitute(
-    expr = mod <- model_pipe,
-    env = list(model_pipe = pipe_expr(model_list))
-  )
-
-  layout_list <- list()
-
-  basic_title <- if (length(responder_val) > 1) {
-    paste(
-      "Summary of Logistic Regression Analysis for", label_paramcd, "for",
-      paste(utils::head(responder_val, -1), collapse = ", "),
-      "and", utils::tail(responder_val, 1), "Responders"
-    )
-  } else {
-    paste("Summary of Logistic Regression Analysis for", label_paramcd, "for", responder_val, "Responders")
-  }
-
-  parsed_basic_table_args <- teal.widgets::parse_basic_table_args(
-    teal.widgets::resolve_basic_table_args(
-      user_table = basic_table_args,
-      module_table = teal.widgets::basic_table_args(title = basic_title)
-    )
-  )
-
-  y$table <- substitute(
-    expr = {
-      table <- expr_basic_table_args %>%
-        tern::summarize_logistic(
-          conf_level = conf_level,
-          drop_and_remove_str = "_NA_"
-        ) %>%
-        rtables::append_topleft(topleft) %>%
-        rtables::build_table(df = mod)
-    },
-    env = list(
-      expr_basic_table_args = parsed_basic_table_args,
-      conf_level = conf_level,
-      topleft = topleft
-    )
-  )
-
-  y
-}
-
 #' teal Module: Logistic Regression
 #'
 #' This module produces a multi-variable logistic regression table consistent with the TLG Catalog template
@@ -299,22 +99,22 @@ template_logistic <- function(dataname,
 #' }
 #'
 #' @export
-tm_t_logistic <- function(label,
-                          dataname,
-                          parentname = "ADSL",
-                          arm_var = NULL,
-                          arm_ref_comp = NULL,
-                          paramcd_var = teal.picks::variables("PARAMCD"),
-                          paramcd_value = teal.picks::values(),
-                          cov_var = teal.picks::variables(selected = NULL),
-                          avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
-                          conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
-                          pre_output = NULL,
-                          post_output = NULL,
-                          basic_table_args = teal.widgets::basic_table_args(),
-                          transformators = list(),
-                          decorators = list(),
-                          paramcd) {
+tm_t_logistic.picks <- function(label,
+                                dataname,
+                                parentname = "ADSL",
+                                arm_var = NULL,
+                                arm_ref_comp = NULL,
+                                paramcd_var = teal.picks::variables("PARAMCD"),
+                                paramcd_value = teal.picks::values(multiple = FALSE),
+                                cov_var = teal.picks::variables(selected = NULL),
+                                avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
+                                conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
+                                pre_output = NULL,
+                                post_output = NULL,
+                                basic_table_args = teal.widgets::basic_table_args(),
+                                transformators = list(),
+                                decorators = list(),
+                                paramcd) {
   message("Initializing tm_t_logistic")
 
   # Compatibility layer for new picks
@@ -324,6 +124,8 @@ tm_t_logistic <- function(label,
     }
   }
   if (missing(paramcd)) {
+    checkmate::assert_class(paramcd_var, "variables")
+    checkmate::assert_class(paramcd_value, "values")
     paramcd <- teal.picks::picks(
       datasets(dataname), variables = paramcd_var, values = paramcd_value
     )
@@ -331,6 +133,7 @@ tm_t_logistic <- function(label,
     if (!missing(paramcd_var) || !missing(paramcd_value)) {
       stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_value`, not both.")
     }
+    checkmate::assert_class(paramcd, "choices_selected")
     paramcd <- teal.picks::as.picks(paramcd)
   }
   if (inherits(conf_level, "choices_selected")) {
@@ -343,10 +146,9 @@ tm_t_logistic <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_class(arm_var, "variables", null.ok = TRUE)
-  checkmate::assert_class(paramcd, "variables")
   checkmate::assert_class(cov_var, "variables", null.ok = TRUE)
   checkmate::assert_class(avalc_var, "variables")
-  checkmate::assert_class(conf_level, "choices_selected")
+  checkmate::assert_class(conf_level, "values")
   checkmate::assert_list(arm_ref_comp, names = "named", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -354,9 +156,8 @@ tm_t_logistic <- function(label,
   assert_decorators(decorators, "table")
 
   if (!is.null(arm_var)) {
-    arm_var <- teal.picks::picks(datasets(dataname), arm_var)
+    arm_var <- teal.picks::picks(datasets(parentname), arm_var)
   }
-  paramcd <- teal.picks::picks(datasets(dataname), paramcd)
   cov_var <- teal.picks::picks(datasets(dataname), cov_var)
   avalc_var <- teal.picks::picks(datasets(dataname), avalc_var)
 
@@ -364,32 +165,39 @@ tm_t_logistic <- function(label,
 
   module(
     label = label,
-    server = srv_t_logistic,
-    ui = ui_t_logistic,
-    ui_args = args[names(args) %in% formals(ui_t_logistic)],
-    server_args = args[names(args) %in% formals(srv_t_logistic)],
+    server = srv_t_logistic.picks,
+    ui = ui_t_logistic.picks,
+    ui_args = args[names(args) %in% names(formals(ui_t_logistic.picks))],
+    server_args = args[names(args) %in% names(formals(srv_t_logistic.picks))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_t_logistic <- function(id,
-                          arm_var,
-                          paramcd,
-                          avalc_var,
-                          cov_var,
-                          conf_level,
-                          pre_output,
-                          post_output,
-                          decorators) {
+ui_t_logistic.picks <- function(id,
+                                arm_var,
+                                paramcd,
+                                avalc_var,
+                                cov_var,
+                                conf_level,
+                                pre_output,
+                                post_output,
+                                decorators) {
   ns <- NS(id)
+  conf_level$fixed <- conf_level$fixed %||% FALSE
   teal.widgets::standard_layout(
     output = teal.widgets::table_with_settings_ui(ns("table")),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.picks::picks_ui("paramcd", paramcd),
-      teal.picks::picks_ui("avalc_var", paramcd),
+      tags$div(
+        tags$label("Select Endpoint:"),
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
+      ),
+      tags$div(
+        tags$label("Analysis Variable:"),
+        teal.picks::picks_ui(ns("avalc_var"), paramcd)
+      ),
       selectInput(
         ns("responders"),
         "Responders",
@@ -399,7 +207,10 @@ ui_t_logistic <- function(id,
       ),
       if (!is.null(arm_var)) {
         tags$div(
-          teal.picks::picks_ui("arm_var", arm_var),
+          tags$div(
+            tags$label("Select Treatment Variable:"),
+            teal.picks::picks_ui(ns("arm_var"), arm_var),
+          ),
           uiOutput(ns("arms_buckets")),
           checkboxInput(
             ns("combine_comp_arms"),
@@ -408,7 +219,10 @@ ui_t_logistic <- function(id,
           )
         )
       },
-      teal.picks::picks_ui("avalc_var", avalc_var),
+      tags$div(
+        tags$label("Covariates:"),
+        teal.picks::picks_ui(ns("cov_var"), cov_var)
+      ),
       uiOutput(ns("interaction_variable")),
       uiOutput(ns("interaction_input")),
       teal.widgets::optionalSelectInput(
@@ -419,8 +233,8 @@ ui_t_logistic <- function(id,
           " (Hazard Ratio)",
           sep = ""
         ),
-        conf_level$choices,
-        conf_level$selected,
+        choices = conf_level$choices,
+        selected = conf_level$selected,
         multiple = FALSE,
         fixed = conf_level$fixed
       ),
@@ -432,18 +246,18 @@ ui_t_logistic <- function(id,
 }
 
 #' @keywords internal
-srv_t_logistic <- function(id,
-                           data,
-                           dataname,
-                           parentname,
-                           arm_var,
-                           arm_ref_comp,
-                           paramcd,
-                           avalc_var,
-                           cov_var,
-                           label,
-                           basic_table_args,
-                           decorators) {
+srv_t_logistic.picks <- function(id,
+                                 data,
+                                 dataname,
+                                 parentname,
+                                 arm_var,
+                                 arm_ref_comp,
+                                 paramcd,
+                                 avalc_var,
+                                 cov_var,
+                                 label,
+                                 basic_table_args,
+                                 decorators) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
@@ -467,7 +281,7 @@ srv_t_logistic <- function(id,
         avalc_var = avalc_var,
         cov_var = cov_var
       ),
-      datasets = data
+      data = data
     )
 
     validated_q <- reactive({
@@ -499,7 +313,7 @@ srv_t_logistic <- function(id,
       )
       validate_input(
         inputId = "conf_level",
-        condition = is.numeric(input$conf_level) && input$conf_level > 0 && input$conf_level < 1,
+        condition = as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
         message = "Confidence level must be a number between 0 and 1."
       )
       validate_input(
@@ -507,88 +321,66 @@ srv_t_logistic <- function(id,
         condition = !is.null(input$responders) && length(input$responders) > 0,
         message = "`Responders` field is empty"
       )
+
       teal.reporter::teal_card(obj) <- c(
         teal.reporter::teal_card("# Logistics table"),
         teal.reporter::teal_card(obj),
         teal.reporter::teal_card("## Module's code")
       )
+      obj
     })
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level."))
-      iv$add_rule("conf_level", shinyvalidate::sv_between(
-        0, 1,
-        message_fmt = "Confdence level must be between {left} and {right}."
-      ))
-      iv$add_validator(iv_arco)
-      # Conditional validator for interaction values.
-      iv_int <- shinyvalidate::InputValidator$new()
-      iv_int$condition(
-        ~ length(input$interaction_var) > 0L &&
-          is.numeric(merged$anl_q()[["ANL"]][[input$interaction_var]])
-      )
-      iv_int$add_rule("interaction_values", shinyvalidate::sv_required(
-        "If interaction is specified the level should be entered."
-      ))
-      iv_int$add_rule(
-        "interaction_values",
-        ~ if (anyNA(as_numeric_from_comma_sep_str(.))) {
-          "Interaction levels are invalid."
-        }
-      )
-      iv_int$add_rule(
-        "interaction_values",
-        ~ if (any(duplicated(as_numeric_from_comma_sep_str(.)))) {
-          "Interaction levels must be unique."
-        }
-      )
-      iv$add_validator(iv_int)
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
-
-    anl_inputs <- teal.transform::merge_expression_srv(
-      selector_list = selector_list,
-      datasets = data,
-      merge_function = "dplyr::inner_join"
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::inner_join",
+      output_name = "ANL"
     )
 
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
+    adsl_inputs <- teal.picks::merge_srv(
+      "adsl_inputs",
+      data = validated_q,
+      selectors = if (is.null(arm_var)) list() else selectors["arm_var"],
+      output_name = "ANL_ADSL"
     )
 
     anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
+      anl <- c(anl_inputs$data(), adsl_inputs$data())
+      if (length(input$interaction_var) > 0L && is.numeric(anl[[input$interaction_var]])) {
+        validate_input(
+          inputId = "interaction_values",
+          condition = !is.null(input$interaction_values),
+          message = "If interaction is specified the level should be entered."
         )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
+
+        validate_input(
+          inputId = "interaction_values",
+          condition = !anyNA(as_numeric_from_comma_sep_str(input$interaction_values)),
+          message = "Interaction levels are invalid."
+        )
+
+        validate_input(
+          inputId = "interaction_values",
+          condition = !any(duplicated(as_numeric_from_comma_sep_str(input$interaction_values))),
+          message = "Interaction levels must be unique."
+        )
+      }
+      anl
     })
 
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
-    )
-
     # Because the AVALC values depends on the selected PARAMCD.
-    observeEvent(merged$anl_input_r(), {
-      avalc_var <- merged$anl_input_r()$columns_source$avalc_var
-      if (nrow(merged$anl_q()[["ANL"]]) == 0) {
+    observeEvent(anl_inputs$data(), {
+      avalc_var <- anl_inputs$variables()$avalc_var
+      anl <- anl_q()[["ANL"]]
+      if (nrow(anl) == 0) {
         responder_choices <- c("CR", "PR")
         responder_sel <- c("CR", "PR")
       } else {
         if (length(avalc_var) == 0) {
           return(NULL)
         }
-        responder_choices <- unique(merged$anl_q()[["ANL"]][[avalc_var]])
+        responder_choices <- unique(anl[[avalc_var]])
         responder_sel <- intersect(responder_choices, isolate(input$responders))
       }
       updateSelectInput(
@@ -599,8 +391,8 @@ srv_t_logistic <- function(id,
     })
 
     output$interaction_variable <- renderUI({
-      cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
-      if (length(cov_var) > 0) {
+      cov_var <- anl_inputs$variables()$cov_var
+      if (length(cov_var) > 0L) {
         teal.widgets::optionalSelectInput(
           session$ns("interaction_var"),
           label = "Interaction",
@@ -608,25 +400,21 @@ srv_t_logistic <- function(id,
           selected = NULL,
           multiple = FALSE
         )
-      } else {
-        NULL
       }
     })
 
     output$interaction_input <- renderUI({
       interaction_var <- input$interaction_var
       if (length(interaction_var) > 0) {
-        if (is.numeric(merged$anl_q()[["ANL"]][[interaction_var]])) {
+        if (is.numeric(anl_q()[["ANL"]][[interaction_var]])) {
           tagList(
             textInput(
               session$ns("interaction_values"),
               label = sprintf("Specify %s values (comma delimited) for treatment ORs calculation:", interaction_var),
-              value = as.character(stats::median(merged$anl_q()[["ANL"]][[interaction_var]]))
+              value = as.character(stats::median(anl_q()[["ANL"]][[interaction_var]]))
             )
           )
         }
-      } else {
-        NULL
       }
     })
 
@@ -634,17 +422,13 @@ srv_t_logistic <- function(id,
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
 
-      validate_inputs(iv_r())
-
-      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
-      input_avalc_var <- as.vector(merged$anl_input_r()$columns_source$avalc_var)
-      input_cov_var <- as.vector(merged$anl_input_r()$columns_source$cov_var)
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_arm_var <- anl_inputs$variables()$arm_var
+      input_avalc_var <- anl_inputs$variables()$avalc_var
+      input_cov_var <- anl_inputs$variables()$cov_var
+      input_paramcd <- anl_inputs$variables()$paramcd
       input_interaction_var <- input$interaction_var
 
       input_interaction_at <- input_interaction_var[input_interaction_var %in% input_cov_var]
-
-      at_values <- as_numeric_from_comma_sep_str(input$interaction_values)
 
       # validate inputs
       validate_args <- list(
@@ -666,7 +450,7 @@ srv_t_logistic <- function(id,
 
         do.call(what = "validate_standard_inputs", validate_args)
 
-        arm_n <- base::table(merged$anl_q()[["ANL"]][[input_arm_var]])
+        arm_n <- base::table(anl_q()[["ANL"]][[input_arm_var]])
         anl_arm_n <- if (input$combine_comp_arms) {
           c(sum(arm_n[unlist(input$buckets$Ref)]), sum(arm_n[unlist(input$buckets$Comp)]))
         } else {
@@ -683,7 +467,7 @@ srv_t_logistic <- function(id,
         need(
           all(
             vapply(
-              merged$anl_q()[["ANL"]][input_cov_var],
+              anl_q()[["ANL"]][input_cov_var],
               FUN = function(x) {
                 length(unique(x)) > 1
               },
@@ -699,24 +483,24 @@ srv_t_logistic <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      ANL <- merged$anl_q()[["ANL"]]
+      obj <- anl_q()
+      ANL <- obj[["ANL"]]
 
-      label_paramcd <- get_paramcd_label(ANL, paramcd)
+      label_paramcd <- selectors$paramcd()$values$selected
 
-      paramcd <- as.character(unique(ANL[[unlist(paramcd$filter)["vars_selected"]]]))
+      paramcd <- as.character(unique(ANL[[anl_inputs$variables()$paramcd]]))
 
       interaction_var <- input$interaction_var
       interaction_flag <- length(interaction_var) != 0
 
       at_values <- as_numeric_from_comma_sep_str(input$interaction_values)
       at_flag <- interaction_flag && is.numeric(ANL[[interaction_var]])
-
-      cov_var <- names(merged$anl_input_r()$columns_source$cov_var)
+      cov_var <- anl_inputs$variables()$cov_var
 
       calls <- template_logistic(
         dataname = "ANL",
-        arm_var = names(merged$anl_input_r()$columns_source$arm_var),
-        aval_var = names(merged$anl_input_r()$columns_source$avalc_var),
+        arm_var = anl_inputs$variables()$arm_var,
+        aval_var = anl_inputs$variables()$avalc_var,
         label_paramcd = label_paramcd,
         cov_var = if (length(cov_var) > 0) cov_var else NULL,
         interaction_var = if (interaction_flag) interaction_var else NULL,
@@ -729,9 +513,6 @@ srv_t_logistic <- function(id,
         responder_val = input$responders,
         basic_table_args = basic_table_args
       )
-
-      obj <- merged$anl_q()
-      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(calls))
     })
 
