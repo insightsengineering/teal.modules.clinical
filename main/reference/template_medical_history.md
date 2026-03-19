@@ -19,27 +19,27 @@ template_medical_history(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - mhterm:
 
-  (`character`)  
+  (`character`)\
   name of the reported term for the medical history variable.
 
 - mhbodsys:
 
-  (`character`)  
+  (`character`)\
   name of the body system or organ class variable.
 
 - mhdistat:
 
-  (`character`)  
+  (`character`)\
   name of the status of the disease variable.
 
 - patient_id:
 
-  (`character`)  
+  (`character`)\
   patient ID.
 
 ## Value

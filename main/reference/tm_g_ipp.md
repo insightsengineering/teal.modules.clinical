@@ -45,53 +45,53 @@ tm_g_ipp(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   values that can be used as arm variable.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - id_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object specifying the variable name for subject id.
 
 - visit_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as `visit` variable. Must be a factor in
   `dataname`.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - avalu_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   analysis unit variable.
 
@@ -101,55 +101,55 @@ tm_g_ipp(
 
 - baseline_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   values that can be used as `baseline_var`.
 
 - add_baseline_hline:
 
-  (`logical`)  
+  (`logical`)\
   whether a horizontal line should be added to the plot at baseline
   y-value.
 
 - separate_by_obs:
 
-  (`logical`)  
+  (`logical`)\
   whether to create multi-panel plots.
 
 - suppress_legend:
 
-  (`logical`)  
+  (`logical`)\
   whether to suppress the plot legend.
 
 - add_avalu:
 
-  (`logical`)  
+  (`logical`)\
   whether `avalu_first` text should be appended to the plot title and
   y-axis label.
 
 - plot_height:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the height
   of the main plot and renders a slider on the plot to interactively
   adjust the plot height.
 
 - plot_width:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the width
   of the main plot and renders a slider on the plot to interactively
   adjust the plot width.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -157,7 +157,7 @@ tm_g_ipp(
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. For this module, this argument will

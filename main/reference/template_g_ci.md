@@ -23,43 +23,43 @@ template_g_ci(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - x_var:
 
-  (`character`)  
+  (`character`)\
   name of the treatment variable to put on the x-axis.
 
 - y_var:
 
-  (`character`)  
+  (`character`)\
   name of the response variable to put on the y-axis.
 
 - grp_var:
 
-  (`character`)  
+  (`character`)\
   name of the group variable used to determine the plot colors, point
   shapes, and line types.
 
 - stat:
 
-  (`character`)  
+  (`character`)\
   statistic to plot. Options are `"mean"` and `"median"`.
 
 - conf_level:
 
-  (`numeric`)  
+  (`numeric`)\
   value for the confidence level within the range of (0, 1).
 
 - unit_var:
 
-  (`character`)  
+  (`character`)\
   name of the unit variable.
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

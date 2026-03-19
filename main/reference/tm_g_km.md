@@ -46,30 +46,30 @@ tm_g_km(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping variable
   in the results table.
 
 - arm_ref_comp:
 
-  (`list`) optional,  
+  (`list`) optional,\
   if specified it must be a named list with each element corresponding
   to an arm variable in `ADSL` and the element must be another list
   (possibly with delayed
@@ -81,60 +81,60 @@ tm_g_km(
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - strata_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   names of the variables for stratified analysis.
 
 - facet_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for names of
   variable that can be used for plot faceting.
 
 - time_unit_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the time
   unit variable.
 
 - aval_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   analysis variable.
 
 - cnsr_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   censoring variable.
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   confidence level, each within range of (0, 1).
 
 - conf_type:
 
-  (`string`)  
+  (`string`)\
   confidence interval type for median survival time CI. Options are
   "plain" (default), "log", "log-log".
 
 - font_size:
 
-  (`numeric`)  
+  (`numeric`)\
   numeric vector of length 3 of current, minimum and maximum font size
   values.
 
 - xticks:
 
-  (`numeric` or `NULL`)  
+  (`numeric` or `NULL`)\
   numeric vector of tick positions or a single number with spacing for
   the x-axis. If `NULL` (default), users can specify this interactively
   in the module. If provided, the interactive input field is
@@ -144,7 +144,7 @@ tm_g_km(
 
 - control_annot_surv_med:
 
-  (`list`)  
+  (`list`)\
   parameters to control the position and size of the annotation table
   added to the plot when `annot_surv_med = TRUE`, specified using the
   [`control_surv_med_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
@@ -154,7 +154,7 @@ tm_g_km(
 
 - control_annot_coxph:
 
-  (`list`)  
+  (`list`)\
   parameters to control the position and size of the annotation table
   added to the plot when `annot_coxph = TRUE`, specified using the
   [`control_coxph_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
@@ -165,7 +165,7 @@ tm_g_km(
 
 - legend_pos:
 
-  (`numeric(2)` or `NULL`)  
+  (`numeric(2)` or `NULL`)\
   vector containing x- and y-coordinates, respectively, for the legend
   position relative to the KM plot area. If `NULL` (default), the legend
   is positioned in the bottom right corner of the plot, or the middle
@@ -173,7 +173,7 @@ tm_g_km(
 
 - rel_height_plot:
 
-  (`proportion`)  
+  (`proportion`)\
   proportion of total figure height to allocate to the Kaplan-Meier
   plot. Relative height of patients at risk table is then
   `1 - rel_height_plot`. If `annot_at_risk = FALSE` or `as_list = TRUE`,
@@ -181,27 +181,27 @@ tm_g_km(
 
 - plot_height:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the height
   of the main plot and renders a slider on the plot to interactively
   adjust the plot height.
 
 - plot_width:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the width
   of the main plot and renders a slider on the plot to interactively
   adjust the plot width.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)

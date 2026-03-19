@@ -23,37 +23,37 @@ prepare_arm(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - ref_arm:
 
-  (`character`)  
+  (`character`)\
   the level of reference arm in case of arm comparison.
 
 - comp_arm:
 
-  (`character`)  
+  (`character`)\
   the level of comparison arm in case of arm comparison.
 
 - compare_arm:
 
-  (`logical`)  
+  (`logical`)\
   triggers the comparison between study arms.
 
 - ref_arm_val:
 
-  (`character`)  
+  (`character`)\
   replacement name for the reference level.
 
 - drop:
 
-  (`logical`)  
+  (`logical`)\
   drop the unused variable levels.
 
 ## Value

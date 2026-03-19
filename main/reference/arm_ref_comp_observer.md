@@ -26,66 +26,66 @@ arm_ref_comp_observer(
 
 - session:
 
-  (`environment`)  
+  (`environment`)\
   shiny session
 
 - input:
 
-  (`character`)  
+  (`character`)\
   shiny input
 
 - output:
 
-  (`character`)  
+  (`character`)\
   shiny input
 
 - id_ref:
 
-  (`character`)  
+  (`character`)\
   id of reference Treatment input UI element
 
 - id_comp:
 
-  (`character`)  
+  (`character`)\
   id of comparison group input UI element
 
 - id_arm_var:
 
-  (`character`)  
+  (`character`)\
   id of Treatment variable input UI element
 
 - data:
 
-  (`reactive` or `data.frame`)  
+  (`reactive` or `data.frame`)\
   dataset used to validate Treatment reference inputs and set `id_ref`
   input.
 
 - arm_ref_comp:
 
-  (`unknown`)  
+  (`unknown`)\
   Treatment reference and compare variables provided as a nested list
   where each Treatment variable corresponds a list specifying the
   default levels for the reference and comparison treatments.
 
 - module:
 
-  (`character`)  
+  (`character`)\
   name of the module where this is called (this is only used to produce
   more informative error messages)
 
 - on_off:
 
-  (`logical`)  
+  (`logical`)\
   A reactive that can be used to stop the whole observer if `FALSE`.
 
 - input_id:
 
-  (`character`)  
+  (`character`)\
   unique id that the buckets will be referenced with.
 
 - output_id:
 
-  (`character`)  
+  (`character`)\
   name of the UI id that the output will be written to.
 
 ## Value

@@ -42,47 +42,47 @@ template_g_km(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - ref_arm:
 
-  (`character`)  
+  (`character`)\
   the level of reference arm in case of arm comparison.
 
 - comp_arm:
 
-  (`character`)  
+  (`character`)\
   the level of comparison arm in case of arm comparison.
 
 - compare_arm:
 
-  (`logical`)  
+  (`logical`)\
   triggers the comparison between study arms.
 
 - combine_comp_arms:
 
-  (`logical`)  
+  (`logical`)\
   triggers the combination of comparison arms.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - cnsr_var:
 
-  (`character`)  
+  (`character`)\
   name of the censoring variable.
 
 - xticks:
 
-  (`numeric` or `NULL`)  
+  (`numeric` or `NULL`)\
   numeric vector of tick positions or a single number with spacing
   between ticks on the x-axis. If `NULL` (default),
   [`labeling::extended()`](https://rdrr.io/pkg/labeling/man/extended.html)
@@ -90,39 +90,39 @@ template_g_km(
 
 - strata_var:
 
-  (`character`)  
+  (`character`)\
   names of the variables for stratified analysis.
 
 - time_points:
 
-  (`character`)  
+  (`character`)\
   time points that can be used in
   [`tern::surv_timepoint()`](https://insightsengineering.github.io/tern/latest-tag/reference/survival_timepoint.html).
 
 - facet_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable to use to facet the plot.
 
 - font_size:
 
-  (`numeric`)  
+  (`numeric`)\
   font size value.
 
 - conf_level:
 
-  (`numeric`)  
+  (`numeric`)\
   value for the confidence level within the range of (0, 1).
 
 - conf_type:
 
-  (`string`)  
+  (`string`)\
   confidence interval type for median survival time CI. Options are
   "plain" (default), "log", "log-log".
 
 - ties:
 
-  (`string`)  
+  (`string`)\
   among `exact` (equivalent to `DISCRETE` in SAS), `efron` and
   `breslow`, see
   [`survival::coxph()`](https://rdrr.io/pkg/survival/man/coxph.html).
@@ -130,48 +130,48 @@ template_g_km(
 
 - xlab:
 
-  (`string`)  
+  (`string`)\
   x-axis label.
 
 - time_unit_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable representing time units.
 
 - yval:
 
-  (`string`)  
+  (`string`)\
   type of plot, to be plotted on the y-axis. Options are `Survival`
   (default) and `Failure` probability.
 
 - ylim:
 
-  (`numeric(2)`)  
+  (`numeric(2)`)\
   vector containing lower and upper limits for the y-axis, respectively.
   If `NULL` (default), the default scale range is used.
 
 - pval_method:
 
-  (`string`)  
+  (`string`)\
   the method used for estimation of p.values; `wald` (default) or
   `likelihood`.
 
 - annot_surv_med:
 
-  (`flag`)  
+  (`flag`)\
   compute and add the annotation table on the Kaplan-Meier curve
   estimating the median survival time per group.
 
 - annot_coxph:
 
-  (`flag`)  
+  (`flag`)\
   whether to add the annotation table from a
   [`survival::coxph()`](https://rdrr.io/pkg/survival/man/coxph.html)
   model.
 
 - control_annot_surv_med:
 
-  (`list`)  
+  (`list`)\
   parameters to control the position and size of the annotation table
   added to the plot when `annot_surv_med = TRUE`, specified using the
   [`control_surv_med_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
@@ -181,7 +181,7 @@ template_g_km(
 
 - control_annot_coxph:
 
-  (`list`)  
+  (`list`)\
   parameters to control the position and size of the annotation table
   added to the plot when `annot_coxph = TRUE`, specified using the
   [`control_coxph_annot()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_annot.html)
@@ -192,7 +192,7 @@ template_g_km(
 
 - legend_pos:
 
-  (`numeric(2)` or `NULL`)  
+  (`numeric(2)` or `NULL`)\
   vector containing x- and y-coordinates, respectively, for the legend
   position relative to the KM plot area. If `NULL` (default), the legend
   is positioned in the bottom right corner of the plot, or the middle
@@ -200,7 +200,7 @@ template_g_km(
 
 - rel_height_plot:
 
-  (`proportion`)  
+  (`proportion`)\
   proportion of total figure height to allocate to the Kaplan-Meier
   plot. Relative height of patients at risk table is then
   `1 - rel_height_plot`. If `annot_at_risk = FALSE` or `as_list = TRUE`,
@@ -208,13 +208,13 @@ template_g_km(
 
 - ci_ribbon:
 
-  (`flag`)  
+  (`flag`)\
   whether the confidence interval should be drawn around the
   Kaplan-Meier curve.
 
 - title:
 
-  (`character`)  
+  (`character`)\
   title of the output.
 
 ## Value

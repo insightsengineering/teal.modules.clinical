@@ -13,17 +13,17 @@ template_basic_info(dataname = "ANL", vars, patient_id = NULL)
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - vars:
 
-  (`character`)  
+  (`character`)\
   names of the variables to be shown in the table.
 
 - patient_id:
 
-  (`character`)  
+  (`character`)\
   patient ID.
 
 ## Value

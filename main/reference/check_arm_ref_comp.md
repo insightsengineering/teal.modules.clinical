@@ -12,17 +12,17 @@ check_arm_ref_comp(x, df_to_check, module)
 
 - x:
 
-  (`character`)  
+  (`character`)\
   Name of the variable
 
 - df_to_check:
 
-  (`data.frame`)  
+  (`data.frame`)\
   table to check
 
 - module:
 
-  (`character`)  
+  (`character`)\
   teal module the ref and comp are called in
 
 ## Value

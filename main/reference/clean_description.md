@@ -12,7 +12,7 @@ clean_description(x)
 
 - x:
 
-  (`character`)  
+  (`character`)\
   vector with categories descriptions.
 
 ## Value

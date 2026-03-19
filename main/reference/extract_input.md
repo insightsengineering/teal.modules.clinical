@@ -14,20 +14,20 @@ extract_input(varname, dataname, filter = FALSE)
 
 - varname:
 
-  (`character`)  
+  (`character`)\
   the original html id. This should be retrieved with
   `ns("original id")` in the UI function or
   `session$ns("original id")`/"original id" in the server function.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   `dataname` from data_extract input. This might be retrieved like
   `data_extract_spec(...)[[1]]$dataname`.
 
 - filter:
 
-  (`logical`) optional,  
+  (`logical`) optional,\
   if the connected `extract_data_spec` has objects passed to its
   `filter` argument
 

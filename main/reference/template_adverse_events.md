@@ -26,57 +26,57 @@ template_adverse_events(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - aeterm:
 
-  (`character`)  
+  (`character`)\
   name of the reported term for the adverse event variable.
 
 - tox_grade:
 
-  (`character`)  
+  (`character`)\
   name of the standard toxicity grade variable.
 
 - causality:
 
-  (`character`)  
+  (`character`)\
   name of the causality variable.
 
 - outcome:
 
-  (`character`)  
+  (`character`)\
   name of outcome of adverse event variable.
 
 - action:
 
-  (`character`)  
+  (`character`)\
   name of action taken with study treatment variable.
 
 - time:
 
-  (`character`)  
+  (`character`)\
   name of study day of start of adverse event variable.
 
 - decod:
 
-  (`character`)  
+  (`character`)\
   name of dictionary derived term variable.
 
 - patient_id:
 
-  (`character`)  
+  (`character`)\
   patient ID.
 
 - font_size:
 
-  (`numeric`)  
+  (`numeric`)\
   font size value.
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

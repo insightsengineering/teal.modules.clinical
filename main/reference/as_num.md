@@ -28,7 +28,7 @@ as_num(str)
 
 - str:
 
-  (`vector`)  
+  (`vector`)\
   to extract numeric from.
 
 ## Value

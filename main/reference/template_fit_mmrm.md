@@ -51,69 +51,69 @@ template_mmrm_plots(
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - ref_arm:
 
-  (`character`)  
+  (`character`)\
   the level of reference arm in case of arm comparison.
 
 - comp_arm:
 
-  (`character`)  
+  (`character`)\
   the level of comparison arm in case of arm comparison.
 
 - combine_comp_arms:
 
-  (`logical`)  
+  (`logical`)\
   triggers the combination of comparison arms.
 
 - id_var:
 
-  (`character`)  
+  (`character`)\
   the variable name for subject id.
 
 - visit_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `visit` variable. Must be a factor
   in `dataname`.
 
 - cov_var:
 
-  (`character`)  
+  (`character`)\
   names of the covariates variables.
 
 - conf_level:
 
-  (`numeric`)  
+  (`numeric`)\
   value for the confidence level within the range of (0, 1).
 
 - method:
 
-  (`string`)  
+  (`string`)\
   a string specifying the adjustment method.
 
 - cor_struct:
 
-  (`string`)  
+  (`string`)\
   a string specifying the correlation structure, defaults to
   `"unstructured"`. See
   [`tern.mmrm::build_formula()`](https://insightsengineering.github.io/tern.mmrm/latest-tag/reference/build_formula.html)
@@ -127,35 +127,35 @@ template_mmrm_plots(
 
 - parallel:
 
-  (`flag`)  
+  (`flag`)\
   flag that controls whether optimizer search can use available free
   cores on the machine (not default).
 
 - fit_name:
 
-  (`string`)  
+  (`string`)\
   name of fitted MMRM object.
 
 - paramcd:
 
-  (`character`)  
+  (`character`)\
   name of the parameter code variable.
 
 - show_relative:
 
-  (`string`)  
+  (`string`)\
   should the "reduction" (`control - treatment`, default) or the
   "increase" (`treatment - control`) be shown for the relative change
   from baseline.
 
 - table_type:
 
-  (`string`)  
+  (`string`)\
   type of table to output.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -163,7 +163,7 @@ template_mmrm_plots(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option
@@ -173,19 +173,19 @@ template_mmrm_plots(
 
 - lsmeans_plot:
 
-  (named `list`)  
+  (named `list`)\
   a `list` of controls for LS means plot. See more
   [`tern.mmrm::g_mmrm_lsmeans()`](https://insightsengineering.github.io/tern.mmrm/latest-tag/reference/g_mmrm_lsmeans.html).
 
 - diagnostic_plot:
 
-  (named `list`)  
+  (named `list`)\
   a `list` of controls for diagnostic_plot. See more
   [`tern.mmrm::g_mmrm_diagnostic()`](https://insightsengineering.github.io/tern.mmrm/latest-tag/reference/g_mmrm_diagnostic.html).
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

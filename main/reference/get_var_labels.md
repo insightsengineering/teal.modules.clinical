@@ -12,17 +12,17 @@ get_var_labels(datasets, dataname, vars)
 
 - datasets:
 
-  (`teal::FilteredData`)  
+  (`teal::FilteredData`)\
   Data built up by teal
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   name of the dataset
 
 - vars:
 
-  (`character`)  
+  (`character`)\
   Column names in the data
 
 ## Value

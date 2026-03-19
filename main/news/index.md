@@ -1,11 +1,16 @@
 # Changelog
 
-## teal.modules.clinical 0.12.0.9011
+## teal.modules.clinical 0.12.0.9012
 
 #### Enhancements
 
 - Added `numeric_formats` argument to `tm_t_summary` to customize
   formatting of numeric statistics.
+
+#### Miscellaneous
+
+- Multiple decorators can be applied to the same output object
+  ([\#1465](https://github.com/insightsengineering/teal.modules.clinical/issues/1465)).
 
 ## teal.modules.clinical 0.12.0
 

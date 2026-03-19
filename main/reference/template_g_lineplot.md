@@ -34,42 +34,42 @@ template_g_lineplot(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - group_var:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   group variable name.
 
 - x:
 
-  (`string`)  
+  (`string`)\
   x-variable name.
 
 - y:
 
-  (`string`)  
+  (`string`)\
   y-variable name.
 
 - y_unit:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   y-axis unit variable name.
 
 - paramcd:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   parameter code variable name.
 
 - param:
 
-  (`character`)  
+  (`character`)\
   parameter to filter the data by.
 
 - mid:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   names of the statistics that will be plotted as midpoints. All the
   statistics indicated in `mid` variable must be present in the object
   returned by `sfun`, and be of a `double` or `numeric` type vector of
@@ -77,7 +77,7 @@ template_g_lineplot(
 
 - interval:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   names of the statistics that will be plotted as intervals. All the
   statistics indicated in `interval` variable must be present in the
   object returned by `sfun`, and be of a `double` or `numeric` type
@@ -86,7 +86,7 @@ template_g_lineplot(
 
 - whiskers:
 
-  (`character`)  
+  (`character`)\
   names of the interval whiskers that will be plotted. Names must match
   names of the list element `interval` that will be returned by `sfun`
   (e.g. `mean_ci_lwr` element of `sfun(x)[["mean_ci"]]`). It is possible
@@ -95,50 +95,50 @@ template_g_lineplot(
 
 - table:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   names of the statistics that will be displayed in the table below the
   plot. All the statistics indicated in `table` variable must be present
   in the object returned by `sfun`.
 
 - mid_type:
 
-  (`string`)  
+  (`string`)\
   controls the type of the `mid` plot, it can be point (`"p"`), line
   (`"l"`), or point and line (`"pl"`).
 
 - conf_level:
 
-  (`numeric`)  
+  (`numeric`)\
   value for the confidence level within the range of (0, 1).
 
 - incl_screen:
 
-  (`logical`)  
+  (`logical`)\
   whether the screening visit should be included.
 
 - mid_point_size:
 
-  (`numeric(1)`)  
+  (`numeric(1)`)\
   font size of the `mid` plot points.
 
 - table_font_size:
 
-  (`numeric(1)`)  
+  (`numeric(1)`)\
   font size of the text in the table.
 
 - title:
 
-  (`string`)  
+  (`string`)\
   plot title.
 
 - y_lab:
 
-  (`string` or `NULL`)  
+  (`string` or `NULL`)\
   y-axis label. If `NULL` then no label will be added.
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. For this module, this argument will

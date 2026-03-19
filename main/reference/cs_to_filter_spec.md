@@ -12,20 +12,20 @@ cs_to_filter_spec(cs, multiple = FALSE, label = "Filter by")
 
 - cs:
 
-  (`choices_selected`)  
+  (`choices_selected`)\
   object to be transformed. See
   [`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html)
   for details.
 
 - multiple:
 
-  (`logical`)  
+  (`logical`)\
   Whether multiple values shall be allowed in the shiny
   [`shiny::selectInput()`](https://rdrr.io/pkg/shiny/man/selectInput.html).
 
 - label:
 
-  (`character`)  
+  (`character`)\
   Label to print over the selection field. For no label, set to `NULL`.
 
 ## Value

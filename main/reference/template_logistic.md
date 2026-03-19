@@ -27,76 +27,76 @@ template_logistic(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`. To fit a logistic model
   with no arm/treatment variable, set to `NULL`.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - label_paramcd:
 
-  (`character`)  
+  (`character`)\
   label of response parameter value to print in the table title.
 
 - cov_var:
 
-  (`character`)  
+  (`character`)\
   names of the covariates variables.
 
 - interaction_var:
 
-  (`character`)  
+  (`character`)\
   names of the variables that can be used for interaction variable
   selection.
 
 - ref_arm:
 
-  (`character`)  
+  (`character`)\
   the level of reference arm in case of arm comparison.
 
 - comp_arm:
 
-  (`character`)  
+  (`character`)\
   the level of comparison arm in case of arm comparison.
 
 - topleft:
 
-  (`character`)  
+  (`character`)\
   text to use as top-left annotation in the table.
 
 - conf_level:
 
-  (`numeric`)  
+  (`numeric`)\
   value for the confidence level within the range of (0, 1).
 
 - combine_comp_arms:
 
-  (`logical`)  
+  (`logical`)\
   triggers the combination of comparison arms.
 
 - responder_val:
 
-  (`character`)  
+  (`character`)\
   values of the responder variable corresponding with a successful
   response.
 
 - at:
 
-  (`numeric` or `NULL`)  
+  (`numeric` or `NULL`)\
   optional values for the interaction variable. Otherwise the median is
   used.
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

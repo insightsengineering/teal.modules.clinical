@@ -13,7 +13,7 @@ split_choices(x)
 
 - x:
 
-  (`choices_selected`)  
+  (`choices_selected`)\
   object with interaction terms
 
 ## Value

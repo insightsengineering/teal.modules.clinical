@@ -28,70 +28,70 @@ template_coxreg_m(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - cov_var:
 
-  (`character`)  
+  (`character`)\
   names of the covariates variables.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - cnsr_var:
 
-  (`character`)  
+  (`character`)\
   name of the censoring variable.
 
 - aval_var:
 
-  (`character`)  
+  (`character`)\
   name of the analysis value variable.
 
 - ref_arm:
 
-  (`character`)  
+  (`character`)\
   the level of reference arm in case of arm comparison.
 
 - comp_arm:
 
-  (`character`)  
+  (`character`)\
   the level of comparison arm in case of arm comparison.
 
 - paramcd:
 
-  (`character`)  
+  (`character`)\
   name of the parameter code variable.
 
 - at:
 
-  (`list` of `numeric`)  
+  (`list` of `numeric`)\
   when the candidate covariate is a `numeric` type variable, use `at` to
   specify the value of the covariate at which the effect should be
   estimated.
 
 - strata_var:
 
-  (`character`)  
+  (`character`)\
   names of the variables for stratified analysis.
 
 - combine_comp_arms:
 
-  (`logical`)  
+  (`logical`)\
   triggers the combination of comparison arms.
 
 - control:
 
-  (`list`)  
+  (`list`)\
   list of settings for the analysis (see
   [`tern::control_coxreg()`](https://insightsengineering.github.io/tern/latest-tag/reference/control_coxreg.html)).
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -99,7 +99,7 @@ template_coxreg_m(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

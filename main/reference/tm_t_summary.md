@@ -34,23 +34,23 @@ tm_t_summary(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - arm_var:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for variable
   names that can be used as `arm_var`. It defines the grouping
   variable(s) in the results table. If there are two elements selected
@@ -59,17 +59,17 @@ tm_t_summary(
 
 - summarize_vars:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   names of the variables that should be summarized.
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -77,17 +77,17 @@ tm_t_summary(
 
 - show_arm_var_labels:
 
-  (`flag`)  
+  (`flag`)\
   whether arm variable label(s) should be displayed. Defaults to `TRUE`.
 
 - useNA:
 
-  (`character`)  
+  (`character`)\
   whether missing data (`NA`) should be displayed as a level.
 
 - na_level:
 
-  (`string`)  
+  (`string`)\
   used to replace all `NA` or empty values in character or factor
   variables in the data. Defaults to `"<Missing>"`. To set a default
   `na_level` to apply in all modules, run
@@ -95,14 +95,14 @@ tm_t_summary(
 
 - numeric_stats:
 
-  (`character`)  
+  (`character`)\
   names of statistics to display for numeric summary variables.
   Available statistics are `n`, `mean_sd`, `mean_ci`, `median`,
   `median_ci`, `quantiles`, `range`, and `geom_mean`.
 
 - numeric_formats:
 
-  (named `list` or `NULL`)  
+  (named `list` or `NULL`)\
   format patterns for numeric statistics. Names should match the
   statistics in `numeric_stats`. If `NULL`, defaults from
   [`tern::analyze_vars()`](https://insightsengineering.github.io/tern/latest-tag/reference/analyze_variables.html)
@@ -110,7 +110,7 @@ tm_t_summary(
 
 - denominator:
 
-  (`character`)  
+  (`character`)\
   chooses how percentages are calculated. With option `N`, the reference
   population from the column total is used as the denominator. With
   option `n`, the number of non-missing records in this row and column
@@ -119,7 +119,7 @@ tm_t_summary(
 
 - drop_arm_levels:
 
-  (`logical`)  
+  (`logical`)\
   whether to drop unused levels of `arm_var`. If `TRUE`, `arm_var`
   levels are set to those used in the `dataname` dataset. If `FALSE`,
   `arm_var` levels are set to those used in the `parentname` dataset. If
@@ -128,13 +128,13 @@ tm_t_summary(
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -142,7 +142,7 @@ tm_t_summary(
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option

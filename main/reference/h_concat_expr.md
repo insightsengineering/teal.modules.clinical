@@ -12,7 +12,7 @@ h_concat_expr(expr)
 
 - expr:
 
-  (`call`)  
+  (`call`)\
   or an object which can be used as so.
 
 ## Value

@@ -30,49 +30,49 @@ template_abnormality(
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - arm_var:
 
-  (`character`)  
+  (`character`)\
   variable names that can be used as `arm_var`.
 
 - id_var:
 
-  (`character`)  
+  (`character`)\
   the variable name for subject id.
 
 - by_vars:
 
-  (`character`)  
+  (`character`)\
   variable names used to split the summary by rows.
 
 - abnormal:
 
-  (`named list`)  
+  (`named list`)\
   indicating abnormality direction and grades.
 
 - grade:
 
-  (`character`)  
+  (`character`)\
   name of the variable used to specify the abnormality grade. Variable
   must be factor.
 
 - baseline_var:
 
-  (`character`)  
+  (`character`)\
   name of the variable specifying baseline abnormality grade.
 
 - treatment_flag_var:
 
-  (`character`)  
+  (`character`)\
   name of the on treatment flag variable.
 
 - treatment_flag:
@@ -81,12 +81,12 @@ template_abnormality(
 
 - add_total:
 
-  (`logical`)  
+  (`logical`)\
   whether to include column with total number of patients.
 
 - total_label:
 
-  (`string`)  
+  (`string`)\
   string to display as total column/row label if column/row is enabled
   (see `add_total`). Defaults to `"All Patients"`. To set a new default
   `total_label` to apply in all modules, run
@@ -94,12 +94,12 @@ template_abnormality(
 
 - exclude_base_abn:
 
-  (`logical`)  
+  (`logical`)\
   whether to exclude patients who had abnormal values at baseline.
 
 - drop_arm_levels:
 
-  (`logical`)  
+  (`logical`)\
   whether to drop unused levels of `arm_var`. If `TRUE`, `arm_var`
   levels are set to those used in the `dataname` dataset. If `FALSE`,
   `arm_var` levels are set to those used in the `parentname` dataset. If
@@ -108,12 +108,12 @@ template_abnormality(
 
 - na_level:
 
-  (`character`)  
+  (`character`)\
   the NA level in the input dataset, defaults to `"<Missing>"`.
 
 - basic_table_args:
 
-  (`basic_table_args`) optional  
+  (`basic_table_args`) optional\
   object created by
   [`teal.widgets::basic_table_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/basic_table_args.html)
   with settings for the module table. The argument is merged with option
@@ -123,7 +123,7 @@ template_abnormality(
 
 - tbl_title:
 
-  (`character`)  
+  (`character`)\
   Title with label of variables from by bars
 
 ## Value

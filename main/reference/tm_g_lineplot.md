@@ -48,17 +48,17 @@ tm_g_lineplot(
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - parentname:
 
-  (`character`)  
+  (`character`)\
   parent analysis data used in teal module, usually this refers to
   `ADSL`.
 
@@ -68,7 +68,7 @@ tm_g_lineplot(
 
 - group_var:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   group variable name.
 
 - x:
@@ -77,34 +77,34 @@ tm_g_lineplot(
 
 - y:
 
-  (`string`)  
+  (`string`)\
   y-variable name.
 
 - y_unit:
 
-  (`string` or `NA`)  
+  (`string` or `NA`)\
   y-axis unit variable name.
 
 - paramcd:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and preselected option for the
   parameter code variable from `dataname`.
 
 - param:
 
-  (`character`)  
+  (`character`)\
   parameter to filter the data by.
 
 - conf_level:
 
-  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))  
+  ([`teal.transform::choices_selected()`](https://insightsengineering.github.io/teal.transform/latest-tag/reference/choices_selected.html))\
   object with all available choices and pre-selected option for the
   confidence level, each within range of (0, 1).
 
 - interval:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   names of the statistics that will be plotted as intervals. All the
   statistics indicated in `interval` variable must be present in the
   object returned by `sfun`, and be of a `double` or `numeric` type
@@ -113,7 +113,7 @@ tm_g_lineplot(
 
 - mid:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   names of the statistics that will be plotted as midpoints. All the
   statistics indicated in `mid` variable must be present in the object
   returned by `sfun`, and be of a `double` or `numeric` type vector of
@@ -121,7 +121,7 @@ tm_g_lineplot(
 
 - whiskers:
 
-  (`character`)  
+  (`character`)\
   names of the interval whiskers that will be plotted. Names must match
   names of the list element `interval` that will be returned by `sfun`
   (e.g. `mean_ci_lwr` element of `sfun(x)[["mean_ci"]]`). It is possible
@@ -130,50 +130,50 @@ tm_g_lineplot(
 
 - table:
 
-  (`character` or `NULL`)  
+  (`character` or `NULL`)\
   names of the statistics that will be displayed in the table below the
   plot. All the statistics indicated in `table` variable must be present
   in the object returned by `sfun`.
 
 - mid_type:
 
-  (`string`)  
+  (`string`)\
   controls the type of the `mid` plot, it can be point (`"p"`), line
   (`"l"`), or point and line (`"pl"`).
 
 - mid_point_size:
 
-  (`numeric(1)`)  
+  (`numeric(1)`)\
   font size of the `mid` plot points.
 
 - table_font_size:
 
-  (`numeric(1)`)  
+  (`numeric(1)`)\
   font size of the text in the table.
 
 - plot_height:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the height
   of the main plot and renders a slider on the plot to interactively
   adjust the plot height.
 
 - plot_width:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the width
   of the main plot and renders a slider on the plot to interactively
   adjust the plot width.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -181,7 +181,7 @@ tm_g_lineplot(
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. For this module, this argument will

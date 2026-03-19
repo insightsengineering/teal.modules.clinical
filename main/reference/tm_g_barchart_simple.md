@@ -28,57 +28,57 @@ tm_g_barchart_simple(
 
 - x:
 
-  (`data_extract_spec`)  
+  (`data_extract_spec`)\
   variable on the x-axis.
 
 - fill:
 
-  (`data_extract_spec`)  
+  (`data_extract_spec`)\
   grouping variable to determine bar colors.
 
 - x_facet:
 
-  (`data_extract_spec`)  
+  (`data_extract_spec`)\
   row-wise faceting groups.
 
 - y_facet:
 
-  (`data_extract_spec`)  
+  (`data_extract_spec`)\
   column-wise faceting groups.
 
 - label:
 
-  (`character`)  
+  (`character`)\
   menu item label of the module in the teal app.
 
 - plot_options:
 
-  (`list`)  
+  (`list`)\
   list of plot options.
 
 - plot_height:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the height
   of the main plot and renders a slider on the plot to interactively
   adjust the plot height.
 
 - plot_width:
 
-  (`numeric`) optional  
+  (`numeric`) optional\
   vector of length three with `c(value, min, max)`. Specifies the width
   of the main plot and renders a slider on the plot to interactively
   adjust the plot width.
 
 - pre_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed before the output to put the output into context. For
   example a title.
 
 - post_output:
 
-  (`shiny.tag`) optional,  
+  (`shiny.tag`) optional,\
   with text placed after the output to put the output into context. For
   example the
   [`shiny::helpText()`](https://rdrr.io/pkg/shiny/man/helpText.html)
@@ -86,7 +86,7 @@ tm_g_barchart_simple(
 
 - ggplot2_args:
 
-  (`ggplot2_args`) optional  
+  (`ggplot2_args`) optional\
   object created by
   [`teal.widgets::ggplot2_args()`](https://insightsengineering.github.io/teal.widgets/latest-tag/reference/ggplot2_args.html)
   with settings for the module plot. The argument is merged with option

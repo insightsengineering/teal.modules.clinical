@@ -19,27 +19,27 @@ template_prior_medication(
 
 - dataname:
 
-  (`character`)  
+  (`character`)\
   analysis data used in teal module.
 
 - atirel:
 
-  (`character`)  
+  (`character`)\
   name of time relation of medication variable.
 
 - cmdecod:
 
-  (`character`)  
+  (`character`)\
   name of standardized medication name variable.
 
 - cmindc:
 
-  (`character`)  
+  (`character`)\
   name of indication variable.
 
 - cmstdy:
 
-  (`character`)  
+  (`character`)\
   name of study relative day of start of medication variable.
 
 ## Value
