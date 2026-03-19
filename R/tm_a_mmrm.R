@@ -608,7 +608,7 @@ tm_a_mmrm <- function(label,
   checkmate::assert_list(ggplot2_args, types = "ggplot2_args")
   checkmate::assert_subset(names(ggplot2_args), c("default", plot_choices))
 
-  assert_decorators(
+  teal::assert_decorators(
     decorators,
     c(
       "lsmeans_table",
@@ -802,27 +802,29 @@ ui_mmrm <- function(id, ...) {
         # Decorators ---
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_lsmeans"),
-          ui_decorate_teal_data(ns("d_lsmeans_table"), select_decorators(a$decorators, "lsmeans_table"))
+          teal::ui_transform_teal_data(ns("d_lsmeans_table"), select_decorators(a$decorators, "lsmeans_table"))
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "g_mmrm_lsmeans"),
-          ui_decorate_teal_data(ns("d_lsmeans_plot"), select_decorators(a$decorators, "lsmeans_plot"))
+          teal::ui_transform_teal_data(ns("d_lsmeans_plot"), select_decorators(a$decorators, "lsmeans_plot"))
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_cov"),
-          ui_decorate_teal_data(ns("d_covariance_table"), select_decorators(a$decorators, "covariance_table"))
+          teal::ui_transform_teal_data(ns("d_covariance_table"), select_decorators(a$decorators, "covariance_table"))
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_fixed"),
-          ui_decorate_teal_data(ns("d_fixed_effects_table"), select_decorators(a$decorators, "fixed_effects_table"))
+          teal::ui_transform_teal_data(
+            ns("d_fixed_effects_table"), select_decorators(a$decorators, "fixed_effects_table")
+          )
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "t_mmrm_diagnostic"),
-          ui_decorate_teal_data(ns("d_diagnostic_table"), select_decorators(a$decorators, "diagnostic_table"))
+          teal::ui_transform_teal_data(ns("d_diagnostic_table"), select_decorators(a$decorators, "diagnostic_table"))
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == '%s'", ns("output_function"), "g_mmrm_diagnostic"),
-          ui_decorate_teal_data(ns("d_diagnostic_plot"), select_decorators(a$decorators, "diagnostic_plot"))
+          teal::ui_transform_teal_data(ns("d_diagnostic_plot"), select_decorators(a$decorators, "diagnostic_plot"))
         ),
         # End of Decorators ---
         conditionalPanel(
@@ -1482,12 +1484,11 @@ srv_mmrm <- function(id,
         nm = c("lsmeans_table", "diagnostic_table", "fixed_effects_table", "covariance_table")
       ),
       function(output_function) {
-        srv_decorate_teal_data(
+        teal::srv_transform_teal_data(
           id = sprintf("d_%s", output_function),
           data = table_q,
-          decorators = select_decorators(decorators, output_function),
-          expr = reactive(bquote(.(as.name(output_function)))),
-          expr_is_reactive = TRUE
+          transformators = select_decorators(decorators, output_function),
+          expr = reactive(bquote(.(as.name(output_function))))
         )
       }
     )
@@ -1497,12 +1498,11 @@ srv_mmrm <- function(id,
       lapply(
         stats::setNames(nm = c("lsmeans_plot", "diagnostic_plot")),
         function(output_function) {
-          srv_decorate_teal_data(
+          teal::srv_transform_teal_data(
             id = sprintf("d_%s", output_function),
             data = plot_q,
-            decorators = select_decorators(decorators, output_function),
-            expr = reactive(bquote(.(as.name(output_function)))),
-            expr_is_reactive = TRUE
+            transformators = select_decorators(decorators, output_function),
+            expr = reactive(bquote(.(as.name(output_function))))
           )
         }
       )

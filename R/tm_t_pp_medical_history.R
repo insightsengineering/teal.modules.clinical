@@ -178,7 +178,7 @@ tm_t_pp_medical_history <- function(label,
   checkmate::assert_class(mhdistat, "choices_selected", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -248,7 +248,7 @@ ui_t_medical_history <- function(id, ...) {
         data_extract_spec = ui_args$mhdistat,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "table"))
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "table"))
     ),
     pre_output = ui_args$pre_output,
     post_output = ui_args$post_output
@@ -364,11 +364,11 @@ srv_t_medical_history <- function(id,
     })
 
     # Decoration of table output.
-    decorated_table_q <- srv_decorate_teal_data(
+    decorated_table_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
+      transformators = select_decorators(decorators, "table"),
+      expr = quote(table)
     )
 
     # Outputs to render.
