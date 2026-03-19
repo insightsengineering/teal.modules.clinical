@@ -183,10 +183,12 @@ template_summary_by <- function(parentname,
     na.rm = na.rm,
     na_level = na_level,
     denom = ifelse(denominator == "n", "n", "N_col"),
-    stats = c(
-      numeric_stats,
-      ifelse(denominator == "omit", "count", "count_fraction")
-    )
+    stats = unique(
+      c(
+        numeric_stats,
+        ifelse(denominator == "omit", "count", "count_fraction")
+      )
+  )
   )
 
   for (by_var in by_vars) {
