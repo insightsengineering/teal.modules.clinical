@@ -35,6 +35,7 @@ Depends:
     R (>= 4.4),
     teal (>= 1.1),
     teal.transform (>= 0.7.0),
+    teal.picks (>= 0.1.0.9212),
     tern (>= 0.9.9)
 Imports:
     broom (>= 0.7.10),
