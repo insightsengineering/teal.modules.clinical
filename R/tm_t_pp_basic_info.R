@@ -99,7 +99,7 @@ template_basic_info <- function(dataname = "ANL",
 tm_t_pp_basic_info <- function(label,
                                dataname = "ADSL",
                                patient_col = "USUBJID",
-                               vars = teal.picks::variables(selected = NULL),
+                               vars = teal.picks::variables(selected = NULL, multiple = TRUE),
                                pre_output = NULL,
                                post_output = NULL,
                                transformators = list()) {
