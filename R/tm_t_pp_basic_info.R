@@ -132,9 +132,9 @@ tm_t_pp_basic_info <- function(label,
 
 #' @keywords internal
 ui_t_basic_info <- function(id,
-                                  vars,
-                                  pre_output,
-                                  post_output) {
+                            vars,
+                            pre_output,
+                            post_output) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = tags$div(
@@ -161,11 +161,11 @@ ui_t_basic_info <- function(id,
 
 #' @keywords internal
 srv_t_basic_info <- function(id,
-                                   data,
-                                   dataname,
-                                   patient_col,
-                                   vars,
-                                   label) {
+                             data,
+                             dataname,
+                             patient_col,
+                             vars,
+                             label) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
