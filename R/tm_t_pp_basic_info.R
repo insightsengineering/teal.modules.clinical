@@ -57,8 +57,8 @@ template_basic_info <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_basic_info
-#' @param vars ([teal.transform::choices_selected()])\cr  object with all
-#'   available choices and preselected option for variables from `dataname` to show in the table.
+#' @param vars (`teal.picks::variables`)\cr object specifying available choices and preselected
+#'   variables from `dataname` to show in the table.
 #'
 #' @inherit module_arguments return
 #'
@@ -76,17 +76,14 @@ template_basic_info <- function(dataname = "ANL",
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
-#' ADSL <- data[["ADSL"]]
-#'
 #' app <- init(
 #'   data = data,
 #'   modules = modules(
-#'     tm_t_pp_basic_info(
+#'     tm_t_pp_basic_info.picks(
 #'       label = "Basic Info",
 #'       dataname = "ADSL",
 #'       patient_col = "USUBJID",
-#'       vars = choices_selected(
-#'         choices = variable_choices(ADSL),
+#'       vars = teal.picks::variables(
 #'         selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
 #'       )
 #'     )
@@ -98,58 +95,46 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @export
 tm_t_pp_basic_info <- function(label,
-                               dataname = "ADSL",
-                               patient_col = "USUBJID",
-                               vars = NULL,
-                               pre_output = NULL,
-                               post_output = NULL,
-                               transformators = list(),
-                               decorators = lifecycle::deprecated()) {
+                                     dataname = "ADSL",
+                                     patient_col = "USUBJID",
+                                     vars = teal.picks::variables(selected = NULL),
+                                     pre_output = NULL,
+                                     post_output = NULL,
+                                     transformators = list()) {
   message("Initializing tm_t_pp_basic_info")
 
-  if (lifecycle::is_present(decorators)) {
-    lifecycle::deprecate_warn(
-      when = "0.11.0",
-      what = "tm_t_pp_laboratory(decorators)",
-      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
-    )
+  # Compatibility layer: convert choices_selected to teal.picks
+  if (inherits(vars, "choices_selected")) {
+    vars <- teal.picks::as.picks(vars)
   }
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(vars, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(vars, "variables", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
+  vars <- teal.picks::picks(datasets(dataname), vars)
+
   args <- as.list(environment())
-  data_extract_list <- list(
-    vars = `if`(is.null(vars), NULL, cs_to_des_select(vars, dataname = dataname, multiple = TRUE))
-  )
 
   module(
     label = label,
     ui = ui_t_basic_info,
-    ui_args = c(data_extract_list, args),
+    ui_args = args[names(args) %in% names(formals(ui_t_basic_info))],
     server = srv_t_basic_info,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        label = label,
-        patient_col = patient_col
-      )
-    ),
+    server_args = args[names(args) %in% names(formals(srv_t_basic_info))],
     transformators = transformators,
     datanames = dataname
   )
 }
 
 #' @keywords internal
-ui_t_basic_info <- function(id, ...) {
-  ui_args <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(ui_args$vars)
-
+ui_t_basic_info <- function(id,
+                                  vars,
+                                  pre_output,
+                                  post_output) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = tags$div(
@@ -158,32 +143,29 @@ ui_t_basic_info <- function(id, ...) {
     ),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(ui_args[c("vars")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("vars"),
-        label = "Select variable:",
-        data_extract_spec = ui_args$vars,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select variable:"),
+        teal.picks::picks_ui(ns("vars"), vars)
       )
     ),
-    pre_output = ui_args$pre_output,
-    post_output = ui_args$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
 #' @keywords internal
 srv_t_basic_info <- function(id,
-                             data,
-                             dataname,
-                             patient_col,
-                             vars,
-                             label) {
+                                   data,
+                                   dataname,
+                                   patient_col,
+                                   vars,
+                                   label) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
@@ -191,7 +173,7 @@ srv_t_basic_info <- function(id,
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
-    # Init
+    # Init patient selector
     patient_data_base <- reactive(unique(data()[[dataname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
@@ -216,60 +198,64 @@ srv_t_basic_info <- function(id,
       ignoreInit = TRUE
     )
 
-    # Basic Info tab ----
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(vars = vars),
-      datasets = data,
-      select_validation_rule = list(
-        vars = shinyvalidate::sv_required("Please select basic info variables")
+    selectors <- teal.picks::picks_srv(
+      picks = list(vars = vars),
+      data = data
+    )
+
+    validated_q <- reactive({
+      obj <- req(data())
+
+      teal:::validate_input(
+        inputId = "vars-variables-selected",
+        condition = !is.null(selectors$vars()$variables$selected),
+        message = "Please select basic info variables"
       )
-    )
+      teal:::validate_input(
+        inputId = "patient_id",
+        condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
+        message = "Please select a patient"
+      )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's output(s)")
+      )
+      obj
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::left_join"
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::left_join",
+      output_name = "ANL"
     )
-
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
-    })
 
     all_q <- reactive({
-      teal::validate_inputs(iv_r())
+      obj <- anl_inputs$data()
+
       my_calls <- template_basic_info(
         dataname = "ANL",
-        vars = anl_inputs()$columns_source$vars,
+        vars = anl_inputs$variables()$vars,
         patient_id = patient_id()
       )
 
       obj <- teal.code::eval_code(
-        anl_q(),
+        obj,
         substitute(
           expr = {
             pt_id <- patient_id
-            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
-          }, env = list(
+            ANL <- ANL[ANL[[patient_col]] == pt_id, ]
+          },
+          env = list(
             patient_col = patient_col,
             patient_id = patient_id()
           )
         )
       )
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
-      obj %>% teal.code::eval_code(as.expression(unlist(my_calls)))
+      obj |> teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
     table_r <- reactive({
