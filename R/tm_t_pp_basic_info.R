@@ -57,8 +57,10 @@ template_basic_info <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_basic_info
-#' @param vars (`teal.picks::variables`)\cr object specifying available choices and preselected
-#'   variables from `dataname` to show in the table.
+#' @param vars (`teal.picks::variables` or `teal.transform::choices_selected`)
+#'
+#' object specifying available choices and preselected variables from
+#' `dataname` to show in the table.
 #'
 #' @inherit module_arguments return
 #'
@@ -95,12 +97,12 @@ template_basic_info <- function(dataname = "ANL",
 #'
 #' @export
 tm_t_pp_basic_info <- function(label,
-                                     dataname = "ADSL",
-                                     patient_col = "USUBJID",
-                                     vars = teal.picks::variables(selected = NULL),
-                                     pre_output = NULL,
-                                     post_output = NULL,
-                                     transformators = list()) {
+                               dataname = "ADSL",
+                               patient_col = "USUBJID",
+                               vars = teal.picks::variables(selected = NULL),
+                               pre_output = NULL,
+                               post_output = NULL,
+                               transformators = list()) {
   message("Initializing tm_t_pp_basic_info")
 
   # Compatibility layer: convert choices_selected to teal.picks
