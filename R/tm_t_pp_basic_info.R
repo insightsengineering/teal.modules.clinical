@@ -81,7 +81,7 @@ template_basic_info <- function(dataname = "ANL",
 #' app <- init(
 #'   data = data,
 #'   modules = modules(
-#'     tm_t_pp_basic_info.picks(
+#'     tm_t_pp_basic_info(
 #'       label = "Basic Info",
 #'       dataname = "ADSL",
 #'       patient_col = "USUBJID",
