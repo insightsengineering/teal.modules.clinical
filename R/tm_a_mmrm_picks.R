@@ -411,16 +411,6 @@ srv_mmrm.picks <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    arm_ref_comp_iv <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = "arm_var-variables-selected", # From UI.
-      data = reactive(data()[[parentname]]),
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_mmrm"
-    )
-
     selectors <- teal.picks::picks_srv(
       picks = list(
         arm_var = arm_var,
@@ -432,6 +422,19 @@ srv_mmrm.picks <- function(id,
         split_covariates = split_covariates
       ),
       data = data
+    )
+
+    arm_var_r <- reactive(selectors$arm_var()$variables$selected)
+
+    arm_ref_comp_iv <- arm_ref_comp_observer_picks(
+      session,
+      input,
+      output,
+      id_arm_var = "arm_var-variables-selected", # From UI.
+      data = reactive(data()[[parentname]]),
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_mmrm",
+      arm_var_r = arm_var_r
     )
 
     observeEvent(selectors$cov_var()$variables$selected, {
@@ -642,7 +645,7 @@ srv_mmrm.picks <- function(id,
     # all the inputs and data that can be out of sync with the fitted model
     mmrm_inputs_reactive <- reactive({
       shinyjs::disable("button_start")
-      # teal::validate_inputs(iv_r()) # AV: restore
+      arm_ref_comp_iv() # make sure the arm_ref_comp reactive values are up to date
       encoding_inputs <- lapply(
         sync_inputs,
         function(x) {
