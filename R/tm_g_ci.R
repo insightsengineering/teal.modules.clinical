@@ -330,7 +330,7 @@ tm_g_ci <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
 
@@ -395,7 +395,7 @@ ui_g_ci <- function(id, ...) {
         choices = c("mean", "median"),
         selected = args$stat
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(args$decorators, "plot"))
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(args$decorators, "plot"))
     ),
     pre_output = args$pre_output,
     post_output = args$post_output
@@ -507,11 +507,11 @@ srv_g_ci <- function(id,
       teal.code::eval_code(obj, list_calls)
     })
 
-    decorated_plot_q <- srv_decorate_teal_data(
+    decorated_plot_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      transformators = select_decorators(decorators, "plot"),
+      expr = quote(plot)
     )
     # Outputs to render.
     plot_r <- reactive(decorated_plot_q()[["plot"]])
