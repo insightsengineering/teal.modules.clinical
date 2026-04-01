@@ -1,0 +1,272 @@
+#' teal Module: Patient Profile Medical History (teal.picks)
+#'
+#' This module produces a patient profile medical history report using ADaM datasets.
+#' This is the `teal.picks` variant of [tm_t_pp_medical_history()].
+#'
+#' @inheritParams module_arguments
+#' @inheritParams teal::module
+#' @inheritParams template_medical_history
+#' @param mhterm (`teal.picks::variables`)\cr variable specification for the
+#'   `MHTERM` variable from `dataname`.
+#' @param mhbodsys (`teal.picks::variables`)\cr variable specification for the
+#'   `MHBODSYS` variable from `dataname`.
+#' @param mhdistat (`teal.picks::variables`)\cr variable specification for the
+#'   `MHDISTAT` variable from `dataname`.
+#'
+#' @inherit module_arguments return seealso
+#'
+#' @section Decorating Module:
+#'
+#' This module generates the following objects, which can be modified in place using decorators:
+#' - `table` (`TableTree` - output of `rtables::build_table()`)
+#'
+#' A Decorator is applied to the specific output using a named list of `teal_transform_module` objects.
+#' The name of this list corresponds to the name of the output to which the decorator is applied.
+#' See code snippet below:
+#'
+#' ```
+#' tm_t_pp_medical_history.picks(
+#'    ..., # arguments for module
+#'    decorators = list(
+#'      table = teal_transform_module(...) # applied only to `table` output
+#'    )
+#' )
+#' ```
+#'
+#' @keywords internal
+tm_t_pp_medical_history.picks <- function(label,
+                                          dataname = "ADMH",
+                                          parentname = "ADSL",
+                                          patient_col = "USUBJID",
+                                          mhterm   = teal.picks::variables("MHTERM",  fixed = TRUE),
+                                          mhbodsys = teal.picks::variables("MHBODSYS", fixed = TRUE),
+                                          mhdistat = teal.picks::variables("MHDISTAT", fixed = TRUE),
+                                          pre_output = NULL,
+                                          post_output = NULL,
+                                          transformators = list(),
+                                          decorators = list()) {
+  message("Initializing tm_t_pp_medical_history.picks")
+
+  # Compatibility: accept choices_selected and convert
+  for (arg in c("mhterm", "mhbodsys", "mhdistat")) {
+    val <- get(arg)
+    if (inherits(val, "choices_selected")) {
+      assign(arg, teal.picks::as.picks(val))
+    }
+  }
+
+  checkmate::assert_string(label)
+  checkmate::assert_string(dataname)
+  checkmate::assert_string(parentname)
+  checkmate::assert_string(patient_col)
+  checkmate::assert_class(mhterm,   "variables", null.ok = TRUE)
+  checkmate::assert_class(mhbodsys, "variables", null.ok = TRUE)
+  checkmate::assert_class(mhdistat, "variables", null.ok = TRUE)
+  checkmate::assert_class(pre_output,  classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
+  assert_decorators(decorators, "table")
+
+  # Build picks bound to the dataset
+  if (!is.null(mhterm))   mhterm   <- teal.picks::picks(datasets(dataname), mhterm)
+  if (!is.null(mhbodsys)) mhbodsys <- teal.picks::picks(datasets(dataname), mhbodsys)
+  if (!is.null(mhdistat)) mhdistat <- teal.picks::picks(datasets(dataname), mhdistat)
+
+  args <- as.list(environment())
+
+  module(
+    label = label,
+    ui = ui_t_medical_history.picks,
+    ui_args = args[names(args) %in% names(formals(ui_t_medical_history.picks))],
+    server = srv_t_medical_history.picks,
+    server_args = args[names(args) %in% names(formals(srv_t_medical_history.picks))],
+    transformators = transformators,
+    datanames = c(dataname, parentname)
+  )
+}
+
+#' @keywords internal
+ui_t_medical_history.picks <- function(id,
+                                       mhterm,
+                                       mhbodsys,
+                                       mhdistat,
+                                       pre_output,
+                                       post_output,
+                                       decorators) {
+  ns <- NS(id)
+  teal.widgets::standard_layout(
+    output = tags$div(
+      teal.widgets::table_with_settings_ui(ns("table"))
+    ),
+    encoding = tags$div(
+      tags$label("Encodings", class = "text-primary"), tags$br(),
+      teal.widgets::optionalSelectInput(
+        ns("patient_id"),
+        "Select Patient:",
+        multiple = FALSE,
+        options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
+      ),
+      if (!is.null(mhterm)) tags$div(
+        tags$label("Select MHTERM variable:"),
+        teal.picks::picks_ui(ns("mhterm"), mhterm)
+      ),
+      if (!is.null(mhbodsys)) tags$div(
+        tags$label("Select MHBODSYS variable:"),
+        teal.picks::picks_ui(ns("mhbodsys"), mhbodsys)
+      ),
+      if (!is.null(mhdistat)) tags$div(
+        tags$label("Select MHDISTAT variable:"),
+        teal.picks::picks_ui(ns("mhdistat"), mhdistat)
+      ),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table"))
+    ),
+    pre_output = pre_output,
+    post_output = post_output
+  )
+}
+
+#' @keywords internal
+srv_t_medical_history.picks <- function(id,
+                                        data,
+                                        dataname,
+                                        parentname,
+                                        patient_col,
+                                        mhterm,
+                                        mhbodsys,
+                                        mhdistat,
+                                        label,
+                                        decorators) {
+  checkmate::assert_class(data, "reactive")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
+
+  moduleServer(id, function(input, output, session) {
+    teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+    patient_id <- reactive(input$patient_id)
+
+    # Patient selector initialisation
+    patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
+    teal.widgets::updateOptionalSelectInput(
+      session,
+      "patient_id",
+      choices = patient_data_base(),
+      selected = patient_data_base()[1]
+    )
+
+    observeEvent(patient_data_base(),
+      handlerExpr = {
+        teal.widgets::updateOptionalSelectInput(
+          session,
+          "patient_id",
+          choices = patient_data_base(),
+          selected = if (length(patient_data_base()) == 1) {
+            patient_data_base()
+          } else {
+            intersect(patient_id(), patient_data_base())
+          }
+        )
+      },
+      ignoreInit = TRUE
+    )
+
+    # Build selector list — only include non-NULL picks
+    picks_list <- Filter(Negate(is.null), list(
+      mhterm   = mhterm,
+      mhbodsys = mhbodsys,
+      mhdistat = mhdistat
+    ))
+
+    selectors <- teal.picks::picks_srv(
+      picks = picks_list,
+      data = data
+    )
+
+    validated_q <- reactive({
+      obj <- req(data())
+
+      teal:::validate_input(
+        inputId = "mhterm-variables-selected",
+        condition = !is.null(selectors$mhterm()$variables$selected),
+        message = "Please select MHTERM variable."
+      )
+      teal:::validate_input(
+        inputId = "mhbodsys-variables-selected",
+        condition = !is.null(selectors$mhbodsys()$variables$selected),
+        message = "Please select MHBODSYS variable."
+      )
+      teal:::validate_input(
+        inputId = "mhdistat-variables-selected",
+        condition = !is.null(selectors$mhdistat()$variables$selected),
+        message = "Please select MHDISTAT variable."
+      )
+      teal:::validate_input(
+        inputId = "patient_id",
+        condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
+        message = "Please select a patient"
+      )
+
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's output(s)")
+      )
+      obj
+    })
+
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::left_join",
+      output_name = "ANL"
+    )
+
+    all_q <- reactive({
+      obj <- anl_inputs$data()
+
+      validate(
+        need(
+          nrow(obj[["ANL"]][obj[["ANL"]][[patient_col]] == patient_id(), ]) > 0,
+          "Patient has no data about medical history."
+        )
+      )
+
+      my_calls <- template_medical_history(
+        dataname = "ANL",
+        mhterm   = anl_inputs$variables()$mhterm,
+        mhbodsys = anl_inputs$variables()$mhbodsys,
+        mhdistat = anl_inputs$variables()$mhdistat,
+        patient_id = patient_id()
+      )
+
+      obj <- teal.code::eval_code(
+        obj,
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
+          },
+          env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
+          )
+        )
+      )
+      teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
+      obj |> teal.code::eval_code(as.expression(unlist(my_calls)))
+    })
+
+    # Decoration of table output
+    decorated_table_q <- srv_decorate_teal_data(
+      id = "decorator",
+      data = all_q,
+      decorators = select_decorators(decorators, "table"),
+      expr = table
+    )
+
+    table_r <- reactive(decorated_table_q()[["table"]])
+
+    teal.widgets::table_with_settings_srv(
+      id = "table",
+      table_r = table_r
+    )
+
+    decorated_table_q
+  })
+}
