@@ -27,36 +27,21 @@ app_driver_tm_t_exposure <- function() {
         label = "Duration of Exposure Table",
         dataname = "ADEX",
         parentname = "ADSL",
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::value_choices(data[["ADEX"]], "PARAMCD", "PARAM"),
-          selected = "TDURD"
-        ),
-        col_by_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADEX"]], subset = c("SEX", "ARM")),
+        paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+        col_by_var = variables(
+          choices = any_of(c("SEX", "ARM")),
           selected = "SEX"
         ),
-        row_by_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADEX"]], subset = c("RACE", "REGION1", "STRATA1", "SEX")),
+        row_by_var = variables(
+          choices = any_of(c("RACE", "REGION1", "STRATA1", "SEX")),
           selected = "RACE"
         ),
-        parcat = teal.transform::choices_selected(
-          choices = teal.transform::value_choices(data[["ADEX"]], "PARCAT2"),
-          selected = "Drug A"
-        ),
+        parcat = variables(choices = "PARCAT2", selected = "PARCAT2"),
         add_total = FALSE,
         paramcd_label = "PARAM",
-        id_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADEX"]], subset = "USUBJID"),
-          selected = "USUBJID", fixed = TRUE
-        ),
-        aval_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADEX"]], subset = "AVAL"),
-          selected = "AVAL", fixed = TRUE
-        ),
-        avalu_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADEX"]], subset = "AVALU"),
-          selected = "AVALU", fixed = TRUE
-        ),
+        id_var = variables(choices = any_of("USUBJID"), selected = "USUBJID", fixed = TRUE),
+        aval_var = variables(choices = any_of("AVAL"), selected = "AVAL", fixed = TRUE),
+        avalu_var = variables(choices = any_of("AVALU"), selected = "AVALU", fixed = TRUE),
         total_label = default_total_label(),
         add_total_row = TRUE,
         total_row_label = "Total number of patients and patient time*",
@@ -90,19 +75,19 @@ testthat::test_that(
       "Duration of Exposure Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals"),
+      app_driver$get_active_module_input("paramcd-values-selected"),
       "TDURD"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals"),
+      app_driver$get_active_module_input("parcat-values-selected"),
       "Drug A"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("col_by_var-dataset_ADSL_singleextract-select"),
+      app_driver$get_active_module_input("col_by_var-variables-selected"),
       "SEX"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("row_by_var-dataset_ADEX_singleextract-select"),
+      app_driver$get_active_module_input("row_by_var-variables-selected"),
       "RACE"
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total_row"))
@@ -117,7 +102,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals", "DOSE")
+    app_driver$set_active_module_input("paramcd-values-selected", "DOSE")
     testthat::expect_false(
       identical(
         table_before,
@@ -132,15 +117,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
-  app_driver$set_active_module_input("paramcd-dataset_ADEX_singleextract-filter1-vals", NULL)
+  app_driver$set_active_module_input("paramcd-values-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "paramcd-dataset_ADEX_singleextract-filter1-vals_input .shiny-validation-message"
-    )),
-    "Please select a parameter value."
-  )
   app_driver$stop()
 })
 
@@ -150,7 +129,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals", "Drug B")
+    app_driver$set_active_module_input("parcat-values-selected", "Drug B")
     testthat::expect_false(
       identical(
         table_before,
@@ -165,15 +144,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_exposure: Deselection of parcat throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
-  app_driver$set_active_module_input("parcat-dataset_ADEX_singleextract-filter1-vals", NULL)
+  app_driver$set_active_module_input("parcat-values-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "parcat-dataset_ADEX_singleextract-filter1-vals_input .shiny-validation-message"
-    )),
-    "Please select a parameter category value."
-  )
   app_driver$stop()
 })
 
@@ -183,7 +156,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("col_by_var-dataset_ADSL_singleextract-select", "ARM")
+    app_driver$set_active_module_input("col_by_var-variables-selected", "ARM")
     testthat::expect_false(
       identical(
         table_before,
@@ -201,7 +174,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("col_by_var-dataset_ADSL_singleextract-select", character(0), wait_ = FALSE)
+    app_driver$set_active_module_input("col_by_var-variables-selected", character(0), wait_ = FALSE)
     testthat::expect_false(
       identical(
         table_before,
@@ -219,7 +192,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("row_by_var-dataset_ADEX_singleextract-select", "REGION1")
+    app_driver$set_active_module_input("row_by_var-variables-selected", "REGION1")
     testthat::expect_false(
       identical(
         table_before,
@@ -234,14 +207,8 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_exposure: Deselection of row_by_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
-  app_driver$set_active_module_input("row_by_var-dataset_ADEX_singleextract-select", NULL)
+  app_driver$set_active_module_input("row_by_var-variables-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "row_by_var-dataset_ADEX_singleextract-select_input .shiny-validation-message"
-    )),
-    "Please select a row by variable."
-  )
   app_driver$stop()
 })

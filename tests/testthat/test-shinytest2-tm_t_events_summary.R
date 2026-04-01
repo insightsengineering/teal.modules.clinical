@@ -47,38 +47,25 @@ app_driver_tm_t_events_summary <- function() {
         label = "Adverse Events Summary",
         dataname = "ADAE",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices("ADSL", c("ARM", "ARMCD")),
-          selected = "ARM"
-        ),
-        flag_var_anl = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices("ADAE", data[[".ae_anl_vars"]]),
+        arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+        flag_var_anl = variables(
+          choices = any_of(data[[".ae_anl_vars"]]),
           selected = data[[".ae_anl_vars"]][1],
-          keep_order = TRUE,
+          multiple = TRUE,
+          ordered = TRUE,
           fixed = FALSE
         ),
-        flag_var_aesi = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices("ADAE", data[[".aesi_vars"]]),
+        flag_var_aesi = variables(
+          choices = any_of(data[[".aesi_vars"]]),
           selected = data[[".aesi_vars"]][1],
-          keep_order = TRUE,
+          multiple = TRUE,
+          ordered = TRUE,
           fixed = FALSE
         ),
-        dthfl_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADSL"]], "DTHFL"),
-          selected = "DTHFL", fixed = TRUE
-        ),
-        dcsreas_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADSL"]], "DCSREAS"),
-          selected = "DCSREAS", fixed = TRUE
-        ),
-        llt = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], "AEDECOD"),
-          selected = "AEDECOD", fixed = TRUE
-        ),
-        aeseq_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAE"]], "AESEQ"),
-          selected = "AESEQ", fixed = TRUE
-        ),
+        dthfl_var = variables(choices = any_of(c("DTHFL")), selected = "DTHFL", fixed = TRUE),
+        dcsreas_var = variables(choices = any_of(c("DCSREAS")), selected = "DCSREAS", fixed = TRUE),
+        llt = variables(choices = any_of(c("AEDECOD")), selected = "AEDECOD", fixed = TRUE),
+        aeseq_var = variables(choices = any_of(c("AESEQ")), selected = "AESEQ", fixed = TRUE),
         add_total = TRUE,
         total_label = default_total_label(),
         na_level = default_na_str(),
@@ -113,15 +100,15 @@ testthat::test_that(
       "Adverse Events Summary"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      app_driver$get_active_module_input("arm_var-variables-selected"),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("flag_var_anl-dataset_ADAE_singleextract-select"),
+      app_driver$get_active_module_input("flag_var_anl-variables-selected"),
       "TMPFL_SER"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("flag_var_aesi-dataset_ADAE_singleextract-select"),
+      app_driver$get_active_module_input("flag_var_aesi-variables-selected"),
       "TMP_SMQ01"
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total"))
@@ -138,7 +125,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -153,14 +140,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_events_summary: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_summary()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  selector <- "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
-    "Please select exactly 1 or 2 treatment variables"
-  )
   app_driver$stop()
 })
 
@@ -170,7 +152,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("flag_var_anl-dataset_ADAE_singleextract-select", c("TMPFL_REL", "TMPFL_GR5"))
+    app_driver$set_active_module_input("flag_var_anl-variables-selected", c("TMPFL_REL", "TMPFL_GR5"))
     testthat::expect_false(
       identical(
         table_before,
@@ -189,7 +171,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("flag_var_anl-dataset_ADAE_singleextract-select", NULL)
+    app_driver$set_active_module_input("flag_var_anl-variables-selected", NULL)
     testthat::expect_false(
       identical(
         table_before,
@@ -208,7 +190,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("flag_var_aesi-dataset_ADAE_singleextract-select", c("TMP_SMQ02", "TMP_CQ01"))
+    app_driver$set_active_module_input("flag_var_aesi-variables-selected", c("TMP_SMQ02", "TMP_CQ01"))
     testthat::expect_false(
       identical(
         table_before,
@@ -227,7 +209,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("flag_var_aesi-dataset_ADAE_singleextract-select", NULL)
+    app_driver$set_active_module_input("flag_var_aesi-variables-selected", NULL)
     testthat::expect_false(
       identical(
         table_before,

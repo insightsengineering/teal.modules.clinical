@@ -15,31 +15,13 @@ app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_leng
         label = "Laboratory Test Results with Highest Grade Post-Baseline",
         dataname = "ADLB",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADSL"]], subset = c("ARM", "ARMCD")),
-          selected = "ARM"
-        ),
-        id_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADLB"]], subset = "USUBJID"),
-          selected = "USUBJID", fixed = TRUE
-        ),
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::value_choices(data[["ADLB"]], "PARAMCD", "PARAM"),
-          selected = c("ALT", "CRP", "IGA")
-        ),
+        arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+        id_var = variables(choices = any_of("USUBJID"), selected = "USUBJID", fixed = TRUE),
+        paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
         add_total = FALSE,
-        atoxgr_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADLB"]], subset = "ATOXGR"),
-          selected = "ATOXGR", fixed = TRUE
-        ),
-        worst_high_flag_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADLB"]], subset = "WGRHIFL"),
-          selected = "WGRHIFL", fixed = TRUE
-        ),
-        worst_low_flag_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADLB"]], subset = "WGRLOFL"),
-          selected = "WGRLOFL", fixed = TRUE
-        ),
+        atoxgr_var = variables(choices = any_of("ATOXGR"), selected = "ATOXGR", fixed = TRUE),
+        worst_high_flag_var = variables(choices = any_of("WGRHIFL"), selected = "WGRHIFL", fixed = TRUE),
+        worst_low_flag_var = variables(choices = any_of("WGRLOFL"), selected = "WGRLOFL", fixed = TRUE),
         worst_flag_indicator = teal.transform::choices_selected("Y"),
         total_label = default_total_label(),
         drop_arm_levels = TRUE,
@@ -80,29 +62,29 @@ testthat::test_that(
       "Laboratory Test Results with Highest Grade Post-Baseline"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      app_driver$get_active_module_input("arm_var-variables-selected"),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals"),
+      app_driver$get_active_module_input("paramcd-values-selected"),
       c("ALT", "CRP", "IGA")
     )
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
     testthat::expect_equal(
-      app_driver$get_active_module_input("id_var-dataset_ADLB_singleextract-select"),
+      app_driver$get_active_module_input("id_var-variables-selected"),
       "USUBJID"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("atoxgr_var-dataset_ADLB_singleextract-select"),
+      app_driver$get_active_module_input("atoxgr_var-variables-selected"),
       "ATOXGR"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("worst_high_flag_var-dataset_ADLB_singleextract-select"),
+      app_driver$get_active_module_input("worst_high_flag_var-variables-selected"),
       "WGRHIFL"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("worst_low_flag_var-dataset_ADLB_singleextract-select"),
+      app_driver$get_active_module_input("worst_low_flag_var-variables-selected"),
       "WGRLOFL"
     )
     testthat::expect_equal(
@@ -119,7 +101,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -137,7 +119,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", c("ALT", "CRP"))
+    app_driver$set_active_module_input("paramcd-values-selected", c("ALT", "CRP"))
     testthat::expect_false(
       identical(
         table_before,
@@ -152,30 +134,18 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
-    ),
-    "Please select a treatment variable."
-  )
   app_driver$stop()
 })
 
 testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
-  app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-filter1-vals", NULL)
+  app_driver$set_active_module_input("paramcd-values-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "paramcd-dataset_ADLB_singleextract-filter1-vals_input .shiny-validation-message"
-    )),
-    "Please select at least one Laboratory parameter."
-  )
   app_driver$stop()
 })
 

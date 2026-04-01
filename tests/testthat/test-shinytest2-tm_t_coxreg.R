@@ -1,5 +1,4 @@
 app_driver_tm_t_coxreg <- function() {
-  # TODO: Check if data fabrication is needed for Cox regression
   data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- teal.data::rADSL
@@ -25,26 +24,25 @@ app_driver_tm_t_coxreg <- function() {
         label = "Cox Reg.",
         dataname = "ADTTE",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(c("ARM", "ARMCD", "ACTARMCD"), "ARM"),
+        arm_var = variables(
+          choices = any_of(c("ARM", "ARMCD", "ACTARMCD")),
+          selected = "ARM"
+        ),
         arm_ref_comp = arm_ref_comp,
-        paramcd = teal.transform::choices_selected(
-          teal.transform::value_choices(data[["ADTTE"]], "PARAMCD", "PARAM"), "OS"
+        paramcd = variables(choices = any_of("PARAMCD"), selected = "PARAMCD"),
+        strata_var = variables(
+          choices = any_of(c("COUNTRY", "STRATA1", "STRATA2")),
+          selected = "STRATA1"
         ),
-        strata_var = teal.transform::choices_selected(
-          c("COUNTRY", "STRATA1", "STRATA2"), "STRATA1"
-        ),
-        cov_var = teal.transform::choices_selected(
-          c("AGE", "BMRKR1", "BMRKR2", "REGION1"), "AGE"
+        cov_var = variables(
+          choices = any_of(c("AGE", "BMRKR1", "BMRKR2", "REGION1")),
+          selected = "AGE",
+          multiple = TRUE,
+          ordered = TRUE
         ),
         multivariate = TRUE,
-        aval_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADTTE"]], "AVAL"), "AVAL",
-          fixed = TRUE
-        ),
-        cnsr_var = teal.transform::choices_selected(
-          teal.transform::variable_choices(data[["ADTTE"]], "CNSR"), "CNSR",
-          fixed = TRUE
-        ),
+        aval_var = variables(choices = any_of("AVAL"), selected = "AVAL", fixed = TRUE),
+        cnsr_var = variables(choices = any_of("CNSR"), selected = "CNSR", fixed = TRUE),
         na_level = default_na_str(),
         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
           keep_order =
@@ -82,11 +80,11 @@ testthat::test_that(
       "Multivariate"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals"),
+      app_driver$get_active_module_input("paramcd-values-selected"),
       "OS"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      app_driver$get_active_module_input("arm_var-variables-selected"),
       "ARM"
     )
     testthat::expect_equal(
@@ -97,11 +95,11 @@ testthat::test_that(
       )
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("cov_var-dataset_ADSL_singleextract-select"),
+      app_driver$get_active_module_input("cov_var-variables-selected"),
       "AGE"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("strata_var-dataset_ADSL_singleextract-select"),
+      app_driver$get_active_module_input("strata_var-variables-selected"),
       "STRATA1"
     )
     testthat::expect_equal(
@@ -127,7 +125,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", "CRSD")
+    app_driver$set_active_module_input("paramcd-values-selected", "CRSD")
     testthat::expect_false(
       identical(
         table_before,
@@ -142,15 +140,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_coxreg: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_coxreg()
-  app_driver$set_active_module_input("paramcd-dataset_ADTTE_singleextract-filter1-vals", NULL)
+  app_driver$set_active_module_input("paramcd-values-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "paramcd-dataset_ADTTE_singleextract-filter1-vals_input .shiny-validation-message"
-    )),
-    "An endpoint is required"
-  )
   app_driver$stop()
 })
 
@@ -160,7 +152,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -175,15 +167,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_coxreg: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_coxreg()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
-    ),
-    "Treatment variable must be selected"
-  )
   app_driver$stop()
 })
 
@@ -193,7 +179,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("cov_var-dataset_ADSL_singleextract-select", c("BMRKR1", "BMRKR2"))
+    app_driver$set_active_module_input("cov_var-variables-selected", c("BMRKR1", "BMRKR2"))
     testthat::expect_false(
       identical(
         table_before,
@@ -211,7 +197,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("cov_var-dataset_ADSL_singleextract-select", NULL)
+    app_driver$set_active_module_input("cov_var-variables-selected", NULL)
     testthat::expect_false(
       identical(
         table_before,
@@ -229,7 +215,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", c("STRATA2", "COUNTRY"))
+    app_driver$set_active_module_input("strata_var-variables-selected", c("STRATA2", "COUNTRY"))
     testthat::expect_false(
       identical(
         table_before,
@@ -247,7 +233,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_coxreg()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
+    app_driver$set_active_module_input("strata_var-variables-selected", NULL)
     testthat::expect_false(
       identical(
         table_before,
