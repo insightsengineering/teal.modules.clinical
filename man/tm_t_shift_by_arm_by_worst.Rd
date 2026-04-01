@@ -7,18 +7,19 @@
 tm_t_shift_by_arm_by_worst(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
-  arm_var,
-  paramcd,
-  aval_var,
+  parentname = "ADSL",
+  arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+  paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+  aval_var = variables(choices = any_of(c("AVALC", "ANRIND")), selected = "AVALC"),
   base_var = lifecycle::deprecated(),
-  baseline_var,
-  worst_flag_var,
-  worst_flag,
-  treatment_flag_var = teal.transform::choices_selected(choices =
-    teal.transform::variable_choices(dataname, subset = "ONTRTFL"), selected = "ONTRTFL"),
-  treatment_flag = teal.transform::choices_selected("Y"),
+  baseline_var = variables(choices = any_of(c("BASEC", "BNRIND")), selected = "BASEC"),
+  worst_flag_var = variables(choices = any_of(c("WORS01FL", "WORS02FL")), selected =
+    "WORS02FL"),
+  worst_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed =
+    TRUE),
+  treatment_flag_var = variables(choices = "ONTRTFL", selected = "ONTRTFL", fixed = TRUE),
+  treatment_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed =
+    TRUE),
   useNA = c("ifany", "no"),
   na_level = tern::default_na_str(),
   add_total = FALSE,
@@ -37,31 +38,32 @@ tm_t_shift_by_arm_by_worst(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable in the results table.}
+\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for treatment arm.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for lab parameter code. The \code{values()} element is added internally to allow
+users to filter the parameter values interactively.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for analysis range indicator.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
+\item{baseline_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for baseline reference range indicator.}
 
-\item{worst_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object
-with all available choices and preselected option for variable names that can be used as worst flag variable.}
+\item{worst_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for the worst post-baseline flag.}
 
-\item{worst_flag}{(\code{character})\cr value indicating worst analysis indicator level.}
+\item{worst_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+value(s) indicating worst post-baseline records.}
 
-\item{treatment_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr on
-treatment flag variable.}
+\item{treatment_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for on-treatment flag.}
 
-\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value
-indicating on treatment records in \code{treatment_flag_var}.}
+\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+value(s) indicating on-treatment records.}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
@@ -153,40 +155,20 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADEG <- data[["ADEG"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_t_shift_by_arm_by_worst(
       label = "Shift by Arm Table",
       dataname = "ADEG",
-      arm_var = choices_selected(
-        variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = choices_selected(
-        value_choices(ADEG, "PARAMCD"),
-        selected = "ECGINTP"
-      ),
-      worst_flag_var = choices_selected(
-        variable_choices(ADEG, c("WORS02FL", "WORS01FL")),
+      arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+      paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+      worst_flag_var = variables(
+        choices = any_of(c("WORS01FL", "WORS02FL")),
         selected = "WORS02FL"
       ),
-      worst_flag = choices_selected(
-        value_choices(ADEG, "WORS02FL"),
-        selected = "Y",
-        fixed = TRUE
-      ),
-      aval_var = choices_selected(
-        variable_choices(ADEG, c("AVALC", "ANRIND")),
-        selected = "AVALC"
-      ),
-      baseline_var = choices_selected(
-        variable_choices(ADEG, c("BASEC", "BNRIND")),
-        selected = "BASEC"
-      ),
+      aval_var = variables(choices = any_of(c("AVALC", "ANRIND")), selected = "AVALC"),
+      baseline_var = variables(choices = any_of(c("BASEC", "BNRIND")), selected = "BASEC"),
       useNA = "ifany"
     )
   )
@@ -199,8 +181,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XCByCoqTgYAUwa-zHs4urptbF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0VjVRgwPzkvwRIiMUSkHF4vHUKD0ODUdGPXIk0g6clZKl2DkiR6I3Gs+GhI66OF-T4ShqsljUzQsdEEGJjAhiPyiLlwdRwfgs6UZDWMWhiuDrHUybHPFKiQT0Q0CuEESFPLAAWQlOj+-oAwtlHnI5JKLRlDSITfweb6A2AVXio2mMqgWLANlqHXrRAajQnzRaNdRBHbtbqnZ8Uo8AAqZLCZP1hiPRmNx43kRMKsBOEPNACSADlbI3HpmdBmpaz6Yy1sZ2T0-Fb87Wiz3SzPLSwbfQRPat+x-s0Ut7HgB1ADyWFyAAYAEwAMReeCDYDvD8fAEZ3wjOcYx0Hc+yTH8nzfD8Z2A6VFyZPwVygHpN0dbcSz7MtpQrKsT3Qs96y-SCX0AsA4ItMDTSTABNZV52lYxaAqai4XsZxYK7VUK3XTUvQLfUqLNPcdCtQ9jxrAjz0vH1MgANUyfIQ0DP4xywcdw3IijpSEpN5MU5TUwYjJtIyegoDjeI7Q3fit2LeMsJEsTbXwwtCJaGTHgAIUyXIhxUsAvLUjSgK4nTMNYr8fL8wzOJnQRDTHTIk1oZYIFYacGKGEylCGVKdHYeJyDUDRtGsGw0ilYl4lYTJ0HYEEABJBFoFImsNRhtEYIZ+iUMB+jOIA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XCByCoqTgYAUwa-zHs4urptbF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0VjVRgwPzkvwRIiMUSkHF4vHUKD0ODUdGPXIk0g6clZKl2DkiR6I3Gs+GhI66OF-T4ShqsljUzQsdEEGJjAhiPyiLlwdRwfgs6UZDWMWhiuDrHUybHPFKiQT0Q0CuEESFPLAAWQlOj+-oAwtlHnI5JKLRlDSITfweb6A2AVXio2mMqgWLANlqHXrRAajQnzRaNdRBHbtbqnZ8Uo8AAqZLCZP1hiPRmNx43kRMKsBOEPNACSADlbI3HpmdBmpaz6Yy1sZ2T0-Fb87Wiz3SzPLSwbfQRPat+x-s0Ut7HgB1ADyWFyAAYAEwAMReeCDYDvD8fAEZ3wjOcYx0Hc+yTH8nzfD8Z2A6VFyZPwVygHpN0dbcSz7MtpQrKsT3Qs96y-SCX0AsA4ItMDTSTABNZV52lYxaAqai4XsZxYK7VUK3XTUvQLfUqLNPcdCtQ9jxrAjz0vH1MgANUyfIQ0DP4xywcdw3IijpSEpN5MU5TUwYjJtIyegoDjeI7Q3fit2LeMsJEsTbXwwtCJaGTHgAIUyXIhxUsAvLUjSgK4nTMNYr8fL8wzOJnQRDTHTIk1oZYIFYacGKGEylCGVKdHYeJyDUDRtGsGw0ilYl4lYTJ0HYEEABJBFoFImsNRhtEYIZ+iUMB+jOIA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYH5YX4IkRGKJSECQSDqFB6HBqL8FGBclDSDpYVkEXY8SJie9gdjXqEjroXsSci16Q1sSxEZoWL8BYxaLTAQQYmMCGJflAIHCiMZ2AR7mBMlgALL0nQczUAYWyxLkxoZTJ0qBYsA2QpYovo32VkpkMvZYAACurMhqDdrRAS4Oo4Pwie7Pd7DWA5Kamaj0WtjLien5hTaRWLZjymRKpS6dHKFUqVcSAOoAeSwuQADABGABi+W1JfLVYATPWjVHM9i-SJA8HXWWK5W2w2wF2dJ3GbyBf4Uy9hXaHdnnT8Xvm-IrlarMgA1TL5PWNtUAOSwAEljxGTToewHyP2dWq9wejdHsfQoD34nBk4L57b00dHNVzzeUN0LVUACFMlyJxDzwR9INPC8ryjG9-T7ENoNg+DJzNQQ-WPTIQ1oZZ5WJTMhgyIYhlInR2Hicg1A0bRrBsNJGUheJWEydB2DQVAABJBFoFIBMEv1GG0Rghn6JQwH6M4gA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYH5YX4IkRGKJSECQSDqFB6HBqL8FGBclDSDpYVkEXY8SJie9gdjXqEjroXsSci16Q1sSxEZoWL8BYxaLTAQQYmMCGJflAIHCiMZ2AR7mBMlgALL0nQczUAYWyxLkxoZTJ0qBYsA2QpYovo32VkpkMvZYAACurMhqDdrRAS4Oo4Pwie7Pd7DWA5Kamaj0WtjLien5hTaRWLZjymRKpS6dHKFUqVcSAOoAeSwuQADABGABi+W1JfLVYATPWjVHM9i-SJA8HXWWK5W2w2wF2dJ3GbyBf4Uy9hXaHdnnT8Xvm-IrlarMgA1TL5PWNtUAOSwAEljxGTToewHyP2dWq9wejdHsfQoD34nBk4L57b00dHNVzzeUN0LVUACFMlyJxDzwR9INPC8ryjG9-T7ENoNg+DJzNQQ-WPTIQ1oZZ5WJTMhgyIYhlInR2Hicg1A0bRrBsNJGUheJWEydB2DQVAABJBFoFIBMEv1GG0Rghn6JQwH6M4gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
