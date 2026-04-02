@@ -63,10 +63,10 @@ reference and comparison arms when the arm variable is changed.}
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{paramcd_var}{(\code{NULL} or \code{\link[teal.picks:picks]{teal.picks::variables()}})\cr used only by the \code{teal.picks} method;
+\item{paramcd_var}{(\code{NULL} or \code{\link[teal.picks:variables]{teal.picks::variables()}})\cr used only by the \code{teal.picks} method;
 ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.}
 
-\item{paramcd_values}{(\code{NULL} or \code{\link[teal.picks:picks]{teal.picks::values()}})\cr used only by the \code{teal.picks} method;
+\item{paramcd_values}{(\code{NULL} or \code{\link[teal.picks:values]{teal.picks::values()}})\cr used only by the \code{teal.picks} method;
 ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.}
 
 \item{method}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
@@ -101,9 +101,6 @@ with settings for all the plots or named list of \code{ggplot2_args} objects for
 List names should match the following: \code{c("default", "lsmeans", "diagnostic")}. The argument is merged
 with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
-
-\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
-To learn more check \code{vignette("transform-input-data", package = "teal")}.}
 
 \item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 (named \code{list} of lists of \code{teal_transform_module}) optional,
@@ -161,23 +158,9 @@ To learn more please refer to the vignette
 \code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
 }
 
-\section{Reporting}{
-
-
-
-This module returns an object of class \code{teal_module}, that contains a \code{server} function.
-Since the server function returns a \code{teal_report} object, this makes this module reportable, which means that
-the reporting functionality will be turned on automatically by the \code{teal} framework.
-
-For more information on reporting in \code{teal}, see the vignettes:
-\itemize{
-\item \code{vignette("reportable-shiny-application", package = "teal.reporter")}
-\item \code{vignette("adding-support-for-reporting-to-custom-modules", package = "teal")}
-}
-
-}
-
 \examples{
+
+library(teal.picks)
 
 arm_ref_comp <- list(
   ARMCD = list(
@@ -210,14 +193,14 @@ app <- init(
     tm_a_mmrm(
       label = "MMRM",
       dataname = "ADQS",
-      aval_var = teal.picks::variables(c("AVAL", "CHG"), 1L),
-      id_var = teal.picks::variables(c("USUBJID", "SUBJID"), 1L),
-      arm_var = teal.picks::variables(c("ARM", "ARMCD"), 1L),
-      visit_var = teal.picks::variables(c("AVISIT", "AVISITN"), 1L),
+      aval_var = variables(c("AVAL", "CHG"), 1L),
+      id_var = variables(c("USUBJID", "SUBJID"), 1L),
+      arm_var = variables(c("ARM", "ARMCD"), 1L),
+      visit_var = variables(c("AVISIT", "AVISITN"), 1L),
       arm_ref_comp = arm_ref_comp,
-      paramcd_var = teal.picks::variables("PARAMCD"),
-      paramcd_values = teal.picks::values(selected = "FKSI-FWB"),
-      cov_var = teal.picks::variables(c("BASE", "AGE", "SEX", teal.picks::interaction_vars("BASE", "AVISIT")), NULL)
+      paramcd_var = variables("PARAMCD"),
+      paramcd_values = values(selected = "FKSI-FWB"),
+      cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
     )
   )
 )
@@ -233,8 +216,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS19EYwA+ozjHPxGFR9IzpRUnYlHR0AQSwAWQBhABEdAF4dUPDIqJ0fYzSdBTBYuJ0AISLcbKiAoPSCCOL4mMrCptKEosUIKO7upX4oUihgnS5qT0Hh6wGhkcMdAHdaUgALWgh2KahcHRBsuiYWDnHeAWExCSkZeQOGZjYt1GpWRm6o6KSAZQAZUdIYARPHAAB6eKD8UTUbKfACKX3+gOBYIhAEdRDoAKQAPkx1RMtGo5EY7GiZR+ADE-gBCdJFACaRR0ADIYuSqQAmHS0tqMsA2HF4no5YyE4mkgBqAEkvlLbFiNpidA0igB1JxOADSOgAjDoktF6ToABytNUa7Vcg1GnUAVjNYHVWp0AGZ9YadByOV0Bbj8TBBMNyBFhTkYtLZfL0lBxMYoOoiCTohG5XIqqGcsmZXKAHIFZgQADWkuzthzvqFYbDMYwcYTJIr+Or4gggngjBk1ixfozzdr8dIia7AGIdDAoIWNgBzZUkURwAiBrS6VvtmQmAeJ-HdAC+3QAVkQNp5C3BWKItnMbAt+L4oMJSP5+LRREDD8fT+fgNB4BftnIAF03DQIIFg2FYQyibYCm2dMoj4IQRAxdIEIuC98QBcFPBgGAPEgqtqCgeg4GoAoijiOJ4kqJsdG2H9dDpYoknhajex0KBNG4TxOMYApTlQGRC1ERBEB42giKQ9gVWKCVoh+B0EgACQAcS6XYdR+NMaNofhuJYPi4G4DABIIISRLEiSxCkxoHC+BwygAKSlJIHTsxznLU3VNLgqsWC8HiDKMkyzNElhxPoSTpJKB0SmSTyNK0tjNBfFY9N49J+ME4TQo7SyLyilNbBiwqc3i7yaL87xfH8IhAgKSq8hqwIfLDVAWFgAhdICjLDJ4YLsosiKrKKAAFWJokSFz+RanI2uYQEuu4QQxECvqsvMparPnER1DgfgyLAClNVlAwKVVCpppo4hNDS1bjPWnLwsixoymiL4XDwNpomUj7diKd6AA1Wky0zso2YkB0sCA0vQsBXve4rSx9XYcwcH5NO3bI+iUWh8nYcHVEh7RrBsfZhVEdYIFYaJ0HYECABJBFoXYGfnRhtDeJQdyUMAdwAoA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS19EYwA+ozjHPxGFR9IzpRUnYlHR0AQSwAWQBhABEdAF4dUPDIqJ0fYzSdBTBYuJ0AISLcbKiAoPSCCOL4mMrCptKEosUIKO7upX4oUihgnS5qT0Hh6wGhkcMdAHdaUgALWgh2KahcHRBsuiYWDnHeAWExCSkZeQOGZjYt1GpWRm6o6KSAZQAZUdIYARPHAAB6eKD8UTUbKfACKX3+gOBYIhAEdRDoAKQAPkx1RMtGo5EY7GiZR+ADE-gBCdJFACaRR0ADIYuSqQAmHS0tqMsA2HF4no5YyE4mkgBqAEkvlLbFiNpidA0igB1JxOADSOgAjDoktF6ToABytNUa7Vcg1GnUAVjNYHVWp0AGZ9YadByOV0Bbj8TBBMNyBFhTkYtLZfL0lBxMYoOoiCTohG5XIqqGcsmZXKAHIFZgQADWkuzthzvqFYbDMYwcYTJIr+Or4gggngjBk1ixfozzdr8dIia7AGIdDAoIWNgBzZUkURwAiBrS6VvtmQmAeJ-HdAC+3QAVkQNp5C3BWKItnMbAt+L4oMJSP5+LRREDD8fT+fgNB4BftnIAF03DQIIFg2FYQyibYCm2dMoj4IQRAxdIEIuC98QBcFPBgGAPEgqtqCgeg4GoAoijiOJ4kqJsdG2H9dDpYoknhajex0KBNG4TxOMYApTlQGRC1ERBEB42giKQ9gVWKCVoh+B0EgACQAcS6XYdR+NMaNofhuJYPi4G4DABIIISRLEiSxCkxoHC+BwygAKSlJIHTsxznLU3VNLgqsWC8HiDKMkyzNElhxPoSTpJKB0SmSTyNK0tjNBfFY9N49J+ME4TQo7SyLyilNbBiwqc3i7yaL87xfH8IhAgKSq8hqwIfLDVAWFgAhdICjLDJ4YLsosiKrKKAAFWJokSFz+RanI2uYQEuu4QQxECvqsvMparPnER1DgfgyLAClNVlAwKVVCpppo4hNDS1bjPWnLwsixoymiL4XDwNpomUj7diKd6AA1Wky0zso2YkB0sCA0vQsBXve4rSx9XYcwcH5NO3bI+iUWh8nYcHVEh7RrBsfZhVEdYIFYaJ0HYECABJBFoXYGfnRhtDeJQdyUMAdwAoA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xDpMWHLj1QyA1qKKEEosMAD6jHDG4cQwqPpGdKKk7Eo6OgCCWACyAMIAIjoAvDrJqekZOlHGJToKYNk5OgBCDbiVGXEJpQRpjblZ7fUDzXkNwRnBwUr8UKRQiTo+4XML1rPzi4Y6AO60pAAWtBDsa1C4OiCVHsxsnHDcvALCYhJSMvI3DHcc-KjUViMSZZAoAZQAMktSDACOE4AAPcJQfiiaiVTIFACKYOhsPhSJRAEdRDoAKQAPjJnRMtGo5EY7EyLQhADEoQBCUoNACaDR0ADIsiz2QAmHRckZ8sA2SnUiBVWn01RMgBqAEkwerbOSTmSdH0GgB1JxOADSOgAjDoCpkeToABzDY2mi3i232y0AVmdYBN5p0AGYbXadKLRRNZVSaTBBAtyGkFYqshqtTrSlBxMYoOoiIzMqntXIOknFQXNdqAHJ1ZgQfxqiu2StR+XJqqZjDZ3OMls0xUdiCCeCMGTWcnR0vJjtd0h5scAYh0MCg-hOAHMDSRRHACHGtLpB8OZCYc7PGDTggBfYIAKyIJ3C-jgrFEZy2Nh2-GiUGEpFi-FoUQ4TvB8nxfYBoHgV9zjkABdNw0ASHYTgORMMnOOpzhLDI+CEERSVKXDXlfGkYWRcIYBgRgYDQ5NqCgeg4GoOoGhyHJcnaPsdHOSDdG5RpsTBTjJwyKBNG4cJxMYOopNoBj8PYQ1GlVTIIV9PIAAkAHEJkuS0IWLLjaH4SSWBklg5PoBSlIcMEHBaAApdUCl9OzHOc3SrQM7Cp2o0zpNKWT5LERT+iaX0mkKTz9MMkSdE0QCDn88yR2C18lPLNMIsLJtou8riwkiaJYiIeI6kKmoSviHzFVQFhYAIEypJSyyFIaAAFbJMnyFyZRqqo6uYWEmu4QQxHM6gxtfbcRHUOB+BYsBWTNLUDFZI02j6rjiE0ZLAostLQoaFpMjBFw8BGTItPOy4GjOgANYYTgZU9LAgfySLAE6zuyxtI0uSsHAhAyL0qaYlFoWp2Ge1RXu0awbGuJNRGOCBWEydB2EQgASQRaEuHHt0YbRgSUS8lDAS9YKAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xDpMWHLj1QyA1qKKEEosMAD6jHDG4cQwqPpGdKKk7Eo6OgCCWACyAMIAIjoAvDrJqekZOlHGJToKYNk5OgBCDbiVGXEJpQRpjblZ7fUDzXkNwRnBwUr8UKRQiTo+4XML1rPzi4Y6AO60pAAWtBDsa1C4OiCVHsxsnHDcvALCYhJSMvI3DHcc-KjUViMSZZAoAZQAMktSDACOE4AAPcJQfiiaiVTIFACKYOhsPhSJRAEdRDoAKQAPjJnRMtGo5EY7EyLQhADEoQBCUoNACaDR0ADIsiz2QAmHRckZ8sA2SnUiBVWn01RMgBqAEkwerbOSTmSdH0GgB1JxOADSOgAjDoCpkeToABzDY2mi3i232y0AVmdYBN5p0AGYbXadKLRRNZVSaTBBAtyGkFYqshqtTrSlBxMYoOoiIzMqntXIOknFQXNdqAHJ1ZgQfxqiu2StR+XJqqZjDZ3OMls0xUdiCCeCMGTWcnR0vJjtd0h5scAYh0MCg-hOAHMDSRRHACHGtLpB8OZCYc7PGDTggBfYIAKyIJ3C-jgrFEZy2Nh2-GiUGEpFi-FoUQ4TvB8nxfYBoHgV9zjkABdNw0ASHYTgORMMnOOpzhLDI+CEERSVKXDXlfGkYWRcIYBgRgYDQ5NqCgeg4GoOoGhyHJcnaPsdHOSDdG5RpsTBTjJwyKBNG4cJxMYOopNoBj8PYQ1GlVTIIV9PIAAkAHEJkuS0IWLLjaH4SSWBklg5PoBSlIcMEHBaAApdUCl9OzHOc3SrQM7Cp2o0zpNKWT5LERT+iaX0mkKTz9MMkSdE0QCDn88yR2C18lPLNMIsLJtou8riwkiaJYiIeI6kKmoSviHzFVQFhYAIEypJSyyFIaAAFbJMnyFyZRqqo6uYWEmu4QQxHM6gxtfbcRHUOB+BYsBWTNLUDFZI02j6rjiE0ZLAostLQoaFpMjBFw8BGTItPOy4GjOgANYYTgZU9LAgfySLAE6zuyxtI0uSsHAhAyL0qaYlFoWp2Ge1RXu0awbGuJNRGOCBWEydB2EQgASQRaEuHHt0YbRgSUS8lDAS9YKAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
