@@ -544,7 +544,7 @@ template_mmrm_plots <- function(fit_name,
 #'       arm_ref_comp = arm_ref_comp,
 #'       paramcd_var = variables("PARAMCD"),
 #'       paramcd_values = values(selected = "FKSI-FWB"),
-#'       cov_var = variables(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL)
+#'       cov_var = variables(c("BASE", "AGE", "SEX", teal.picks::interaction_var("BASE:AVISIT")), NULL)
 #'     )
 #'   )
 #' )
