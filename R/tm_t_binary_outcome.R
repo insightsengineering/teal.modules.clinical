@@ -684,7 +684,7 @@ ui_t_binary_outcome <- function(id,
         condition = paste0("!input['", ns("compare_arms"), "']"),
         checkboxInput(ns("add_total"), "Add All Patients column", value = add_total)
       ),
-      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -752,19 +752,6 @@ srv_t_binary_outcome <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    # Setup arm variable selection, default reference arms, and default
-    # comparison arms for encoding panel
-    iv_arm_ref <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = "arm_var-variables-selected",
-      data = data()[[parentname]],
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_t_binary_outcome",
-      on_off = reactive(input$compare_arms)
-    )
-
     anl_selectors <- picks_srv(
       id = "",
       picks = list(
@@ -776,11 +763,25 @@ srv_t_binary_outcome <- function(id,
       data = data
     )
 
+    arm_var_r <- reactive(anl_selectors$arm_var()$variables$selected)
+
+    arm_ref_comp_iv <- arm_ref_comp_observer_picks(
+      session,
+      input,
+      output,
+      id_arm_var = "arm_var-variables-selected",
+      data = reactive(data()[[parentname]]),
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_binary_outcome",
+      on_off = reactive(input$compare_arms),
+      arm_var_r = arm_var_r
+    )
+
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
 
       if (isTRUE(input$compare_arms)) {
-        iv$add_validator(iv_arm_ref)
+        iv$add_validator(arm_ref_comp_buckets_validator())
       }
 
       iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
@@ -856,6 +857,9 @@ srv_t_binary_outcome <- function(id,
     )
 
     validate_check <- reactive({
+      if (isTRUE(input$compare_arms)) {
+        arm_ref_comp_iv()
+      }
       teal::validate_inputs(iv_r())
       validate(
         need(length(anl_selectors$arm_var()$variables$selected) >= 1L, "A treatment variable is required"),

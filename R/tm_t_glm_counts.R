@@ -202,7 +202,7 @@ ui_t_glm_counts <- function(id,
   )
 
   table_settings <- shiny::tagList(
-    teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
+    teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
     bslib::accordion(
       bslib::accordion_panel(
         "Additional table settings",
@@ -265,17 +265,6 @@ srv_t_glm_counts <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    iv_arm_ref <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = "arm_var-variables-selected",
-      data = reactive(data()[[parentname]]),
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_t_counts",
-      on_off = reactive(input$compare_arms)
-    )
-
     anl_selectors <- picks_srv(
       id = "",
       picks = list(
@@ -286,6 +275,20 @@ srv_t_glm_counts <- function(id,
         offset_var = offset_var
       ),
       data = data
+    )
+
+    arm_var_r <- reactive(anl_selectors$arm_var()$variables$selected)
+
+    arm_ref_comp_iv <- arm_ref_comp_observer_picks(
+      session,
+      input,
+      output,
+      id_arm_var = "arm_var-variables-selected",
+      data = reactive(data()[[parentname]]),
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_counts",
+      on_off = reactive(input$compare_arms),
+      arm_var_r = arm_var_r
     )
 
     data_with_card <- reactive({
@@ -308,7 +311,7 @@ srv_t_glm_counts <- function(id,
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
       if (isTRUE(input$compare_arms)) {
-        iv$add_validator(iv_arm_ref)
+        iv$add_validator(arm_ref_comp_buckets_validator())
       }
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
@@ -323,6 +326,9 @@ srv_t_glm_counts <- function(id,
     })
 
     validate_checks <- reactive({
+      if (isTRUE(input$compare_arms)) {
+        arm_ref_comp_iv()
+      }
       teal::validate_inputs(iv_r())
       validate(
         need(

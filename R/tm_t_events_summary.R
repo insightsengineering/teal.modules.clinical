@@ -751,7 +751,7 @@ ui_t_events_summary <- function(id,
         "Add All Patients column",
         value = add_total
       ),
-      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
       bslib::accordion_panel(
         "Table Settings",
         open = TRUE,

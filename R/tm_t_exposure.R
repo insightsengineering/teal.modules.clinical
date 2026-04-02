@@ -397,7 +397,7 @@ ui_t_exposure <- function(id,
       tags$div(tags$label("Select Row by Variable"), picks_ui(ns("row_by_var"), row_by_var)),
       checkboxInput(ns("add_total_row"), "Add Total row", value = add_total_row),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
-      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -527,7 +527,13 @@ srv_t_exposure <- function(id,
       input_avalu_var <- as.character(unique(anl_merged[[input_avalu_name]]))
 
       input_paramcd_name <- as.vector(anl_selectors$paramcd()$variables$selected)[[1]]
-      input_paramcd <- as.character(unique(anl_merged[[input_paramcd_name]]))
+      pc_param_r <- anl_selectors$paramcd()
+      pc_vals <- if (is.null(pc_param_r$values)) {
+        character(0)
+      } else {
+        as.character(pc_param_r$values$selected)
+      }
+      input_paramcd <- pc_vals[[1]]
 
       if (is.null(paramcd_label)) {
         input_paramcd_label <- input_paramcd
@@ -536,7 +542,7 @@ srv_t_exposure <- function(id,
         paramcd_map_list <- c(paramcd_col, paramcd_label)
         paramcd_map <- unique(anl_filtered[paramcd_map_list])
         input_paramcd_label <- as.character(
-          paramcd_map[paramcd_map[[paramcd_col]] == input_paramcd[1], paramcd_label, drop = TRUE][1]
+          paramcd_map[paramcd_map[[paramcd_col]] == input_paramcd, paramcd_label, drop = TRUE][1]
         )
       }
 

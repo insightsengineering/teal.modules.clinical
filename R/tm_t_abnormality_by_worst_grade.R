@@ -414,7 +414,7 @@ ui_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         tags$label("Worst high flag variable"),
         picks_ui(ns("worst_high_flag_var"), worst_high_flag_var)
       ),
-      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(

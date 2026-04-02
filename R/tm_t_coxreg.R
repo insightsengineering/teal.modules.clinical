@@ -681,7 +681,7 @@ ui_t_coxreg <- function(id,
           )
         )
       ),
-      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table"))
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table"))
     ),
     pre_output = pre_output,
     post_output = post_output
@@ -709,15 +709,6 @@ srv_t_coxreg <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    iv_arm_ref <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = "arm_var-variables-selected",
-      data = reactive(data()[[parentname]]),
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_t_coxreg"
-    )
 
     use_interactions <- reactive({
       input$type == "Univariate" && isTRUE(input$interactions)
@@ -734,6 +725,19 @@ srv_t_coxreg <- function(id,
         cov_var = cov_var
       ),
       data = data
+    )
+
+    arm_var_r <- reactive(anl_selectors$arm_var()$variables$selected)
+
+    arm_ref_comp_iv <- arm_ref_comp_observer_picks(
+      session,
+      input,
+      output,
+      id_arm_var = "arm_var-variables-selected",
+      data = reactive(data()[[parentname]]),
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_coxreg",
+      arm_var_r = arm_var_r
     )
 
     merged_input_r <- reactive({
@@ -804,7 +808,7 @@ srv_t_coxreg <- function(id,
 
     iv_r <- reactive({
       iv <- shinyvalidate::InputValidator$new()
-      iv$add_validator(iv_arm_ref)
+      iv$add_validator(arm_ref_comp_buckets_validator())
       iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
       iv$add_rule(
         "conf_level",
@@ -832,6 +836,7 @@ srv_t_coxreg <- function(id,
 
     ## Prepare the call evaluation environment ----
     validate_checks <- reactive({
+      arm_ref_comp_iv()
       teal::validate_inputs(iv_r())
 
       validate(
