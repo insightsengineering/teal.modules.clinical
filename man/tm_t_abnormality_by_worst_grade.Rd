@@ -9,13 +9,11 @@ tm_t_abnormality_by_worst_grade(
   dataname,
   parentname = "ADSL",
   arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-  id_var = variables(choices = any_of("USUBJID"), selected = "USUBJID", fixed = TRUE),
-  paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-  atoxgr_var = variables(choices = any_of("ATOXGR"), selected = "ATOXGR", fixed = TRUE),
-  worst_high_flag_var = variables(choices = any_of("WGRHIFL"), selected = "WGRHIFL",
-    fixed = TRUE),
-  worst_low_flag_var = variables(choices = any_of("WGRLOFL"), selected = "WGRLOFL", fixed
-    = TRUE),
+  id_var = variables(choices = "USUBJID"),
+  paramcd = variables(choices = "PARAMCD"),
+  atoxgr_var = variables(choices = "ATOXGR"),
+  worst_high_flag_var = variables(choices = "WGRHIFL"),
+  worst_low_flag_var = variables(choices = "WGRLOFL"),
   worst_flag_indicator = teal.transform::choices_selected("Y"),
   add_total = TRUE,
   total_label = default_total_label(),
@@ -156,7 +154,7 @@ app <- init(
       label = "Laboratory Test Results with Highest Grade Post-Baseline",
       dataname = "ADLB",
       arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
-      paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+      paramcd = variables(choices = "PARAMCD"),
       add_total = FALSE
     )
   ),
@@ -177,8 +175,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJr24xaCb1ewCBkIQQxJqoBAbURjP3zmBSlgALJvHQshdXcoXQEFYsidRwfj+2cLjfKxue1AsWDYzssHv0PsDocj2tgbNz0rztdL7dwXf75+vrB30-AETybZt+H4I0iFCP0FQAMVKapvgrAISjkUCTGWVZNUiKIuhkXUK1w-DhxnVklwuSpSjguC2TwHRv1-A8AE1jyIuBuDwuhSLrfoKLAAB5e57FsWiv19H9yD-ZcwFYgEegCAJaGMHR2GyVYoAsbRrBsIpG1ELJx1KdB2FFAASQRaAKczi0YbR-CUIElDAIFKSAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJr24xaCb1ewCBkIQQxJqoBAbURjP3zmBSlgALJvHQshdXcoXQEFYsidRwfj+2cLjfKxue1AsWDYzssHv0PsDocj2tgbNz0rztdL7dwXf75+vrB30-AETybZt+H4I0iFCP0FQAMVKapvgrAISjkUCTGWVZNUiKIuhkXUK1w-DhxnVklwuSpSjguC2TwHRv1-A8AE1jyIuBuDwuhSLrfoKLAAB5e57FsWiv19H9yD-ZcwFYgEegCAJaGMHR2GyVYoAsbRrBsIpG1ELJx1KdB2FFAASQRaAKczi0YbR-CUIElDAIFKSAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJr24xaCb1ewCBkIQQxJqoBAbURjP3zmBSlgALJvHQshdXcoXQEFYsidRwfj+2cLjfKxue1AsWDYzssHv0PsDocj2tgbNz0rztfHislDr8I1EUI-QVAAxUpqm+CsAhKOQT0WZZVk1SIoi6GRdQrJCUOHGdWSXC5KlKYDgLZPAdG3OBd33Z8AE0v1Peo4G4ZC6Cwut+lwsAAHl7nsWwiKXMiKIPGiAR6AIAloYwdHYbJVigCxtGsGwikbUQsnHUp0HYUUABJBFoAodOLRhtH8JQgSUMAgUpIA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpXSYsO-VNVaNFEEr8UKRQ+kZc1AD6waHWQSFhhjoA7rSkABa0EOyxULg6IEo6OgCCACIAygAy4TqkMARRcAAeUVD8otTFZeXVAEJ1DU2t7fzU9DoApAB8Uz0lxrTU5IzsAISlAGoAkpU7ttPZUzoE7ApglQDCWE5OAHI79wDiFwUX-aWVTtVPLmByAIAXwCACsiNkogBrOCsUS5RI2ZL8ODGKDCUhRAj8WiiJrgyEwuHAaDweF5OQAXVcEAqNTqeWAwAudOqF0p1NpfUGyMSTJZ3PZnKUaFQdWy6XOEBKeR0AF4dHlcD0+EIRKJ5TpVcIxFKSiUGlFMVB6BAiIwYNx0qwovQbSlzaJMQBzZgovX6krUE1waiai7VE3mkLm1h2MSkHRYMQYjVpTI6AAStGdGQjOmebt0AAUiE6DP0oKJfdk4G8Fvq8qTdAqBQNy9LPToWDAopoWJr24xaCb1ewCBkIQQxJqoBAbURjP3zmBSlgALJvHQshdXcoXQEFYsidRwfj+2cLjfKxue1AsWDYzssHv0PsDocj2tgbNz0rztfHislDr8I1EUI-QVAAxUpqm+CsAhKOQT0WZZVk1SIoi6GRdQrJCUOHGdWSXC5KlKYDgLZPAdG3OBd33Z8AE0v1Peo4G4ZC6Cwut+lwsAAHl7nsWwiKXMiKIPGiAR6AIAloYwdHYbJVigCxtGsGwikbUQsnHUp0HYUUABJBFoAodOLRhtH8JQgSUMAgUpIA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }

@@ -10,17 +10,17 @@ tm_t_tte(
   parentname = "ADSL",
   arm_var = variables(choices = any_of(c("ARM", "ARMCD", "ACTARMCD"))),
   arm_ref_comp = NULL,
-  paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-  strata_var = variables(choices = any_of(c("SEX", "BMRKR2"))),
-  aval_var = variables(choices = "AVAL", selected = "AVAL", fixed = TRUE),
-  cnsr_var = variables(choices = "CNSR", selected = "CNSR", fixed = TRUE),
+  paramcd = variables(choices = "PARAMCD"),
+  strata_var = variables(choices = any_of(c("SEX", "BMRKR2")), selected = "SEX"),
+  aval_var = variables(choices = "AVAL"),
+  cnsr_var = variables(choices = "CNSR"),
   conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order
     = TRUE),
   conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
     keep_order = TRUE),
   time_points = teal.transform::choices_selected(c(182, 243), 182),
-  time_unit_var = variables(choices = "AVALU", selected = "AVALU", fixed = TRUE),
-  event_desc_var = variables(choices = "EVNTDESC", selected = "EVNTDESC", fixed = TRUE),
+  time_unit_var = variables(choices = "AVALU"),
+  event_desc_var = variables(choices = "EVNTDESC"),
   add_total = FALSE,
   total_label = default_total_label(),
   na_level = tern::default_na_str(),
@@ -190,7 +190,7 @@ app <- init(
       dataname = "ADTTE",
       arm_var = variables(choices = any_of(c("ARM", "ARMCD", "ACTARMCD"))),
       arm_ref_comp = arm_ref_comp,
-      paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+      paramcd = variables(choices = "PARAMCD"),
       strata_var = variables(choices = any_of(c("SEX", "BMRKR2")), selected = "SEX"),
       time_points = teal.transform::choices_selected(c(182, 243), 182)
     )
@@ -208,8 +208,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaEYYP0Yl9aIYVCK6UVJ2BsyAYVtMrABZL7ZHQAXh0r3eDQyd2MoJ0CjAf3+OgAQgjcFCdMQnnCCB9EQCsuj4QTkV8EYMMnIMRAMki4RCPrSMjoYXCESjEDoAArUKAEOD0IjozHY55gvEIzJc7KMQQAcx0AA1iQivlyvo96PEPJYIBSGoNBko0M9wvFokyMkk4UkaRk+EIRKI4Y7hGIrSySn41j04J6WeCoPQ4NR2WBbLR4HYiDonNoyHZgyIRczA0kjrowVKmi1U4GMiwbpoWHCS4xaMmPQQYqMBS6wVAIKw-ERjOxJaTVaSgd3vr8Ab2wHIR-aC0XbvcxXCJzCHk8x4HUCxYBsyyxK-RnR3azIxOHuX9MoDssTRKG4Oo4PwD0eTxTFyy3sxPH5y+uK1WZjW6-vG83W3bTtcicFU8BJFF-iwABpLAACYKWpHRzxEK8b2zMAQLA6lMQyDR4D8VBRjIBtijgbgMFIZgIFEYwiGuRBEB-PdRD8FDL3IfgO3YABGAAOOCUjggAWABmJD+LgykWWko0lFoWF2Hicg1A0bRrBsNJmVEOJm0ydB2FNAASQRaBSYzz0YbRGEGPolDAPoziAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaEYYP0Yl9aIYVCK6UVJ2BsyAYVtMrABZL7ZHQAXh0r3eDQyd2MoJ0CjAf3+OgAQgjcFCdMQnnCCB9EQCsuj4QTkV8EYMMnIMRAMki4RCPrSMjoYXCESjEDoAArUKAEOD0IjozHY55gvEIzJc7KMQQAcx0AA1iQivlyvo96PEPJYIBSGoNBko0M9wvFokyMkk4UkaRk+EIRKI4Y7hGIrSySn41j04J6WeCoPQ4NR2WBbLR4HYiDonNoyHZgyIRczA0kjrowVKmi1U4GMiwbpoWHCS4xaMmPQQYqMBS6wVAIKw-ERjOxJaTVaSgd3vr8Ab2wHIR-aC0XbvcxXCJzCHk8x4HUCxYBsyyxK-RnR3azIxOHuX9MoDssTRKG4Oo4PwD0eTxTFyy3sxPH5y+uK1WZjW6-vG83W3bTtcicFU8BJFF-iwABpLAACYKWpHRzxEK8b2zMAQLA6lMQyDR4D8VBRjIBtijgbgMFIZgIFEYwiGuRBEB-PdRD8FDL3IfgO3YABGAAOOCUjggAWABmJD+LgykWWko0lFoWF2Hicg1A0bRrBsNJmVEOJm0ydB2FNAASQRaBSYzz0YbRGEGPolDAPoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaEYYP0Yl9aIYVCK6UVJ2BsyAYVtMrABZL7ZHQAXh0r3eDQyd2MoJ0CjAf3+OgAQgjcFCdMQnnCCB9EQCsuj4QTkV8EYMMnIMRAMki4RCPrSMjoYXCESjEDoAArUKAEOD0IjozHY55gvEIzJc7KMQQAcx0AA1iQivlyvo96PEPJYIBSGoNBko0M9wvFokyMkk4UkaRk+EIRKI4Y7hGIrSySn41j04J6WeCoPQ4NR2WBbLR4HYiDonNoyHZgyIRczA0kjrowVKmi1U4GMiwbpoWHCS4xaMmPQQYqMBS6wVAIKw-ERjOxJaTVaSgd3vr8Ab2wHIR-aC0XbvcxXCJzCHk8x4HUCxYBsyyxK-RnR3azIxOHuX9MoDshTFyy3sxPH5y+uK1WZjW6-vG83W+3O7knCq8CSUf8sAAaSwAAmClqR0URQzgdQ4H4cMvx-alMQyDR4D8VBRjIBtijgbgMFIZgIFEYwiGuRBECfPdRD8KCRFg-gO3YABGAAOECUhAgAWABmCC2JAykWSEo0lFoWF2Hicg1A0bRrBsNJmVEOJm0ydB2FNAASQRaBSLSoMYbRGEGPolDAPoziAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOzbWycikrLK6v5SciUAX0UIACsieL8AazhWUUTQm3D+OGMoYVI-An5aUTKRscnp4Gh4GaS5AF1XaEYYP0Yl9aIYVCK6UVJ2BsyAYVtMrABZL7ZHQAXh0r3eDQyd2MoJ0CjAf3+OgAQgjcFCdMQnnCCB9EQCsuj4QTkV8EYMMnIMRAMki4RCPrSMjoYXCESjEDoAArUKAEOD0IjozHY55gvEIzJc7KMQQAcx0AA1iQivlyvo96PEPJYIBSGoNBko0M9wvFokyMkk4UkaRk+EIRKI4Y7hGIrSySn41j04J6WeCoPQ4NR2WBbLR4HYiDonNoyHZgyIRczA0kjrowVKmi1U4GMiwbpoWHCS4xaMmPQQYqMBS6wVAIKw-ERjOxJaTVaSgd3vr8Ab2wHIR-aC0XbvcxXCJzCHk8x4HUCxYBsyyxK-RnR3azIxOHuX9MoDshTFyy3sxPH5y+uK1WZjW6-vG83W+3O7knCq8CSUf8sAAaSwAAmClqR0URQzgdQ4H4cMvx-alMQyDR4D8VBRjIBtijgbgMFIZgIFEYwiGuRBECfPdRD8KCRFg-gO3YABGAAOECUhAgAWABmCC2JAykWSEo0lFoWF2Hicg1A0bRrBsNJmVEOJm0ydB2FNAASQRaBSLSoMYbRGEGPolDAPoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
