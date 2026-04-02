@@ -61,7 +61,6 @@ Imports:
     teal.code (>= 0.7.0),
     teal.data (>= 0.8.0),
     teal.logger (>= 0.4.0),
-    teal.picks,
     tidyselect (>= 1.2.0),
     teal.reporter (>= 0.6.0),
     teal.widgets (>= 0.5.0),
@@ -88,9 +87,10 @@ VignetteBuilder:
 Remotes:
     insightsengineering/teal@redesign_extraction@main,
     insightsengineering/teal.picks,
-    insightsengineering/teal.transform,
+    insightsengineering/teal.transform
 Config/Needs/verdepcheck: insightsengineering/teal,
-    insightsengineering/teal.slice, insightsengineering/teal.transform,
+    insightsengineering/teal.slice, insightsengineering/teal.transform, 
+    insightsengineering/teal.picks,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
     wilkelab/cowplot, tidyverse/dplyr, rstudio/DT,
     insightsengineering/formatters, tidyverse/ggplot2, slowkow/ggrepel,
