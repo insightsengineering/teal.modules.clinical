@@ -524,7 +524,18 @@ srv_t_exposure <- function(id,
       anl_merged <- anl_q()[["ANL"]]
 
       input_avalu_name <- as.vector(anl_selectors$avalu_var()$variables$selected)[[1]]
-      input_avalu_var <- as.character(unique(anl_merged[[input_avalu_name]]))
+      avalu_unique <- as.character(unique(anl_merged[[input_avalu_name]]))
+      avalu_unique <- avalu_unique[!is.na(avalu_unique) & nzchar(avalu_unique)]
+      validate(
+        need(
+          length(avalu_unique) == 1L,
+          paste(
+            "Filtered data must have exactly one analysis value unit (AVALU); found:",
+            paste(avalu_unique, collapse = ", ")
+          )
+        )
+      )
+      input_avalu_var <- avalu_unique[[1]]
 
       input_paramcd_name <- as.vector(anl_selectors$paramcd()$variables$selected)[[1]]
       pc_param_r <- anl_selectors$paramcd()

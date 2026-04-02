@@ -750,9 +750,9 @@ srv_t_tte <- function(id,
       data = data
     )
 
-    # Setup arm variable selection, default reference arms, and default
-    # comparison arms for encoding panel
-    iv_arm_ref <- arm_ref_comp_observer(
+    arm_var_r <- reactive(selectors$arm_var()$variables$selected)
+
+    arm_ref_comp_iv <- arm_ref_comp_observer_picks(
       session,
       input,
       output,
@@ -760,7 +760,8 @@ srv_t_tte <- function(id,
       data = reactive(data()[[parentname]]),
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_tte",
-      on_off = reactive(input$compare_arms)
+      on_off = reactive(input$compare_arms),
+      arm_var_r = arm_var_r
     )
 
     output$helptext_ui <- renderUI({
@@ -791,6 +792,9 @@ srv_t_tte <- function(id,
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- reactive({
+      if (isTRUE(input$compare_arms)) {
+        arm_ref_comp_iv()
+      }
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
@@ -822,7 +826,10 @@ srv_t_tte <- function(id,
       if (isTRUE(input$compare_arms)) {
         validate_args <- append(
           validate_args,
-          list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
+          list(
+            ref_arm = arm_bucket_values(input$buckets, "Ref"),
+            comp_arm = arm_bucket_values(input$buckets, "Comp")
+          )
         )
       }
 
@@ -848,8 +855,8 @@ srv_t_tte <- function(id,
         parentname = "ANL_ADSL",
         arm_var = anl_selectors$arm_var()$variables$selected,
         paramcd = anl_selectors$paramcd()$variables$selected,
-        ref_arm = unlist(input$buckets$Ref),
-        comp_arm = unlist(input$buckets$Comp),
+        ref_arm = arm_bucket_values(input$buckets, "Ref"),
+        comp_arm = arm_bucket_values(input$buckets, "Comp"),
         compare_arm = input$compare_arms,
         combine_comp_arms = input$combine_comp_arms && input$compare_arms,
         aval_var = anl_selectors$aval_var()$variables$selected,
