@@ -501,11 +501,12 @@ template_mmrm_plots <- function(fit_name,
 #'
 #' @examplesShinylive
 #' library(teal.modules.clinical)
-#' library(teal.picks)
 #' interactive <- function() TRUE
 #' {{ next_example }}
 #'
 #' @examples
+#' 
+#' library(teal.picks)
 #'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(

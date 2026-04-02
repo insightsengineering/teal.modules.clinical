@@ -63,10 +63,10 @@ reference and comparison arms when the arm variable is changed.}
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{paramcd_var}{(\code{NULL} or \code{\link[teal.picks:picks]{teal.picks::variables()}})\cr used only by the \code{teal.picks} method;
+\item{paramcd_var}{(\code{NULL} or \code{\link[teal.picks:variables]{teal.picks::variables()}})\cr used only by the \code{teal.picks} method;
 ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.}
 
-\item{paramcd_values}{(\code{NULL} or \code{\link[teal.picks:picks]{teal.picks::values()}})\cr used only by the \code{teal.picks} method;
+\item{paramcd_values}{(\code{NULL} or \code{\link[teal.picks:values]{teal.picks::values()}})\cr used only by the \code{teal.picks} method;
 ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.}
 
 \item{method}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
@@ -101,9 +101,6 @@ with settings for all the plots or named list of \code{ggplot2_args} objects for
 List names should match the following: \code{c("default", "lsmeans", "diagnostic")}. The argument is merged
 with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
-
-\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
-To learn more check \code{vignette("transform-input-data", package = "teal")}.}
 
 \item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 (named \code{list} of lists of \code{teal_transform_module}) optional,
@@ -161,23 +158,9 @@ To learn more please refer to the vignette
 \code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
 }
 
-\section{Reporting}{
-
-
-
-This module returns an object of class \code{teal_module}, that contains a \code{server} function.
-Since the server function returns a \code{teal_report} object, this makes this module reportable, which means that
-the reporting functionality will be turned on automatically by the \code{teal} framework.
-
-For more information on reporting in \code{teal}, see the vignettes:
-\itemize{
-\item \code{vignette("reportable-shiny-application", package = "teal.reporter")}
-\item \code{vignette("adding-support-for-reporting-to-custom-modules", package = "teal")}
-}
-
-}
-
 \examples{
+
+library(teal.picks)
 
 arm_ref_comp <- list(
   ARMCD = list(
@@ -214,7 +197,14 @@ app <- init(
       id_var = variables(c("USUBJID", "SUBJID"), 1L),
       arm_var = variables(c("ARM", "ARMCD"), 1L),
       visit_var = variables(c("AVISIT", "AVISITN"), 1L),
+      aval_var = variables(c("AVAL", "CHG"), 1L),
+      id_var = variables(c("USUBJID", "SUBJID"), 1L),
+      arm_var = variables(c("ARM", "ARMCD"), 1L),
+      visit_var = variables(c("AVISIT", "AVISITN"), 1L),
       arm_ref_comp = arm_ref_comp,
+      paramcd_var = variables("PARAMCD"),
+      paramcd_values = values(selected = "FKSI-FWB"),
+      cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
       paramcd_var = variables("PARAMCD"),
       paramcd_values = values(selected = "FKSI-FWB"),
       cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
@@ -233,8 +223,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA6EOkxYcuPVDIDWoxdLJxmBUrQBucAAQAeALSWAZoIgnaJdnMsAVLAFUAokpB0IwwAPqMcA5hxDCoNvZ0oqTsSpaWAIJYALIAwgAilgC8lkkpaemWkQ7FlgpgWdmWAEL1uBXpsfElBKkNOZltdf1NufX66fr6SvxQpFAJlhphs-MeM3MLdpYA7rSkABa0EOyrULiWIBUqzGyccNy8AsJiElIy8tcMtxz8qNSsRgTTL5ADKABlFqQYAQwnAAB5hKD8UTUCoZfIARVBUJhcMRyIAjqJLABSAB8pI6jlo1HIjHYGWa4IAYpCAIQleoATXqlgAZJlmWyAEyWTnDXlgTwUqkQSo0ulGRkANQAkqC1V4ycdSZZevUAOr+fwAaUsAEZLPkMtzLAAOIZGk3msU2u0WgCsTrAxrNlgAzNbbZYRSLxjLKdSYIJ5uRUvKFZl1ZrtSUoOIHFATEQGRkU1q5O1Ewr8xqtQA5WrMCDaVXlrwVyNypOVDMYLM5hnN6kK9sQQTwRgyDxkqMlpPtzukXOjgDElhgUG0xwA5vqSKI4ARY+YrAOhzJHNmZ4xqfoAL76ABWRGOYW0cFYolOm08234USgwlIMX4tFEWFb3vR9n2AaB4BfM45AAXWCNB4m2Y59gTdIzlqM5i3SPghBEEkShwl4X2paEkTCGAYFCVCk2oKB6DgahanqbJshyNpe0sM4IKsLkGixUF2IndIoDMbgwlExhagk2g6Lw9gDQaFUMnBH1cgACQAcXGC4LXBIsONofhxJYKSWBk+g5IU3xQV8ZoACk1XyH0bPsxztMtPSsMnUJjMkkppNksR5L6RofUaAp3N0-ShMsMwAP2XzTOHQKXwUstUzCgtG0izyOJYcJqhiIg4lqfKIiiIq4i8hVUBYWACCMiSkvMuT6gABSyDI8ic6VqsqWrmBhRruEEMRTOoUaXy3EQTDgfgmLAFlTU1WwWUNVpeo44gzES-yzJS4L6maDJQUCPBhgyDSzouepToADSGY56RPNwIF84iwGO07MobCMLgrXxwT088KimJRaBqdgnqMF6LA8TwrkTUQjggVgMnQdgEIAEkEWgLmxrdGAsIElAvJQwAvGCgA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA6EOkxYcuPVDIDWoxdLJxmBUrQBucAAQAeALSWAZoIgnaJdnMsAVLAFUAokpB0IwwAPqMcA5hxDCoNvZ0oqTsSpaWAIJYALIAwgAilgC8lkkpaemWkQ7FlgpgWdmWAEL1uBXpsfElBKkNOZltdf1NufX66fr6SvxQpFAJlhphs-MeM3MLdpYA7rSkABa0EOyrULiWIBUqzGyccNy8AsJiElIy8tcMtxz8qNSsRgTTL5ADKABlFqQYAQwnAAB5hKD8UTUCoZfIARVBUJhcMRyIAjqJLABSAB8pI6jlo1HIjHYGWa4IAYpCAIQleoATXqlgAZJlmWyAEyWTnDXlgTwUqkQSo0ulGRkANQAkqC1V4ycdSZZevUAOr+fwAaUsAEZLPkMtzLAAOIZGk3msU2u0WgCsTrAxrNlgAzNbbZYRSLxjLKdSYIJ5uRUvKFZl1ZrtSUoOIHFATEQGRkU1q5O1Ewr8xqtQA5WrMCDaVXlrwVyNypOVDMYLM5hnN6kK9sQQTwRgyDxkqMlpPtzukXOjgDElhgUG0xwA5vqSKI4ARY+YrAOhzJHNmZ4xqfoAL76ABWRGOYW0cFYolOm08234USgwlIMX4tFEWFb3vR9n2AaB4BfM45AAXWCNB4m2Y59gTdIzlqM5i3SPghBEEkShwl4X2paEkTCGAYFCVCk2oKB6DgahanqbJshyNpe0sM4IKsLkGixUF2IndIoDMbgwlExhagk2g6Lw9gDQaFUMnBH1cgACQAcXGC4LXBIsONofhxJYKSWBk+g5IU3xQV8ZoACk1XyH0bPsxztMtPSsMnUJjMkkppNksR5L6RofUaAp3N0-ShMsMwAP2XzTOHQKXwUstUzCgtG0izyOJYcJqhiIg4lqfKIiiIq4i8hVUBYWACCMiSkvMuT6gABSyDI8ic6VqsqWrmBhRruEEMRTOoUaXy3EQTDgfgmLAFlTU1WwWUNVpeo44gzES-yzJS4L6maDJQUCPBhgyDSzouepToADSGY56RPNwIF84iwGO07MobCMLgrXxwT088KimJRaBqdgnqMF6LA8TwrkTUQjggVgMnQdgEIAEkEWgLmxrdGAsIElAvJQwAvGCgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xDpMWHLj1QyA1qKKEEosMAD6jHDG4cQwqPpGdKKk7Eo6OgCCWACyAMIAIjoAvDrJqekZOlHGJToKYNk5OgBCDbiVGXEJpQRpjblZ7fUDzXkNwRnBwUr8UKRQiTo+4XML1rPzi4Y6AO60pAAWtBDsa1C4OiCVHsxsnHDcvALCYhJSMvI3DHcc-KjUViMSZZAoAZQAMktSDACOE4AAPcJQfiiaiVTIFACKYOhsPhSJRAEdRDoAKQAPjJnRMtGo5EY7EyLQhADEoQBCUoNACaDR0ADIsiz2QAmHRckZ8sA2SnUiBVWn01RMgBqAEkwerbOSTmSdH0GgB1JxOADSOgAjDoCpkeToABzDY2mi3i232y0AVmdYBN5p0AGYbXadKLRRNZVSaTBBAtyGkFYqshqtTrSlBxMYoOoiIzMqntXIOknFQXNdqAHJ1ZgQfxqiu2StR+XJqqZjDZ3OMls0xUdiCCeCMGTWcnR0vJjtd0h5scAYh0MCg-hOAHMDSRRHACHGtLpB8OZCYc7PGDTggBfYIAKyIJ3C-jgrFEZy2Nh2-GiUGEpFi-FoUQ4TvB8nxfYBoHgV9zjkABdNw0ASHYTgORMMnOOpzhLDI+CEERSVKXDXlfGkYWRcIYBgRgYDQ5NqCgeg4GoOoGhyHJcnaPsdHOSDdG5RpsTBTjJwyKBNG4cJxMYOopNoBj8PYQ1GlVTIIV9PIAAkAHEJkuS0IWLLjaH4SSWBklg5PoBSlIcMEHBaAApdUCl9OzHOc3SrQM7Cp2o0zpNKWT5LERT+iaX0mkKTz9MMkSdE0QCDn88yR2C18lPLNMIsLJtou8riwkiaJYiIeI6kKmoSviHzFVQFhYAIEypJSyyFIaAAFbJMnyFyZRqqo6uYWEmu4QQxHM6gxtfbcRHUOB+BYsBWTNLUDFZI02j6rjiE0ZLAostLQoaFpMjBFw8BGTItPOy4GjOgANYYTgZU9LAgfySLAE6zuyxtI0uSsHAhAyL0qaYlFoWp2Ge1RXu0awbGuJNRGOCBWEydB2EQgASQRaEuHHt0YbRgSUS8lDAS9YKAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS1xDpMWHLj1QyA1qKKEEosMAD6jHDG4cQwqPpGdKKk7Eo6OgCCWACyAMIAIjoAvDrJqekZOlHGJToKYNk5OgBCDbiVGXEJpQRpjblZ7fUDzXkNwRnBwUr8UKRQiTo+4XML1rPzi4Y6AO60pAAWtBDsa1C4OiCVHsxsnHDcvALCYhJSMvI3DHcc-KjUViMSZZAoAZQAMktSDACOE4AAPcJQfiiaiVTIFACKYOhsPhSJRAEdRDoAKQAPjJnRMtGo5EY7EyLQhADEoQBCUoNACaDR0ADIsiz2QAmHRckZ8sA2SnUiBVWn01RMgBqAEkwerbOSTmSdH0GgB1JxOADSOgAjDoCpkeToABzDY2mi3i232y0AVmdYBN5p0AGYbXadKLRRNZVSaTBBAtyGkFYqshqtTrSlBxMYoOoiIzMqntXIOknFQXNdqAHJ1ZgQfxqiu2StR+XJqqZjDZ3OMls0xUdiCCeCMGTWcnR0vJjtd0h5scAYh0MCg-hOAHMDSRRHACHGtLpB8OZCYc7PGDTggBfYIAKyIJ3C-jgrFEZy2Nh2-GiUGEpFi-FoUQ4TvB8nxfYBoHgV9zjkABdNw0ASHYTgORMMnOOpzhLDI+CEERSVKXDXlfGkYWRcIYBgRgYDQ5NqCgeg4GoOoGhyHJcnaPsdHOSDdG5RpsTBTjJwyKBNG4cJxMYOopNoBj8PYQ1GlVTIIV9PIAAkAHEJkuS0IWLLjaH4SSWBklg5PoBSlIcMEHBaAApdUCl9OzHOc3SrQM7Cp2o0zpNKWT5LERT+iaX0mkKTz9MMkSdE0QCDn88yR2C18lPLNMIsLJtou8riwkiaJYiIeI6kKmoSviHzFVQFhYAIEypJSyyFIaAAFbJMnyFyZRqqo6uYWEmu4QQxHM6gxtfbcRHUOB+BYsBWTNLUDFZI02j6rjiE0ZLAostLQoaFpMjBFw8BGTItPOy4GjOgANYYTgZU9LAgfySLAE6zuyxtI0uSsHAhAyL0qaYlFoWp2Ge1RXu0awbGuJNRGOCBWEydB2EQgASQRaEuHHt0YbRgSUS8lDAS9YKAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
