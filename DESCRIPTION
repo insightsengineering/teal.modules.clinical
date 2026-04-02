@@ -85,7 +85,7 @@ VignetteBuilder:
     knitr,
     rmarkdown
 Remotes:
-    insightsengineering/teal,
+    insightsengineering/teal@redesign_extraction@main,
     insightsengineering/teal.transform,
     insightsengineering/teal.picks@279-interactive_variables
 Config/Needs/verdepcheck: insightsengineering/teal,
