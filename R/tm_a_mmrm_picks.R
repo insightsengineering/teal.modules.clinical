@@ -24,7 +24,8 @@ tm_a_mmrm.default <- function(label,
                               basic_table_args = teal.widgets::basic_table_args(),
                               ggplot2_args = teal.widgets::ggplot2_args(),
                               transformators = list(),
-                              decorators = list()) {
+                              decorators = list(),
+                              ...) {
   message("Initializing tm_a_mmrm")
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
