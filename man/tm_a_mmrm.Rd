@@ -197,7 +197,14 @@ app <- init(
       id_var = variables(c("USUBJID", "SUBJID"), 1L),
       arm_var = variables(c("ARM", "ARMCD"), 1L),
       visit_var = variables(c("AVISIT", "AVISITN"), 1L),
+      aval_var = variables(c("AVAL", "CHG"), 1L),
+      id_var = variables(c("USUBJID", "SUBJID"), 1L),
+      arm_var = variables(c("ARM", "ARMCD"), 1L),
+      visit_var = variables(c("AVISIT", "AVISITN"), 1L),
       arm_ref_comp = arm_ref_comp,
+      paramcd_var = variables("PARAMCD"),
+      paramcd_values = values(selected = "FKSI-FWB"),
+      cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
       paramcd_var = variables("PARAMCD"),
       paramcd_values = values(selected = "FKSI-FWB"),
       cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
