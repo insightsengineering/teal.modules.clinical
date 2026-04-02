@@ -677,16 +677,16 @@ tm_t_events_summary <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  dthfl_var <- picks(datasets(parentname, parentname), dthfl_var)
-  dcsreas_var <- picks(datasets(parentname, parentname), dcsreas_var)
-  llt <- picks(datasets(dataname, dataname), llt)
-  aeseq_var <- picks(datasets(dataname, dataname), aeseq_var)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  dthfl_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), dthfl_var)
+  dcsreas_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), dcsreas_var)
+  llt <- teal.picks::picks(teal.picks::datasets(dataname, dataname), llt)
+  aeseq_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aeseq_var)
   if (!is.null(flag_var_anl)) {
-    flag_var_anl <- picks(datasets(dataname, dataname), flag_var_anl)
+    flag_var_anl <- teal.picks::picks(teal.picks::datasets(dataname, dataname), flag_var_anl)
   }
   if (!is.null(flag_var_aesi)) {
-    flag_var_aesi <- picks(datasets(dataname, dataname), flag_var_aesi)
+    flag_var_aesi <- teal.picks::picks(teal.picks::datasets(dataname, dataname), flag_var_aesi)
   }
 
   args <- as.list(environment())

@@ -523,13 +523,13 @@ tm_t_tte <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  strata_var <- picks(datasets(parentname, parentname), strata_var)
-  paramcd <- picks(datasets(dataname, dataname), paramcd, values())
-  aval_var <- picks(datasets(dataname, dataname), aval_var)
-  cnsr_var <- picks(datasets(dataname, dataname), cnsr_var)
-  time_unit_var <- picks(datasets(dataname, dataname), time_unit_var)
-  event_desc_var <- picks(datasets(dataname, dataname), event_desc_var)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  strata_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), strata_var)
+  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
+  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
+  cnsr_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cnsr_var)
+  time_unit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), time_unit_var)
+  event_desc_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), event_desc_var)
 
   args <- as.list(environment())
 

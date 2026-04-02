@@ -350,13 +350,13 @@ tm_t_exposure <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  paramcd <- picks(datasets(dataname, dataname), paramcd, values())
-  row_by_var <- picks(datasets(dataname, dataname), row_by_var)
-  col_by_var <- picks(datasets(parentname, parentname), col_by_var)
-  id_var <- picks(datasets(dataname, dataname), id_var)
-  parcat <- picks(datasets(dataname, dataname), parcat, values())
-  aval_var <- picks(datasets(dataname, dataname), aval_var)
-  avalu_var <- picks(datasets(dataname, dataname), avalu_var)
+  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
+  row_by_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), row_by_var)
+  col_by_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), col_by_var)
+  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
+  parcat <- teal.picks::picks(teal.picks::datasets(dataname, dataname), parcat, values())
+  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
+  avalu_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), avalu_var)
 
   args <- as.list(environment())
   module(

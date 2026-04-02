@@ -354,8 +354,8 @@ tm_t_summary <- function(label,
   numeric_stats <- match.arg(numeric_stats, several.ok = TRUE)
 
 
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  summarize_vars <- picks(datasets(dataname, dataname), summarize_vars)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  summarize_vars <- teal.picks::picks(teal.picks::datasets(dataname, dataname), summarize_vars)
 
   args <- as.list(environment())
 
@@ -486,7 +486,7 @@ srv_summary <- function(id,
     anl_selectors <- selectors
 
     # ↓ add usubjid to make sure it is included in a merged dataset (primary_keys are not included if not selected)
-    anl_selectors$usubjid <- reactive(picks(datasets(parentname, parentname), variables("USUBJID", "USUBJID")))
+    anl_selectors$usubjid <- reactive(teal.picks::picks(teal.picks::datasets(parentname, parentname), variables("USUBJID", "USUBJID")))
     adsl_selectors <- selectors["arm_var"]
 
     data_with_card <- reactive({

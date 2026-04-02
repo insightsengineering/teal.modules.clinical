@@ -312,12 +312,12 @@ tm_t_shift_by_arm <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  paramcd <- picks(datasets(dataname, dataname), paramcd, values())
-  visit_var <- picks(datasets(dataname, dataname), visit_var, values())
-  aval_var <- picks(datasets(dataname, dataname), aval_var)
-  baseline_var <- picks(datasets(dataname, dataname), baseline_var)
-  treatment_flag_var <- picks(datasets(dataname, dataname), treatment_flag_var)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
+  visit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), visit_var, values())
+  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
+  baseline_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), baseline_var)
+  treatment_flag_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), treatment_flag_var)
 
   args <- as.list(environment())
 

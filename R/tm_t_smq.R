@@ -417,11 +417,11 @@ tm_t_smq <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  id_var <- picks(datasets(dataname, dataname), id_var)
-  llt <- picks(datasets(dataname, dataname), llt)
-  baskets <- picks(datasets(dataname, dataname), baskets)
-  scopes <- picks(datasets(dataname, dataname), scopes)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
+  llt <- teal.picks::picks(teal.picks::datasets(dataname, dataname), llt)
+  baskets <- teal.picks::picks(teal.picks::datasets(dataname, dataname), baskets)
+  scopes <- teal.picks::picks(teal.picks::datasets(dataname, dataname), scopes)
 
   args <- as.list(environment())
 

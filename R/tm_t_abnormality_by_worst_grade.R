@@ -354,12 +354,12 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  paramcd <- picks(datasets(dataname, dataname), paramcd, values(selected = c("ALT", "CRP", "IGA")))
-  id_var <- picks(datasets(dataname, dataname), id_var)
-  atoxgr_var <- picks(datasets(dataname, dataname), atoxgr_var)
-  worst_high_flag_var <- picks(datasets(dataname, dataname), worst_high_flag_var)
-  worst_low_flag_var <- picks(datasets(dataname, dataname), worst_low_flag_var)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values(selected = c("ALT", "CRP", "IGA")))
+  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
+  atoxgr_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), atoxgr_var)
+  worst_high_flag_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), worst_high_flag_var)
+  worst_low_flag_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), worst_low_flag_var)
 
   args <- as.list(environment())
 

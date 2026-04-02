@@ -480,12 +480,12 @@ tm_t_summary_by <- function(label,
 
   teal::assert_decorators(decorators, "table")
 
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  id_var <- picks(datasets(dataname, dataname), id_var)
-  by_vars <- picks(datasets(dataname, dataname), by_vars)
-  summarize_vars <- picks(datasets(dataname, dataname), summarize_vars)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
+  by_vars <- teal.picks::picks(teal.picks::datasets(dataname, dataname), by_vars)
+  summarize_vars <- teal.picks::picks(teal.picks::datasets(dataname, dataname), summarize_vars)
   if (!is.null(paramcd)) {
-    paramcd <- picks(datasets(dataname, dataname), paramcd, values())
+    paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
   }
 
   args <- as.list(environment())

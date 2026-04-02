@@ -582,9 +582,9 @@ tm_t_events <- function(label,
   teal::assert_decorators(decorators, "table")
 
 
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  hlt <- picks(datasets(dataname, dataname), hlt)
-  llt <- picks(datasets(dataname, dataname), llt)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  hlt <- teal.picks::picks(teal.picks::datasets(dataname, dataname), hlt)
+  llt <- teal.picks::picks(teal.picks::datasets(dataname, dataname), llt)
 
   args <- as.list(environment())
 
