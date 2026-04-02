@@ -87,7 +87,7 @@ VignetteBuilder:
 Remotes:
     insightsengineering/teal,
     insightsengineering/teal.transform,
-    insightsengineering/teal.picks,
+    insightsengineering/teal.picks@279-interactive_variables,
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
