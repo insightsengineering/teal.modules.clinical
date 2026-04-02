@@ -541,7 +541,7 @@ tm_t_binary_outcome <- function(label,
     control$strat$method_ci, c("wald", "waldcc", "cmh", "ha", "strat_newcombe", "strat_newcombecc")
   )
   checkmate::assert_subset(control$strat$method_test, c("cmh"))
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
   denom <- match.arg(denom)
 
@@ -720,7 +720,7 @@ ui_t_binary_outcome <- function(id, ...) {
         condition = paste0("!input['", ns("compare_arms"), "']"),
         checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -1045,11 +1045,11 @@ srv_t_binary_outcome <- function(id,
     })
 
 
-    decorated_all_q <- srv_decorate_teal_data(
+    decorated_all_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = table_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
+      transformators = select_decorators(decorators, "table"),
+      expr = quote(table)
     )
 
     # Outputs to render.
