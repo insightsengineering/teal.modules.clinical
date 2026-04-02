@@ -917,7 +917,7 @@ tm_t_events_by_grade <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
   arm_var <- picks(datasets(parentname, parentname), arm_var)
   hlt <- picks(datasets(dataname, dataname), hlt)
@@ -983,7 +983,7 @@ ui_t_events_by_grade <- function(id,
         "Display grade groupings in nested columns",
         value = col_by_grade
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
+      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -1224,11 +1224,11 @@ srv_t_events_by_grade <- function(id,
       teal.code::eval_code(table_q(), "table <- pruned_and_sorted_result")
     })
 
-    decorated_table_q <- srv_decorate_teal_data(
+    decorated_table_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = table_renamed_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
+      transformators = select_decorators(decorators, "table"),
+      expr = quote(table)
     )
     # Outputs to render.
     table_r <- reactive({

@@ -391,7 +391,7 @@ tm_t_abnormality <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
   arm_var <- picks(datasets(parentname, parentname), arm_var)
   by_vars <- picks(datasets(dataname, dataname), by_vars)
@@ -451,7 +451,7 @@ ui_t_abnormality <- function(id,
         "Exclude subjects whose baseline grade is the same as abnormal grade",
         value = exclude_base_abn
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
+      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -648,11 +648,11 @@ srv_t_abnormality <- function(id,
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
-    decorated_table_q <- srv_decorate_teal_data(
+    decorated_table_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
+      transformators = select_decorators(decorators, "table"),
+      expr = quote(table)
     )
 
     # Outputs to render.
