@@ -505,6 +505,7 @@ template_mmrm_plots <- function(fit_name,
 #' {{ next_example }}
 #'
 #' @examples
+#' library(teal.picks)
 #'
 #' arm_ref_comp <- list(
 #'   ARMCD = list(
@@ -537,14 +538,14 @@ template_mmrm_plots <- function(fit_name,
 #'     tm_a_mmrm(
 #'       label = "MMRM",
 #'       dataname = "ADQS",
-#'       aval_var = teal.picks::variables(c("AVAL", "CHG"), 1L),
-#'       id_var = teal.picks::variables(c("USUBJID", "SUBJID"), 1L),
-#'       arm_var = teal.picks::variables(c("ARM", "ARMCD"), 1L),
-#'       visit_var = teal.picks::variables(c("AVISIT", "AVISITN"), 1L),
+#'       aval_var = variables(c("AVAL", "CHG"), 1L),
+#'       id_var = variables(c("USUBJID", "SUBJID"), 1L),
+#'       arm_var = variables(c("ARM", "ARMCD"), 1L),
+#'       visit_var = variables(c("AVISIT", "AVISITN"), 1L),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd_var = teal.picks::variables("PARAMCD"),
-#'       paramcd_values = teal.picks::values(selected = "FKSI-FWB"),
-#'       cov_var = teal.picks::variables(c("BASE", "AGE", "SEX", teal.picks::interaction_vars("BASE", "AVISIT")), NULL)
+#'       paramcd_var = variables("PARAMCD"),
+#'       paramcd_values = values(selected = "FKSI-FWB"),
+#'       cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
 #'     )
 #'   )
 #' )
@@ -575,8 +576,7 @@ tm_a_mmrm <- function(label,
                       basic_table_args,
                       ggplot2_args,
                       transformators,
-                      decorators,
-                      ...) {
+                      decorators) {
   UseMethod("tm_a_mmrm", aval_var)
 }
 
