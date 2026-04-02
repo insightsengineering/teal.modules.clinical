@@ -537,14 +537,14 @@ template_mmrm_plots <- function(fit_name,
 #'     tm_a_mmrm(
 #'       label = "MMRM",
 #'       dataname = "ADQS",
-#'       aval_var = variables(c("AVAL", "CHG"), 1L),
-#'       id_var = variables(c("USUBJID", "SUBJID"), 1L),
-#'       arm_var = variables(c("ARM", "ARMCD"), 1L),
-#'       visit_var = variables(c("AVISIT", "AVISITN"), 1L),
+#'       aval_var = teal.picks::variables(c("AVAL", "CHG"), 1L),
+#'       id_var = teal.picks::variables(c("USUBJID", "SUBJID"), 1L),
+#'       arm_var = teal.picks::variables(c("ARM", "ARMCD"), 1L),
+#'       visit_var = teal.picks::variables(c("AVISIT", "AVISITN"), 1L),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd_var = variables("PARAMCD"),
-#'       paramcd_values = values(selected = "FKSI-FWB"),
-#'       cov_var = variables(c("BASE", "AGE", "SEX", teal.picks::interaction_var("BASE:AVISIT")), NULL)
+#'       paramcd_var = teal.picks::variables("PARAMCD"),
+#'       paramcd_values = teal.picks::values(selected = "FKSI-FWB"),
+#'       cov_var = teal.picks::variables(c("BASE", "AGE", "SEX", teal.picks::interaction_vars("BASE", "AVISIT")), NULL)
 #'     )
 #'   )
 #' )
@@ -602,7 +602,10 @@ tm_a_mmrm.choices_selected <- function(label,
                                          "Satterthwaite",
                                          keep_order = TRUE
                                        ),
-                                       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                       conf_level = teal.transform::choices_selected(
+                                         c(0.95, 0.9, 0.8), 0.95,
+                                         keep_order = TRUE
+                                       ),
                                        plot_height = c(700L, 200L, 2000L),
                                        plot_width = NULL,
                                        total_label = default_total_label(),
@@ -691,7 +694,7 @@ tm_a_mmrm.choices_selected <- function(label,
 }
 
 #' @keywords internal
-ui_mmrm.choices_selected <- function(id, ...) {
+ui_mmrm.choices_selected <- function(id, ...) { # nolint: object_name.
   a <- list(...) # module args
   ns <- NS(id)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -928,7 +931,7 @@ ui_mmrm.choices_selected <- function(id, ...) {
   )
 }
 
-srv_mmrm.choices_selected <- function(id,
+srv_mmrm.choices_selected <- function(id, # nolint: object_name.
                                       data,
                                       dataname,
                                       parentname,

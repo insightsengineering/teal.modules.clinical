@@ -48,13 +48,16 @@ tm_a_mmrm.default <- function(label,
   checkmate::assert_class(conf_level, "values")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(
-    plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height"
+    plot_height[1],
+    lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height"
   )
   checkmate::assert_numeric(
-    plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE
+    plot_width,
+    len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE
   )
   checkmate::assert_numeric(
-    plot_width[1], lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
+    plot_width[1],
+    lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -89,7 +92,7 @@ tm_a_mmrm.default <- function(label,
   visit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), visit_var)
   split_covariates <- teal.picks::picks(
     teal.picks::datasets(dataname, dataname),
-    split_choices.variables(cov_var)
+    split_choices_variables(cov_var)
   )
   cov_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cov_var)
 
@@ -106,7 +109,7 @@ tm_a_mmrm.default <- function(label,
 }
 
 #' @keywords internal
-ui_mmrm.picks <- function(id,
+ui_mmrm.picks <- function(id, # nolint: object_name.
                           aval_var,
                           paramcd,
                           visit_var,
@@ -384,7 +387,7 @@ ui_mmrm.picks <- function(id,
 }
 
 #' @keywords internal
-srv_mmrm.picks <- function(id,
+srv_mmrm.picks <- function(id, # nolint: object_name.
                            data,
                            reporter,
                            filter_panel_api,
@@ -437,19 +440,22 @@ srv_mmrm.picks <- function(id,
       arm_var_r = arm_var_r
     )
 
-    observeEvent(selectors$cov_var()$variables$selected, {
-      # update covariates as actual variables
-      split_interactions_values <- split_interactions(selectors$cov_var()$variables$selected)
-      arm_var_value <- selectors$arm_var()$variables$selected
-      if (length(intersect(split_interactions_values, arm_var_value)) >= 1L) {
-        split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
-      } else {
-        split_covariates_selected <- split_interactions_values
-      }
-      rv_value <- selectors$split_covariates()
-      rv_value$variables$selected <- split_covariates_selected
-      selectors$split_covariates(rv_value)
-    }, ignoreNULL = FALSE)
+    observeEvent(selectors$cov_var()$variables$selected,
+      {
+        # update covariates as actual variables
+        split_interactions_values <- split_interactions(selectors$cov_var()$variables$selected)
+        arm_var_value <- selectors$arm_var()$variables$selected
+        if (length(intersect(split_interactions_values, arm_var_value)) >= 1L) {
+          split_covariates_selected <- setdiff(split_interactions_values, arm_var_value)
+        } else {
+          split_covariates_selected <- split_interactions_values
+        }
+        rv_value <- selectors$split_covariates()
+        rv_value$variables$selected <- split_covariates_selected
+        selectors$split_covariates(rv_value)
+      },
+      ignoreNULL = FALSE
+    )
 
     validated_q <- reactive({
       obj <- req(data())
@@ -477,8 +483,8 @@ srv_mmrm.picks <- function(id,
       if (selected_visit > 0) { # Interactive covariates and visit variable must include same visit variable
         selected_covr <- selectors$cov_var()$variables$selected
         checks <- list(
-          list(cov = "BASE:AVISIT",  invalid_visit = "AVISITN", valid_visit = "AVISIT"),
-          list(cov = "BASE:AVISITN", invalid_visit = "AVISIT",  valid_visit = "AVISITN")
+          list(cov = "BASE:AVISIT", invalid_visit = "AVISITN", valid_visit = "AVISIT"),
+          list(cov = "BASE:AVISITN", invalid_visit = "AVISIT", valid_visit = "AVISITN")
         )
         vapply(checks, FUN.VALUE = logical(1L), function(x) {
           validate_input(
@@ -537,15 +543,14 @@ srv_mmrm.picks <- function(id,
     # Note:
     # input$parallel does not get us out of sync (it just takes longer to get to same result)
     sync_inputs <- c(
-      "aval_var-variables-selected", # extract_input("aval_var", dataname),
-      # extract_input("paramcd", dataname, filter = TRUE),
-      "arm_var-variables-selected", # extract_input("arm_var", parentname),
+      "aval_var-variables-selected",
+      "arm_var-variables-selected",
       "Ref",
       "Comp",
       "combine_comp_arms",
-      "visit_var-variables-selected", # extract_input("visit_var", dataname),
-      "cov_var-variables-selected", # extract_input("cov_var", dataname),
-      "id_var-variables-selected", # extract_input("id_var", dataname),
+      "visit_var-variables-selected",
+      "cov_var-variables-selected",
+      "id_var-variables-selected",
       "weights_emmeans",
       "cor_struct",
       "method",
@@ -742,7 +747,7 @@ srv_mmrm.picks <- function(id,
 
       all_x_vars <- c(input_arm_var, input_visit_var, covariate_parts)
 
-      all_x_vars_in_adsl <- intersect(all_x_vars, colnames(adsl_filtered) )
+      all_x_vars_in_adsl <- intersect(all_x_vars, colnames(adsl_filtered))
       all_x_vars_in_anl <- setdiff(all_x_vars, all_x_vars_in_adsl)
 
       adslvars <- unique(c("USUBJID", "STUDYID", input_arm_var, input_id_var, all_x_vars_in_adsl))
