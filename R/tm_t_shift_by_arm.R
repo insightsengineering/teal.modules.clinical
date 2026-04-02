@@ -247,11 +247,11 @@ template_shift_by_arm <- function(dataname,
 #'     tm_t_shift_by_arm(
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-#'       visit_var = variables(choices = "AVISIT", selected = "AVISIT"),
-#'       aval_var = variables(choices = "ANRIND", selected = "ANRIND", fixed = TRUE),
-#'       baseline_var = variables(choices = "BNRIND", selected = "BNRIND", fixed = TRUE),
+#'       arm_var = variables(choices = c("ARM", "ARMCD")),
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       visit_var = variables(choices = "AVISIT"),
+#'       aval_var = variables(choices = "ANRIND"),
+#'       baseline_var = variables(choices = "BNRIND"),
 #'       useNA = "ifany"
 #'     )
 #'   )
@@ -264,13 +264,13 @@ template_shift_by_arm <- function(dataname,
 tm_t_shift_by_arm <- function(label,
                               dataname,
                               parentname = "ADSL",
-                              arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                              paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-                              visit_var = variables(choices = "AVISIT", selected = "AVISIT"),
-                              aval_var = variables(choices = "ANRIND", selected = "ANRIND", fixed = TRUE),
+                              arm_var = variables(choices = c("ARM", "ARMCD")),
+                              paramcd = variables(choices = "PARAMCD"),
+                              visit_var = variables(choices = "AVISIT"),
+                              aval_var = variables(choices = "ANRIND"),
                               base_var = lifecycle::deprecated(),
-                              baseline_var = variables(choices = "BNRIND", selected = "BNRIND", fixed = TRUE),
-                              treatment_flag_var = variables(choices = "ONTRTFL", selected = "ONTRTFL", fixed = TRUE),
+                              baseline_var = variables(choices = "BNRIND"),
+                              treatment_flag_var = variables(choices = "ONTRTFL"),
                               treatment_flag = teal.transform::choices_selected(
                                 c("Y", "N"),
                                 selected = "Y", fixed = TRUE
@@ -453,7 +453,12 @@ srv_shift_by_arm <- function(id,
       obj
     })
     merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     # Validate inputs.

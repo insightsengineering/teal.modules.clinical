@@ -183,13 +183,18 @@ template_events_patyear <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_events_patyear
-#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
+#' @param arm_var ([teal.picks::variables()])\cr object with all
 #'   available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param events_var ([teal.transform::choices_selected()])\cr object with
+#' @param events_var ([teal.picks::variables()])\cr object with
 #'   all available choices and preselected option for the variable with all event counts.
+#' @param paramcd ([teal.picks::variables()])\cr variable used to filter the analysis dataset
+#'   (typically `PARAMCD`). The `values()` element is added internally to allow users to pick
+#'   parameter value(s) interactively.
+#' @param aval_var ([teal.picks::variables()])\cr analysis variable (typically `AVAL`).
+#' @param avalu_var ([teal.picks::variables()])\cr analysis unit variable (typically `AVALU`).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -251,20 +256,12 @@ template_events_patyear <- function(dataname,
 #'     tm_t_events_patyear(
 #'       label = "AE Rate Adjusted for Patient-Years At Risk Table",
 #'       dataname = "ADAETTE",
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(ADSL, c("ARM", "ARMCD")),
-#'         selected = "ARMCD"
-#'       ),
+#'       arm_var = variables(choices = c("ARM", "ARMCD")),
 #'       add_total = TRUE,
-#'       events_var = choices_selected(
-#'         choices = variable_choices(ADAETTE, "n_events"),
-#'         selected = "n_events",
-#'         fixed = TRUE
-#'       ),
-#'       paramcd = choices_selected(
-#'         choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
-#'         selected = "AETTE1"
-#'       )
+#'       events_var = variables(choices = "n_events"),
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       aval_var = variables(choices = "AVAL"),
+#'       avalu_var = variables(choices = "AVALU")
 #'     )
 #'   )
 #' )
@@ -287,20 +284,15 @@ template_events_patyear <- function(dataname,
 #'     tm_t_events_patyear(
 #'       label = "AE Rate Adjusted for Patient-Years At Risk Table",
 #'       dataname = "ADAETTE",
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(ADSL, c("ARM", "ARMCD", "SEX")),
+#'       arm_var = variables(
+#'         choices = c("ARM", "ARMCD", "SEX"),
 #'         selected = c("ARM", "SEX")
 #'       ),
 #'       add_total = TRUE,
-#'       events_var = choices_selected(
-#'         choices = variable_choices(ADAETTE, "n_events"),
-#'         selected = "n_events",
-#'         fixed = TRUE
-#'       ),
-#'       paramcd = choices_selected(
-#'         choices = value_choices(ADAETTE, "PARAMCD", "PARAM"),
-#'         selected = "AETTE1"
-#'       )
+#'       events_var = variables(choices = "n_events"),
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       aval_var = variables(choices = "AVAL"),
+#'       avalu_var = variables(choices = "AVALU")
 #'     )
 #'   )
 #' )
@@ -311,22 +303,12 @@ template_events_patyear <- function(dataname,
 #' @export
 tm_t_events_patyear <- function(label,
                                 dataname,
-                                parentname = ifelse(
-                                  inherits(arm_var, "data_extract_spec"),
-                                  teal.transform::datanames_input(arm_var),
-                                  "ADSL"
-                                ),
-                                arm_var,
-                                events_var,
-                                paramcd,
-                                aval_var = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
-                                  fixed = TRUE
-                                ),
-                                avalu_var = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
-                                  fixed = TRUE
-                                ),
+                                parentname = "ADSL",
+                                arm_var = variables(choices = c("ARM", "ARMCD")),
+                                events_var = variables(choices = "n_events"),
+                                paramcd = variables(choices = "PARAMCD"),
+                                aval_var = variables(choices = "AVAL"),
+                                avalu_var = variables(choices = "AVALU"),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = tern::default_na_str(),
@@ -344,11 +326,11 @@ tm_t_events_patyear <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(events_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(aval_var, "choices_selected")
-  checkmate::assert_class(avalu_var, "choices_selected")
+  checkmate::assert_class(arm_var, "variables")
+  checkmate::assert_class(events_var, "variables")
+  checkmate::assert_class(paramcd, "variables")
+  checkmate::assert_class(aval_var, "variables")
+  checkmate::assert_class(avalu_var, "variables")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
@@ -359,89 +341,72 @@ tm_t_events_patyear <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  args <- c(as.list(environment()))
+  arm_var <- picks(datasets(parentname, parentname), arm_var)
+  paramcd <- picks(datasets(dataname, dataname), paramcd, values())
+  events_var <- picks(datasets(dataname, dataname), events_var)
+  aval_var <- picks(datasets(dataname, dataname), aval_var)
+  avalu_var <- picks(datasets(dataname, dataname), avalu_var)
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    avalu_var = cs_to_des_select(avalu_var, dataname = dataname),
-    events_var = cs_to_des_select(events_var, dataname = dataname)
-  )
+  args <- as.list(environment())
 
   module(
     label = label,
     ui = ui_events_patyear,
-    ui_args = c(data_extract_list, args),
     server = srv_events_patyear,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        total_label = total_label,
-        na_level = na_level,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_events_patyear))],
+    server_args = args[names(args) %in% names(formals(srv_events_patyear))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = union(parentname, dataname)
   )
 }
 
 #' @keywords internal
-ui_events_patyear <- function(id, ...) {
+ui_events_patyear <- function(id,
+                              arm_var,
+                              paramcd,
+                              aval_var,
+                              avalu_var,
+                              events_var,
+                              add_total,
+                              conf_level,
+                              drop_arm_levels,
+                              pre_output,
+                              post_output,
+                              decorators) {
   ns <- NS(id)
-  a <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var, a$paramcd, a$aval_var, a$avalu_var, a$events_var
-  )
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("patyear_table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "avalu_var", "events_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Treatment Variable"),
+        picks_ui(ns("arm_var"), arm_var)
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select an Event Type Parameter",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
+      checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
+      tags$div(
+        tags$label("Select an Event Type Parameter"),
+        picks_ui(ns("paramcd"), paramcd)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Analysis Variable"),
+        picks_ui(ns("aval_var"), aval_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("events_var"),
-        label = "Event Variable",
-        data_extract_spec = a$events_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Event Variable"),
+        picks_ui(ns("events_var"), events_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("avalu_var"),
-        label = "Analysis Unit Variable",
-        data_extract_spec = a$avalu_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Analysis Unit Variable"),
+        picks_ui(ns("avalu_var"), avalu_var)
       ),
       teal.widgets::optionalSelectInput(
         inputId = ns("conf_level"),
         label = "Confidence Level",
-        a$conf_level$choices,
-        a$conf_level$selected,
+        conf_level$choices,
+        conf_level$selected,
         multiple = FALSE,
-        fixed = a$conf_level$fixed
+        fixed = conf_level$fixed
       ),
       teal.widgets::optionalSelectInput(
         ns("conf_method"),
@@ -451,7 +416,7 @@ ui_events_patyear <- function(id, ...) {
         multiple = FALSE,
         fixed = FALSE
       ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -459,7 +424,7 @@ ui_events_patyear <- function(id, ...) {
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
-            value = a$drop_arm_levels
+            value = drop_arm_levels
           ),
           teal.widgets::optionalSelectInput(
             ns("num_pt_year"),
@@ -479,8 +444,8 @@ ui_events_patyear <- function(id, ...) {
         )
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -494,11 +459,9 @@ srv_events_patyear <- function(id,
                                aval_var,
                                avalu_var,
                                events_var,
-                               add_total,
+                               label,
                                total_label,
                                na_level,
-                               drop_arm_levels,
-                               label,
                                basic_table_args,
                                decorators) {
   checkmate::assert_class(data, "reactive")
@@ -506,9 +469,42 @@ srv_events_patyear <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
+
+    selectors <- picks_srv(
+      id = "",
+      picks = list(
+        arm_var = arm_var,
+        paramcd = paramcd,
+        aval_var = aval_var,
+        avalu_var = avalu_var,
+        events_var = events_var
+      ),
+      data = data
+    )
+
+    anl_selectors <- selectors
+    adsl_selectors <- selectors["arm_var"]
+
+    data_with_card <- reactive({
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's output(s)")
+        )
+      obj
+    })
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
+    anl_q <- merged_adsl_anl$data
+
     observeEvent(anl_q(), {
-      data_anl <- merged$anl_q()[["ANL"]]
-      aval_unit_var <- merged$anl_input_r()$columns_source$avalu_var
+      data_anl <- anl_q()[["ANL"]]
+      aval_unit_var <- anl_selectors$avalu_var()$variables$selected
       if (length(aval_unit_var) > 0) {
         choices <- stats::na.omit(unique(data_anl[[aval_unit_var]]))
         choices <- gsub("s$", "", tolower(choices))
@@ -522,95 +518,80 @@ srv_events_patyear <- function(id,
       }
     })
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        arm_var = arm_var,
-        paramcd = paramcd,
-        aval_var = aval_var,
-        avalu_var = avalu_var,
-        events_var = events_var
-      ),
-      datasets = data,
-      select_validation_rule = list(
-        arm_var = ~ if (length(.) != 1 && length(.) != 2) "Please select exactly 1 or 2 treatment variables",
-        aval_var = shinyvalidate::sv_required("Analysis Variable is required"),
-        events_var = shinyvalidate::sv_required("Events Variable is required")
-      ),
-      filter_validation_rule = list(
-        paramcd = shinyvalidate::sv_required("A Event Type Parameter is required")
-      )
-    )
-
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(
-          0, 1,
-          inclusive = c(FALSE, FALSE),
-          message_fmt = "Confidence level must be between 0 and 1"
-        )
-      )
-      iv$add_rule("conf_method", shinyvalidate::sv_required("A CI method is required"))
-      iv$add_rule("num_pt_year", shinyvalidate::sv_required("Time Unit for AE Rate is required"))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
-
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
-    })
-
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
-    )
-
-    # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
+      input_arm <- anl_selectors$arm_var()$variables$selected
+      validate(
+        need(length(input_arm) %in% 1:2, "Please select exactly 1 or 2 treatment variables")
+      )
 
-      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
-      input_aval_var <- as.vector(merged$anl_input_r()$columns_source$aval_var)
-      input_avalu_var <- as.vector(merged$anl_input_r()$columns_source$avalu_var)
-      input_events_var <- as.vector(merged$anl_input_r()$columns_source$events_var)
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      paramcd_pick <- anl_selectors$paramcd()
+      paramcd_vals <- if (is.null(paramcd_pick$values)) {
+        character(0)
+      } else {
+        paramcd_pick$values$selected
+      }
+      validate(
+        need(
+          length(paramcd_vals) >= 1L,
+          "A Event Type Parameter is required"
+        )
+      )
 
-      # validate inputs
+      validate(
+        need(
+          length(anl_selectors$aval_var()$variables$selected) >= 1L,
+          "Analysis Variable is required"
+        ),
+        need(
+          length(anl_selectors$events_var()$variables$selected) >= 1L,
+          "Events Variable is required"
+        )
+      )
+
+      validate_input(
+        "conf_level",
+        condition = function(x) {
+          !is.null(x) && nzchar(x) && {
+            xv <- suppressWarnings(as.numeric(x))
+            !is.na(xv) && xv > 0 && xv < 1
+          }
+        },
+        message = "Confidence level must be between 0 and 1"
+      )
+      validate_input(
+        "conf_method",
+        condition = function(x) !is.null(x) && nzchar(x),
+        message = "A CI method is required"
+      )
+      validate_input(
+        "num_pt_year",
+        condition = function(x) !is.null(x) && nzchar(x),
+        message = "Time Unit for AE Rate is required"
+      )
+
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
+
+      input_arm_var <- as.vector(anl_selectors$arm_var()$variables$selected)
+      input_aval_var <- as.vector(anl_selectors$aval_var()$variables$selected)
+      input_avalu_var <- as.vector(anl_selectors$avalu_var()$variables$selected)
+      input_events_var <- as.vector(anl_selectors$events_var()$variables$selected)
+      input_paramcd_var <- as.vector(anl_selectors$paramcd()$variables$selected)
+
       validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
         anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_events_var, input_aval_var, input_avalu_var),
+        anlvars = c(
+          "USUBJID", "STUDYID", input_paramcd_var,
+          input_events_var, input_aval_var, input_avalu_var
+        ),
         arm_var = input_arm_var[[1]]
       )
 
       validate(
         need(
-          !any(is.na(merged$anl_q()[["ANL"]][[input_events_var]])),
+          !any(is.na(anl_q()[["ANL"]][[input_events_var]])),
           "`Event Variable` for selected parameter includes NA values."
         )
       )
@@ -621,15 +602,21 @@ srv_events_patyear <- function(id,
     table_q <- reactive({
       validate_checks()
 
-      ANL <- merged$anl_q()[["ANL"]]
-      label_paramcd <- get_paramcd_label(ANL, paramcd)
+      ANL <- anl_q()[["ANL"]]
+      pcd <- anl_selectors$paramcd()
+      pcd_vals <- if (is.null(pcd$values)) character(0) else pcd$values$selected
+      label_paramcd <- paramcd_title_from_anl(
+        ANL,
+        paramcd_name = pcd$variables$selected[[1]],
+        paramcd_vals = pcd_vals
+      )
 
       my_calls <- template_events_patyear(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
-        aval_var = as.vector(merged$anl_input_r()$columns_source$aval_var),
-        events_var = as.vector(merged$anl_input_r()$columns_source$events_var),
+        arm_var = as.vector(anl_selectors$arm_var()$variables$selected),
+        aval_var = as.vector(anl_selectors$aval_var()$variables$selected),
+        events_var = as.vector(anl_selectors$events_var()$variables$selected),
         label_paramcd = label_paramcd,
         add_total = input$add_total,
         total_label = total_label,
@@ -655,7 +642,7 @@ srv_events_patyear <- function(id,
         drop_arm_levels = input$drop_arm_levels,
         basic_table_args = basic_table_args
       )
-      obj <- merged$anl_q()
+      obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })

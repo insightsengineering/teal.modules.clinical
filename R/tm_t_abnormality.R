@@ -250,12 +250,16 @@ template_abnormality <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_abnormality
-#' @param grade ([teal.transform::choices_selected()])\cr
-#'   object with all available choices and preselected option for variable names that can be used to
-#'   specify the abnormality grade. Variable must be factor.
+#' @param arm_var ([teal.picks::variables()])\cr object with all available choices and preselected
+#'   option for the treatment variable.
+#' @param by_vars ([teal.picks::variables()])\cr object with all available choices and preselected
+#'   option(s) for row-by variables (`multiple = TRUE`, `ordered = TRUE` recommended).
+#' @param grade ([teal.picks::variables()])\cr object with all available choices and preselected
+#'   option for the abnormality grade variable. Variable must be factor.
 #' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
-#' @param baseline_var ([teal.transform::choices_selected()])\cr
-#'   variable for baseline abnormality grade.
+#' @param id_var ([teal.picks::variables()])\cr subject identifier variable.
+#' @param baseline_var ([teal.picks::variables()])\cr variable for baseline abnormality grade.
+#' @param treatment_flag_var ([teal.picks::variables()])\cr on-treatment flag variable.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
 #' @inherit module_arguments return seealso
@@ -321,25 +325,16 @@ template_abnormality <- function(parentname,
 #'     tm_t_abnormality(
 #'       label = "Abnormality Table",
 #'       dataname = "ADLB",
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-#'         selected = "ARM"
-#'       ),
+#'       arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
 #'       add_total = FALSE,
-#'       by_vars = choices_selected(
-#'         choices = variable_choices(ADLB, subset = c("LBCAT", "PARAM", "AVISIT")),
+#'       by_vars = variables(
+#'         choices = c("LBCAT", "PARAM", "AVISIT"),
 #'         selected = c("LBCAT", "PARAM"),
-#'         keep_order = TRUE
+#'         multiple = TRUE,
+#'         ordered = TRUE
 #'       ),
-#'       baseline_var = choices_selected(
-#'         variable_choices(ADLB, subset = "BNRIND"),
-#'         selected = "BNRIND", fixed = TRUE
-#'       ),
-#'       grade = choices_selected(
-#'         choices = variable_choices(ADLB, subset = "ANRIND"),
-#'         selected = "ANRIND",
-#'         fixed = TRUE
-#'       ),
+#'       baseline_var = variables(choices = "BNRIND"),
+#'       grade = variables(choices = "ANRIND"),
 #'       abnormal = list(low = "LOW", high = "HIGH"),
 #'       exclude_base_abn = FALSE
 #'     )
@@ -352,27 +347,19 @@ template_abnormality <- function(parentname,
 #' @export
 tm_t_abnormality <- function(label,
                              dataname,
-                             parentname = ifelse(
-                               inherits(arm_var, "data_extract_spec"),
-                               teal.transform::datanames_input(arm_var),
-                               "ADSL"
+                             parentname = "ADSL",
+                             arm_var = variables(choices = c("ARM", "ARMCD")),
+                             by_vars = variables(
+                               choices = c("LBCAT", "PARAM", "AVISIT"),
+                               selected = c("LBCAT", "PARAM"),
+                               multiple = TRUE,
+                               ordered = TRUE
                              ),
-                             arm_var,
-                             by_vars,
-                             grade,
+                             grade = variables(choices = "ANRIND"),
                              abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-                             id_var = teal.transform::choices_selected(
-                               teal.transform::variable_choices(dataname, subset = "USUBJID"),
-                               selected = "USUBJID", fixed = TRUE
-                             ),
-                             baseline_var = teal.transform::choices_selected(
-                               teal.transform::variable_choices(dataname, subset = "BNRIND"),
-                               selected = "BNRIND", fixed = TRUE
-                             ),
-                             treatment_flag_var = teal.transform::choices_selected(
-                               teal.transform::variable_choices(dataname, subset = "ONTRTFL"),
-                               selected = "ONTRTFL", fixed = TRUE
-                             ),
+                             id_var = variables(choices = "USUBJID"),
+                             baseline_var = variables(choices = "BNRIND"),
+                             treatment_flag_var = variables(choices = "ONTRTFL"),
                              treatment_flag = teal.transform::choices_selected("Y"),
                              add_total = TRUE,
                              total_label = default_total_label(),
@@ -390,12 +377,12 @@ tm_t_abnormality <- function(label,
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   checkmate::assert_list(abnormal, types = "character", len = 2)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(by_vars, "choices_selected")
-  checkmate::assert_class(grade, "choices_selected")
-  checkmate::assert_class(id_var, "choices_selected")
-  checkmate::assert_class(baseline_var, "choices_selected")
-  checkmate::assert_class(treatment_flag_var, "choices_selected")
+  checkmate::assert_class(arm_var, "variables")
+  checkmate::assert_class(by_vars, "variables")
+  checkmate::assert_class(grade, "variables")
+  checkmate::assert_class(id_var, "variables")
+  checkmate::assert_class(baseline_var, "variables")
+  checkmate::assert_class(treatment_flag_var, "variables")
   checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
@@ -406,14 +393,12 @@ tm_t_abnormality <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    id_var = cs_to_des_select(id_var, dataname = dataname),
-    by_vars = cs_to_des_select(by_vars, dataname = dataname, multiple = TRUE, ordered = TRUE),
-    grade = cs_to_des_select(grade, dataname = dataname),
-    baseline_var = cs_to_des_select(baseline_var, dataname = dataname),
-    treatment_flag_var = cs_to_des_select(treatment_flag_var, dataname = dataname)
-  )
+  arm_var <- picks(datasets(parentname, parentname), arm_var)
+  by_vars <- picks(datasets(dataname, dataname), by_vars)
+  grade <- picks(datasets(dataname, dataname), grade)
+  id_var <- picks(datasets(dataname, dataname), id_var)
+  baseline_var <- picks(datasets(dataname, dataname), baseline_var)
+  treatment_flag_var <- picks(datasets(dataname, dataname), treatment_flag_var)
 
   args <- as.list(environment())
 
@@ -421,73 +406,52 @@ tm_t_abnormality <- function(label,
     label = label,
     ui = ui_t_abnormality,
     server = srv_t_abnormality,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        abnormal = abnormal,
-        treatment_flag = treatment_flag,
-        label = label,
-        total_label = total_label,
-        na_level = na_level,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_t_abnormality))],
+    server_args = args[names(args) %in% names(formals(srv_t_abnormality))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = union(parentname, dataname)
   )
 }
 
 #' @keywords internal
-ui_t_abnormality <- function(id, ...) {
+ui_t_abnormality <- function(id,
+                             arm_var,
+                             by_vars,
+                             grade,
+                             id_var,
+                             baseline_var,
+                             treatment_flag_var,
+                             add_total,
+                             exclude_base_abn,
+                             drop_arm_levels,
+                             pre_output,
+                             post_output,
+                             decorators) {
   ns <- NS(id)
-  a <- list(...) # module args
-
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var,
-    a$id_var,
-    a$by_vars,
-    a$grade,
-    a$baseline_var,
-    a$treatment_flag_var,
-    a$treatment_flag
-  )
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(
-        a[c("arm_var", "id_var", "by_vars", "grade", "baseline_var", "treatment_flag_var")]
+      tags$div(
+        tags$label("Select Treatment Variable"),
+        picks_ui(ns("arm_var"), arm_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
+      checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
+      tags$div(
+        tags$label("Row By Variable"),
+        picks_ui(ns("by_vars"), by_vars)
       ),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      teal.transform::data_extract_ui(
-        id = ns("by_vars"),
-        label = "Row By Variable",
-        data_extract_spec = a$by_vars,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("grade"),
-        label = "Grade Variable",
-        data_extract_spec = a$grade,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Grade Variable"),
+        picks_ui(ns("grade"), grade)
       ),
       checkboxInput(
         ns("exclude_base_abn"),
         "Exclude subjects whose baseline grade is the same as abnormal grade",
-        value = a$exclude_base_abn
+        value = exclude_base_abn
       ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -495,7 +459,7 @@ ui_t_abnormality <- function(id, ...) {
           checkboxInput(
             ns("drop_arm_levels"),
             label = "Drop columns not in filtered analysis dataset",
-            value = a$drop_arm_levels
+            value = drop_arm_levels
           )
         )
       ),
@@ -503,23 +467,17 @@ ui_t_abnormality <- function(id, ...) {
         open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
-          teal.transform::data_extract_ui(
-            id = ns("id_var"),
-            label = "Subject Identifier",
-            data_extract_spec = a$id_var,
-            is_single_dataset = is_single_dataset_value
+          tags$div(
+            tags$label("Subject Identifier"),
+            picks_ui(ns("id_var"), id_var)
           ),
-          teal.transform::data_extract_ui(
-            id = ns("baseline_var"),
-            label = "Baseline Grade Variable",
-            data_extract_spec = a$baseline_var,
-            is_single_dataset = is_single_dataset_value
+          tags$div(
+            tags$label("Baseline Grade Variable"),
+            picks_ui(ns("baseline_var"), baseline_var)
           ),
-          teal.transform::data_extract_ui(
-            id = ns("treatment_flag_var"),
-            label = "On Treatment Flag Variable",
-            data_extract_spec = a$treatment_flag_var,
-            is_single_dataset = is_single_dataset_value
+          tags$div(
+            tags$label("On Treatment Flag Variable"),
+            picks_ui(ns("treatment_flag_var"), treatment_flag_var)
           ),
           teal.widgets::optionalSelectInput(
             ns("treatment_flag"),
@@ -530,8 +488,8 @@ ui_t_abnormality <- function(id, ...) {
         )
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -560,8 +518,10 @@ srv_t_abnormality <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
+
+    selectors <- picks_srv(
+      id = "",
+      picks = list(
         arm_var = arm_var,
         id_var = id_var,
         by_vars = by_vars,
@@ -569,28 +529,28 @@ srv_t_abnormality <- function(id,
         baseline_var = baseline_var,
         treatment_flag_var = treatment_flag_var
       ),
-      datasets = data,
-      select_validation_rule = list(
-        arm_var = shinyvalidate::sv_required(
-          "Please select a treatment variable."
-        ),
-        by_vars = shinyvalidate::sv_required(
-          "Please select a Row By Variable."
-        ),
-        id_var = shinyvalidate::sv_required(
-          "Please select a subject identifier."
-        ),
-        grade = shinyvalidate::sv_required(
-          "Please select a grade variable."
-        ),
-        baseline_var = shinyvalidate::sv_required(
-          "Please select a baseline grade variable."
-        ),
-        treatment_flag_var = shinyvalidate::sv_required(
-          "Please select indicator value for on treatment records."
-        )
-      )
+      data = data
     )
+
+    anl_selectors <- selectors
+    adsl_selectors <- selectors["arm_var"]
+
+    data_with_card <- reactive({
+      obj <- data()
+      teal.reporter::teal_card(obj) <-
+        c(
+          teal.reporter::teal_card(obj),
+          teal.reporter::teal_card("## Module's output(s)")
+        )
+      obj
+    })
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
+    anl_q <- merged_adsl_anl$data
 
     isolate({
       resolved <- teal.transform::resolve_delayed(treatment_flag, as.list(data()))
@@ -602,55 +562,44 @@ srv_t_abnormality <- function(id,
       )
     })
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
-
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(arm_var = arm_var),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
-    })
-
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
-    )
-
     validate_checks <- reactive({
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
+      input_arm <- anl_selectors$arm_var()$variables$selected
+      validate(
+        need(length(input_arm) == 1L, "Please select a treatment variable.")
+      )
+      validate(
+        need(
+          length(anl_selectors$by_vars()$variables$selected) >= 1L,
+          "Please select a Row By Variable."
+        ),
+        need(
+          length(anl_selectors$id_var()$variables$selected) >= 1L,
+          "Please select a subject identifier."
+        ),
+        need(
+          length(anl_selectors$grade()$variables$selected) >= 1L,
+          "Please select a grade variable."
+        ),
+        need(
+          length(anl_selectors$baseline_var()$variables$selected) >= 1L,
+          "Please select a baseline grade variable."
+        ),
+        need(
+          length(anl_selectors$treatment_flag_var()$variables$selected) >= 1L,
+          "Please select indicator value for on treatment records."
+        )
+      )
 
-      teal::validate_inputs(iv_r())
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
 
-      input_arm_var <- names(merged$anl_input_r()$columns_source$arm_var)
-      input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
-      input_by_vars <- names(merged$anl_input_r()$columns_source$by_vars)
-      input_grade <- names(merged$anl_input_r()$columns_source$grade)
-      input_baseline_var <- names(merged$anl_input_r()$columns_source$baseline_var)
-      input_treatment_flag_var <- names(merged$anl_input_r()$columns_source$treatment_flag_var)
+      input_arm_var <- as.vector(anl_selectors$arm_var()$variables$selected)
+      input_id_var <- as.vector(anl_selectors$id_var()$variables$selected)
+      input_by_vars <- as.vector(anl_selectors$by_vars()$variables$selected)
+      input_grade <- as.vector(anl_selectors$grade()$variables$selected)
+      input_baseline_var <- as.vector(anl_selectors$baseline_var()$variables$selected)
+      input_treatment_flag_var <- as.vector(anl_selectors$treatment_flag_var()$variables$selected)
 
-      # validate inputs
       validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
@@ -663,9 +612,9 @@ srv_t_abnormality <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      by_vars_names <- merged$anl_input_r()$columns_source$by_vars
+      by_vars_names <- anl_selectors$by_vars()$variables$selected
       by_vars_labels <- as.character(sapply(by_vars_names, function(name) {
-        attr(merged$anl_q()[["ANL"]][[name]], "label")
+        attr(anl_q()[["ANL"]][[name]], "label")
       }))
 
       tbl_title <- ifelse(
@@ -677,13 +626,13 @@ srv_t_abnormality <- function(id,
       my_calls <- template_abnormality(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
-        by_vars = merged$anl_input_r()$columns_source$by_vars,
-        id_var = as.vector(merged$anl_input_r()$columns_source$id_var),
+        arm_var = as.vector(anl_selectors$arm_var()$variables$selected),
+        by_vars = anl_selectors$by_vars()$variables$selected,
+        id_var = as.vector(anl_selectors$id_var()$variables$selected),
         abnormal = abnormal,
-        grade = as.vector(merged$anl_input_r()$columns_source$grade),
-        baseline_var = as.vector(merged$anl_input_r()$columns_source$baseline_var),
-        treatment_flag_var = as.vector(merged$anl_input_r()$columns_source$treatment_flag_var),
+        grade = as.vector(anl_selectors$grade()$variables$selected),
+        baseline_var = as.vector(anl_selectors$baseline_var()$variables$selected),
+        treatment_flag_var = as.vector(anl_selectors$treatment_flag_var()$variables$selected),
         treatment_flag = input$treatment_flag,
         add_total = input$add_total,
         total_label = total_label,
@@ -694,7 +643,7 @@ srv_t_abnormality <- function(id,
         tbl_title = tbl_title
       )
 
-      obj <- merged$anl_q()
+      obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })

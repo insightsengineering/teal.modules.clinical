@@ -367,11 +367,11 @@ template_smq <- function(dataname,
 #'     tm_t_smq(
 #'       label = "Adverse Events by SMQ Table",
 #'       dataname = "ADAE",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD", "SEX"))),
+#'       arm_var = variables(choices = c("ARM", "ARMCD", "SEX")),
 #'       add_total = FALSE,
 #'       baskets = variables(choices = starts_with("SMQ") | starts_with("CQ")),
 #'       scopes = variables(choices = ends_with("SC")),
-#'       llt = variables(choices = "AEDECOD", selected = "AEDECOD")
+#'       llt = variables(choices = "AEDECOD")
 #'     )
 #'   )
 #' )
@@ -383,9 +383,9 @@ template_smq <- function(dataname,
 tm_t_smq <- function(label,
                      dataname,
                      parentname = "ADSL",
-                     arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                     id_var = variables(choices = "USUBJID", selected = "USUBJID", fixed = TRUE),
-                     llt = variables(choices = "AEDECOD", selected = "AEDECOD"),
+                     arm_var = variables(choices = c("ARM", "ARMCD")),
+                     id_var = variables(choices = "USUBJID"),
+                     llt = variables(choices = "AEDECOD"),
                      add_total = TRUE,
                      total_label = default_total_label(),
                      sort_criteria = c("freq_desc", "alpha"),
@@ -548,7 +548,12 @@ srv_t_smq <- function(id,
       obj
     })
     merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({

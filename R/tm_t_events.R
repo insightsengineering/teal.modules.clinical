@@ -448,11 +448,14 @@ template_events <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_events
-#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for variable names that can be used as `arm_var`.
-#'   It defines the grouping variable(s) in the results table.
+#' @param arm_var ([teal.picks::variables()])\cr specification of variable names that can be used as
+#'   `arm_var`. It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
+#' @param hlt ([teal.picks::variables()])\cr specification of the analysis variable used as the
+#'   high level term for event grouping.
+#' @param llt ([teal.picks::variables()])\cr specification of the analysis variable used as the
+#'   low level term for event grouping.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -504,13 +507,16 @@ template_events <- function(dataname,
 #'     tm_t_events(
 #'       label = "Adverse Event Table",
 #'       dataname = "ADAE",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
-#'       llt = choices_selected(
-#'         choices = variable_choices(ADAE, c("AETERM", "AEDECOD")),
-#'         selected = c("AEDECOD")
+#'       arm_var = variables(
+#'         choices = c("ARM", "ARMCD"),
+#'         selected = "ARM"
 #'       ),
-#'       hlt = choices_selected(
-#'         choices = variable_choices(ADAE, c("AEBODSYS", "AESOC")),
+#'       llt = variables(
+#'         choices = c("AETERM", "AEDECOD"),
+#'         selected = "AEDECOD"
+#'       ),
+#'       hlt = variables(
+#'         choices = c("AEBODSYS", "AESOC"),
 #'         selected = "AEBODSYS"
 #'       ),
 #'       add_total = TRUE,
@@ -526,9 +532,18 @@ template_events <- function(dataname,
 tm_t_events <- function(label,
                         dataname,
                         parentname = "ADSL",
-                        arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                        hlt = variables(choices = any_of(c("ARM", "ARMCD"))),
-                        llt = variables(choices = any_of(c("ARM", "ARMCD"))),
+                        arm_var = variables(
+                          choices = c("ARM", "ARMCD"),
+                          selected = "ARM"
+                        ),
+                        hlt = variables(
+                          choices = c("AEBODSYS", "AESOC"),
+                          selected = "AEBODSYS"
+                        ),
+                        llt = variables(
+                          choices = c("AETERM", "AEDECOD"),
+                          selected = "AEDECOD"
+                        ),
                         add_total = TRUE,
                         total_label = default_total_label(),
                         na_level = tern::default_na_str(),
@@ -703,8 +718,12 @@ srv_t_events_byterm <- function(id,
         )
       obj
     })
-    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({

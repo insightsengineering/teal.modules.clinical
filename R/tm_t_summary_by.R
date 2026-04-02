@@ -403,12 +403,12 @@ template_summary_by <- function(parentname,
 #'     tm_t_summary_by(
 #'       label = "Summary by Row Groups Table",
 #'       dataname = "ADLB",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+#'       arm_var = variables(choices = c("ARM", "ARMCD")),
 #'       add_total = TRUE,
-#'       by_vars = variables(choices = any_of(c("PARAM", "AVISIT")), selected = "AVISIT"),
-#'       summarize_vars = variables(choices = any_of(c("AVAL", "CHG")), selected = "AVAL"),
+#'       by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
+#'       summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
 #'       useNA = "ifany",
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD")
+#'       paramcd = variables(choices = "PARAMCD")
 #'     )
 #'   )
 #' )
@@ -420,10 +420,16 @@ template_summary_by <- function(parentname,
 tm_t_summary_by <- function(label,
                             dataname,
                             parentname = "ADSL",
-                            arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                            by_vars = variables(choices = any_of(c("PARAM", "AVISIT"))),
-                            summarize_vars = variables(choices = any_of(c("AVAL", "CHG"))),
-                            id_var = variables(choices = "USUBJID", selected = "USUBJID", fixed = TRUE),
+                            arm_var = variables(choices = c("ARM", "ARMCD")),
+                            by_vars = variables(
+                              choices = c("PARAM", "AVISIT"),
+                              selected = "AVISIT"
+                            ),
+                            summarize_vars = variables(
+                              choices = c("AVAL", "CHG"),
+                              selected = "AVAL"
+                            ),
+                            id_var = variables(choices = "USUBJID"),
                             paramcd = NULL,
                             add_total = TRUE,
                             total_label = default_total_label(),
@@ -507,7 +513,7 @@ ui_summary_by <- function(id,
                            add_total,
                            parallel_vars,
                            row_groups,
-                           useNA,
+                          useNA, # nolint: object_name_linter.
                            denominator,
                            numeric_stats,
                            categorical_stats,
@@ -669,7 +675,12 @@ srv_summary_by <- function(id,
       obj
     })
     merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     # Prepare the analysis environment (filter data, check data, populate envir).

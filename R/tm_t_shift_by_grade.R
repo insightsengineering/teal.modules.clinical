@@ -530,10 +530,10 @@ template_shift_by_grade <- function(parentname,
 #'     tm_t_shift_by_grade(
 #'       label = "Grade Laboratory Abnormality Table",
 #'       dataname = "ADLB",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+#'       arm_var = variables(choices = c("ARM", "ARMCD")),
+#'       paramcd = variables(choices = "PARAMCD"),
 #'       worst_flag_var = variables(
-#'         choices = any_of(c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+#'         choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
 #'         selected = "WGRLOVFL"
 #'       ),
 #'       add_total = FALSE
@@ -549,20 +549,20 @@ template_shift_by_grade <- function(parentname,
 tm_t_shift_by_grade <- function(label,
                                 dataname,
                                 parentname = "ADSL",
-                                arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                                visit_var = variables(choices = "AVISIT", selected = "AVISIT", fixed = TRUE),
-                                paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+                                arm_var = variables(choices = c("ARM", "ARMCD")),
+                                visit_var = variables(choices = "AVISIT"),
+                                paramcd = variables(choices = "PARAMCD"),
                                 worst_flag_var = variables(
-                                  choices = any_of(c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+                                  choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
                                   selected = "WGRLOVFL"
                                 ),
                                 worst_flag_indicator = teal.transform::choices_selected(
                                   c("Y", "N"),
                                   selected = "Y", fixed = TRUE
                                 ),
-                                anl_toxgrade_var = variables(choices = "ATOXGR", selected = "ATOXGR", fixed = TRUE),
-                                base_toxgrade_var = variables(choices = "BTOXGR", selected = "BTOXGR", fixed = TRUE),
-                                id_var = variables(choices = "USUBJID", selected = "USUBJID", fixed = TRUE),
+                                anl_toxgrade_var = variables(choices = "ATOXGR"),
+                                base_toxgrade_var = variables(choices = "BTOXGR"),
+                                id_var = variables(choices = "USUBJID"),
                                 add_total = FALSE,
                                 total_label = default_total_label(),
                                 drop_arm_levels = TRUE,
@@ -753,7 +753,12 @@ srv_t_shift_by_grade <- function(id,
       obj
     })
     merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({

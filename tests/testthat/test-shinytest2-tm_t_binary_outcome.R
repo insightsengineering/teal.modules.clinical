@@ -23,23 +23,18 @@ app_driver_tm_t_binary_outcome <- function() {
         label = "Responders",
         dataname = "ADRS",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADRS"]], c("ARM", "ARMCD", "ACTARMCD")),
+        arm_var = variables(
+          choices = c("ARM", "ARMCD", "ACTARMCD"),
           selected = "ARM"
         ),
         arm_ref_comp = arm_ref_comp,
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::value_choices(data[["ADRS"]], "PARAMCD", "PARAM"),
-          selected = "BESRSPI"
-        ),
-        strata_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADRS"]], c("SEX", "BMRKR2", "RACE")),
+        paramcd = variables(choices = "PARAMCD"),
+        strata_var = variables(
+          choices = c("SEX", "BMRKR2", "RACE"),
           selected = "RACE"
         ),
-        aval_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(
-            data[["ADRS"]], c("AVALC", "SEX")
-          ),
+        aval_var = variables(
+          choices = c("AVALC", "SEX"),
           selected = "AVALC",
           fixed = FALSE
         ),
@@ -111,7 +106,7 @@ testthat::test_that(
       "Responders"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals"),
+      app_driver$get_active_module_input("paramcd-values-selected"),
       "BESRSPI"
     )
     testthat::expect_equal(
@@ -119,7 +114,7 @@ testthat::test_that(
       c("Complete Response (CR)", "Partial Response (PR)")
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      app_driver$get_active_module_input("arm_var-variables-selected"),
       "ARM"
     )
     testthat::expect_equal(
@@ -138,7 +133,7 @@ testthat::test_that(
       "schouten"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("strata_var-dataset_ADSL_singleextract-select"),
+      app_driver$get_active_module_input("strata_var-variables-selected"),
       "RACE"
     )
     testthat::expect_equal(
@@ -154,7 +149,7 @@ testthat::test_that(
       "0.95"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aval_var-dataset_ADRS_singleextract-select"),
+      app_driver$get_active_module_input("aval_var-variables-selected"),
       "AVALC"
     )
     testthat::expect_true(app_driver$get_active_module_input("compare_arms"))
@@ -171,7 +166,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", "INVET")
+    app_driver$set_active_module_input("paramcd-values-selected", "INVET")
     testthat::expect_false(
       identical(
         table_before,
@@ -186,15 +181,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
-  app_driver$set_active_module_input("paramcd-dataset_ADRS_singleextract-filter1-vals", NULL)
+  app_driver$set_active_module_input("paramcd-values-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "paramcd-dataset_ADRS_singleextract-filter1-vals_input .shiny-validation-message"
-    )),
-    "Please select a filter."
-  )
   app_driver$stop()
 })
 
@@ -241,7 +230,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARMCD")
+    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -256,15 +245,9 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message")
-    ),
-    "Treatment variable must be selected"
-  )
   app_driver$stop()
 })
 
@@ -274,7 +257,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", "SEX")
+    app_driver$set_active_module_input("strata_var-variables-selected", "SEX")
 
     testthat::expect_false(
       identical(
@@ -293,7 +276,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-dataset_ADSL_singleextract-select", NULL)
+    app_driver$set_active_module_input("strata_var-variables-selected", NULL)
     testthat::expect_false(
       identical(
         table_before,

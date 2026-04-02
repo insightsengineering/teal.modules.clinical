@@ -417,17 +417,14 @@ template_binary_outcome <- function(dataname,
 #'     tm_t_binary_outcome(
 #'       label = "Responders",
 #'       dataname = "ADRS",
-#'       paramcd = choices_selected(
-#'         choices = value_choices(ADRS, "PARAMCD", "PARAM"),
-#'         selected = "BESRSPI"
-#'       ),
-#'       arm_var = choices_selected(
-#'         choices = variable_choices(ADRS, c("ARM", "ARMCD", "ACTARMCD")),
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       arm_var = variables(
+#'         choices = c("ARM", "ARMCD", "ACTARMCD"),
 #'         selected = "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       strata_var = choices_selected(
-#'         choices = variable_choices(ADRS, c("SEX", "BMRKR2", "RACE")),
+#'       strata_var = variables(
+#'         choices = c("SEX", "BMRKR2", "RACE"),
 #'         selected = "RACE"
 #'       ),
 #'       default_responses = list(
@@ -461,18 +458,15 @@ template_binary_outcome <- function(dataname,
 #' @export
 tm_t_binary_outcome <- function(label,
                                 dataname,
-                                parentname = ifelse(
-                                  test = inherits(arm_var, "data_extract_spec"),
-                                  yes = teal.transform::datanames_input(arm_var),
-                                  no = "ADSL"
-                                ),
+                                parentname = "ADSL",
                                 arm_var,
                                 arm_ref_comp = NULL,
                                 paramcd,
                                 strata_var,
-                                aval_var = teal.transform::choices_selected(
-                                  choices = teal.transform::variable_choices(dataname, c("AVALC", "SEX")),
-                                  selected = "AVALC", fixed = FALSE
+                                aval_var = variables(
+                                  choices = c("AVALC", "SEX"),
+                                  selected = "AVALC",
+                                  fixed = FALSE
                                 ),
                                 conf_level = teal.transform::choices_selected(
                                   c(0.95, 0.9, 0.8), 0.95,
@@ -506,10 +500,10 @@ tm_t_binary_outcome <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(strata_var, "choices_selected")
-  checkmate::assert_class(aval_var, "choices_selected")
+  checkmate::assert_class(arm_var, "variables")
+  checkmate::assert_class(paramcd, "variables")
+  checkmate::assert_class(strata_var, "variables")
+  checkmate::assert_class(aval_var, "variables")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
@@ -545,64 +539,44 @@ tm_t_binary_outcome <- function(label,
 
   denom <- match.arg(denom)
 
-  args <- as.list(environment())
+  arm_var <- picks(datasets(parentname, parentname), arm_var)
+  paramcd <- picks(datasets(dataname, dataname), paramcd, values())
+  aval_var <- picks(datasets(dataname, dataname), aval_var)
+  strata_var <- picks(datasets(parentname, parentname), strata_var)
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
-  )
+  args <- as.list(environment())
 
   module(
     label = label,
     ui = ui_t_binary_outcome,
-    ui_args = c(data_extract_list, args),
+    ui_args = args[names(args) %in% names(formals(ui_t_binary_outcome))],
     server = srv_t_binary_outcome,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        arm_ref_comp = arm_ref_comp,
-        label = label,
-        total_label = total_label,
-        default_responses = default_responses,
-        control = control,
-        rsp_table = rsp_table,
-        na_level = na_level,
-        denom = denom,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    server_args = args[names(args) %in% names(formals(srv_t_binary_outcome))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = union(parentname, dataname)
   )
 }
 
 #' @keywords internal
-ui_t_binary_outcome <- function(id, ...) {
-  a <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$paramcd,
-    a$arm_var,
-    a$aval_var,
-    a$strata_var
-  )
-
+ui_t_binary_outcome <- function(id,
+                                  paramcd,
+                                  arm_var,
+                                  strata_var,
+                                  aval_var,
+                                  arm_ref_comp,
+                                  add_total,
+                                  control,
+                                  conf_level,
+                                  rsp_table,
+                                  pre_output,
+                                  post_output,
+                                  decorators) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("paramcd", "arm_var", "aval_var", "strata_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Parameter",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
-      ),
+      tags$div(tags$label("Parameter"), picks_ui(ns("paramcd"), paramcd)),
       selectInput(
         ns("responders"),
         "Responders",
@@ -610,18 +584,13 @@ ui_t_binary_outcome <- function(id, ...) {
         selected = NULL,
         multiple = TRUE
       ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
+      tags$div(tags$label("Select Treatment Variable"), picks_ui(ns("arm_var"), arm_var)),
       tags$div(
         class = "arm-comp-box",
         bslib::input_switch(
           id = ns("compare_arms"),
           label = "Compare Treatments",
-          value = !is.null(a$arm_ref_comp)
+          value = !is.null(arm_ref_comp)
         ),
         conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
@@ -658,7 +627,7 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Newcombe, without correction" = "newcombe",
                 "Newcombe, with correction" = "newcombecc"
               ),
-              selected = a$control$unstrat$method_ci,
+              selected = control$unstrat$method_ci,
               multiple = FALSE,
               fixed = FALSE
             ),
@@ -670,14 +639,14 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Fisher's Exact Test" = "fisher",
                 "Chi-Squared Test with Schouten correction" = "schouten"
               ),
-              selected = a$control$unstrat$method_test,
+              selected = control$unstrat$method_test,
               multiple = FALSE,
               fixed = FALSE
             ),
             bslib::input_switch(
               id = ns("u_odds_ratio"),
               label = "Odds Ratio Estimation",
-              value = a$control$unstrat$odds
+              value = control$unstrat$odds
             )
           )
         ),
@@ -685,12 +654,7 @@ ui_t_binary_outcome <- function(id, ...) {
           open = TRUE,
           bslib::accordion_panel(
             title = "Stratified analysis settings",
-            teal.transform::data_extract_ui(
-              id = ns("strata_var"),
-              label = "Stratification Factors",
-              data_extract_spec = a$strata_var,
-              is_single_dataset = is_single_dataset_value
-            ),
+            tags$div(tags$label("Stratification Factors"), picks_ui(ns("strata_var"), strata_var)),
             teal.widgets::optionalSelectInput(
               ns("s_diff_ci"),
               label = "Method for Difference of Proportions CI",
@@ -702,14 +666,14 @@ ui_t_binary_outcome <- function(id, ...) {
                 "Stratified Newcombe, without correction" = "strat_newcombe",
                 "Stratified Newcombe, with correction" = "strat_newcombecc"
               ),
-              selected = a$control$strat$method_ci,
+              selected = control$strat$method_ci,
               multiple = FALSE
             ),
             teal.widgets::optionalSelectInput(
               ns("s_diff_test"),
               label = "Method for Difference of Proportions Test",
               choices = c("CMH Test" = "cmh"),
-              selected = a$control$strat$method_test,
+              selected = control$strat$method_test,
               multiple = FALSE,
               fixed = TRUE
             )
@@ -718,9 +682,9 @@ ui_t_binary_outcome <- function(id, ...) {
       ),
       conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        checkboxInput(ns("add_total"), "Add All Patients column", value = add_total)
       ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -737,34 +701,29 @@ ui_t_binary_outcome <- function(id, ...) {
               "Jeffreys" = "jeffreys",
               "Agresti-Coull" = "agresti-coull"
             ),
-            selected = a$control$global$method,
+            selected = control$global$method,
             multiple = FALSE,
             fixed = FALSE
           ),
           teal.widgets::optionalSelectInput(
             inputId = ns("conf_level"),
             label = "Confidence Level",
-            a$conf_level$choices,
-            a$conf_level$selected,
+            conf_level$choices,
+            conf_level$selected,
             multiple = FALSE,
-            fixed = a$conf_level$fixed
+            fixed = conf_level$fixed
           ),
           bslib::input_switch(
             id = ns("show_rsp_cat"),
             label = "Show All Response Categories",
-            value = ifelse(a$rsp_table, TRUE, FALSE)
+            value = ifelse(rsp_table, TRUE, FALSE)
           )
         ),
-        teal.transform::data_extract_ui(
-          id = ns("aval_var"),
-          label = "Analysis Variable",
-          data_extract_spec = a$aval_var,
-          is_single_dataset = is_single_dataset_value
-        )
+        tags$div(tags$label("Analysis Variable"), picks_ui(ns("aval_var"), aval_var))
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -799,21 +758,22 @@ srv_t_binary_outcome <- function(id,
       session,
       input,
       output,
-      id_arm_var = extract_input("arm_var", parentname),
+      id_arm_var = "arm_var-variables-selected",
       data = data()[[parentname]],
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_binary_outcome",
       on_off = reactive(input$compare_arms)
     )
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(arm_var = arm_var, paramcd = paramcd, strata_var = strata_var, aval_var = aval_var),
-      datasets = data,
-      select_validation_rule = list(
-        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
-        arm_var = shinyvalidate::sv_required("A treatment variable is required")
+    anl_selectors <- picks_srv(
+      id = "",
+      picks = list(
+        arm_var = arm_var,
+        paramcd = paramcd,
+        strata_var = strata_var,
+        aval_var = aval_var
       ),
-      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select a filter."))
+      data = data
     )
 
     iv_r <- reactive({
@@ -829,44 +789,42 @@ srv_t_binary_outcome <- function(id,
         "conf_level",
         shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between {left} and {right}")
       )
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "aval_var", "paramcd"))
+      iv$enable()
+      iv
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(arm_var = arm_var, strata_var = strata_var),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
+    data_with_card <- reactive({
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
+      obj
     })
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
+    adsl_selectors <- anl_selectors[c("arm_var", "strata_var")]
+    merged_adsl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
+    anl_q <- merged_adsl$data
 
     observeEvent(
       c(
-        input[[extract_input("aval_var", "ADRS")]],
-        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
+        input[["aval_var-variables-selected"]],
+        input[["paramcd-values-selected"]]
       ),
       handlerExpr = {
         anl <- anl_q()[["ANL"]]
-        aval_var <- anl_inputs()$columns_source$aval_var
-        paramcd <- input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
-        sel_param <- if (is.list(default_responses) && (!is.null(paramcd))) {
-          default_responses[[paramcd]]
+        aval_name <- anl_selectors$aval_var()$variables$selected
+        paramcd_sel <- input[["paramcd-values-selected"]]
+        sel_param <- if (is.list(default_responses) && length(paramcd_sel) > 0L) {
+          default_responses[[paramcd_sel[[1]]]]
         } else {
           default_responses
         }
@@ -875,17 +833,18 @@ srv_t_binary_outcome <- function(id,
         } else {
           sel_param
         }
-        responder_choices <- if (length(aval_var) == 0) {
+        responder_choices <- if (length(aval_name) == 0L) {
           character(0)
         } else {
-          if ("levels" %in% names(sel_param)) {
-            if (length(intersect(unique(anl[[aval_var]]), sel_param$levels)) > 1) {
+          av <- aval_name[[1]]
+          if (is.list(sel_param) && "levels" %in% names(sel_param)) {
+            if (length(intersect(unique(anl[[av]]), sel_param$levels)) > 1) {
               sel_param$levels
             } else {
-              unique(anl[[aval_var]])
+              unique(anl[[av]])
             }
           } else {
-            unique(anl[[aval_var]])
+            unique(anl[[av]])
           }
         }
         updateSelectInput(
@@ -898,15 +857,22 @@ srv_t_binary_outcome <- function(id,
 
     validate_check <- reactive({
       teal::validate_inputs(iv_r())
+      validate(
+        need(length(anl_selectors$arm_var()$variables$selected) >= 1L, "A treatment variable is required"),
+        need(length(anl_selectors$aval_var()$variables$selected) >= 1L, "An analysis variable is required")
+      )
+      pc <- anl_selectors$paramcd()
+      pc_vals <- if (is.null(pc$values)) character(0) else pc$values$selected
+      validate(need(length(pc_vals) >= 1L, "Please select a filter."))
+
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
 
-      anl_m <- anl_inputs()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_arm_var <- as.vector(anl_selectors$arm_var()$variables$selected)
+      input_strata_var <- as.vector(anl_selectors$strata_var()$variables$selected)
+      input_aval_var <- as.vector(anl_selectors$aval_var()$variables$selected)
+      input_paramcd <- as.vector(anl_selectors$paramcd()$variables$selected)
 
       validate_args <- list(
         adsl = adsl_filtered,
@@ -986,18 +952,18 @@ srv_t_binary_outcome <- function(id,
       validate_check()
 
       qenv <- anl_q()
-      anl_m <- anl_inputs()
       anl <- qenv[["ANL"]]
 
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
+      input_aval_var <- as.vector(anl_selectors$aval_var()$variables$selected)
       req(input$responders %in% anl[[input_aval_var]])
 
-      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-      input_paramcd <- unlist(anl_m$filter_info$paramcd)["selected"]
+      input_strata_var <- as.vector(anl_selectors$strata_var()$variables$selected)
+      paramcd_col <- as.vector(anl_selectors$paramcd()$variables$selected)[[1]]
+      input_paramcd <- unique(anl[[paramcd_col]])[[1]]
 
       responder_val_levels <- as.character(unique(anl[[input_aval_var]]))
       final_responder <- if (is.list(default_responses)) {
-        default_responses[[input_paramcd]][["levels"]]
+        default_responses[[as.character(input_paramcd)]][["levels"]]
       } else {
         responder_val_levels
       }
@@ -1006,7 +972,7 @@ srv_t_binary_outcome <- function(id,
       my_calls <- template_binary_outcome(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
+        arm_var = as.vector(anl_selectors$arm_var()$variables$selected),
         paramcd = input_paramcd,
         ref_arm = unlist(input$buckets$Ref),
         comp_arm = unlist(input$buckets$Comp),

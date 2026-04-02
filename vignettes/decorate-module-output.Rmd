@@ -108,7 +108,7 @@ data <- within(teal_data(), {
 
 
   ADLB <- tmc_ex_adlb |>
-    mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min)) |>
+    mutate(AVISIT = forcats::fct_reorder(AVISIT, AVISITN, min)) |>
     mutate(
       ONTRTFL = case_when(
         AVISIT %in% c("SCREENING", "BASELINE") ~ "",
@@ -146,22 +146,24 @@ app <- init(
     tm_t_abnormality(
       label = "tm_t_abnormality",
       dataname = "ADLB",
-      arm_var = choices_selected(
-        choices = variable_choices("ADSL", subset = c("ARM", "ARMCD")),
+      arm_var = variables(
+        choices = c("ARM", "ARMCD"),
         selected = "ARM"
       ),
       add_total = FALSE,
-      by_vars = choices_selected(
-        choices = variable_choices("ADLB", subset = c("LBCAT", "PARAM", "AVISIT")),
+      by_vars = variables(
+        choices = c("LBCAT", "PARAM", "AVISIT"),
         selected = c("LBCAT", "PARAM"),
-        keep_order = TRUE
+        multiple = TRUE,
+        ordered = TRUE
       ),
-      baseline_var = choices_selected(
-        variable_choices("ADLB", subset = "BNRIND"),
-        selected = "BNRIND", fixed = TRUE
+      baseline_var = variables(
+        choices = "BNRIND",
+        selected = "BNRIND",
+        fixed = TRUE
       ),
-      grade = choices_selected(
-        choices = variable_choices("ADLB", subset = "ANRIND"),
+      grade = variables(
+        choices = "ANRIND",
         selected = "ANRIND",
         fixed = TRUE
       ),
@@ -287,7 +289,7 @@ data <- teal_data(join_keys = default_cdisc_join_keys[c("ADSL", "ADRS")])
 data <- within(data, {
   ADSL <- rADSL
   ADLB <- tmc_ex_adlb |>
-    mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min)) |>
+    mutate(AVISIT = forcats::fct_reorder(AVISIT, AVISITN, min)) |>
     mutate(
       ONTRTFL = case_when(
         AVISIT %in% c("SCREENING", "BASELINE") ~ "",

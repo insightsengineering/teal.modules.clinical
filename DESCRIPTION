@@ -89,7 +89,8 @@ Remotes:
     insightsengineering/teal.transform,
     insightsengineering/teal.picks
 Config/Needs/verdepcheck: insightsengineering/teal,
-    insightsengineering/teal.slice, insightsengineering/teal.transform,
+    insightsengineering/teal.slice, insightsengineering/teal.transform, 
+    insightsengineering/teal.picks,
     insightsengineering/tern, tidymodels/broom, mllg/checkmate,
     wilkelab/cowplot, tidyverse/dplyr, rstudio/DT,
     insightsengineering/formatters, tidyverse/ggplot2, slowkow/ggrepel,

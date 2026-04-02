@@ -213,15 +213,16 @@ template_exposure <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_exposure
-#' @param row_by_var ([teal.transform::choices_selected()])\cr
-#'   object with all available choices and preselected option for
-#'   variable names that can be used to split rows.
-#' @param col_by_var ([teal.transform::choices_selected()])\cr
-#'   object with all available choices and preselected option for
-#'   variable names that can be used to split columns.
-#' @param parcat ([teal.transform::choices_selected()])\cr
-#'   object with all available choices and preselected option for
-#'   parameter category values.
+#' @param row_by_var ([teal.picks::variables()])\cr
+#'   variable names that can be used to split rows (`dataname`).
+#' @param col_by_var ([teal.picks::variables()])\cr
+#'   variable names that can be used to split columns (`parentname`).
+#' @param paramcd ([teal.picks::variables()])\cr variable used to filter by parameter (`dataname`);
+#'   `values()` is added internally.
+#' @param id_var ([teal.picks::variables()])\cr subject identifier (`dataname`).
+#' @param parcat ([teal.picks::variables()])\cr parameter category column on `dataname`; `values()` is added internally.
+#' @param aval_var ([teal.picks::variables()])\cr analysis value variable (`dataname`).
+#' @param avalu_var ([teal.picks::variables()])\cr analysis value unit variable (`dataname`).
 #' @param paramcd_label (`character`)\cr the column from the dataset where the value will be used to
 #'   label the argument `paramcd`.
 #'
@@ -287,22 +288,16 @@ template_exposure <- function(parentname,
 #'     tm_t_exposure(
 #'       label = "Duration of Exposure Table",
 #'       dataname = "ADEX",
-#'       paramcd = choices_selected(
-#'         choices = value_choices(data[["ADEX"]], "PARAMCD", "PARAM"),
-#'         selected = "TDURD"
-#'       ),
-#'       col_by_var = choices_selected(
-#'         choices = variable_choices(data[["ADEX"]], subset = c("SEX", "ARM")),
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       col_by_var = variables(
+#'         choices = c("SEX", "ARM"),
 #'         selected = "SEX"
 #'       ),
-#'       row_by_var = choices_selected(
-#'         choices = variable_choices(data[["ADEX"]], subset = c("RACE", "REGION1", "STRATA1", "SEX")),
+#'       row_by_var = variables(
+#'         choices = c("RACE", "REGION1", "STRATA1", "SEX"),
 #'         selected = "RACE"
 #'       ),
-#'       parcat = choices_selected(
-#'         choices = value_choices(data[["ADEX"]], "PARCAT2"),
-#'         selected = "Drug A"
-#'       ),
+#'       parcat = variables(choices = "PARCAT2"),
 #'       add_total = FALSE
 #'     )
 #'   ),
@@ -315,34 +310,15 @@ template_exposure <- function(parentname,
 #' @export
 tm_t_exposure <- function(label,
                           dataname,
-                          parentname = ifelse(
-                            inherits(col_by_var, "data_extract_spec"),
-                            teal.transform::datanames_input(col_by_var),
-                            "ADSL"
-                          ),
+                          parentname = "ADSL",
                           row_by_var,
                           col_by_var,
-                          paramcd = teal.transform::choices_selected(
-                            choices = teal.transform::value_choices(dataname, "PARAMCD", "PARAM"),
-                            selected = "TDURD"
-                          ),
+                          paramcd = variables(choices = "PARAMCD"),
                           paramcd_label = "PARAM",
-                          id_var = teal.transform::choices_selected(
-                            teal.transform::variable_choices(dataname, subset = "USUBJID"),
-                            selected = "USUBJID",
-                            fixed = TRUE
-                          ),
+                          id_var = variables(choices = "USUBJID"),
                           parcat,
-                          aval_var = teal.transform::choices_selected(
-                            teal.transform::variable_choices(dataname, subset = "AVAL"),
-                            selected = "AVAL",
-                            fixed = TRUE
-                          ),
-                          avalu_var = teal.transform::choices_selected(
-                            teal.transform::variable_choices(dataname, subset = "AVALU"),
-                            selected = "AVALU",
-                            fixed = TRUE
-                          ),
+                          aval_var = variables(choices = "AVAL"),
+                          avalu_var = variables(choices = "AVALU"),
                           add_total,
                           total_label = default_total_label(),
                           add_total_row = TRUE,
@@ -358,13 +334,13 @@ tm_t_exposure <- function(label,
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  checkmate::assert_class(row_by_var, "choices_selected")
-  checkmate::assert_class(col_by_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(id_var, "choices_selected")
-  checkmate::assert_class(parcat, "choices_selected")
-  checkmate::assert_class(aval_var, "choices_selected")
-  checkmate::assert_class(avalu_var, "choices_selected")
+  checkmate::assert_class(row_by_var, "variables")
+  checkmate::assert_class(col_by_var, "variables")
+  checkmate::assert_class(paramcd, "variables")
+  checkmate::assert_class(id_var, "variables")
+  checkmate::assert_class(parcat, "variables")
+  checkmate::assert_class(aval_var, "variables")
+  checkmate::assert_class(avalu_var, "variables")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(add_total_row)
@@ -374,118 +350,66 @@ tm_t_exposure <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  data_extract_list <- list(
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    row_by_var = cs_to_des_select(row_by_var, dataname = dataname),
-    col_by_var = cs_to_des_select(col_by_var, dataname = parentname),
-    id_var = cs_to_des_select(id_var, dataname = dataname),
-    parcat = cs_to_des_filter(parcat, dataname = dataname),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    avalu_var = cs_to_des_select(avalu_var, dataname = dataname)
-  )
+  paramcd <- picks(datasets(dataname, dataname), paramcd, values())
+  row_by_var <- picks(datasets(dataname, dataname), row_by_var)
+  col_by_var <- picks(datasets(parentname, parentname), col_by_var)
+  id_var <- picks(datasets(dataname, dataname), id_var)
+  parcat <- picks(datasets(dataname, dataname), parcat, values())
+  aval_var <- picks(datasets(dataname, dataname), aval_var)
+  avalu_var <- picks(datasets(dataname, dataname), avalu_var)
 
   args <- as.list(environment())
   module(
     label = label,
     ui = ui_t_exposure,
     server = srv_t_exposure,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        total_label = total_label,
-        total_row_label = total_row_label,
-        na_level = na_level,
-        basic_table_args = basic_table_args,
-        paramcd_label = paramcd_label,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_t_exposure))],
+    server_args = args[names(args) %in% names(formals(srv_t_exposure))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = union(parentname, dataname)
   )
 }
 
 
 #' @keywords internal
-ui_t_exposure <- function(id, ...) {
+ui_t_exposure <- function(id,
+                          paramcd,
+                          parcat,
+                          col_by_var,
+                          row_by_var,
+                          id_var,
+                          aval_var,
+                          avalu_var,
+                          add_total_row,
+                          add_total,
+                          pre_output,
+                          post_output,
+                          decorators) {
   ns <- NS(id)
-  a <- list(...) # module args
-
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$paramcd,
-    a$col_by_var,
-    a$row_by_var,
-    a$id_var,
-    a$parcat,
-    a$aval_var,
-    a$avalu_var
-  )
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c(
-        "paramcd", "col_by_var", "row_by_var", "id_var", "parcat", "aval_var", "avalu_var"
-      )]),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select the Parameter",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("parcat"),
-        label = "Select the Parameter Category",
-        data_extract_spec = a$parcat,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("col_by_var"),
-        label = "Select Column by Variable",
-        data_extract_spec = a$col_by_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("row_by_var"),
-        label = "Select Row by Variable",
-        data_extract_spec = a$row_by_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      checkboxInput(ns("add_total_row"), "Add Total row", value = a$add_total_row),
-      checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      tags$div(tags$label("Select the Parameter"), picks_ui(ns("paramcd"), paramcd)),
+      tags$div(tags$label("Select the Parameter Category"), picks_ui(ns("parcat"), parcat)),
+      tags$div(tags$label("Select Column by Variable"), picks_ui(ns("col_by_var"), col_by_var)),
+      tags$div(tags$label("Select Row by Variable"), picks_ui(ns("row_by_var"), row_by_var)),
+      checkboxInput(ns("add_total_row"), "Add Total row", value = add_total_row),
+      checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
+      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
-          teal.transform::data_extract_ui(
-            id = ns("id_var"),
-            label = "Subject Identifier",
-            data_extract_spec = a$id_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          teal.transform::data_extract_ui(
-            id = ns("aval_var"),
-            label = "Analysis Value Variable",
-            data_extract_spec = a$aval_var,
-            is_single_dataset = is_single_dataset_value
-          ),
-          teal.transform::data_extract_ui(
-            id = ns("avalu_var"),
-            label = "Analysis Value Unit Variable",
-            data_extract_spec = a$avalu_var,
-            is_single_dataset = is_single_dataset_value
-          )
+          tags$div(tags$label("Subject Identifier"), picks_ui(ns("id_var"), id_var)),
+          tags$div(tags$label("Analysis Value Variable"), picks_ui(ns("aval_var"), aval_var)),
+          tags$div(tags$label("Analysis Value Unit Variable"), picks_ui(ns("avalu_var"), avalu_var))
         )
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -506,23 +430,16 @@ srv_t_exposure <- function(id,
                            label,
                            total_label,
                            total_row_label,
-                           basic_table_args = basic_table_args,
+                           basic_table_args,
                            decorators) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    rule_intersection <- function(other) {
-      function(value) {
-        others <- selector_list()[[other]]()$select
-        if (length(intersect(value, others)) > 0L) {
-          "Column by and row by variables should not be the same."
-        }
-      }
-    }
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
+    selectors <- picks_srv(
+      id = "",
+      picks = list(
         id_var = id_var,
         paramcd = paramcd,
         row_by_var = row_by_var,
@@ -531,83 +448,68 @@ srv_t_exposure <- function(id,
         aval_var = aval_var,
         avalu_var = avalu_var
       ),
-      datasets = data,
-      select_validation_rule = list(
-        id_var = shinyvalidate::sv_required("Subject Identifier is required"),
-        col_by_var = shinyvalidate::compose_rules(
-          shinyvalidate::sv_optional(),
-          rule_intersection("row_by_var")
-        ),
-        row_by_var = shinyvalidate::compose_rules(
-          shinyvalidate::sv_required("Please select a row by variable."),
-          rule_intersection("col_by_var")
-        ),
-        aval_var = shinyvalidate::sv_required("Please select an analysis variable."),
-        avalu_var = shinyvalidate::sv_required("Please select an analysis unit variable.")
-      ),
-      filter_validation_rule = list(
-        paramcd = shinyvalidate::sv_required("Please select a parameter value."),
-        parcat = shinyvalidate::sv_required("Please select a parameter category value.")
-      )
+      data = data
     )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
+    anl_selectors <- selectors
+    adsl_selectors <- selectors["col_by_var"]
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(col_by_var = col_by_var),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
+    data_with_card <- reactive({
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
+      obj
     })
-
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
     )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
+    anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
+      input_id <- as.vector(anl_selectors$id_var()$variables$selected)
+      input_row <- as.vector(anl_selectors$row_by_var()$variables$selected)
+      input_col <- as.vector(anl_selectors$col_by_var()$variables$selected)
+      input_aval <- as.vector(anl_selectors$aval_var()$variables$selected)
+      input_avalu <- as.vector(anl_selectors$avalu_var()$variables$selected)
 
-      teal::validate_inputs(iv_r())
+      validate(
+        need(length(input_id) >= 1L, "Subject Identifier is required"),
+        need(length(input_row) >= 1L, "Please select a row by variable."),
+        need(length(input_aval) >= 1L, "Please select an analysis variable."),
+        need(length(input_avalu) >= 1L, "Please select an analysis unit variable."),
+        need(
+          length(intersect(input_row, input_col)) == 0L,
+          "Column by and row by variables should not be the same."
+        )
+      )
 
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
-      input_id_var <- names(merged$anl_input_r()$columns_source$id_var)
-      input_row_by_var <- names(merged$anl_input_r()$columns_source$row_by_var)
-      input_col_by_var <- names(merged$adsl_input_r()$columns_source$col_by_var)
-      input_parcat <- unlist(parcat$filter)["vars_selected"]
-      input_aval_var <- names(merged$anl_input_r()$columns_source$aval_var)
-      input_avalu_var <- names(merged$anl_input_r()$columns_source$avalu_var)
+      pc_param <- anl_selectors$paramcd()
+      pc_vals <- if (is.null(pc_param$values)) character(0) else pc_param$values$selected
+      validate(need(length(pc_vals) >= 1L, "Please select a parameter value."))
 
-      # validate inputs
+      pc_parcat <- anl_selectors$parcat()
+      parcat_vals <- if (is.null(pc_parcat$values)) character(0) else pc_parcat$values$selected
+      validate(need(length(parcat_vals) >= 1L, "Please select a parameter category value."))
+
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
+
+      input_paramcd_var <- as.vector(anl_selectors$paramcd()$variables$selected)
+      input_parcat_var <- as.vector(anl_selectors$parcat()$variables$selected)
+
       validate_standard_inputs(
         adsl = adsl_filtered,
-        adslvars = c("USUBJID", "STUDYID", input_col_by_var),
+        adslvars = c("USUBJID", "STUDYID", input_col),
         anl = anl_filtered,
         anlvars = c(
-          "USUBJID", "STUDYID", input_id_var, input_paramcd,
-          input_row_by_var, input_parcat, input_aval_var, input_avalu_var
+          "USUBJID", "STUDYID", input_id, input_paramcd_var,
+          input_row, input_parcat_var, input_aval, input_avalu
         ),
         arm_var = NULL,
         need_arm = FALSE
@@ -618,46 +520,53 @@ srv_t_exposure <- function(id,
     all_q <- reactive({
       validate_checks()
 
-      anl_filtered <- merged$anl_q()[[dataname]]
-      input_avalu_var <- as.character(
-        unique(merged$anl_q()[["ANL"]][[names(merged$anl_input_r()$columns_source$avalu_var)[1]]])
-      )
-      input_paramcd <- as.character(
-        unique(merged$anl_q()[["ANL"]][[names(merged$anl_input_r()$columns_source$paramcd)[1]]])
-      )
+      anl_filtered <- anl_q()[[dataname]]
+      anl_merged <- anl_q()[["ANL"]]
+
+      input_avalu_name <- as.vector(anl_selectors$avalu_var()$variables$selected)[[1]]
+      input_avalu_var <- as.character(unique(anl_merged[[input_avalu_name]]))
+
+      input_paramcd_name <- as.vector(anl_selectors$paramcd()$variables$selected)[[1]]
+      input_paramcd <- as.character(unique(anl_merged[[input_paramcd_name]]))
 
       if (is.null(paramcd_label)) {
         input_paramcd_label <- input_paramcd
       } else {
-        paramcd <- names(merged$anl_input_r()$columns_source$paramcd)
-        paramcd_map_list <- c(paramcd, paramcd_label)
+        paramcd_col <- input_paramcd_name
+        paramcd_map_list <- c(paramcd_col, paramcd_label)
         paramcd_map <- unique(anl_filtered[paramcd_map_list])
-        input_paramcd_label <- as.character(paramcd_map[paramcd_map[1] == input_paramcd, 2])
+        input_paramcd_label <- as.character(
+          paramcd_map[paramcd_map[[paramcd_col]] == input_paramcd[1], paramcd_label, drop = TRUE][1]
+        )
       }
 
+      parcat_pick <- anl_selectors$parcat()
+      parcat_sel <- if (is.null(parcat_pick$values)) character(0) else parcat_pick$values$selected[[1]]
+
       basic_table_args$title <- "Duration of Exposure Table"
-      basic_table_args$subtitles <-
-        paste("Parameter Category:", merged$anl_input_r()$filter_info$parcat[[1]]$selected[[1]])
+      basic_table_args$subtitles <- paste("Parameter Category:", parcat_sel)
+
+      input_col_names <- as.vector(anl_selectors$col_by_var()$variables$selected)
 
       my_calls <- template_exposure(
         parentname = "ANL_ADSL",
         dataname = "ANL",
-        id_var = names(merged$anl_input_r()$columns_source$id_var),
+        id_var = as.vector(anl_selectors$id_var()$variables$selected),
         paramcd = input_paramcd,
         paramcd_label = input_paramcd_label,
-        row_by_var = names(merged$anl_input_r()$columns_source$row_by_var),
-        col_by_var = names(merged$anl_input_r()$columns_source$col_by_var),
+        row_by_var = as.vector(anl_selectors$row_by_var()$variables$selected),
+        col_by_var = input_col_names,
         add_total = input$add_total,
         total_label = total_label,
         add_total_row = input$add_total_row,
         total_row_label = total_row_label,
         drop_levels = TRUE,
         na_level = na_level,
-        aval_var = names(merged$anl_input_r()$columns_source$aval_var),
+        aval_var = as.vector(anl_selectors$aval_var()$variables$selected),
         avalu_var = input_avalu_var,
         basic_table_args = basic_table_args
       )
-      obj <- merged$anl_q()
+      obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })

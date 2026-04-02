@@ -249,14 +249,14 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'     tm_t_shift_by_arm_by_worst(
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+#'       arm_var = variables(choices = c("ARM", "ARMCD")),
+#'       paramcd = variables(choices = "PARAMCD"),
 #'       worst_flag_var = variables(
-#'         choices = any_of(c("WORS01FL", "WORS02FL")),
+#'         choices = c("WORS01FL", "WORS02FL"),
 #'         selected = "WORS02FL"
 #'       ),
-#'       aval_var = variables(choices = any_of(c("AVALC", "ANRIND")), selected = "AVALC"),
-#'       baseline_var = variables(choices = any_of(c("BASEC", "BNRIND")), selected = "BASEC"),
+#'       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "AVALC"),
+#'       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BASEC"),
 #'       useNA = "ifany"
 #'     )
 #'   )
@@ -269,20 +269,20 @@ template_shift_by_arm_by_worst <- function(dataname,
 tm_t_shift_by_arm_by_worst <- function(label,
                                        dataname,
                                        parentname = "ADSL",
-                                       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                                       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-                                       aval_var = variables(choices = any_of(c("AVALC", "ANRIND")), selected = "AVALC"),
+                                       arm_var = variables(choices = c("ARM", "ARMCD")),
+                                       paramcd = variables(choices = "PARAMCD"),
+                                       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "AVALC"),
                                        base_var = lifecycle::deprecated(),
-                                       baseline_var = variables(choices = any_of(c("BASEC", "BNRIND")), selected = "BASEC"),
+                                       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BASEC"),
                                        worst_flag_var = variables(
-                                         choices = any_of(c("WORS01FL", "WORS02FL")),
+                                         choices = c("WORS01FL", "WORS02FL"),
                                          selected = "WORS02FL"
                                        ),
                                        worst_flag = teal.transform::choices_selected(
                                          c("Y", "N"),
                                          selected = "Y", fixed = TRUE
                                        ),
-                                       treatment_flag_var = variables(choices = "ONTRTFL", selected = "ONTRTFL", fixed = TRUE),
+                                       treatment_flag_var = variables(choices = "ONTRTFL"),
                                        treatment_flag = teal.transform::choices_selected(
                                          c("Y", "N"),
                                          selected = "Y", fixed = TRUE
@@ -475,7 +475,12 @@ srv_shift_by_arm_by_worst <- function(id,
       obj
     })
     merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     # validate inputs

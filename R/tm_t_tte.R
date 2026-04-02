@@ -463,10 +463,10 @@ template_tte <- function(dataname = "ANL",
 #'     tm_t_tte(
 #'       label = "Time To Event Table",
 #'       dataname = "ADTTE",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD", "ACTARMCD"))),
+#'       arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-#'       strata_var = variables(choices = any_of(c("SEX", "BMRKR2")), selected = "SEX"),
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
 #'       time_points = teal.transform::choices_selected(c(182, 243), 182)
 #'     )
 #'   )
@@ -479,17 +479,20 @@ template_tte <- function(dataname = "ANL",
 tm_t_tte <- function(label,
                      dataname,
                      parentname = "ADSL",
-                     arm_var = variables(choices = any_of(c("ARM", "ARMCD", "ACTARMCD"))),
+                     arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
                      arm_ref_comp = NULL,
-                     paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-                     strata_var = variables(choices = any_of(c("SEX", "BMRKR2"))),
-                     aval_var = variables(choices = "AVAL", selected = "AVAL", fixed = TRUE),
-                     cnsr_var = variables(choices = "CNSR", selected = "CNSR", fixed = TRUE),
+                     paramcd = variables(choices = "PARAMCD"),
+                     strata_var = variables(
+                       choices = c("SEX", "BMRKR2"),
+                       selected = "SEX"
+                     ),
+                     aval_var = variables(choices = "AVAL"),
+                     cnsr_var = variables(choices = "CNSR"),
                      conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      time_points = teal.transform::choices_selected(c(182, 243), 182),
-                     time_unit_var = variables(choices = "AVALU", selected = "AVALU", fixed = TRUE),
-                     event_desc_var = variables(choices = "EVNTDESC", selected = "EVNTDESC", fixed = TRUE),
+                     time_unit_var = variables(choices = "AVALU"),
+                     event_desc_var = variables(choices = "EVNTDESC"),
                      add_total = FALSE,
                      total_label = default_total_label(),
                      na_level = tern::default_na_str(),
@@ -778,7 +781,12 @@ srv_t_tte <- function(id,
       obj
     })
     merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     # Prepare the analysis environment (filter data, check data, populate envir).

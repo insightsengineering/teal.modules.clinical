@@ -7,18 +7,16 @@
 tm_t_shift_by_arm(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
-  arm_var,
-  paramcd,
-  visit_var,
-  aval_var,
+  parentname = "ADSL",
+  arm_var = variables(choices = c("ARM", "ARMCD")),
+  paramcd = variables(choices = "PARAMCD"),
+  visit_var = variables(choices = "AVISIT"),
+  aval_var = variables(choices = "ANRIND"),
   base_var = lifecycle::deprecated(),
-  baseline_var,
-  treatment_flag_var =
-    teal.transform::choices_selected(teal.transform::variable_choices(dataname, subset =
-    "ONTRTFL"), selected = "ONTRTFL"),
-  treatment_flag = teal.transform::choices_selected("Y"),
+  baseline_var = variables(choices = "BNRIND"),
+  treatment_flag_var = variables(choices = "ONTRTFL"),
+  treatment_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed =
+    TRUE),
   useNA = c("ifany", "no"),
   na_level = tern::default_na_str(),
   add_total = FALSE,
@@ -37,30 +35,30 @@ tm_t_shift_by_arm(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
-It defines the grouping variable in the results table.}
+\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for treatment arm.}
 
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for lab parameter code. The \code{values()} element is added internally to allow
+users to filter the parameter values interactively.}
 
-\item{visit_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable names that can be used as \code{visit} variable.
-Must be a factor in \code{dataname}.}
+\item{visit_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for analysis visit. The \code{values()} element is added internally to allow
+users to filter the visit values interactively.}
 
-\item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the analysis variable.}
+\item{aval_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for analysis range indicator.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and preselected option for variable values that can be used as \code{baseline_var}.}
+\item{baseline_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for baseline reference range indicator.}
 
-\item{treatment_flag_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr on
-treatment flag variable.}
+\item{treatment_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+variable for on-treatment flag.}
 
-\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value
-indicating on treatment records in \code{treatment_flag_var}.}
+\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+value(s) indicating on-treatment records.}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 
@@ -152,37 +150,17 @@ data <- within(data, {
 })
 join_keys(data) <- default_cdisc_join_keys[names(data)]
 
-ADSL <- data[["ADSL"]]
-ADEG <- data[["ADEG"]]
-
 app <- init(
   data = data,
   modules = modules(
     tm_t_shift_by_arm(
       label = "Shift by Arm Table",
       dataname = "ADEG",
-      arm_var = choices_selected(
-        variable_choices(ADSL, subset = c("ARM", "ARMCD")),
-        selected = "ARM"
-      ),
-      paramcd = choices_selected(
-        value_choices(ADEG, "PARAMCD"),
-        selected = "HR"
-      ),
-      visit_var = choices_selected(
-        value_choices(ADEG, "AVISIT"),
-        selected = "POST-BASELINE MINIMUM"
-      ),
-      aval_var = choices_selected(
-        variable_choices(ADEG, subset = "ANRIND"),
-        selected = "ANRIND",
-        fixed = TRUE
-      ),
-      baseline_var = choices_selected(
-        variable_choices(ADEG, subset = "BNRIND"),
-        selected = "BNRIND",
-        fixed = TRUE
-      ),
+      arm_var = variables(choices = c("ARM", "ARMCD")),
+      paramcd = variables(choices = "PARAMCD"),
+      visit_var = variables(choices = "AVISIT"),
+      aval_var = variables(choices = "ANRIND"),
+      baseline_var = variables(choices = "BNRIND"),
       useNA = "ifany"
     )
   )
@@ -199,8 +177,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XCByCoqTgYAUwa-zHs4urptbF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0VjVRgwHF4vHUKD0ODUdGPXIk0g6clZKl2BkiR6I3G0+GhI66OF-T4Chq0lgwPyaFjoggxMYEMR+URMuDqOD8GnCjKKxi0PlwdaqmTY54pUSCehajlwgiQp5YACyAp0fw9AGFso85HJBYaMlqRLr+Cy3Z6wDK8cH4xlUCxYBtlZb1aJNdrIwbDYrqIJzSq1dbPilHgAFTJYTLu-2BkOh8M68hRiVgAASWEeSZ0iaFtM0W2iCqVzszGtbef7Ru4xYtZdm-2alaeADUAJK5Le2JtznQz9vRqsAeVytgMACFMrknPktwA5Jw6d3Prfuhyx-uDw1QQtx0YDNlxzCN23zYVjVNegRCXK0VwrI97UdaNMifLBnwDMA-xbXMT07dDMKfbDm0NYxaAqPV0XsZxfzIvF6CgcN4nNY0QIQsC2z1SDhxYGC4NLBD2FXW0ULgJ1vTAa8MKwg8h2FY9qM7GTiNIw8KKojs7EcFwFIyXDaUELUn0yaNaGWCBWD7BShgMpQhgsnR2Hicg1A0bRrBsNIhWJeJWEydB2BBAASQRaBSUKtUYbRGCGfolDAfoziAA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XCByCoqTgYAUwa-zHs4urptbF0PvHnJbXu8lGhUEV4tF2A0kjoALw6JK4Bp8IQiUSwnTI4RiSEQDIZEp+NaiOLGNb0VjVRgwHF4vHUKD0ODUdGPXIk0g6clZKl2BkiR6I3G0+GhI66OF-T4Chq0lgwPyaFjoggxMYEMR+URMuDqOD8GnCjKKxi0PlwdaqmTY54pUSCehajlwgiQp5YACyAp0fw9AGFso85HJBYaMlqRLr+Cy3Z6wDK8cH4xlUCxYBtlZb1aJNdrIwbDYrqIJzSq1dbPilHgAFTJYTLu-2BkOh8M68hRiVgAASWEeSZ0iaFtM0W2iCqVzszGtbef7Ru4xYtZdm-2alaeADUAJK5Le2JtznQz9vRqsAeVytgMACFMrknPktwA5Jw6d3Prfuhyx-uDw1QQtx0YDNlxzCN23zYVjVNegRCXK0VwrI97UdaNMifLBnwDMA-xbXMT07dDMKfbDm0NYxaAqPV0XsZxfzIvF6CgcN4nNY0QIQsC2z1SDhxYGC4NLBD2FXW0ULgJ1vTAa8MKwg8h2FY9qM7GTiNIw8KKojs7EcFwFIyXDaUELUn0yaNaGWCBWD7BShgMpQhgsnR2Hicg1A0bRrBsNIhWJeJWEydB2BBAASQRaBSUKtUYbRGCGfolDAfoziAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYECQSDqFB6HBqL8FGBclDSDpYVkEXY0SJse9gcjXqEjroXtici1yQ1kSwYH5NCxfpzGLRSYCCDExgQxL8CPcwJksABZck6BkygDC2WxcjkFKpOlQLFgG25LD59G+7EFwtF9LAAAUpZlpcrVRqqZottEOVyXjzDcbTTJzfLJQA1ACSuSDtgdLJBUE5-h5+t5-NmPpFPwtmQAclgg+mVWB1ZGMvQoKIMfE4G7GPGvQKhb7U-6AEKZ7O5-OU5GCEvpzJYsC0ZYQVjYyNDDJDIb9nTseLkNQabTWGxpSmQ+KsTLodhoVAAEkEtBS253JcY2kYQ36SjA-TOQA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYECQSDqFB6HBqL8FGBclDSDpYVkEXY0SJse9gcjXqEjroXtici1yQ1kSwYH5NCxfpzGLRSYCCDExgQxL8CPcwJksABZck6BkygDC2WxcjkFKpOlQLFgG25LD59G+7EFwtF9LAAAUpZlpcrVRqqZottEOVyXjzDcbTTJzfLJQA1ACSuSDtgdLJBUE5-h5+t5-NmPpFPwtmQAclgg+mVWB1ZGMvQoKIMfE4G7GPGvQKhb7U-6AEKZ7O5-OU5GCEvpzJYsC0ZYQVjYyNDDJDIb9nTseLkNQabTWGxpSmQ+KsTLodhoVAAEkEtBS253JcY2kYQ36SjA-TOQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
