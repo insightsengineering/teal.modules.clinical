@@ -175,19 +175,19 @@ arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
   reactive({
     browser()
     validate_input(
-      input = id_arm_var,
+      inputId = id_arm_var,
       condition = !is.null(arm_var_r()),
       message = "Treatment variable must be selected.",
       session = session
     )
     validate_input(
-      input = input_id,
+      inputId = input_id,
       condition = length(input[[input_id]][[id_ref]]) > 0,
       message = "A reference arm must be selected.",
       session = session
     )
     validate_input(
-      input = input_id,
+      inputId = input_id,
       condition = length(input[[input_id]][[id_comp]]) > 0,
       message = "A comparison arm must be selected.",
       session = session

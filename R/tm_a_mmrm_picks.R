@@ -249,7 +249,7 @@ ui_mmrm.picks <- function(id, # nolint: object_name.
             ns("output_function"),
             "t_mmrm_lsmeans"
           ),
-          ui_decorate_teal_data(
+          teal::ui_transform_teal_data(
             ns("d_lsmeans_table"),
             select_decorators(decorators, "lsmeans_table")
           )
@@ -260,7 +260,7 @@ ui_mmrm.picks <- function(id, # nolint: object_name.
             ns("output_function"),
             "g_mmrm_lsmeans"
           ),
-          ui_decorate_teal_data(
+          teal::ui_transform_teal_data(
             ns("d_lsmeans_plot"),
             select_decorators(decorators, "lsmeans_plot")
           )
@@ -271,7 +271,7 @@ ui_mmrm.picks <- function(id, # nolint: object_name.
             ns("output_function"),
             "t_mmrm_cov"
           ),
-          ui_decorate_teal_data(
+          teal::ui_transform_teal_data(
             ns("d_covariance_table"),
             select_decorators(decorators, "covariance_table")
           )
@@ -282,7 +282,7 @@ ui_mmrm.picks <- function(id, # nolint: object_name.
             ns("output_function"),
             "t_mmrm_fixed"
           ),
-          ui_decorate_teal_data(
+          teal::ui_transform_teal_data(
             ns("d_fixed_effects_table"),
             select_decorators(decorators, "fixed_effects_table")
           )
@@ -293,7 +293,7 @@ ui_mmrm.picks <- function(id, # nolint: object_name.
             ns("output_function"),
             "t_mmrm_diagnostic"
           ),
-          ui_decorate_teal_data(
+          teal::ui_transform_teal_data(
             ns("d_diagnostic_table"),
             select_decorators(decorators, "diagnostic_table")
           )
@@ -304,7 +304,7 @@ ui_mmrm.picks <- function(id, # nolint: object_name.
             ns("output_function"),
             "g_mmrm_diagnostic"
           ),
-          ui_decorate_teal_data(
+          teal::ui_transform_teal_data(
             ns("d_diagnostic_plot"),
             select_decorators(decorators, "diagnostic_plot")
           )
@@ -962,7 +962,7 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
         nm = c("lsmeans_table", "diagnostic_table", "fixed_effects_table", "covariance_table")
       ),
       function(output_function) {
-        srv_decorate_teal_data(
+        teal::srv_transform_teal_data(
           id = sprintf("d_%s", output_function),
           data = table_q,
           decorators = select_decorators(decorators, output_function),
@@ -977,7 +977,7 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
       lapply(
         stats::setNames(nm = c("lsmeans_plot", "diagnostic_plot")),
         function(output_function) {
-          srv_decorate_teal_data(
+          teal::srv_transform_teal_data(
             id = sprintf("d_%s", output_function),
             data = plot_q,
             decorators = select_decorators(decorators, output_function),
