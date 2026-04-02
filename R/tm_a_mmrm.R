@@ -692,7 +692,7 @@ tm_a_mmrm.choices_selected <- function(label,
 
 #' @keywords internal
 ui_mmrm.choices_selected <- function(id, ...) {
-  a <- rlang::dots_list(...) # module args
+  a <- list(...) # module args
   ns <- NS(id)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
