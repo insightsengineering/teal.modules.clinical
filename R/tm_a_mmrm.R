@@ -602,7 +602,10 @@ tm_a_mmrm.choices_selected <- function(label,
                                          "Satterthwaite",
                                          keep_order = TRUE
                                        ),
-                                       conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                                       conf_level = teal.transform::choices_selected(
+                                         c(0.95, 0.9, 0.8), 0.95,
+                                         keep_order = TRUE
+                                       ),
                                        plot_height = c(700L, 200L, 2000L),
                                        plot_width = NULL,
                                        total_label = default_total_label(),
@@ -691,7 +694,7 @@ tm_a_mmrm.choices_selected <- function(label,
 }
 
 #' @keywords internal
-ui_mmrm.choices_selected <- function(id, ...) {
+ui_mmrm.choices_selected <- function(id, ...) { # nolint: object_name.
   a <- list(...) # module args
   ns <- NS(id)
   is_single_dataset_value <- teal.transform::is_single_dataset(
@@ -928,7 +931,7 @@ ui_mmrm.choices_selected <- function(id, ...) {
   )
 }
 
-srv_mmrm.choices_selected <- function(id,
+srv_mmrm.choices_selected <- function(id, # nolint: object_name.
                                       data,
                                       dataname,
                                       parentname,
