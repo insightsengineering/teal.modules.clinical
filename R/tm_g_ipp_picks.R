@@ -37,30 +37,30 @@
 #' @inheritSection teal::example_module Reporting
 #'
 #' @export
-tm_g_ipp.picks <- function(label,
-                           dataname,
-                           parentname = "ADSL",
-                           arm_var = teal.picks::variables("ARMCD"),
-                           paramcd_var = teal.picks::variables("PARAMCD"),
-                           paramcd_value = teal.picks::values(multiple = FALSE),
-                           aval_var = teal.picks::variables("AVAL", fixed = TRUE),
-                           avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
-                           id_var = teal.picks::variables("USUBJID", fixed = TRUE),
-                           visit_var = teal.picks::variables("AVISIT"),
-                           baseline_var = teal.picks::variables("BASE", fixed = TRUE),
-                           add_baseline_hline = FALSE,
-                           separate_by_obs = FALSE,
-                           suppress_legend = FALSE,
-                           add_avalu = TRUE,
-                           plot_height = c(1200L, 400L, 5000L),
-                           plot_width = NULL,
-                           pre_output = NULL,
-                           post_output = NULL,
-                           ggplot2_args = teal.widgets::ggplot2_args(),
-                           transformators = list(),
-                           decorators = list(),
-                           # legacy choices_selected arguments kept for back-compat
-                           paramcd) {
+tm_g_ipp <- function(label,
+                     dataname,
+                     parentname = "ADSL",
+                     arm_var = teal.picks::variables("ARMCD"),
+                     paramcd_var = teal.picks::variables("PARAMCD"),
+                     paramcd_value = teal.picks::values(multiple = FALSE),
+                     aval_var = teal.picks::variables("AVAL", fixed = TRUE),
+                     avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
+                     id_var = teal.picks::variables("USUBJID", fixed = TRUE),
+                     visit_var = teal.picks::variables("AVISIT"),
+                     baseline_var = teal.picks::variables("BASE", fixed = TRUE),
+                     add_baseline_hline = FALSE,
+                     separate_by_obs = FALSE,
+                     suppress_legend = FALSE,
+                     add_avalu = TRUE,
+                     plot_height = c(1200L, 400L, 5000L),
+                     plot_width = NULL,
+                     pre_output = NULL,
+                     post_output = NULL,
+                     ggplot2_args = teal.widgets::ggplot2_args(),
+                     transformators = list(),
+                     decorators = list(),
+                     # legacy choices_selected arguments kept for back-compat
+                     paramcd) {
   message("Initializing tm_g_ipp")
 
   # Compatibility layer: convert choices_selected -> teal.picks
@@ -121,31 +121,31 @@ tm_g_ipp.picks <- function(label,
 
   module(
     label = label,
-    server = srv_g_ipp.picks,
-    ui = ui_g_ipp.picks,
-    ui_args = args[names(args) %in% names(formals(ui_g_ipp.picks))],
-    server_args = args[names(args) %in% names(formals(srv_g_ipp.picks))],
+    server = srv_g_ipp,
+    ui = ui_g_ipp,
+    ui_args = args[names(args) %in% names(formals(ui_g_ipp))],
+    server_args = args[names(args) %in% names(formals(srv_g_ipp))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_g_ipp.picks <- function(id,
-                           arm_var,
-                           paramcd,
-                           aval_var,
-                           avalu_var,
-                           id_var,
-                           visit_var,
-                           baseline_var,
-                           add_baseline_hline,
-                           separate_by_obs,
-                           suppress_legend,
-                           add_avalu,
-                           pre_output,
-                           post_output,
-                           decorators) {
+ui_g_ipp <- function(id,
+                     arm_var,
+                     paramcd,
+                     aval_var,
+                     avalu_var,
+                     id_var,
+                     visit_var,
+                     baseline_var,
+                     add_baseline_hline,
+                     separate_by_obs,
+                     suppress_legend,
+                     add_avalu,
+                     pre_output,
+                     post_output,
+                     decorators) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
@@ -213,22 +213,22 @@ ui_g_ipp.picks <- function(id,
 }
 
 #' @keywords internal
-srv_g_ipp.picks <- function(id,
-                            data,
-                            dataname,
-                            parentname,
-                            arm_var,
-                            paramcd,
-                            aval_var,
-                            avalu_var,
-                            id_var,
-                            visit_var,
-                            baseline_var,
-                            plot_height,
-                            plot_width,
-                            label,
-                            ggplot2_args,
-                            decorators) {
+srv_g_ipp <- function(id,
+                      data,
+                      dataname,
+                      parentname,
+                      arm_var,
+                      paramcd,
+                      aval_var,
+                      avalu_var,
+                      id_var,
+                      visit_var,
+                      baseline_var,
+                      plot_height,
+                      plot_width,
+                      label,
+                      ggplot2_args,
+                      decorators) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 

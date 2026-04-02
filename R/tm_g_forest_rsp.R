@@ -442,10 +442,10 @@ tm_g_forest_rsp <- function(label,
 
   module(
     label      = label,
-    server     = srv_g_forest_rsp.picks,
-    ui         = ui_g_forest_rsp.picks,
-    ui_args    = args[names(args) %in% names(formals(ui_g_forest_rsp.picks))],
-    server_args = args[names(args) %in% names(formals(srv_g_forest_rsp.picks))],
+    server     = srv_g_forest_rsp,
+    ui         = ui_g_forest_rsp,
+    ui_args    = args[names(args) %in% names(formals(ui_g_forest_rsp))],
+    server_args = args[names(args) %in% names(formals(srv_g_forest_rsp))],
     transformators = transformators,
     datanames  = c(dataname, parentname)
   )

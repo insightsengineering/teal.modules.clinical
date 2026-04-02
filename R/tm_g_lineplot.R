@@ -281,30 +281,14 @@ template_g_lineplot <- function(dataname = "ANL",
 #' @export
 tm_g_lineplot <- function(label,
                           dataname,
-                          parentname = NULL,
-                          strata = lifecycle::deprecated(),
-                          group_var = teal.transform::choices_selected(
-                            teal.transform::variable_choices(parentname, c("ARM", "ARMCD", "ACTARMCD")), "ARM"
-                          ),
-                          x = teal.transform::choices_selected(
-                            teal.transform::variable_choices(dataname, "AVISIT"), "AVISIT",
-                            fixed = TRUE
-                          ),
-                          y = teal.transform::choices_selected(
-                            teal.transform::variable_choices(dataname, c("AVAL", "BASE", "CHG", "PCHG")), "AVAL"
-                          ),
-                          y_unit = teal.transform::choices_selected(
-                            teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
-                            fixed = TRUE
-                          ),
-                          paramcd = teal.transform::choices_selected(
-                            teal.transform::variable_choices(dataname, "PARAMCD"), "PARAMCD",
-                            fixed = TRUE
-                          ),
-                          param = teal.transform::choices_selected(
-                            teal.transform::value_choices(dataname, "PARAMCD", "PARAM"), "ALT"
-                          ),
-                          conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                          parentname = "ADSL",
+                          group_var = teal.picks::variables(c("ARM", "ARMCD", "ACTARMCD"), selected = "ARM"),
+                          x = teal.picks::variables("AVISIT", fixed = TRUE),
+                          y = teal.picks::variables(c("AVAL", "BASE", "CHG", "PCHG"), selected = "AVAL"),
+                          y_unit = teal.picks::variables("AVALU", fixed = TRUE),
+                          param_var = teal.picks::variables("PARAMCD", fixed = TRUE),
+                          param_value = teal.picks::values(multiple = FALSE),
+                          conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
                           interval = "mean_ci",
                           mid = "mean",
                           whiskers = c("mean_ci_lwr", "mean_ci_upr"),
@@ -319,31 +303,31 @@ tm_g_lineplot <- function(label,
                           ggplot2_args = teal.widgets::ggplot2_args(),
                           transformators = list(),
                           decorators = list()) {
-  if (lifecycle::is_present(strata)) {
-    lifecycle::deprecate_stop(
-      when = "0.9.1",
-      what = "tm_g_lineplot(strata)",
-      with = "tm_g_lineplot(group_var)"
-    )
+  message("Initializing tm_g_lineplot")
+
+  # Compatibility: accept choices_selected and convert to picks
+  for (arg in c("group_var", "x", "y", "y_unit")) {
+    if (inherits(get(arg), "choices_selected")) {
+      assign(arg, teal.picks::as.picks(get(arg)))
+    }
+  }
+  if (inherits(conf_level, "choices_selected")) {
+    conf_level <- teal.picks::as.picks(conf_level)
+    class(conf_level) <- gsub("variables", "values", class(conf_level), fixed = TRUE)
   }
 
-  # Now handle 'parentname' calculation based on 'group_var'
-  if (is.null(parentname)) {
-    parentname <- ifelse(
-      inherits(group_var, "data_extract_spec"),
-      teal.transform::datanames_input(group_var),
-      "ADSL"
-    )
-  }
-  message("Initializing tm_g_lineplot")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
+  checkmate::assert_class(group_var, "variables")
+  checkmate::assert_class(x, "variables")
+  checkmate::assert_class(y, "variables")
+  checkmate::assert_class(y_unit, "variables")
+  checkmate::assert_class(param_var, "variables")
+  checkmate::assert_class(param_value, "values")
+  checkmate::assert_class(conf_level, "values")
   checkmate::assert_string(mid)
   checkmate::assert_string(interval, null.ok = TRUE)
-  whiskers <- match.arg(whiskers)
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(plot_height[1], lower = plot_height[2], upper = plot_height[3], .var.name = "plot_height")
   checkmate::assert_numeric(plot_width, len = 3, any.missing = FALSE, null.ok = TRUE, finite = TRUE)
@@ -354,95 +338,72 @@ tm_g_lineplot <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
+  assert_decorators(decorators, "plot")
 
-  teal::assert_decorators(decorators, "plot")
+  # Build picks objects bound to their datasets
+  group_var <- teal.picks::picks(datasets(parentname), group_var)
+  x         <- teal.picks::picks(datasets(dataname), x)
+  y         <- teal.picks::picks(datasets(dataname), y)
+  y_unit    <- teal.picks::picks(datasets(dataname), y_unit)
+  param     <- teal.picks::picks(datasets(dataname), variables = param_var, values = param_value)
 
   args <- as.list(environment())
-  data_extract_list <- list(
-    group_var = cs_to_des_select(group_var, dataname = parentname),
-    param = cs_to_des_filter(param, dataname = dataname),
-    x = cs_to_des_select(x, dataname = dataname, multiple = FALSE),
-    y = cs_to_des_select(y, dataname = dataname, multiple = FALSE),
-    y_unit = cs_to_des_select(y_unit, dataname = dataname),
-    paramcd = cs_to_des_select(paramcd, dataname = dataname)
-  )
 
   module(
     label = label,
     server = srv_g_lineplot,
     ui = ui_g_lineplot,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        label = label,
-        parentname = parentname,
-        plot_height = plot_height,
-        plot_width = plot_width,
-        ggplot2_args = ggplot2_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_g_lineplot))],
+    server_args = args[names(args) %in% names(formals(srv_g_lineplot))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_g_lineplot <- function(id, ...) {
-  a <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$group_var,
-    a$paramcd,
-    a$x,
-    a$param,
-    a$y,
-    a$y_unit
-  )
-
+ui_g_lineplot <- function(id,
+                          group_var,
+                          param,
+                          x,
+                          y,
+                          y_unit,
+                          conf_level,
+                          mid_point_size,
+                          table_font_size,
+                          table,
+                          pre_output,
+                          post_output,
+                          decorators) {
   ns <- NS(id)
+  conf_level$fixed <- conf_level$fixed %||% FALSE
+
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(
       verbatimTextOutput(outputId = ns("text")),
-      teal.widgets::plot_with_settings_ui(
-        id = ns("myplot")
-      )
+      teal.widgets::plot_with_settings_ui(id = ns("myplot"))
     ),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("group_var", "paramcd", "x", "y", "y_unit", "param")]),
-      teal.transform::data_extract_ui(
-        id = ns("param"),
-        label = "Select Biomarker",
-        data_extract_spec = a$param,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Biomarker:"),
+        teal.picks::picks_ui(ns("param"), param)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("group_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$group_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Treatment Variable:"),
+        teal.picks::picks_ui(ns("group_var"), group_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("y"),
-        label = "Analysis Variable",
-        data_extract_spec = a$y,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Analysis Variable:"),
+        teal.picks::picks_ui(ns("y"), y)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("x"),
-        label = "Time Variable",
-        data_extract_spec = a$x,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Time Variable:"),
+        teal.picks::picks_ui(ns("x"), x)
       ),
       selectInput(
         ns("mid"),
         "Midpoint Statistic",
-        choices = c(
-          "Mean" = "mean",
-          "Median" = "median"
-        ),
+        choices = c("Mean" = "mean", "Median" = "median"),
         selected = "mean"
       ),
       teal.widgets::optionalSelectInput(
@@ -456,12 +417,8 @@ ui_g_lineplot <- function(id, ...) {
         ),
         selected = "mean_ci"
       ),
-      checkboxInput(
-        ns("incl_screen"),
-        "Include screening visit",
-        value = TRUE
-      ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
+      checkboxInput(ns("incl_screen"), "Include screening visit", value = TRUE),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -469,15 +426,15 @@ ui_g_lineplot <- function(id, ...) {
           teal.widgets::optionalSelectInput(
             ns("conf_level"),
             "Level of Confidence",
-            a$conf_level$choices,
-            a$conf_level$selected,
+            choices = conf_level$choices,
+            selected = conf_level$selected,
             multiple = FALSE,
-            fixed = a$conf_level$fixed
+            fixed = conf_level$fixed
           ),
           teal.widgets::optionalSliderInputValMinMax(
             ns("mid_point_size"),
             "Midpoint symbol size",
-            a$mid_point_size,
+            mid_point_size,
             ticks = FALSE
           ),
           checkboxGroupInput(
@@ -489,24 +446,12 @@ ui_g_lineplot <- function(id, ...) {
           radioButtons(
             ns("mid_type"),
             label = "Plot type",
-            choices = c(
-              "Point and line" = "pl",
-              "Point" = "p",
-              "Line" = "l"
-            ),
+            choices = c("Point and line" = "pl", "Point" = "p", "Line" = "l"),
             selected = "pl"
           ),
-          teal.transform::data_extract_ui(
-            id = ns("y_unit"),
-            label = "Analysis Unit Variable",
-            data_extract_spec = a$y_unit,
-            is_single_dataset = is_single_dataset_value
-          ),
-          teal.transform::data_extract_ui(
-            id = ns("paramcd"),
-            label = "Parameter Code Variable",
-            data_extract_spec = a$paramcd,
-            is_single_dataset = is_single_dataset_value
+          tags$div(
+            tags$label("Analysis Unit Variable:"),
+            teal.picks::picks_ui(ns("y_unit"), y_unit)
           )
         )
       ),
@@ -517,7 +462,7 @@ ui_g_lineplot <- function(id, ...) {
           teal.widgets::optionalSliderInputValMinMax(
             ns("table_font_size"),
             "Table Font Size",
-            a$table_font_size,
+            table_font_size,
             ticks = FALSE
           ),
           checkboxGroupInput(
@@ -532,13 +477,13 @@ ui_g_lineplot <- function(id, ...) {
               "25% and 75%-ile" = "quantiles",
               "Min - Max" = "range"
             ),
-            selected = a$table,
+            selected = table
           )
         )
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -547,11 +492,10 @@ srv_g_lineplot <- function(id,
                            data,
                            dataname,
                            parentname,
-                           paramcd,
                            group_var,
+                           param,
                            x,
                            y,
-                           param,
                            y_unit,
                            label,
                            plot_height,
@@ -559,77 +503,89 @@ srv_g_lineplot <- function(id,
                            ggplot2_args,
                            decorators) {
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(x = x, y = y, group_var = group_var, paramcd = paramcd, y_unit = y_unit, param = param),
-      datasets = data,
-      select_validation_rule = list(
-        x = shinyvalidate::sv_required("Please select a time variable"),
-        y = shinyvalidate::sv_required("Please select an analysis variable"),
-        group_var = shinyvalidate::sv_required("Please select a treatment variable")
+
+    selectors <- teal.picks::picks_srv(
+      picks = list(
+        group_var = group_var,
+        param     = param,
+        x         = x,
+        y         = y,
+        y_unit    = y_unit
       ),
-      filter_validation_rule = list(
-        param = shinyvalidate::sv_required(message = "Please select Biomarker filter.")
-      )
+      data = data
     )
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(
-          0, 1,
-          message_fmt = "Please choose a confidence level between 0 and 1", inclusive = c(FALSE, FALSE)
-        )
+    validated_q <- reactive({
+      obj <- req(data())
+
+      teal:::validate_input(
+        inputId = "group_var-variables-selected",
+        condition = !is.null(selectors$group_var()$variables$selected),
+        message = "Please select a treatment variable."
       )
-      teal.transform::compose_and_enable_validators(iv, selector_list)
+      teal:::validate_input(
+        inputId = "y-variables-selected",
+        condition = !is.null(selectors$y()$variables$selected),
+        message = "Please select an analysis variable."
+      )
+      teal:::validate_input(
+        inputId = "x-variables-selected",
+        condition = !is.null(selectors$x()$variables$selected),
+        message = "Please select a time variable."
+      )
+      teal:::validate_input(
+        inputId = "param-values-selected",
+        condition = !is.null(selectors$param()$values$selected),
+        message = "Please select a Biomarker filter."
+      )
+      teal:::validate_input(
+        inputId = "conf_level",
+        condition = !is.null(input$conf_level),
+        message = "Please choose a confidence level."
+      )
+      teal:::validate_input(
+        inputId = "conf_level",
+        condition = as.numeric(input$conf_level) > 0 && as.numeric(input$conf_level) < 1,
+        message = "Confidence level must be a number strictly between 0 and 1."
+      )
+
+      obj
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::inner_join",
+      output_name = "ANL"
     )
-
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
-    })
-
-    merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
+      anl_q <- anl_inputs$data()
+      ANL <- anl_q[["ANL"]]
+      teal::validate_has_data(ANL, 2)
 
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
+      adsl_filtered <- anl_q[[parentname]]
+      anl_filtered  <- anl_q[[dataname]]
 
-      input_strata <- names(merged$anl_input_r()$columns_source$group_var)
-      input_x_var <- names(merged$anl_input_r()$columns_source$x)
-      input_y <- names(merged$anl_input_r()$columns_source$y)
-      input_param <- unlist(param$filter)["vars_selected"]
-      input_paramcd <- names(merged$anl_input_r()$columns_source$paramcd)
-      input_y_unit <- names(merged$anl_input_r()$columns_source$y_unit)
+      input_strata  <- anl_inputs$variables()$group_var
+      input_x_var   <- anl_inputs$variables()$x
+      input_y       <- anl_inputs$variables()$y
+      input_y_unit  <- anl_inputs$variables()$y_unit
+      input_paramcd <- anl_inputs$variables()$param_var %||% "PARAMCD"
 
-      # validate inputs
       validate_args <- list(
-        adsl = adsl_filtered,
+        adsl    = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_strata),
-        anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y, input_y_unit, input_param),
+        anl     = anl_filtered,
+        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_x_var, input_y, input_y_unit),
         arm_var = input_strata
       )
 
-      # validate arm levels
       if (length(input_strata) > 0 && length(unique(adsl_filtered[[input_strata]])) == 1) {
         validate_args <- append(validate_args, list(min_n_levels_armvar = NULL))
       }
@@ -640,11 +596,13 @@ srv_g_lineplot <- function(id,
 
     all_q <- reactive({
       validate_checks()
-      ANL <- merged$anl_q()[["ANL"]]
-      teal::validate_has_data(ANL, 2)
 
-      whiskers_selected <- if ("Lower" %in% input$whiskers) 1 else NULL
-      if ("Upper" %in% input$whiskers) whiskers_selected <- c(whiskers_selected, 2)
+      obj <- anl_inputs$data()
+      ANL <- obj[["ANL"]]
+
+      whiskers_selected <- if ("Lower" %in% input$whiskers) 1L else NULL
+      if ("Upper" %in% input$whiskers) whiskers_selected <- c(whiskers_selected, 2L)
+
       if (is.null(input$interval) || is.null(whiskers_selected)) {
         input_whiskers <- NULL
         input_interval <- NULL
@@ -652,45 +610,43 @@ srv_g_lineplot <- function(id,
         input_interval <- input$interval
         input_whiskers <- names(tern::s_summary(0)[[input_interval]][whiskers_selected])
       }
-      input_param <- as.character(unique(ANL[[names(merged$anl_input_r()$columns_source$param)[1]]]))
 
       my_calls <- template_g_lineplot(
-        dataname = "ANL",
-        group_var = names(merged$anl_input_r()$columns_source$group_var),
-        y = names(merged$anl_input_r()$columns_source$y),
-        x = names(merged$anl_input_r()$columns_source$x),
-        paramcd = names(merged$anl_input_r()$columns_source$paramcd),
-        y_unit = names(merged$anl_input_r()$columns_source$y_unit),
-        conf_level = as.numeric(input$conf_level),
-        incl_screen = input$incl_screen,
-        mid = input$mid,
-        interval = input_interval,
-        whiskers = input_whiskers,
-        table = input$table,
-        mid_type = input$mid_type,
-        mid_point_size = input$mid_point_size,
-        table_font_size = input$table_font_size,
-        ggplot2_args = ggplot2_args
+        dataname      = "ANL",
+        group_var     = anl_inputs$variables()$group_var,
+        y             = anl_inputs$variables()$y,
+        x             = anl_inputs$variables()$x,
+        paramcd       = anl_inputs$variables()$param_var %||% "PARAMCD",
+        y_unit        = anl_inputs$variables()$y_unit,
+        conf_level    = as.numeric(input$conf_level),
+        incl_screen   = input$incl_screen,
+        mid           = input$mid,
+        interval      = input_interval,
+        whiskers      = input_whiskers,
+        table         = input$table,
+        mid_type      = input$mid_type,
+        mid_point_size   = input$mid_point_size,
+        table_font_size  = input$table_font_size,
+        ggplot2_args  = ggplot2_args
       )
-      obj <- merged$anl_q()
+
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
-    decorated_all_q <- teal::srv_transform_teal_data(
-      id = "decorator",
-      data = all_q,
-      transformators = select_decorators(decorators, "plot"),
-      expr = quote(plot)
+    decorated_all_q <- srv_decorate_teal_data(
+      id         = "decorator",
+      data       = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr       = plot
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 
-    # Insert the plot into a plot with settings module from teal.widgets
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "myplot",
+      id     = "myplot",
       plot_r = plot_r,
       height = plot_height,
-      width = plot_width
+      width  = plot_width
     )
 
     set_chunk_dims(pws, decorated_all_q)

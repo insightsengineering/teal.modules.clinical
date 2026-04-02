@@ -99,22 +99,22 @@
 #' }
 #'
 #' @export
-tm_t_logistic.picks <- function(label,
-                                dataname,
-                                parentname = "ADSL",
-                                arm_var = NULL,
-                                arm_ref_comp = NULL,
-                                paramcd_var = teal.picks::variables("PARAMCD"),
-                                paramcd_value = teal.picks::values(multiple = FALSE),
-                                cov_var = teal.picks::variables(selected = NULL),
-                                avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
-                                conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
-                                pre_output = NULL,
-                                post_output = NULL,
-                                basic_table_args = teal.widgets::basic_table_args(),
-                                transformators = list(),
-                                decorators = list(),
-                                paramcd) {
+tm_t_logistic <- function(label,
+                          dataname,
+                          parentname = "ADSL",
+                          arm_var = NULL,
+                          arm_ref_comp = NULL,
+                          paramcd_var = teal.picks::variables("PARAMCD"),
+                          paramcd_value = teal.picks::values(multiple = FALSE),
+                          cov_var = teal.picks::variables(selected = NULL),
+                          avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
+                          conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
+                          pre_output = NULL,
+                          post_output = NULL,
+                          basic_table_args = teal.widgets::basic_table_args(),
+                          transformators = list(),
+                          decorators = list(),
+                          paramcd) {
   message("Initializing tm_t_logistic")
 
   # Compatibility layer for new picks
@@ -165,25 +165,25 @@ tm_t_logistic.picks <- function(label,
 
   module(
     label = label,
-    server = srv_t_logistic.picks,
-    ui = ui_t_logistic.picks,
-    ui_args = args[names(args) %in% names(formals(ui_t_logistic.picks))],
-    server_args = args[names(args) %in% names(formals(srv_t_logistic.picks))],
+    server = srv_t_logistic,
+    ui = ui_t_logistic,
+    ui_args = args[names(args) %in% names(formals(ui_t_logistic))],
+    server_args = args[names(args) %in% names(formals(srv_t_logistic))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_t_logistic.picks <- function(id,
-                                arm_var,
-                                paramcd,
-                                avalc_var,
-                                cov_var,
-                                conf_level,
-                                pre_output,
-                                post_output,
-                                decorators) {
+ui_t_logistic <- function(id,
+                          arm_var,
+                          paramcd,
+                          avalc_var,
+                          cov_var,
+                          conf_level,
+                          pre_output,
+                          post_output,
+                          decorators) {
   ns <- NS(id)
   conf_level$fixed <- conf_level$fixed %||% FALSE
   teal.widgets::standard_layout(
@@ -246,18 +246,18 @@ ui_t_logistic.picks <- function(id,
 }
 
 #' @keywords internal
-srv_t_logistic.picks <- function(id,
-                                 data,
-                                 dataname,
-                                 parentname,
-                                 arm_var,
-                                 arm_ref_comp,
-                                 paramcd,
-                                 avalc_var,
-                                 cov_var,
-                                 label,
-                                 basic_table_args,
-                                 decorators) {
+srv_t_logistic <- function(id,
+                           data,
+                           dataname,
+                           parentname,
+                           arm_var,
+                           arm_ref_comp,
+                           paramcd,
+                           avalc_var,
+                           cov_var,
+                           label,
+                           basic_table_args,
+                           decorators) {
   checkmate::assert_class(data, "reactive")
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
 

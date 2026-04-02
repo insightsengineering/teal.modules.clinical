@@ -185,97 +185,69 @@ tm_t_pp_laboratory <- function(label,
                                dataname = "ADLB",
                                parentname = "ADSL",
                                patient_col = "USUBJID",
-                               timepoints = NULL,
-                               aval = lifecycle::deprecated(),
-                               aval_var = NULL,
-                               avalu = lifecycle::deprecated(),
-                               avalu_var = NULL,
-                               param = NULL,
-                               paramcd = NULL,
-                               anrind = NULL,
+                               timepoints = teal.picks::variables("ADY",    fixed = TRUE),
+                               aval_var   = teal.picks::variables("AVAL",   fixed = TRUE),
+                               avalu_var  = teal.picks::variables("AVALU",  fixed = TRUE),
+                               param      = teal.picks::variables("PARAM",  fixed = TRUE),
+                               paramcd    = teal.picks::variables("PARAMCD", fixed = TRUE),
+                               anrind     = teal.picks::variables("ANRIND", fixed = TRUE),
                                pre_output = NULL,
                                post_output = NULL,
-                               transformators = list(),
-                               decorators = lifecycle::deprecated()) {
-  if (lifecycle::is_present(decorators)) {
-    lifecycle::deprecate_warn(
-      when = "0.11.0",
-      what = "tm_t_pp_laboratory(decorators)",
-      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
-    )
-  }
-
-  if (lifecycle::is_present(aval)) {
-    lifecycle::deprecate_stop(
-      when = "0.8.16",
-      what = "tm_t_pp_laboratory(aval)",
-      with = "tm_t_pp_laboratory(aval_var)"
-    )
-  }
-
-  if (lifecycle::is_present(avalu)) {
-    lifecycle::deprecate_stop(
-      when = "0.8.16",
-      what = "tm_t_pp_laboratory(avalu)",
-      with = "tm_t_pp_laboratory(avalu_var)"
-    )
-  }
-
+                               transformators = list()) {
   message("Initializing tm_t_pp_laboratory")
+
+  # Compatibility: accept choices_selected and convert
+  for (arg in c("timepoints", "aval_var", "avalu_var", "param", "paramcd", "anrind")) {
+    val <- get(arg)
+    if (inherits(val, "choices_selected")) {
+      assign(arg, teal.picks::as.picks(val))
+    }
+  }
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(timepoints, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(aval_var, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(avalu_var, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(param, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(paramcd, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(anrind, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
+  checkmate::assert_class(timepoints, "variables", null.ok = TRUE)
+  checkmate::assert_class(aval_var,   "variables", null.ok = TRUE)
+  checkmate::assert_class(avalu_var,  "variables", null.ok = TRUE)
+  checkmate::assert_class(param,      "variables", null.ok = TRUE)
+  checkmate::assert_class(paramcd,    "variables", null.ok = TRUE)
+  checkmate::assert_class(anrind,     "variables", null.ok = TRUE)
+  checkmate::assert_class(pre_output,  classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
+  # Build picks bound to the dataset
+  if (!is.null(timepoints)) timepoints <- teal.picks::picks(datasets(dataname), timepoints)
+  if (!is.null(aval_var))   aval_var   <- teal.picks::picks(datasets(dataname), aval_var)
+  if (!is.null(avalu_var))  avalu_var  <- teal.picks::picks(datasets(dataname), avalu_var)
+  if (!is.null(param))      param      <- teal.picks::picks(datasets(dataname), param)
+  if (!is.null(paramcd))    paramcd    <- teal.picks::picks(datasets(dataname), paramcd)
+  if (!is.null(anrind))     anrind     <- teal.picks::picks(datasets(dataname), anrind)
+
   args <- as.list(environment())
-  data_extract_list <- list(
-    timepoints = `if`(is.null(timepoints), NULL, cs_to_des_select(timepoints, dataname = dataname)),
-    aval_var = `if`(is.null(aval_var), NULL, cs_to_des_select(aval_var, dataname = dataname)),
-    avalu_var = `if`(is.null(avalu_var), NULL, cs_to_des_select(avalu_var, dataname = dataname)),
-    param = `if`(is.null(param), NULL, cs_to_des_select(param, dataname = dataname)),
-    paramcd = `if`(is.null(paramcd), NULL, cs_to_des_select(paramcd, dataname = dataname)),
-    anrind = `if`(is.null(anrind), NULL, cs_to_des_select(anrind, dataname = dataname))
-  )
 
   module(
     label = label,
     ui = ui_g_laboratory,
-    ui_args = c(data_extract_list, args),
+    ui_args = args[names(args) %in% names(formals(ui_g_laboratory))],
     server = srv_g_laboratory,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        patient_col = patient_col
-      )
-    ),
+    server_args = args[names(args) %in% names(formals(srv_g_laboratory))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_g_laboratory <- function(id, ...) {
-  ui_args <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    ui_args$timepoints,
-    ui_args$aval_var,
-    ui_args$avalu_var,
-    ui_args$param,
-    ui_args$paramcd,
-    ui_args$anrind
-  )
-
+ui_g_laboratory <- function(id,
+                            timepoints,
+                            aval_var,
+                            avalu_var,
+                            param,
+                            paramcd,
+                            anrind,
+                            pre_output,
+                            post_output) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = tags$div(
@@ -284,48 +256,35 @@ ui_g_laboratory <- function(id, ...) {
     ),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(ui_args[c("timepoints", "aval_var", "avalu_var", "param", "paramcd", "anrind")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select PARAMCD variable:",
-        data_extract_spec = ui_args$paramcd,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(paramcd)) tags$div(
+        tags$label("Select PARAMCD variable:"),
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("param"),
-        label = "Select PARAM variable:",
-        data_extract_spec = ui_args$param,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(param)) tags$div(
+        tags$label("Select PARAM variable:"),
+        teal.picks::picks_ui(ns("param"), param)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("timepoints"),
-        label = "Select timepoints variable:",
-        data_extract_spec = ui_args$timepoints,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(timepoints)) tags$div(
+        tags$label("Select timepoints variable:"),
+        teal.picks::picks_ui(ns("timepoints"), timepoints)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Select AVAL variable:",
-        data_extract_spec = ui_args$aval_var,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(aval_var)) tags$div(
+        tags$label("Select AVAL variable:"),
+        teal.picks::picks_ui(ns("aval_var"), aval_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("avalu_var"),
-        label = "Select AVALU variable:",
-        data_extract_spec = ui_args$avalu_var,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(avalu_var)) tags$div(
+        tags$label("Select AVALU variable:"),
+        teal.picks::picks_ui(ns("avalu_var"), avalu_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("anrind"),
-        label = "Select ANRIND variable:",
-        data_extract_spec = ui_args$anrind,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(anrind)) tags$div(
+        tags$label("Select ANRIND variable:"),
+        teal.picks::picks_ui(ns("anrind"), anrind)
       ),
       selectInput(
         inputId = ns("round_value"),
@@ -333,8 +292,8 @@ ui_g_laboratory <- function(id, ...) {
         choices = NULL
       )
     ),
-    pre_output = ui_args$pre_output,
-    post_output = ui_args$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -358,7 +317,7 @@ srv_g_laboratory <- function(id,
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
-    # Init
+    # Patient selector initialisation
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
@@ -383,114 +342,130 @@ srv_g_laboratory <- function(id,
       ignoreInit = TRUE
     )
 
-    # Update round_values
-    aval_values <- isolate(data())[[dataname]][, aval_var$select$selected]
-    decimal_nums <- aval_values[trunc(aval_values) != aval_values]
-    max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", decimal_nums)))
-
-    updateSelectInput(
-      session,
-      "round_value",
-      choices = seq(0, max_decimal),
-      selected = min(4, max_decimal)
-    )
-
-    # Laboratory values tab ----
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        timepoints = timepoints,
-        aval_var = aval_var,
-        avalu_var = avalu_var,
-        param = param,
-        paramcd = paramcd,
-        anrind = anrind
-      ),
-      datasets = data,
-      select_validation_rule = list(
-        timepoints = shinyvalidate::sv_required("Please select timepoints variable."),
-        aval_var = shinyvalidate::sv_required("Please select AVAL variable."),
-        avalu_var = shinyvalidate::sv_required("Please select AVALU variable."),
-        param = shinyvalidate::sv_required("Please select PARAM variable."),
-        paramcd = shinyvalidate::sv_required("Please select PARAMCD variable."),
-        anrind = shinyvalidate::sv_required("Please select ANRIND variable.")
-      )
-    )
-
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient"))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
-
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list
-    )
-
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
+    # Populate round_value choices from the aval column once data is available.
+    # The aval column name comes from the default/fixed picks selection.
+    observeEvent(data(), once = TRUE, {
+      aval_col <- isolate(aval_var)$variables$selected %||%
+        teal.picks::picks_default(aval_var)
+      if (!is.null(aval_col) && aval_col %in% names(data()[[dataname]])) {
+        aval_values <- data()[[dataname]][[aval_col]]
+        decimal_nums <- aval_values[!is.na(aval_values) & trunc(aval_values) != aval_values]
+        if (length(decimal_nums) > 0) {
+          max_decimal <- max(nchar(gsub("([0-9]+).([0-9]+)", "\\2", as.character(decimal_nums))))
+        } else {
+          max_decimal <- 4L
+        }
+        updateSelectInput(
+          session,
+          "round_value",
+          choices = seq(0L, max_decimal),
+          selected = min(4L, max_decimal)
         )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
+      }
     })
 
-    # Generate r code for the analysis.
+    # Build selector list — only include non-NULL picks
+    picks_list <- Filter(Negate(is.null), list(
+      timepoints = timepoints,
+      aval_var   = aval_var,
+      avalu_var  = avalu_var,
+      param      = param,
+      paramcd    = paramcd,
+      anrind     = anrind
+    ))
+
+    selectors <- teal.picks::picks_srv(
+      picks = picks_list,
+      data = data
+    )
+
+    validated_q <- reactive({
+      obj <- req(data())
+
+      teal:::validate_input(
+        inputId = "timepoints-variables-selected",
+        condition = !is.null(selectors$timepoints()$variables$selected),
+        message = "Please select timepoints variable."
+      )
+      teal:::validate_input(
+        inputId = "aval_var-variables-selected",
+        condition = !is.null(selectors$aval_var()$variables$selected),
+        message = "Please select AVAL variable."
+      )
+      teal:::validate_input(
+        inputId = "avalu_var-variables-selected",
+        condition = !is.null(selectors$avalu_var()$variables$selected),
+        message = "Please select AVALU variable."
+      )
+      teal:::validate_input(
+        inputId = "param-variables-selected",
+        condition = !is.null(selectors$param()$variables$selected),
+        message = "Please select PARAM variable."
+      )
+      teal:::validate_input(
+        inputId = "paramcd-variables-selected",
+        condition = !is.null(selectors$paramcd()$variables$selected),
+        message = "Please select PARAMCD variable."
+      )
+      teal:::validate_input(
+        inputId = "anrind-variables-selected",
+        condition = !is.null(selectors$anrind()$variables$selected),
+        message = "Please select ANRIND variable."
+      )
+      teal:::validate_input(
+        inputId = "patient_id",
+        condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
+        message = "Please select a patient"
+      )
+
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's output(s)")
+      )
+      obj
+    })
+
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::left_join",
+      output_name = "ANL"
+    )
+
     all_q <- reactive({
-      teal::validate_inputs(iv_r())
+      obj <- anl_inputs$data()
 
       labor_calls <- template_laboratory(
-        dataname = "ANL",
-        timepoints = input[[extract_input("timepoints", dataname)]],
-        aval_var = input[[extract_input("aval_var", dataname)]],
-        avalu_var = input[[extract_input("avalu_var", dataname)]],
-        param = input[[extract_input("param", dataname)]],
-        paramcd = input[[extract_input("paramcd", dataname)]],
-        anrind = input[[extract_input("anrind", dataname)]],
+        dataname   = "ANL",
+        timepoints = anl_inputs$variables()$timepoints,
+        aval_var   = anl_inputs$variables()$aval_var,
+        avalu_var  = anl_inputs$variables()$avalu_var,
+        param      = anl_inputs$variables()$param,
+        paramcd    = anl_inputs$variables()$paramcd,
+        anrind     = anl_inputs$variables()$anrind,
         patient_id = patient_id(),
         round_value = as.integer(input$round_value)
       )
 
       obj <- teal.code::eval_code(
-        anl_q(),
+        obj,
         substitute(
           expr = {
             pt_id <- patient_id
             ANL <- ANL[ANL[[patient_col]] == patient_id, ]
-          }, env = list(
+          },
+          env = list(
             patient_col = patient_col,
             patient_id = patient_id()
           )
         )
       )
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
-      obj <- obj %>% teal.code::eval_code(as.expression(labor_calls))
-      # removes table_data_html needed only for the display
+      obj <- obj |> teal.code::eval_code(as.expression(labor_calls))
+      # Remove table_data_html — only needed for the display, not the report
       teal.reporter::teal_card(obj) <- utils::head(teal.reporter::teal_card(obj), -3)
-
       obj
-    })
-
-    # Outputs to render.
-    table_r <- reactive({
-      q <- req(all_q())
-
-      table_html <- DT::datatable(
-        data = q[["table_data_html"]],
-        escape = FALSE,
-        options = list(
-          lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
-          scrollX = TRUE
-        )
-      )
-      table_html$dependencies <- c(
-        table_html$dependencies,
-        list(rmarkdown::html_dependency_bootstrap("default"))
-      )
-      table_html
     })
 
     output$title <- renderText({
@@ -498,7 +473,24 @@ srv_g_laboratory <- function(id,
       paste("<h5><b>Patient ID:", all_q()[["pt_id"]], "</b></h5>")
     })
 
-    output$lab_values_table <- DT::renderDataTable(expr = table_r())
+    output$lab_values_table <- DT::renderDataTable(
+      expr = {
+        q <- req(all_q())
+        table_html <- DT::datatable(
+          data = q[["table_data_html"]],
+          escape = FALSE,
+          options = list(
+            lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25")),
+            scrollX = TRUE
+          )
+        )
+        table_html$dependencies <- c(
+          table_html$dependencies,
+          list(rmarkdown::html_dependency_bootstrap("default"))
+        )
+        table_html
+      }
+    )
 
     all_q
   })
