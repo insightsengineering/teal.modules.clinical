@@ -505,7 +505,6 @@ template_mmrm_plots <- function(fit_name,
 #' {{ next_example }}
 #'
 #' @examples
-#' 
 #' library(teal.picks)
 #'
 #' arm_ref_comp <- list(

@@ -9,6 +9,7 @@
 #' @import teal
 #' @import teal.picks
 #' @import teal.transform
+#' @import teal.picks
 #' @import tern
 #' @importFrom dplyr %>% .data
 #' @importFrom tidyselect starts_with ends_with where
