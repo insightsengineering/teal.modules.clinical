@@ -97,6 +97,7 @@ can be modified with the help of `rtables` modifiers like `rtables::insert_rrow`
 
 ```{r decorate_listing_df, message=FALSE}
 library(teal.modules.clinical)
+library(teal.picks)
 
 data <- within(teal_data(), {
   library(dplyr)
