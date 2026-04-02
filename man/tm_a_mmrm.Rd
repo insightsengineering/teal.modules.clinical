@@ -111,11 +111,6 @@ decorator for tables or plots included in the module output reported.
 The decorators are applied to the respective output objects.
 
 See section "Decorating Module" below for more details.}
-
-\item{...}{\itemize{
-\item For \code{modules()}: (\code{teal_module} or \code{teal_modules}) Objects to wrap into a tab.
-\item For \code{format()} and \code{print()}: Arguments passed to other methods.
-}}
 }
 \value{
 a \code{teal_module} object.
