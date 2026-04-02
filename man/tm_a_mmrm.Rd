@@ -27,8 +27,7 @@ tm_a_mmrm(
   basic_table_args,
   ggplot2_args,
   transformators,
-  decorators,
-  ...
+  decorators
 )
 }
 \arguments{
