@@ -1,24 +1,7 @@
-#' teal Module: Simple Bar Chart (teal.picks implementation)
-#'
-#' This module produces a [ggplot2::ggplot()] type bar chart and summary table of counts per category.
-#' This is the `teal.picks` implementation of [tm_g_barchart_simple()].
-#'
-#' @inheritParams tm_g_barchart_simple
 #' @param x (`picks` or `NULL`)\cr variable on the x-axis.
 #' @param fill (`picks` or `NULL`)\cr grouping variable to determine bar colors.
 #' @param x_facet (`picks` or `NULL`)\cr row-wise faceting groups.
 #' @param y_facet (`picks` or `NULL`)\cr column-wise faceting groups.
-#'
-#' @inherit module_arguments return seealso
-#'
-#' @section Decorating Module:
-#'
-#' This module generates the following objects, which can be modified in place using decorators:
-#' - `plot` (`ggplot`)
-#'
-#' For additional details and examples of decorators, refer to the vignette
-#' `vignette("decorate-module-output", package = "teal.modules.clinical")`.
-#'
 #' @export
 tm_g_barchart_simple.picks <- function(x = teal.picks::picks(
                                          teal.picks::datasets(),

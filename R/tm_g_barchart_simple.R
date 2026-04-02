@@ -165,10 +165,22 @@
 #' }
 #'
 #' @export
-tm_g_barchart_simple <- function(x = NULL,
-                                 fill = NULL,
-                                 x_facet = NULL,
-                                 y_facet = NULL,
+tm_g_barchart_simple <- function(x = teal.picks::picks(
+                                   teal.picks::datasets(),
+                                   teal.picks::variables(selected = NULL, multiple = FALSE)
+                                 ),
+                                 fill = teal.picks::picks(
+                                   teal.picks::datasets(),
+                                   teal.picks::variables(selected = NULL, multiple = FALSE)
+                                 ),
+                                 x_facet = teal.picks::picks(
+                                   teal.picks::datasets(),
+                                   teal.picks::variables(selected = NULL, multiple = FALSE)
+                                 ),
+                                 y_facet = teal.picks::picks(
+                                   teal.picks::datasets(),
+                                   teal.picks::variables(selected = NULL, multiple = FALSE)
+                                 ),
                                  label = "Count Barchart",
                                  plot_options = NULL,
                                  plot_height = c(600L, 200L, 2000L),
@@ -178,6 +190,23 @@ tm_g_barchart_simple <- function(x = NULL,
                                  ggplot2_args = teal.widgets::ggplot2_args(),
                                  transformators = list(),
                                  decorators = list()) {
+  useMethod("tm_g_barchart_simple", x)
+}
+
+#' @export
+tm_g_barchart_simple.default <- function(x = NULL,
+                                         fill = NULL,
+                                         x_facet = NULL,
+                                         y_facet = NULL,
+                                         label = "Count Barchart",
+                                         plot_options = NULL,
+                                         plot_height = c(600L, 200L, 2000L),
+                                         plot_width = NULL,
+                                         pre_output = NULL,
+                                         post_output = NULL,
+                                         ggplot2_args = teal.widgets::ggplot2_args(),
+                                         transformators = list(),
+                                         decorators = list()) {
   message("Initializing tm_g_barchart_simple")
   checkmate::assert_string(label)
   checkmate::assert_list(plot_options, null.ok = TRUE)
