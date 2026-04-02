@@ -351,25 +351,30 @@ template_forest_rsp <- function(dataname = "ANL",
 #' @export
 tm_g_forest_rsp <- function(label,
                             dataname,
-                            parentname = ifelse(
-                              inherits(arm_var, "data_extract_spec"),
-                              teal.transform::datanames_input(arm_var),
-                              "ADSL"
+                            parentname = "ADSL",
+                            arm_var = teal.picks::variables(
+                              choices = c("ARM", "ARMCD"),
+                              selected = "ARM",
+                              multiple = FALSE
                             ),
-                            arm_var,
                             arm_ref_comp = NULL,
-                            paramcd,
-                            aval_var = teal.transform::choices_selected(
-                              teal.transform::variable_choices(dataname, "AVALC"), "AVALC",
-                              fixed = TRUE
-                            ),
-                            subgroup_var,
-                            strata_var,
+                            paramcd_var = teal.picks::variables("PARAMCD"),
+                            paramcd_value = teal.picks::values(multiple = FALSE),
+                            aval_var = teal.picks::variables("AVALC", fixed = TRUE),
+                            subgroup_var = teal.picks::variables(selected = NULL, multiple = TRUE),
+                            strata_var = teal.picks::variables(selected = NULL, multiple = TRUE),
                             stats = c("n_tot", "n", "n_rsp", "prop", "or", "ci"),
                             riskdiff = NULL,
                             fixed_symbol_size = TRUE,
-                            conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                            default_responses = c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"),
+                            conf_level = teal.picks::values(
+                              c("0.95", "0.9", "0.8"),
+                              selected = "0.95",
+                              keep_order = TRUE
+                            ),
+                            default_responses = c(
+                              "CR", "PR", "Y",
+                              "Complete Response (CR)", "Partial Response (PR)"
+                            ),
                             plot_height = c(500L, 200L, 2000L),
                             plot_width = c(1500L, 800L, 3000L),
                             rel_width_forest = c(25L, 0L, 100L),
@@ -380,16 +385,18 @@ tm_g_forest_rsp <- function(label,
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_g_forest_rsp")
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_flag(fixed_symbol_size)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(aval_var, "choices_selected")
-  checkmate::assert_class(subgroup_var, "choices_selected")
-  checkmate::assert_class(strata_var, "choices_selected")
-  checkmate::assert_class(conf_level, "choices_selected")
+  checkmate::assert_class(arm_var, "variables", null.ok = TRUE)
+  checkmate::assert_class(paramcd_var, "variables")
+  checkmate::assert_class(paramcd_value, "values")
+  checkmate::assert_class(aval_var, "variables")
+  checkmate::assert_class(subgroup_var, "variables")
+  checkmate::assert_class(strata_var, "variables")
+  checkmate::assert_class(conf_level, "values")
   checkmate::assert_character(stats, min.len = 3)
   checkmate::assert_true(all(c("n_tot", "or", "ci") %in% stats))
   checkmate::assert_list(riskdiff, null.ok = TRUE)
@@ -404,131 +411,135 @@ tm_g_forest_rsp <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  teal::assert_decorators(decorators, "plot")
+  assert_decorators(decorators, "plot")
+
+  # Build picks from specs -------------------------------------------------------
+
+  # arm_var: treatment variable from parentname (ADSL)
+  arm_var <- if (!is.null(arm_var)) {
+    teal.picks::picks(teal.picks::datasets(parentname), arm_var)
+  } else {
+    NULL
+  }
+
+  # paramcd: filter picks on dataname by PARAMCD value
+  paramcd <- teal.picks::picks(
+    teal.picks::datasets(dataname),
+    variables = paramcd_var,
+    values    = paramcd_value
+  )
+
+  # aval_var: analysis variable from dataname
+  aval_var <- teal.picks::picks(teal.picks::datasets(dataname), aval_var)
+
+  # subgroup_var: subgroup variables from parentname
+  subgroup_var <- teal.picks::picks(teal.picks::datasets(parentname), subgroup_var)
+
+  # strata_var: stratification variables from parentname
+  strata_var <- teal.picks::picks(teal.picks::datasets(parentname), strata_var)
 
   args <- as.list(environment())
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    subgroup_var = cs_to_des_select(subgroup_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
-    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE)
-  )
-
   module(
-    label = label,
-    ui = ui_g_forest_rsp,
-    ui_args = c(data_extract_list, args),
-    server = srv_g_forest_rsp,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        arm_ref_comp = arm_ref_comp,
-        label = label,
-        stats = stats,
-        riskdiff = riskdiff,
-        default_responses = default_responses,
-        plot_height = plot_height,
-        plot_width = plot_width,
-        ggplot2_args = ggplot2_args,
-        decorators = decorators
-      )
-    ),
+    label      = label,
+    server     = srv_g_forest_rsp.picks,
+    ui         = ui_g_forest_rsp.picks,
+    ui_args    = args[names(args) %in% names(formals(ui_g_forest_rsp.picks))],
+    server_args = args[names(args) %in% names(formals(srv_g_forest_rsp.picks))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames  = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_g_forest_rsp <- function(id, ...) {
-  a <- list(...) # module args
-  is_single_dataset_value <- teal.transform::is_single_dataset(a$arm_var, a$paramcd, a$subgroup_var, a$strata_var)
-
+ui_g_forest_rsp <- function(id,
+                            arm_var,
+                            paramcd,
+                            aval_var,
+                            subgroup_var,
+                            strata_var,
+                            conf_level,
+                            fixed_symbol_size,
+                            rel_width_forest,
+                            font_size,
+                            pre_output,
+                            post_output,
+                            decorators) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("myplot")),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(a[c("arm_var", "paramcd", "aval_var", "subgroup_var", "strata_var")]),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Endpoint:"),
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Analysis Variable:"),
+        teal.picks::picks_ui(ns("aval_var"), aval_var)
       ),
       selectInput(
         ns("responders"),
         "Responders",
-        choices = c("CR", "PR"),
+        choices  = c("CR", "PR"),
         selected = c("CR", "PR"),
         multiple = TRUE
       ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      uiOutput(
-        ns("arms_buckets"),
-        title = paste(
-          "Multiple reference groups are automatically combined into a single group when more than one",
-          "value is selected."
+      if (!is.null(arm_var)) {
+        tags$div(
+          tags$div(
+            tags$label("Select Treatment Variable:"),
+            teal.picks::picks_ui(ns("arm_var"), arm_var)
+          ),
+          uiOutput(
+            ns("arms_buckets"),
+            title = paste(
+              "Multiple reference groups are automatically combined into a single group",
+              "when more than one value is selected."
+            )
+          )
         )
+      },
+      tags$div(
+        tags$label("Subgroup Variables:"),
+        teal.picks::picks_ui(ns("subgroup_var"), subgroup_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("subgroup_var"),
-        label = "Subgroup Variables",
-        data_extract_spec = a$subgroup_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Stratify by:"),
+        teal.picks::picks_ui(ns("strata_var"), strata_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("strata_var"),
-        label = "Stratify by",
-        data_extract_spec = a$strata_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
+      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
           title = "Additional plot settings",
           teal.widgets::optionalSelectInput(
-            inputId = ns("conf_level"),
-            label = "Confidence Level",
-            a$conf_level$choices,
-            a$conf_level$selected,
+            inputId  = ns("conf_level"),
+            label    = "Confidence Level",
+            choices  = conf_level$choices,
+            selected = conf_level$selected,
             multiple = FALSE,
-            fixed = a$conf_level$fixed
+            fixed    = conf_level$fixed %||% FALSE
           ),
-          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = TRUE),
+          checkboxInput(ns("fixed_symbol_size"), "Fixed symbol size", value = fixed_symbol_size),
           teal.widgets::optionalSliderInputValMinMax(
             ns("rel_width_forest"),
             "Relative Width of Forest Plot (%)",
-            a$rel_width_forest,
+            rel_width_forest,
             ticks = FALSE, step = 1
           ),
           teal.widgets::optionalSliderInputValMinMax(
             ns("font_size"),
             "Table Font Size",
-            a$font_size,
+            font_size,
             ticks = FALSE, step = 1
           )
         )
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -552,85 +563,122 @@ srv_g_forest_rsp <- function(id,
                              ggplot2_args,
                              decorators) {
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    # Setup arm variable selection, default reference arms, and default
-    # comparison arms for encoding panel
-    iv_arm_ref <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = extract_input("arm_var", parentname),
-      data = data()[[parentname]],
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_t_tte"
-    )
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        arm_var = arm_var,
-        subgroup_var = subgroup_var,
-        strata_var = strata_var,
-        paramcd = paramcd,
-        aval_var = aval_var
-      ),
-      datasets = data,
-      select_validation_rule = list(
-        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
-        arm_var = shinyvalidate::sv_required("A treatment variable is required")
-      ),
-      filter_validation_rule = list(paramcd = shinyvalidate::sv_required(message = "Please select Endpoint filter."))
-    )
-
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("conf_level", shinyvalidate::sv_required("Please choose a confidence level between 0 and 1"))
-      iv$add_rule(
-        "conf_level",
-        shinyvalidate::sv_between(0, 1, message_fmt = "Please choose a confidence level between {left} and {right}")
+    # Setup arm ref/comp buckets UI and validator
+    if (!is.null(arm_var)) {
+      iv_arm_ref <- arm_ref_comp_observer(
+        session,
+        input,
+        output,
+        id_arm_var = "arm_var-variables-selected",
+        data       = reactive(data()[[parentname]]),
+        arm_ref_comp = arm_ref_comp,
+        module     = "tm_g_forest_rsp"
       )
-      iv$add_rule("responders", shinyvalidate::sv_required("`Responders` field is empty"))
-      iv$add_validator(iv_arm_ref)
-      teal.transform::compose_and_enable_validators(iv, selector_list, c("arm_var", "aval_var", "paramcd"))
+    }
+
+    picks_list <- Filter(Negate(is.null), list(
+      arm_var     = arm_var,
+      paramcd     = paramcd,
+      aval_var    = aval_var,
+      subgroup_var = subgroup_var,
+      strata_var  = strata_var
+    ))
+
+    selectors <- teal.picks::picks_srv(
+      picks = picks_list,
+      data  = data
+    )
+
+    validated_q <- reactive({
+      obj <- req(data())
+
+      teal:::validate_input(
+        inputId   = "paramcd-values-selected",
+        condition = !is.null(selectors$paramcd()$values$selected),
+        message   = "Please select an endpoint (PARAMCD)."
+      )
+      teal:::validate_input(
+        inputId   = "aval_var-variables-selected",
+        condition = !is.null(selectors$aval_var()$variables$selected),
+        message   = "An analysis variable is required."
+      )
+      if (!is.null(arm_var)) {
+        teal:::validate_input(
+          inputId   = "arm_var-variables-selected",
+          condition = !is.null(selectors$arm_var()$variables$selected),
+          message   = "A treatment variable is required."
+        )
+      }
+      teal:::validate_input(
+        inputId   = "conf_level",
+        condition = !is.null(input$conf_level),
+        message   = "Please choose a confidence level."
+      )
+      teal:::validate_input(
+        inputId   = "conf_level",
+        condition = {
+          cv <- suppressWarnings(as.numeric(input$conf_level))
+          !is.na(cv) && cv > 0 && cv < 1
+        },
+        message   = "Confidence level must be between 0 and 1."
+      )
+      teal:::validate_input(
+        inputId   = "responders",
+        condition = !is.null(input$responders) && length(input$responders) > 0,
+        message   = "`Responders` field is empty."
+      )
+
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card("# Forest Response Plot"),
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's code")
+      )
+      obj
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
+    # Merge ADRS selectors: PARAMCD filter + aval_var → ANL
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data      = validated_q,
+      selectors = selectors[c("paramcd", "aval_var")],
+      join_fun  = "dplyr::inner_join",
+      output_name = "ANL"
     )
 
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = list(arm_var = arm_var, subgroup_var = subgroup_var, strata_var = strata_var),
-      anl_name = "ANL_ADSL"
+    # Merge ADSL selectors: arm_var + subgroup_var + strata_var → ANL_ADSL
+    adsl_selector_names <- intersect(
+      c("arm_var", "subgroup_var", "strata_var"),
+      names(selectors)
+    )
+    adsl_inputs <- teal.picks::merge_srv(
+      "adsl_inputs",
+      data      = validated_q,
+      selectors = selectors[adsl_selector_names],
+      output_name = "ANL_ADSL"
     )
 
     anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>%
-        teal.code::eval_code(code = as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(code = as.expression(adsl_inputs()$expr))
+      c(anl_inputs$data(), adsl_inputs$data())
     })
 
+    # Update responders when PARAMCD or aval_var changes
     observeEvent(
-      eventExpr = c(
-        input[[extract_input("aval_var", "ADRS")]],
-        input[[extract_input("paramcd", paramcd$filter[[1]]$dataname, filter = TRUE)]]
+      eventExpr = list(
+        selectors$paramcd()$values$selected,
+        selectors$aval_var()$variables$selected
       ),
       handlerExpr = {
         req(anl_q())
-        anl <- anl_q()[["ANL"]]
-        aval_var <- anl_inputs()$columns_source$aval_var
-        paramcd_level <- unlist(anl_inputs()$filter_info$paramcd[[1]]$selected)
-        if (length(paramcd_level) == 0) {
+        anl       <- anl_q()[["ANL"]]
+        aval_var  <- selectors$aval_var()$variables$selected
+        paramcd_level <- selectors$paramcd()$values$selected
+
+        if (length(paramcd_level) == 0 || length(aval_var) == 0) {
           return(NULL)
         }
 
@@ -640,13 +688,9 @@ srv_g_forest_rsp <- function(id,
           default_responses
         }
 
+        common_rsp <- if (is.list(sel_param)) sel_param$rsp else sel_param
 
-        common_rsp <- if (is.list(sel_param)) {
-          sel_param$rsp
-        } else {
-          sel_param
-        }
-        responder_choices <- if (length(aval_var) == 0) {
+        responder_choices <- if (nrow(anl) == 0 || length(aval_var) == 0) {
           character(0)
         } else {
           if ("levels" %in% names(sel_param)) {
@@ -659,50 +703,45 @@ srv_g_forest_rsp <- function(id,
             unique(anl[[aval_var]])
           }
         }
+
         updateSelectInput(
           session, "responders",
-          choices = responder_choices,
+          choices  = responder_choices,
           selected = intersect(responder_choices, common_rsp)
         )
       }
     )
 
-    # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
       req(anl_q())
       adsl_filtered <- anl_q()[[parentname]]
-      anl_filtered <- anl_q()[[dataname]]
-      anl <- anl_q()[["ANL"]]
+      anl_filtered  <- anl_q()[[dataname]]
+      anl           <- anl_q()[["ANL"]]
 
-      anl_m <- anl_inputs()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_arm_var      <- selectors$arm_var()$variables$selected
+      input_aval_var     <- selectors$aval_var()$variables$selected
+      input_subgroup_var <- selectors$subgroup_var()$variables$selected
+      input_strata_var   <- selectors$strata_var()$variables$selected
+      input_paramcd      <- selectors$paramcd()$variables$selected
 
       # validate inputs
       validate_args <- list(
-        adsl = adsl_filtered,
+        adsl     = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var, input_subgroup_var, input_strata_var),
-        anl = anl_filtered,
-        anlvars = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
-        arm_var = input_arm_var
+        anl      = anl_filtered,
+        anlvars  = c("USUBJID", "STUDYID", input_paramcd, input_aval_var),
+        arm_var  = input_arm_var,
+        ref_arm  = unlist(input$buckets$Ref),
+        comp_arm = unlist(input$buckets$Comp)
       )
-      validate_args <- append(
-        validate_args,
-        list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
-      )
-
       do.call(what = "validate_standard_inputs", validate_args)
 
-      teal::validate_one_row_per_id(anl_q()[["ANL"]], key = c("USUBJID", "STUDYID", input_paramcd))
+      teal::validate_one_row_per_id(anl, key = c("USUBJID", "STUDYID", input_paramcd))
 
       if (length(input_subgroup_var) > 0) {
         validate(
           need(
-            all(vapply(adsl_filtered[, input_subgroup_var], is.factor, logical(1))),
+            all(vapply(adsl_filtered[, input_subgroup_var, drop = FALSE], is.factor, logical(1))),
             "Not all subgroup variables are factors."
           )
         )
@@ -710,98 +749,70 @@ srv_g_forest_rsp <- function(id,
       if (length(input_strata_var) > 0) {
         validate(
           need(
-            all(vapply(adsl_filtered[, input_strata_var], is.factor, logical(1))),
+            all(vapply(adsl_filtered[, input_strata_var, drop = FALSE], is.factor, logical(1))),
             "Not all stratification variables are factors."
           )
         )
       }
 
-      if (!identical(default_responses, c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)"))) {
-        validate(
-          need(
-            all(unlist(lapply(default_responses, function(x) {
-              if (is.list(x) & "levels" %in% names(x)) {
-                lvls <- x$levels
-                all(x$rsp %in% lvls)
-              } else {
-                lvls <- unique(anl[[input$`aval_var-dataset_ADRS_singleextract-select`]])
-                if ("rsp" %in% names(x)) {
-                  all(x$rsp %in% lvls)
-                } else {
-                  all(x %in% lvls)
-                }
-              }
-            }))),
-            "All selected default responses must be in the levels of AVAL."
-          )
-        )
-      }
-
-      if (is.list(default_responses)) {
-        validate(
-          need(
-            all(
-              grepl("\\.rsp|\\.levels", names(unlist(default_responses))) |
-                names(unlist(default_responses)) %in% names(default_responses)
-            ),
-            "The lists given for each AVAL in default_responses must be named 'rsp' and 'levels'."
-          )
-        )
-      }
-
-      validate_has_data(anl_q()[["ANL"]], min_nrow = 1)
+      teal::validate_has_data(anl, min_nrow = 1)
       NULL
     })
 
-    # The R-code corresponding to the analysis.
     all_q <- reactive({
       validate_checks()
-      anl_m <- anl_inputs()
 
-      strata_var <- as.vector(anl_m$columns_source$strata_var)
-      subgroup_var <- as.vector(anl_m$columns_source$subgroup_var)
-      resolved_paramcd <- teal.transform::resolve_delayed(paramcd, as.list(data()))
-      obj_var_name <- get_g_forest_obj_var_name(resolved_paramcd, input)
+      input_arm_var      <- selectors$arm_var()$variables$selected
+      input_aval_var     <- selectors$aval_var()$variables$selected
+      input_subgroup_var <- selectors$subgroup_var()$variables$selected
+      input_strata_var   <- selectors$strata_var()$variables$selected
+
+      # obj_var_name: the label for the selected PARAMCD level
+      # In picks, we read it directly from the selector reactive
+      paramcd_level <- selectors$paramcd()$values$selected
+      obj_var_name  <- paramcd_level %||% ""
 
       my_calls <- template_forest_rsp(
-        dataname = "ANL",
-        parentname = "ANL_ADSL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        ref_arm = unlist(input$buckets$Ref),
-        comp_arm = unlist(input$buckets$Comp),
-        obj_var_name = obj_var_name,
-        aval_var = as.vector(anl_m$columns_source$aval_var),
-        responders = input$responders,
-        subgroup_var = if (length(subgroup_var) != 0) subgroup_var else NULL,
-        strata_var = if (length(strata_var) != 0) strata_var else NULL,
-        stats = stats,
-        riskdiff = riskdiff,
-        conf_level = as.numeric(input$conf_level),
-        col_symbol_size = `if`(input$fixed_symbol_size, NULL, 1),
-        font_size = input$font_size,
-        ggplot2_args = ggplot2_args
+        dataname         = "ANL",
+        parentname       = "ANL_ADSL",
+        arm_var          = input_arm_var,
+        ref_arm          = unlist(input$buckets$Ref),
+        comp_arm         = unlist(input$buckets$Comp),
+        obj_var_name     = obj_var_name,
+        aval_var         = input_aval_var,
+        responders       = input$responders,
+        subgroup_var     = if (length(input_subgroup_var) != 0) input_subgroup_var else NULL,
+        strata_var       = if (length(input_strata_var) != 0) input_strata_var else NULL,
+        stats            = stats,
+        riskdiff         = riskdiff,
+        conf_level       = as.numeric(input$conf_level),
+        col_symbol_size  = `if`(input$fixed_symbol_size, NULL, 1),
+        font_size        = input$font_size,
+        ggplot2_args     = ggplot2_args
       )
+
       obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table and Plot")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
-    decorated_all_q <- teal::srv_transform_teal_data(
-      id = "decorator",
-      data = all_q,
-      transformators = select_decorators(decorators, "plot"),
-      expr = reactive({
+    decorated_all_q <- srv_decorate_teal_data(
+      id         = "decorator",
+      data       = all_q,
+      decorators = select_decorators(decorators, "plot"),
+      expr       = reactive({
         substitute(
           cowplot::plot_grid(
             table,
             plot,
             align = "h",
-            axis = "tblr",
+            axis  = "tblr",
             rel_widths = c(1 - input_rel_width_forest / 100, input_rel_width_forest / 100)
           ),
           env = list(input_rel_width_forest = input$rel_width_forest)
         )
-      })
+      }),
+      expr_is_reactive = TRUE
     )
 
     plot_r <- reactive({
@@ -809,16 +820,16 @@ srv_g_forest_rsp <- function(id,
         decorated_all_q()[["table"]],
         decorated_all_q()[["plot"]],
         align = "h",
-        axis = "tblr",
+        axis  = "tblr",
         rel_widths = c(1 - input$rel_width_forest / 100, input$rel_width_forest / 100)
       )
     })
 
     pws <- teal.widgets::plot_with_settings_srv(
-      id = "myplot",
+      id     = "myplot",
       plot_r = plot_r,
       height = plot_height,
-      width = plot_width
+      width  = plot_width
     )
 
     set_chunk_dims(pws, decorated_all_q)
