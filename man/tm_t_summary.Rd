@@ -34,14 +34,13 @@ tm_t_summary(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for variable names that can be used as \code{arm_var}.
+\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr object with all available choices and preselected
+option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{summarize_vars}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr names of
-the variables that should be summarized.}
+\item{summarize_vars}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr variable(s) to summarize.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
@@ -160,11 +159,11 @@ app <- init(
     tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",
-      arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
       add_total = TRUE,
-      summarize_vars = choices_selected(
-        c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
-        c("SEX", "RACE")
+      summarize_vars = variables(
+        choices = c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
+        selected = c("SEX", "RACE")
       ),
       useNA = "ifany"
     )

@@ -233,11 +233,12 @@ template_summary <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_summary
-#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
-#'   available choices and preselected option for variable names that can be used as `arm_var`.
+#' @param arm_var ([teal.picks::variables()])\cr object with all available choices and preselected
+#'   option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
+#' @param summarize_vars ([teal.picks::variables()])\cr variable(s) to summarize.
 #' @param show_arm_var_labels (`flag`)\cr whether arm variable label(s) should be displayed. Defaults to `TRUE`.
 #'
 #' @inherit module_arguments return seealso
@@ -290,11 +291,11 @@ template_summary <- function(dataname,
 #'     tm_t_summary(
 #'       label = "Demographic Table",
 #'       dataname = "ADSL",
-#'       arm_var = choices_selected(c("ARM", "ARMCD"), "ARM"),
+#'       arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
 #'       add_total = TRUE,
-#'       summarize_vars = choices_selected(
-#'         c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
-#'         c("SEX", "RACE")
+#'       summarize_vars = variables(
+#'         choices = c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
+#'         selected = c("SEX", "RACE")
 #'       ),
 #'       useNA = "ifany"
 #'     )
