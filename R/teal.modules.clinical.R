@@ -8,6 +8,7 @@
 #' @import shiny
 #' @import teal
 #' @import teal.transform
+#' @import teal.picks
 #' @import tern
 #' @importFrom dplyr %>% .data
 

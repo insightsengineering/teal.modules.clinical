@@ -63,10 +63,10 @@ reference and comparison arms when the arm variable is changed.}
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
 
-\item{paramcd_var}{(\code{NULL} or \code{\link[teal.picks:variables]{teal.picks::variables()}})\cr used only by the \code{teal.picks} method;
+\item{paramcd_var}{(\code{NULL} or \code{\link[teal.picks:picks]{teal.picks::variables()}})\cr used only by the \code{teal.picks} method;
 ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.}
 
-\item{paramcd_values}{(\code{NULL} or \code{\link[teal.picks:values]{teal.picks::values()}})\cr used only by the \code{teal.picks} method;
+\item{paramcd_values}{(\code{NULL} or \code{\link[teal.picks:picks]{teal.picks::values()}})\cr used only by the \code{teal.picks} method;
 ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.}
 
 \item{method}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
@@ -101,6 +101,9 @@ with settings for all the plots or named list of \code{ggplot2_args} objects for
 List names should match the following: \code{c("default", "lsmeans", "diagnostic")}. The argument is merged
 with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
+
+\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
+To learn more check \code{vignette("transform-input-data", package = "teal")}.}
 
 \item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 (named \code{list} of lists of \code{teal_transform_module}) optional,
@@ -158,6 +161,22 @@ To learn more please refer to the vignette
 \code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
 }
 
+\section{Reporting}{
+
+
+
+This module returns an object of class \code{teal_module}, that contains a \code{server} function.
+Since the server function returns a \code{teal_report} object, this makes this module reportable, which means that
+the reporting functionality will be turned on automatically by the \code{teal} framework.
+
+For more information on reporting in \code{teal}, see the vignettes:
+\itemize{
+\item \code{vignette("reportable-shiny-application", package = "teal.reporter")}
+\item \code{vignette("adding-support-for-reporting-to-custom-modules", package = "teal")}
+}
+
+}
+
 \examples{
 
 library(teal.picks)
@@ -197,14 +216,7 @@ app <- init(
       id_var = variables(c("USUBJID", "SUBJID"), 1L),
       arm_var = variables(c("ARM", "ARMCD"), 1L),
       visit_var = variables(c("AVISIT", "AVISITN"), 1L),
-      aval_var = variables(c("AVAL", "CHG"), 1L),
-      id_var = variables(c("USUBJID", "SUBJID"), 1L),
-      arm_var = variables(c("ARM", "ARMCD"), 1L),
-      visit_var = variables(c("AVISIT", "AVISITN"), 1L),
       arm_ref_comp = arm_ref_comp,
-      paramcd_var = variables("PARAMCD"),
-      paramcd_values = values(selected = "FKSI-FWB"),
-      cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
       paramcd_var = variables("PARAMCD"),
       paramcd_values = values(selected = "FKSI-FWB"),
       cov_var = variables(c("BASE", "AGE", "SEX", interaction_vars("BASE", "AVISIT")), NULL)
