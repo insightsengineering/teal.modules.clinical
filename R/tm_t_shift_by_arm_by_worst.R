@@ -250,7 +250,7 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
 #'       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+#'       paramcd = variables(choices = "PARAMCD"),
 #'       worst_flag_var = variables(
 #'         choices = any_of(c("WORS01FL", "WORS02FL")),
 #'         selected = "WORS02FL"
@@ -270,7 +270,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        dataname,
                                        parentname = "ADSL",
                                        arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                                       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+                                       paramcd = variables(choices = "PARAMCD"),
                                        aval_var = variables(choices = any_of(c("AVALC", "ANRIND")), selected = "AVALC"),
                                        base_var = lifecycle::deprecated(),
                                        baseline_var = variables(choices = any_of(c("BASEC", "BNRIND")), selected = "BASEC"),
@@ -282,7 +282,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                          c("Y", "N"),
                                          selected = "Y", fixed = TRUE
                                        ),
-                                       treatment_flag_var = variables(choices = "ONTRTFL", selected = "ONTRTFL", fixed = TRUE),
+                                       treatment_flag_var = variables(choices = "ONTRTFL"),
                                        treatment_flag = teal.transform::choices_selected(
                                          c("Y", "N"),
                                          selected = "Y", fixed = TRUE

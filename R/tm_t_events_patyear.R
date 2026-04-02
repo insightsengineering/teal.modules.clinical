@@ -258,10 +258,10 @@ template_events_patyear <- function(dataname,
 #'       dataname = "ADAETTE",
 #'       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
 #'       add_total = TRUE,
-#'       events_var = variables(choices = "n_events", selected = "n_events", fixed = TRUE),
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-#'       aval_var = variables(choices = "AVAL", selected = "AVAL", fixed = TRUE),
-#'       avalu_var = variables(choices = "AVALU", selected = "AVALU", fixed = TRUE)
+#'       events_var = variables(choices = "n_events"),
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       aval_var = variables(choices = "AVAL"),
+#'       avalu_var = variables(choices = "AVALU")
 #'     )
 #'   )
 #' )
@@ -289,10 +289,10 @@ template_events_patyear <- function(dataname,
 #'         selected = c("ARM", "SEX")
 #'       ),
 #'       add_total = TRUE,
-#'       events_var = variables(choices = "n_events", selected = "n_events", fixed = TRUE),
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-#'       aval_var = variables(choices = "AVAL", selected = "AVAL", fixed = TRUE),
-#'       avalu_var = variables(choices = "AVALU", selected = "AVALU", fixed = TRUE)
+#'       events_var = variables(choices = "n_events"),
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       aval_var = variables(choices = "AVAL"),
+#'       avalu_var = variables(choices = "AVALU")
 #'     )
 #'   )
 #' )
@@ -305,10 +305,10 @@ tm_t_events_patyear <- function(label,
                                 dataname,
                                 parentname = "ADSL",
                                 arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                                events_var = variables(choices = any_of(c("n_events")), selected = "n_events", fixed = TRUE),
-                                paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-                                aval_var = variables(choices = "AVAL", selected = "AVAL", fixed = TRUE),
-                                avalu_var = variables(choices = "AVALU", selected = "AVALU", fixed = TRUE),
+                                events_var = variables(choices = "n_events"),
+                                paramcd = variables(choices = "PARAMCD"),
+                                aval_var = variables(choices = "AVAL"),
+                                avalu_var = variables(choices = "AVALU"),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = tern::default_na_str(),
@@ -494,8 +494,12 @@ srv_events_patyear <- function(id,
         )
       obj
     })
-    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     observeEvent(anl_q(), {

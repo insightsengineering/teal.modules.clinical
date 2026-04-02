@@ -27,7 +27,7 @@ app_driver_tm_t_exposure <- function() {
         label = "Duration of Exposure Table",
         dataname = "ADEX",
         parentname = "ADSL",
-        paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+        paramcd = variables(choices = "PARAMCD"),
         col_by_var = variables(
           choices = any_of(c("SEX", "ARM")),
           selected = "SEX"
@@ -36,12 +36,12 @@ app_driver_tm_t_exposure <- function() {
           choices = any_of(c("RACE", "REGION1", "STRATA1", "SEX")),
           selected = "RACE"
         ),
-        parcat = variables(choices = "PARCAT2", selected = "PARCAT2"),
+        parcat = variables(choices = "PARCAT2"),
         add_total = FALSE,
         paramcd_label = "PARAM",
-        id_var = variables(choices = any_of("USUBJID"), selected = "USUBJID", fixed = TRUE),
-        aval_var = variables(choices = any_of("AVAL"), selected = "AVAL", fixed = TRUE),
-        avalu_var = variables(choices = any_of("AVALU"), selected = "AVALU", fixed = TRUE),
+        id_var = variables(choices = "USUBJID"),
+        aval_var = variables(choices = "AVAL"),
+        avalu_var = variables(choices = "AVALU"),
         total_label = default_total_label(),
         add_total_row = TRUE,
         total_row_label = "Total number of patients and patient time*",

@@ -29,7 +29,7 @@ app_driver_tm_t_coxreg <- function() {
           selected = "ARM"
         ),
         arm_ref_comp = arm_ref_comp,
-        paramcd = variables(choices = any_of("PARAMCD"), selected = "PARAMCD"),
+        paramcd = variables(choices = "PARAMCD"),
         strata_var = variables(
           choices = any_of(c("COUNTRY", "STRATA1", "STRATA2")),
           selected = "STRATA1"
@@ -41,8 +41,8 @@ app_driver_tm_t_coxreg <- function() {
           ordered = TRUE
         ),
         multivariate = TRUE,
-        aval_var = variables(choices = any_of("AVAL"), selected = "AVAL", fixed = TRUE),
-        cnsr_var = variables(choices = any_of("CNSR"), selected = "CNSR", fixed = TRUE),
+        aval_var = variables(choices = "AVAL"),
+        cnsr_var = variables(choices = "CNSR"),
         na_level = default_na_str(),
         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
           keep_order =

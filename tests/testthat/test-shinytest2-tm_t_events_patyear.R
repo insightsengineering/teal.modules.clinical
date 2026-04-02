@@ -22,14 +22,14 @@ app_driver_tm_t_events_patyear <- function() {
           selected = "ARMCD"
         ),
         add_total = TRUE,
-        events_var = variables(choices = any_of(c("n_events")), selected = "n_events", fixed = TRUE),
-        paramcd = variables(choices = any_of(c("PARAMCD")), selected = "PARAMCD"),
+        events_var = variables(choices = "n_events"),
+        paramcd = variables(choices = "PARAMCD"),
         conf_level = teal.transform::choices_selected(
           c(0.95, 0.9, 0.8), 0.95,
           keep_order = TRUE
         ),
-        aval_var = variables(choices = any_of(c("AVAL")), selected = "AVAL", fixed = TRUE),
-        avalu_var = variables(choices = any_of(c("AVALU")), selected = "AVALU", fixed = TRUE),
+        aval_var = variables(choices = "AVAL"),
+        avalu_var = variables(choices = "AVALU"),
         total_label = default_total_label(),
         na_level = default_na_str(),
         drop_arm_levels = TRUE,

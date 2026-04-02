@@ -13,7 +13,10 @@ app_driver_tm_t_events <- function() {
         label = "Adverse Event Table",
         dataname = "ADAE",
         parentname = "ADSL",
-        arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+        arm_var = variables(
+          choices = any_of(c("ARM", "ARMCD")),
+          selected = "ARM"
+        ),
         llt = variables(
           choices = any_of(c("AETERM", "AEDECOD")),
           selected = "AEDECOD"

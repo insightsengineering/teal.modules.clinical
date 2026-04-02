@@ -333,8 +333,8 @@ template_abnormality <- function(parentname,
 #'         multiple = TRUE,
 #'         ordered = TRUE
 #'       ),
-#'       baseline_var = variables(choices = any_of("BNRIND"), selected = "BNRIND", fixed = TRUE),
-#'       grade = variables(choices = any_of("ANRIND"), selected = "ANRIND", fixed = TRUE),
+#'       baseline_var = variables(choices = "BNRIND"),
+#'       grade = variables(choices = "ANRIND"),
 #'       abnormal = list(low = "LOW", high = "HIGH"),
 #'       exclude_base_abn = FALSE
 #'     )
@@ -355,11 +355,11 @@ tm_t_abnormality <- function(label,
                                multiple = TRUE,
                                ordered = TRUE
                              ),
-                             grade = variables(choices = any_of("ANRIND"), selected = "ANRIND", fixed = TRUE),
+                             grade = variables(choices = "ANRIND"),
                              abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-                             id_var = variables(choices = any_of("USUBJID"), selected = "USUBJID", fixed = TRUE),
-                             baseline_var = variables(choices = any_of("BNRIND"), selected = "BNRIND", fixed = TRUE),
-                             treatment_flag_var = variables(choices = any_of("ONTRTFL"), selected = "ONTRTFL", fixed = TRUE),
+                             id_var = variables(choices = "USUBJID"),
+                             baseline_var = variables(choices = "BNRIND"),
+                             treatment_flag_var = variables(choices = "ONTRTFL"),
                              treatment_flag = teal.transform::choices_selected("Y"),
                              add_total = TRUE,
                              total_label = default_total_label(),
@@ -544,8 +544,12 @@ srv_t_abnormality <- function(id,
         )
       obj
     })
-    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     isolate({

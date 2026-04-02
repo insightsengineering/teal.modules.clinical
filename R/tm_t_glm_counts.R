@@ -88,10 +88,10 @@
 #'         selected = "ARMCD"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       aval_var = variables(choices = any_of("AVAL"), selected = "AVAL", fixed = TRUE),
-#'       strata_var = variables(choices = any_of("SEX"), selected = NULL),
-#'       offset_var = variables(choices = any_of("AGE"), selected = NULL),
-#'       cov_var = variables(choices = any_of("SITEID"), selected = NULL)
+#'       aval_var = variables(choices = "AVAL"),
+#'       strata_var = variables(choices = "SEX", selected = NULL),
+#'       offset_var = variables(choices = "AGE", selected = NULL),
+#'       cov_var = variables(choices = "SITEID", selected = NULL)
 #'     )
 #'   )
 #' )
@@ -103,7 +103,7 @@
 tm_t_glm_counts <- function(label = "Counts Module",
                             dataname,
                             parentname = "ADSL",
-                            aval_var = variables(choices = any_of("AVAL"), selected = "AVAL", fixed = TRUE),
+                            aval_var = variables(choices = "AVAL"),
                             arm_var,
                             strata_var,
                             rate_mean_method = c("emmeans", "ppmeans"),

@@ -217,7 +217,8 @@ template_exposure <- function(parentname,
 #'   variable names that can be used to split rows (`dataname`).
 #' @param col_by_var ([teal.picks::variables()])\cr
 #'   variable names that can be used to split columns (`parentname`).
-#' @param paramcd ([teal.picks::variables()])\cr variable used to filter by parameter (`dataname`); `values()` is added internally.
+#' @param paramcd ([teal.picks::variables()])\cr variable used to filter by parameter (`dataname`);
+#'   `values()` is added internally.
 #' @param id_var ([teal.picks::variables()])\cr subject identifier (`dataname`).
 #' @param parcat ([teal.picks::variables()])\cr parameter category column on `dataname`; `values()` is added internally.
 #' @param aval_var ([teal.picks::variables()])\cr analysis value variable (`dataname`).
@@ -287,7 +288,7 @@ template_exposure <- function(parentname,
 #'     tm_t_exposure(
 #'       label = "Duration of Exposure Table",
 #'       dataname = "ADEX",
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+#'       paramcd = variables(choices = "PARAMCD"),
 #'       col_by_var = variables(
 #'         choices = any_of(c("SEX", "ARM")),
 #'         selected = "SEX"
@@ -296,7 +297,7 @@ template_exposure <- function(parentname,
 #'         choices = any_of(c("RACE", "REGION1", "STRATA1", "SEX")),
 #'         selected = "RACE"
 #'       ),
-#'       parcat = variables(choices = "PARCAT2", selected = "PARCAT2"),
+#'       parcat = variables(choices = "PARCAT2"),
 #'       add_total = FALSE
 #'     )
 #'   ),
@@ -312,12 +313,12 @@ tm_t_exposure <- function(label,
                           parentname = "ADSL",
                           row_by_var,
                           col_by_var,
-                          paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+                          paramcd = variables(choices = "PARAMCD"),
                           paramcd_label = "PARAM",
-                          id_var = variables(choices = any_of("USUBJID"), selected = "USUBJID", fixed = TRUE),
+                          id_var = variables(choices = "USUBJID"),
                           parcat,
-                          aval_var = variables(choices = any_of("AVAL"), selected = "AVAL", fixed = TRUE),
-                          avalu_var = variables(choices = any_of("AVALU"), selected = "AVALU", fixed = TRUE),
+                          aval_var = variables(choices = "AVAL"),
+                          avalu_var = variables(choices = "AVALU"),
                           add_total,
                           total_label = default_total_label(),
                           add_total_row = TRUE,
@@ -462,8 +463,12 @@ srv_t_exposure <- function(id,
         )
       obj
     })
-    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({

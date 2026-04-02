@@ -636,10 +636,10 @@ tm_t_events_summary <- function(label,
                                 arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
                                 flag_var_anl = NULL,
                                 flag_var_aesi = NULL,
-                                dthfl_var = variables(choices = any_of(c("DTHFL")), selected = "DTHFL", fixed = TRUE),
-                                dcsreas_var = variables(choices = any_of(c("DCSREAS")), selected = "DCSREAS", fixed = TRUE),
-                                llt = variables(choices = any_of(c("AEDECOD")), selected = "AEDECOD", fixed = TRUE),
-                                aeseq_var = variables(choices = any_of(c("AESEQ")), selected = "AESEQ", fixed = TRUE),
+                                dthfl_var = variables(choices = "DTHFL"),
+                                dcsreas_var = variables(choices = "DCSREAS"),
+                                llt = variables(choices = "AEDECOD"),
+                                aeseq_var = variables(choices = "AESEQ"),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = tern::default_na_str(),
@@ -860,8 +860,12 @@ srv_t_events_summary <- function(id,
         )
       obj
     })
-    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({

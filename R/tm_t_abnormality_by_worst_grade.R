@@ -306,7 +306,7 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #'       label = "Laboratory Test Results with Highest Grade Post-Baseline",
 #'       dataname = "ADLB",
 #'       arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+#'       paramcd = variables(choices = "PARAMCD"),
 #'       add_total = FALSE
 #'     )
 #'   ),
@@ -323,11 +323,11 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             dataname,
                                             parentname = "ADSL",
                                             arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                                            id_var = variables(choices = any_of("USUBJID"), selected = "USUBJID", fixed = TRUE),
-                                            paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
-                                            atoxgr_var = variables(choices = any_of("ATOXGR"), selected = "ATOXGR", fixed = TRUE),
-                                            worst_high_flag_var = variables(choices = any_of("WGRHIFL"), selected = "WGRHIFL", fixed = TRUE),
-                                            worst_low_flag_var = variables(choices = any_of("WGRLOFL"), selected = "WGRLOFL", fixed = TRUE),
+                                            id_var = variables(choices = "USUBJID"),
+                                            paramcd = variables(choices = "PARAMCD"),
+                                            atoxgr_var = variables(choices = "ATOXGR"),
+                                            worst_high_flag_var = variables(choices = "WGRHIFL"),
+                                            worst_low_flag_var = variables(choices = "WGRLOFL"),
                                             worst_flag_indicator = teal.transform::choices_selected("Y"),
                                             add_total = TRUE,
                                             total_label = default_total_label(),
@@ -501,8 +501,12 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         )
       obj
     })
-    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({

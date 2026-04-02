@@ -28,7 +28,7 @@ app_driver_tm_t_binary_outcome <- function() {
           selected = "ARM"
         ),
         arm_ref_comp = arm_ref_comp,
-        paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+        paramcd = variables(choices = "PARAMCD"),
         strata_var = variables(
           choices = any_of(c("SEX", "BMRKR2", "RACE")),
           selected = "RACE"

@@ -371,7 +371,7 @@ template_smq <- function(dataname,
 #'       add_total = FALSE,
 #'       baskets = variables(choices = starts_with("SMQ") | starts_with("CQ")),
 #'       scopes = variables(choices = ends_with("SC")),
-#'       llt = variables(choices = "AEDECOD", selected = "AEDECOD")
+#'       llt = variables(choices = "AEDECOD")
 #'     )
 #'   )
 #' )
@@ -384,8 +384,8 @@ tm_t_smq <- function(label,
                      dataname,
                      parentname = "ADSL",
                      arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-                     id_var = variables(choices = "USUBJID", selected = "USUBJID", fixed = TRUE),
-                     llt = variables(choices = "AEDECOD", selected = "AEDECOD"),
+                     id_var = variables(choices = "USUBJID"),
+                     llt = variables(choices = "AEDECOD"),
                      add_total = TRUE,
                      total_label = default_total_label(),
                      sort_criteria = c("freq_desc", "alpha"),

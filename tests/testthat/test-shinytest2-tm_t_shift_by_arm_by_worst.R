@@ -14,7 +14,7 @@ app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length.
         dataname = "ADEG",
         parentname = "ADSL",
         arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
-        paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+        paramcd = variables(choices = "PARAMCD"),
         worst_flag_var = variables(
           choices = any_of(c("WORS02FL", "WORS01FL")),
           selected = "WORS02FL"

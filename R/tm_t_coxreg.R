@@ -430,7 +430,7 @@ template_coxreg_m <- function(dataname,
 #'         selected = "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = variables(choices = any_of("PARAMCD"), selected = "PARAMCD"),
+#'       paramcd = variables(choices = "PARAMCD"),
 #'       strata_var = variables(
 #'         choices = any_of(c("COUNTRY", "STRATA1", "STRATA2")),
 #'         selected = "STRATA1"
@@ -510,10 +510,10 @@ template_coxreg_m <- function(dataname,
 #'     tm_t_coxreg(
 #'       label = "Cox Reg.",
 #'       dataname = "ADTTE",
-#'       arm_var = variables(choices = any_of("ARMCD"), selected = "ARMCD"),
+#'       arm_var = variables(choices = "ARMCD"),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = variables(choices = any_of("PARAMCD"), selected = "PARAMCD"),
-#'       strata_var = variables(choices = any_of("INST"), selected = NULL),
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       strata_var = variables(choices = "INST", selected = NULL),
 #'       cov_var = variables(
 #'         choices = any_of(c("SEX", "AGE")),
 #'         selected = "SEX",
@@ -537,8 +537,8 @@ tm_t_coxreg <- function(label,
                         paramcd,
                         cov_var,
                         strata_var,
-                        aval_var = variables(choices = any_of("AVAL"), selected = "AVAL", fixed = TRUE),
-                        cnsr_var = variables(choices = any_of("CNSR"), selected = "CNSR", fixed = TRUE),
+                        aval_var = variables(choices = "AVAL"),
+                        cnsr_var = variables(choices = "CNSR"),
                         multivariate = TRUE,
                         na_level = tern::default_na_str(),
                         conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
@@ -854,9 +854,18 @@ srv_t_coxreg <- function(id,
       input_cov_var <- as.vector(merged_input_r()$columns_source$cov_var)
 
       validate(
-        need(length(intersect(input_arm_var, input_strata_var)) == 0L, "`Treatment` and `Strata` variables should not overlap"),
-        need(length(intersect(input_arm_var, input_cov_var)) == 0L, "`Treatment` and `Covariate` variables should not overlap"),
-        need(length(intersect(input_strata_var, input_cov_var)) == 0L, "`Covariate` and `Strata` variables should not overlap")
+        need(
+          length(intersect(input_arm_var, input_strata_var)) == 0L,
+          "`Treatment` and `Strata` variables should not overlap"
+        ),
+        need(
+          length(intersect(input_arm_var, input_cov_var)) == 0L,
+          "`Treatment` and `Covariate` variables should not overlap"
+        ),
+        need(
+          length(intersect(input_strata_var, input_cov_var)) == 0L,
+          "`Covariate` and `Strata` variables should not overlap"
+        )
       )
       validate(
         need(

@@ -417,7 +417,7 @@ template_binary_outcome <- function(dataname,
 #'     tm_t_binary_outcome(
 #'       label = "Responders",
 #'       dataname = "ADRS",
-#'       paramcd = variables(choices = "PARAMCD", selected = "PARAMCD"),
+#'       paramcd = variables(choices = "PARAMCD"),
 #'       arm_var = variables(
 #'         choices = any_of(c("ARM", "ARMCD", "ACTARMCD")),
 #'         selected = "ARM"
@@ -802,9 +802,16 @@ srv_t_binary_outcome <- function(id,
         )
       obj
     })
-    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+    )
     adsl_selectors <- anl_selectors[c("arm_var", "strata_var")]
-    merged_adsl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_adsl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl$data
 
     observeEvent(
