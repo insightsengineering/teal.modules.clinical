@@ -78,13 +78,20 @@ tm_a_mmrm.default <- function(label,
     )
   )
 
-  aval_var <- picks(datasets(dataname, dataname), aval_var)
-  id_var <- picks(datasets(dataname, dataname), id_var)
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  paramcd <- picks(datasets(dataname, dataname), paramcd_var, paramcd_values)
-  visit_var <- picks(datasets(dataname, dataname), visit_var)
-  split_covariates = picks(datasets(dataname, dataname), split_choices.variables(cov_var))
-  cov_var <- picks(datasets(dataname, dataname), cov_var)
+  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
+  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- teal.picks::picks(
+    teal.picks::datasets(dataname, dataname),
+    paramcd_var,
+    paramcd_values
+  )
+  visit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), visit_var)
+  split_covariates <- teal.picks::picks(
+    teal.picks::datasets(dataname, dataname),
+    split_choices.variables(cov_var)
+  )
+  cov_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cov_var)
 
   args <- as.list(environment())
   module(
