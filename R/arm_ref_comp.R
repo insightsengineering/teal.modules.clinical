@@ -173,7 +173,6 @@ arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
   })
 
   reactive({
-    browser()
     validate_input(
       inputId = id_arm_var,
       condition = !is.null(arm_var_r()),

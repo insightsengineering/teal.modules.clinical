@@ -575,8 +575,7 @@ tm_a_mmrm <- function(label,
                       basic_table_args,
                       ggplot2_args,
                       transformators,
-                      decorators,
-                      ...) {
+                      decorators) {
   UseMethod("tm_a_mmrm", aval_var)
 }
 
