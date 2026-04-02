@@ -478,7 +478,7 @@ tm_t_summary_by <- function(label,
   categorical_stats_choices <- c("n", "count", "count_fraction", "count_fraction_fixed_dp", "fraction", "n_blq")
   categorical_stats <- match.arg(categorical_stats, categorical_stats_choices, several.ok = TRUE)
 
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
   arm_var <- picks(datasets(parentname, parentname), arm_var)
   id_var <- picks(datasets(dataname, dataname), id_var)
@@ -614,7 +614,7 @@ ui_summary_by <- function(id,
           }
         )
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -738,11 +738,11 @@ srv_summary_by <- function(id,
     })
 
     # Decoration of table output.
-    decorated_table_q <- srv_decorate_teal_data(
+    decorated_table_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
+      transformators = select_decorators(decorators, "table"),
+      expr = quote(table)
     )
 
     # Outputs to render.

@@ -517,7 +517,7 @@ tm_g_pp_patient_timeline <- function(label,
     plot_width[1],
     lower = plot_width[2], upper = plot_width[3], null.ok = TRUE, .var.name = "plot_width"
   )
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
   xor_error_string <- function(x, y) {
     paste(
@@ -700,7 +700,7 @@ ui_g_patient_timeline <- function(id, ...) {
           is_single_dataset = is_single_dataset_value
         )
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -942,11 +942,11 @@ srv_g_patient_timeline <- function(id,
       teal.code::eval_code(object = obj, as.expression(patient_timeline_calls))
     })
 
-    decorated_all_q <- srv_decorate_teal_data(
+    decorated_all_q <- teal::srv_transform_teal_data(
       "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      transformators = select_decorators(decorators, "plot"),
+      expr = quote(plot)
     )
 
     plot_r <- reactive(decorated_all_q()[["plot"]])

@@ -247,7 +247,7 @@ tm_a_gee <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
   args <- as.list(environment())
 
@@ -388,7 +388,7 @@ ui_gee <- function(id, ...) {
         ),
         selected = "t_gee_lsmeans"
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "table"))
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table"))
     ),
     pre_output = a$pre_output,
     post_output = a$post_output
@@ -585,11 +585,11 @@ srv_gee <- function(id,
       output_title
     })
 
-    decorated_table_q <- srv_decorate_teal_data(
+    decorated_table_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = table_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
+      transformators = select_decorators(decorators, "table"),
+      expr = quote(table)
     )
 
     # Outputs to render.

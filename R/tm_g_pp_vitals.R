@@ -321,7 +321,7 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(aval_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
   checkmate::assert_multi_class(xaxis, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -393,7 +393,7 @@ ui_g_vitals <- function(id, ...) {
         data_extract_spec = ui_args$aval_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(ui_args$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -571,11 +571,11 @@ srv_g_vitals <- function(id,
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
 
-    decorated_all_q <- srv_decorate_teal_data(
+    decorated_all_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      transformators = select_decorators(decorators, "plot"),
+      expr = quote(plot)
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 
