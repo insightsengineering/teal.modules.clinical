@@ -142,16 +142,6 @@ template_g_ipp <- function(dataname = "ANL",
     )
   }
 
-  graph_list <- add_expr(
-    graph_list,
-    quote(grid::grid.newpage())
-  )
-
-  graph_list <- add_expr(
-    graph_list,
-    quote(grid::grid.draw(plot))
-  )
-
   y$graph <- bracket_expr(graph_list)
 
   y
@@ -348,7 +338,7 @@ tm_g_ipp <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, "plot")
+  teal::assert_decorators(decorators, "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -447,7 +437,7 @@ ui_g_ipp <- function(id, ...) {
         data_extract_spec = a$baseline_var,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(a$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -634,10 +624,14 @@ srv_g_ipp <- function(id,
     })
 
     # Outputs to render.
-    decorated_all_q <- srv_decorate_teal_data(
+    decorated_all_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = all_q,
-      decorators = select_decorators(decorators, "plot")
+      transformators = select_decorators(decorators, "plot"),
+      expr = quote({
+        grid::grid.newpage()
+        grid::grid.draw(plot)
+      })
     )
     plot_r <- reactive(decorated_all_q()[["plot"]])
 

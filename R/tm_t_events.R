@@ -564,7 +564,7 @@ tm_t_events <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
-  assert_decorators(decorators, "table")
+  teal::assert_decorators(decorators, "table")
 
 
   arm_var <- picks(datasets(parentname, parentname), arm_var)
@@ -618,7 +618,7 @@ ui_t_events_byterm <- function(id,
         picks_ui(ns("llt"), llt)
       ),
       checkboxInput(ns("add_total"), "Add All Patients columns", value = add_total),
-      ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
+      teal::ui_decorate_teal_data(ns("decorator"), decorators = select_decorators(decorators, "table")),
       bslib::accordion_panel(
         "Additional table settings",
         open = TRUE,
@@ -782,11 +782,11 @@ srv_t_events_byterm <- function(id,
         table <- pruned_and_sorted_result
       })
     })
-    decorated_table_q <- srv_decorate_teal_data(
+    decorated_table_q <- teal::srv_transform_teal_data(
       id = "decorator",
       data = table_renamed_q,
-      decorators = select_decorators(decorators, "table"),
-      expr = table
+      transformators = select_decorators(decorators, "table"),
+      expr = quote(table)
     )
 
     # Outputs to render.

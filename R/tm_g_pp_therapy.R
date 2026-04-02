@@ -394,7 +394,7 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  assert_decorators(decorators, names = "plot")
+  teal::assert_decorators(decorators, names = "plot")
 
   args <- as.list(environment())
   data_extract_list <- list(
@@ -529,7 +529,7 @@ ui_g_therapy <- function(id, ...) {
         data_extract_spec = ui_args$cmendy,
         is_single_dataset = is_single_dataset_value
       ),
-      ui_decorate_teal_data(ns("d_plot"), decorators = select_decorators(ui_args$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("d_plot"), transformators = select_decorators(ui_args$decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -709,11 +709,11 @@ srv_g_therapy <- function(id,
 
     output$therapy_table <- DT::renderDataTable(table_r()[["html"]])
 
-    decorated_all_q_plot <- srv_decorate_teal_data(
+    decorated_all_q_plot <- teal::srv_transform_teal_data(
       "d_plot",
       data = all_q,
-      decorators = select_decorators(decorators, "plot"),
-      expr = plot
+      transformators = select_decorators(decorators, "plot"),
+      expr = quote(plot)
     )
 
     plot_r <- reactive({
