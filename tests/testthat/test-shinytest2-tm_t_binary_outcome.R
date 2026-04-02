@@ -24,17 +24,17 @@ app_driver_tm_t_binary_outcome <- function() {
         dataname = "ADRS",
         parentname = "ADSL",
         arm_var = variables(
-          choices = any_of(c("ARM", "ARMCD", "ACTARMCD")),
+          choices = c("ARM", "ARMCD", "ACTARMCD"),
           selected = "ARM"
         ),
         arm_ref_comp = arm_ref_comp,
         paramcd = variables(choices = "PARAMCD"),
         strata_var = variables(
-          choices = any_of(c("SEX", "BMRKR2", "RACE")),
+          choices = c("SEX", "BMRKR2", "RACE"),
           selected = "RACE"
         ),
         aval_var = variables(
-          choices = any_of(c("AVALC", "SEX")),
+          choices = c("AVALC", "SEX"),
           selected = "AVALC",
           fixed = FALSE
         ),

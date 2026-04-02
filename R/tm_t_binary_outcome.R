@@ -419,12 +419,12 @@ template_binary_outcome <- function(dataname,
 #'       dataname = "ADRS",
 #'       paramcd = variables(choices = "PARAMCD"),
 #'       arm_var = variables(
-#'         choices = any_of(c("ARM", "ARMCD", "ACTARMCD")),
+#'         choices = c("ARM", "ARMCD", "ACTARMCD"),
 #'         selected = "ARM"
 #'       ),
 #'       arm_ref_comp = arm_ref_comp,
 #'       strata_var = variables(
-#'         choices = any_of(c("SEX", "BMRKR2", "RACE")),
+#'         choices = c("SEX", "BMRKR2", "RACE"),
 #'         selected = "RACE"
 #'       ),
 #'       default_responses = list(
@@ -464,7 +464,7 @@ tm_t_binary_outcome <- function(label,
                                 paramcd,
                                 strata_var,
                                 aval_var = variables(
-                                  choices = any_of(c("AVALC", "SEX")),
+                                  choices = c("AVALC", "SEX"),
                                   selected = "AVALC",
                                   fixed = FALSE
                                 ),

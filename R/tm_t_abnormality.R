@@ -325,10 +325,10 @@ template_abnormality <- function(parentname,
 #'     tm_t_abnormality(
 #'       label = "Abnormality Table",
 #'       dataname = "ADLB",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+#'       arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
 #'       add_total = FALSE,
 #'       by_vars = variables(
-#'         choices = any_of(c("LBCAT", "PARAM", "AVISIT")),
+#'         choices = c("LBCAT", "PARAM", "AVISIT"),
 #'         selected = c("LBCAT", "PARAM"),
 #'         multiple = TRUE,
 #'         ordered = TRUE
@@ -348,9 +348,9 @@ template_abnormality <- function(parentname,
 tm_t_abnormality <- function(label,
                              dataname,
                              parentname = "ADSL",
-                             arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+                             arm_var = variables(choices = c("ARM", "ARMCD")),
                              by_vars = variables(
-                               choices = any_of(c("LBCAT", "PARAM", "AVISIT")),
+                               choices = c("LBCAT", "PARAM", "AVISIT"),
                                selected = c("LBCAT", "PARAM"),
                                multiple = TRUE,
                                ordered = TRUE

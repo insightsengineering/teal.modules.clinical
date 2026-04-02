@@ -14,15 +14,15 @@ app_driver_tm_t_events <- function() {
         dataname = "ADAE",
         parentname = "ADSL",
         arm_var = variables(
-          choices = any_of(c("ARM", "ARMCD")),
+          choices = c("ARM", "ARMCD"),
           selected = "ARM"
         ),
         llt = variables(
-          choices = any_of(c("AETERM", "AEDECOD")),
+          choices = c("AETERM", "AEDECOD"),
           selected = "AEDECOD"
         ),
         hlt = variables(
-          choices = any_of(c("AEBODSYS", "AESOC")),
+          choices = c("AEBODSYS", "AESOC"),
           selected = "AEBODSYS"
         ),
         add_total = TRUE,

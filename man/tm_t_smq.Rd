@@ -8,7 +8,7 @@ tm_t_smq(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+  arm_var = variables(choices = c("ARM", "ARMCD")),
   id_var = variables(choices = "USUBJID"),
   llt = variables(choices = "AEDECOD"),
   add_total = TRUE,
@@ -162,7 +162,7 @@ app <- init(
     tm_t_smq(
       label = "Adverse Events by SMQ Table",
       dataname = "ADAE",
-      arm_var = variables(choices = any_of(c("ARM", "ARMCD", "SEX"))),
+      arm_var = variables(choices = c("ARM", "ARMCD", "SEX")),
       add_total = FALSE,
       baskets = variables(choices = starts_with("SMQ") | starts_with("CQ")),
       scopes = variables(choices = ends_with("SC")),

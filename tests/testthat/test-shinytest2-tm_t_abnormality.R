@@ -21,10 +21,10 @@ app_driver_tm_t_abnormality <- function() {
         label = "Abnormality Table",
         dataname = "ADLB",
         parentname = "ADSL",
-        arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+        arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         add_total = FALSE,
         by_vars = variables(
-          choices = any_of(c("LBCAT", "PARAM", "AVISIT")),
+          choices = c("LBCAT", "PARAM", "AVISIT"),
           selected = c("LBCAT", "PARAM"),
           multiple = TRUE,
           ordered = TRUE

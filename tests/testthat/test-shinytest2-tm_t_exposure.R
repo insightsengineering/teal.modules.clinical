@@ -29,11 +29,11 @@ app_driver_tm_t_exposure <- function() {
         parentname = "ADSL",
         paramcd = variables(choices = "PARAMCD"),
         col_by_var = variables(
-          choices = any_of(c("SEX", "ARM")),
+          choices = c("SEX", "ARM"),
           selected = "SEX"
         ),
         row_by_var = variables(
-          choices = any_of(c("RACE", "REGION1", "STRATA1", "SEX")),
+          choices = c("RACE", "REGION1", "STRATA1", "SEX"),
           selected = "RACE"
         ),
         parcat = variables(choices = "PARCAT2"),

@@ -8,7 +8,7 @@ tm_t_shift_by_arm(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+  arm_var = variables(choices = c("ARM", "ARMCD")),
   paramcd = variables(choices = "PARAMCD"),
   visit_var = variables(choices = "AVISIT"),
   aval_var = variables(choices = "ANRIND"),
@@ -156,7 +156,7 @@ app <- init(
     tm_t_shift_by_arm(
       label = "Shift by Arm Table",
       dataname = "ADEG",
-      arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+      arm_var = variables(choices = c("ARM", "ARMCD")),
       paramcd = variables(choices = "PARAMCD"),
       visit_var = variables(choices = "AVISIT"),
       aval_var = variables(choices = "ANRIND"),

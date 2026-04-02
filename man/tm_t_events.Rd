@@ -8,9 +8,9 @@ tm_t_events(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
-  hlt = variables(choices = any_of(c("AEBODSYS", "AESOC")), selected = "AEBODSYS"),
-  llt = variables(choices = any_of(c("AETERM", "AEDECOD")), selected = "AEDECOD"),
+  arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+  hlt = variables(choices = c("AEBODSYS", "AESOC"), selected = "AEBODSYS"),
+  llt = variables(choices = c("AETERM", "AEDECOD"), selected = "AEDECOD"),
   add_total = TRUE,
   total_label = default_total_label(),
   na_level = tern::default_na_str(),
@@ -166,15 +166,15 @@ app <- init(
       label = "Adverse Event Table",
       dataname = "ADAE",
       arm_var = variables(
-        choices = any_of(c("ARM", "ARMCD")),
+        choices = c("ARM", "ARMCD"),
         selected = "ARM"
       ),
       llt = variables(
-        choices = any_of(c("AETERM", "AEDECOD")),
+        choices = c("AETERM", "AEDECOD"),
         selected = "AEDECOD"
       ),
       hlt = variables(
-        choices = any_of(c("AEBODSYS", "AESOC")),
+        choices = c("AEBODSYS", "AESOC"),
         selected = "AEBODSYS"
       ),
       add_total = TRUE,

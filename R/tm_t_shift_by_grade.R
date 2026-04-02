@@ -530,10 +530,10 @@ template_shift_by_grade <- function(parentname,
 #'     tm_t_shift_by_grade(
 #'       label = "Grade Laboratory Abnormality Table",
 #'       dataname = "ADLB",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+#'       arm_var = variables(choices = c("ARM", "ARMCD")),
 #'       paramcd = variables(choices = "PARAMCD"),
 #'       worst_flag_var = variables(
-#'         choices = any_of(c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+#'         choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
 #'         selected = "WGRLOVFL"
 #'       ),
 #'       add_total = FALSE
@@ -549,11 +549,11 @@ template_shift_by_grade <- function(parentname,
 tm_t_shift_by_grade <- function(label,
                                 dataname,
                                 parentname = "ADSL",
-                                arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+                                arm_var = variables(choices = c("ARM", "ARMCD")),
                                 visit_var = variables(choices = "AVISIT"),
                                 paramcd = variables(choices = "PARAMCD"),
                                 worst_flag_var = variables(
-                                  choices = any_of(c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+                                  choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
                                   selected = "WGRLOVFL"
                                 ),
                                 worst_flag_indicator = teal.transform::choices_selected(

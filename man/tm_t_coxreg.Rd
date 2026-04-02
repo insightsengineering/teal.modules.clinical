@@ -199,17 +199,17 @@ app <- init(
       label = "Cox Reg.",
       dataname = "ADTTE",
       arm_var = variables(
-        choices = any_of(c("ARM", "ARMCD", "ACTARMCD")),
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
         selected = "ARM"
       ),
       arm_ref_comp = arm_ref_comp,
       paramcd = variables(choices = "PARAMCD"),
       strata_var = variables(
-        choices = any_of(c("COUNTRY", "STRATA1", "STRATA2")),
+        choices = c("COUNTRY", "STRATA1", "STRATA2"),
         selected = "STRATA1"
       ),
       cov_var = variables(
-        choices = any_of(c("AGE", "BMRKR1", "BMRKR2", "REGION1")),
+        choices = c("AGE", "BMRKR1", "BMRKR2", "REGION1"),
         selected = "AGE",
         multiple = TRUE,
         ordered = TRUE
@@ -282,7 +282,7 @@ app <- init(
       paramcd = variables(choices = "PARAMCD"),
       strata_var = variables(choices = "INST", selected = NULL),
       cov_var = variables(
-        choices = any_of(c("SEX", "AGE")),
+        choices = c("SEX", "AGE"),
         selected = "SEX",
         multiple = TRUE,
         ordered = TRUE

@@ -8,7 +8,7 @@ tm_t_abnormality_by_worst_grade(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+  arm_var = variables(choices = c("ARM", "ARMCD")),
   id_var = variables(choices = "USUBJID"),
   paramcd = variables(choices = "PARAMCD"),
   atoxgr_var = variables(choices = "ATOXGR"),
@@ -153,7 +153,7 @@ app <- init(
     tm_t_abnormality_by_worst_grade(
       label = "Laboratory Test Results with Highest Grade Post-Baseline",
       dataname = "ADLB",
-      arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
       paramcd = variables(choices = "PARAMCD"),
       add_total = FALSE
     )

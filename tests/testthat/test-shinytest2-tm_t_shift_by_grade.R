@@ -14,10 +14,10 @@ app_driver_tm_t_shift_by_grade <- function() {
         dataname = "ADLB",
         parentname = "ADSL",
         visit_var = variables(choices = "AVISIT"),
-        arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+        arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         paramcd = variables(choices = "PARAMCD"),
         worst_flag_var = variables(
-          choices = any_of(c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+          choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
           selected = "WGRLOVFL"
         ),
         worst_flag_indicator = teal.transform::choices_selected(
@@ -191,10 +191,10 @@ app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_len
         tm_t_shift_by_grade(
           label = "Grade Laboratory Abnormality Table",
           dataname = "ADLB",
-          arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+          arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
           paramcd = variables(choices = "PARAMCD"),
           worst_flag_var = variables(
-            choices = any_of(c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL")),
+            choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
             selected = "WGRLOFL"
           ),
           worst_flag_indicator = teal.transform::choices_selected(

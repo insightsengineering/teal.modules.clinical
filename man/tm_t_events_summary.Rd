@@ -8,7 +8,7 @@ tm_t_events_summary(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+  arm_var = variables(choices = c("ARM", "ARMCD")),
   flag_var_anl = NULL,
   flag_var_aesi = NULL,
   dthfl_var = variables(choices = "DTHFL"),
@@ -211,16 +211,16 @@ app <- init(
     tm_t_events_summary(
       label = "Adverse Events Summary",
       dataname = "ADAE",
-      arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+      arm_var = variables(choices = c("ARM", "ARMCD")),
       flag_var_anl = variables(
-        choices = any_of(data[[".ae_anl_vars"]]),
+        choices = data[[".ae_anl_vars"]],
         selected = data[[".ae_anl_vars"]][1],
         multiple = TRUE,
         ordered = TRUE,
         fixed = FALSE
       ),
       flag_var_aesi = variables(
-        choices = any_of(data[[".aesi_vars"]]),
+        choices = data[[".aesi_vars"]],
         selected = data[[".aesi_vars"]][1],
         multiple = TRUE,
         ordered = TRUE,

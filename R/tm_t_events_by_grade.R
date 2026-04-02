@@ -845,17 +845,17 @@ template_events_col_by_grade <- function(dataname,
 #'     tm_t_events_by_grade(
 #'       label = "Adverse Events by Grade Table",
 #'       dataname = "ADAE",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+#'       arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
 #'       llt = variables(
-#'         choices = any_of(c("AETERM", "AEDECOD")),
+#'         choices = c("AETERM", "AEDECOD"),
 #'         selected = "AEDECOD"
 #'       ),
 #'       hlt = variables(
-#'         choices = any_of(c("AEBODSYS", "AESOC")),
+#'         choices = c("AEBODSYS", "AESOC"),
 #'         selected = "AEBODSYS"
 #'       ),
 #'       grade = variables(
-#'         choices = any_of(c("AETOXGR", "AESEV")),
+#'         choices = c("AETOXGR", "AESEV"),
 #'         selected = "AETOXGR"
 #'       )
 #'     )
@@ -868,17 +868,17 @@ template_events_col_by_grade <- function(dataname,
 tm_t_events_by_grade <- function(label,
                                  dataname,
                                  parentname = "ADSL",
-                                 arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+                                 arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
                                  hlt = variables(
-                                   choices = any_of(c("AEBODSYS", "AESOC")),
+                                   choices = c("AEBODSYS", "AESOC"),
                                    selected = "AEBODSYS"
                                  ),
                                  llt = variables(
-                                   choices = any_of(c("AETERM", "AEDECOD")),
+                                   choices = c("AETERM", "AEDECOD"),
                                    selected = "AEDECOD"
                                  ),
                                  grade = variables(
-                                   choices = any_of(c("AETOXGR", "AESEV")),
+                                   choices = c("AETOXGR", "AESEV"),
                                    selected = "AETOXGR"
                                  ),
                                  grading_groups = list(

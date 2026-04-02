@@ -8,7 +8,7 @@ tm_t_events_patyear(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+  arm_var = variables(choices = c("ARM", "ARMCD")),
   events_var = variables(choices = "n_events"),
   paramcd = variables(choices = "PARAMCD"),
   aval_var = variables(choices = "AVAL"),
@@ -162,7 +162,7 @@ app <- init(
     tm_t_events_patyear(
       label = "AE Rate Adjusted for Patient-Years At Risk Table",
       dataname = "ADAETTE",
-      arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+      arm_var = variables(choices = c("ARM", "ARMCD")),
       add_total = TRUE,
       events_var = variables(choices = "n_events"),
       paramcd = variables(choices = "PARAMCD"),
@@ -184,7 +184,7 @@ app <- init(
       label = "AE Rate Adjusted for Patient-Years At Risk Table",
       dataname = "ADAETTE",
       arm_var = variables(
-        choices = any_of(c("ARM", "ARMCD", "SEX")),
+        choices = c("ARM", "ARMCD", "SEX"),
         selected = c("ARM", "SEX")
       ),
       add_total = TRUE,

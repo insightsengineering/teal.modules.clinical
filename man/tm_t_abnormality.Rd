@@ -8,8 +8,8 @@ tm_t_abnormality(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-  by_vars = variables(choices = any_of(c("LBCAT", "PARAM", "AVISIT")), selected =
+  arm_var = variables(choices = c("ARM", "ARMCD")),
+  by_vars = variables(choices = c("LBCAT", "PARAM", "AVISIT"), selected =
     c("LBCAT", "PARAM"), multiple = TRUE, ordered = TRUE),
   grade = variables(choices = "ANRIND"),
   abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
@@ -172,10 +172,10 @@ app <- init(
     tm_t_abnormality(
       label = "Abnormality Table",
       dataname = "ADLB",
-      arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
       add_total = FALSE,
       by_vars = variables(
-        choices = any_of(c("LBCAT", "PARAM", "AVISIT")),
+        choices = c("LBCAT", "PARAM", "AVISIT"),
         selected = c("LBCAT", "PARAM"),
         multiple = TRUE,
         ordered = TRUE

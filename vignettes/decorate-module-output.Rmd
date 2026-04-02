@@ -147,23 +147,23 @@ app <- init(
       label = "tm_t_abnormality",
       dataname = "ADLB",
       arm_var = variables(
-        choices = any_of(c("ARM", "ARMCD")),
+        choices = c("ARM", "ARMCD"),
         selected = "ARM"
       ),
       add_total = FALSE,
       by_vars = variables(
-        choices = any_of(c("LBCAT", "PARAM", "AVISIT")),
+        choices = c("LBCAT", "PARAM", "AVISIT"),
         selected = c("LBCAT", "PARAM"),
         multiple = TRUE,
         ordered = TRUE
       ),
       baseline_var = variables(
-        choices = any_of("BNRIND"),
+        choices = "BNRIND",
         selected = "BNRIND",
         fixed = TRUE
       ),
       grade = variables(
-        choices = any_of("ANRIND"),
+        choices = "ANRIND",
         selected = "ANRIND",
         fixed = TRUE
       ),

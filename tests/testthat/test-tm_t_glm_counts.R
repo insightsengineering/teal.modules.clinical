@@ -27,7 +27,7 @@ app_driver_tm_t_glm_counts <- function() { # nolint: object_length.
       modules = tm_t_glm_counts(
         dataname = "ADTTE",
         arm_var = variables(
-          choices = any_of(c("ARM", "ARMCD", "ACTARMCD")),
+          choices = c("ARM", "ARMCD", "ACTARMCD"),
           selected = "ARMCD"
         ),
         arm_ref_comp = arm_ref_comp,

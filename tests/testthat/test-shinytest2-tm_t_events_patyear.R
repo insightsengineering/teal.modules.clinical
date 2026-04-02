@@ -18,7 +18,7 @@ app_driver_tm_t_events_patyear <- function() {
         dataname = "ADAETTE",
         parentname = "ADSL",
         arm_var = variables(
-          choices = any_of(c("ARM", "ARMCD", "SEX")),
+          choices = c("ARM", "ARMCD", "SEX"),
           selected = "ARMCD"
         ),
         add_total = TRUE,

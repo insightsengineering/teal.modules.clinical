@@ -12,7 +12,7 @@ tm_t_binary_outcome(
   arm_ref_comp = NULL,
   paramcd,
   strata_var,
-  aval_var = variables(choices = any_of(c("AVALC", "SEX")), selected = "AVALC", fixed =
+  aval_var = variables(choices = c("AVALC", "SEX"), selected = "AVALC", fixed =
     FALSE),
   conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
     TRUE),
@@ -212,12 +212,12 @@ app <- init(
       dataname = "ADRS",
       paramcd = variables(choices = "PARAMCD"),
       arm_var = variables(
-        choices = any_of(c("ARM", "ARMCD", "ACTARMCD")),
+        choices = c("ARM", "ARMCD", "ACTARMCD"),
         selected = "ARM"
       ),
       arm_ref_comp = arm_ref_comp,
       strata_var = variables(
-        choices = any_of(c("SEX", "BMRKR2", "RACE")),
+        choices = c("SEX", "BMRKR2", "RACE"),
         selected = "RACE"
       ),
       default_responses = list(

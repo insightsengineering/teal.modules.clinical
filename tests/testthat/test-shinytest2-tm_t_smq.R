@@ -13,7 +13,7 @@ app_driver_tm_t_smq <- function() {
         label = "Adverse Events by SMQ Table",
         dataname = "ADAE",
         parentname = "ADSL",
-        arm_var = variables(choices = any_of(c("ARM", "SEX")), selected = "ARM"),
+        arm_var = variables(choices = c("ARM", "SEX"), selected = "ARM"),
         id_var = variables(choices = "USUBJID"),
         add_total = FALSE,
         total_label = default_total_label(),
@@ -23,7 +23,7 @@ app_driver_tm_t_smq <- function() {
         smq_varlabel = "Standardized MedDRA Query",
         baskets = variables(choices = starts_with("SMQ") | starts_with("CQ")),
         scopes = variables(choices = ends_with("SC")),
-        llt = variables(choices = any_of(c("AEDECOD", "SEX")), selected = "AEDECOD"),
+        llt = variables(choices = c("AEDECOD", "SEX"), selected = "AEDECOD"),
         pre_output = NULL,
         post_output = NULL,
         basic_table_args = teal.widgets::basic_table_args()

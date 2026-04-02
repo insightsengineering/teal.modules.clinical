@@ -8,9 +8,9 @@ tm_t_summary_by(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
-  by_vars = variables(choices = any_of(c("PARAM", "AVISIT")), selected = "AVISIT"),
-  summarize_vars = variables(choices = any_of(c("AVAL", "CHG")), selected = "AVAL"),
+  arm_var = variables(choices = c("ARM", "ARMCD")),
+  by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
+  summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
   id_var = variables(choices = "USUBJID"),
   paramcd = NULL,
   add_total = TRUE,
@@ -173,10 +173,10 @@ app <- init(
     tm_t_summary_by(
       label = "Summary by Row Groups Table",
       dataname = "ADLB",
-      arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+      arm_var = variables(choices = c("ARM", "ARMCD")),
       add_total = TRUE,
-      by_vars = variables(choices = any_of(c("PARAM", "AVISIT")), selected = "AVISIT"),
-      summarize_vars = variables(choices = any_of(c("AVAL", "CHG")), selected = "AVAL"),
+      by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
+      summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
       useNA = "ifany",
       paramcd = variables(choices = "PARAMCD")
     )

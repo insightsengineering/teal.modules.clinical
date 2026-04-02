@@ -508,15 +508,15 @@ template_events <- function(dataname,
 #'       label = "Adverse Event Table",
 #'       dataname = "ADAE",
 #'       arm_var = variables(
-#'         choices = any_of(c("ARM", "ARMCD")),
+#'         choices = c("ARM", "ARMCD"),
 #'         selected = "ARM"
 #'       ),
 #'       llt = variables(
-#'         choices = any_of(c("AETERM", "AEDECOD")),
+#'         choices = c("AETERM", "AEDECOD"),
 #'         selected = "AEDECOD"
 #'       ),
 #'       hlt = variables(
-#'         choices = any_of(c("AEBODSYS", "AESOC")),
+#'         choices = c("AEBODSYS", "AESOC"),
 #'         selected = "AEBODSYS"
 #'       ),
 #'       add_total = TRUE,
@@ -533,15 +533,15 @@ tm_t_events <- function(label,
                         dataname,
                         parentname = "ADSL",
                         arm_var = variables(
-                          choices = any_of(c("ARM", "ARMCD")),
+                          choices = c("ARM", "ARMCD"),
                           selected = "ARM"
                         ),
                         hlt = variables(
-                          choices = any_of(c("AEBODSYS", "AESOC")),
+                          choices = c("AEBODSYS", "AESOC"),
                           selected = "AEBODSYS"
                         ),
                         llt = variables(
-                          choices = any_of(c("AETERM", "AEDECOD")),
+                          choices = c("AETERM", "AEDECOD"),
                           selected = "AEDECOD"
                         ),
                         add_total = TRUE,

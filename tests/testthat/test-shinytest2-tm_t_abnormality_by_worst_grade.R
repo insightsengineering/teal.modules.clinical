@@ -15,7 +15,7 @@ app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_leng
         label = "Laboratory Test Results with Highest Grade Post-Baseline",
         dataname = "ADLB",
         parentname = "ADSL",
-        arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+        arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         id_var = variables(choices = "USUBJID"),
         paramcd = variables(choices = "PARAMCD"),
         add_total = FALSE,

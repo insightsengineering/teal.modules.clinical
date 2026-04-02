@@ -13,7 +13,7 @@ app_driver_tm_t_shift_by_arm <- function() {
         label = "Shift by Arm Table",
         dataname = "ADEG",
         parentname = "ADSL",
-        arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+        arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         paramcd = variables(choices = "PARAMCD"),
         visit_var = variables(choices = "AVISIT"),
         aval_var = variables(choices = "ANRIND"),

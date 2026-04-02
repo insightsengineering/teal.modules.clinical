@@ -249,14 +249,14 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'     tm_t_shift_by_arm_by_worst(
 #'       label = "Shift by Arm Table",
 #'       dataname = "ADEG",
-#'       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+#'       arm_var = variables(choices = c("ARM", "ARMCD")),
 #'       paramcd = variables(choices = "PARAMCD"),
 #'       worst_flag_var = variables(
-#'         choices = any_of(c("WORS01FL", "WORS02FL")),
+#'         choices = c("WORS01FL", "WORS02FL"),
 #'         selected = "WORS02FL"
 #'       ),
-#'       aval_var = variables(choices = any_of(c("AVALC", "ANRIND")), selected = "AVALC"),
-#'       baseline_var = variables(choices = any_of(c("BASEC", "BNRIND")), selected = "BASEC"),
+#'       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "AVALC"),
+#'       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BASEC"),
 #'       useNA = "ifany"
 #'     )
 #'   )
@@ -269,13 +269,13 @@ template_shift_by_arm_by_worst <- function(dataname,
 tm_t_shift_by_arm_by_worst <- function(label,
                                        dataname,
                                        parentname = "ADSL",
-                                       arm_var = variables(choices = any_of(c("ARM", "ARMCD"))),
+                                       arm_var = variables(choices = c("ARM", "ARMCD")),
                                        paramcd = variables(choices = "PARAMCD"),
-                                       aval_var = variables(choices = any_of(c("AVALC", "ANRIND")), selected = "AVALC"),
+                                       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "AVALC"),
                                        base_var = lifecycle::deprecated(),
-                                       baseline_var = variables(choices = any_of(c("BASEC", "BNRIND")), selected = "BASEC"),
+                                       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BASEC"),
                                        worst_flag_var = variables(
-                                         choices = any_of(c("WORS01FL", "WORS02FL")),
+                                         choices = c("WORS01FL", "WORS02FL"),
                                          selected = "WORS02FL"
                                        ),
                                        worst_flag = teal.transform::choices_selected(

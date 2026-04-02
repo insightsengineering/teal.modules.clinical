@@ -8,10 +8,10 @@ tm_t_events_by_grade(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
-  hlt = variables(choices = any_of(c("AEBODSYS", "AESOC")), selected = "AEBODSYS"),
-  llt = variables(choices = any_of(c("AETERM", "AEDECOD")), selected = "AEDECOD"),
-  grade = variables(choices = any_of(c("AETOXGR", "AESEV")), selected = "AETOXGR"),
+  arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+  hlt = variables(choices = c("AEBODSYS", "AESOC"), selected = "AEBODSYS"),
+  llt = variables(choices = c("AETERM", "AEDECOD"), selected = "AEDECOD"),
+  grade = variables(choices = c("AETOXGR", "AESEV"), selected = "AETOXGR"),
   grading_groups = list(`Any Grade (\%)` = c("1", "2", "3", "4", "5"), `Grade 1-2 (\%)` =
     c("1", "2"), `Grade 3-4 (\%)` = c("3", "4"), `Grade 5 (\%)` = "5"),
   col_by_grade = FALSE,
@@ -161,17 +161,17 @@ app <- init(
     tm_t_events_by_grade(
       label = "Adverse Events by Grade Table",
       dataname = "ADAE",
-      arm_var = variables(choices = any_of(c("ARM", "ARMCD")), selected = "ARM"),
+      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
       llt = variables(
-        choices = any_of(c("AETERM", "AEDECOD")),
+        choices = c("AETERM", "AEDECOD"),
         selected = "AEDECOD"
       ),
       hlt = variables(
-        choices = any_of(c("AEBODSYS", "AESOC")),
+        choices = c("AEBODSYS", "AESOC"),
         selected = "AEBODSYS"
       ),
       grade = variables(
-        choices = any_of(c("AETOXGR", "AESEV")),
+        choices = c("AETOXGR", "AESEV"),
         selected = "AETOXGR"
       )
     )

@@ -8,10 +8,10 @@ tm_t_tte(
   label,
   dataname,
   parentname = "ADSL",
-  arm_var = variables(choices = any_of(c("ARM", "ARMCD", "ACTARMCD"))),
+  arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
   arm_ref_comp = NULL,
   paramcd = variables(choices = "PARAMCD"),
-  strata_var = variables(choices = any_of(c("SEX", "BMRKR2")), selected = "SEX"),
+  strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
   aval_var = variables(choices = "AVAL"),
   cnsr_var = variables(choices = "CNSR"),
   conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order
@@ -188,10 +188,10 @@ app <- init(
     tm_t_tte(
       label = "Time To Event Table",
       dataname = "ADTTE",
-      arm_var = variables(choices = any_of(c("ARM", "ARMCD", "ACTARMCD"))),
+      arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
       arm_ref_comp = arm_ref_comp,
       paramcd = variables(choices = "PARAMCD"),
-      strata_var = variables(choices = any_of(c("SEX", "BMRKR2")), selected = "SEX"),
+      strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
       time_points = teal.transform::choices_selected(c(182, 243), 182)
     )
   )
