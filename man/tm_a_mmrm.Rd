@@ -103,9 +103,6 @@ List names should match the following: \code{c("default", "lsmeans", "diagnostic
 with option \code{teal.ggplot2_args} and with default module arguments (hard coded in the module body).
 For more details, see the help vignette: \code{vignette("custom-ggplot2-arguments", package = "teal.widgets")}.}
 
-\item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
-To learn more check \code{vignette("transform-input-data", package = "teal")}.}
-
 \item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 (named \code{list} of lists of \code{teal_transform_module}) optional,
 decorator for tables or plots included in the module output reported.
@@ -165,22 +162,6 @@ For additional details and examples of decorators, refer to the vignette
 
 To learn more please refer to the vignette
 \code{vignette("transform-module-output", package = "teal")} or the \code{\link[teal:teal_transform_module]{teal::teal_transform_module()}} documentation.
-}
-
-\section{Reporting}{
-
-
-
-This module returns an object of class \code{teal_module}, that contains a \code{server} function.
-Since the server function returns a \code{teal_report} object, this makes this module reportable, which means that
-the reporting functionality will be turned on automatically by the \code{teal} framework.
-
-For more information on reporting in \code{teal}, see the vignettes:
-\itemize{
-\item \code{vignette("reportable-shiny-application", package = "teal.reporter")}
-\item \code{vignette("adding-support-for-reporting-to-custom-modules", package = "teal")}
-}
-
 }
 
 \examples{
