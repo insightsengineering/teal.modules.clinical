@@ -464,7 +464,7 @@ split_choices <- function(x) {
   split_x
 }
 
-split_choices.variables <- function(x) { # nolint: object_name.
+split_choices_variables <- function(x) {
   checkmate::assert_class(x, "variables")
   if (!checkmate::test_character(x$choices, min.len = 1) ||
     !checkmate::test_character(x$selected, min.len = 1)) {
