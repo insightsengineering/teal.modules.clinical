@@ -66,6 +66,7 @@ Imports:
     teal.widgets (>= 0.5.0),
     tern.gee (>= 0.1.5),
     tern.mmrm (>= 0.3.3),
+    tidyselect (>= 1.2.0),
     utils,
     vistime (>= 1.2.3)
 Suggests:
@@ -85,9 +86,9 @@ VignetteBuilder:
     knitr,
     rmarkdown
 Remotes:
-    insightsengineering/teal@redesign_extraction@main,
+    insightsengineering/teal,
     insightsengineering/teal.transform,
-    insightsengineering/teal.picks
+    insightsengineering/teal.picks@279-interactive_variables
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform, 
     insightsengineering/teal.picks,
@@ -104,7 +105,8 @@ Config/Needs/verdepcheck: insightsengineering/teal,
     shosaco/vistime, tidyverse/forcats, yihui/knitr, tidyverse/lubridate,
     insightsengineering/nestcolor, r-lib/pkgload,
     insightsengineering/roxy.shinylive, tidyverse/rvest,
-    rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/withr
+    rstudio/shinytest2, r-lib/styler, r-lib/testthat, r-lib/tidyselect,
+    r-lib/withr
 Config/Needs/website: insightsengineering/nesttemplate
 Config/testthat/edition: 3
 Encoding: UTF-8

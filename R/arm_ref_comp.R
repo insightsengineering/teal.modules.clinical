@@ -90,6 +90,111 @@ arm_ref_comp_observer <- function(session,
   iv
 }
 
+#' Observer for Treatment reference variable
+#'
+#' @description
+#' Updates the reference and comparison Treatments when the selected Treatment variable changes
+#'
+#' @param session (`environment`)\cr shiny session
+#' @param input (`character`)\cr shiny input
+#' @param output (`character`)\cr shiny input
+#' @param id_ref (`character`)\cr id of reference Treatment input UI element
+#' @param id_comp (`character`)\cr id of comparison group input UI element
+#' @param id_arm_var (`character`)\cr id of Treatment variable input UI element
+#' @param data (`reactive` or `data.frame`)\cr dataset used to validate Treatment reference inputs and
+#'   set `id_ref` input.
+#' @param arm_ref_comp (`unknown`)\cr Treatment reference and compare variables provided as a
+#'   nested list where each Treatment variable corresponds a list specifying the default levels for the
+#'   reference and comparison treatments.
+#' @param module (`character`)\cr name of the module where this is called (this is only used
+#'   to produce more informative error messages)
+#' @param on_off (`logical`)\cr A reactive that can be used to
+#'   stop the whole observer if `FALSE`.
+#' @param input_id (`character`)\cr unique id that the buckets will be referenced with.
+#' @param output_id (`character`)\cr name of the UI id that the output will be written to.
+#' @param arm_var_r (`reactive`)\cr reactive expression that returns the selected Treatment variable.
+#' @return Returns a `shinyvalidate::InputValidator` which checks that there is at least one reference
+#'   and comparison arm
+#' @keywords internal
+#'
+arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
+                                        input,
+                                        output,
+                                        id_ref = "Ref",
+                                        id_comp = "Comp",
+                                        id_arm_var,
+                                        data,
+                                        arm_ref_comp,
+                                        module,
+                                        on_off = reactive(TRUE),
+                                        input_id = "buckets",
+                                        output_id = "arms_buckets",
+                                        arm_var_r) {
+  output[[output_id]] <- renderUI({
+    if (isTRUE(on_off())) {
+      df <- if (is.reactive(data)) {
+        data()
+      } else {
+        data
+      }
+
+      check_arm_ref_comp(arm_ref_comp, df, module) ## throws an error if there are issues
+
+      arm_var <- req(arm_var_r())
+
+      arm <- df[[arm_var]]
+      teal::validate_has_elements(arm, "Treatment variable is empty.")
+
+      arm_levels <- if (is.factor(arm)) {
+        levels(droplevels(arm))
+      } else {
+        unique(arm)
+      }
+      default_settings <- arm_ref_comp[[arm_var]]
+
+      if (is.null(default_settings)) {
+        ref_arm <- arm_levels[1]
+        comp_arm <- setdiff(arm_levels, ref_arm)
+      } else {
+        ref_arm <- default_settings$ref
+        comp_arm <- default_settings$comp
+      }
+
+      buckets <- list(ref_arm, comp_arm)
+      names(buckets) <- c(id_ref, id_comp)
+
+      teal.widgets::draggable_buckets(
+        session$ns(input_id),
+        label = "Groups",
+        elements = character(),
+        buckets = buckets
+      )
+    }
+  })
+
+  reactive({
+    browser()
+    validate_input(
+      input = id_arm_var,
+      condition = !is.null(arm_var_r()),
+      message = "Treatment variable must be selected.",
+      session = session
+    )
+    validate_input(
+      input = input_id,
+      condition = length(input[[input_id]][[id_ref]]) > 0,
+      message = "A reference arm must be selected.",
+      session = session
+    )
+    validate_input(
+      input = input_id,
+      condition = length(input[[input_id]][[id_comp]]) > 0,
+      message = "A comparison arm must be selected.",
+      session = session
+    )
+  })
+}
+
 #' Check if the Treatment variable is reference or compare
 #'
 #' @description Check Treatment variable type.

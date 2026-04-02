@@ -24,7 +24,8 @@ tm_a_mmrm.default <- function(label,
                               basic_table_args = teal.widgets::basic_table_args(),
                               ggplot2_args = teal.widgets::ggplot2_args(),
                               transformators = list(),
-                              decorators = list()) {
+                              decorators = list(),
+                              ...) {
   message("Initializing tm_a_mmrm")
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
@@ -77,13 +78,20 @@ tm_a_mmrm.default <- function(label,
     )
   )
 
-  aval_var <- picks(datasets(dataname, dataname), aval_var)
-  id_var <- picks(datasets(dataname, dataname), id_var)
-  arm_var <- picks(datasets(parentname, parentname), arm_var)
-  paramcd <- picks(datasets(dataname, dataname), paramcd_var, paramcd_values)
-  visit_var <- picks(datasets(dataname, dataname), visit_var)
-  split_covariates = picks(datasets(dataname, dataname), split_choices.variables(cov_var))
-  cov_var <- picks(datasets(dataname, dataname), cov_var)
+  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
+  id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  paramcd <- teal.picks::picks(
+    teal.picks::datasets(dataname, dataname),
+    paramcd_var,
+    paramcd_values
+  )
+  visit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), visit_var)
+  split_covariates <- teal.picks::picks(
+    teal.picks::datasets(dataname, dataname),
+    split_choices.variables(cov_var)
+  )
+  cov_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cov_var)
 
   args <- as.list(environment())
   module(
@@ -403,16 +411,6 @@ srv_mmrm.picks <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    arm_ref_comp_iv <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = "arm_var-variables-selected", # From UI.
-      data = reactive(data()[[parentname]]),
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_mmrm"
-    )
-
     selectors <- teal.picks::picks_srv(
       picks = list(
         arm_var = arm_var,
@@ -424,6 +422,19 @@ srv_mmrm.picks <- function(id,
         split_covariates = split_covariates
       ),
       data = data
+    )
+
+    arm_var_r <- reactive(selectors$arm_var()$variables$selected)
+
+    arm_ref_comp_iv <- arm_ref_comp_observer_picks(
+      session,
+      input,
+      output,
+      id_arm_var = "arm_var-variables-selected", # From UI.
+      data = reactive(data()[[parentname]]),
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_mmrm",
+      arm_var_r = arm_var_r
     )
 
     observeEvent(selectors$cov_var()$variables$selected, {
@@ -634,7 +645,7 @@ srv_mmrm.picks <- function(id,
     # all the inputs and data that can be out of sync with the fitted model
     mmrm_inputs_reactive <- reactive({
       shinyjs::disable("button_start")
-      # teal::validate_inputs(iv_r()) # AV: restore
+      arm_ref_comp_iv() # make sure the arm_ref_comp reactive values are up to date
       encoding_inputs <- lapply(
         sync_inputs,
         function(x) {

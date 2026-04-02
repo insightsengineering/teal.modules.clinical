@@ -450,6 +450,10 @@ template_mmrm_plots <- function(fit_name,
 #'   List names should match the following: `c("default", "lsmeans", "diagnostic")`. The argument is merged
 #'   with option `teal.ggplot2_args` and with default module arguments (hard coded in the module body).
 #'   For more details, see the help vignette: `vignette("custom-ggplot2-arguments", package = "teal.widgets")`.
+#' @param paramcd_var (`NULL` or [`teal.picks::variables()`])\cr used only by the `teal.picks` method;
+#'   ignored when `aval_var` is [`teal.transform::choices_selected()`].
+#' @param paramcd_values (`NULL` or [`teal.picks::values()`])\cr used only by the `teal.picks` method;
+#'   ignored when `aval_var` is [`teal.transform::choices_selected()`].
 #'
 #' @note
 #' The ordering of the input data sets can lead to slightly different numerical results or
@@ -559,6 +563,8 @@ tm_a_mmrm <- function(label,
                       cov_var,
                       arm_ref_comp,
                       paramcd,
+                      paramcd_var = NULL,
+                      paramcd_values = NULL,
                       method,
                       conf_level,
                       plot_height,
@@ -589,6 +595,8 @@ tm_a_mmrm.choices_selected <- function(label,
                                        cov_var,
                                        arm_ref_comp = NULL,
                                        paramcd,
+                                       paramcd_var = NULL,
+                                       paramcd_values = NULL,
                                        method = teal.transform::choices_selected(
                                          c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
                                          "Satterthwaite",
@@ -603,7 +611,8 @@ tm_a_mmrm.choices_selected <- function(label,
                                        basic_table_args = teal.widgets::basic_table_args(),
                                        ggplot2_args = teal.widgets::ggplot2_args(),
                                        transformators = list(),
-                                       decorators = list()) {
+                                       decorators = list(),
+                                       ...) {
   message("Initializing tm_a_mmrm")
   cov_var <- teal.transform::add_no_selected_choices(cov_var, multiple = TRUE)
   checkmate::assert_string(label)
@@ -683,7 +692,7 @@ tm_a_mmrm.choices_selected <- function(label,
 
 #' @keywords internal
 ui_mmrm.choices_selected <- function(id, ...) {
-  a <- rlang::dots_list(...) # module args
+  a <- list(...) # module args
   ns <- NS(id)
   is_single_dataset_value <- teal.transform::is_single_dataset(
     a$arm_var,
