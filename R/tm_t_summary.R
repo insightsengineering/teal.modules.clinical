@@ -377,7 +377,7 @@ ui_summary <- function(id,
                        arm_var,
                        summarize_vars,
                        add_total,
-                       useNA,
+                       useNA, # nolint: object_name.
                        numeric_stats,
                        denominator,
                        drop_arm_levels,
@@ -486,7 +486,12 @@ srv_summary <- function(id,
     anl_selectors <- selectors
 
     # ↓ add usubjid to make sure it is included in a merged dataset (primary_keys are not included if not selected)
-    anl_selectors$usubjid <- reactive(teal.picks::picks(teal.picks::datasets(parentname, parentname), variables("USUBJID", "USUBJID")))
+    anl_selectors$usubjid <- reactive(
+      teal.picks::picks(
+        teal.picks::datasets(parentname, parentname),
+        variables("USUBJID", "USUBJID")
+      )
+    )
     adsl_selectors <- selectors["arm_var"]
 
     data_with_card <- reactive({
@@ -498,8 +503,18 @@ srv_summary <- function(id,
         )
       obj
     })
-    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
-    merged_adsl_anl <- merge_srv("merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL")
+    merged_anl <- merge_srv(
+      "merge_anl",
+      data = data_with_card,
+      selectors = anl_selectors,
+      output_name = "ANL"
+    )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
     anl_q <- merged_adsl_anl$data
 
     observeEvent(anl_selectors$summarize_vars()$variables$selected, {
