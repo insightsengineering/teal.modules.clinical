@@ -58,33 +58,33 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
 
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Laboratory Test Results with Highest Grade Post-Baseline"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-values-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "paramcd", "values")),
       c("ALT", "CRP", "IGA")
     )
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
     testthat::expect_equal(
-      app_driver$get_active_module_input("id_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "id_var", "variables")),
       "USUBJID"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("atoxgr_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "atoxgr_var", "variables")),
       "ATOXGR"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("worst_high_flag_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "worst_high_flag_var", "variables")),
       "WGRHIFL"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("worst_low_flag_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "worst_low_flag_var", "variables")),
       "WGRLOFL"
     )
     testthat::expect_equal(
@@ -101,7 +101,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -119,7 +119,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-values-selected", c("ALT", "CRP"))
+    set_teal_picks_slot(app_driver, "paramcd", "values", c("ALT", "CRP"))
     testthat::expect_false(
       identical(
         table_before,
@@ -134,7 +134,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
-  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -143,7 +143,7 @@ testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of arm_v
 testthat::test_that("e2e - tm_t_abnormality_by_worst_grade: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality_by_worst_grade()
-  app_driver$set_active_module_input("paramcd-values-selected", NULL)
+  set_teal_picks_slot(app_driver, "paramcd", "values", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
