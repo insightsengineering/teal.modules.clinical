@@ -618,20 +618,20 @@ tm_t_shift_by_grade <- function(label,
 
 #' @keywords internal
 ui_t_shift_by_grade <- function(id,
-                                 arm_var,
-                                 visit_var,
-                                 paramcd,
-                                 worst_flag_var,
-                                 worst_flag_indicator,
-                                 anl_toxgrade_var,
-                                 base_toxgrade_var,
-                                 id_var,
-                                 add_total,
-                                 drop_arm_levels,
-                                 code_missing_baseline,
-                                 pre_output,
-                                 post_output,
-                                 decorators) {
+                                arm_var,
+                                visit_var,
+                                paramcd,
+                                worst_flag_var,
+                                worst_flag_indicator,
+                                anl_toxgrade_var,
+                                base_toxgrade_var,
+                                id_var,
+                                add_total,
+                                drop_arm_levels,
+                                code_missing_baseline,
+                                pre_output,
+                                post_output,
+                                decorators) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
@@ -727,7 +727,8 @@ srv_t_shift_by_grade <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(id = "",
+    selectors <- picks_srv(
+      id = "",
       picks = list(
         arm_var = arm_var,
         visit_var = visit_var,
