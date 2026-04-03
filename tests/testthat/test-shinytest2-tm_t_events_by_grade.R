@@ -69,23 +69,23 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Adverse Events by Grade Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("hlt-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "hlt", "variables")),
       "AEBODSYS"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("llt-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "llt", "variables")),
       "AEDECOD"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("grade-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "grade", "variables")),
       "AETOXGR"
     )
     testthat::expect_equal(
@@ -109,7 +109,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -124,7 +124,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_events_by_grade: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_by_grade()
-  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -136,7 +136,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("hlt-variables-selected", "AESOC")
+    set_teal_picks_slot(app_driver, "hlt", "variables", "AESOC")
     testthat::expect_false(
       identical(
         table_before,
@@ -154,7 +154,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("hlt-variables-selected", NULL)
+    set_teal_picks_slot(app_driver, "hlt", "variables", NULL)
     testthat::expect_false(
       identical(
         table_before,
@@ -172,7 +172,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("llt-variables-selected", "AETERM")
+    set_teal_picks_slot(app_driver, "llt", "variables", "AETERM")
     testthat::expect_false(
       identical(
         table_before,
@@ -190,7 +190,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("llt-variables-selected", NULL)
+    set_teal_picks_slot(app_driver, "llt", "variables", NULL)
     testthat::expect_false(
       identical(
         table_before,
@@ -208,7 +208,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("grade-variables-selected", "AESEV")
+    set_teal_picks_slot(app_driver, "grade", "variables", "AESEV")
     testthat::expect_false(
       identical(
         table_before,
@@ -223,7 +223,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_events_by_grade: Deselection of grade throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_by_grade()
-  app_driver$set_active_module_input("grade-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "grade", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
