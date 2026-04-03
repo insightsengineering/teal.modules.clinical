@@ -43,6 +43,38 @@ init_teal_app_driver <- function(...) {
   )
 }
 
+# Open a teal.picks badge dropdown so nested pickerInput values are bound in the session.
+open_teal_picks_dropdown <- function(app_driver, pick_id) {
+  checkmate::assert_string(pick_id)
+  badge_ns <- app_driver$namespaces()$module(paste0(pick_id, "-inputs-summary_badge"))
+  app_driver$click(paste0("#", badge_ns))
+  app_driver$wait_for_idle()
+  invisible(app_driver)
+}
+
+# Read the Shiny value for a categorical teal.picks slot (variables, values, datasets, ...).
+get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
+  checkmate::assert_string(pick_id)
+  checkmate::assert_string(slot)
+  open_teal_picks_dropdown(app_driver, pick_id)
+  app_driver$get_active_module_input(paste0(pick_id, "-", slot, "-selected"))
+}
+
+# Set a categorical teal.picks slot; picker commits when *_selected_open becomes FALSE.
+# Use value = NULL for an empty multi-select (character(0) is sent to Shiny).
+set_teal_picks_slot <- function(app_driver, pick_id, slot, value) {
+  checkmate::assert_string(pick_id)
+  checkmate::assert_string(slot)
+  open_teal_picks_dropdown(app_driver, pick_id)
+  sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
+  open_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected_open"))
+  val <- if (is.null(value)) character(0) else value
+  app_driver$set_input(sel_id, val)
+  app_driver$set_input(open_id, FALSE)
+  app_driver$wait_for_idle()
+  invisible(app_driver)
+}
+
 ns_des_input <- function(id, dataname, type) {
   sprintf("%s-dataset_%s_singleextract-%s", id, dataname, type)
 }

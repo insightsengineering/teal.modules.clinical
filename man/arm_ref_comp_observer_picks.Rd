@@ -53,8 +53,8 @@ stop the whole observer if \code{FALSE}.}
 \item{arm_var_r}{(\code{reactive})\cr reactive expression that returns the selected Treatment variable.}
 }
 \value{
-Returns a \code{shinyvalidate::InputValidator} which checks that there is at least one reference
-and comparison arm
+A \code{shiny::reactive} that runs arm/bucket validation (call inside other reactives before
+\code{teal::validate_inputs()}).
 }
 \description{
 Updates the reference and comparison Treatments when the selected Treatment variable changes

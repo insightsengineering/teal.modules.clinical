@@ -965,9 +965,8 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
         teal::srv_transform_teal_data(
           id = sprintf("d_%s", output_function),
           data = table_q,
-          decorators = select_decorators(decorators, output_function),
-          expr = reactive(bquote(.(as.name(output_function)))),
-          expr_is_reactive = TRUE
+          transformators = select_decorators(decorators, output_function),
+          expr = reactive(bquote(.(as.name(output_function))))
         )
       }
     )
@@ -980,9 +979,8 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
           teal::srv_transform_teal_data(
             id = sprintf("d_%s", output_function),
             data = plot_q,
-            decorators = select_decorators(decorators, output_function),
-            expr = reactive(bquote(.(as.name(output_function)))),
-            expr_is_reactive = TRUE
+            transformators = select_decorators(decorators, output_function),
+            expr = reactive(bquote(.(as.name(output_function))))
           )
         }
       )

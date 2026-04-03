@@ -41,8 +41,12 @@ arm_ref_comp_observer <- function(session,
   iv2 <- shinyvalidate::InputValidator$new()
   iv2$condition(~ iv1$is_valid())
   iv1$add_rule(id_arm_var, shinyvalidate::sv_required("Treatment variable must be selected"))
-  iv2$add_rule(input_id, ~ if (length(.[[id_ref]]) == 0) "A reference arm must be selected")
-  iv2$add_rule(input_id, ~ if (length(.[[id_comp]]) == 0) "A comparison arm must be selected")
+  iv2$add_rule(input_id, ~ if (length(arm_bucket_values(., id_ref)) == 0L) {
+    "A reference arm must be selected"
+  })
+  iv2$add_rule(input_id, ~ if (length(arm_bucket_values(., id_comp)) == 0L) {
+    "A comparison arm must be selected"
+  })
   iv$add_validator(iv1)
   iv$add_validator(iv2)
 
@@ -90,6 +94,62 @@ arm_ref_comp_observer <- function(session,
   iv
 }
 
+#' Flatten draggable bucket contents to non-empty character arms
+#'
+#' Aligns with [teal::validate_has_elements()] used by [validate_standard_inputs()]:
+#' list length can be positive while [unlist()] is empty (e.g. nested empty vectors).
+#'
+#' @param buckets (`list` or `NULL`)\cr value of Shiny `input$buckets`.
+#' @param name (`character(1)`)\cr bucket id, typically `"Ref"` or `"Comp"`.
+#'
+#' @return `character()` (possibly length zero).
+#' @keywords internal
+#'
+arm_bucket_values <- function(buckets, name) {
+  checkmate::assert_string(name)
+  if (is.null(buckets)) {
+    return(character(0))
+  }
+  b <- buckets[[name]]
+  if (is.null(b)) {
+    return(character(0))
+  }
+  x <- unlist(b, recursive = TRUE, use.names = FALSE)
+  if (length(x) == 0L) {
+    return(character(0))
+  }
+  x <- as.character(x)
+  x[!is.na(x) & nzchar(x)]
+}
+
+#' Shiny validator for reference / comparison arm buckets only
+#'
+#' For modules using [teal.picks::picks_ui()], treatment column selection is validated via
+#' [teal.picks::picks_srv()] reactives; this validator only enforces `input$buckets` arms.
+#'
+#' @param id_ref (`character(1)`)\cr bucket name for reference arms.
+#' @param id_comp (`character(1)`)\cr bucket name for comparison arms.
+#'
+#' @return A `shinyvalidate::InputValidator`.
+#' @keywords internal
+#'
+arm_ref_comp_buckets_validator <- function(id_ref = "Ref", id_comp = "Comp") {
+  iv <- shinyvalidate::InputValidator$new()
+  iv$add_rule("buckets", function(value) {
+    if (length(arm_bucket_values(value, id_ref)) == 0L) {
+      return("A reference arm must be selected")
+    }
+    NULL
+  })
+  iv$add_rule("buckets", function(value) {
+    if (length(arm_bucket_values(value, id_comp)) == 0L) {
+      return("A comparison arm must be selected")
+    }
+    NULL
+  })
+  iv
+}
+
 #' Observer for Treatment reference variable
 #'
 #' @description
@@ -113,8 +173,8 @@ arm_ref_comp_observer <- function(session,
 #' @param input_id (`character`)\cr unique id that the buckets will be referenced with.
 #' @param output_id (`character`)\cr name of the UI id that the output will be written to.
 #' @param arm_var_r (`reactive`)\cr reactive expression that returns the selected Treatment variable.
-#' @return Returns a `shinyvalidate::InputValidator` which checks that there is at least one reference
-#'   and comparison arm
+#' @return A `shiny::reactive` that runs arm/bucket validation (call inside other reactives before
+#'   `teal::validate_inputs()`).
 #' @keywords internal
 #'
 arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
@@ -140,7 +200,8 @@ arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
 
       check_arm_ref_comp(arm_ref_comp, df, module) ## throws an error if there are issues
 
-      arm_var <- req(arm_var_r())
+      arm_var_vec <- req(arm_var_r())
+      arm_var <- arm_var_vec[[1]]
 
       arm <- df[[arm_var]]
       teal::validate_has_elements(arm, "Treatment variable is empty.")
@@ -173,21 +234,25 @@ arm_ref_comp_observer_picks <- function(session, # nolint: object_name.
   })
 
   reactive({
+    if (!isTRUE(on_off())) {
+      return(invisible(NULL))
+    }
     validate_input(
       inputId = id_arm_var,
-      condition = !is.null(arm_var_r()),
+      condition = length(arm_var_r()) >= 1L,
       message = "Treatment variable must be selected.",
       session = session
     )
+    buckets_val <- input[[input_id]]
     validate_input(
       inputId = input_id,
-      condition = length(input[[input_id]][[id_ref]]) > 0,
+      condition = length(arm_bucket_values(buckets_val, id_ref)) > 0L,
       message = "A reference arm must be selected.",
       session = session
     )
     validate_input(
       inputId = input_id,
-      condition = length(input[[input_id]][[id_comp]]) > 0,
+      condition = length(arm_bucket_values(buckets_val, id_comp)) > 0L,
       message = "A comparison arm must be selected.",
       session = session
     )

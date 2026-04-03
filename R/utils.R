@@ -907,6 +907,30 @@ get_paramcd_label <- function(anl, paramcd) {
   })
 }
 
+#' Title label for parameter code(s) from analysis data (picks-based modules)
+#'
+#' @param anl (`data.frame`)\cr analysis dataset after filtering.
+#' @param paramcd_name (`character(1)`)\cr column name for parameter code (e.g. `PARAMCD`).
+#' @param paramcd_vals (`character`)\cr selected parameter code value(s).
+#'
+#' @return A single string suitable for table titles.
+#' @keywords internal
+paramcd_title_from_anl <- function(anl, paramcd_name, paramcd_vals) {
+  if (!length(paramcd_vals)) {
+    return("")
+  }
+  paramcd_vals <- unique(as.character(paramcd_vals))
+  if ("PARAM" %in% names(anl)) {
+    lbl <- vapply(paramcd_vals, function(v) {
+      idx <- which(anl[[paramcd_name]] == v)
+      if (length(idx)) as.character(anl[["PARAM"]][idx[1]]) else v
+    }, character(1))
+    paste(lbl, collapse = ", ")
+  } else {
+    paste(paramcd_vals, collapse = ", ")
+  }
+}
+
 as_numeric_from_comma_sep_str <- function(input_string, sep = ",") {
   if (!is.null(input_string) && trimws(input_string) != "") {
     split_string <- unlist(strsplit(trimws(input_string), sep))
