@@ -64,13 +64,15 @@ template_coxreg_u <- function(dataname,
     )
   )
 
-  data_pipe <- add_expr(
-    data_pipe,
-    substitute(
-      expr = dplyr::mutate(across(where(is.factor) & cov_var, droplevels)),
-      env = list(cov_var = cov_var)
+  if (!is.null(cov_var) && length(cov_var) > 0L) {
+    data_pipe <- add_expr(
+      data_pipe,
+      substitute(
+        expr = dplyr::mutate(across(where(is.factor) & cov_var, droplevels)),
+        env = list(cov_var = cov_var)
+      )
     )
-  )
+  }
 
   data_pipe <- add_expr(
     data_pipe,
@@ -231,13 +233,15 @@ template_coxreg_m <- function(dataname,
     )
   )
 
-  data_pipe <- add_expr(
-    data_pipe,
-    substitute(
-      expr = dplyr::mutate(across(where(is.factor) & cov_var, droplevels)),
-      env = list(cov_var = cov_var)
+  if (!is.null(cov_var) && length(cov_var) > 0L) {
+    data_pipe <- add_expr(
+      data_pipe,
+      substitute(
+        expr = dplyr::mutate(across(where(is.factor) & cov_var, droplevels)),
+        env = list(cov_var = cov_var)
+      )
     )
-  )
+  }
 
   data_pipe <- add_expr(
     data_pipe,
