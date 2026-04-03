@@ -61,15 +61,15 @@ testthat::test_that(
       "Summary by Row Groups Table"
     )
     testthat::expect_identical(
-      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_identical(
-      as.vector(get_teal_picks_slot(app_driver, "by_vars", "variables")),
+      get_teal_picks_slot(app_driver, "by_vars", "variables"),
       "AVISIT"
     )
     testthat::expect_identical(
-      as.vector(get_teal_picks_slot(app_driver, "summarize_vars", "variables")),
+      get_teal_picks_slot(app_driver, "summarize_vars", "variables"),
       "AVAL"
     )
     testthat::expect_equal(

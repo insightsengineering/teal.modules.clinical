@@ -530,7 +530,7 @@ ui_summary_by <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Column Variable(s)"),
-        picks_ui(ns("arm_var"), arm_var)
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
       `if`(
@@ -538,16 +538,16 @@ ui_summary_by <- function(id,
         NULL,
         tags$div(
           tags$label("Select Endpoint"),
-          picks_ui(ns("paramcd"), paramcd)
+          teal.picks::picks_ui(ns("paramcd"), paramcd)
         )
       ),
       tags$div(
         tags$label("Row By Variable"),
-        picks_ui(ns("by_vars"), by_vars)
+        teal.picks::picks_ui(ns("by_vars"), by_vars)
       ),
       tags$div(
         tags$label("Summarize Variables"),
-        picks_ui(ns("summarize_vars"), summarize_vars)
+        teal.picks::picks_ui(ns("summarize_vars"), summarize_vars)
       ),
       checkboxInput(ns("parallel_vars"), "Show summarize variables in parallel", value = parallel_vars),
       checkboxInput(ns("row_groups"), "Summarize number of subjects in row groups", value = row_groups),
@@ -621,7 +621,7 @@ ui_summary_by <- function(id,
           title = "Additional Variables Info",
           tags$div(
             tags$label("Subject Identifier"),
-            picks_ui(ns("id_var"), id_var)
+            teal.picks::picks_ui(ns("id_var"), id_var)
           )
         )
       )
@@ -660,7 +660,7 @@ srv_summary_by <- function(id,
       spec_list[["paramcd"]] <- paramcd
     }
 
-    selectors <- picks_srv(id = "", picks = spec_list, data = data)
+    selectors <- teal.picks::picks_srv(id = "", picks = spec_list, data = data)
 
     anl_selectors <- selectors
     adsl_selectors <- selectors["arm_var"]
