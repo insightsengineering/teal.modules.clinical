@@ -52,10 +52,10 @@ init_teal_app_driver <- function(...) {
   paste0("\"", id, "\"")
 }
 
-# Open a teal.picks badge dropdown so nested pickerInput values are bound in the session.
+# Click the teal.picks summary badge (toggles the dropdown open/closed).
 # Use getElementById + click() instead of AppDriver$click(CSS): Chromote querySelectorAll
 # can return DOM error -32000 for some ids/selectors in CI even with attribute selectors.
-open_teal_picks_dropdown <- function(app_driver, pick_id) {
+.teal_picks_click_summary_badge <- function(app_driver, pick_id) {
   checkmate::assert_string(pick_id)
   badge_ns <- app_driver$namespaces()$module(paste0(pick_id, "-inputs-summary_badge"))
   id_lit <- .teal_picks_js_id_literal(badge_ns)
@@ -68,12 +68,26 @@ open_teal_picks_dropdown <- function(app_driver, pick_id) {
   invisible(app_driver)
 }
 
+# Open a teal.picks badge dropdown. Required before set_input on nested pickers: badge-dropdown
+# script.js calls Shiny.bindAll(container) only when the panel is shown.
+open_teal_picks_dropdown <- function(app_driver, pick_id) {
+  .teal_picks_click_summary_badge(app_driver, pick_id)
+}
+
+# Close the teal.picks badge if it is open (same control toggles).
+close_teal_picks_dropdown <- function(app_driver, pick_id) {
+  .teal_picks_click_summary_badge(app_driver, pick_id)
+}
+
 # Read the Shiny value for a categorical teal.picks slot (variables, values, datasets, ...).
-# Do not open the badge first: with the dropdown open, bootstrap-select can report every choice
-# in `input$selected` instead of the committed selection (e.g. all PARAMCD levels vs `"OS"`).
+# While the badge has never been opened, picker inputs are not bound (see teal.picks
+# badge-dropdown script.js). While the panel stays open, bootstrap-select can report every
+# choice in `input$selected`. So: open once to bind, close, then read the committed value.
 get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
+  open_teal_picks_dropdown(app_driver, pick_id)
+  close_teal_picks_dropdown(app_driver, pick_id)
   raw <- app_driver$get_active_module_input(paste0(pick_id, "-", slot, "-selected"))
   if (is.null(raw)) {
     return(NULL)
@@ -101,6 +115,7 @@ set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
   if (isTRUE(wait)) {
     app_driver$wait_for_idle()
   }
+  close_teal_picks_dropdown(app_driver, pick_id)
   invisible(app_driver)
 }
 
