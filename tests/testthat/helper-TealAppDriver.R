@@ -43,18 +43,27 @@ init_teal_app_driver <- function(...) {
   )
 }
 
-# Escape `id` for a CSS attribute selector (IDs may contain `:` / `.` which break `#id` selectors).
-.teal_picks_badge_css <- function(id) {
+# Escape an HTML element `id` for use inside a JavaScript double-quoted string literal.
+.teal_picks_js_id_literal <- function(id) {
   id <- gsub("\\", "\\\\", id, fixed = TRUE)
   id <- gsub("\"", "\\\"", id, fixed = TRUE)
-  paste0("[id=\"", id, "\"]")
+  id <- gsub("\r", "\\r", id, fixed = TRUE)
+  id <- gsub("\n", "\\n", id, fixed = TRUE)
+  paste0("\"", id, "\"")
 }
 
 # Open a teal.picks badge dropdown so nested pickerInput values are bound in the session.
+# Use getElementById + click() instead of AppDriver$click(CSS): Chromote querySelectorAll
+# can return DOM error -32000 for some ids/selectors in CI even with attribute selectors.
 open_teal_picks_dropdown <- function(app_driver, pick_id) {
   checkmate::assert_string(pick_id)
   badge_ns <- app_driver$namespaces()$module(paste0(pick_id, "-inputs-summary_badge"))
-  app_driver$click(.teal_picks_badge_css(badge_ns))
+  id_lit <- .teal_picks_js_id_literal(badge_ns)
+  app_driver$wait_for_js(sprintf("document.getElementById(%s) !== null", id_lit))
+  app_driver$run_js(sprintf(
+    "(() => { const el = document.getElementById(%s); el.click(); })()",
+    id_lit
+  ))
   app_driver$wait_for_idle()
   invisible(app_driver)
 }
