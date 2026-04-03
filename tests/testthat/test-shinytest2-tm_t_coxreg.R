@@ -80,11 +80,11 @@ testthat::test_that(
       "Multivariate"
     )
     testthat::expect_identical(
-      as.vector(get_teal_picks_slot(app_driver, "paramcd", "values")),
+      get_teal_picks_slot(app_driver, "paramcd", "values"),
       "OS"
     )
     testthat::expect_identical(
-      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
@@ -95,11 +95,11 @@ testthat::test_that(
       )
     )
     testthat::expect_identical(
-      as.vector(get_teal_picks_slot(app_driver, "cov_var", "variables")),
+      get_teal_picks_slot(app_driver, "cov_var", "variables"),
       "AGE"
     )
     testthat::expect_identical(
-      as.vector(get_teal_picks_slot(app_driver, "strata_var", "variables")),
+      get_teal_picks_slot(app_driver, "strata_var", "variables"),
       "STRATA1"
     )
     testthat::expect_equal(

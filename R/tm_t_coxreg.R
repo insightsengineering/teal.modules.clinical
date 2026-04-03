@@ -612,10 +612,10 @@ ui_t_coxreg <- function(id,
         selected = dplyr::if_else(multivariate, "Multivariate", "Univariate")
       ),
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      tags$div(tags$label("Select Endpoint"), picks_ui(ns("paramcd"), paramcd)),
-      tags$div(tags$label("Censor Variable"), picks_ui(ns("cnsr_var"), cnsr_var)),
-      tags$div(tags$label("Analysis Variable"), picks_ui(ns("aval_var"), aval_var)),
-      tags$div(tags$label("Select Treatment Variable"), picks_ui(ns("arm_var"), arm_var)),
+      tags$div(tags$label("Select Endpoint"), teal.picks::picks_ui(ns("paramcd"), paramcd)),
+      tags$div(tags$label("Censor Variable"), teal.picks::picks_ui(ns("cnsr_var"), cnsr_var)),
+      tags$div(tags$label("Analysis Variable"), teal.picks::picks_ui(ns("aval_var"), aval_var)),
+      tags$div(tags$label("Select Treatment Variable"), teal.picks::picks_ui(ns("arm_var"), arm_var)),
       uiOutput(ns("arms_buckets")),
       conditionalPanel(
         condition = paste0("input['", ns("type"), "'] == 'Multivariate'"),
@@ -624,7 +624,7 @@ ui_t_coxreg <- function(id,
           "Combine all comparison groups?"
         )
       ),
-      tags$div(tags$label("Covariates"), picks_ui(ns("cov_var"), cov_var)),
+      tags$div(tags$label("Covariates"), teal.picks::picks_ui(ns("cov_var"), cov_var)),
       conditionalPanel(
         condition = paste0("input['", ns("type"), "'] == 'Univariate'"),
         checkboxInput(
@@ -633,7 +633,7 @@ ui_t_coxreg <- function(id,
         )
       ),
       uiOutput(ns("interaction_input")),
-      tags$div(tags$label("Stratify by"), picks_ui(ns("strata_var"), strata_var)),
+      tags$div(tags$label("Stratify by"), teal.picks::picks_ui(ns("strata_var"), strata_var)),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -714,7 +714,7 @@ srv_t_coxreg <- function(id,
       input$type == "Univariate" && isTRUE(input$interactions)
     })
 
-    anl_selectors <- picks_srv(
+    anl_selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,
