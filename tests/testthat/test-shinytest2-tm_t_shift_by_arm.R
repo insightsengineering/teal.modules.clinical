@@ -47,19 +47,19 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm()
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Shift by Arm Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aval_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "aval_var", "variables")),
       "ANRIND"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("baseline_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "baseline_var", "variables")),
       "BNRIND"
     )
     testthat::expect_equal(
@@ -77,7 +77,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -92,7 +92,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_shift_by_arm: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_arm()
-  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -104,7 +104,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-values-selected", "HR")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "HR")
     testthat::expect_false(
       identical(
         table_before,
@@ -122,7 +122,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("visit_var-values-selected", "SCREENING")
+    set_teal_picks_slot(app_driver, "visit_var", "values", "SCREENING")
     testthat::expect_false(
       identical(
         table_before,
