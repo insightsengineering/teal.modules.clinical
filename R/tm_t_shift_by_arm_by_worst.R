@@ -367,15 +367,15 @@ ui_shift_by_arm_by_worst <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Treatment Variable"),
-        picks_ui(ns("arm_var"), arm_var)
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       tags$div(
         tags$label("Select Endpoint"),
-        picks_ui(ns("paramcd"), paramcd)
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
       tags$div(
         tags$label("Select The Worst Flag"),
-        picks_ui(ns("worst_flag_var"), worst_flag_var)
+        teal.picks::picks_ui(ns("worst_flag_var"), worst_flag_var)
       ),
       teal.widgets::optionalSelectInput(
         ns("worst_flag"),
@@ -387,11 +387,11 @@ ui_shift_by_arm_by_worst <- function(id,
       ),
       tags$div(
         tags$label("Select Analysis Value"),
-        picks_ui(ns("aval_var"), aval_var)
+        teal.picks::picks_ui(ns("aval_var"), aval_var)
       ),
       tags$div(
         tags$label("Select Baseline Value"),
-        picks_ui(ns("baseline_var"), baseline_var)
+        teal.picks::picks_ui(ns("baseline_var"), baseline_var)
       ),
       checkboxInput(ns("add_total"), "Add All Patients row", value = add_total),
       radioButtons(
@@ -407,7 +407,7 @@ ui_shift_by_arm_by_worst <- function(id,
           title = "Additional Variables Info",
           tags$div(
             tags$label("On Treatment Flag Variable"),
-            picks_ui(ns("treatment_flag_var"), treatment_flag_var)
+            teal.picks::picks_ui(ns("treatment_flag_var"), treatment_flag_var)
           ),
           teal.widgets::optionalSelectInput(
             inputId = ns("treatment_flag"),
@@ -449,7 +449,7 @@ srv_shift_by_arm_by_worst <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(
+    selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,
