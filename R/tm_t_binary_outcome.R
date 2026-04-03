@@ -816,15 +816,24 @@ srv_t_binary_outcome <- function(id,
     )
     anl_q <- merged_adsl$data
 
-    observeEvent(
-      c(
-        input[["aval_var-variables-selected"]],
-        input[["paramcd-values-selected"]]
-      ),
-      handlerExpr = {
+    # Keep responders selectInput in sync with merged ANL and all encoding picks.
+    # observeEvent(aval, paramcd) alone missed arm/strata/merge updates, leaving
+    # responders empty after picks commit and failing shinyvalidate.
+    shiny::observe(
+      {
         anl <- anl_q()[["ANL"]]
+        shiny::req(is.data.frame(anl), nrow(anl) > 0L)
+
         aval_name <- anl_selectors$aval_var()$variables$selected
-        paramcd_sel <- input[["paramcd-values-selected"]]
+        shiny::req(length(aval_name) > 0L)
+
+        pc <- anl_selectors$paramcd()
+        paramcd_sel <- if (is.null(pc$values)) character(0) else pc$values$selected
+        shiny::req(length(paramcd_sel) > 0L)
+
+        invisible(anl_selectors$arm_var()$variables$selected)
+        invisible(anl_selectors$strata_var()$variables$selected)
+
         sel_param <- if (is.list(default_responses) && length(paramcd_sel) > 0L) {
           default_responses[[paramcd_sel[[1]]]]
         } else {
@@ -849,12 +858,34 @@ srv_t_binary_outcome <- function(id,
             unique(anl[[av]])
           }
         }
-        updateSelectInput(
+        if (length(responder_choices) == 0L) {
+          return(invisible(NULL))
+        }
+        default_sel <- intersect(responder_choices, common_rsp)
+        prev <- as.character(
+          unlist(shiny::isolate(input$responders), use.names = FALSE)
+        )
+        new_sel <- if (
+          length(prev) > 0L &&
+            all(prev %in% responder_choices)
+        ) {
+          intersect(prev, responder_choices)
+        } else {
+          default_sel
+        }
+        if (length(new_sel) == 0L) {
+          new_sel <- default_sel
+        }
+        if (length(new_sel) == 0L) {
+          return(invisible(NULL))
+        }
+        shiny::updateSelectInput(
           session, "responders",
           choices = responder_choices,
-          selected = intersect(responder_choices, common_rsp)
+          selected = new_sel
         )
-      }
+      },
+      priority = 1L
     )
 
     validate_check <- reactive({

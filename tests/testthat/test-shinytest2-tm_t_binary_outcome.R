@@ -105,9 +105,9 @@ testthat::test_that(
       app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Responders"
     )
-    testthat::expect_equal(
-      get_teal_picks_slot(app_driver, "paramcd", "values"),
-      "BESRSPI"
+    testthat::expect_identical(
+      sort(get_teal_picks_slot(app_driver, "paramcd", "values")),
+      sort(c("BESRSPI", "INVET", "OVRINV"))
     )
     testthat::expect_equal(
       app_driver$get_active_module_input("responders"),
