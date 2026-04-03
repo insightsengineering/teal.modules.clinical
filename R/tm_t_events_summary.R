@@ -499,26 +499,27 @@ template_events_summary <- function(anl_name,
 #' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
-#' @param arm_var ([teal.transform::choices_selected()])\cr object with all
+#' @param arm_var ([teal.picks::variables()])\cr object with all
 #'   available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param dthfl_var ([teal.transform::choices_selected()])\cr object
+#' @param dthfl_var ([teal.picks::variables()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as death flag variable.
 #'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
-#' @param dcsreas_var ([teal.transform::choices_selected()])\cr object
+#' @param dcsreas_var ([teal.picks::variables()])\cr object
 #'   with all available choices and preselected option for variable names that can be used as study discontinuation
 #'   reason variable. Records with `"ADVERSE EVENTS"` are summarized in the table row for
 #'   "Total number of patients withdrawn from study due to an AE".
-#' @param flag_var_anl ([teal.transform::choices_selected()] or `NULL`)\cr
+#' @param flag_var_anl ([teal.picks::variables()] or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious events,
 #'   Related events, etc.). Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi ([teal.transform::choices_selected()] or `NULL`)\cr
+#' @param flag_var_aesi ([teal.picks::variables()] or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event special interest groups. All flag
 #'   variables must be of type `logical`. Variable labels are used as table row names if they exist.
-#' @param aeseq_var ([teal.transform::choices_selected()])\cr variable for
+#' @param aeseq_var ([teal.picks::variables()])\cr variable for
 #'   adverse events sequence number from `dataset`. Used for counting total number of events.
+#' @param llt ([teal.picks::variables()])\cr adverse event term / low-level term column (e.g. `AEDECOD`).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -605,20 +606,19 @@ template_events_summary <- function(anl_name,
 #'     tm_t_events_summary(
 #'       label = "Adverse Events Summary",
 #'       dataname = "ADAE",
-#'       arm_var = choices_selected(
-#'         choices = variable_choices("ADSL", c("ARM", "ARMCD")),
-#'         selected = "ARM"
-#'       ),
-#'       flag_var_anl = choices_selected(
-#'         choices = variable_choices("ADAE", data[[".ae_anl_vars"]]),
+#'       arm_var = variables(choices = c("ARM", "ARMCD")),
+#'       flag_var_anl = variables(
+#'         choices = data[[".ae_anl_vars"]],
 #'         selected = data[[".ae_anl_vars"]][1],
-#'         keep_order = TRUE,
+#'         multiple = TRUE,
+#'         ordered = TRUE,
 #'         fixed = FALSE
 #'       ),
-#'       flag_var_aesi = choices_selected(
-#'         choices = variable_choices("ADAE", data[[".aesi_vars"]]),
+#'       flag_var_aesi = variables(
+#'         choices = data[[".aesi_vars"]],
 #'         selected = data[[".aesi_vars"]][1],
-#'         keep_order = TRUE,
+#'         multiple = TRUE,
+#'         ordered = TRUE,
 #'         fixed = FALSE
 #'       ),
 #'       add_total = TRUE
@@ -632,30 +632,14 @@ template_events_summary <- function(anl_name,
 #' @export
 tm_t_events_summary <- function(label,
                                 dataname,
-                                parentname = ifelse(
-                                  inherits(arm_var, "data_extract_spec"),
-                                  teal.transform::datanames_input(arm_var),
-                                  "ADSL"
-                                ),
-                                arm_var,
+                                parentname = "ADSL",
+                                arm_var = variables(choices = c("ARM", "ARMCD")),
                                 flag_var_anl = NULL,
                                 flag_var_aesi = NULL,
-                                dthfl_var = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(parentname, "DTHFL"), "DTHFL",
-                                  fixed = TRUE
-                                ),
-                                dcsreas_var = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(parentname, "DCSREAS"), "DCSREAS",
-                                  fixed = TRUE
-                                ),
-                                llt = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(dataname, "AEDECOD"), "AEDECOD",
-                                  fixed = TRUE
-                                ),
-                                aeseq_var = teal.transform::choices_selected(
-                                  teal.transform::variable_choices(dataname, "AESEQ"), "AESEQ",
-                                  fixed = TRUE
-                                ),
+                                dthfl_var = variables(choices = "DTHFL"),
+                                dcsreas_var = variables(choices = "DCSREAS"),
+                                llt = variables(choices = "AEDECOD"),
+                                aeseq_var = variables(choices = "AESEQ"),
                                 add_total = TRUE,
                                 total_label = default_total_label(),
                                 na_level = tern::default_na_str(),
@@ -673,13 +657,13 @@ tm_t_events_summary <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(flag_var_anl, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(flag_var_aesi, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(dthfl_var, "choices_selected")
-  checkmate::assert_class(dcsreas_var, "choices_selected")
-  checkmate::assert_class(llt, "choices_selected")
-  checkmate::assert_class(aeseq_var, "choices_selected")
+  checkmate::assert_class(arm_var, "variables")
+  checkmate::assert_class(flag_var_anl, "variables", null.ok = TRUE)
+  checkmate::assert_class(flag_var_aesi, "variables", null.ok = TRUE)
+  checkmate::assert_class(dthfl_var, "variables")
+  checkmate::assert_class(dcsreas_var, "variables")
+  checkmate::assert_class(llt, "variables")
+  checkmate::assert_class(aeseq_var, "variables")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -693,164 +677,135 @@ tm_t_events_summary <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  args <- c(as.list(environment()))
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  dthfl_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), dthfl_var)
+  dcsreas_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), dcsreas_var)
+  llt <- teal.picks::picks(teal.picks::datasets(dataname, dataname), llt)
+  aeseq_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aeseq_var)
+  if (!is.null(flag_var_anl)) {
+    flag_var_anl <- teal.picks::picks(teal.picks::datasets(dataname, dataname), flag_var_anl)
+  }
+  if (!is.null(flag_var_aesi)) {
+    flag_var_aesi <- teal.picks::picks(teal.picks::datasets(dataname, dataname), flag_var_aesi)
+  }
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname, multiple = TRUE, ordered = TRUE),
-    dthfl_var = cs_to_des_select(dthfl_var, dataname = parentname),
-    dcsreas_var = cs_to_des_select(dcsreas_var, dataname = parentname),
-    flag_var_anl = `if`(
-      is.null(flag_var_anl),
-      NULL,
-      cs_to_des_select(flag_var_anl, dataname = dataname, multiple = TRUE, ordered = TRUE)
-    ),
-    flag_var_aesi = `if`(
-      is.null(flag_var_aesi),
-      NULL,
-      cs_to_des_select(flag_var_aesi, dataname = dataname, multiple = TRUE, ordered = TRUE)
-    ),
-    aeseq_var = cs_to_des_select(aeseq_var, dataname = dataname),
-    llt = cs_to_des_select(llt, dataname = dataname)
-  )
+  args <- as.list(environment())
 
   module(
     label = label,
     ui = ui_t_events_summary,
-    ui_args = c(data_extract_list, args),
     server = srv_t_events_summary,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        total_label = total_label,
-        na_level = na_level,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_t_events_summary))],
+    server_args = args[names(args) %in% names(formals(srv_t_events_summary))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = union(parentname, dataname)
   )
 }
 
 #' @keywords internal
-ui_t_events_summary <- function(id, ...) {
+ui_t_events_summary <- function(id,
+                                arm_var,
+                                dthfl_var,
+                                dcsreas_var,
+                                flag_var_anl,
+                                flag_var_aesi,
+                                aeseq_var,
+                                llt,
+                                add_total,
+                                count_dth,
+                                count_wd,
+                                count_subj,
+                                count_pt,
+                                count_events,
+                                pre_output,
+                                post_output,
+                                decorators) {
   ns <- NS(id)
-  a <- list(...)
-
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var,
-    a$dthfl_var,
-    a$dcsreas_var,
-    a$flag_var_anl,
-    a$flag_var_aesi,
-    a$aeseq_var,
-    a$llt
-  )
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(
-        a[c("arm_var", "dthfl_var", "dcsreas_var", "flag_var_anl", "flag_var_aesi", "aeseq_var", "llt")]
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Treatment Variable"),
+        picks_ui(ns("arm_var"), arm_var)
       ),
       `if`(
-        is.null(a$flag_var_anl),
+        is.null(flag_var_anl),
         NULL,
-        teal.transform::data_extract_ui(
-          id = ns("flag_var_anl"),
-          label = "Event Flag Variables",
-          data_extract_spec = a$flag_var_anl,
-          is_single_dataset = is_single_dataset_value
+        tags$div(
+          tags$label("Event Flag Variables"),
+          picks_ui(ns("flag_var_anl"), flag_var_anl)
         )
       ),
       `if`(
-        is.null(a$flag_var_aesi),
+        is.null(flag_var_aesi),
         NULL,
-        teal.transform::data_extract_ui(
-          id = ns("flag_var_aesi"),
-          label = "AE Basket Flag Variables",
-          data_extract_spec = a$flag_var_aesi,
-          is_single_dataset = is_single_dataset_value
+        tags$div(
+          tags$label("AE Basket Flag Variables"),
+          picks_ui(ns("flag_var_aesi"), flag_var_aesi)
         )
       ),
       checkboxInput(
         ns("add_total"),
         "Add All Patients column",
-        value = a$add_total
+        value = add_total
       ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
       bslib::accordion_panel(
         "Table Settings",
         open = TRUE,
         checkboxInput(
           ns("count_dth"),
           "Count deaths",
-          value = a$count_dth
+          value = count_dth
         ),
         checkboxInput(
           ns("count_wd"),
           "Count withdrawals due to AE",
-          value = a$count_wd
+          value = count_wd
         ),
         checkboxInput(
           ns("count_subj"),
           "Count patients",
-          value = a$count_subj
+          value = count_subj
         ),
         checkboxInput(
           ns("count_pt"),
           "Count preferred terms",
-          value = a$count_pt
+          value = count_pt
         ),
         checkboxInput(
           ns("count_events"),
           "Count events",
-          value = a$count_events
+          value = count_events
         )
       ),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
-          teal.transform::data_extract_ui(
-            id = ns("dthfl_var"),
-            label = "Death Flag Variable",
-            data_extract_spec = a$dthfl_var,
-            is_single_dataset = is_single_dataset_value
+          tags$div(
+            tags$label("Death Flag Variable"),
+            picks_ui(ns("dthfl_var"), dthfl_var)
           ),
-          teal.transform::data_extract_ui(
-            id = ns("dcsreas_var"),
-            label = "Study Discontinuation Reason Variable",
-            data_extract_spec = a$dcsreas_var,
-            is_single_dataset = is_single_dataset_value
+          tags$div(
+            tags$label("Study Discontinuation Reason Variable"),
+            picks_ui(ns("dcsreas_var"), dcsreas_var)
           ),
-          teal.transform::data_extract_ui(
-            id = ns("aeseq_var"),
-            label = "AE Sequence Variable",
-            data_extract_spec = a$aeseq_var,
-            is_single_dataset = is_single_dataset_value
+          tags$div(
+            tags$label("AE Sequence Variable"),
+            picks_ui(ns("aeseq_var"), aeseq_var)
           ),
-          teal.transform::data_extract_ui(
-            id = ns("llt"),
-            label = "AE Term Variable",
-            data_extract_spec = a$llt,
-            is_single_dataset = is_single_dataset_value
+          tags$div(
+            tags$label("AE Term Variable"),
+            picks_ui(ns("llt"), llt)
           )
         )
       )
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -876,87 +831,85 @@ srv_t_events_summary <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    data_extract_vars <- list(
-      arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var,
-      aeseq_var = aeseq_var, llt = llt
-    )
 
+    picks_list <- list(
+      arm_var = arm_var,
+      dthfl_var = dthfl_var,
+      dcsreas_var = dcsreas_var,
+      aeseq_var = aeseq_var,
+      llt = llt
+    )
     if (!is.null(flag_var_anl)) {
-      data_extract_vars[["flag_var_anl"]] <- flag_var_anl
+      picks_list$flag_var_anl <- flag_var_anl
     }
-
     if (!is.null(flag_var_aesi)) {
-      data_extract_vars[["flag_var_aesi"]] <- flag_var_aesi
+      picks_list$flag_var_aesi <- flag_var_aesi
     }
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = data_extract_vars,
-      datasets = data,
-      select_validation_rule = list(
-        arm_var = ~ if (length(.) != 1 && length(.) != 2) "Please select exactly 1 or 2 treatment variables",
-        dthfl_var = shinyvalidate::sv_required("Death Flag Variable is requried"),
-        dcsreas_var = shinyvalidate::sv_required("Study Discontinuation Reason Variable is required"),
-        aeseq_var = shinyvalidate::sv_required("AE Sequence Variable is required"),
-        llt = shinyvalidate::sv_required("AE Term Variable is required")
-      )
-    )
+    selectors <- picks_srv(id = "", picks = picks_list, data = data)
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
+    anl_selectors <- selectors
+    adsl_selectors <- selectors[c("arm_var", "dthfl_var", "dcsreas_var")]
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      data_extract = Filter(Negate(is.null), list(arm_var = arm_var, dthfl_var = dthfl_var, dcsreas_var = dcsreas_var)),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
+    data_with_card <- reactive({
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_inputs()$expr))
+      obj
     })
-
-    merged <- list(
-      anl_input_r = anl_inputs,
-      adsl_input_r = adsl_inputs,
-      anl_q = anl_q
+    merged_anl <- merge_srv(
+      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
     )
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+    )
+    anl_q <- merged_adsl_anl$data
 
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
+      input_arm <- anl_selectors$arm_var()$variables$selected
+      validate(
+        need(length(input_arm) %in% 1:2, "Please select exactly 1 or 2 treatment variables")
+      )
+      validate(
+        need(
+          length(anl_selectors$dthfl_var()$variables$selected) >= 1L,
+          "Death Flag Variable is required"
+        ),
+        need(
+          length(anl_selectors$dcsreas_var()$variables$selected) >= 1L,
+          "Study Discontinuation Reason Variable is required"
+        ),
+        need(
+          length(anl_selectors$aeseq_var()$variables$selected) >= 1L,
+          "AE Sequence Variable is required"
+        ),
+        need(
+          length(anl_selectors$llt()$variables$selected) >= 1L,
+          "AE Term Variable is required"
+        )
+      )
 
-      adsl_filtered <- merged$anl_q()[[parentname]]
-      anl_filtered <- merged$anl_q()[[dataname]]
+      adsl_filtered <- anl_q()[[parentname]]
+      anl_filtered <- anl_q()[[dataname]]
 
-      input_arm_var <- as.vector(merged$anl_input_r()$columns_source$arm_var)
-      input_dthfl_var <- as.vector(merged$anl_input_r()$columns_source$dthfl_var)
-      input_dcsreas_var <- as.vector(merged$anl_input_r()$columns_source$dcsreas_var)
+      input_arm_var <- as.vector(anl_selectors$arm_var()$variables$selected)
+      input_dthfl_var <- as.vector(anl_selectors$dthfl_var()$variables$selected)
+      input_dcsreas_var <- as.vector(anl_selectors$dcsreas_var()$variables$selected)
       input_flag_var_anl <- if (!is.null(flag_var_anl)) {
-        as.vector(merged$anl_input_r()$columns_source$flag_var_anl)
+        as.vector(anl_selectors$flag_var_anl()$variables$selected)
       } else {
         NULL
       }
       input_flag_var_aesi <- if (!is.null(flag_var_aesi)) {
-        as.vector(merged$anl_input_r()$columns_source$flag_var_aesi)
+        as.vector(anl_selectors$flag_var_aesi()$variables$selected)
       } else {
         NULL
       }
-      input_aeseq_var <- as.vector(merged$anl_input_r()$columns_source$aeseq_var)
-      input_llt <- as.vector(merged$anl_input_r()$columns_source$llt)
+      input_aeseq_var <- as.vector(anl_selectors$aeseq_var()$variables$selected)
+      input_llt <- as.vector(anl_selectors$llt()$variables$selected)
 
       validate(
         need(
@@ -977,7 +930,6 @@ srv_t_events_summary <- function(id,
         )
       )
 
-      # validate inputs
       validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var, input_dthfl_var, input_dcsreas_var),
@@ -992,12 +944,12 @@ srv_t_events_summary <- function(id,
       validate_checks()
 
       input_flag_var_anl <- if (!is.null(flag_var_anl)) {
-        as.vector(merged$anl_input_r()$columns_source$flag_var_anl)
+        as.vector(anl_selectors$flag_var_anl()$variables$selected)
       } else {
         NULL
       }
       input_flag_var_aesi <- if (!is.null(flag_var_aesi)) {
-        as.vector(merged$anl_input_r()$columns_source$flag_var_aesi)
+        as.vector(anl_selectors$flag_var_aesi()$variables$selected)
       } else {
         NULL
       }
@@ -1005,13 +957,13 @@ srv_t_events_summary <- function(id,
       my_calls <- template_events_summary(
         anl_name = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = as.vector(merged$anl_input_r()$columns_source$arm_var),
-        dthfl_var = as.vector(merged$anl_input_r()$columns_source$dthfl_var),
-        dcsreas_var = as.vector(merged$anl_input_r()$columns_source$dcsreas_var),
-        flag_var_anl = if (length(input_flag_var_anl) != 0) input_flag_var_anl else NULL,
-        flag_var_aesi = if (length(input_flag_var_aesi) != 0) input_flag_var_aesi else NULL,
-        aeseq_var = as.vector(merged$anl_input_r()$columns_source$aeseq_var),
-        llt = as.vector(merged$anl_input_r()$columns_source$llt),
+        arm_var = as.vector(anl_selectors$arm_var()$variables$selected),
+        dthfl_var = as.vector(anl_selectors$dthfl_var()$variables$selected),
+        dcsreas_var = as.vector(anl_selectors$dcsreas_var()$variables$selected),
+        flag_var_anl = if (length(input_flag_var_anl)) input_flag_var_anl else NULL,
+        flag_var_aesi = if (length(input_flag_var_aesi)) input_flag_var_aesi else NULL,
+        aeseq_var = as.vector(anl_selectors$aeseq_var()$variables$selected),
+        llt = as.vector(anl_selectors$llt()$variables$selected),
         add_total = input$add_total,
         total_label = total_label,
         na_level = na_level,
@@ -1022,7 +974,7 @@ srv_t_events_summary <- function(id,
         count_events = input$count_events
       )
 
-      obj <- merged$anl_q()
+      obj <- anl_q()
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
       all_basic_table_args <- teal.widgets::resolve_basic_table_args(user_table = basic_table_args)
       teal.code::eval_code(
