@@ -65,26 +65,26 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_abnormality()
 
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Abnormality Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("by_vars-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "by_vars", "variables")),
       c("LBCAT", "PARAM")
     )
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
     testthat::expect_false(app_driver$get_active_module_input("exclude_base_abn"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
     testthat::expect_equal(
-      app_driver$get_active_module_input("baseline_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "baseline_var", "variables")),
       "BNRIND"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("grade-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "grade", "variables")),
       "ANRIND"
     )
     app_driver$stop()
@@ -97,7 +97,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -112,7 +112,7 @@ testthat::test_that(
 testthat::test_that("e2e - arm_var: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
-  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -124,7 +124,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_abnormality()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("by_vars-variables-selected", "AVISIT")
+    set_teal_picks_slot(app_driver, "by_vars", "variables", "AVISIT")
     testthat::expect_false(
       identical(
         table_before,
@@ -139,7 +139,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_abnormality: Deselection of by_vars throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_abnormality()
-  app_driver$set_active_module_input("by_vars-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "by_vars", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
