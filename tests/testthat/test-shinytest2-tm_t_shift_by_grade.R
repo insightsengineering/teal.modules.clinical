@@ -66,23 +66,23 @@ testthat::test_that(
       "Grade Laboratory Abnormality Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-values-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "paramcd", "values")),
       character(0)
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("worst_flag_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "worst_flag_var", "variables")),
       "WGRLOVFL"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("anl_toxgrade_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "anl_toxgrade_var", "variables")),
       "ATOXGR"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("base_toxgrade_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "base_toxgrade_var", "variables")),
       "BTOXGR"
     )
     testthat::expect_equal(
@@ -102,7 +102,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -117,7 +117,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_grade()
-  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -129,7 +129,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-values-selected", "CRP")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "CRP")
     testthat::expect_false(
       identical(
         table_before,
@@ -147,7 +147,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("worst_flag_var-variables-selected", "WGRLOFL")
+    set_teal_picks_slot(app_driver, "worst_flag_var", "variables", "WGRLOFL")
     testthat::expect_false(
       identical(
         table_before,
@@ -162,7 +162,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_shift_by_grade: Deselection of worst_flag throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_shift_by_grade()
-  app_driver$set_active_module_input("worst_flag_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "worst_flag_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
