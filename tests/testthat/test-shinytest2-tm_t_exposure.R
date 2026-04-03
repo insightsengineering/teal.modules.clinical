@@ -75,19 +75,19 @@ testthat::test_that(
       "Duration of Exposure Table"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "paramcd", "values")),
+      get_teal_picks_slot(app_driver, "paramcd", "values"),
       "TDURD"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "parcat", "values")),
+      get_teal_picks_slot(app_driver, "parcat", "values"),
       "Drug A"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "col_by_var", "variables")),
+      get_teal_picks_slot(app_driver, "col_by_var", "variables"),
       "SEX"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "row_by_var", "variables")),
+      get_teal_picks_slot(app_driver, "row_by_var", "variables"),
       "RACE"
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total_row"))

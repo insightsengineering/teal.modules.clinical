@@ -391,10 +391,10 @@ ui_t_exposure <- function(id,
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      tags$div(tags$label("Select the Parameter"), picks_ui(ns("paramcd"), paramcd)),
-      tags$div(tags$label("Select the Parameter Category"), picks_ui(ns("parcat"), parcat)),
-      tags$div(tags$label("Select Column by Variable"), picks_ui(ns("col_by_var"), col_by_var)),
-      tags$div(tags$label("Select Row by Variable"), picks_ui(ns("row_by_var"), row_by_var)),
+      tags$div(tags$label("Select the Parameter"), teal.picks::picks_ui(ns("paramcd"), paramcd)),
+      tags$div(tags$label("Select the Parameter Category"), teal.picks::picks_ui(ns("parcat"), parcat)),
+      tags$div(tags$label("Select Column by Variable"), teal.picks::picks_ui(ns("col_by_var"), col_by_var)),
+      tags$div(tags$label("Select Row by Variable"), teal.picks::picks_ui(ns("row_by_var"), row_by_var)),
       checkboxInput(ns("add_total_row"), "Add Total row", value = add_total_row),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
       teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
@@ -402,9 +402,9 @@ ui_t_exposure <- function(id,
         open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
-          tags$div(tags$label("Subject Identifier"), picks_ui(ns("id_var"), id_var)),
-          tags$div(tags$label("Analysis Value Variable"), picks_ui(ns("aval_var"), aval_var)),
-          tags$div(tags$label("Analysis Value Unit Variable"), picks_ui(ns("avalu_var"), avalu_var))
+          tags$div(tags$label("Subject Identifier"), teal.picks::picks_ui(ns("id_var"), id_var)),
+          tags$div(tags$label("Analysis Value Variable"), teal.picks::picks_ui(ns("aval_var"), aval_var)),
+          tags$div(tags$label("Analysis Value Unit Variable"), teal.picks::picks_ui(ns("avalu_var"), avalu_var))
         )
       )
     ),
@@ -437,7 +437,7 @@ srv_t_exposure <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(
+    selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         id_var = id_var,
