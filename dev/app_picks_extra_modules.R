@@ -1,11 +1,5 @@
-# Teal app: exercise picks-enabled modules (abnormality, events, exposure, GLM, Cox, binary).
-# From package root: source("dev/app_picks_extra_modules.R")
-#
-# Adjust load_all() paths if your clones live elsewhere.
-
 devtools::load_all("teal")
 devtools::load_all("teal.picks")
-# Package name is teal.modules.clinical (with "s"); "teal.module.clinical" is a typo and will not load sources.
 devtools::load_all("teal.modules.clinical")
 
 data <- teal_data()

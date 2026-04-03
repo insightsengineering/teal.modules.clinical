@@ -1,11 +1,5 @@
-# Run a teal app exercising all modules changed on this feature branch.
-# Run from the package root with: source("dev/app.R")
-
-# pkgload::load_all()
-
 devtools::load_all("teal")
 devtools::load_all("teal.picks")
-# Package name is teal.modules.clinical (with "s"); "teal.module.clinical" is a typo and will not load sources.
 devtools::load_all("teal.modules.clinical")
 
 data <- teal_data()
