@@ -576,7 +576,7 @@ ui_t_binary_outcome <- function(id,
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      tags$div(tags$label("Parameter"), picks_ui(ns("paramcd"), paramcd)),
+      tags$div(tags$label("Parameter"), teal.picks::picks_ui(ns("paramcd"), paramcd)),
       selectInput(
         ns("responders"),
         "Responders",
@@ -584,7 +584,7 @@ ui_t_binary_outcome <- function(id,
         selected = NULL,
         multiple = TRUE
       ),
-      tags$div(tags$label("Select Treatment Variable"), picks_ui(ns("arm_var"), arm_var)),
+      tags$div(tags$label("Select Treatment Variable"), teal.picks::picks_ui(ns("arm_var"), arm_var)),
       tags$div(
         class = "arm-comp-box",
         bslib::input_switch(
@@ -654,7 +654,7 @@ ui_t_binary_outcome <- function(id,
           open = TRUE,
           bslib::accordion_panel(
             title = "Stratified analysis settings",
-            tags$div(tags$label("Stratification Factors"), picks_ui(ns("strata_var"), strata_var)),
+            tags$div(tags$label("Stratification Factors"), teal.picks::picks_ui(ns("strata_var"), strata_var)),
             teal.widgets::optionalSelectInput(
               ns("s_diff_ci"),
               label = "Method for Difference of Proportions CI",
@@ -719,7 +719,7 @@ ui_t_binary_outcome <- function(id,
             value = ifelse(rsp_table, TRUE, FALSE)
           )
         ),
-        tags$div(tags$label("Analysis Variable"), picks_ui(ns("aval_var"), aval_var))
+        tags$div(tags$label("Analysis Variable"), teal.picks::picks_ui(ns("aval_var"), aval_var))
       )
     ),
     pre_output = pre_output,
@@ -752,7 +752,7 @@ srv_t_binary_outcome <- function(id,
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    anl_selectors <- picks_srv(
+    anl_selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,
