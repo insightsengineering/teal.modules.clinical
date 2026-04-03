@@ -171,17 +171,10 @@ Finally, we use `shiny` to launch the application:
 shinyApp(app$ui, app$server)
 ```
 
-Many `teal.modules.clinical` modules take column choices via [teal.picks::variables()].
-Literal column names are usually passed as character vectors; `tidyselect` expressions
-(for example [tidyselect::starts_with()]) are available when choices should be resolved
-dynamically against the data. Some arguments still use
-`teal.transform::choices_selected()` where noted in each module’s documentation.
-The `tm_t_summary()` module illustrates the `variables()` pattern:
+Some `teal.modules.clinical` modules allow for the specification of arguments using
+`teal.transform::choices_selected()`, such as the `tm_t_summary()` module in the following example.
 
 ```r
-library(teal)
-library(teal.modules.clinical)
-
 ADSL <- tmc_ex_adsl
 
 app <- init(
@@ -190,12 +183,10 @@ app <- init(
     tm_t_summary(
       label = "Demographic Table",
       dataname = "ADSL",
-      arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-      summarize_vars = variables(
+      arm_var = choices_selected(choices = c("ARM", "ARMCD"), selected = "ARM"),
+      summarize_vars = choices_selected(
         choices = c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
-        selected = c("SEX", "RACE"),
-        multiple = TRUE,
-        ordered = TRUE
+        selected = c("SEX", "RACE")
       )
     )
   )

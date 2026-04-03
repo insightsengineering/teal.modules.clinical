@@ -97,7 +97,6 @@ can be modified with the help of `rtables` modifiers like `rtables::insert_rrow`
 
 ```{r decorate_listing_df, message=FALSE}
 library(teal.modules.clinical)
-library(teal.picks)
 
 data <- within(teal_data(), {
   library(dplyr)
@@ -147,24 +146,22 @@ app <- init(
     tm_t_abnormality(
       label = "tm_t_abnormality",
       dataname = "ADLB",
-      arm_var = variables(
-        choices = c("ARM", "ARMCD"),
+      arm_var = choices_selected(
+        choices = variable_choices("ADSL", subset = c("ARM", "ARMCD")),
         selected = "ARM"
       ),
       add_total = FALSE,
-      by_vars = variables(
-        choices = c("LBCAT", "PARAM", "AVISIT"),
+      by_vars = choices_selected(
+        choices = variable_choices("ADLB", subset = c("LBCAT", "PARAM", "AVISIT")),
         selected = c("LBCAT", "PARAM"),
-        multiple = TRUE,
-        ordered = TRUE
+        keep_order = TRUE
       ),
-      baseline_var = variables(
-        choices = "BNRIND",
-        selected = "BNRIND",
-        fixed = TRUE
+      baseline_var = choices_selected(
+        variable_choices("ADLB", subset = "BNRIND"),
+        selected = "BNRIND", fixed = TRUE
       ),
-      grade = variables(
-        choices = "ANRIND",
+      grade = choices_selected(
+        choices = variable_choices("ADLB", subset = "ANRIND"),
         selected = "ANRIND",
         fixed = TRUE
       ),
