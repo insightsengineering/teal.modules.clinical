@@ -187,7 +187,7 @@ template_summary_by <- function(parentname,
         numeric_stats,
         ifelse(denominator == "omit", "count", "count_fraction")
       )
-  )
+    )
   )
 
   for (by_var in by_vars) {
@@ -503,25 +503,25 @@ tm_t_summary_by <- function(label,
 
 #' @keywords internal
 ui_summary_by <- function(id,
-                           dataname,
-                           parentname,
-                           arm_var,
-                           id_var,
-                           paramcd,
-                           by_vars,
-                           summarize_vars,
-                           add_total,
-                           parallel_vars,
-                           row_groups,
+                          dataname,
+                          parentname,
+                          arm_var,
+                          id_var,
+                          paramcd,
+                          by_vars,
+                          summarize_vars,
+                          add_total,
+                          parallel_vars,
+                          row_groups,
                           useNA, # nolint: object_name_linter.
-                           denominator,
-                           numeric_stats,
-                           categorical_stats,
-                           drop_arm_levels,
-                           drop_zero_levels,
-                           pre_output,
-                           post_output,
-                           decorators) {
+                          denominator,
+                          numeric_stats,
+                          categorical_stats,
+                          drop_arm_levels,
+                          drop_zero_levels,
+                          pre_output,
+                          post_output,
+                          decorators) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
