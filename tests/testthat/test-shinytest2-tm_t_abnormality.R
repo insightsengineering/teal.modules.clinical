@@ -69,22 +69,22 @@ testthat::test_that(
       "Abnormality Table"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "by_vars", "variables")),
+      get_teal_picks_slot(app_driver, "by_vars", "variables"),
       c("LBCAT", "PARAM")
     )
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
     testthat::expect_false(app_driver$get_active_module_input("exclude_base_abn"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "baseline_var", "variables")),
+      get_teal_picks_slot(app_driver, "baseline_var", "variables"),
       "BNRIND"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "grade", "variables")),
+      get_teal_picks_slot(app_driver, "grade", "variables"),
       "ANRIND"
     )
     app_driver$stop()

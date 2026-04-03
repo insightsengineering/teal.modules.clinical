@@ -435,16 +435,16 @@ ui_t_abnormality <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Treatment Variable"),
-        picks_ui(ns("arm_var"), arm_var)
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
       tags$div(
         tags$label("Row By Variable"),
-        picks_ui(ns("by_vars"), by_vars)
+        teal.picks::picks_ui(ns("by_vars"), by_vars)
       ),
       tags$div(
         tags$label("Grade Variable"),
-        picks_ui(ns("grade"), grade)
+        teal.picks::picks_ui(ns("grade"), grade)
       ),
       checkboxInput(
         ns("exclude_base_abn"),
@@ -469,15 +469,15 @@ ui_t_abnormality <- function(id,
           title = "Additional Variables Info",
           tags$div(
             tags$label("Subject Identifier"),
-            picks_ui(ns("id_var"), id_var)
+            teal.picks::picks_ui(ns("id_var"), id_var)
           ),
           tags$div(
             tags$label("Baseline Grade Variable"),
-            picks_ui(ns("baseline_var"), baseline_var)
+            teal.picks::picks_ui(ns("baseline_var"), baseline_var)
           ),
           tags$div(
             tags$label("On Treatment Flag Variable"),
-            picks_ui(ns("treatment_flag_var"), treatment_flag_var)
+            teal.picks::picks_ui(ns("treatment_flag_var"), treatment_flag_var)
           ),
           teal.widgets::optionalSelectInput(
             ns("treatment_flag"),
@@ -519,7 +519,7 @@ srv_t_abnormality <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(
+    selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,
