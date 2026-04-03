@@ -68,15 +68,15 @@ testthat::test_that(
       "Time To Event Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
       "ARM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("strata_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "strata_var", "variables")),
       "SEX"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("event_desc_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "event_desc_var", "variables")),
       "EVNTDESC"
     )
     testthat::expect_equal(
@@ -103,7 +103,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-values-selected", "CRSD")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "CRSD")
     testthat::expect_false(
       identical(
         table_before,
@@ -118,7 +118,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_tte: Deselection of paramcd values throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
-  app_driver$set_active_module_input("paramcd-values-selected", NULL)
+  set_teal_picks_slot(app_driver, "paramcd", "values", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -130,7 +130,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -145,7 +145,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_tte: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
-  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -157,7 +157,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-variables-selected", "BMRKR2")
+    set_teal_picks_slot(app_driver, "strata_var", "variables", "BMRKR2")
     testthat::expect_false(
       identical(
         table_before,
@@ -175,7 +175,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-variables-selected", NULL)
+    set_teal_picks_slot(app_driver, "strata_var", "variables", NULL)
     testthat::expect_false(
       identical(
         table_before,
