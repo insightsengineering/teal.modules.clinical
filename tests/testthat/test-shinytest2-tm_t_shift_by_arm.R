@@ -51,15 +51,15 @@ testthat::test_that(
       "Shift by Arm Table"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "aval_var", "variables")),
+      get_teal_picks_slot(app_driver, "aval_var", "variables"),
       "ANRIND"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "baseline_var", "variables")),
+      get_teal_picks_slot(app_driver, "baseline_var", "variables"),
       "BNRIND"
     )
     testthat::expect_equal(

@@ -354,23 +354,23 @@ ui_shift_by_arm <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Treatment Variable"),
-        picks_ui(ns("arm_var"), arm_var)
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       tags$div(
         tags$label("Select Endpoint"),
-        picks_ui(ns("paramcd"), paramcd)
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
       tags$div(
         tags$label("Select Visit"),
-        picks_ui(ns("visit_var"), visit_var)
+        teal.picks::picks_ui(ns("visit_var"), visit_var)
       ),
       tags$div(
         tags$label("Select Analysis Range Indicator Variable"),
-        picks_ui(ns("aval_var"), aval_var)
+        teal.picks::picks_ui(ns("aval_var"), aval_var)
       ),
       tags$div(
         tags$label("Select Baseline Reference Range Indicator Variable"),
-        picks_ui(ns("baseline_var"), baseline_var)
+        teal.picks::picks_ui(ns("baseline_var"), baseline_var)
       ),
       checkboxInput(ns("add_total"), "Add All Patients row", value = add_total),
       radioButtons(
@@ -386,7 +386,7 @@ ui_shift_by_arm <- function(id,
           title = "Additional Variables Info",
           tags$div(
             tags$label("On Treatment Flag Variable"),
-            picks_ui(ns("treatment_flag_var"), treatment_flag_var)
+            teal.picks::picks_ui(ns("treatment_flag_var"), treatment_flag_var)
           ),
           teal.widgets::optionalSelectInput(
             ns("treatment_flag"),
@@ -427,7 +427,7 @@ srv_shift_by_arm <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(
+    selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,
