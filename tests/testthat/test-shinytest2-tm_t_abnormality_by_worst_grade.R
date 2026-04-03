@@ -62,29 +62,29 @@ testthat::test_that(
       "Laboratory Test Results with Highest Grade Post-Baseline"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "paramcd", "values")),
+      get_teal_picks_slot(app_driver, "paramcd", "values"),
       c("ALT", "CRP", "IGA")
     )
     testthat::expect_false(app_driver$get_active_module_input("add_total"))
     testthat::expect_true(app_driver$get_active_module_input("drop_arm_levels"))
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "id_var", "variables")),
+      get_teal_picks_slot(app_driver, "id_var", "variables"),
       "USUBJID"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "atoxgr_var", "variables")),
+      get_teal_picks_slot(app_driver, "atoxgr_var", "variables"),
       "ATOXGR"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "worst_high_flag_var", "variables")),
+      get_teal_picks_slot(app_driver, "worst_high_flag_var", "variables"),
       "WGRHIFL"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "worst_low_flag_var", "variables")),
+      get_teal_picks_slot(app_driver, "worst_low_flag_var", "variables"),
       "WGRLOFL"
     )
     testthat::expect_equal(

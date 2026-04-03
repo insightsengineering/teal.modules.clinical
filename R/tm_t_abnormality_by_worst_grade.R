@@ -399,24 +399,24 @@ ui_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Treatment Variable"),
-        picks_ui(ns("arm_var"), arm_var)
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
       tags$div(
         tags$label("Select Lab Parameter"),
-        picks_ui(ns("paramcd"), paramcd)
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
       tags$div(
         tags$label("Analysis toxicity grade"),
-        picks_ui(ns("atoxgr_var"), atoxgr_var)
+        teal.picks::picks_ui(ns("atoxgr_var"), atoxgr_var)
       ),
       tags$div(
         tags$label("Worst low flag variable"),
-        picks_ui(ns("worst_low_flag_var"), worst_low_flag_var)
+        teal.picks::picks_ui(ns("worst_low_flag_var"), worst_low_flag_var)
       ),
       tags$div(
         tags$label("Worst high flag variable"),
-        picks_ui(ns("worst_high_flag_var"), worst_high_flag_var)
+        teal.picks::picks_ui(ns("worst_high_flag_var"), worst_high_flag_var)
       ),
       teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
       bslib::accordion(
@@ -425,7 +425,7 @@ ui_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
           title = "Additional table settings",
           tags$div(
             tags$label("Subject Identifier"),
-            picks_ui(ns("id_var"), id_var)
+            teal.picks::picks_ui(ns("id_var"), id_var)
           ),
           teal.widgets::optionalSelectInput(
             ns("worst_flag_indicator"),
@@ -470,7 +470,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(
+    selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,
