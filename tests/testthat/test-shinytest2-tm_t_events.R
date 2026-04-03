@@ -63,15 +63,15 @@ testthat::test_that(
       "Adverse Event Table"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "hlt", "variables")),
+      get_teal_picks_slot(app_driver, "hlt", "variables"),
       "AEBODSYS"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "llt", "variables")),
+      get_teal_picks_slot(app_driver, "llt", "variables"),
       "AEDECOD"
     )
     testthat::expect_equal(
