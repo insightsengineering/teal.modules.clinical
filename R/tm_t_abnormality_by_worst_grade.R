@@ -506,10 +506,12 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
       obj
     })
     merged_anl <- merge_srv(
-      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+      "merge_anl",
+      data = data_with_card, selectors = anl_selectors, output_name = "ANL"
     )
     merged_adsl_anl <- merge_srv(
-      "merge_adsl_anl", data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
+      "merge_adsl_anl",
+      data = merged_anl$data, selectors = adsl_selectors, output_name = "ANL_ADSL"
     )
     anl_q <- merged_adsl_anl$data
 
