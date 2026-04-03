@@ -187,10 +187,15 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
   open_teal_picks_dropdown(app_driver, pick_id)
-  close_teal_picks_dropdown(app_driver, pick_id)
   sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
   id_lit <- .teal_picks_js_id_literal(sel_id)
-  app_driver$wait_for_js(sprintf("document.getElementById(%s) !== null", id_lit))
+  timeout_ms <- as.integer(
+    getOption("shinytest2.timeout", default = Sys.getenv("SHINYTEST2_TIMEOUT", unset = 30 * 1000))
+  )
+  app_driver$wait_for_js(
+    sprintf("document.getElementById(%s) !== null", id_lit),
+    timeout = timeout_ms
+  )
   raw <- app_driver$get_js(sprintf(
     paste0(
       "(() => {\n",
@@ -203,6 +208,7 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
     ),
     id_lit
   ))
+  close_teal_picks_dropdown(app_driver, pick_id)
   .teal_picks_normalize_slot_read(raw)
 }
 
