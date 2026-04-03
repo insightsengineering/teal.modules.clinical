@@ -11,21 +11,20 @@
 #'
 #' @keywords internal
 control_tte <- function(
-  surv_time = list(
-    conf_level = 0.95,
-    conf_type = "plain",
-    quantiles = c(0.25, 0.75)
-  ),
-  coxph = list(
-    pval_method = "log-rank",
-    ties = "efron",
-    conf_level = 0.95
-  ),
-  surv_timepoint = tern::control_surv_timepoint(
-    conf_level = 0.95,
-    conf_type = c("plain", "none", "log", "log-log")
-  )
-) {
+    surv_time = list(
+      conf_level = 0.95,
+      conf_type = "plain",
+      quantiles = c(0.25, 0.75)
+    ),
+    coxph = list(
+      pval_method = "log-rank",
+      ties = "efron",
+      conf_level = 0.95
+    ),
+    surv_timepoint = tern::control_surv_timepoint(
+      conf_level = 0.95,
+      conf_type = c("plain", "none", "log", "log-log")
+    )) {
   list(
     surv_time = do.call("control_surv_time", surv_time, envir = getNamespace("tern")),
     coxph = do.call("control_coxph", coxph, envir = getNamespace("tern")),
@@ -382,12 +381,18 @@ template_tte <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_tte
+#' @param arm_var ([teal.picks::variables()])\cr variable for treatment arm.
+#' @param paramcd ([teal.picks::variables()])\cr variable for parameter code.
+#'   A `values()` selector is added internally to allow filtering parameter values.
+#' @param strata_var ([teal.picks::variables()])\cr variable(s) for stratification.
+#' @param aval_var ([teal.picks::variables()])\cr variable for analysis value (time-to-event).
+#' @param cnsr_var ([teal.picks::variables()])\cr variable for censoring indicator.
+#' @param time_unit_var ([teal.picks::variables()])\cr variable for time unit.
+#' @param event_desc_var ([teal.picks::variables()])\cr variable for event description.
 #' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
-#' @param event_desc_var (`character` or [teal.transform::data_extract_spec()])\cr variable name with the
-#'   event description information, optional.
 #'
 #' @section Decorating Module:
 #'
@@ -441,9 +446,6 @@ template_tte <- function(dataname = "ANL",
 #' })
 #' join_keys(data) <- default_cdisc_join_keys[names(data)]
 #'
-#' ADSL <- data[["ADSL"]]
-#' ADTTE <- data[["ADTTE"]]
-#'
 #' arm_ref_comp <- list(
 #'   ACTARMCD = list(
 #'     ref = "ARM B",
@@ -461,25 +463,11 @@ template_tte <- function(dataname = "ANL",
 #'     tm_t_tte(
 #'       label = "Time To Event Table",
 #'       dataname = "ADTTE",
-#'       arm_var = choices_selected(
-#'         variable_choices(ADSL, c("ARM", "ARMCD", "ACTARMCD")),
-#'         "ARM"
-#'       ),
+#'       arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
 #'       arm_ref_comp = arm_ref_comp,
-#'       paramcd = choices_selected(
-#'         value_choices(ADTTE, "PARAMCD", "PARAM"),
-#'         "OS"
-#'       ),
-#'       strata_var = choices_selected(
-#'         variable_choices(ADSL, c("SEX", "BMRKR2")),
-#'         "SEX"
-#'       ),
-#'       time_points = choices_selected(c(182, 243), 182),
-#'       event_desc_var = choices_selected(
-#'         variable_choices(ADTTE, "EVNTDESC"),
-#'         "EVNTDESC",
-#'         fixed = TRUE
-#'       )
+#'       paramcd = variables(choices = "PARAMCD"),
+#'       strata_var = variables(choices = c("SEX", "BMRKR2"), selected = "SEX"),
+#'       time_points = teal.transform::choices_selected(c(182, 243), 182)
 #'     )
 #'   )
 #' )
@@ -490,31 +478,21 @@ template_tte <- function(dataname = "ANL",
 #' @export
 tm_t_tte <- function(label,
                      dataname,
-                     parentname = ifelse(
-                       inherits(arm_var, "data_extract_spec"),
-                       teal.transform::datanames_input(arm_var),
-                       "ADSL"
-                     ),
-                     arm_var,
+                     parentname = "ADSL",
+                     arm_var = variables(choices = c("ARM", "ARMCD", "ACTARMCD")),
                      arm_ref_comp = NULL,
-                     paramcd,
-                     strata_var,
-                     aval_var = teal.transform::choices_selected(
-                       teal.transform::variable_choices(dataname, "AVAL"), "AVAL",
-                       fixed = TRUE
+                     paramcd = variables(choices = "PARAMCD"),
+                     strata_var = variables(
+                       choices = c("SEX", "BMRKR2"),
+                       selected = "SEX"
                      ),
-                     cnsr_var = teal.transform::choices_selected(
-                       teal.transform::variable_choices(dataname, "CNSR"), "CNSR",
-                       fixed = TRUE
-                     ),
+                     aval_var = variables(choices = "AVAL"),
+                     cnsr_var = variables(choices = "CNSR"),
                      conf_level_coxph = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
                      conf_level_survfit = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
-                     time_points,
-                     time_unit_var = teal.transform::choices_selected(
-                       teal.transform::variable_choices(dataname, "AVALU"), "AVALU",
-                       fixed = TRUE
-                     ),
-                     event_desc_var = teal.transform::choices_selected("EVNTDESC", "EVNTDESC", fixed = TRUE),
+                     time_points = teal.transform::choices_selected(c(182, 243), 182),
+                     time_unit_var = variables(choices = "AVALU"),
+                     event_desc_var = variables(choices = "EVNTDESC"),
                      add_total = FALSE,
                      total_label = default_total_label(),
                      na_level = tern::default_na_str(),
@@ -527,15 +505,16 @@ tm_t_tte <- function(label,
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "choices_selected")
-  checkmate::assert_class(paramcd, "choices_selected")
-  checkmate::assert_class(strata_var, "choices_selected")
-  checkmate::assert_class(aval_var, "choices_selected")
-  checkmate::assert_class(cnsr_var, "choices_selected")
+  checkmate::assert_class(arm_var, "variables")
+  checkmate::assert_class(paramcd, "variables")
+  checkmate::assert_class(strata_var, "variables")
+  checkmate::assert_class(aval_var, "variables")
+  checkmate::assert_class(cnsr_var, "variables")
   checkmate::assert_class(conf_level_coxph, "choices_selected")
   checkmate::assert_class(conf_level_survfit, "choices_selected")
   checkmate::assert_class(time_points, "choices_selected")
-  checkmate::assert_class(time_unit_var, "choices_selected")
+  checkmate::assert_class(time_unit_var, "variables")
+  checkmate::assert_class(event_desc_var, "variables")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -544,93 +523,72 @@ tm_t_tte <- function(label,
   checkmate::assert_class(basic_table_args, "basic_table_args")
   teal::assert_decorators(decorators, "table")
 
-  args <- as.list(environment())
+  arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
+  strata_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), strata_var)
+  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
+  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
+  cnsr_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), cnsr_var)
+  time_unit_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), time_unit_var)
+  event_desc_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), event_desc_var)
 
-  data_extract_list <- list(
-    arm_var = cs_to_des_select(arm_var, dataname = parentname),
-    paramcd = cs_to_des_filter(paramcd, dataname = dataname),
-    aval_var = cs_to_des_select(aval_var, dataname = dataname),
-    cnsr_var = cs_to_des_select(cnsr_var, dataname = dataname),
-    strata_var = cs_to_des_select(strata_var, dataname = parentname, multiple = TRUE),
-    event_desc_var = cs_to_des_select(event_desc_var, dataname = dataname),
-    time_unit_var = cs_to_des_select(time_unit_var, dataname = dataname)
-  )
+  args <- as.list(environment())
 
   module(
     label = label,
     server = srv_t_tte,
     ui = ui_t_tte,
-    ui_args = c(data_extract_list, args),
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        arm_ref_comp = arm_ref_comp,
-        label = label,
-        total_label = total_label,
-        na_level = na_level,
-        basic_table_args = basic_table_args,
-        decorators = decorators
-      )
-    ),
+    ui_args = args[names(args) %in% names(formals(ui_t_tte))],
+    server_args = args[names(args) %in% names(formals(srv_t_tte))],
     transformators = transformators,
-    datanames = teal.transform::get_extract_datanames(data_extract_list)
+    datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_t_tte <- function(id, ...) {
-  a <- list(...) # module args
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    a$arm_var,
-    a$paramcd,
-    a$aval_var,
-    a$cnsr_var,
-    a$strata_var,
-    a$event_desc_var,
-    a$time_unit_var
-  )
-
+ui_t_tte <- function(id,
+                     arm_var,
+                     arm_ref_comp,
+                     paramcd,
+                     aval_var,
+                     cnsr_var,
+                     strata_var,
+                     event_desc_var,
+                     time_unit_var,
+                     time_points,
+                     conf_level_coxph,
+                     conf_level_survfit,
+                     add_total,
+                     pre_output,
+                     post_output,
+                     decorators) {
   ns <- NS(id)
 
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(
-        a[c("arm_var", "paramcd", "aval_var", "cnsr_var", "strata_var", "event_desc_var")]
+      tags$div(
+        tags$label("Select Endpoint"),
+        picks_ui(ns("paramcd"), paramcd)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select Endpoint",
-        data_extract_spec = a$paramcd,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Analysis Variable"),
+        picks_ui(ns("aval_var"), aval_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Analysis Variable",
-        data_extract_spec = a$aval_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Censor Variable"),
+        picks_ui(ns("cnsr_var"), cnsr_var)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cnsr_var"),
-        label = "Censor Variable",
-        data_extract_spec = a$cnsr_var,
-        is_single_dataset = is_single_dataset_value
-      ),
-      teal.transform::data_extract_ui(
-        id = ns("arm_var"),
-        label = "Select Treatment Variable",
-        data_extract_spec = a$arm_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select Treatment Variable"),
+        picks_ui(ns("arm_var"), arm_var)
       ),
       tags$div(
         class = "arm-comp-box",
         bslib::input_switch(
           id = ns("compare_arms"),
           label = "Compare Treatments",
-          value = !is.null(a$arm_ref_comp)
+          value = !is.null(arm_ref_comp)
         ),
         conditionalPanel(
           condition = paste0("input['", ns("compare_arms"), "']"),
@@ -642,31 +600,27 @@ ui_t_tte <- function(id, ...) {
               "Combine all comparison groups?",
               value = FALSE
             ),
-            teal.transform::data_extract_ui(
-              id = ns("strata_var"),
-              label = "Stratify by",
-              data_extract_spec = a$strata_var,
-              is_single_dataset = is_single_dataset_value
+            tags$div(
+              tags$label("Stratify by"),
+              picks_ui(ns("strata_var"), strata_var)
             )
           )
         )
       ),
       conditionalPanel(
         condition = paste0("!input['", ns("compare_arms"), "']"),
-        checkboxInput(ns("add_total"), "Add All Patients column", value = a$add_total)
+        checkboxInput(ns("add_total"), "Add All Patients column", value = add_total)
       ),
       teal.widgets::optionalSelectInput(ns("time_points"),
         "Time Points",
-        a$time_points$choices,
-        a$time_points$selected,
+        time_points$choices,
+        time_points$selected,
         multiple = TRUE,
-        fixed = a$time_points$fixed
+        fixed = time_points$fixed
       ),
-      teal.transform::data_extract_ui(
-        id = ns("event_desc_var"),
-        label = "Event Description Variable",
-        data_extract_spec = a$event_desc_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Event Description Variable"),
+        picks_ui(ns("event_desc_var"), event_desc_var)
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
@@ -708,58 +662,54 @@ ui_t_tte <- function(id, ...) {
                 sep = ""
               )
             ),
-            a$conf_level_coxph$choices,
-            a$conf_level_coxph$selected,
+            conf_level_coxph$choices,
+            conf_level_coxph$selected,
             multiple = FALSE,
-            fixed = a$conf_level_coxph$fixed
+            fixed = conf_level_coxph$fixed
           )
         )
       ),
-      bslib::accordion(
+      bslib::accordion_panel(
+        "Additional table settings",
         open = TRUE,
-        bslib::accordion_panel(
-          "Additional table settings",
-          teal.widgets::optionalSelectInput(
-            inputId = ns("conf_level_survfit"),
-            label = HTML(
-              paste(
-                "Confidence Level for ",
-                tags$span(class = "text-primary", "Survfit"),
-                " (KM Median Estimate & Event Free Rate)",
-                sep = ""
-              )
-            ),
-            a$conf_level_survfit$choices,
-            a$conf_level_survfit$selected,
-            multiple = FALSE,
-            fixed = a$conf_level_survfit$fixed
+        teal.widgets::optionalSelectInput(
+          inputId = ns("conf_level_survfit"),
+          label = HTML(
+            paste(
+              "Confidence Level for ",
+              tags$span(class = "text-primary", "Survfit"),
+              " (KM Median Estimate & Event Free Rate)",
+              sep = ""
+            )
           ),
-          radioButtons(
-            ns("conf_type_survfit"),
-            "Confidence Level Type for Survfit",
-            choices = c("plain", "log", "log-log"),
-            selected = "plain"
-          ),
-          sliderInput(
-            inputId = ns("probs_survfit"),
-            label = "KM Estimate Percentiles",
-            min = 0.01,
-            max = 0.99,
-            value = c(0.25, 0.75),
-            width = "100%"
-          ),
-          teal.transform::data_extract_ui(
-            id = ns("time_unit_var"),
-            label = "Time Unit Variable",
-            data_extract_spec = a$time_unit_var,
-            is_single_dataset = is_single_dataset_value
-          )
+          conf_level_survfit$choices,
+          conf_level_survfit$selected,
+          multiple = FALSE,
+          fixed = conf_level_survfit$fixed
+        ),
+        radioButtons(
+          ns("conf_type_survfit"),
+          "Confidence Level Type for Survfit",
+          choices = c("plain", "log", "log-log"),
+          selected = "plain"
+        ),
+        sliderInput(
+          inputId = ns("probs_survfit"),
+          label = "KM Estimate Percentiles",
+          min = 0.01,
+          max = 0.99,
+          value = c(0.25, 0.75),
+          width = "100%"
+        ),
+        tags$div(
+          tags$label("Time Unit Variable"),
+          picks_ui(ns("time_unit_var"), time_unit_var)
         )
       ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(a$decorators, "table")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
     ),
-    pre_output = a$pre_output,
-    post_output = a$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -786,21 +736,9 @@ srv_t_tte <- function(id,
   checkmate::assert_class(shiny::isolate(data()), "teal_data")
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
-    # Setup arm variable selection, default reference arms, and default
-    # comparison arms for encoding panel
-    iv_arm_ref <- arm_ref_comp_observer(
-      session,
-      input,
-      output,
-      id_arm_var = extract_input("arm_var", parentname),
-      data = reactive(data()[[parentname]]),
-      arm_ref_comp = arm_ref_comp,
-      module = "tm_t_tte",
-      on_off = reactive(input$compare_arms)
-    )
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
+    selectors <- picks_srv(id = "",
+      picks = list(
         arm_var = arm_var,
         paramcd = paramcd,
         aval_var = aval_var,
@@ -809,92 +747,65 @@ srv_t_tte <- function(id,
         event_desc_var = event_desc_var,
         time_unit_var = time_unit_var
       ),
-      datasets = data,
-      select_validation_rule = list(
-        aval_var = shinyvalidate::sv_required("An analysis variable is required"),
-        cnsr_var = shinyvalidate::sv_required("A censor variable is required"),
-        arm_var = shinyvalidate::sv_required("A treatment variable is required"),
-        event_desc_var = shinyvalidate::sv_required("An event description variable is required"),
-        time_unit_var = shinyvalidate::sv_required("A Time unit variable is required")
-      ),
-      filter_validation_rule = list(
-        paramcd = shinyvalidate::sv_required("An endpoint is required")
-      )
+      data = data
+    )
+
+    arm_var_r <- reactive(selectors$arm_var()$variables$selected)
+
+    arm_ref_comp_iv <- arm_ref_comp_observer_picks(
+      session,
+      input,
+      output,
+      id_arm_var = "arm_var-variables-selected",
+      data = reactive(data()[[parentname]]),
+      arm_ref_comp = arm_ref_comp,
+      module = "tm_t_tte",
+      on_off = reactive(input$compare_arms),
+      arm_var_r = arm_var_r
     )
 
     output$helptext_ui <- renderUI({
-      req(selector_list()$arm_var()$select)
+      req(selectors$arm_var()$variables$selected)
       helpText("Multiple reference groups are automatically combined into a single group.")
     })
 
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
+    anl_selectors <- selectors
+    adsl_selectors <- selectors[c("arm_var", "strata_var")]
 
-      if (isTRUE(input$compare_arms)) {
-        iv$add_validator(iv_arm_ref)
-      }
-
-      iv$add_rule("conf_level_coxph", shinyvalidate::sv_required("Please choose a hazard ratio confidence level"))
-      iv$add_rule(
-        "conf_level_coxph", shinyvalidate::sv_between(
-          0, 1,
-          message_fmt = "Hazard ratio confidence level must between 0 and 1"
-        )
-      )
-      iv$add_rule("conf_level_survfit", shinyvalidate::sv_required("Please choose a KM confidence level"))
-      iv$add_rule(
-        "conf_level_survfit", shinyvalidate::sv_between(
-          0, 1,
-          message_fmt = "KM confidence level must between 0 and 1"
-        )
-      )
-      iv$add_rule(
-        "probs_survfit",
-        ~ if (!is.null(.) && .[1] == .[2]) "KM Estimate Percentiles cannot have a range of size 0"
-      )
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
-
-    anl_merge_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::inner_join"
-    )
-
-    adsl_merge_inputs <- teal.transform::merge_expression_module(
-      datasets = data,
-      join_keys = teal.data::join_keys(data),
-      data_extract = list(arm_var = arm_var, strata_var = strata_var),
-      anl_name = "ANL_ADSL"
-    )
-
-    anl_q <- reactive({
+    data_with_card <- reactive({
       obj <- data()
       teal.reporter::teal_card(obj) <-
         c(
           teal.reporter::teal_card(obj),
           teal.reporter::teal_card("## Module's output(s)")
         )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_merge_inputs()$expr)) %>%
-        teal.code::eval_code(as.expression(adsl_merge_inputs()$expr))
+      obj
     })
+    merged_anl <- merge_srv("merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL")
+    merged_adsl_anl <- merge_srv(
+      "merge_adsl_anl",
+      data = merged_anl$data,
+      selectors = adsl_selectors,
+      output_name = "ANL_ADSL"
+    )
+    anl_q <- merged_adsl_anl$data
 
     # Prepare the analysis environment (filter data, check data, populate envir).
     validate_checks <- reactive({
-      teal::validate_inputs(iv_r())
+      if (isTRUE(input$compare_arms)) {
+        arm_ref_comp_iv()
+      }
       adsl_filtered <- anl_q()[[parentname]]
       anl_filtered <- anl_q()[[dataname]]
       anl <- anl_q()[["ANL"]]
 
-      anl_m <- anl_merge_inputs()
-      input_arm_var <- as.vector(anl_m$columns_source$arm_var)
-      input_strata_var <- as.vector(anl_m$columns_source$strata_var)
-      input_aval_var <- as.vector(anl_m$columns_source$aval_var)
-      input_cnsr_var <- as.vector(anl_m$columns_source$cnsr_var)
-      input_event_desc <- as.vector(anl_m$columns_source$event_desc_var)
-      input_time_unit_var <- as.vector(anl_m$columns_source$time_unit_var)
-      input_paramcd <- unlist(paramcd$filter)["vars_selected"]
+      input_arm_var <- anl_selectors$arm_var()$variables$selected
+      input_strata_var <- anl_selectors$strata_var()$variables$selected
+      input_aval_var <- anl_selectors$aval_var()$variables$selected
+      input_cnsr_var <- anl_selectors$cnsr_var()$variables$selected
+      input_event_desc <- anl_selectors$event_desc_var()$variables$selected
+      input_time_unit_var <- anl_selectors$time_unit_var()$variables$selected
+      input_paramcd_var <- anl_selectors$paramcd()$variables$selected
 
       # validate inputs
       validate_args <- list(
@@ -902,7 +813,7 @@ srv_t_tte <- function(id,
         adslvars = c("USUBJID", "STUDYID", input_arm_var, input_strata_var),
         anl = anl_filtered,
         anlvars = c(
-          "USUBJID", "STUDYID", input_paramcd, input_aval_var,
+          "USUBJID", "STUDYID", input_paramcd_var, input_aval_var,
           input_cnsr_var, input_event_desc, input_time_unit_var
         ),
         arm_var = input_arm_var
@@ -915,7 +826,10 @@ srv_t_tte <- function(id,
       if (isTRUE(input$compare_arms)) {
         validate_args <- append(
           validate_args,
-          list(ref_arm = unlist(input$buckets$Ref), comp_arm = unlist(input$buckets$Comp))
+          list(
+            ref_arm = arm_bucket_values(input$buckets, "Ref"),
+            comp_arm = arm_bucket_values(input$buckets, "Comp")
+          )
         )
       }
 
@@ -931,29 +845,26 @@ srv_t_tte <- function(id,
     })
 
     # The R-code corresponding to the analysis.
-
     all_q <- reactive({
       validate_checks()
 
-      anl_m <- anl_merge_inputs()
-
-      strata_var <- as.vector(anl_m$columns_source$strata_var)
+      input_strata_var <- anl_selectors$strata_var()$variables$selected
 
       my_calls <- template_tte(
         dataname = "ANL",
         parentname = "ANL_ADSL",
-        arm_var = as.vector(anl_m$columns_source$arm_var),
-        paramcd = unlist(anl_m$filter_info$paramcd)["selected"],
-        ref_arm = unlist(input$buckets$Ref),
-        comp_arm = unlist(input$buckets$Comp),
+        arm_var = anl_selectors$arm_var()$variables$selected,
+        paramcd = anl_selectors$paramcd()$variables$selected,
+        ref_arm = arm_bucket_values(input$buckets, "Ref"),
+        comp_arm = arm_bucket_values(input$buckets, "Comp"),
         compare_arm = input$compare_arms,
         combine_comp_arms = input$combine_comp_arms && input$compare_arms,
-        aval_var = as.vector(anl_m$columns_source$aval_var),
-        cnsr_var = as.vector(anl_m$columns_source$cnsr_var),
-        strata_var = if (length(strata_var) != 0) strata_var else NULL,
+        aval_var = anl_selectors$aval_var()$variables$selected,
+        cnsr_var = anl_selectors$cnsr_var()$variables$selected,
+        strata_var = if (length(input_strata_var) != 0) input_strata_var else NULL,
         time_points = as.numeric(input$time_points),
-        time_unit_var = as.vector(anl_m$columns_source$time_unit_var),
-        event_desc_var = as.vector(anl_m$columns_source$event_desc_var),
+        time_unit_var = anl_selectors$time_unit_var()$variables$selected,
+        event_desc_var = anl_selectors$event_desc_var()$variables$selected,
         control = control_tte(
           coxph = tern::control_coxph(
             pval_method = input$pval_method_coxph,
