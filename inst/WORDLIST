@@ -21,6 +21,7 @@ UI
 Univariable
 datatables
 de
+draggable
 emmeans
 funder
 ggplot
@@ -28,8 +29,11 @@ lsmeans
 ppmeans
 pre
 preselected
+reactives
 reportable
 responder
 responders
+tidyselect
 univariable
 unstratified
+validator
