@@ -959,19 +959,19 @@ ui_t_events_by_grade <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Treatment Variable"),
-        picks_ui(ns("arm_var"), arm_var)
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       tags$div(
         tags$label("Event High Level Term"),
-        picks_ui(ns("hlt"), hlt)
+        teal.picks::picks_ui(ns("hlt"), hlt)
       ),
       tags$div(
         tags$label("Event Low Level Term"),
-        picks_ui(ns("llt"), llt)
+        teal.picks::picks_ui(ns("llt"), llt)
       ),
       tags$div(
         tags$label("Event Grade"),
-        picks_ui(ns("grade"), grade)
+        teal.picks::picks_ui(ns("grade"), grade)
       ),
       checkboxInput(
         ns("add_total"),
@@ -1041,7 +1041,7 @@ srv_t_events_by_grade <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(
+    selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,
