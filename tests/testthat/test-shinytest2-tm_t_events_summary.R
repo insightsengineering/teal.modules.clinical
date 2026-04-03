@@ -100,15 +100,15 @@ testthat::test_that(
       "Adverse Events Summary"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "flag_var_anl", "variables")),
+      get_teal_picks_slot(app_driver, "flag_var_anl", "variables"),
       "TMPFL_SER"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "flag_var_aesi", "variables")),
+      get_teal_picks_slot(app_driver, "flag_var_aesi", "variables"),
       "TMP_SMQ01"
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total"))

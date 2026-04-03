@@ -728,14 +728,14 @@ ui_t_events_summary <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Treatment Variable"),
-        picks_ui(ns("arm_var"), arm_var)
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       `if`(
         is.null(flag_var_anl),
         NULL,
         tags$div(
           tags$label("Event Flag Variables"),
-          picks_ui(ns("flag_var_anl"), flag_var_anl)
+          teal.picks::picks_ui(ns("flag_var_anl"), flag_var_anl)
         )
       ),
       `if`(
@@ -743,7 +743,7 @@ ui_t_events_summary <- function(id,
         NULL,
         tags$div(
           tags$label("AE Basket Flag Variables"),
-          picks_ui(ns("flag_var_aesi"), flag_var_aesi)
+          teal.picks::picks_ui(ns("flag_var_aesi"), flag_var_aesi)
         )
       ),
       checkboxInput(
@@ -787,19 +787,19 @@ ui_t_events_summary <- function(id,
           title = "Additional Variables Info",
           tags$div(
             tags$label("Death Flag Variable"),
-            picks_ui(ns("dthfl_var"), dthfl_var)
+            teal.picks::picks_ui(ns("dthfl_var"), dthfl_var)
           ),
           tags$div(
             tags$label("Study Discontinuation Reason Variable"),
-            picks_ui(ns("dcsreas_var"), dcsreas_var)
+            teal.picks::picks_ui(ns("dcsreas_var"), dcsreas_var)
           ),
           tags$div(
             tags$label("AE Sequence Variable"),
-            picks_ui(ns("aeseq_var"), aeseq_var)
+            teal.picks::picks_ui(ns("aeseq_var"), aeseq_var)
           ),
           tags$div(
             tags$label("AE Term Variable"),
-            picks_ui(ns("llt"), llt)
+            teal.picks::picks_ui(ns("llt"), llt)
           )
         )
       )
@@ -846,7 +846,7 @@ srv_t_events_summary <- function(id,
       picks_list$flag_var_aesi <- flag_var_aesi
     }
 
-    selectors <- picks_srv(id = "", picks = picks_list, data = data)
+    selectors <- teal.picks::picks_srv(id = "", picks = picks_list, data = data)
 
     anl_selectors <- selectors
     adsl_selectors <- selectors[c("arm_var", "dthfl_var", "dcsreas_var")]
