@@ -737,7 +737,8 @@ srv_t_tte <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(id = "",
+    selectors <- picks_srv(
+      id = "",
       picks = list(
         arm_var = arm_var,
         paramcd = paramcd,

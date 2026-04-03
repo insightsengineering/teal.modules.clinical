@@ -47,7 +47,6 @@ app_driver_tm_t_tte <- function() {
 }
 
 testthat::test_that("e2e - tm_t_tte: Module initializes in teal without errors and produces table output.", {
-
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
   app_driver$expect_no_shiny_error()
@@ -62,7 +61,6 @@ testthat::test_that(
   "e2e - tm_t_tte: Starts with specified label, paramcd, event_desc_var, arm_var,
   strata_var, time_points, conf_level_coxph, conf_level_survfit, compare_arms, combine_comp_arms.",
   {
-
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     testthat::expect_equal(
@@ -102,7 +100,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_tte: Selecting paramcd values changes the table and does not throw validation errors.",
   {
-
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -119,7 +116,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_tte: Deselection of paramcd values throws validation error.", {
-
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
   app_driver$set_active_module_input("paramcd-values-selected", NULL)
@@ -131,7 +127,6 @@ testthat::test_that("e2e - tm_t_tte: Deselection of paramcd values throws valida
 testthat::test_that(
   "e2e - tm_t_tte: Selecting arm_var changes the table and does not throw validation errors.",
   {
-
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -148,7 +143,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_tte: Deselection of arm_var throws validation error.", {
-
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_tte()
   app_driver$set_active_module_input("arm_var-variables-selected", NULL)
@@ -160,7 +154,6 @@ testthat::test_that("e2e - tm_t_tte: Deselection of arm_var throws validation er
 testthat::test_that(
   "e2e - tm_t_tte: Selecting strata_var changes the table and does not throw validation errors.",
   {
-
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -179,7 +172,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_tte: Deselection of strata_var changes the table and does not throw validation errors.",
   {
-
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_tte()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
