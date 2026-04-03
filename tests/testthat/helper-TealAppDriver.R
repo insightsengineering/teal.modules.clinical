@@ -62,16 +62,20 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
 
 # Set a categorical teal.picks slot; picker commits when *_selected_open becomes FALSE.
 # Use value = NULL for an empty multi-select (character(0) is sent to Shiny).
-set_teal_picks_slot <- function(app_driver, pick_id, slot, value) {
+# @param wait (`logical(1)`) if `TRUE` (default), call `wait_for_idle()` after committing the picker.
+set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
+  checkmate::assert_flag(wait)
   open_teal_picks_dropdown(app_driver, pick_id)
   sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
   open_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected_open"))
   val <- if (is.null(value)) character(0) else value
   app_driver$set_input(sel_id, val)
   app_driver$set_input(open_id, FALSE)
-  app_driver$wait_for_idle()
+  if (isTRUE(wait)) {
+    app_driver$wait_for_idle()
+  }
   invisible(app_driver)
 }
 
