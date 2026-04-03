@@ -52,11 +52,11 @@ testthat::test_that("e2e - tm_t_summary: Starts with specified label, arm_var, s
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_summary()
   testthat::expect_equal(
-    app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+    app_driver$get_text(".teal-modules-tree a.module-button.active"),
     "Demographic Table"
   )
-  testthat::expect_equal(
-    app_driver$get_active_module_input("arm_var-variables-selected"),
+  testthat::expect_identical(
+    as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
     "ARM"
   )
   testthat::expect_equal(
@@ -77,7 +77,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -93,7 +93,7 @@ testthat::test_that("e2e - tm_t_summary: Deselection of arm_var throws validatio
 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_summary()
-  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -106,7 +106,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_summary()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("summarize_vars-variables-selected", c("SEX", "AGE"))
+    set_teal_picks_slot(app_driver, "summarize_vars", "variables", c("SEX", "AGE"))
     testthat::expect_false(
       identical(
         table_before,
@@ -122,7 +122,7 @@ testthat::test_that("e2e - tm_t_summary: Deselection of summarize_vars throws va
 
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_summary()
-  app_driver$set_active_module_input("summarize_vars-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "summarize_vars", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
