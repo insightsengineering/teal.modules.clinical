@@ -43,11 +43,18 @@ init_teal_app_driver <- function(...) {
   )
 }
 
+# Escape `id` for a CSS attribute selector (IDs may contain `:` / `.` which break `#id` selectors).
+.teal_picks_badge_css <- function(id) {
+  id <- gsub("\\", "\\\\", id, fixed = TRUE)
+  id <- gsub("\"", "\\\"", id, fixed = TRUE)
+  paste0("[id=\"", id, "\"]")
+}
+
 # Open a teal.picks badge dropdown so nested pickerInput values are bound in the session.
 open_teal_picks_dropdown <- function(app_driver, pick_id) {
   checkmate::assert_string(pick_id)
   badge_ns <- app_driver$namespaces()$module(paste0(pick_id, "-inputs-summary_badge"))
-  app_driver$click(paste0("#", badge_ns))
+  app_driver$click(.teal_picks_badge_css(badge_ns))
   app_driver$wait_for_idle()
   invisible(app_driver)
 }
@@ -57,7 +64,11 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
   open_teal_picks_dropdown(app_driver, pick_id)
-  app_driver$get_active_module_input(paste0(pick_id, "-", slot, "-selected"))
+  raw <- app_driver$get_active_module_input(paste0(pick_id, "-", slot, "-selected"))
+  if (is.null(raw)) {
+    return(NULL)
+  }
+  as.vector(raw)
 }
 
 # Set a categorical teal.picks slot; picker commits when *_selected_open becomes FALSE.
