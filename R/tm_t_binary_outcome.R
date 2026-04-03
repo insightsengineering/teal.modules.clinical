@@ -559,18 +559,18 @@ tm_t_binary_outcome <- function(label,
 
 #' @keywords internal
 ui_t_binary_outcome <- function(id,
-                                  paramcd,
-                                  arm_var,
-                                  strata_var,
-                                  aval_var,
-                                  arm_ref_comp,
-                                  add_total,
-                                  control,
-                                  conf_level,
-                                  rsp_table,
-                                  pre_output,
-                                  post_output,
-                                  decorators) {
+                                paramcd,
+                                arm_var,
+                                strata_var,
+                                aval_var,
+                                arm_ref_comp,
+                                add_total,
+                                control,
+                                conf_level,
+                                rsp_table,
+                                pre_output,
+                                post_output,
+                                decorators) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::white_small_well(teal.widgets::table_with_settings_ui(ns("table"))),
@@ -804,7 +804,8 @@ srv_t_binary_outcome <- function(id,
       obj
     })
     merged_anl <- merge_srv(
-      "merge_anl", data = data_with_card, selectors = anl_selectors, output_name = "ANL"
+      "merge_anl",
+      data = data_with_card, selectors = anl_selectors, output_name = "ANL"
     )
     adsl_selectors <- anl_selectors[c("arm_var", "strata_var")]
     merged_adsl <- merge_srv(
