@@ -222,11 +222,11 @@ ui_t_glm_counts <- function(id,
     output = output,
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      tags$div(tags$label("Select Treatment Variable"), picks_ui(ns("arm_var"), arm_var)),
-      tags$div(tags$label("Analysis Variable"), picks_ui(ns("aval_var"), aval_var)),
-      tags$div(tags$label("Covariate(s)"), picks_ui(ns("cov_var"), cov_var)),
-      tags$div(tags$label("Offset variable"), picks_ui(ns("offset_var"), offset_var)),
-      tags$div(tags$label("Stratify by"), picks_ui(ns("strata_var"), strata_var)),
+      tags$div(tags$label("Select Treatment Variable"), teal.picks::picks_ui(ns("arm_var"), arm_var)),
+      tags$div(tags$label("Analysis Variable"), teal.picks::picks_ui(ns("aval_var"), aval_var)),
+      tags$div(tags$label("Covariate(s)"), teal.picks::picks_ui(ns("cov_var"), cov_var)),
+      tags$div(tags$label("Offset variable"), teal.picks::picks_ui(ns("offset_var"), offset_var)),
+      tags$div(tags$label("Stratify by"), teal.picks::picks_ui(ns("strata_var"), strata_var)),
       compare_treatments,
       shiny::selectInput(
         ns("distribution"),
@@ -265,7 +265,7 @@ srv_t_glm_counts <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    anl_selectors <- picks_srv(
+    anl_selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,
