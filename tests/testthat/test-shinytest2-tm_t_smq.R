@@ -33,7 +33,6 @@ app_driver_tm_t_smq <- function() {
 }
 
 testthat::test_that("e2e - tm_t_smq: Module initializes in teal without errors and produces table output.", {
-
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$expect_no_shiny_error()
@@ -47,7 +46,6 @@ testthat::test_that("e2e - tm_t_smq: Module initializes in teal without errors a
 testthat::test_that(
   "e2e - tm_t_smq: Starts with specified label, arm_var, llt, baskets, sort_criteria, add_total, drop_arm_levels.",
   {
-
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()
     testthat::expect_equal(
@@ -75,7 +73,6 @@ testthat::test_that(
 testthat::test_that(
   "e2e - tm_t_smq: Selecting arm_var changes the table and does not throw validation errors.",
   {
-
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -92,7 +89,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation error.", {
-
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$set_active_module_input("arm_var-variables-selected", NULL)
@@ -104,7 +100,6 @@ testthat::test_that("e2e - tm_t_smq: Deselection of arm_var throws validation er
 testthat::test_that(
   "e2e - tm_t_smq: Selecting llt changes the table and does not throw validation errors.",
   {
-
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -121,7 +116,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_smq: Deselection of llt throws validation error.", {
-
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$set_active_module_input("llt-variables-selected", NULL)
@@ -133,7 +127,6 @@ testthat::test_that("e2e - tm_t_smq: Deselection of llt throws validation error.
 testthat::test_that(
   "e2e - tm_t_smq: Selecting baskets changes the table and does not throw validation errors.",
   {
-
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_smq()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
@@ -150,7 +143,6 @@ testthat::test_that(
 )
 
 testthat::test_that("e2e - tm_t_smq: Deselection of baskets throws validation error.", {
-
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_smq()
   app_driver$set_active_module_input("baskets-variables-selected", NULL)
