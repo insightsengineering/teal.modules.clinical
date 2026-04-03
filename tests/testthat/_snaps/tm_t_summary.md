@@ -11,6 +11,7 @@
           arm_levels <- levels(anl[["ARM"]])
           adsl <- adsl %>% dplyr::filter(ARM %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(ARM = droplevels(ARM))
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -72,6 +73,7 @@
           arm_levels <- levels(anl[["STRATA1"]])
           adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -106,6 +108,7 @@
           arm_levels <- levels(anl[["STRATA1"]])
           adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -141,6 +144,7 @@
           arm_levels <- levels(anl[["STRATA1"]])
           adsl <- adsl %>% dplyr::filter(STRATA1 %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(STRATA1 = droplevels(STRATA1))
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
@@ -149,7 +153,7 @@
           split_fun = rtables::drop_split_levels) %>% tern::analyze_vars(vars = c("RACE", 
           "COUNTRY", "AGE"), show_labels = "visible", na.rm = FALSE, 
           na_str = "<Missing>", denom = "N_col", .stats = c("n", "median", 
-              "count_fraction"), .formats = list(median = "xx.x"))
+              "count_fraction"), .formats = NULL)
       
       $table
       {
@@ -174,6 +178,7 @@
           arm_levels <- levels(anl[["SEX"]])
           adsl <- adsl %>% dplyr::filter(SEX %in% arm_levels)
           adsl <- adsl %>% dplyr::mutate(SEX = droplevels(SEX))
+          adsl <- tern::df_explicit_na(adsl, na_level = "<Missing>")
       }
       
       $layout
