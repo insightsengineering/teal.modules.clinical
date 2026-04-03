@@ -8,11 +8,9 @@ on:
       - synchronize
       - reopened
       - ready_for_review
-    branches:
-      - main
   push:
     branches:
-      - main
+      - "**"
   workflow_dispatch:
 
 jobs:
@@ -100,7 +98,7 @@ jobs:
     uses: insightsengineering/r.pkg.template/.github/workflows/links.yaml@main
   vbump:
     name: Version Bump 🤜🤛
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     uses: insightsengineering/r.pkg.template/.github/workflows/version-bump.yaml@main
     secrets:
       REPO_GITHUB_TOKEN: ${{ secrets.REPO_GITHUB_TOKEN }}
