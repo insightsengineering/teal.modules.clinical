@@ -81,7 +81,7 @@ testthat::test_that(
     )
     testthat::expect_identical(
       get_teal_picks_slot(app_driver, "paramcd", "values"),
-      "OS"
+      c("CRSD", "EFS", "OS", "PFS", "TNE")
     )
     testthat::expect_identical(
       get_teal_picks_slot(app_driver, "arm_var", "variables"),
@@ -192,19 +192,26 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_coxreg: Deselection of cov_var changes the table and does not throw validation errors.",
+  "e2e - tm_t_coxreg: Deselection of all covariates clears the table and surfaces a validation error from the analysis pipeline.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_coxreg()
-    table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    set_teal_picks_slot(app_driver, "cov_var", "variables", NULL)
-    testthat::expect_false(
-      identical(
-        table_before,
-        app_driver$get_active_module_table_output("table-table-with-settings")
-      )
+    testthat::expect_gt(
+      nrow(app_driver$get_active_module_table_output("table-table-with-settings")),
+      0L
     )
-    app_driver$expect_no_validation_error()
+    set_teal_picks_slot(app_driver, "cov_var", "variables", NULL)
+    testthat::expect_identical(
+      app_driver$get_active_module_table_output("table-table-with-settings"),
+      data.frame()
+    )
+    app_driver$expect_validation_error()
+    validation_html <- app_driver$get_html(".shiny-output-error-validation")
+    testthat::expect_match(
+      paste(validation_html, collapse = ""),
+      "Data passed has errors",
+      fixed = TRUE
+    )
     app_driver$stop()
   }
 )
