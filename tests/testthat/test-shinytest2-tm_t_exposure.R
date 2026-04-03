@@ -71,23 +71,23 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Duration of Exposure Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-values-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "paramcd", "values")),
       "TDURD"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("parcat-values-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "parcat", "values")),
       "Drug A"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("col_by_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "col_by_var", "variables")),
       "SEX"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("row_by_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "row_by_var", "variables")),
       "RACE"
     )
     testthat::expect_true(app_driver$get_active_module_input("add_total_row"))
@@ -102,7 +102,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-values-selected", "DOSE")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "DOSE")
     testthat::expect_false(
       identical(
         table_before,
@@ -117,7 +117,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_exposure: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
-  app_driver$set_active_module_input("paramcd-values-selected", NULL)
+  set_teal_picks_slot(app_driver, "paramcd", "values", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -129,7 +129,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("parcat-values-selected", "Drug B")
+    set_teal_picks_slot(app_driver, "parcat", "values", "Drug B")
     testthat::expect_false(
       identical(
         table_before,
@@ -144,7 +144,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_exposure: Deselection of parcat throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
-  app_driver$set_active_module_input("parcat-values-selected", NULL)
+  set_teal_picks_slot(app_driver, "parcat", "values", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -156,7 +156,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("col_by_var-variables-selected", "ARM")
+    set_teal_picks_slot(app_driver, "col_by_var", "variables", "ARM")
     testthat::expect_false(
       identical(
         table_before,
@@ -174,7 +174,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("col_by_var-variables-selected", character(0), wait_ = FALSE)
+    set_teal_picks_slot(app_driver, "col_by_var", "variables", NULL, wait = FALSE)
     testthat::expect_false(
       identical(
         table_before,
@@ -192,7 +192,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_exposure()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("row_by_var-variables-selected", "REGION1")
+    set_teal_picks_slot(app_driver, "row_by_var", "variables", "REGION1")
     testthat::expect_false(
       identical(
         table_before,
@@ -207,7 +207,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_exposure: Deselection of row_by_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_exposure()
-  app_driver$set_active_module_input("row_by_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "row_by_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
