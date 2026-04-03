@@ -69,10 +69,11 @@ open_teal_picks_dropdown <- function(app_driver, pick_id) {
 }
 
 # Read the Shiny value for a categorical teal.picks slot (variables, values, datasets, ...).
+# Do not open the badge first: with the dropdown open, bootstrap-select can report every choice
+# in `input$selected` instead of the committed selection (e.g. all PARAMCD levels vs `"OS"`).
 get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
-  open_teal_picks_dropdown(app_driver, pick_id)
   raw <- app_driver$get_active_module_input(paste0(pick_id, "-", slot, "-selected"))
   if (is.null(raw)) {
     return(NULL)
@@ -80,7 +81,10 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   as.vector(raw)
 }
 
-# Set a categorical teal.picks slot; picker commits when *_selected_open becomes FALSE.
+# Set a categorical teal.picks slot. teal.picks commits from pickerInput only when
+# `*_selected_open` transitions to FALSE (see `observeEvent(input$selected_open, ...)` in
+# teal.picks). If `selected_open` is already FALSE, setting it to FALSE again does not fire
+# the observer, so we pulse TRUE -> set value -> FALSE after opening the badge panel.
 # Use value = NULL for an empty multi-select (character(0) is sent to Shiny).
 # @param wait (`logical(1)`) if `TRUE` (default), call `wait_for_idle()` after committing the picker.
 set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
@@ -91,6 +95,7 @@ set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
   sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
   open_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected_open"))
   val <- if (is.null(value)) character(0) else value
+  app_driver$set_input(open_id, TRUE)
   app_driver$set_input(sel_id, val)
   app_driver$set_input(open_id, FALSE)
   if (isTRUE(wait)) {
