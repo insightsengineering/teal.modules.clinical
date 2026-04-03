@@ -640,28 +640,28 @@ ui_t_shift_by_grade <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Treatment Variable"),
-        picks_ui(ns("arm_var"), arm_var)
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
       tags$div(
         tags$label("Select Lab Parameter"),
-        picks_ui(ns("paramcd"), paramcd)
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
       tags$div(
         tags$label("Worst flag variable"),
-        picks_ui(ns("worst_flag_var"), worst_flag_var)
+        teal.picks::picks_ui(ns("worst_flag_var"), worst_flag_var)
       ),
       tags$div(
         tags$label("Analysis Visit"),
-        picks_ui(ns("visit_var"), visit_var)
+        teal.picks::picks_ui(ns("visit_var"), visit_var)
       ),
       tags$div(
         tags$label("Analysis toxicity grade"),
-        picks_ui(ns("anl_toxgrade_var"), anl_toxgrade_var)
+        teal.picks::picks_ui(ns("anl_toxgrade_var"), anl_toxgrade_var)
       ),
       tags$div(
         tags$label("Baseline toxicity grade"),
-        picks_ui(ns("base_toxgrade_var"), base_toxgrade_var)
+        teal.picks::picks_ui(ns("base_toxgrade_var"), base_toxgrade_var)
       ),
       bslib::accordion(
         open = TRUE,
@@ -684,7 +684,7 @@ ui_t_shift_by_grade <- function(id,
         open = TRUE,
         bslib::accordion_panel(
           title = "Additional Variables Info",
-          picks_ui(ns("id_var"), id_var),
+          teal.picks::picks_ui(ns("id_var"), id_var),
           teal.widgets::optionalSelectInput(
             ns("worst_flag_indicator"),
             label = "Value Indicating Worst Grade",
@@ -727,7 +727,7 @@ srv_t_shift_by_grade <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(
+    selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,

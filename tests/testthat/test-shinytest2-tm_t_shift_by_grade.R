@@ -66,23 +66,23 @@ testthat::test_that(
       "Grade Laboratory Abnormality Table"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "paramcd", "values")),
+      get_teal_picks_slot(app_driver, "paramcd", "values"),
       character(0)
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "worst_flag_var", "variables")),
+      get_teal_picks_slot(app_driver, "worst_flag_var", "variables"),
       "WGRLOVFL"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "anl_toxgrade_var", "variables")),
+      get_teal_picks_slot(app_driver, "anl_toxgrade_var", "variables"),
       "ATOXGR"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "base_toxgrade_var", "variables")),
+      get_teal_picks_slot(app_driver, "base_toxgrade_var", "variables"),
       "BTOXGR"
     )
     testthat::expect_equal(
