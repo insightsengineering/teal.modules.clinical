@@ -393,12 +393,12 @@ ui_summary <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Column Variable(s)"),
-        picks_ui(ns("arm_var"), arm_var),
+        teal.picks::picks_ui(ns("arm_var"), arm_var),
       ),
       checkboxInput(ns("add_total"), "Add All Patients column", value = add_total),
       tags$div(
         tags$label("Summarize Variables"),
-        picks_ui(ns("summarize_vars"), summarize_vars),
+        teal.picks::picks_ui(ns("summarize_vars"), summarize_vars),
       ),
       bslib::accordion(
         open = TRUE,
@@ -476,7 +476,7 @@ srv_summary <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(
+    selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,

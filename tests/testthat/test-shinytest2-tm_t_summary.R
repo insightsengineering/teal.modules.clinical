@@ -54,7 +54,7 @@ testthat::test_that("e2e - tm_t_summary: Starts with specified label, arm_var, s
     "Demographic Table"
   )
   testthat::expect_identical(
-    as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+    get_teal_picks_slot(app_driver, "arm_var", "variables"),
     "ARM"
   )
   testthat::expect_equal(
