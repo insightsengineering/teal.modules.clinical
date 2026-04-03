@@ -102,11 +102,11 @@ testthat::test_that(
     app_driver <- app_driver_tm_t_binary_outcome()
 
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Responders"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-values-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "paramcd", "values")),
       "BESRSPI"
     )
     testthat::expect_equal(
@@ -114,7 +114,7 @@ testthat::test_that(
       c("Complete Response (CR)", "Partial Response (PR)")
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
       "ARM"
     )
     testthat::expect_equal(
@@ -133,7 +133,7 @@ testthat::test_that(
       "schouten"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("strata_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "strata_var", "variables")),
       "RACE"
     )
     testthat::expect_equal(
@@ -149,7 +149,7 @@ testthat::test_that(
       "0.95"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aval_var-variables-selected"),
+      as.vector(get_teal_picks_slot(app_driver, "aval_var", "variables")),
       "AVALC"
     )
     testthat::expect_true(app_driver$get_active_module_input("compare_arms"))
@@ -166,7 +166,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-values-selected", "INVET")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "INVET")
     testthat::expect_false(
       identical(
         table_before,
@@ -181,7 +181,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
-  app_driver$set_active_module_input("paramcd-values-selected", NULL)
+  set_teal_picks_slot(app_driver, "paramcd", "values", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -230,7 +230,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-variables-selected", "ARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")
     testthat::expect_false(
       identical(
         table_before,
@@ -245,7 +245,7 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_binary_outcome: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_binary_outcome()
-  app_driver$set_active_module_input("arm_var-variables-selected", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(app_driver$get_active_module_table_output("table-table-with-settings"), data.frame())
   app_driver$expect_validation_error()
   app_driver$stop()
@@ -257,8 +257,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-variables-selected", "SEX")
-
+    set_teal_picks_slot(app_driver, "strata_var", "variables", "SEX")
     testthat::expect_false(
       identical(
         table_before,
@@ -276,7 +275,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_binary_outcome()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("strata_var-variables-selected", NULL)
+    set_teal_picks_slot(app_driver, "strata_var", "variables", NULL)
     testthat::expect_false(
       identical(
         table_before,
