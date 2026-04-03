@@ -569,19 +569,19 @@ ui_t_tte <- function(id,
       tags$label("Encodings", class = "text-primary"), tags$br(),
       tags$div(
         tags$label("Select Endpoint"),
-        picks_ui(ns("paramcd"), paramcd)
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
       tags$div(
         tags$label("Analysis Variable"),
-        picks_ui(ns("aval_var"), aval_var)
+        teal.picks::picks_ui(ns("aval_var"), aval_var)
       ),
       tags$div(
         tags$label("Censor Variable"),
-        picks_ui(ns("cnsr_var"), cnsr_var)
+        teal.picks::picks_ui(ns("cnsr_var"), cnsr_var)
       ),
       tags$div(
         tags$label("Select Treatment Variable"),
-        picks_ui(ns("arm_var"), arm_var)
+        teal.picks::picks_ui(ns("arm_var"), arm_var)
       ),
       tags$div(
         class = "arm-comp-box",
@@ -602,7 +602,7 @@ ui_t_tte <- function(id,
             ),
             tags$div(
               tags$label("Stratify by"),
-              picks_ui(ns("strata_var"), strata_var)
+              teal.picks::picks_ui(ns("strata_var"), strata_var)
             )
           )
         )
@@ -620,7 +620,7 @@ ui_t_tte <- function(id,
       ),
       tags$div(
         tags$label("Event Description Variable"),
-        picks_ui(ns("event_desc_var"), event_desc_var)
+        teal.picks::picks_ui(ns("event_desc_var"), event_desc_var)
       ),
       conditionalPanel(
         condition = paste0("input['", ns("compare_arms"), "']"),
@@ -703,7 +703,7 @@ ui_t_tte <- function(id,
         ),
         tags$div(
           tags$label("Time Unit Variable"),
-          picks_ui(ns("time_unit_var"), time_unit_var)
+          teal.picks::picks_ui(ns("time_unit_var"), time_unit_var)
         )
       ),
       teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "table")),
@@ -737,7 +737,7 @@ srv_t_tte <- function(id,
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
 
-    selectors <- picks_srv(
+    selectors <- teal.picks::picks_srv(
       id = "",
       picks = list(
         arm_var = arm_var,

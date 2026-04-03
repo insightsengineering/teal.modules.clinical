@@ -68,15 +68,15 @@ testthat::test_that(
       "Time To Event Table"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "arm_var", "variables")),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "strata_var", "variables")),
+      get_teal_picks_slot(app_driver, "strata_var", "variables"),
       "SEX"
     )
     testthat::expect_equal(
-      as.vector(get_teal_picks_slot(app_driver, "event_desc_var", "variables")),
+      get_teal_picks_slot(app_driver, "event_desc_var", "variables"),
       "EVNTDESC"
     )
     testthat::expect_equal(
