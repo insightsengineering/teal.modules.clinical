@@ -774,6 +774,24 @@ srv_t_shift_by_grade <- function(id,
       input_anl_toxgrade_var <- anl_selectors$anl_toxgrade_var()$variables$selected
       input_base_toxgrade_var <- anl_selectors$base_toxgrade_var()$variables$selected
 
+      shiny::validate(shiny::need(
+        length(input_worst_flag_var) >= 1L,
+        "Please select a worst flag variable."
+      ))
+
+      wf_vec <- as.vector(input_worst_flag_var)
+      wf_col <- wf_vec[[1]]
+      if (nzchar(wf_col) && wf_col %in% names(anl_filtered)) {
+        shiny::validate(shiny::need(
+          any(as.character(anl_filtered[[wf_col]]) == input$worst_flag_indicator, na.rm = TRUE),
+          sprintf(
+            "No observations with %s equal to the selected worst flag indicator (%s).",
+            wf_col,
+            input$worst_flag_indicator
+          )
+        ))
+      }
+
       validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),

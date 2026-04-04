@@ -62,16 +62,16 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_grade()
     testthat::expect_equal(
-      app_driver$get_text("#teal-teal_modules-active_tab .active > a"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "Grade Laboratory Abnormality Table"
     )
     testthat::expect_equal(
       get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARM"
     )
-    testthat::expect_equal(
-      get_teal_picks_slot(app_driver, "paramcd", "values"),
-      character(0)
+    testthat::expect_identical(
+      sort(get_teal_picks_slot(app_driver, "paramcd", "values")),
+      sort(unique(as.character(teal.data::rADLB[["PARAMCD"]])))
     )
     testthat::expect_equal(
       get_teal_picks_slot(app_driver, "worst_flag_var", "variables"),
