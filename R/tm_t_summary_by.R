@@ -694,6 +694,11 @@ srv_summary_by <- function(id,
       input_summarize_vars <- anl_selectors$summarize_vars()$variables$selected
       input_paramcd_var <- if (!is.null(paramcd)) anl_selectors$paramcd()$variables$selected else NULL
 
+      validate(shiny::need(
+        length(input_summarize_vars) >= 1L,
+        "Please select at least one variable to summarize."
+      ))
+
       validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
