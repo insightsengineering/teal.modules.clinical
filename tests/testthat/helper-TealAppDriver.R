@@ -44,7 +44,7 @@ init_teal_app_driver <- function(...) {
 }
 
 # Escape an HTML element `id` for use inside a JavaScript double-quoted string literal.
-.teal_picks_js_id_literal <- function(id) {
+.teal_picks_js_id_literal <- function(id) { # nolint: object_length_linter.
   id <- gsub("\\", "\\\\", id, fixed = TRUE)
   id <- gsub("\"", "\\\"", id, fixed = TRUE)
   id <- gsub("\r", "\\r", id, fixed = TRUE)
@@ -53,7 +53,7 @@ init_teal_app_driver <- function(...) {
 }
 
 # JavaScript array literal of quoted strings for picker values (may be empty).
-.teal_picks_js_string_array_literal <- function(val) {
+.teal_picks_js_string_array_literal <- function(val) { # nolint: object_length_linter.
   val <- as.character(val)
   if (length(val) == 0L) {
     return("[]")
@@ -67,12 +67,12 @@ init_teal_app_driver <- function(...) {
 }
 
 # JavaScript double-quoted string literal (e.g. Shiny.setInputValue name or string value).
-.teal_picks_js_quoted_string <- function(s) {
+.teal_picks_js_quoted_string <- function(s) { # nolint: object_length_linter.
   .teal_picks_js_id_literal(s)
 }
 
 # Value argument for Shiny.setInputValue: `[]`, a JSON string, or a JSON string array.
-.teal_picks_shiny_setinput_value_literal <- function(val) {
+.teal_picks_shiny_setinput_value_literal <- function(val) { # nolint: object_length_linter.
   val <- as.character(val)
   if (length(val) == 0L) {
     return("[]")
@@ -84,7 +84,7 @@ init_teal_app_driver <- function(...) {
 }
 
 # Sync native <select> + bootstrap-select widget, then let Shiny read change events.
-.teal_picks_apply_select_value_in_browser <- function(app_driver, select_id, val) {
+.teal_picks_apply_select_value_in_browser <- function(app_driver, select_id, val) { # nolint: object_length_linter.
   checkmate::assert_string(select_id)
   val <- as.character(val)
   id_lit <- .teal_picks_js_id_literal(select_id)
@@ -121,7 +121,7 @@ init_teal_app_driver <- function(...) {
 }
 
 # Push values through Shiny and force teal.picks picker commit (selected_open pulse).
-.teal_picks_shiny_set_picker_and_commit <- function(app_driver, sel_id, open_id, val) {
+.teal_picks_shiny_set_picker_and_commit <- function(app_driver, sel_id, open_id, val) { # nolint: object_length_linter.
   checkmate::assert_string(sel_id)
   checkmate::assert_string(open_id)
   val <- as.character(val)
@@ -140,7 +140,7 @@ init_teal_app_driver <- function(...) {
 # Click the teal.picks summary badge (toggles the dropdown open/closed).
 # Use getElementById + click() instead of AppDriver$click(CSS): Chromote querySelectorAll
 # can return DOM error -32000 for some ids/selectors in CI even with attribute selectors.
-.teal_picks_click_summary_badge <- function(app_driver, pick_id) {
+.teal_picks_click_summary_badge <- function(app_driver, pick_id) { # nolint: object_length_linter.
   checkmate::assert_string(pick_id)
   badge_ns <- app_driver$namespaces()$module(paste0(pick_id, "-inputs-summary_badge"))
   id_lit <- .teal_picks_js_id_literal(badge_ns)
@@ -165,7 +165,7 @@ close_teal_picks_dropdown <- function(app_driver, pick_id) {
 }
 
 # Parse teal.picks summary `title` (datasets: … / variables: … lines from picks_srv).
-.teal_picks_parse_badge_title_slot <- function(title, slot) {
+.teal_picks_parse_badge_title_slot <- function(title, slot) { # nolint: object_length_linter.
   if (is.null(title) || !nzchar(title)) {
     return(NULL)
   }
@@ -187,7 +187,7 @@ close_teal_picks_dropdown <- function(app_driver, pick_id) {
 }
 
 # Badge label may prefix variables with dataset (e.g. "ADLB BNRIND").
-.teal_picks_strip_ds_prefix_vec <- function(x) {
+.teal_picks_strip_ds_prefix_vec <- function(x) { # nolint: object_length_linter.
   vapply(
     as.character(x),
     function(s) sub("^\\S+\\s+", "", s),
@@ -197,7 +197,7 @@ close_teal_picks_dropdown <- function(app_driver, pick_id) {
 }
 
 # Normalize JS read: NULL / empty -> NULL; one level -> scalar char; several -> char vector.
-.teal_picks_normalize_slot_read <- function(raw) {
+.teal_picks_normalize_slot_read <- function(raw) { # nolint: object_length_linter.
   if (is.null(raw)) {
     return(NULL)
   }
