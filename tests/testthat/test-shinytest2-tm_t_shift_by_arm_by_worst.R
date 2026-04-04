@@ -163,6 +163,8 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
+    # One endpoint keeps AVALC cardinality below the module limit (< 50 levels).
+    set_teal_picks_slot(app_driver, "paramcd", "values", "ECGINTP")
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "aval_var", "variables", "AVALC")
     testthat::expect_false(
@@ -191,6 +193,8 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_shift_by_arm_by_worst()
+    # One endpoint keeps BASEC cardinality below the module limit (< 50 levels).
+    set_teal_picks_slot(app_driver, "paramcd", "values", "ECGINTP")
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
     set_teal_picks_slot(app_driver, "baseline_var", "variables", "BASEC")
     testthat::expect_false(

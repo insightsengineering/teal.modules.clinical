@@ -489,8 +489,28 @@ srv_shift_by_arm_by_worst <- function(id,
       anl_filtered <- anl_q()[[dataname]]
 
       input_arm_var <- anl_selectors$arm_var()$variables$selected
+      input_paramcd_values <- anl_selectors$paramcd()$values$selected
+      input_worst_flag_var <- anl_selectors$worst_flag_var()$variables$selected
       input_aval_var <- anl_selectors$aval_var()$variables$selected
       input_baseline_var <- anl_selectors$baseline_var()$variables$selected
+
+      validate(shiny::need(length(input_arm_var) >= 1L, "Please select a treatment variable."))
+      validate(shiny::need(
+        length(input_paramcd_values) >= 1L,
+        "Please select at least one parameter value."
+      ))
+      validate(shiny::need(
+        length(input_worst_flag_var) >= 1L,
+        "Please select a worst flag variable."
+      ))
+      validate(shiny::need(
+        length(input_aval_var) >= 1L,
+        "Please select an analysis value variable."
+      ))
+      validate(shiny::need(
+        length(input_baseline_var) >= 1L,
+        "Please select a baseline value variable."
+      ))
 
       validate(
         need(
