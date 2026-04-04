@@ -164,6 +164,38 @@ close_teal_picks_dropdown <- function(app_driver, pick_id) {
   .teal_picks_click_summary_badge(app_driver, pick_id)
 }
 
+# Parse teal.picks summary `title` (datasets: … / variables: … lines from picks_srv).
+.teal_picks_parse_badge_title_slot <- function(title, slot) {
+  if (is.null(title) || !nzchar(title)) {
+    return(NULL)
+  }
+  prefix <- paste0(slot, ": ")
+  lines <- strsplit(title, "\n", fixed = TRUE)[[1]]
+  line <- lines[startsWith(lines, prefix)]
+  if (length(line) == 0L) {
+    return(NULL)
+  }
+  rest <- trimws(substring(line[[1]], nchar(prefix) + 1L))
+  if (!nzchar(rest)) {
+    return(NULL)
+  }
+  if (grepl(", ", rest, fixed = TRUE)) {
+    trimws(strsplit(rest, ", ", fixed = TRUE)[[1]])
+  } else {
+    rest
+  }
+}
+
+# Badge label may prefix variables with dataset (e.g. "ADLB BNRIND").
+.teal_picks_strip_ds_prefix_vec <- function(x) {
+  vapply(
+    as.character(x),
+    function(s) sub("^\\S+\\s+", "", s),
+    character(1),
+    USE.NAMES = FALSE
+  )
+}
+
 # Normalize JS read: NULL / empty -> NULL; one level -> scalar char; several -> char vector.
 .teal_picks_normalize_slot_read <- function(raw) {
   if (is.null(raw)) {
@@ -220,9 +252,36 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
     return(.teal_picks_normalize_slot_read(raw))
   }
   # fixed=TRUE or length(choices)<=1: teal.picks omits the categorical <select>
-  # (see .pick_srv selected_container); read the summary badge label instead (R toString).
+  # (see .pick_srv selected_container). Prefer parsing summary `title` (datasets:/variables:)
+  # so multi-slot picks are not confused with `.badge-dropdown-label` innerText alone.
   badge_ns <- app_driver$namespaces()$module(paste0(pick_id, "-inputs-summary_badge"))
   badge_lit <- .teal_picks_js_id_literal(badge_ns)
+  title_txt <- app_driver$get_js(sprintf(
+    paste0(
+      "(() => {\n",
+      "  const b = document.getElementById(%s);\n",
+      "  if (!b) return null;\n",
+      "  const t = b.querySelector('[title]');\n",
+      "  return t ? t.getAttribute('title') : null;\n",
+      "})()"
+    ),
+    badge_lit
+  ))
+  parsed_title <- .teal_picks_parse_badge_title_slot(title_txt, slot)
+  if (!is.null(parsed_title)) {
+    parts <- if (length(parsed_title) == 1L) {
+      c(parsed_title)
+    } else {
+      parsed_title
+    }
+    if (identical(slot, "variables")) {
+      parts <- .teal_picks_strip_ds_prefix_vec(parts)
+    }
+    return(.teal_picks_normalize_slot_read(as.list(parts)))
+  }
+  if (!identical(slot, "variables")) {
+    return(NULL)
+  }
   txt <- app_driver$get_js(sprintf(
     paste0(
       "(() => {\n",
@@ -237,19 +296,10 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   if (is.null(txt) || !nzchar(txt)) {
     return(NULL)
   }
-  # Badge may prefix variable names with the source dataset (e.g. "ADLB BNRIND").
-  strip_ds_prefix <- function(x) {
-    sub("^\\S+\\s+", "", x)
-  }
   parts <- if (grepl(", ", txt, fixed = TRUE)) {
-    vapply(
-      trimws(strsplit(txt, ", ", fixed = TRUE)[[1]]),
-      strip_ds_prefix,
-      character(1),
-      USE.NAMES = FALSE
-    )
+    .teal_picks_strip_ds_prefix_vec(trimws(strsplit(txt, ", ", fixed = TRUE)[[1]]))
   } else {
-    c(strip_ds_prefix(txt))
+    .teal_picks_strip_ds_prefix_vec(c(txt))
   }
   .teal_picks_normalize_slot_read(as.list(parts))
 }
