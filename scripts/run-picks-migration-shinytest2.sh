@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 # Run shinytest2 files (TESTING_DEPTH = 5) for each per-module picks migration branch.
+#
+# Shared test helpers (e.g. tests/testthat/helper-TealAppDriver.R) should live on
+#   picks_modules_migration@279-interactive_variables@main
+# Merge or rebase that branch into each tm_*@picks_modules_migration@... branch
+# before relying on this script, so picks helpers match the integration branch.
+#
 # Usage: from repo root (teal.modules.clinical):
 #   chmod +x scripts/run-picks-migration-shinytest2.sh
 #   ./scripts/run-picks-migration-shinytest2.sh

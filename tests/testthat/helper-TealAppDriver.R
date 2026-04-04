@@ -189,27 +189,69 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   open_teal_picks_dropdown(app_driver, pick_id)
   sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
   id_lit <- .teal_picks_js_id_literal(sel_id)
-  timeout_ms <- as.integer(
-    getOption("shinytest2.timeout", default = Sys.getenv("SHINYTEST2_TIMEOUT", unset = 30 * 1000))
-  )
-  app_driver$wait_for_js(
-    sprintf("document.getElementById(%s) !== null", id_lit),
-    timeout = timeout_ms
-  )
-  raw <- app_driver$get_js(sprintf(
+  has_sel <- isTRUE(app_driver$get_js(
+    sprintf("(() => document.getElementById(%s) !== null)()", id_lit)
+  ))
+  raw <- if (isTRUE(has_sel)) {
+    timeout_ms <- as.integer(
+      getOption("shinytest2.timeout", default = Sys.getenv("SHINYTEST2_TIMEOUT", unset = 30 * 1000))
+    )
+    app_driver$wait_for_js(
+      sprintf("document.getElementById(%s) !== null", id_lit),
+      timeout = timeout_ms
+    )
+    app_driver$get_js(sprintf(
+      paste0(
+        "(() => {\n",
+        "  const sel = document.getElementById(%s);\n",
+        "  if (!sel) return null;\n",
+        "  if (sel.multiple) return Array.from(sel.selectedOptions).map(o => o.value);\n",
+        "  if (!sel.value) return [];\n",
+        "  return [sel.value];\n",
+        "})()"
+      ),
+      id_lit
+    ))
+  } else {
+    NULL
+  }
+  close_teal_picks_dropdown(app_driver, pick_id)
+  if (!is.null(raw)) {
+    return(.teal_picks_normalize_slot_read(raw))
+  }
+  # fixed=TRUE or length(choices)<=1: teal.picks omits the categorical <select>
+  # (see .pick_srv selected_container); read the summary badge label instead (R toString).
+  badge_ns <- app_driver$namespaces()$module(paste0(pick_id, "-inputs-summary_badge"))
+  badge_lit <- .teal_picks_js_id_literal(badge_ns)
+  txt <- app_driver$get_js(sprintf(
     paste0(
       "(() => {\n",
-      "  const sel = document.getElementById(%s);\n",
-      "  if (!sel) return null;\n",
-      "  if (sel.multiple) return Array.from(sel.selectedOptions).map(o => o.value);\n",
-      "  if (!sel.value) return [];\n",
-      "  return [sel.value];\n",
+      "  const el = document.getElementById(%s);\n",
+      "  if (!el) return null;\n",
+      "  const lab = el.querySelector('.badge-dropdown-label');\n",
+      "  return lab ? lab.innerText.trim() : null;\n",
       "})()"
     ),
-    id_lit
+    badge_lit
   ))
-  close_teal_picks_dropdown(app_driver, pick_id)
-  .teal_picks_normalize_slot_read(raw)
+  if (is.null(txt) || !nzchar(txt)) {
+    return(NULL)
+  }
+  # Badge may prefix variable names with the source dataset (e.g. "ADLB BNRIND").
+  strip_ds_prefix <- function(x) {
+    sub("^\\S+\\s+", "", x)
+  }
+  parts <- if (grepl(", ", txt, fixed = TRUE)) {
+    vapply(
+      trimws(strsplit(txt, ", ", fixed = TRUE)[[1]]),
+      strip_ds_prefix,
+      character(1),
+      USE.NAMES = FALSE
+    )
+  } else {
+    c(strip_ds_prefix(txt))
+  }
+  .teal_picks_normalize_slot_read(as.list(parts))
 }
 
 # Set a categorical teal.picks slot. `set_input` alone often does not refresh bootstrap-select
