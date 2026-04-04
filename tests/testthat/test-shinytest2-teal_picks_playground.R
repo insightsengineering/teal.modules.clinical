@@ -2,7 +2,7 @@
 # teal.picks encodings (paramcd + arm_var) to exercise helper-TealAppDriver.R picks
 # helpers without running a full clinical module.
 
-app_driver_teal_picks_playground <- function() {
+app_driver_teal_picks_playground <- function() { # nolint: object_length_linter.
   paramcd_pick <- teal.picks::picks(
     teal.picks::datasets("ADTTE", "ADTTE"),
     teal.picks::variables(choices = "PARAMCD"),
