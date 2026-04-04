@@ -807,6 +807,11 @@ srv_t_tte <- function(id,
       input_event_desc <- anl_selectors$event_desc_var()$variables$selected
       input_time_unit_var <- anl_selectors$time_unit_var()$variables$selected
       input_paramcd_var <- anl_selectors$paramcd()$variables$selected
+      input_paramcd_values <- anl_selectors$paramcd()$values$selected
+      validate(shiny::need(
+        length(input_paramcd_values) >= 1L,
+        "Please select at least one parameter value."
+      ))
 
       # validate inputs
       validate_args <- list(
