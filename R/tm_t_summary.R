@@ -549,6 +549,10 @@ srv_summary <- function(id,
 
       validate(
         need(
+          length(input_summarize_vars) >= 1L,
+          "Please select at least one variable to summarize."
+        ),
+        need(
           length(unique(anl$USUBJID)) == nrow(anl),
           paste0(
             "Please choose an analysis dataset where each row represents a different subject, ",
