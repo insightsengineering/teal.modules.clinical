@@ -567,6 +567,15 @@ srv_t_smq <- function(id,
       input_scopes <- anl_selectors$scopes()$variables$selected
       input_llt <- anl_selectors$llt()$variables$selected
 
+      shiny::validate(shiny::need(
+        length(input_llt) >= 1L,
+        "Please select at least one lowest level term variable."
+      ))
+      shiny::validate(shiny::need(
+        length(input_baskets) >= 1L,
+        "Please select at least one SMQ/CQ basket variable."
+      ))
+
       validate_standard_inputs(
         adsl = adsl_filtered,
         adslvars = c("USUBJID", "STUDYID", input_arm_var),
