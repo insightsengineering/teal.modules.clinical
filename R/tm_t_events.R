@@ -739,6 +739,11 @@ srv_t_events_byterm <- function(id,
         anl_selectors$llt()$variables$selected
       )
 
+      validate(shiny::need(
+        length(input_arm_var) >= 1L,
+        "Please select a treatment variable."
+      ))
+
       validate(
         if (length(input_arm_var) >= 1) {
           need(is.factor(adsl_filtered[[input_arm_var[[1]]]]), "Treatment variable is not a factor.")
@@ -765,6 +770,7 @@ srv_t_events_byterm <- function(id,
 
     # The R-code corresponding to the analysis.
     table_q <- reactive({
+      validate_checks()
       ANL <- anl_q()[["ANL"]]
 
       input_hlt <- anl_selectors$hlt()$variables$selected
