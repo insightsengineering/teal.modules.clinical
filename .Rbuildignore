@@ -47,4 +47,5 @@ coverage.*
 ^pkgdown$
 ^.revdeprefs\.yaml$
 ^revdep$
+^scripts$
 ^\.covrignore$
