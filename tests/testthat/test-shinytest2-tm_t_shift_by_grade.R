@@ -13,10 +13,10 @@ app_driver_tm_t_shift_by_grade <- function() {
         label = "Grade Laboratory Abnormality Table",
         dataname = "ADLB",
         parentname = "ADSL",
-        visit_var = variables(choices = "AVISIT"),
-        arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-        paramcd = variables(choices = "PARAMCD"),
-        worst_flag_var = variables(
+        visit_var = teal.picks::variables(choices = "AVISIT"),
+        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+        paramcd = teal.picks::variables(choices = "PARAMCD"),
+        worst_flag_var = teal.picks::variables(
           choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
           selected = "WGRLOVFL"
         ),
@@ -24,9 +24,9 @@ app_driver_tm_t_shift_by_grade <- function() {
           c("Y", "N"),
           selected = "Y", fixed = TRUE
         ),
-        anl_toxgrade_var = variables(choices = "ATOXGR"),
-        base_toxgrade_var = variables(choices = "BTOXGR"),
-        id_var = variables(choices = "USUBJID"),
+        anl_toxgrade_var = teal.picks::variables(choices = "ATOXGR"),
+        base_toxgrade_var = teal.picks::variables(choices = "BTOXGR"),
+        id_var = teal.picks::variables(choices = "USUBJID"),
         add_total = FALSE,
         total_label = default_total_label(),
         drop_arm_levels = TRUE,
@@ -184,9 +184,9 @@ app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_len
         tm_t_shift_by_grade(
           label = "Grade Laboratory Abnormality Table",
           dataname = "ADLB",
-          arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-          paramcd = variables(choices = "PARAMCD"),
-          worst_flag_var = variables(
+          arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+          paramcd = teal.picks::variables(choices = "PARAMCD"),
+          worst_flag_var = teal.picks::variables(
             choices = c("WGRLOVFL", "WGRLOFL", "WGRHIVFL", "WGRHIFL"),
             selected = "WGRLOFL"
           ),
@@ -194,8 +194,8 @@ app_driver_tm_t_shift_by_grade_invalid_data <- function() { # nolint: object_len
             c("Y", "N"),
             selected = "Y", fixed = TRUE
           ),
-          anl_toxgrade_var = variables(choices = "ATOXGR"),
-          base_toxgrade_var = variables(choices = "BTOXGR"),
+          anl_toxgrade_var = teal.picks::variables(choices = "ATOXGR"),
+          base_toxgrade_var = teal.picks::variables(choices = "BTOXGR"),
           add_total = FALSE
         )
       ),
