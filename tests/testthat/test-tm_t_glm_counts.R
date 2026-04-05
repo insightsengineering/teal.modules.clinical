@@ -26,15 +26,15 @@ app_driver_tm_t_glm_counts <- function() { # nolint: object_length.
       data = data,
       modules = tm_t_glm_counts(
         dataname = "ADTTE",
-        arm_var = variables(
+        arm_var = teal.picks::variables(
           choices = c("ARM", "ARMCD", "ACTARMCD"),
           selected = "ARMCD"
         ),
         arm_ref_comp = arm_ref_comp,
-        aval_var = variables(choices = "AVAL"),
-        strata_var = variables(choices = "SEX", selected = NULL),
-        offset_var = variables(choices = "AGE", selected = NULL),
-        cov_var = variables(choices = "SITEID", selected = NULL)
+        aval_var = teal.picks::variables(choices = "AVAL"),
+        strata_var = teal.picks::variables(choices = "SEX", selected = NULL),
+        offset_var = teal.picks::variables(choices = "AGE", selected = NULL),
+        cov_var = teal.picks::variables(choices = "SITEID", selected = NULL)
       )
     )
   )
