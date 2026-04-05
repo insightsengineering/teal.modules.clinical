@@ -27,21 +27,21 @@ app_driver_tm_t_exposure <- function() {
         label = "Duration of Exposure Table",
         dataname = "ADEX",
         parentname = "ADSL",
-        paramcd = variables(choices = "PARAMCD"),
-        col_by_var = variables(
+        paramcd = teal.picks::variables(choices = "PARAMCD"),
+        col_by_var = teal.picks::variables(
           choices = c("SEX", "ARM"),
           selected = "SEX"
         ),
-        row_by_var = variables(
+        row_by_var = teal.picks::variables(
           choices = c("RACE", "REGION1", "STRATA1", "SEX"),
           selected = "RACE"
         ),
-        parcat = variables(choices = "PARCAT2"),
+        parcat = teal.picks::variables(choices = "PARCAT2"),
         add_total = FALSE,
         paramcd_label = "PARAM",
-        id_var = variables(choices = "USUBJID"),
-        aval_var = variables(choices = "AVAL"),
-        avalu_var = variables(choices = "AVALU"),
+        id_var = teal.picks::variables(choices = "USUBJID"),
+        aval_var = teal.picks::variables(choices = "AVAL"),
+        avalu_var = teal.picks::variables(choices = "AVALU"),
         total_label = default_total_label(),
         add_total_row = TRUE,
         total_row_label = "Total number of patients and patient time*",
