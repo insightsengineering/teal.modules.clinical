@@ -96,4 +96,3 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
   res <- testthat::expect_silent(result)
   testthat::expect_snapshot(res)
 })
-
