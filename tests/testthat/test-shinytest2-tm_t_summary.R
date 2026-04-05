@@ -11,9 +11,9 @@ app_driver_tm_t_summary <- function() {
       modules = tm_t_summary(
         label = "Demographic Table",
         dataname = "ADSL",
-        arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
         add_total = TRUE,
-        summarize_vars = variables(
+        summarize_vars = teal.picks::variables(
           choices = c("SEX", "RACE", "BMRKR2", "EOSDY", "DCSREAS", "AGE"),
           selected = c("SEX", "RACE")
         ),
