@@ -192,7 +192,10 @@ testthat::test_that(
 )
 
 testthat::test_that(
-  "e2e - tm_t_coxreg: Deselection of all covariates clears the table and surfaces a validation error from the analysis pipeline.",
+  paste0(
+    "e2e - tm_t_coxreg: Deselection of all covariates clears the table and surfaces ",
+    "a validation error from the analysis pipeline."
+  ),
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_coxreg()
