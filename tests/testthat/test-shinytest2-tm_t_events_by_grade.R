@@ -18,16 +18,16 @@ app_driver_tm_t_events_by_grade <- function() { # nolint: object_length.
         label = "Adverse Events by Grade Table",
         dataname = "ADAE",
         parentname = "ADSL",
-        arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-        llt = variables(
+        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+        llt = teal.picks::variables(
           choices = c("AETERM", "AEDECOD"),
           selected = "AEDECOD"
         ),
-        hlt = variables(
+        hlt = teal.picks::variables(
           choices = c("AEBODSYS", "AESOC"),
           selected = "AEBODSYS"
         ),
-        grade = variables(
+        grade = teal.picks::variables(
           choices = c("AETOXGR", "AESEV"),
           selected = "AETOXGR"
         ),
