@@ -13,15 +13,15 @@ app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length.
         label = "Shift by Arm Table",
         dataname = "ADEG",
         parentname = "ADSL",
-        arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-        paramcd = variables(choices = "PARAMCD"),
-        worst_flag_var = variables(
+        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+        paramcd = teal.picks::variables(choices = "PARAMCD"),
+        worst_flag_var = teal.picks::variables(
           choices = c("WORS02FL", "WORS01FL"),
           selected = "WORS02FL"
         ),
         worst_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed = TRUE),
-        aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
-        baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
+        aval_var = teal.picks::variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
+        baseline_var = teal.picks::variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
         useNA = "ifany",
         treatment_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed = TRUE),
         na_level = default_na_str(),
