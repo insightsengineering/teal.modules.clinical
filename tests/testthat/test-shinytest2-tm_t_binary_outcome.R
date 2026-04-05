@@ -23,17 +23,17 @@ app_driver_tm_t_binary_outcome <- function() {
         label = "Responders",
         dataname = "ADRS",
         parentname = "ADSL",
-        arm_var = variables(
+        arm_var = teal.picks::variables(
           choices = c("ARM", "ARMCD", "ACTARMCD"),
           selected = "ARM"
         ),
         arm_ref_comp = arm_ref_comp,
-        paramcd = variables(choices = "PARAMCD"),
-        strata_var = variables(
+        paramcd = teal.picks::variables(choices = "PARAMCD"),
+        strata_var = teal.picks::variables(
           choices = c("SEX", "BMRKR2", "RACE"),
           selected = "RACE"
         ),
-        aval_var = variables(
+        aval_var = teal.picks::variables(
           choices = c("AVALC", "SEX"),
           selected = "AVALC",
           fixed = FALSE
