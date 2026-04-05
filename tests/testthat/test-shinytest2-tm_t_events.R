@@ -13,15 +13,15 @@ app_driver_tm_t_events <- function() {
         label = "Adverse Event Table",
         dataname = "ADAE",
         parentname = "ADSL",
-        arm_var = variables(
+        arm_var = teal.picks::variables(
           choices = c("ARM", "ARMCD"),
           selected = "ARM"
         ),
-        llt = variables(
+        llt = teal.picks::variables(
           choices = c("AETERM", "AEDECOD"),
           selected = "AEDECOD"
         ),
-        hlt = variables(
+        hlt = teal.picks::variables(
           choices = c("AEBODSYS", "AESOC"),
           selected = "AEBODSYS"
         ),
