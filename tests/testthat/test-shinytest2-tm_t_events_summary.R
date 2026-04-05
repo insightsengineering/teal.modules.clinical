@@ -47,25 +47,25 @@ app_driver_tm_t_events_summary <- function() {
         label = "Adverse Events Summary",
         dataname = "ADAE",
         parentname = "ADSL",
-        arm_var = variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
-        flag_var_anl = variables(
+        arm_var = teal.picks::variables(choices = c("ARM", "ARMCD"), selected = "ARM"),
+        flag_var_anl = teal.picks::variables(
           choices = data[[".ae_anl_vars"]],
           selected = data[[".ae_anl_vars"]][1],
           multiple = TRUE,
           ordered = TRUE,
           fixed = FALSE
         ),
-        flag_var_aesi = variables(
+        flag_var_aesi = teal.picks::variables(
           choices = data[[".aesi_vars"]],
           selected = data[[".aesi_vars"]][1],
           multiple = TRUE,
           ordered = TRUE,
           fixed = FALSE
         ),
-        dthfl_var = variables(choices = "DTHFL"),
-        dcsreas_var = variables(choices = "DCSREAS"),
-        llt = variables(choices = "AEDECOD"),
-        aeseq_var = variables(choices = "AESEQ"),
+        dthfl_var = teal.picks::variables(choices = "DTHFL"),
+        dcsreas_var = teal.picks::variables(choices = "DCSREAS"),
+        llt = teal.picks::variables(choices = "AEDECOD"),
+        aeseq_var = teal.picks::variables(choices = "AESEQ"),
         add_total = TRUE,
         total_label = default_total_label(),
         na_level = default_na_str(),
