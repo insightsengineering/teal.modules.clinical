@@ -32,8 +32,8 @@ git commit -m "chore(pr): browser verification screenshot for $Topic" 2>&1
 if ($LASTEXITCODE -ne 0) {
   Write-Warning "Nothing to commit or commit failed"
 }
-git push origin HEAD *> $null
-if ($LASTEXITCODE -ne 0) {
-  throw "git push failed with exit $LASTEXITCODE"
+$p = Start-Process -FilePath "git" -ArgumentList @("push", "origin", "HEAD") -Wait -PassThru -WindowStyle Hidden
+if ($p.ExitCode -ne 0) {
+  throw "git push failed with exit $($p.ExitCode)"
 }
 & ".\dev\picks_pr_append_body.ps1" -Pr $Pr -Topic $Topic -Branch $Branch -CodeFile "_topic_code.txt"
