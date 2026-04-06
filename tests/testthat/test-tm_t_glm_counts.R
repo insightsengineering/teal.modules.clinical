@@ -59,7 +59,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_glm_counts()
     table_before <- app_driver$get_active_module_table_output("table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-variables-selected", "ACTARMCD")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ACTARMCD")
     testthat::expect_false(
       identical(
         table_before,
