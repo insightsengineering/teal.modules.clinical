@@ -43,7 +43,7 @@ init_teal_app_driver <- function(...) {
   )
 }
 
-# Escape an HTML element `id` for use inside a JavaScript double-quoted string literal.
+# Escape a string for use as a JavaScript double-quoted literal (ids, Shiny input names, values).
 .teal_picks_js_id_literal <- function(id) { # nolint: object_length_linter.
   id <- gsub("\\", "\\\\", id, fixed = TRUE)
   id <- gsub("\"", "\\\"", id, fixed = TRUE)
@@ -58,17 +58,8 @@ init_teal_app_driver <- function(...) {
   if (length(val) == 0L) {
     return("[]")
   }
-  parts <- vapply(val, function(x) {
-    x <- gsub("\\", "\\\\", x, fixed = TRUE)
-    x <- gsub("\"", "\\\"", x, fixed = TRUE)
-    paste0("\"", x, "\"")
-  }, character(1))
+  parts <- vapply(val, .teal_picks_js_id_literal, character(1))
   paste0("[", paste(parts, collapse = ","), "]")
-}
-
-# JavaScript double-quoted string literal (e.g. Shiny.setInputValue name or string value).
-.teal_picks_js_quoted_string <- function(s) { # nolint: object_length_linter.
-  .teal_picks_js_id_literal(s)
 }
 
 # Value argument for Shiny.setInputValue: `[]`, a JSON string, or a JSON string array.
@@ -78,9 +69,9 @@ init_teal_app_driver <- function(...) {
     return("[]")
   }
   if (length(val) == 1L) {
-    return(.teal_picks_js_quoted_string(val[[1]]))
+    return(.teal_picks_js_id_literal(val[[1]]))
   }
-  paste0("[", paste(vapply(val, .teal_picks_js_quoted_string, character(1)), collapse = ","), "]")
+  paste0("[", paste(vapply(val, .teal_picks_js_id_literal, character(1)), collapse = ","), "]")
 }
 
 # Sync native <select> + bootstrap-select widget, then let Shiny read change events.
@@ -125,8 +116,8 @@ init_teal_app_driver <- function(...) {
   checkmate::assert_string(sel_id)
   checkmate::assert_string(open_id)
   val <- as.character(val)
-  name_sel <- .teal_picks_js_quoted_string(sel_id)
-  name_open <- .teal_picks_js_quoted_string(open_id)
+  name_sel <- .teal_picks_js_id_literal(sel_id)
+  name_open <- .teal_picks_js_id_literal(open_id)
   val_js <- .teal_picks_shiny_setinput_value_literal(val)
   app_driver$run_js(paste(
     sprintf("Shiny.setInputValue(%s, %s, {priority: 'event'});", name_sel, val_js),
@@ -151,17 +142,6 @@ init_teal_app_driver <- function(...) {
   ))
   app_driver$wait_for_idle()
   invisible(app_driver)
-}
-
-# Open a teal.picks badge dropdown. Required before set_input on nested pickers: badge-dropdown
-# script.js calls Shiny.bindAll(container) only when the panel is shown.
-open_teal_picks_dropdown <- function(app_driver, pick_id) {
-  .teal_picks_click_summary_badge(app_driver, pick_id)
-}
-
-# Close the teal.picks badge if it is open (same control toggles).
-close_teal_picks_dropdown <- function(app_driver, pick_id) {
-  .teal_picks_click_summary_badge(app_driver, pick_id)
 }
 
 # Parse teal.picks summary `title` (datasets: … / variables: … lines from picks_srv).
@@ -218,7 +198,7 @@ close_teal_picks_dropdown <- function(app_driver, pick_id) {
 get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
-  open_teal_picks_dropdown(app_driver, pick_id)
+  .teal_picks_click_summary_badge(app_driver, pick_id)
   sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
   id_lit <- .teal_picks_js_id_literal(sel_id)
   has_sel <- isTRUE(app_driver$get_js(
@@ -247,7 +227,7 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   } else {
     NULL
   }
-  close_teal_picks_dropdown(app_driver, pick_id)
+  .teal_picks_click_summary_badge(app_driver, pick_id)
   if (!is.null(raw)) {
     return(.teal_picks_normalize_slot_read(raw))
   }
@@ -313,7 +293,7 @@ set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
   checkmate::assert_flag(wait)
-  open_teal_picks_dropdown(app_driver, pick_id)
+  .teal_picks_click_summary_badge(app_driver, pick_id)
   sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
   open_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected_open"))
   val <- if (is.null(value)) character(0) else as.character(value)
@@ -322,7 +302,7 @@ set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
   if (isTRUE(wait)) {
     app_driver$wait_for_idle()
   }
-  close_teal_picks_dropdown(app_driver, pick_id)
+  .teal_picks_click_summary_badge(app_driver, pick_id)
   invisible(app_driver)
 }
 
