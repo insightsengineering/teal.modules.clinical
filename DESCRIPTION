@@ -35,6 +35,7 @@ Depends:
     R (>= 4.4),
     teal (>= 1.1.0.9029),
     teal.transform (>= 0.7.0),
+    teal.picks (>= 0.1.0.9212),
     tern (>= 0.9.9)
 Imports:
     broom (>= 0.7.10),
@@ -84,6 +85,7 @@ VignetteBuilder:
     rmarkdown
 Remotes:
     insightsengineering/teal,
+    insightsengineering/tealpicks@with_primary_keys@12-alternative,
     insightsengineering/teal.reporter
 Config/Needs/verdepcheck: insightsengineering/teal,
     insightsengineering/teal.slice, insightsengineering/teal.transform,
