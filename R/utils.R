@@ -1105,7 +1105,12 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 #'
 #' @param arg module variable of class `choices_selected` or picks variables
 #' @keywords internal
-convert_arg_to_picks <- function(arg) {
+convert_arg_to_picks <- function(arg, allowed_class = c("choices_selected", "filter_spec", "select_spec")) {
+  arg <- rlang::ensym(arg)
+  arg_name <- as.character(arg)
+  arg <- rlang::eval_tidy(arg)
+  allowed_class <- match.arg(allowed_class)
+  checkmate::assert_multi_class(arg, c(allowed_class, "pick", "picks"), .var.name = arg_name)
   if (checkmate::test_multi_class(arg, c("choices_selected", "filter_spec", "select_spec"))) {
     teal.picks::as.picks(arg)
   } else {
