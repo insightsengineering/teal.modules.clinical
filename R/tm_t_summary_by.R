@@ -448,6 +448,11 @@ tm_t_summary_by <- function(label,
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_t_summary_by")
+  arm_var <- convert_arg_to_picks(arm_var)
+  by_vars <- convert_arg_to_picks(by_vars)
+  summarize_vars <- convert_arg_to_picks(summarize_vars)
+  id_var <- convert_arg_to_picks(id_var)
+  if (!is.null(paramcd)) paramcd <- convert_arg_to_picks(paramcd)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
