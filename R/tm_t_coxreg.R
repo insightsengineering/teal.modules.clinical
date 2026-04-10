@@ -552,6 +552,12 @@ tm_t_coxreg <- function(label,
                         transformators = list(),
                         decorators = list()) {
   message("Initializing tm_t_coxreg")
+  arm_var <- convert_arg_to_picks(arm_var)
+  paramcd <- convert_arg_to_picks(paramcd)
+  cov_var <- convert_arg_to_picks(cov_var)
+  strata_var <- convert_arg_to_picks(strata_var)
+  aval_var <- convert_arg_to_picks(aval_var)
+  cnsr_var <- convert_arg_to_picks(cnsr_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
