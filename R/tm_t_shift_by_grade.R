@@ -574,6 +574,13 @@ tm_t_shift_by_grade <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_shift_by_grade")
+  arm_var <- convert_arg_to_picks(arm_var)
+  visit_var <- convert_arg_to_picks(visit_var)
+  paramcd <- convert_arg_to_picks(paramcd)
+  worst_flag_var <- convert_arg_to_picks(worst_flag_var)
+  anl_toxgrade_var <- convert_arg_to_picks(anl_toxgrade_var)
+  base_toxgrade_var <- convert_arg_to_picks(base_toxgrade_var)
+  id_var <- convert_arg_to_picks(id_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
