@@ -338,6 +338,12 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             transformators = list(),
                                             decorators = list()) {
   message("Initializing tm_t_abnormality_by_worst_grade")
+  arm_var <- convert_arg_to_picks(arm_var)
+  id_var <- convert_arg_to_picks(id_var)
+  paramcd <- convert_arg_to_picks(paramcd)
+  atoxgr_var <- convert_arg_to_picks(atoxgr_var)
+  worst_high_flag_var <- convert_arg_to_picks(worst_high_flag_var)
+  worst_low_flag_var <- convert_arg_to_picks(worst_low_flag_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
