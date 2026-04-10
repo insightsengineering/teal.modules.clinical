@@ -560,6 +560,9 @@ tm_t_events <- function(label,
                         transformators = list(),
                         decorators = list()) {
   message("Initializing tm_t_events")
+  arm_var <- convert_arg_to_picks(arm_var)
+  hlt <- convert_arg_to_picks(hlt)
+  llt <- convert_arg_to_picks(llt)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
