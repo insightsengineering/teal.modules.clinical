@@ -330,6 +330,13 @@ tm_t_exposure <- function(label,
                           transformators = list(),
                           decorators = list()) {
   message("Initializing tm_t_exposure")
+  row_by_var <- convert_arg_to_picks(row_by_var)
+  col_by_var <- convert_arg_to_picks(col_by_var)
+  paramcd <- convert_arg_to_picks(paramcd)
+  id_var <- convert_arg_to_picks(id_var)
+  parcat <- convert_arg_to_picks(parcat)
+  aval_var <- convert_arg_to_picks(aval_var)
+  avalu_var <- convert_arg_to_picks(avalu_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
