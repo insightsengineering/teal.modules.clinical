@@ -1111,9 +1111,5 @@ convert_arg_to_picks <- function(arg, allowed_class = c("choices_selected", "fil
   arg <- rlang::eval_tidy(arg)
   allowed_class <- match.arg(allowed_class)
   checkmate::assert_multi_class(arg, c(allowed_class, "pick", "picks"), .var.name = arg_name)
-  if (checkmate::test_multi_class(arg, c("choices_selected", "filter_spec", "select_spec"))) {
-    teal.picks::as.picks(arg)
-  } else {
-    arg
-  }
+  teal.picks::as.picks(arg)
 }
