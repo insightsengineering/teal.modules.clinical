@@ -654,6 +654,13 @@ tm_t_events_summary <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_events_summary")
+  arm_var <- convert_arg_to_picks(arm_var)
+  if (!is.null(flag_var_anl)) flag_var_anl <- convert_arg_to_picks(flag_var_anl)
+  if (!is.null(flag_var_aesi)) flag_var_aesi <- convert_arg_to_picks(flag_var_aesi)
+  dthfl_var <- convert_arg_to_picks(dthfl_var)
+  dcsreas_var <- convert_arg_to_picks(dcsreas_var)
+  llt <- convert_arg_to_picks(llt)
+  aeseq_var <- convert_arg_to_picks(aeseq_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
