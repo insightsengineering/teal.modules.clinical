@@ -294,6 +294,12 @@ tm_t_shift_by_arm <- function(label,
   }
 
   message("Initializing tm_t_shift_by_arm")
+  arm_var <- convert_arg_to_picks(arm_var)
+  paramcd <- convert_arg_to_picks(paramcd)
+  visit_var <- convert_arg_to_picks(visit_var)
+  aval_var <- convert_arg_to_picks(aval_var)
+  baseline_var <- convert_arg_to_picks(baseline_var)
+  treatment_flag_var <- convert_arg_to_picks(treatment_flag_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
