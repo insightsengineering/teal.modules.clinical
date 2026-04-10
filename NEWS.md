@@ -1,7 +1,10 @@
-# teal.modules.clinical 0.12.0.9012
+# teal.modules.clinical 0.12.0.9013
 
 ### Enhancements
 * Added `numeric_formats` argument to `tm_t_summary` to customize formatting of numeric statistics.
+
+### Bug fixes
+* Fixed `tm_g_pp_therapy` displaying column names instead of values in the start and end day columns of the therapy table (#1450).
 
 ### Miscellaneous
 * Multiple decorators can be applied to the same output object (#1465).
