@@ -400,6 +400,11 @@ tm_t_smq <- function(label,
                      transformators = list(),
                      decorators = list()) {
   message("Initializing tm_t_smq")
+  arm_var <- convert_arg_to_picks(arm_var)
+  id_var <- convert_arg_to_picks(id_var)
+  llt <- convert_arg_to_picks(llt)
+  baskets <- convert_arg_to_picks(baskets)
+  scopes <- convert_arg_to_picks(scopes)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
