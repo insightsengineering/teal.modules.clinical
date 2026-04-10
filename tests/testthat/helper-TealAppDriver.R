@@ -176,21 +176,6 @@ init_teal_app_driver <- function(...) {
   )
 }
 
-# Normalize JS read: NULL / empty -> NULL; one level -> scalar char; several -> char vector.
-.teal_picks_normalize_slot_read <- function(raw) { # nolint: object_length_linter.
-  if (is.null(raw)) {
-    return(NULL)
-  }
-  v <- as.character(unlist(raw, use.names = FALSE))
-  if (length(v) == 0L) {
-    return(NULL)
-  }
-  if (length(v) == 1L) {
-    return(v[[1]])
-  }
-  v
-}
-
 # Read the Shiny value for a categorical teal.picks slot (variables, values, datasets, ...).
 # While the badge has never been opened, picker inputs are not bound (see teal.picks
 # badge-dropdown script.js). `get_active_module_input` can list every choice after
@@ -198,90 +183,9 @@ init_teal_app_driver <- function(...) {
 get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
-  .teal_picks_click_summary_badge(app_driver, pick_id)
-  sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
-  id_lit <- .teal_picks_js_id_literal(sel_id)
-  has_sel <- isTRUE(app_driver$get_js(
-    sprintf("(() => document.getElementById(%s) !== null)()", id_lit)
-  ))
-  raw <- if (isTRUE(has_sel)) {
-    timeout_ms <- as.integer(
-      getOption("shinytest2.timeout", default = Sys.getenv("SHINYTEST2_TIMEOUT", unset = 30 * 1000))
-    )
-    app_driver$wait_for_js(
-      sprintf("document.getElementById(%s) !== null", id_lit),
-      timeout = timeout_ms
-    )
-    app_driver$get_js(sprintf(
-      paste0(
-        "(() => {\n",
-        "  const sel = document.getElementById(%s);\n",
-        "  if (!sel) return null;\n",
-        "  if (sel.multiple) return Array.from(sel.selectedOptions).map(o => o.value);\n",
-        "  if (!sel.value) return [];\n",
-        "  return [sel.value];\n",
-        "})()"
-      ),
-      id_lit
-    ))
-  } else {
-    NULL
-  }
-  .teal_picks_click_summary_badge(app_driver, pick_id)
-  if (!is.null(raw)) {
-    return(.teal_picks_normalize_slot_read(raw))
-  }
-  # fixed=TRUE or length(choices)<=1: teal.picks omits the categorical <select>
-  # (see .pick_srv selected_container). Prefer parsing summary `title` (datasets:/variables:)
-  # so multi-slot picks are not confused with `.badge-dropdown-label` innerText alone.
-  badge_ns <- app_driver$namespaces()$module(paste0(pick_id, "-inputs-summary_badge"))
-  badge_lit <- .teal_picks_js_id_literal(badge_ns)
-  title_txt <- app_driver$get_js(sprintf(
-    paste0(
-      "(() => {\n",
-      "  const b = document.getElementById(%s);\n",
-      "  if (!b) return null;\n",
-      "  const t = b.querySelector('[title]');\n",
-      "  return t ? t.getAttribute('title') : null;\n",
-      "})()"
-    ),
-    badge_lit
-  ))
-  parsed_title <- .teal_picks_parse_badge_title_slot(title_txt, slot)
-  if (!is.null(parsed_title)) {
-    parts <- if (length(parsed_title) == 1L) {
-      c(parsed_title)
-    } else {
-      parsed_title
-    }
-    if (identical(slot, "variables")) {
-      parts <- .teal_picks_strip_ds_prefix_vec(parts)
-    }
-    return(.teal_picks_normalize_slot_read(as.list(parts)))
-  }
-  if (!identical(slot, "variables")) {
-    return(NULL)
-  }
-  txt <- app_driver$get_js(sprintf(
-    paste0(
-      "(() => {\n",
-      "  const el = document.getElementById(%s);\n",
-      "  if (!el) return null;\n",
-      "  const lab = el.querySelector('.badge-dropdown-label');\n",
-      "  return lab ? lab.innerText.trim() : null;\n",
-      "})()"
-    ),
-    badge_lit
-  ))
-  if (is.null(txt) || !nzchar(txt)) {
-    return(NULL)
-  }
-  parts <- if (grepl(", ", txt, fixed = TRUE)) {
-    .teal_picks_strip_ds_prefix_vec(trimws(strsplit(txt, ", ", fixed = TRUE)[[1]]))
-  } else {
-    .teal_picks_strip_ds_prefix_vec(c(txt))
-  }
-  .teal_picks_normalize_slot_read(as.list(parts))
+  sel_id <- app_driver$namespaces()$module(NS(pick_id, "picks_resolved"))
+  selected_pick <- app_driver$get_value(export = sel_id)
+  selected_pick[[slot]]$selected
 }
 
 # Set a categorical teal.picks slot. `set_input` alone often does not refresh bootstrap-select
