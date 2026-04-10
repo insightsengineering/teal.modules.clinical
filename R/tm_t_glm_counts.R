@@ -119,6 +119,11 @@ tm_t_glm_counts <- function(label = "Counts Module",
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_t_glm_counts")
+  arm_var <- convert_arg_to_picks(arm_var)
+  aval_var <- convert_arg_to_picks(aval_var)
+  strata_var <- convert_arg_to_picks(strata_var)
+  offset_var <- convert_arg_to_picks(offset_var)
+  cov_var <- convert_arg_to_picks(cov_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   distribution_choices <- c("negbin", "quasipoisson", "poisson")
