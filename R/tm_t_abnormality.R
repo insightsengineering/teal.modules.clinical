@@ -372,6 +372,12 @@ tm_t_abnormality <- function(label,
                              transformators = list(),
                              decorators = list()) {
   message("Initializing tm_t_abnormality")
+  arm_var <- convert_arg_to_picks(arm_var)
+  by_vars <- convert_arg_to_picks(by_vars)
+  grade <- convert_arg_to_picks(grade)
+  id_var <- convert_arg_to_picks(id_var)
+  baseline_var <- convert_arg_to_picks(baseline_var)
+  treatment_flag_var <- convert_arg_to_picks(treatment_flag_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
