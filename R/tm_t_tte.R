@@ -502,6 +502,13 @@ tm_t_tte <- function(label,
                      transformators = list(),
                      decorators = list()) {
   message("Initializing tm_t_tte")
+  arm_var <- convert_arg_to_picks(arm_var)
+  paramcd <- convert_arg_to_picks(paramcd)
+  strata_var <- convert_arg_to_picks(strata_var)
+  aval_var <- convert_arg_to_picks(aval_var)
+  cnsr_var <- convert_arg_to_picks(cnsr_var)
+  time_unit_var <- convert_arg_to_picks(time_unit_var)
+  event_desc_var <- convert_arg_to_picks(event_desc_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
