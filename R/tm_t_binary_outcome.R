@@ -497,6 +497,10 @@ tm_t_binary_outcome <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_binary_outcome")
+  arm_var <- convert_arg_to_picks(arm_var)
+  paramcd <- convert_arg_to_picks(paramcd)
+  strata_var <- convert_arg_to_picks(strata_var)
+  aval_var <- convert_arg_to_picks(aval_var)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
