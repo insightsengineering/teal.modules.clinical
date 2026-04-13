@@ -1108,9 +1108,9 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 convert_arg_to_picks <- function(arg,
                                  allowed_class = c("choices_selected", "filter_spec", "select_spec"),
                                  envir = parent.frame()) {
-  arg <- rlang::ensym(arg)
+  arg <- substitute(arg)
   arg_name <- as.character(arg)
-  arg <- rlang::eval_tidy(arg, env = envir)
+  arg <- eval(arg, envir = envir)
   allowed_class <- match.arg(allowed_class)
   checkmate::assert_multi_class(arg, c(allowed_class, "pick", "picks"), .var.name = arg_name)
   teal.picks::as.picks(arg)
