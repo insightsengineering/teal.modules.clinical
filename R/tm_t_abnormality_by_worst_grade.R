@@ -248,7 +248,8 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #'   preselected option for the worst high grade flag variable.
 #' @param worst_low_flag_var ([teal.picks::variables()])\cr object with all available choices and
 #'   preselected option for the worst low grade flag variable.
-#' @param worst_flag_indicator ([teal.transform::choices_selected()])\cr value indicating worst grade.
+#' @param worst_flag_indicator ([teal.picks::values()])\cr allowed flag value(s) and default selection
+#'   indicating worst grade. The UI shows the selected value as static text (not an interactive control).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -328,7 +329,12 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             atoxgr_var = variables(choices = "ATOXGR"),
                                             worst_high_flag_var = variables(choices = "WGRHIFL"),
                                             worst_low_flag_var = variables(choices = "WGRLOFL"),
-                                            worst_flag_indicator = teal.transform::choices_selected("Y"),
+                                            worst_flag_indicator = teal.picks::values(
+                                              c("Y", "N"),
+                                              "Y",
+                                              multiple = FALSE,
+                                              fixed = TRUE
+                                            ),
                                             add_total = TRUE,
                                             total_label = default_total_label(),
                                             drop_arm_levels = TRUE,
@@ -354,7 +360,10 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
   checkmate::assert_class(atoxgr_var, "variables")
   checkmate::assert_class(worst_high_flag_var, "variables")
   checkmate::assert_class(worst_low_flag_var, "variables")
-  checkmate::assert_class(worst_flag_indicator, "choices_selected")
+  checkmate::assert_class(worst_flag_indicator, "values")
+  worst_flag_value <- as.character(worst_flag_indicator$selected)
+  checkmate::assert_character(worst_flag_value, min.len = 1L, .var.name = "worst_flag_indicator$selected")
+  worst_flag_value <- worst_flag_value[[1]]
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -391,6 +400,7 @@ ui_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                             atoxgr_var,
                                             worst_high_flag_var,
                                             worst_low_flag_var,
+                                            worst_flag_value,
                                             add_total,
                                             drop_arm_levels,
                                             id_var,
@@ -433,11 +443,12 @@ ui_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
             tags$label("Subject Identifier"),
             teal.picks::picks_ui(ns("id_var"), id_var)
           ),
-          teal.widgets::optionalSelectInput(
-            ns("worst_flag_indicator"),
-            label = "Value Indicating Worst Grade",
-            multiple = FALSE,
-            fixed_on_single = TRUE
+          tags$div(
+            tags$label("Value Indicating Worst Grade"),
+            tags$p(
+              class = "tm-abnormality-worst-grade-worst-flag-value text-muted mb-0",
+              worst_flag_value
+            )
           ),
           checkboxInput(
             ns("drop_arm_levels"),
@@ -461,7 +472,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
                                              arm_var,
                                              paramcd,
                                              atoxgr_var,
-                                             worst_flag_indicator,
+                                             worst_flag_value,
                                              worst_low_flag_var,
                                              worst_high_flag_var,
                                              add_total,
@@ -491,16 +502,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
 
     anl_selectors <- selectors
     adsl_selectors <- selectors["arm_var"]
-
-    isolate({
-      resolved <- teal.transform::resolve_delayed(worst_flag_indicator, as.list(data()))
-      teal.widgets::updateOptionalSelectInput(
-        session = session,
-        inputId = "worst_flag_indicator",
-        choices = resolved$choices,
-        selected = resolved$selected
-      )
-    })
 
     data_with_card <- reactive({
       obj <- data()
@@ -556,14 +557,6 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
           length(pcd_vals) >= 1L,
           "Please select at least one Laboratory parameter."
         )
-      )
-
-      validate_input(
-        "worst_flag_indicator",
-        condition = function(x) {
-          !is.null(x) && length(x) >= 1L && nzchar(as.character(x)[[1]])
-        },
-        message = "Please select the value indicating worst grade."
       )
 
       adsl_filtered <- anl_q()[[parentname]]
@@ -640,7 +633,7 @@ srv_t_abnormality_by_worst_grade <- function(id, # nolint: object_length.
         atoxgr_var = as.vector(anl_selectors$atoxgr_var()$variables$selected),
         worst_high_flag_var = as.vector(anl_selectors$worst_high_flag_var()$variables$selected),
         worst_low_flag_var = as.vector(anl_selectors$worst_low_flag_var()$variables$selected),
-        worst_flag_indicator = input$worst_flag_indicator,
+        worst_flag_indicator = worst_flag_value,
         add_total = input$add_total,
         total_label = total_label,
         drop_arm_levels = input$drop_arm_levels,

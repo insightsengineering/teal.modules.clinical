@@ -14,7 +14,7 @@ tm_t_abnormality_by_worst_grade(
   atoxgr_var = variables(choices = "ATOXGR"),
   worst_high_flag_var = variables(choices = "WGRHIFL"),
   worst_low_flag_var = variables(choices = "WGRLOFL"),
-  worst_flag_indicator = teal.transform::choices_selected("Y"),
+  worst_flag_indicator = teal.picks::values(c("Y", "N"), "Y", multiple = FALSE, fixed = TRUE),
   add_total = TRUE,
   total_label = default_total_label(),
   drop_arm_levels = TRUE,
@@ -50,7 +50,8 @@ preselected option for the worst high grade flag variable.}
 \item{worst_low_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr object with all available choices and
 preselected option for the worst low grade flag variable.}
 
-\item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value indicating worst grade.}
+\item{worst_flag_indicator}{(\code{\link[teal.picks:picks]{teal.picks::values()}})\cr allowed flag value(s) and default selection
+indicating worst grade. The UI shows the selected value as static text (not an interactive control).}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 

@@ -22,7 +22,12 @@ app_driver_tm_t_abnormality_by_worst_grade <- function() { # nolint: object_leng
         atoxgr_var = teal.picks::variables(choices = "ATOXGR"),
         worst_high_flag_var = teal.picks::variables(choices = "WGRHIFL"),
         worst_low_flag_var = teal.picks::variables(choices = "WGRLOFL"),
-        worst_flag_indicator = teal.transform::choices_selected("Y"),
+        worst_flag_indicator = teal.picks::values(
+          c("Y", "N"),
+          "Y",
+          multiple = FALSE,
+          fixed = TRUE
+        ),
         total_label = default_total_label(),
         drop_arm_levels = TRUE,
         pre_output = NULL,
@@ -88,7 +93,7 @@ testthat::test_that(
       "WGRLOFL"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("worst_flag_indicator"),
+      app_driver$get_text(".tm-abnormality-worst-grade-worst-flag-value"),
       "Y"
     )
     app_driver$stop()
