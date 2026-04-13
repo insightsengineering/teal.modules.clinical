@@ -900,10 +900,10 @@ tm_t_events_by_grade <- function(label,
                                  transformators = list(),
                                  decorators = list()) {
   message("Initializing tm_t_events_by_grade")
-  arm_var <- convert_arg_to_picks(arm_var)
-  hlt <- convert_arg_to_picks(hlt)
-  llt <- convert_arg_to_picks(llt)
-  grade <- convert_arg_to_picks(grade)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  hlt <- teal.picks::as.picks(hlt, quiet = FALSE)
+  llt <- teal.picks::as.picks(llt, quiet = FALSE)
+  grade <- teal.picks::as.picks(grade, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
