@@ -119,11 +119,11 @@ tm_t_glm_counts <- function(label = "Counts Module",
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_t_glm_counts")
-  arm_var <- convert_arg_to_picks(arm_var)
-  aval_var <- convert_arg_to_picks(aval_var)
-  strata_var <- convert_arg_to_picks(strata_var)
-  offset_var <- convert_arg_to_picks(offset_var)
-  cov_var <- convert_arg_to_picks(cov_var)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  aval_var <- teal.picks::as.picks(aval_var, quiet = FALSE)
+  strata_var <- teal.picks::as.picks(strata_var, quiet = FALSE)
+  offset_var <- teal.picks::as.picks(offset_var, quiet = FALSE)
+  cov_var <- teal.picks::as.picks(cov_var, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   distribution_choices <- c("negbin", "quasipoisson", "poisson")
