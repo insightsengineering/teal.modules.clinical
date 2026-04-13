@@ -294,12 +294,12 @@ tm_t_shift_by_arm <- function(label,
   }
 
   message("Initializing tm_t_shift_by_arm")
-  arm_var <- convert_arg_to_picks(arm_var)
-  paramcd <- convert_arg_to_picks(paramcd)
-  visit_var <- convert_arg_to_picks(visit_var)
-  aval_var <- convert_arg_to_picks(aval_var)
-  baseline_var <- convert_arg_to_picks(baseline_var)
-  treatment_flag_var <- convert_arg_to_picks(treatment_flag_var)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
+  visit_var <- teal.picks::as.picks(visit_var, quiet = FALSE)
+  aval_var <- teal.picks::as.picks(aval_var, quiet = FALSE)
+  baseline_var <- teal.picks::as.picks(baseline_var, quiet = FALSE)
+  treatment_flag_var <- teal.picks::as.picks(treatment_flag_var, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
