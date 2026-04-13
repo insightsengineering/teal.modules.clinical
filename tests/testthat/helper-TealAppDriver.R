@@ -209,7 +209,7 @@ set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
   .teal_picks_click_summary_badge(app_driver, pick_id)
   exports <- teal_picks_exports(app_driver, pick_id)
   sel_id <- sprintf(exports$selected_id_fmt, slot)
-  open_id <- exports$open_id
+  open_id <- sprintf(exports$open_id_fmt, slot)
   val <- if (is.null(value)) character(0L) else as.character(value)
   .teal_picks_apply_select_value_in_browser(app_driver, sel_id, val)
   .teal_picks_shiny_set_picker_and_commit(app_driver, sel_id, open_id, val)
