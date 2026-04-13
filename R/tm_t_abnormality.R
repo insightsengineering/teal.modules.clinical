@@ -372,12 +372,12 @@ tm_t_abnormality <- function(label,
                              transformators = list(),
                              decorators = list()) {
   message("Initializing tm_t_abnormality")
-  arm_var <- convert_arg_to_picks(arm_var)
-  by_vars <- convert_arg_to_picks(by_vars)
-  grade <- convert_arg_to_picks(grade)
-  id_var <- convert_arg_to_picks(id_var)
-  baseline_var <- convert_arg_to_picks(baseline_var)
-  treatment_flag_var <- convert_arg_to_picks(treatment_flag_var)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  by_vars <- teal.picks::as.picks(by_vars, quiet = FALSE)
+  grade <- teal.picks::as.picks(grade, quiet = FALSE)
+  id_var <- teal.picks::as.picks(id_var, quiet = FALSE)
+  baseline_var <- teal.picks::as.picks(baseline_var, quiet = FALSE)
+  treatment_flag_var <- teal.picks::as.picks(treatment_flag_var, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
