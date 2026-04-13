@@ -448,11 +448,11 @@ tm_t_summary_by <- function(label,
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_t_summary_by")
-  arm_var <- convert_arg_to_picks(arm_var)
-  by_vars <- convert_arg_to_picks(by_vars)
-  summarize_vars <- convert_arg_to_picks(summarize_vars)
-  id_var <- convert_arg_to_picks(id_var)
-  if (!is.null(paramcd)) paramcd <- convert_arg_to_picks(paramcd)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  by_vars <- teal.picks::as.picks(by_vars, quiet = FALSE)
+  summarize_vars <- teal.picks::as.picks(summarize_vars, quiet = FALSE)
+  id_var <- teal.picks::as.picks(id_var, quiet = FALSE)
+  if (!is.null(paramcd)) paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
