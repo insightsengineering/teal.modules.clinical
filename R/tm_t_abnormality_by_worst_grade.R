@@ -338,12 +338,12 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             transformators = list(),
                                             decorators = list()) {
   message("Initializing tm_t_abnormality_by_worst_grade")
-  arm_var <- convert_arg_to_picks(arm_var)
-  id_var <- convert_arg_to_picks(id_var)
-  paramcd <- convert_arg_to_picks(paramcd)
-  atoxgr_var <- convert_arg_to_picks(atoxgr_var)
-  worst_high_flag_var <- convert_arg_to_picks(worst_high_flag_var)
-  worst_low_flag_var <- convert_arg_to_picks(worst_low_flag_var)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  id_var <- teal.picks::as.picks(id_var, quiet = FALSE)
+  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
+  atoxgr_var <- teal.picks::as.picks(atoxgr_var, quiet = FALSE)
+  worst_high_flag_var <- teal.picks::as.picks(worst_high_flag_var, quiet = FALSE)
+  worst_low_flag_var <- teal.picks::as.picks(worst_low_flag_var, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
