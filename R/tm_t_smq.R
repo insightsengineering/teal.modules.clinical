@@ -400,11 +400,11 @@ tm_t_smq <- function(label,
                      transformators = list(),
                      decorators = list()) {
   message("Initializing tm_t_smq")
-  arm_var <- convert_arg_to_picks(arm_var)
-  id_var <- convert_arg_to_picks(id_var)
-  llt <- convert_arg_to_picks(llt)
-  baskets <- convert_arg_to_picks(baskets)
-  scopes <- convert_arg_to_picks(scopes)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  id_var <- teal.picks::as.picks(id_var, quiet = FALSE)
+  llt <- teal.picks::as.picks(llt, quiet = FALSE)
+  baskets <- teal.picks::as.picks(baskets, quiet = FALSE)
+  scopes <- teal.picks::as.picks(scopes, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
