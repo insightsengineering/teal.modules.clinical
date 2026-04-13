@@ -474,6 +474,13 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
         condition = !is.null(selectors$arm_var()$variables$selected),
         message = "A treatment variables must be selected."
       )
+
+      validate_input(
+        inputId = "paramcd-values-selected",
+        condition = !is.null(selectors$paramcd()$values$selected),
+        message = "A select endpoint must be selected."
+      )
+
       validate_input(
         inputId = "id_var-variables-selected",
         condition = !is.null(selectors$id_var()$variables$selected),

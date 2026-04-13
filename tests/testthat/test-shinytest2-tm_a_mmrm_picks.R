@@ -261,7 +261,8 @@ for (func in output_functions) {
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", character(0L))
+      set_teal_picks_slot(app_driver, "aval_var", "variables", character(0L))
+
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
@@ -271,13 +272,11 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("aval_var", "ADQS", "select_input")
-          )
-        )),
-        "Analysis Variable' field is not selected"
+        app_driver$get_text(
+          app_driver$namespaces(TRUE)$module("mmrm_table-table_out_main")
+        ),
+        "A analysis variable must be selected.",
+        fixed = TRUE
       )
       app_driver$expect_validation_error()
       app_driver$stop()
@@ -296,7 +295,8 @@ for (func in output_functions) {
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0L))
+      # app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0L))
+      set_teal_picks_slot(app_driver, "paramcd", "values", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {

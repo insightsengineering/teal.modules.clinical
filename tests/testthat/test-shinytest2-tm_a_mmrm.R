@@ -1,5 +1,3 @@
-testthat::skip("until converted with merge")
-
 app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   arm_ref_comp <- list(
     ARMCD = list(
