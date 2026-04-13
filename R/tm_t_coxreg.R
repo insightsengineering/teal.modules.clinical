@@ -552,12 +552,12 @@ tm_t_coxreg <- function(label,
                         transformators = list(),
                         decorators = list()) {
   message("Initializing tm_t_coxreg")
-  arm_var <- convert_arg_to_picks(arm_var)
-  paramcd <- convert_arg_to_picks(paramcd)
-  cov_var <- convert_arg_to_picks(cov_var)
-  strata_var <- convert_arg_to_picks(strata_var)
-  aval_var <- convert_arg_to_picks(aval_var)
-  cnsr_var <- convert_arg_to_picks(cnsr_var)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
+  cov_var <- teal.picks::as.picks(cov_var, quiet = FALSE)
+  strata_var <- teal.picks::as.picks(strata_var, quiet = FALSE)
+  aval_var <- teal.picks::as.picks(aval_var, quiet = FALSE)
+  cnsr_var <- teal.picks::as.picks(cnsr_var, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
