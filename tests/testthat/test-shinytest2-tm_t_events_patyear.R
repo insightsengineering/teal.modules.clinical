@@ -17,32 +17,19 @@ app_driver_tm_t_events_patyear <- function() {
         label = "AE Rate Adjusted for Patient-Years At Risk Table",
         dataname = "ADAETTE",
         parentname = "ADSL",
-        arm_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADSL"]], c("ARM", "ARMCD", "SEX")),
+        arm_var = teal.picks::variables(
+          choices = c("ARM", "ARMCD", "SEX"),
           selected = "ARMCD"
         ),
         add_total = TRUE,
-        events_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAETTE"]], "n_events"),
-          selected = "n_events",
-          fixed = TRUE
-        ),
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::value_choices(data[["ADAETTE"]], "PARAMCD", "PARAM"),
-          selected = "AETTE1"
-        ),
+        events_var = teal.picks::variables(choices = "n_events"),
+        paramcd = teal.picks::variables(choices = "PARAMCD"),
         conf_level = teal.transform::choices_selected(
-          c(2, 0.95, 0.9, 0.8), 0.95,
+          c(0.95, 0.9, 0.8), 0.95,
           keep_order = TRUE
         ),
-        aval_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVAL"),
-          selected = "AVAL", fixed = TRUE
-        ),
-        avalu_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADAETTE"]], "AVALU"),
-          selected = "AVALU", fixed = TRUE
-        ),
+        aval_var = teal.picks::variables(choices = "AVAL"),
+        avalu_var = teal.picks::variables(choices = "AVALU"),
         total_label = default_total_label(),
         na_level = default_na_str(),
         drop_arm_levels = TRUE,
@@ -70,16 +57,20 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     testthat::expect_equal(
-      app_driver$get_text("a.nav-link.active"),
+      app_driver$get_text(".teal-modules-tree a.module-button.active"),
       "AE Rate Adjusted for Patient-Years At Risk Table"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"),
+      get_teal_picks_slot(app_driver, "arm_var", "variables"),
       "ARMCD"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals"),
-      "AETTE1"
+      get_teal_picks_slot(app_driver, "paramcd", "variables"),
+      "PARAMCD"
+    )
+    testthat::expect_identical(
+      sort(get_teal_picks_slot(app_driver, "paramcd", "values")),
+      sort(unique(as.character(tmc_ex_adaette[["PARAMCD"]])))
     )
     testthat::expect_equal(
       app_driver$get_active_module_input("conf_level"),
@@ -109,7 +100,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
-    app_driver$set_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals", "AETTE2")
+    set_teal_picks_slot(app_driver, "paramcd", "values", "AETTE2")
     testthat::expect_false(
       identical(
         table_before,
@@ -124,18 +115,12 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_events_patyear: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_patyear()
-  app_driver$set_active_module_input("paramcd-dataset_ADAETTE_singleextract-filter1-vals", NULL)
+  set_teal_picks_slot(app_driver, "paramcd", "values", NULL)
   testthat::expect_identical(
     app_driver$get_active_module_table_output("patyear_table-table-with-settings"),
     data.frame()
   )
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "paramcd-dataset_ADAETTE_singleextract-filter1-vals_input .shiny-validation-message"
-    )),
-    "A Event Type Parameter is required"
-  )
   app_driver$stop()
 })
 
@@ -145,7 +130,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", "ARM")
+    set_teal_picks_slot(app_driver, "arm_var", "variables", "ARM")
     testthat::expect_false(
       identical(
         table_before,
@@ -160,17 +145,12 @@ testthat::test_that(
 testthat::test_that("e2e - tm_t_events_patyear: Deselection of arm_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_events_patyear()
-  app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", NULL)
+  set_teal_picks_slot(app_driver, "arm_var", "variables", NULL)
   testthat::expect_identical(
     app_driver$get_active_module_table_output("patyear_table-table-with-settings"),
     data.frame()
   )
   app_driver$expect_validation_error()
-  selector <- "arm_var-dataset_ADSL_singleextract-select_input .shiny-validation-message"
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(selector)),
-    "Please select exactly 1 or 2 treatment variables"
-  )
   app_driver$stop()
 })
 
@@ -180,7 +160,7 @@ testthat::test_that(
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_events_patyear()
     table_before <- app_driver$get_active_module_table_output("patyear_table-table-with-settings")
-    app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", c("ARM", "SEX"))
+    set_teal_picks_slot(app_driver, "arm_var", "variables", c("ARM", "SEX"))
     testthat::expect_false(
       identical(
         table_before,

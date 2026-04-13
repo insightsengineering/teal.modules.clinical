@@ -1,4 +1,4 @@
-^renv$
+﻿^renv$
 ^renv\.lock$
 CODE_OF_CONDUCT.md
 SECURITY.md
@@ -49,3 +49,4 @@ coverage.*
 ^revdep$
 ^scripts$
 ^\.covrignore$
+
