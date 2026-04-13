@@ -328,8 +328,8 @@ tm_t_summary <- function(label,
                          transformators = list(),
                          decorators = list()) {
   message("Initializing tm_t_summary")
-  arm_var <- convert_arg_to_picks(arm_var)
-  summarize_vars <- convert_arg_to_picks(summarize_vars)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  summarize_vars <- teal.picks::as.picks(summarize_vars, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)

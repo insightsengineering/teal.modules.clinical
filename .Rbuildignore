@@ -49,4 +49,3 @@ coverage.*
 ^revdep$
 ^scripts$
 ^\.covrignore$
-^inst/pr_verification/
