@@ -497,10 +497,10 @@ tm_t_binary_outcome <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_binary_outcome")
-  arm_var <- convert_arg_to_picks(arm_var)
-  paramcd <- convert_arg_to_picks(paramcd)
-  strata_var <- convert_arg_to_picks(strata_var)
-  aval_var <- convert_arg_to_picks(aval_var)
+  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
+  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
+  strata_var <- teal.picks::as.picks(strata_var, quiet = FALSE)
+  aval_var <- teal.picks::as.picks(aval_var, quiet = FALSE)
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
