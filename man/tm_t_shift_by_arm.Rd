@@ -15,8 +15,7 @@ tm_t_shift_by_arm(
   base_var = lifecycle::deprecated(),
   baseline_var = variables(choices = "BNRIND"),
   treatment_flag_var = variables(choices = "ONTRTFL"),
-  treatment_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed =
-    TRUE),
+  treatment_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
   useNA = c("ifany", "no"),
   na_level = tern::default_na_str(),
   add_total = FALSE,
@@ -57,8 +56,8 @@ variable for baseline reference range indicator.}
 \item{treatment_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
 variable for on-treatment flag.}
 
-\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
-value(s) indicating on-treatment records.}
+\item{treatment_flag}{(\code{\link[teal.picks:picks]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+value matching \code{treatment_flag_var} for on-treatment records (default \code{"Y"}).}
 
 \item{useNA}{(\code{character})\cr whether missing data (\code{NA}) should be displayed as a level.}
 

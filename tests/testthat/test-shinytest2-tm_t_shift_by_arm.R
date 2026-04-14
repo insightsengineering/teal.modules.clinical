@@ -20,7 +20,7 @@ app_driver_tm_t_shift_by_arm <- function() {
         baseline_var = teal.picks::variables(choices = "BNRIND"),
         useNA = "ifany",
         treatment_flag_var = teal.picks::variables(choices = "ONTRTFL"),
-        treatment_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed = TRUE),
+        treatment_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
         na_level = default_na_str(),
         add_total = FALSE,
         total_label = default_total_label(),

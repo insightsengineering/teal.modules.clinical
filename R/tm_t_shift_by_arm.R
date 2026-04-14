@@ -197,8 +197,8 @@ template_shift_by_arm <- function(dataname,
 #'   variable for baseline reference range indicator.
 #' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for on-treatment flag.
-#' @param treatment_flag ([teal.transform::choices_selected()])\cr
-#'   value(s) indicating on-treatment records.
+#' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#'   value matching `treatment_flag_var` for on-treatment records (default `"Y"`).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -271,10 +271,7 @@ tm_t_shift_by_arm <- function(label,
                               base_var = lifecycle::deprecated(),
                               baseline_var = variables(choices = "BNRIND"),
                               treatment_flag_var = variables(choices = "ONTRTFL"),
-                              treatment_flag = teal.transform::choices_selected(
-                                c("Y", "N"),
-                                selected = "Y", fixed = TRUE
-                              ),
+                              treatment_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
                               useNA = c("ifany", "no"), # nolint: object_name.
                               na_level = tern::default_na_str(),
                               add_total = FALSE,
@@ -300,13 +297,13 @@ tm_t_shift_by_arm <- function(label,
   aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
   baseline_var <- deprecate_pick_variables_arg(baseline_var, "baseline_var")
   treatment_flag_var <- deprecate_pick_variables_arg(treatment_flag_var, "treatment_flag_var")
+  treatment_flag <- deprecate_pick_values_arg(treatment_flag, "treatment_flag")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
   checkmate::assert_string(total_label)
-  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
