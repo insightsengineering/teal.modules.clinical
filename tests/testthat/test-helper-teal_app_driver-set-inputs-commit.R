@@ -1,9 +1,7 @@
-# Compare `Shiny.setInputValue` via `run_js` vs `AppDriver$set_inputs(..., priority_ = "event")`
-# for the teal.picks commit pulse (selected + selected_open TRUE/FALSE).
+# Tests for teal.picks commit via `AppDriver$set_inputs(..., priority_ = "event")`.
 #
-# The first `test_that()` checks R/JS literal alignment without a browser. The second needs
-# Chromote/Chrome; it is skipped unless `Sys.setenv(TEAL_PICKS_TEST_COMMIT_EQUIVALENCE = "true")`
-# (then run `testthat::test_local()` / `devtools::test()`).
+# The first `test_that()` checks selected-value shaping without a browser. The second needs
+# Chromote/Chrome; it follows the same `skip_if_too_deep()` pattern as other shinytest2 tests.
 
 if (!exists(".teal_picks_shiny_set_picker_and_commit", inherits = TRUE)) {
   source(file.path(testthat::test_path(), "helper-TealAppDriver.R"), local = TRUE)
@@ -25,9 +23,7 @@ normalize_pick_test_input <- function(x) {
   x
 }
 
-snapshot_commit_inputs <- function(val, commit_with) {
-  checkmate::assert_choice(commit_with, c("run_js", "set_inputs"))
-
+snapshot_commit_inputs <- function(val) {
   dir <- tempfile("teal_picks_commit_test")
   dir.create(dir)
   writeLines(
@@ -50,8 +46,7 @@ snapshot_commit_inputs <- function(val, commit_with) {
     app,
     sel_id = sel_id,
     open_id = open_id,
-    val = val,
-    commit_with = commit_with
+    val = val
   )
 
   inputs <- app$get_values()$input
@@ -61,24 +56,16 @@ snapshot_commit_inputs <- function(val, commit_with) {
   )
 }
 
-testthat::test_that(".teal_picks_shiny_selected_value_for_set_inputs matches setInput JS literal cases", {
+testthat::test_that(".teal_picks_shiny_selected_value_for_set_inputs maps empty / scalar / vector", {
   v0 <- character(0)
   testthat::expect_equal(
     .teal_picks_shiny_selected_value_for_set_inputs(v0),
     v0
   )
-  testthat::expect_equal(
-    .teal_picks_shiny_setinput_value_literal(v0),
-    "[]"
-  )
 
   testthat::expect_equal(
     .teal_picks_shiny_selected_value_for_set_inputs("ARM"),
     "ARM"
-  )
-  testthat::expect_equal(
-    .teal_picks_shiny_setinput_value_literal("ARM"),
-    "\"ARM\""
   )
 
   v2 <- c("ARM", "AGE")
@@ -86,29 +73,29 @@ testthat::test_that(".teal_picks_shiny_selected_value_for_set_inputs matches set
     .teal_picks_shiny_selected_value_for_set_inputs(v2),
     v2
   )
-  testthat::expect_equal(
-    .teal_picks_shiny_setinput_value_literal(v2),
-    "[\"ARM\",\"AGE\"]"
-  )
 })
 
-testthat::test_that("teal.picks commit: run_js and set_inputs yield the same Shiny input snapshot", {
+testthat::test_that("teal.picks commit via set_inputs sets Shiny inputs as expected", {
   testthat::skip_if_not_installed("shinytest2")
-  testthat::skip_on_cran()
-  if (!identical(Sys.getenv("TEAL_PICKS_TEST_COMMIT_EQUIVALENCE", "false"), "true")) {
-    testthat::skip("Set TEAL_PICKS_TEST_COMMIT_EQUIVALENCE=true to run (requires Chromote/Chrome).")
-  }
+  skip_if_too_deep(5)
 
   cases <- list(
-    empty = character(0),
-    one = "ARM",
-    multi = c("ARM", "AGE")
+    empty = list(
+      val = character(0),
+      expected = list(sel = NULL, open = FALSE)
+    ),
+    one = list(
+      val = "ARM",
+      expected = list(sel = "ARM", open = FALSE)
+    ),
+    multi = list(
+      val = c("ARM", "AGE"),
+      expected = list(sel = c("ARM", "AGE"), open = FALSE)
+    )
   )
 
   for (nm in names(cases)) {
-    val <- cases[[nm]]
-    snap_js <- snapshot_commit_inputs(val, "run_js")
-    snap_si <- snapshot_commit_inputs(val, "set_inputs")
-    testthat::expect_equal(snap_js, snap_si, label = nm)
+    snap <- snapshot_commit_inputs(cases[[nm]]$val)
+    testthat::expect_equal(snap, cases[[nm]]$expected, label = nm)
   }
 })
