@@ -183,18 +183,18 @@ template_events_patyear <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_events_patyear
-#' @param arm_var ([teal.picks::variables()])\cr object with all
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all
 #'   available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param events_var ([teal.picks::variables()])\cr object with
+#' @param events_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with
 #'   all available choices and preselected option for the variable with all event counts.
-#' @param paramcd ([teal.picks::variables()])\cr variable used to filter the analysis dataset
+#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable used to filter the analysis dataset
 #'   (typically `PARAMCD`). The `values()` element is added internally to allow users to pick
 #'   parameter value(s) interactively.
-#' @param aval_var ([teal.picks::variables()])\cr analysis variable (typically `AVAL`).
-#' @param avalu_var ([teal.picks::variables()])\cr analysis unit variable (typically `AVALU`).
+#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr analysis variable (typically `AVAL`).
+#' @param avalu_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr analysis unit variable (typically `AVALU`).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -323,19 +323,14 @@ tm_t_events_patyear <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_events_patyear")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  events_var <- teal.picks::as.picks(events_var, quiet = FALSE)
-  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
-  aval_var <- teal.picks::as.picks(aval_var, quiet = FALSE)
-  avalu_var <- teal.picks::as.picks(avalu_var, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  events_var <- deprecate_pick_variables_arg(events_var, "events_var")
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
+  avalu_var <- deprecate_pick_variables_arg(avalu_var, "avalu_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(events_var, "variables")
-  checkmate::assert_class(paramcd, "variables")
-  checkmate::assert_class(aval_var, "variables")
-  checkmate::assert_class(avalu_var, "variables")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
