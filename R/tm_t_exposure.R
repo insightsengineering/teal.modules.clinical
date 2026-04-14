@@ -213,16 +213,16 @@ template_exposure <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_exposure
-#' @param row_by_var ([teal.picks::variables()])\cr
+#' @param row_by_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable names that can be used to split rows (`dataname`).
-#' @param col_by_var ([teal.picks::variables()])\cr
+#' @param col_by_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable names that can be used to split columns (`parentname`).
-#' @param paramcd ([teal.picks::variables()])\cr variable used to filter by parameter (`dataname`);
+#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable used to filter by parameter (`dataname`);
 #'   `values()` is added internally.
-#' @param id_var ([teal.picks::variables()])\cr subject identifier (`dataname`).
-#' @param parcat ([teal.picks::variables()])\cr parameter category column on `dataname`; `values()` is added internally.
-#' @param aval_var ([teal.picks::variables()])\cr analysis value variable (`dataname`).
-#' @param avalu_var ([teal.picks::variables()])\cr analysis value unit variable (`dataname`).
+#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr subject identifier (`dataname`).
+#' @param parcat ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr parameter category column on `dataname`; `values()` is added internally.
+#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr analysis value variable (`dataname`).
+#' @param avalu_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr analysis value unit variable (`dataname`).
 #' @param paramcd_label (`character`)\cr the column from the dataset where the value will be used to
 #'   label the argument `paramcd`.
 #'
@@ -330,24 +330,17 @@ tm_t_exposure <- function(label,
                           transformators = list(),
                           decorators = list()) {
   message("Initializing tm_t_exposure")
-  row_by_var <- teal.picks::as.picks(row_by_var, quiet = FALSE)
-  col_by_var <- teal.picks::as.picks(col_by_var, quiet = FALSE)
-  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
-  id_var <- teal.picks::as.picks(id_var, quiet = FALSE)
-  parcat <- teal.picks::as.picks(parcat, quiet = FALSE)
-  aval_var <- teal.picks::as.picks(aval_var, quiet = FALSE)
-  avalu_var <- teal.picks::as.picks(avalu_var, quiet = FALSE)
+  row_by_var <- deprecate_pick_variables_arg(row_by_var, "row_by_var")
+  col_by_var <- deprecate_pick_variables_arg(col_by_var, "col_by_var")
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
+  parcat <- deprecate_pick_variables_arg(parcat, "parcat")
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
+  avalu_var <- deprecate_pick_variables_arg(avalu_var, "avalu_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  checkmate::assert_class(row_by_var, "variables")
-  checkmate::assert_class(col_by_var, "variables")
-  checkmate::assert_class(paramcd, "variables")
-  checkmate::assert_class(id_var, "variables")
-  checkmate::assert_class(parcat, "variables")
-  checkmate::assert_class(aval_var, "variables")
-  checkmate::assert_class(avalu_var, "variables")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(add_total_row)
