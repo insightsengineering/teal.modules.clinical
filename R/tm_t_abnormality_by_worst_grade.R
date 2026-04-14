@@ -236,19 +236,19 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_abnormality_by_worst_grade
-#' @param arm_var ([teal.picks::variables()])\cr object with all available choices and preselected
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and preselected
 #'   option for the treatment variable.
-#' @param id_var ([teal.picks::variables()])\cr subject identifier variable.
-#' @param paramcd ([teal.picks::variables()])\cr variable used to filter the analysis dataset
+#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr subject identifier variable.
+#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable used to filter the analysis dataset
 #'   (typically `PARAMCD`). The `values()` element is added internally to allow users to pick
 #'   laboratory parameter value(s) interactively.
-#' @param atoxgr_var ([teal.picks::variables()])\cr object with all available choices and preselected
+#' @param atoxgr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and preselected
 #'   option for the analysis toxicity grade variable.
-#' @param worst_high_flag_var ([teal.picks::variables()])\cr object with all available choices and
+#' @param worst_high_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and
 #'   preselected option for the worst high grade flag variable.
-#' @param worst_low_flag_var ([teal.picks::variables()])\cr object with all available choices and
+#' @param worst_low_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and
 #'   preselected option for the worst low grade flag variable.
-#' @param worst_flag_indicator ([teal.picks::values()])\cr allowed flag value(s) and default selection
+#' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr allowed flag value(s) and default selection
 #'   indicating worst grade. The UI shows the selected value as static text (not an interactive control).
 #'
 #' @inherit module_arguments return seealso
@@ -344,23 +344,17 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             transformators = list(),
                                             decorators = list()) {
   message("Initializing tm_t_abnormality_by_worst_grade")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  id_var <- teal.picks::as.picks(id_var, quiet = FALSE)
-  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
-  atoxgr_var <- teal.picks::as.picks(atoxgr_var, quiet = FALSE)
-  worst_high_flag_var <- teal.picks::as.picks(worst_high_flag_var, quiet = FALSE)
-  worst_low_flag_var <- teal.picks::as.picks(worst_low_flag_var, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  atoxgr_var <- deprecate_pick_variables_arg(atoxgr_var, "atoxgr_var")
+  worst_high_flag_var <- deprecate_pick_variables_arg(worst_high_flag_var, "worst_high_flag_var")
+  worst_low_flag_var <- deprecate_pick_variables_arg(worst_low_flag_var, "worst_low_flag_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(total_label)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(id_var, "variables")
-  checkmate::assert_class(paramcd, "variables")
-  checkmate::assert_class(atoxgr_var, "variables")
-  checkmate::assert_class(worst_high_flag_var, "variables")
-  checkmate::assert_class(worst_low_flag_var, "variables")
-  checkmate::assert_class(worst_flag_indicator, "values")
+  worst_flag_indicator <- deprecate_pick_values_arg(worst_flag_indicator, \"worst_flag_indicator\")
   worst_flag_value <- as.character(worst_flag_indicator$selected)
   checkmate::assert_character(worst_flag_value, min.len = 1L, .var.name = "worst_flag_indicator$selected")
   worst_flag_value <- worst_flag_value[[1]]
