@@ -80,6 +80,47 @@ init_teal_app_driver <- function(...) {
   .teal_picks_js_json_collection_literal(val, singleton_as_bare_string = TRUE)
 }
 
+# R value for `AppDriver$set_inputs()` matching [.teal_picks_shiny_setinput_value_literal()] semantics.
+.teal_picks_shiny_selected_value_for_set_inputs <- function(val) { # nolint: object_length_linter.
+  val <- as.character(val)
+  if (length(val) == 0L) {
+    character(0)
+  } else if (length(val) == 1L) {
+    val[[1L]]
+  } else {
+    val
+  }
+}
+
+# Same as [.teal_picks_shiny_set_picker_and_commit()] but uses `$set_inputs(..., priority_ = "event")`
+# (three flushes: selected value, `*_open` TRUE, `*_open` FALSE). For discussion see PR review on
+# `run_js` vs shinytest2-native input setting.
+.teal_picks_shiny_set_picker_and_commit_set_inputs <- function(app_driver, sel_id, open_id, val) { # nolint: object_length_linter.
+  checkmate::assert_string(sel_id)
+  checkmate::assert_string(open_id)
+  val <- as.character(val)
+  sel_value <- .teal_picks_shiny_selected_value_for_set_inputs(val)
+
+  do_call_set_inputs <- function(named_inputs, wait_) {
+    do.call(
+      app_driver$set_inputs,
+      c(
+        named_inputs,
+        list(
+          priority_ = "event",
+          allow_no_input_binding_ = TRUE,
+          wait_ = wait_
+        )
+      )
+    )
+  }
+
+  do_call_set_inputs(stats::setNames(list(sel_value), sel_id), wait_ = FALSE)
+  do_call_set_inputs(stats::setNames(list(TRUE), open_id), wait_ = FALSE)
+  do_call_set_inputs(stats::setNames(list(FALSE), open_id), wait_ = TRUE)
+  invisible(app_driver)
+}
+
 # Sync native <select> + bootstrap-select widget, then let Shiny read change events.
 .teal_picks_apply_select_value_in_browser <- function(app_driver, select_id, val) { # nolint: object_length_linter.
   checkmate::assert_string(select_id)
@@ -118,10 +159,21 @@ init_teal_app_driver <- function(...) {
 }
 
 # Push values through Shiny and force teal.picks picker commit (selected_open pulse).
-.teal_picks_shiny_set_picker_and_commit <- function(app_driver, sel_id, open_id, val) { # nolint: object_length_linter.
+#
+# @param commit_with (`character(1)`) `"run_js"` (default) uses `Shiny.setInputValue` in the browser;
+#   `"set_inputs"` uses [`AppDriver$set_inputs()`] with `priority_ = "event"` (see
+#   [.teal_picks_shiny_set_picker_and_commit_set_inputs()]).
+.teal_picks_shiny_set_picker_and_commit <- function(app_driver, sel_id, open_id, val,
+                                                   commit_with = c("run_js", "set_inputs")) { # nolint: object_length_linter.
   checkmate::assert_string(sel_id)
   checkmate::assert_string(open_id)
+  commit_with <- match.arg(commit_with)
   val <- as.character(val)
+
+  if (identical(commit_with, "set_inputs")) {
+    return(.teal_picks_shiny_set_picker_and_commit_set_inputs(app_driver, sel_id, open_id, val))
+  }
+
   name_sel <- .teal_picks_js_id_literal(sel_id)
   name_open <- .teal_picks_js_id_literal(open_id)
   val_js <- .teal_picks_shiny_setinput_value_literal(val)
@@ -199,16 +251,20 @@ get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
 # `*_selected_open` via Shiny.setInputValue.
 # Use value = NULL for an empty multi-select (character(0) is sent to Shiny).
 # @param wait (`logical(1)`) if `TRUE` (default), call `wait_for_idle()` after committing the picker.
-set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE) {
+# @param commit_with (`character(1)`) `"run_js"` or `"set_inputs"`; passed to
+#   [.teal_picks_shiny_set_picker_and_commit()].
+set_teal_picks_slot <- function(app_driver, pick_id, slot, value, wait = TRUE,
+                               commit_with = c("run_js", "set_inputs")) {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
   checkmate::assert_flag(wait)
+  commit_with <- match.arg(commit_with)
   .teal_picks_click_summary_badge(app_driver, pick_id)
   sel_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected"))
   open_id <- app_driver$namespaces()$module(paste0(pick_id, "-", slot, "-selected_open"))
   val <- if (is.null(value)) character(0) else as.character(value)
   .teal_picks_apply_select_value_in_browser(app_driver, sel_id, val)
-  .teal_picks_shiny_set_picker_and_commit(app_driver, sel_id, open_id, val)
+  .teal_picks_shiny_set_picker_and_commit(app_driver, sel_id, open_id, val, commit_with = commit_with)
   if (isTRUE(wait)) {
     app_driver$wait_for_idle()
   }
