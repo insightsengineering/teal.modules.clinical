@@ -345,14 +345,14 @@ template_summary_by <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_summary_by
-#' @param arm_var ([teal.picks::variables()])\cr variable(s) for treatment arm.
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable(s) for treatment arm.
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param by_vars ([teal.picks::variables()])\cr variable(s) for row grouping.
-#' @param summarize_vars ([teal.picks::variables()])\cr variable(s) to summarize.
-#' @param id_var ([teal.picks::variables()])\cr variable for subject identifier.
-#' @param paramcd ([teal.picks::variables()])\cr optional variable for parameter code filter.
+#' @param by_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable(s) for row grouping.
+#' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable(s) to summarize.
+#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for subject identifier.
+#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional variable for parameter code filter.
 #'   When provided, a `values()` selector is added to allow users to filter
 #'   the parameter values interactively.
 #'
@@ -448,21 +448,16 @@ tm_t_summary_by <- function(label,
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_t_summary_by")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  by_vars <- teal.picks::as.picks(by_vars, quiet = FALSE)
-  summarize_vars <- teal.picks::as.picks(summarize_vars, quiet = FALSE)
-  id_var <- teal.picks::as.picks(id_var, quiet = FALSE)
-  if (!is.null(paramcd)) paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  by_vars <- deprecate_pick_variables_arg(by_vars, "by_vars")
+  summarize_vars <- deprecate_pick_variables_arg(summarize_vars, "summarize_vars")
+  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
+  if (!is.null(paramcd)) paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(by_vars, "variables")
-  checkmate::assert_class(summarize_vars, "variables")
-  checkmate::assert_class(id_var, "variables")
-  checkmate::assert_class(paramcd, "variables", null.ok = TRUE)
   checkmate::assert_class(denominator, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
