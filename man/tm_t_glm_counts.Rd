@@ -33,11 +33,11 @@ tm_t_glm_counts(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{aval_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr analysis variable (\code{dataname}).}
+\item{aval_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr analysis variable (\code{dataname}).}
 
-\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr treatment variable (\code{parentname}).}
+\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr treatment variable (\code{parentname}).}
 
-\item{strata_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr optional stratification columns (\code{dataname}).}
+\item{strata_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr optional stratification columns (\code{dataname}).}
 
 \item{rate_mean_method}{(\code{character}) method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans"
 (as in \code{summarize_glm_count()}).}
@@ -47,7 +47,7 @@ tm_t_glm_counts(
 
 \item{offset_var}{(\code{character}) a name of the numeric variable to be used as an offset?}
 
-\item{cov_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr optional covariate columns (\code{dataname}).}
+\item{cov_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr optional covariate columns (\code{dataname}).}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
