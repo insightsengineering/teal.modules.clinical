@@ -1168,8 +1168,3 @@ deprecate_pick_values_arg <- function(x, arg_name) {
   checkmate::assert_class(x, "values", .var.name = arg_name)
   x
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/picks_modules_migration@279-interactive_variables@main
-
