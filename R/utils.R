@@ -1101,17 +1101,70 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
   })
 }
 
-#' Silently convert choice selected module variables to picks class
+#' Coerce legacy `teal.transform` specs to [`teal.picks::variables()`] with deprecation
 #'
-#' @param arg module variable of class `choices_selected` or picks variables
+#' If `x` is a legacy `choices_selected`, `filter_spec`, or `select_spec` object, it is converted
+#' via [`teal.picks::as.picks()`]. Otherwise `x` must already inherit `"variables"`.
+#'
+#' @param x (`variables` or legacy `teal.transform` class) object.
+#' @param arg_name (`character(1)`) argument name (used in deprecation messages).
+#' @param null.ok (`logical(1)`) whether `NULL` is allowed.
+#'
 #' @keywords internal
-convert_arg_to_picks <- function(arg,
-                                 allowed_class = c("choices_selected", "filter_spec", "select_spec"),
-                                 envir = parent.frame()) {
-  arg <- substitute(arg)
-  arg_name <- as.character(arg)
-  arg <- eval(arg, envir = envir)
-  allowed_class <- match.arg(allowed_class)
-  checkmate::assert_multi_class(arg, c(allowed_class, "pick", "picks"), .var.name = arg_name)
-  teal.picks::as.picks(arg)
+#' @noRd
+deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) {
+  checkmate::assert_string(arg_name)
+  if (isTRUE(null.ok) && is.null(x)) {
+    return(x)
+  }
+  legacy <- c("choices_selected", "filter_spec", "select_spec")
+  if (inherits(x, legacy)) {
+    lifecycle::deprecate_warn(
+      when = "0.13.0",
+      what = I(paste0("`", arg_name, "`")),
+      details = paste(
+        "Pass `teal.picks::variables()` (or a full `teal.picks::picks()` chain).",
+        "Support for legacy `teal.transform::choices_selected()`, `filter_spec`, and `select_spec` is deprecated."
+      )
+    )
+    x <- teal.picks::as.picks(x, quiet = FALSE)
+  }
+  checkmate::assert_class(x, "variables", null.ok = null.ok, .var.name = arg_name)
+  x
+}
+
+#' Coerce legacy `choices_selected` to [`teal.picks::values()`] with deprecation
+#'
+#' @param x (`values` or `choices_selected`) object.
+#' @param arg_name (`character(1)`) argument name.
+#'
+#' @keywords internal
+#' @noRd
+deprecate_pick_values_arg <- function(x, arg_name) {
+  checkmate::assert_string(arg_name)
+  if (inherits(x, "choices_selected")) {
+    lifecycle::deprecate_warn(
+      when = "0.13.0",
+      what = I(paste0("`", arg_name, "`")),
+      details = paste(
+        "Pass `teal.picks::values()`.",
+        "Support for legacy `teal.transform::choices_selected()` is deprecated."
+      )
+    )
+    if (is.null(x$choices) || inherits(x$choices, "delayed_data")) {
+      stop(
+        "Delayed `choices_selected` objects cannot be coerced automatically; specify `teal.picks::values()` explicitly.",
+        call. = FALSE
+      )
+    }
+    ch <- as.character(x$choices)
+    se <- as.character(unlist(x$selected, use.names = FALSE))
+    checkmate::assert_character(ch, min.len = 1L)
+    checkmate::assert_character(se, min.len = 1L)
+    fixed <- isTRUE(x$fixed)
+    multiple <- length(se) > 1L
+    x <- teal.picks::values(ch, se, multiple = multiple, fixed = fixed)
+  }
+  checkmate::assert_class(x, "values", .var.name = arg_name)
+  x
 }
