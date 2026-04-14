@@ -465,22 +465,22 @@ template_shift_by_grade <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_shift_by_grade
-#' @param arm_var ([teal.picks::variables()])\cr
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for treatment arm.
-#' @param visit_var ([teal.picks::variables()])\cr
+#' @param visit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for analysis visit.
-#' @param paramcd ([teal.picks::variables()])\cr
+#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow
 #'   users to filter the parameter values interactively.
-#' @param worst_flag_var ([teal.picks::variables()])\cr
+#' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for worst grade flag.
 #' @param worst_flag_indicator ([teal.transform::choices_selected()])\cr
 #'   value(s) indicating worst grade records.
-#' @param anl_toxgrade_var ([teal.picks::variables()])\cr
+#' @param anl_toxgrade_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for analysis toxicity grade.
-#' @param base_toxgrade_var ([teal.picks::variables()])\cr
+#' @param base_toxgrade_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for baseline toxicity grade.
-#' @param id_var ([teal.picks::variables()])\cr
+#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for subject identifier.
 #'
 #' @inherit module_arguments return seealso
@@ -574,25 +574,18 @@ tm_t_shift_by_grade <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_shift_by_grade")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  visit_var <- teal.picks::as.picks(visit_var, quiet = FALSE)
-  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
-  worst_flag_var <- teal.picks::as.picks(worst_flag_var, quiet = FALSE)
-  anl_toxgrade_var <- teal.picks::as.picks(anl_toxgrade_var, quiet = FALSE)
-  base_toxgrade_var <- teal.picks::as.picks(base_toxgrade_var, quiet = FALSE)
-  id_var <- teal.picks::as.picks(id_var, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  visit_var <- deprecate_pick_variables_arg(visit_var, "visit_var")
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  worst_flag_var <- deprecate_pick_variables_arg(worst_flag_var, "worst_flag_var")
+  anl_toxgrade_var <- deprecate_pick_variables_arg(anl_toxgrade_var, "anl_toxgrade_var")
+  base_toxgrade_var <- deprecate_pick_variables_arg(base_toxgrade_var, "base_toxgrade_var")
+  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(visit_var, "variables")
-  checkmate::assert_class(paramcd, "variables")
-  checkmate::assert_class(worst_flag_var, "variables")
   checkmate::assert_class(worst_flag_indicator, "choices_selected")
-  checkmate::assert_class(anl_toxgrade_var, "variables")
-  checkmate::assert_class(base_toxgrade_var, "variables")
-  checkmate::assert_class(id_var, "variables")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_flag(drop_arm_levels)
