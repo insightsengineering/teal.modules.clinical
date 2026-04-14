@@ -34,26 +34,26 @@ tm_t_shift_by_arm(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for treatment arm.}
 
-\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for lab parameter code. The \code{values()} element is added internally to allow
 users to filter the parameter values interactively.}
 
-\item{visit_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{visit_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for analysis visit. The \code{values()} element is added internally to allow
 users to filter the visit values interactively.}
 
-\item{aval_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{aval_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for analysis range indicator.}
 
 \item{base_var}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{baseline_var} argument instead.}
 
-\item{baseline_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{baseline_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for baseline reference range indicator.}
 
-\item{treatment_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{treatment_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for on-treatment flag.}
 
 \item{treatment_flag}{(\code{\link[teal.picks:picks]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
