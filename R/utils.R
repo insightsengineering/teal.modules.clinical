@@ -1111,6 +1111,7 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 #' @param null.ok (`logical(1)`) whether `NULL` is allowed.
 #'
 #' @keywords internal
+#' @noRd
 deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) {
   checkmate::assert_string(arg_name)
   if (isTRUE(null.ok) && is.null(x)) {
@@ -1130,6 +1131,45 @@ deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) {
   }
   checkmate::assert_class(x, "variables", null.ok = null.ok, .var.name = arg_name)
   x
+<<<<<<< HEAD
+=======
+}
+
+#' Coerce legacy `choices_selected` to [`teal.picks::values()`] with deprecation
+#'
+#' @param x (`values` or `choices_selected`) object.
+#' @param arg_name (`character(1)`) argument name.
+#'
+#' @keywords internal
+#' @noRd
+deprecate_pick_values_arg <- function(x, arg_name) {
+  checkmate::assert_string(arg_name)
+  if (inherits(x, "choices_selected")) {
+    lifecycle::deprecate_warn(
+      when = "0.13.0",
+      what = I(paste0("`", arg_name, "`")),
+      details = paste(
+        "Pass `teal.picks::values()`.",
+        "Support for legacy `teal.transform::choices_selected()` is deprecated."
+      )
+    )
+    if (is.null(x$choices) || inherits(x$choices, "delayed_data")) {
+      stop(
+        "Delayed `choices_selected` objects cannot be coerced automatically; specify `teal.picks::values()` explicitly.",
+        call. = FALSE
+      )
+    }
+    ch <- as.character(x$choices)
+    se <- as.character(unlist(x$selected, use.names = FALSE))
+    checkmate::assert_character(ch, min.len = 1L)
+    checkmate::assert_character(se, min.len = 1L)
+    fixed <- isTRUE(x$fixed)
+    multiple <- length(se) > 1L
+    x <- teal.picks::values(ch, se, multiple = multiple, fixed = fixed)
+  }
+  checkmate::assert_class(x, "values", .var.name = arg_name)
+  x
+>>>>>>> origin/picks_modules_migration@279-interactive_variables@main
 }
 
 #' Coerce legacy `choices_selected` to [`teal.picks::values()`] with deprecation
