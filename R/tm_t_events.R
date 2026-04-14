@@ -448,13 +448,13 @@ template_events <- function(dataname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_events
-#' @param arm_var ([teal.picks::variables()])\cr specification of variable names that can be used as
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr specification of variable names that can be used as
 #'   `arm_var`. It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param hlt ([teal.picks::variables()])\cr specification of the analysis variable used as the
+#' @param hlt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr specification of the analysis variable used as the
 #'   high level term for event grouping.
-#' @param llt ([teal.picks::variables()])\cr specification of the analysis variable used as the
+#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr specification of the analysis variable used as the
 #'   low level term for event grouping.
 #'
 #' @inherit module_arguments return seealso
@@ -560,15 +560,12 @@ tm_t_events <- function(label,
                         transformators = list(),
                         decorators = list()) {
   message("Initializing tm_t_events")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  hlt <- teal.picks::as.picks(hlt, quiet = FALSE)
-  llt <- teal.picks::as.picks(llt, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  hlt <- deprecate_pick_variables_arg(hlt, "hlt")
+  llt <- deprecate_pick_variables_arg(llt, "llt")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(hlt, "variables")
-  checkmate::assert_class(llt, "variables")
   checkmate::assert_string(event_type)
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
