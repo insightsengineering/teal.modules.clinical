@@ -6,11 +6,11 @@
 #' @inheritParams template_arguments
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
-#' @param arm_var ([teal.picks::variables()])\cr treatment variable (`parentname`).
-#' @param aval_var ([teal.picks::variables()])\cr analysis variable (`dataname`).
-#' @param strata_var ([teal.picks::variables()])\cr optional stratification columns (`dataname`).
-#' @param offset_var ([teal.picks::variables()])\cr optional offset column (`dataname`).
-#' @param cov_var ([teal.picks::variables()])\cr optional covariate columns (`dataname`).
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr treatment variable (`parentname`).
+#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr analysis variable (`dataname`).
+#' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional stratification columns (`dataname`).
+#' @param offset_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional offset column (`dataname`).
+#' @param cov_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional covariate columns (`dataname`).
 #' @param conf_level ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param add_total (`logical`)\cr initial value for the \dQuote{Add All Patients column} checkbox when comparing arms.
@@ -119,11 +119,11 @@ tm_t_glm_counts <- function(label = "Counts Module",
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_t_glm_counts")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  aval_var <- teal.picks::as.picks(aval_var, quiet = FALSE)
-  strata_var <- teal.picks::as.picks(strata_var, quiet = FALSE)
-  offset_var <- teal.picks::as.picks(offset_var, quiet = FALSE)
-  cov_var <- teal.picks::as.picks(cov_var, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
+  strata_var <- deprecate_pick_variables_arg(strata_var, "strata_var")
+  offset_var <- deprecate_pick_variables_arg(offset_var, "offset_var")
+  cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   distribution_choices <- c("negbin", "quasipoisson", "poisson")
@@ -131,11 +131,6 @@ tm_t_glm_counts <- function(label = "Counts Module",
   rate_mean_method <- match.arg(rate_mean_method, rate_mean_method_choices)
   distribution <- match.arg(distribution, distribution_choices)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(aval_var, "variables")
-  checkmate::assert_class(strata_var, "variables")
-  checkmate::assert_class(offset_var, "variables")
-  checkmate::assert_class(cov_var, "variables")
   checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
