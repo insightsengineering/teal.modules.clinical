@@ -37,29 +37,29 @@ tm_t_shift_by_grade(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for treatment arm.}
 
-\item{visit_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{visit_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for analysis visit.}
 
-\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for lab parameter code. The \code{values()} element is added internally to allow
 users to filter the parameter values interactively.}
 
-\item{worst_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{worst_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for worst grade flag.}
 
 \item{worst_flag_indicator}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
 value(s) indicating worst grade records.}
 
-\item{anl_toxgrade_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{anl_toxgrade_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for analysis toxicity grade.}
 
-\item{base_toxgrade_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{base_toxgrade_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for baseline toxicity grade.}
 
-\item{id_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr
+\item{id_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for subject identifier.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
