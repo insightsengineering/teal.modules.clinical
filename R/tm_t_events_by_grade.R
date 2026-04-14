@@ -779,10 +779,10 @@ template_events_col_by_grade <- function(dataname,
 #' @inheritParams teal::module
 #' @inheritParams template_events_by_grade
 #' @inheritParams template_events_col_by_grade
-#' @param arm_var ([teal.picks::variables()])\cr treatment arm variable on `parentname`.
-#' @param hlt ([teal.picks::variables()])\cr high-level term variable on `dataname` (optional).
-#' @param llt ([teal.picks::variables()])\cr low-level term variable on `dataname` (optional).
-#' @param grade ([teal.picks::variables()])\cr grade variable on `dataname`.
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr treatment arm variable on `parentname`.
+#' @param hlt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr high-level term variable on `dataname` (optional).
+#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr low-level term variable on `dataname` (optional).
+#' @param grade ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr grade variable on `dataname`.
 #' @param col_by_grade (`logical`)\cr whether to display the grading groups in nested columns.
 #' @param grading_groups (`list`)\cr named list of grading groups used when `col_by_grade = TRUE`.
 #'
@@ -900,17 +900,13 @@ tm_t_events_by_grade <- function(label,
                                  transformators = list(),
                                  decorators = list()) {
   message("Initializing tm_t_events_by_grade")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  hlt <- teal.picks::as.picks(hlt, quiet = FALSE)
-  llt <- teal.picks::as.picks(llt, quiet = FALSE)
-  grade <- teal.picks::as.picks(grade, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  hlt <- deprecate_pick_variables_arg(hlt, "hlt")
+  llt <- deprecate_pick_variables_arg(llt, "llt")
+  grade <- deprecate_pick_variables_arg(grade, "grade")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(hlt, "variables")
-  checkmate::assert_class(llt, "variables")
-  checkmate::assert_class(grade, "variables")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
