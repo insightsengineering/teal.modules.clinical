@@ -248,8 +248,9 @@ template_abnormality_by_worst_grade <- function(parentname, # nolint: object_len
 #'   preselected option for the worst high grade flag variable.
 #' @param worst_low_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and
 #'   preselected option for the worst low grade flag variable.
-#' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr allowed flag value(s) and default selection
-#'   indicating worst grade. The UI shows the selected value as static text (not an interactive control).
+#' @param worst_flag_indicator ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#'   Value(s) matching the worst high/low flag variables (default `"Y"`). Uses explicit candidate levels including an empty string where needed.
+#'   The UI shows the selected value as static text (not an interactive control).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -329,12 +330,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
                                             atoxgr_var = variables(choices = "ATOXGR"),
                                             worst_high_flag_var = variables(choices = "WGRHIFL"),
                                             worst_low_flag_var = variables(choices = "WGRLOFL"),
-                                            worst_flag_indicator = teal.picks::values(
-                                              c("Y", "N"),
-                                              "Y",
-                                              multiple = FALSE,
-                                              fixed = TRUE
-                                            ),
+                                            worst_flag_indicator = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
                                             add_total = TRUE,
                                             total_label = default_total_label(),
                                             drop_arm_levels = TRUE,
