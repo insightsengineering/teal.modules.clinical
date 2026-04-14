@@ -34,13 +34,15 @@ tm_t_summary(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr object with all available choices and preselected
+\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+object with all available choices and preselected
 option for variable names that can be used as \code{arm_var}.
 It defines the grouping variable(s) in the results table.
 If there are two elements selected for \code{arm_var},
 second variable will be nested under the first variable.}
 
-\item{summarize_vars}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr variable(s) to summarize.}
+\item{summarize_vars}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
+variable(s) to summarize.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
