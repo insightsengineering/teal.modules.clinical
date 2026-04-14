@@ -381,14 +381,14 @@ template_tte <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_tte
-#' @param arm_var ([teal.picks::variables()])\cr variable for treatment arm.
-#' @param paramcd ([teal.picks::variables()])\cr variable for parameter code.
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for treatment arm.
+#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for parameter code.
 #'   A `values()` selector is added internally to allow filtering parameter values.
-#' @param strata_var ([teal.picks::variables()])\cr variable(s) for stratification.
-#' @param aval_var ([teal.picks::variables()])\cr variable for analysis value (time-to-event).
-#' @param cnsr_var ([teal.picks::variables()])\cr variable for censoring indicator.
-#' @param time_unit_var ([teal.picks::variables()])\cr variable for time unit.
-#' @param event_desc_var ([teal.picks::variables()])\cr variable for event description.
+#' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable(s) for stratification.
+#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for analysis value (time-to-event).
+#' @param cnsr_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for censoring indicator.
+#' @param time_unit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for time unit.
+#' @param event_desc_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for event description.
 #' @param conf_level_coxph ([teal.transform::choices_selected()])\cr object with all available choices and
 #'   pre-selected option for confidence level, each within range of (0, 1).
 #' @param conf_level_survfit ([teal.transform::choices_selected()])\cr object with all available choices and
@@ -502,26 +502,19 @@ tm_t_tte <- function(label,
                      transformators = list(),
                      decorators = list()) {
   message("Initializing tm_t_tte")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
-  strata_var <- teal.picks::as.picks(strata_var, quiet = FALSE)
-  aval_var <- teal.picks::as.picks(aval_var, quiet = FALSE)
-  cnsr_var <- teal.picks::as.picks(cnsr_var, quiet = FALSE)
-  time_unit_var <- teal.picks::as.picks(time_unit_var, quiet = FALSE)
-  event_desc_var <- teal.picks::as.picks(event_desc_var, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  strata_var <- deprecate_pick_variables_arg(strata_var, "strata_var")
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
+  cnsr_var <- deprecate_pick_variables_arg(cnsr_var, "cnsr_var")
+  time_unit_var <- deprecate_pick_variables_arg(time_unit_var, "time_unit_var")
+  event_desc_var <- deprecate_pick_variables_arg(event_desc_var, "event_desc_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(paramcd, "variables")
-  checkmate::assert_class(strata_var, "variables")
-  checkmate::assert_class(aval_var, "variables")
-  checkmate::assert_class(cnsr_var, "variables")
   checkmate::assert_class(conf_level_coxph, "choices_selected")
   checkmate::assert_class(conf_level_survfit, "choices_selected")
   checkmate::assert_class(time_points, "choices_selected")
-  checkmate::assert_class(time_unit_var, "variables")
-  checkmate::assert_class(event_desc_var, "variables")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
