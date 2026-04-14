@@ -38,7 +38,7 @@ tm_t_tte(
 
 \item{parentname}{(\code{character})\cr parent analysis data used in teal module, usually this refers to \code{ADSL}.}
 
-\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr variable for treatment arm.}
+\item{arm_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for treatment arm.}
 
 \item{arm_ref_comp}{(\code{list}) optional,\cr if specified it must be a named list with each element corresponding to
 an arm variable in \code{ADSL} and the element must be another list (possibly
@@ -46,14 +46,14 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr variable for parameter code.
+\item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for parameter code.
 A \code{values()} selector is added internally to allow filtering parameter values.}
 
-\item{strata_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr variable(s) for stratification.}
+\item{strata_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable(s) for stratification.}
 
-\item{aval_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr variable for analysis value (time-to-event).}
+\item{aval_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for analysis value (time-to-event).}
 
-\item{cnsr_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr variable for censoring indicator.}
+\item{cnsr_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for censoring indicator.}
 
 \item{conf_level_coxph}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
 pre-selected option for confidence level, each within range of (0, 1).}
@@ -64,9 +64,9 @@ pre-selected option for confidence level, each within range of (0, 1).}
 \item{time_points}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and preselected option
 for time points that can be used in \code{\link[tern:survival_timepoint]{tern::surv_timepoint()}}.}
 
-\item{time_unit_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr variable for time unit.}
+\item{time_unit_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for time unit.}
 
-\item{event_desc_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr variable for event description.}
+\item{event_desc_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for event description.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
