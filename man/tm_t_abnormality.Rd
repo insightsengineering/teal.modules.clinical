@@ -16,7 +16,7 @@ tm_t_abnormality(
   id_var = variables(choices = "USUBJID"),
   baseline_var = variables(choices = "BNRIND"),
   treatment_flag_var = variables(choices = "ONTRTFL"),
-  treatment_flag = teal.transform::choices_selected("Y"),
+  treatment_flag = teal.picks::values(tidyselect::everything(), "Y", multiple = TRUE),
   add_total = TRUE,
   total_label = default_total_label(),
   exclude_base_abn = FALSE,
@@ -53,8 +53,9 @@ option for the abnormality grade variable. Variable must be factor.}
 
 \item{treatment_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr on-treatment flag variable.}
 
-\item{treatment_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr value
-indicating on treatment records in \code{treatment_flag_var}.}
+\item{treatment_flag}{(\code{\link[teal.picks:picks]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+value(s) indicating on-treatment records in \code{treatment_flag_var} (e.g. \code{"Y"}). Typically
+\code{teal.picks::values(tidyselect::everything(), "Y", multiple = TRUE)} so choices follow the column.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 

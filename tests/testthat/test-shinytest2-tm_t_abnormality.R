@@ -35,7 +35,7 @@ app_driver_tm_t_abnormality <- function() {
         id_var = teal.picks::variables(choices = "USUBJID"),
         exclude_base_abn = FALSE,
         treatment_flag_var = teal.picks::variables(choices = "ONTRTFL"),
-        treatment_flag = teal.transform::choices_selected("Y"),
+        treatment_flag = teal.picks::values(tidyselect::everything(), "Y", multiple = TRUE),
         total_label = default_total_label(),
         drop_arm_levels = TRUE,
         pre_output = NULL,
