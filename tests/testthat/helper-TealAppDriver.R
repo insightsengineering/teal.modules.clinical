@@ -52,26 +52,32 @@ init_teal_app_driver <- function(...) {
   paste0("\"", id, "\"")
 }
 
-# JavaScript array literal of quoted strings for picker values (may be empty).
-.teal_picks_js_string_array_literal <- function(val) { # nolint: object_length_linter.
+# JSON `[]`, a JSON string, or JSON string array for embedded JS (see `singleton_as_bare_string`).
+#
+# When `singleton_as_bare_string` is `TRUE` and `length(val) == 1L`, return a single JSON string
+# token (e.g. `"foo"`). Otherwise return a JSON array (`[]`, `["a"]`, or `["a","b"]`). The bare
+# string form matches `Shiny.setInputValue` expectations for scalar vs vector values; the
+# always-array form is used where `const arr = ...` must remain an array (DOM sync script).
+.teal_picks_js_json_collection_literal <- function(val, singleton_as_bare_string) { # nolint: object_length_linter.
   val <- as.character(val)
   if (length(val) == 0L) {
     return("[]")
   }
   parts <- vapply(val, .teal_picks_js_id_literal, character(1))
+  if (isTRUE(singleton_as_bare_string) && length(val) == 1L) {
+    return(parts[[1L]])
+  }
   paste0("[", paste(parts, collapse = ","), "]")
+}
+
+# JavaScript array literal of quoted strings for picker values (may be empty).
+.teal_picks_js_string_array_literal <- function(val) { # nolint: object_length_linter.
+  .teal_picks_js_json_collection_literal(val, singleton_as_bare_string = FALSE)
 }
 
 # Value argument for Shiny.setInputValue: `[]`, a JSON string, or a JSON string array.
 .teal_picks_shiny_setinput_value_literal <- function(val) { # nolint: object_length_linter.
-  val <- as.character(val)
-  if (length(val) == 0L) {
-    return("[]")
-  }
-  if (length(val) == 1L) {
-    return(.teal_picks_js_id_literal(val[[1]]))
-  }
-  paste0("[", paste(vapply(val, .teal_picks_js_id_literal, character(1)), collapse = ","), "]")
+  .teal_picks_js_json_collection_literal(val, singleton_as_bare_string = TRUE)
 }
 
 # Sync native <select> + bootstrap-select widget, then let Shiny read change events.
