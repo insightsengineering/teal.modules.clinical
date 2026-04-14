@@ -183,19 +183,19 @@ template_shift_by_arm <- function(dataname,
 #' @inheritParams teal::module
 #' @inheritParams template_shift_by_arm
 #' @inheritParams template_arguments
-#' @param arm_var ([teal.picks::variables()])\cr
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for treatment arm.
-#' @param paramcd ([teal.picks::variables()])\cr
+#' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for lab parameter code. The `values()` element is added internally to allow
 #'   users to filter the parameter values interactively.
-#' @param visit_var ([teal.picks::variables()])\cr
+#' @param visit_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for analysis visit. The `values()` element is added internally to allow
 #'   users to filter the visit values interactively.
-#' @param aval_var ([teal.picks::variables()])\cr
+#' @param aval_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for analysis range indicator.
-#' @param baseline_var ([teal.picks::variables()])\cr
+#' @param baseline_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for baseline reference range indicator.
-#' @param treatment_flag_var ([teal.picks::variables()])\cr
+#' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for on-treatment flag.
 #' @param treatment_flag ([teal.transform::choices_selected()])\cr
 #'   value(s) indicating on-treatment records.
@@ -294,24 +294,18 @@ tm_t_shift_by_arm <- function(label,
   }
 
   message("Initializing tm_t_shift_by_arm")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  paramcd <- teal.picks::as.picks(paramcd, quiet = FALSE)
-  visit_var <- teal.picks::as.picks(visit_var, quiet = FALSE)
-  aval_var <- teal.picks::as.picks(aval_var, quiet = FALSE)
-  baseline_var <- teal.picks::as.picks(baseline_var, quiet = FALSE)
-  treatment_flag_var <- teal.picks::as.picks(treatment_flag_var, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  visit_var <- deprecate_pick_variables_arg(visit_var, "visit_var")
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
+  baseline_var <- deprecate_pick_variables_arg(baseline_var, "baseline_var")
+  treatment_flag_var <- deprecate_pick_variables_arg(treatment_flag_var, "treatment_flag_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   useNA <- match.arg(useNA) # nolint: object_name.
   checkmate::assert_string(na_level)
   checkmate::assert_string(total_label)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(paramcd, "variables")
-  checkmate::assert_class(visit_var, "variables")
-  checkmate::assert_class(aval_var, "variables")
-  checkmate::assert_class(baseline_var, "variables")
-  checkmate::assert_class(treatment_flag_var, "variables")
   checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
