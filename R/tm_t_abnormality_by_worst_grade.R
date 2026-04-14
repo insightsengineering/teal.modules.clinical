@@ -354,7 +354,7 @@ tm_t_abnormality_by_worst_grade <- function(label, # nolint: object_length.
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(total_label)
-  worst_flag_indicator <- deprecate_pick_values_arg(worst_flag_indicator, \"worst_flag_indicator\")
+  worst_flag_indicator <- deprecate_pick_values_arg(worst_flag_indicator, "worst_flag_indicator")
   worst_flag_value <- as.character(worst_flag_indicator$selected)
   checkmate::assert_character(worst_flag_value, min.len = 1L, .var.name = "worst_flag_indicator$selected")
   worst_flag_value <- worst_flag_value[[1]]
