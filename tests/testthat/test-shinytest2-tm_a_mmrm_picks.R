@@ -1,5 +1,3 @@
-testthat::skip("until converted with merge")
-
 app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   arm_ref_comp <- list(
     ARMCD = list(
@@ -11,20 +9,24 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
-    ADQS <- tmc_ex_adqs %>%
-      dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
-      dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
+    ADQS <- tmc_ex_adqs |>
+      dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") |>
+      dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) |>
       dplyr::mutate(
         AVISIT = as.factor(AVISIT),
-        AVISITN = rank(AVISITN) %>%
-          as.factor() %>%
-          as.numeric() %>%
+        AVISITN = rank(AVISITN) |>
+          as.factor() |>
+          as.numeric() |>
           as.factor() #' making consecutive numeric factor
       )
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
-  arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
+  testthat::expect_warning(
+    paramcd_values <- teal.picks::values(selected = "FKSI-FWB"),
+    "doesn't guarantee that `selected` is a subset of `choices`.",
+    fixed = TRUE
+  )
 
   app_driver <- init_teal_app_driver(
     teal::init(
@@ -32,27 +34,16 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
       modules = tm_a_mmrm(
         label = "MMRM",
         dataname = "ADQS",
-        parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-          teal.transform::datanames_input(arm_var), "ADSL"
-        ),
-        aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
-        id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-        arm_var = arm_var,
-        visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+        parentname = "ADSL",
+        aval_var = teal.picks::variables(c("AVAL", "CHG")),
+        id_var = teal.picks::variables(c("USUBJID", "SUBJID")),
+        arm_var = teal.picks::variables(c("ARM", "ARMCD")),
+        visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
         arm_ref_comp = arm_ref_comp,
-        paramcd = choices_selected(
-          choices = value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-          selected = "FKSI-FWB"
-        ),
-        cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
-        method = teal.transform::choices_selected(c(
-          "Satterthwaite", "Kenward-Roger",
-          "Kenward-Roger-Linear"
-        ), "Satterthwaite", keep_order = TRUE),
-        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
-          keep_order =
-            TRUE
-        ),
+        paramcd_values = paramcd_values,
+        cov_var = teal.picks::variables(c("BASE", "AGE", "SEX", teal.picks::interaction_vars("BASE", "AVISIT")), NULL),
+        method = teal.picks::values(c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"), "Satterthwaite"),
+        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
         plot_height = c(700L, 200L, 2000L),
         plot_width = NULL,
         total_label = default_total_label(),
@@ -107,30 +98,27 @@ testthat::test_that(
 
     testthat::expect_equal(app_driver$get_text("a.nav-link.active"), "MMRM")
 
-    testthat::expect_equal(app_driver$get_active_module_input("aval_var-dataset_ADQS_singleextract-select"), "AVAL")
+    exported_values <- app_driver$get_values()$export
+    names(exported_values) <- gsub(sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values), fixed = TRUE)
 
-    testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals"),
-      "FKSI-FWB"
-    )
+    testthat::expect_equal(exported_values[["aval_var-resolved"]]$variables$selected, "AVAL")
 
-    testthat::expect_equal(app_driver$get_active_module_input("visit_var-dataset_ADQS_singleextract-select"), "AVISIT")
+    testthat::expect_equal(exported_values[["paramcd-resolved"]]$values$selected, "FKSI-FWB")
 
-    testthat::expect_null(app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select"))
+    testthat::expect_equal(exported_values[["visit_var-resolved"]]$variables$selected, "AVISIT")
 
-    testthat::expect_equal(app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"), "ARM")
+    testthat::expect_null(exported_values[["cov_var-resolved"]]$variables$selected)
+
+    testthat::expect_equal(exported_values[["arm_var-resolved"]]$variables$selected, "ARM")
 
     testthat::expect_equal(
       app_driver$get_active_module_input("buckets"),
-      list(
-        Ref = list("A: Drug X"),
-        Comp = list("B: Placebo", "C: Combination")
-      )
+      list(Ref = list("A: Drug X"), Comp = list("B: Placebo", "C: Combination"))
     )
 
     testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
 
-    testthat::expect_equal(app_driver$get_active_module_input("id_var-dataset_ADQS_singleextract-select"), "USUBJID")
+    testthat::expect_equal(exported_values[["id_var-resolved"]]$variables$selected, "USUBJID")
 
     testthat::expect_equal(app_driver$get_active_module_input("weights_emmeans"), "proportional")
 
@@ -187,7 +175,7 @@ testthat::test_that(
   settings throws no validation errors and verify visibility of generated plots.",
   {
     skip_if_too_deep(5)
-    app_driver <- app_driver_tm_a_mmrm()
+
 
     app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
