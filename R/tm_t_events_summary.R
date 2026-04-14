@@ -499,27 +499,27 @@ template_events_summary <- function(anl_name,
 #' @inheritParams teal::module
 #' @inheritParams template_arguments
 #' @inheritParams template_events_summary
-#' @param arm_var ([teal.picks::variables()])\cr object with all
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all
 #'   available choices and preselected option for variable names that can be used as `arm_var`.
 #'   It defines the grouping variable(s) in the results table.
 #'   If there are two elements selected for `arm_var`,
 #'   second variable will be nested under the first variable.
-#' @param dthfl_var ([teal.picks::variables()])\cr object
+#' @param dthfl_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object
 #'   with all available choices and preselected option for variable names that can be used as death flag variable.
 #'   Records with `"Y"`` are summarized in the table row for "Total number of deaths".
-#' @param dcsreas_var ([teal.picks::variables()])\cr object
+#' @param dcsreas_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object
 #'   with all available choices and preselected option for variable names that can be used as study discontinuation
 #'   reason variable. Records with `"ADVERSE EVENTS"` are summarized in the table row for
 #'   "Total number of patients withdrawn from study due to an AE".
-#' @param flag_var_anl ([teal.picks::variables()] or `NULL`)\cr
+#' @param flag_var_anl ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event sub-groups (e.g. Serious events,
 #'   Related events, etc.). Variable labels are used as table row names if they exist.
-#' @param flag_var_aesi ([teal.picks::variables()] or `NULL`)\cr
+#' @param flag_var_aesi ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted or `NULL`)\cr
 #'   vector with names of flag variables from `dataset` used to count adverse event special interest groups. All flag
 #'   variables must be of type `logical`. Variable labels are used as table row names if they exist.
-#' @param aeseq_var ([teal.picks::variables()])\cr variable for
+#' @param aeseq_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for
 #'   adverse events sequence number from `dataset`. Used for counting total number of events.
-#' @param llt ([teal.picks::variables()])\cr adverse event term / low-level term column (e.g. `AEDECOD`).
+#' @param llt ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr adverse event term / low-level term column (e.g. `AEDECOD`).
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -654,23 +654,16 @@ tm_t_events_summary <- function(label,
                                 transformators = list(),
                                 decorators = list()) {
   message("Initializing tm_t_events_summary")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  if (!is.null(flag_var_anl)) flag_var_anl <- teal.picks::as.picks(flag_var_anl, quiet = FALSE)
-  if (!is.null(flag_var_aesi)) flag_var_aesi <- teal.picks::as.picks(flag_var_aesi, quiet = FALSE)
-  dthfl_var <- teal.picks::as.picks(dthfl_var, quiet = FALSE)
-  dcsreas_var <- teal.picks::as.picks(dcsreas_var, quiet = FALSE)
-  llt <- teal.picks::as.picks(llt, quiet = FALSE)
-  aeseq_var <- teal.picks::as.picks(aeseq_var, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  if (!is.null(flag_var_anl)) flag_var_anl <- deprecate_pick_variables_arg(flag_var_anl, "flag_var_anl")
+  if (!is.null(flag_var_aesi)) flag_var_aesi <- deprecate_pick_variables_arg(flag_var_aesi, "flag_var_aesi")
+  dthfl_var <- deprecate_pick_variables_arg(dthfl_var, "dthfl_var")
+  dcsreas_var <- deprecate_pick_variables_arg(dcsreas_var, "dcsreas_var")
+  llt <- deprecate_pick_variables_arg(llt, "llt")
+  aeseq_var <- deprecate_pick_variables_arg(aeseq_var, "aeseq_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(flag_var_anl, "variables", null.ok = TRUE)
-  checkmate::assert_class(flag_var_aesi, "variables", null.ok = TRUE)
-  checkmate::assert_class(dthfl_var, "variables")
-  checkmate::assert_class(dcsreas_var, "variables")
-  checkmate::assert_class(llt, "variables")
-  checkmate::assert_class(aeseq_var, "variables")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
