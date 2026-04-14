@@ -1111,6 +1111,7 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 #' @param null.ok (`logical(1)`) whether `NULL` is allowed.
 #'
 #' @keywords internal
+#' @noRd
 deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) {
   checkmate::assert_string(arg_name)
   if (isTRUE(null.ok) && is.null(x)) {
@@ -1138,6 +1139,7 @@ deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) {
 #' @param arg_name (`character(1)`) argument name.
 #'
 #' @keywords internal
+#' @noRd
 deprecate_pick_values_arg <- function(x, arg_name) {
   checkmate::assert_string(arg_name)
   if (inherits(x, "choices_selected")) {
@@ -1166,3 +1168,4 @@ deprecate_pick_values_arg <- function(x, arg_name) {
   checkmate::assert_class(x, "values", .var.name = arg_name)
   x
 }
+
