@@ -199,8 +199,8 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'   value(s) indicating worst post-baseline records.
 #' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for on-treatment flag.
-#' @param treatment_flag ([teal.transform::choices_selected()])\cr
-#'   value(s) indicating on-treatment records.
+#' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#'   value matching `treatment_flag_var` for on-treatment records (default `"Y"`).
 #'
 #' @inherit module_arguments return
 #'
@@ -283,10 +283,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                          selected = "Y", fixed = TRUE
                                        ),
                                        treatment_flag_var = variables(choices = "ONTRTFL"),
-                                       treatment_flag = teal.transform::choices_selected(
-                                         c("Y", "N"),
-                                         selected = "Y", fixed = TRUE
-                                       ),
+                                       treatment_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
                                        useNA = c("ifany", "no"), # nolint: object_name.
                                        na_level = tern::default_na_str(),
                                        add_total = FALSE,
@@ -311,6 +308,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
   baseline_var <- deprecate_pick_variables_arg(baseline_var, "baseline_var")
   worst_flag_var <- deprecate_pick_variables_arg(worst_flag_var, "worst_flag_var")
   treatment_flag_var <- deprecate_pick_variables_arg(treatment_flag_var, "treatment_flag_var")
+  treatment_flag <- deprecate_pick_values_arg(treatment_flag, "treatment_flag")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -318,7 +316,6 @@ tm_t_shift_by_arm_by_worst <- function(label,
   checkmate::assert_string(na_level)
   checkmate::assert_string(total_label)
   checkmate::assert_class(worst_flag, "choices_selected")
-  checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")

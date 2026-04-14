@@ -23,7 +23,7 @@ app_driver_tm_t_shift_by_arm_by_worst <- function() { # nolint: object_length.
         aval_var = teal.picks::variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
         baseline_var = teal.picks::variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
         useNA = "ifany",
-        treatment_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed = TRUE),
+        treatment_flag = teal.picks::values(c("Y", "N", ""), "Y", multiple = FALSE),
         na_level = default_na_str(),
         add_total = FALSE,
         total_label = default_total_label(),
