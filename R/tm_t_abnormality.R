@@ -250,16 +250,16 @@ template_abnormality <- function(parentname,
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_abnormality
-#' @param arm_var ([teal.picks::variables()])\cr object with all available choices and preselected
+#' @param arm_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and preselected
 #'   option for the treatment variable.
-#' @param by_vars ([teal.picks::variables()])\cr object with all available choices and preselected
+#' @param by_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and preselected
 #'   option(s) for row-by variables (`multiple = TRUE`, `ordered = TRUE` recommended).
-#' @param grade ([teal.picks::variables()])\cr object with all available choices and preselected
+#' @param grade ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr object with all available choices and preselected
 #'   option for the abnormality grade variable. Variable must be factor.
 #' @param abnormal (`named list`)\cr defined by user to indicate what abnormalities are to be displayed.
-#' @param id_var ([teal.picks::variables()])\cr subject identifier variable.
-#' @param baseline_var ([teal.picks::variables()])\cr variable for baseline abnormality grade.
-#' @param treatment_flag_var ([teal.picks::variables()])\cr on-treatment flag variable.
+#' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr subject identifier variable.
+#' @param baseline_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for baseline abnormality grade.
+#' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr on-treatment flag variable.
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
 #' @inherit module_arguments return seealso
@@ -372,23 +372,17 @@ tm_t_abnormality <- function(label,
                              transformators = list(),
                              decorators = list()) {
   message("Initializing tm_t_abnormality")
-  arm_var <- teal.picks::as.picks(arm_var, quiet = FALSE)
-  by_vars <- teal.picks::as.picks(by_vars, quiet = FALSE)
-  grade <- teal.picks::as.picks(grade, quiet = FALSE)
-  id_var <- teal.picks::as.picks(id_var, quiet = FALSE)
-  baseline_var <- teal.picks::as.picks(baseline_var, quiet = FALSE)
-  treatment_flag_var <- teal.picks::as.picks(treatment_flag_var, quiet = FALSE)
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  by_vars <- deprecate_pick_variables_arg(by_vars, "by_vars")
+  grade <- deprecate_pick_variables_arg(grade, "grade")
+  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
+  baseline_var <- deprecate_pick_variables_arg(baseline_var, "baseline_var")
+  treatment_flag_var <- deprecate_pick_variables_arg(treatment_flag_var, "treatment_flag_var")
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
   checkmate::assert_list(abnormal, types = "character", len = 2)
-  checkmate::assert_class(arm_var, "variables")
-  checkmate::assert_class(by_vars, "variables")
-  checkmate::assert_class(grade, "variables")
-  checkmate::assert_class(id_var, "variables")
-  checkmate::assert_class(baseline_var, "variables")
-  checkmate::assert_class(treatment_flag_var, "variables")
   checkmate::assert_class(treatment_flag, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
