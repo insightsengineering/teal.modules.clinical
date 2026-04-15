@@ -465,13 +465,13 @@ for (func in output_functions) {
 }
 
 input_list <- list(
-  "aval_var-dataset_ADQS_singleextract-select" = "CHG",
-  "paramcd-dataset_ADQS_singleextract-filter1-vals" = "BFIALL",
-  "visit_var-dataset_ADQS_singleextract-select" = "AVISITN",
-  "cov_var-dataset_ADQS_singleextract-select" = "AGE",
-  "arm_var-dataset_ADSL_singleextract-select" = "ARMCD",
+  "aval_var" = quote(set_teal_picks_slot(app_driver, "aval_var", "variables", "CHG")),
+  "paramcd" = quote(set_teal_picks_slot(app_driver, "paramcd", "values", "BFIALL")),
+  "visit_var" = quote(set_teal_picks_slot(app_driver, "visit_var", "variables", "AVISITN")),
+  "cov_var" = quote(set_teal_picks_slot(app_driver, "cov_var", "variables", "AGE")),
+  "arm_var" = quote(set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")),
   "combine_comp_arms" = TRUE,
-  "id_var-dataset_ADQS_singleextract-select" = "SUBJID",
+  "id_var" = quote(set_teal_picks_slot(app_driver, "id_var", "variables", "SUBJID")),
   "weights_emmeans" = "equal",
   "cor_struct" = "ante-dependence",
   "conf_level" = "0.8",
@@ -479,10 +479,10 @@ input_list <- list(
 )
 
 non_responsive_conditions <- list(
-  "g_mmrm_lsmeans" = c("id_var-dataset_ADQS_singleextract-select"),
+  "g_mmrm_lsmeans" = c("id_var"),
   "g_mmrm_diagnostic" = c(
-    "arm_var-dataset_ADSL_singleextract-select",
-    "id_var-dataset_ADQS_singleextract-select",
+    "arm_var",
+    "id_var",
     "weights_emmeans",
     "cor_struct",
     "conf_level",
@@ -522,7 +522,11 @@ for (func in output_functions) {
           next
         }
 
-        app_driver$set_active_module_input(input_name, input_list[[input_name]])
+        if (is.call(input_list[[input_name]])) {
+          eval(input_list[[input_name]])
+        } else {
+          app_driver$set_active_module_input(input_name, input_list[[input_name]])
+        }
         app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
         app_driver$wait_for_idle()
         app_driver$expect_no_validation_error()
