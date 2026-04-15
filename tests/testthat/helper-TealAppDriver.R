@@ -207,7 +207,7 @@ init_teal_app_driver <- function(...) {
 get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
-  sel_id <- app_driver$namespaces()$module(NS(pick_id, "picks_resolved"))
+  sel_id <- app_driver$namespaces()$module(NS(pick_id, "resolved"))
   selected_pick <- app_driver$get_value(export = sel_id)
   selected_pick[[slot]]$selected
 }

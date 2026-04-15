@@ -380,7 +380,7 @@ ui_shift_by_arm_by_worst <- function(id,
         choices = worst_flag$choices,
         selected = worst_flag$selected,
         multiple = FALSE,
-        fixed = worst_flag$fixed
+        fixed = isTRUE(worst_flag$fixed)
       ),
       tags$div(
         tags$label("Select Analysis Value"),
@@ -412,7 +412,7 @@ ui_shift_by_arm_by_worst <- function(id,
             choices = treatment_flag$choices,
             selected = treatment_flag$selected,
             multiple = FALSE,
-            fixed = treatment_flag$fixed
+            fixed = isTRUE(treatment_flag$fixed)
           )
         )
       )
