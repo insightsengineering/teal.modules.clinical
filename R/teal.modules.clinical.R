@@ -11,6 +11,7 @@
 #' @import teal.picks
 #' @import tern
 #' @importFrom dplyr %>% .data
+#' @importFrom tidyselect starts_with ends_with where
 
 # We need this to avoid R CMD check warning about missing global definitions.
 utils::globalVariables(c(

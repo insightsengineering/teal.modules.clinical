@@ -108,7 +108,7 @@ data <- within(teal_data(), {
 
 
   ADLB <- tmc_ex_adlb |>
-    mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min)) |>
+    mutate(AVISIT = forcats::fct_reorder(AVISIT, AVISITN, min)) |>
     mutate(
       ONTRTFL = case_when(
         AVISIT %in% c("SCREENING", "BASELINE") ~ "",
@@ -287,7 +287,7 @@ data <- teal_data(join_keys = default_cdisc_join_keys[c("ADSL", "ADRS")])
 data <- within(data, {
   ADSL <- rADSL
   ADLB <- tmc_ex_adlb |>
-    mutate(AVISIT == forcats::fct_reorder(AVISIT, AVISITN, min)) |>
+    mutate(AVISIT = forcats::fct_reorder(AVISIT, AVISITN, min)) |>
     mutate(
       ONTRTFL = case_when(
         AVISIT %in% c("SCREENING", "BASELINE") ~ "",
