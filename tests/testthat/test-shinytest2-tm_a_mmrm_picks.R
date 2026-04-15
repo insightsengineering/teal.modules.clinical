@@ -533,6 +533,7 @@ for (func in output_functions) {
 
         # Check output based on function type (plot or table)
         if (grepl("^g_", func)) {
+          browser()
           plot_after <- app_driver$get_active_module_plot_output("mmrm_plot")
           testthat::expect_false(
             identical(plot_before, plot_after)

@@ -2,15 +2,15 @@
 tm_a_mmrm.default <- function(label,
                               dataname,
                               parentname = "ADSL",
-                              aval_var = teal.picks::variables(c("AVAL", "CHG")),
-                              id_var = teal.picks::variables(c("USUBJID", "SUBJID")),
+                              aval_var = teal.picks::variables(c("AVAL", "CHG"), multiple = FALSE),
+                              id_var = teal.picks::variables(c("USUBJID", "SUBJID"), multiple = FALSE),
                               arm_var = teal.picks::variables(c("ARM", "ARMCD")),
                               visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
                               cov_var = teal.picks::variables(selected = NULL),
                               arm_ref_comp = NULL,
                               paramcd = lifecycle::deprecated(),
-                              paramcd_var = teal.picks::variables(c("PARAMCD", "PARAM")),
-                              paramcd_values = teal.picks::values(tidyselect::everything()),
+                              paramcd_var = teal.picks::variables(c("PARAMCD", "PARAM"), multiple = FALSE),
+                              paramcd_values = teal.picks::values(multiple = FALSE),
                               method = teal.picks::values(
                                 c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"),
                                 "Satterthwaite"
@@ -80,6 +80,17 @@ tm_a_mmrm.default <- function(label,
       "diagnostic_plot"
     )
   )
+
+  # force multiple = FALSE
+  for (var in c("aval_var", "id_var", "arm_var", "visit_var", "paramcd_var", "paramcd_values")) {
+    if (isTRUE(attr(get(var), "multiple", exact = TRUE))) {
+      warning(
+        sprintf("Multiple variables allowed for %s. Forcing single selection.", var),
+        call. = FALSE
+      )
+      eval(substitute(attr(var, "multiple") <- FALSE, list(var = as.name(var))))
+    }
+  }
 
   aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
   id_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), id_var)
@@ -549,19 +560,20 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
 
     # Note:
     # input$parallel does not get us out of sync (it just takes longer to get to same result)
-    sync_inputs <- c(
-      "aval_var-variables-selected",
-      "arm_var-variables-selected",
-      "Ref",
-      "Comp",
-      "combine_comp_arms",
-      "visit_var-variables-selected",
-      "cov_var-variables-selected",
-      "id_var-variables-selected",
-      "weights_emmeans",
-      "cor_struct",
-      "method",
-      "conf_level"
+    sync_inputs <- list(
+      "aval_var-variables-selected" = reactive(selectors$aval_var()$variables$selected),
+      "paramcd-values-selected" = reactive(selectors$paramcd()$values$selected),
+      "arm_var-variables-selected" = reactive(selectors$arm_var()$variables$selected),
+      Ref = reactive(unlist(input$Ref)),
+      Comp = reactive(unlist(input$Comp)),
+      combine_comp_arms = reactive(input$combine_comp_arms),
+      visit_var = reactive(selectors$visit_var()$variables$selected),
+      "cov_var-variables-selected" = reactive(selectors$cov_var()$variables$selected),
+      "id_var-variables-selected" = reactive(selectors$id_var()$variables$selected),
+      weights_emmeans = reactive(input$weights_emmeans),
+      cor_struct = reactive(input$cor_struct),
+      method = reactive(input$method),
+      conf_level = reactive(input$conf_level)
     )
 
     # Setup arm variable selection, default reference arms, and default
@@ -658,17 +670,8 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
     mmrm_inputs_reactive <- reactive({
       shinyjs::disable("button_start")
       arm_ref_comp_iv() # make sure the arm_ref_comp reactive values are up to date
-      encoding_inputs <- lapply(
-        sync_inputs,
-        function(x) {
-          if (x %in% c("Ref", "Comp")) {
-            unlist(input$buckets[[x]])
-          } else {
-            input[[x]]
-          }
-        }
-      )
-      names(encoding_inputs) <- sync_inputs
+      encoding_inputs <- lapply(sync_inputs, function(x) x())
+      names(encoding_inputs) <- names(sync_inputs)
 
       adsl_filtered <- anl_q()[["ADSL"]]
       anl_filtered <- anl_q()[[dataname]]
@@ -677,6 +680,7 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
       teal::validate_has_data(anl_filtered, min_nrow = 1)
 
       validate_checks()
+      browser()
       c(
         list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered),
         encoding_inputs
