@@ -176,6 +176,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
 
+    app_driver <- app_driver_tm_a_mmrm()
 
     app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
