@@ -168,28 +168,6 @@ init_teal_app_driver <- function(...) {
   invisible(app_driver)
 }
 
-# Parse teal.picks summary `title` (datasets: … / variables: … lines from picks_srv).
-.teal_picks_parse_badge_title_slot <- function(title, slot) { # nolint: object_length_linter.
-  if (is.null(title) || !nzchar(title)) {
-    return(NULL)
-  }
-  prefix <- paste0(slot, ": ")
-  lines <- strsplit(title, "\n", fixed = TRUE)[[1]]
-  line <- lines[startsWith(lines, prefix)]
-  if (length(line) == 0L) {
-    return(NULL)
-  }
-  rest <- trimws(substring(line[[1]], nchar(prefix) + 1L))
-  if (!nzchar(rest)) {
-    return(NULL)
-  }
-  if (grepl(", ", rest, fixed = TRUE)) {
-    trimws(strsplit(rest, ", ", fixed = TRUE)[[1]])
-  } else {
-    rest
-  }
-}
-
 # Badge label may prefix variables with dataset (e.g. "ADLB BNRIND").
 .teal_picks_strip_ds_prefix_vec <- function(x) { # nolint: object_length_linter.
   vapply(
@@ -207,7 +185,7 @@ init_teal_app_driver <- function(...) {
 get_teal_picks_slot <- function(app_driver, pick_id, slot = "variables") {
   checkmate::assert_string(pick_id)
   checkmate::assert_string(slot)
-  sel_id <- app_driver$namespaces()$module(NS(pick_id, "resolved"))
+  sel_id <- app_driver$namespaces()$module(NS(pick_id, "picks_resolved"))
   selected_pick <- app_driver$get_value(export = sel_id)
   selected_pick[[slot]]$selected
 }
