@@ -1112,7 +1112,7 @@ set_chunk_dims <- function(pws, q_r, inner_classes = NULL) {
 #'
 #' @keywords internal
 #' @noRd
-deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) {
+deprecate_pick_variables_arg <- function(x, arg_name, null.ok = FALSE) { # nolint: object_name_linter.
   checkmate::assert_string(arg_name)
   if (isTRUE(null.ok) && is.null(x)) {
     return(x)
@@ -1153,7 +1153,8 @@ deprecate_pick_values_arg <- function(x, arg_name) {
     )
     if (is.null(x$choices) || inherits(x$choices, "delayed_data")) {
       stop(
-        "Delayed `choices_selected` objects cannot be coerced automatically; specify `teal.picks::values()` explicitly.",
+        "Delayed `choices_selected` objects cannot be coerced automatically; ",
+        "specify `teal.picks::values()` explicitly.",
         call. = FALSE
       )
     }
