@@ -27,6 +27,13 @@ tm_a_mmrm.default <- function(label,
                               decorators = list(),
                               ...) {
   message("Initializing tm_a_mmrm")
+
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
+  id_var <- deprecate_pick_variables_arg(id_var, "id_var")
+  arm_var <- deprecate_pick_variables_arg(arm_var, "arm_var")
+  visit_var <- deprecate_pick_variables_arg(visit_var, "visit_var")
+  cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var")
+
   checkmate::assert_string(label)
   checkmate::assert_string(total_label)
   checkmate::assert_string(dataname)
@@ -41,6 +48,7 @@ tm_a_mmrm.default <- function(label,
       what = "tm_a_mmrm(paramcd)",
       details = "Use of paramcd was removed in `tm_a_mmrm` module usage with teal.picks"
     )
+    paramcd_values <- deprecate_pick_values_arg(paramcd, "paramcd_var")
   }
   checkmate::assert_class(paramcd_var, "variables")
   checkmate::assert_class(paramcd_values, "values")
@@ -84,9 +92,9 @@ tm_a_mmrm.default <- function(label,
   # force multiple = FALSE
   for (var in c("aval_var", "id_var", "arm_var", "visit_var", "paramcd_var", "paramcd_values")) {
     if (isTRUE(attr(get(var), "multiple", exact = TRUE))) {
-      warning(
-        sprintf("Multiple variables allowed for %s. Forcing single selection.", var),
-        call. = FALSE
+      message(
+        sprintf("Multiple variables are not allowed for %s. Forcing single selection.", var),
+        domain = "force_single_selection"
       )
       eval(substitute(attr(var, "multiple") <- FALSE, list(var = as.name(var))))
     }
@@ -478,12 +486,13 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
       validate_input(
         inputId = "visit_var-variables-selected",
         condition = !is.null(selectors$visit_var()$variables$selected),
-        message = "A visit variables must be selected."
+        message = "A visit variable must be selected."
       )
+      # arm_var-variables-selected is handled in arm_ref_comp_observer()
       validate_input(
         inputId = "arm_var-variables-selected",
         condition = !is.null(selectors$arm_var()$variables$selected),
-        message = "A treatment variables must be selected."
+        message = "A treatment variable must be selected."
       )
 
       validate_input(
@@ -496,6 +505,12 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
         inputId = "id_var-variables-selected",
         condition = !is.null(selectors$id_var()$variables$selected),
         message = "A subject identifier must be selected."
+      )
+
+      validate_input(
+        inputId = "conf_level",
+        condition = !is.null(input$conf_level),
+        message = "A confidence level must be selected."
       )
       selected_visit <- selectors$visit_var()$variables$selected
       if (selected_visit > 0) { # Interactive covariates and visit variable must include same visit variable
@@ -564,8 +579,8 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
       "aval_var-variables-selected" = reactive(selectors$aval_var()$variables$selected),
       "paramcd-values-selected" = reactive(selectors$paramcd()$values$selected),
       "arm_var-variables-selected" = reactive(selectors$arm_var()$variables$selected),
-      Ref = reactive(unlist(input$Ref)),
-      Comp = reactive(unlist(input$Comp)),
+      Ref = reactive(unlist(input$buckets$Ref)),
+      Comp = reactive(unlist(input$buckets$Comp)),
       combine_comp_arms = reactive(input$combine_comp_arms),
       visit_var = reactive(selectors$visit_var()$variables$selected),
       "cov_var-variables-selected" = reactive(selectors$cov_var()$variables$selected),
@@ -680,7 +695,6 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
       teal::validate_has_data(anl_filtered, min_nrow = 1)
 
       validate_checks()
-      browser()
       c(
         list(adsl_filtered = adsl_filtered, anl_filtered = anl_filtered),
         encoding_inputs
@@ -705,7 +719,7 @@ srv_mmrm.picks <- function(id, # nolint: object_name.
       equal_ADSL <- all.equal(state$input$adsl_filtered, displayed_state$adsl_filtered) # nolint: object_name.
       equal_dataname <- all.equal(state$input$anl_filtered, displayed_state$anl_filtered)
       true_means_change <- vapply(
-        sync_inputs,
+        names(sync_inputs),
         FUN = function(x) {
           if (is.null(state$input[[x]])) {
             if (is.null(displayed_state[[x]])) {

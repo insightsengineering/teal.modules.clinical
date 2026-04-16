@@ -130,15 +130,25 @@ init_teal_app_driver <- function(...) {
   checkmate::assert_string(sel_id)
   checkmate::assert_string(open_id)
   val <- as.character(val)
-  name_sel <- .teal_picks_js_id_literal(sel_id)
-  name_open <- .teal_picks_js_id_literal(open_id)
-  val_js <- .teal_picks_shiny_setinput_value_literal(val)
-  app_driver$run_js(paste(
-    sprintf("Shiny.setInputValue(%s, %s, {priority: 'event'});", name_sel, val_js),
-    sprintf("Shiny.setInputValue(%s, true, {priority: 'event'});", name_open),
-    sprintf("Shiny.setInputValue(%s, false, {priority: 'event'});", name_open),
-    sep = "\n"
-  ))
+  sel_value <- .teal_picks_shiny_selected_value_for_set_inputs(val)
+
+  do_call_set_inputs <- function(named_inputs, wait_) {
+    do.call(
+      app_driver$set_inputs,
+      c(
+        named_inputs,
+        list(
+          priority_ = "event",
+          allow_no_input_binding_ = TRUE,
+          wait_ = wait_
+        )
+      )
+    )
+  }
+
+  do_call_set_inputs(stats::setNames(list(sel_value), sel_id), wait_ = FALSE)
+  do_call_set_inputs(stats::setNames(list(TRUE), open_id), wait_ = FALSE)
+  do_call_set_inputs(stats::setNames(list(FALSE), open_id), wait_ = TRUE)
   invisible(app_driver)
 }
 

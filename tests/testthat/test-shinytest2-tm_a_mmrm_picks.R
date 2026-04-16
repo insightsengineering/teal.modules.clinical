@@ -1,4 +1,3 @@
-skip("wip - being finished in a different PR")
 app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   arm_ref_comp <- list(
     ARMCD = list(
@@ -24,7 +23,7 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
   testthat::expect_warning(
-    paramcd_values <- teal.picks::values(selected = "FKSI-FWB"),
+    paramcd_values <- teal.picks::values(selected = "FKSI-FWB", multiple = FALSE),
     "doesn't guarantee that `selected` is a subset of `choices`.",
     fixed = TRUE
   )
@@ -78,14 +77,13 @@ testthat::test_that(
     skip_if_too_deep(5)
 
     app_driver <- app_driver_tm_a_mmrm(FALSE)
+    withr::defer(app_driver$stop())
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
 
     null_text <- app_driver$get_text(app_driver$namespaces(TRUE)$module("null_input_msg"))
 
     testthat::expect_match(null_text, "Please first specify 'Model Settings' and press 'Fit Model'")
-
-    app_driver$stop()
   }
 )
 
@@ -96,6 +94,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm(FALSE)
+    withr::defer(app_driver$stop())
 
     testthat::expect_equal(app_driver$get_text("a.nav-link.active"), "MMRM")
 
@@ -105,15 +104,14 @@ testthat::test_that(
       fixed = TRUE
     )
 
-    testthat::expect_equal(exported_values[["aval_var-resolved"]]$variables$selected, "AVAL")
+    testthat::expect_equal(exported_values[["aval_var-picks_resolved"]]$variables$selected, "AVAL")
 
-    testthat::expect_equal(exported_values[["paramcd-resolved"]]$values$selected, "FKSI-FWB")
+    testthat::expect_equal(exported_values[["paramcd-picks_resolved"]]$values$selected, "FKSI-FWB")
 
-    testthat::expect_equal(exported_values[["visit_var-resolved"]]$variables$selected, "AVISIT")
+    testthat::expect_equal(exported_values[["visit_var-picks_resolved"]]$variables$selected, "AVISIT")
+    testthat::expect_null(exported_values[["cov_var-picks_resolved"]]$variables$selected)
 
-    testthat::expect_null(exported_values[["cov_var-resolved"]]$variables$selected)
-
-    testthat::expect_equal(exported_values[["arm_var-resolved"]]$variables$selected, "ARM")
+    testthat::expect_equal(exported_values[["arm_var-picks_resolved"]]$variables$selected, "ARM")
 
     testthat::expect_equal(
       app_driver$get_active_module_input("buckets"),
@@ -122,7 +120,7 @@ testthat::test_that(
 
     testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
 
-    testthat::expect_equal(exported_values[["id_var-resolved"]]$variables$selected, "USUBJID")
+    testthat::expect_equal(exported_values[["id_var-picks_resolved"]]$variables$selected, "USUBJID")
 
     testthat::expect_equal(app_driver$get_active_module_input("weights_emmeans"), "proportional")
 
@@ -135,22 +133,19 @@ testthat::test_that(
     testthat::expect_true(app_driver$get_active_module_input("parallel"))
 
     testthat::expect_equal(app_driver$get_active_module_input("output_function"), "t_mmrm_lsmeans")
-
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default selection.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
+  withr::defer(app_driver$stop())
   app_driver$expect_no_validation_error()
 
   table <- app_driver$get_active_module_table_output("mmrm_table-table-with-settings")
   col_val <- app_driver$get_active_module_input("buckets")
   testthat::expect_true(all(unlist(col_val, use.names = FALSE) %in% colnames(table)))
   testthat::expect_equal(nrow(table), 25)
-
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -159,6 +154,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
+    withr::defer(app_driver$stop())
 
     app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
@@ -170,7 +166,6 @@ testthat::test_that(
     testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
     app_driver$set_active_module_input("t_mmrm_lsmeans_show_relative", "increase")
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -181,6 +176,7 @@ testthat::test_that(
     skip_if_too_deep(5)
 
     app_driver <- app_driver_tm_a_mmrm()
+    withr::defer(app_driver$stop())
 
     app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
@@ -217,7 +213,6 @@ testthat::test_that(
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
-    app_driver$stop()
   }
 )
 
@@ -227,6 +222,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
+    withr::defer(app_driver$stop())
 
     app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
@@ -249,11 +245,16 @@ testthat::test_that(
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
-    app_driver$stop()
   }
 )
 
 for (func in output_functions) {
+  id_selector <- if (grepl("^g_", func)) {
+    app_driver$namespaces(TRUE)$module("mmrm_plot-plot_out_main")
+  } else {
+    app_driver$namespaces(TRUE)$module("mmrm_table-table_out_main")
+  }
+
   testthat::test_that(
     sprintf(
       "e2e - tm_a_mmrm: Deselection of aval_var throws validation error in method %s.",
@@ -262,6 +263,7 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -277,14 +279,11 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(
-          app_driver$namespaces(TRUE)$module("mmrm_table-table_out_main")
-        ),
+        app_driver$get_text(id_selector),
         "A analysis variable must be selected.",
         fixed = TRUE
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -296,6 +295,7 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -311,16 +311,10 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("paramcd", "ADQS", "filter1-vals_input")
-          )
-        )),
-        "Select Endpoint' field is not selected"
+        app_driver$get_text(id_selector),
+        "A select endpoint must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -332,6 +326,7 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -347,16 +342,10 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("visit_var", "ADQS", "select_input")
-          )
-        )),
-        "Visit Variable' field is not selected"
+        app_driver$get_text(id_selector),
+        "A visit variable must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -368,6 +357,7 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -383,16 +373,10 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("arm_var", "ADSL", "select_input")
-          )
-        )),
-        "Treatment variable must be selected"
+        app_driver$get_text(id_selector),
+        "A treatment variable must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -404,6 +388,7 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -419,16 +404,10 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("id_var", "ADQS", "select_input")
-          )
-        )),
-        "Subject Identifier' field is not selected"
+        app_driver$get_text(id_selector),
+        "A subject identifier must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -440,6 +419,7 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -454,16 +434,10 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            "conf_level_input"
-          )
-        )),
-        "Confidence Level' field is not selected"
+        app_driver$get_text(id_selector),
+        "A confidence level must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 }
@@ -507,6 +481,7 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -537,7 +512,6 @@ for (func in output_functions) {
 
         # Check output based on function type (plot or table)
         if (grepl("^g_", func)) {
-          browser()
           plot_after <- app_driver$get_active_module_plot_output("mmrm_plot")
           testthat::expect_false(
             identical(plot_before, plot_after)
@@ -552,7 +526,6 @@ for (func in output_functions) {
           )
         }
       }
-      app_driver$stop()
     }
   )
 }
