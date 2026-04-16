@@ -99,7 +99,10 @@ testthat::test_that(
     testthat::expect_equal(app_driver$get_text("a.nav-link.active"), "MMRM")
 
     exported_values <- app_driver$get_values()$export
-    names(exported_values) <- gsub(sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values), fixed = TRUE)
+    names(exported_values) <- gsub(
+      sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+      fixed = TRUE
+    )
 
     testthat::expect_equal(exported_values[["aval_var-resolved"]]$variables$selected, "AVAL")
 
