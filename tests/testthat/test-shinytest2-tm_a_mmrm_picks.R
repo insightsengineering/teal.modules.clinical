@@ -300,7 +300,6 @@ for (func in output_functions) {
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      # app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0L))
       set_teal_picks_slot(app_driver, "paramcd", "values", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
@@ -331,7 +330,6 @@ for (func in output_functions) {
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      # app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", character(0L))
       set_teal_picks_slot(app_driver, "visit_var", "variables", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
@@ -362,7 +360,6 @@ for (func in output_functions) {
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      # app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0L))
       set_teal_picks_slot(app_driver, "arm_var", "variables", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
@@ -393,7 +390,6 @@ for (func in output_functions) {
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      # app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", character(0L))
       set_teal_picks_slot(app_driver, "id_var", "variables", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
