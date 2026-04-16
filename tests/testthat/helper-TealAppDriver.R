@@ -52,26 +52,38 @@ init_teal_app_driver <- function(...) {
   paste0("\"", id, "\"")
 }
 
-# JavaScript array literal of quoted strings for picker values (may be empty).
-.teal_picks_js_string_array_literal <- function(val) { # nolint: object_length_linter.
+# JSON `[]`, a JSON string, or JSON string array for embedded JS (see `singleton_as_bare_string`).
+#
+# When `singleton_as_bare_string` is `TRUE` and `length(val) == 1L`, return a single JSON string
+# token (e.g. `"foo"`). Otherwise return a JSON array (`[]`, `["a"]`, or `["a","b"]`). The
+# always-array form is used where `const arr = ...` must remain an array (DOM sync script).
+.teal_picks_js_json_collection_literal <- function(val, singleton_as_bare_string) { # nolint: object_length_linter.
   val <- as.character(val)
   if (length(val) == 0L) {
     return("[]")
   }
   parts <- vapply(val, .teal_picks_js_id_literal, character(1))
+  if (isTRUE(singleton_as_bare_string) && length(val) == 1L) {
+    return(parts[[1L]])
+  }
   paste0("[", paste(parts, collapse = ","), "]")
 }
 
-# Value argument for Shiny.setInputValue: `[]`, a JSON string, or a JSON string array.
-.teal_picks_shiny_setinput_value_literal <- function(val) { # nolint: object_length_linter.
+# JavaScript array literal of quoted strings for picker values (may be empty).
+.teal_picks_js_string_array_literal <- function(val) { # nolint: object_length_linter.
+  .teal_picks_js_json_collection_literal(val, singleton_as_bare_string = FALSE)
+}
+
+# Scalar string or character vector for `AppDriver$set_inputs()` (empty multi-select: `character(0)`).
+.teal_picks_shiny_selected_value_for_set_inputs <- function(val) { # nolint: object_length_linter.
   val <- as.character(val)
   if (length(val) == 0L) {
-    return("[]")
+    character(0)
+  } else if (length(val) == 1L) {
+    val[[1L]]
+  } else {
+    val
   }
-  if (length(val) == 1L) {
-    return(.teal_picks_js_id_literal(val[[1]]))
-  }
-  paste0("[", paste(vapply(val, .teal_picks_js_id_literal, character(1)), collapse = ","), "]")
 }
 
 # Sync native <select> + bootstrap-select widget, then let Shiny read change events.
@@ -111,7 +123,9 @@ init_teal_app_driver <- function(...) {
   invisible(app_driver)
 }
 
-# Push values through Shiny and force teal.picks picker commit (selected_open pulse).
+# Push values through Shiny and force teal.picks picker commit (`*_open` TRUE then FALSE).
+# Uses [`AppDriver$set_inputs()`] with `priority_ = "event"` and `allow_no_input_binding_ = TRUE`
+# so shinytest2 waits for the last flush (unbound picker inputs).
 .teal_picks_shiny_set_picker_and_commit <- function(app_driver, sel_id, open_id, val) { # nolint: object_length_linter.
   checkmate::assert_string(sel_id)
   checkmate::assert_string(open_id)
@@ -142,28 +156,6 @@ init_teal_app_driver <- function(...) {
   ))
   app_driver$wait_for_idle()
   invisible(app_driver)
-}
-
-# Parse teal.picks summary `title` (datasets: … / variables: … lines from picks_srv).
-.teal_picks_parse_badge_title_slot <- function(title, slot) { # nolint: object_length_linter.
-  if (is.null(title) || !nzchar(title)) {
-    return(NULL)
-  }
-  prefix <- paste0(slot, ": ")
-  lines <- strsplit(title, "\n", fixed = TRUE)[[1]]
-  line <- lines[startsWith(lines, prefix)]
-  if (length(line) == 0L) {
-    return(NULL)
-  }
-  rest <- trimws(substring(line[[1]], nchar(prefix) + 1L))
-  if (!nzchar(rest)) {
-    return(NULL)
-  }
-  if (grepl(", ", rest, fixed = TRUE)) {
-    trimws(strsplit(rest, ", ", fixed = TRUE)[[1]])
-  } else {
-    rest
-  }
 }
 
 # Badge label may prefix variables with dataset (e.g. "ADLB BNRIND").
