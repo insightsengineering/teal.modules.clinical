@@ -89,11 +89,11 @@ testthat::test_that(
       "ANRIND"
     )
     testthat::expect_equal(
-      get_teal_picks_slot(app_driver, "treatment_flag", "variables"),
+      get_teal_picks_slot(app_driver, "treatment_flag_var", "variables"),
       "ONTRTFL"
     )
     testthat::expect_equal(
-      get_teal_picks_slot(app_driver, "treatment_flag", "values"),
+      get_teal_picks_slot(app_driver, "treatment_flag_var", "values"),
       "Y"
     )
     app_driver$stop()

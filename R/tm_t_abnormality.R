@@ -407,11 +407,6 @@ tm_t_abnormality <- function(label,
   )
 
   checkmate::assert_true(teal.picks::is_pick_multiple(by_vars$variables))
-  checkmate::assert_false(teal.picks::is_pick_multiple(arm_var$variables))
-  checkmate::assert_false(teal.picks::is_pick_multiple(grade$variables))
-  checkmate::assert_false(teal.picks::is_pick_multiple(id_var$variables))
-  checkmate::assert_false(teal.picks::is_pick_multiple(baseline_var$variables))
-  checkmate::assert_false(teal.picks::is_pick_multiple(treatment_flag_var$variables))
   checkmate::assert_true(teal.picks::is_pick_multiple(treatment_flag_var$values))
 
   args <- as.list(environment())
@@ -491,7 +486,7 @@ ui_t_abnormality <- function(id,
           ),
           tags$div(
             tags$label("On-treatment flag (variable and values)"),
-            teal.picks::picks_ui(ns("treatment_flag"), treatment_flag_var)
+            teal.picks::picks_ui(ns("treatment_flag_var"), treatment_flag_var)
           )
         )
       )
@@ -534,7 +529,7 @@ srv_t_abnormality <- function(id,
         by_vars = by_vars,
         grade = grade,
         baseline_var = baseline_var,
-        treatment_flag = treatment_flag_var
+        treatment_flag_var = treatment_flag_var
       ),
       data = data
     )
@@ -584,11 +579,11 @@ srv_t_abnormality <- function(id,
           "Please select a baseline grade variable."
         ),
         need(
-          length(anl_selectors$treatment_flag()$variables$selected) >= 1L,
+          length(anl_selectors$treatment_flag_var()$variables$selected) >= 1L,
           "Please select the on-treatment flag variable."
         ),
         need(
-          length(anl_selectors$treatment_flag()$values$selected) >= 1L,
+          length(anl_selectors$treatment_flag_var()$values$selected) >= 1L,
           "Please select at least one on-treatment flag value."
         )
       )
@@ -601,7 +596,7 @@ srv_t_abnormality <- function(id,
       input_by_vars <- as.vector(anl_selectors$by_vars()$variables$selected)
       input_grade <- as.vector(anl_selectors$grade()$variables$selected)
       input_baseline_var <- as.vector(anl_selectors$baseline_var()$variables$selected)
-      input_treatment_flag_var <- as.vector(anl_selectors$treatment_flag()$variables$selected)
+      input_treatment_flag_var <- as.vector(anl_selectors$treatment_flag_var()$variables$selected)
 
       validate_standard_inputs(
         adsl = adsl_filtered,
@@ -635,8 +630,8 @@ srv_t_abnormality <- function(id,
         abnormal = abnormal,
         grade = as.vector(anl_selectors$grade()$variables$selected),
         baseline_var = as.vector(anl_selectors$baseline_var()$variables$selected),
-        treatment_flag_var = as.vector(anl_selectors$treatment_flag()$variables$selected),
-        treatment_flag = as.vector(anl_selectors$treatment_flag()$values$selected),
+        treatment_flag_var = as.vector(anl_selectors$treatment_flag_var()$variables$selected),
+        treatment_flag = as.vector(anl_selectors$treatment_flag_var()$values$selected),
         add_total = input$add_total,
         total_label = total_label,
         exclude_base_abn = input$exclude_base_abn,
