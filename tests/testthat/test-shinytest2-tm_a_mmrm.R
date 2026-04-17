@@ -1,28 +1,27 @@
 app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
-  arm_ref_comp <- list(
-    ARMCD = list(
-      ref = "ARM B",
-      comp = c("ARM A", "ARM C")
-    )
-  )
+  arm_ref_comp <- list(ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")))
 
   data <- teal.data::teal_data()
   data <- within(data, {
     ADSL <- tmc_ex_adsl
-    ADQS <- tmc_ex_adqs %>%
-      dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") %>%
-      dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) %>%
+    ADQS <- tmc_ex_adqs |>
+      dplyr::filter(ABLFL != "Y" & ABLFL2 != "Y") |>
+      dplyr::filter(AVISIT %in% c("WEEK 1 DAY 8", "WEEK 2 DAY 15", "WEEK 3 DAY 22")) |>
       dplyr::mutate(
         AVISIT = as.factor(AVISIT),
-        AVISITN = rank(AVISITN) %>%
-          as.factor() %>%
-          as.numeric() %>%
+        AVISITN = rank(AVISITN) |>
+          as.factor() |>
+          as.numeric() |>
           as.factor() #' making consecutive numeric factor
       )
   })
   teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[names(data)]
 
-  arm_var <- choices_selected(c("ARM", "ARMCD"), "ARM")
+  testthat::expect_warning(
+    paramcd_values <- teal.picks::values(selected = "FKSI-FWB", multiple = FALSE),
+    "doesn't guarantee that `selected` is a subset of `choices`.",
+    fixed = TRUE
+  )
 
   app_driver <- init_teal_app_driver(
     teal::init(
@@ -30,27 +29,16 @@ app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
       modules = tm_a_mmrm(
         label = "MMRM",
         dataname = "ADQS",
-        parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-          teal.transform::datanames_input(arm_var), "ADSL"
-        ),
-        aval_var = choices_selected(c("AVAL", "CHG"), "AVAL"),
-        id_var = choices_selected(c("USUBJID", "SUBJID"), "USUBJID"),
-        arm_var = arm_var,
-        visit_var = choices_selected(c("AVISIT", "AVISITN"), "AVISIT"),
+        parentname = "ADSL",
+        aval_var = teal.picks::variables(c("AVAL", "CHG")),
+        id_var = teal.picks::variables(c("USUBJID", "SUBJID")),
+        arm_var = teal.picks::variables(c("ARM", "ARMCD")),
+        visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
         arm_ref_comp = arm_ref_comp,
-        paramcd = choices_selected(
-          choices = value_choices(data[["ADQS"]], "PARAMCD", "PARAM"),
-          selected = "FKSI-FWB"
-        ),
-        cov_var = choices_selected(c("BASE", "AGE", "SEX", "BASE:AVISIT"), NULL),
-        method = teal.transform::choices_selected(c(
-          "Satterthwaite", "Kenward-Roger",
-          "Kenward-Roger-Linear"
-        ), "Satterthwaite", keep_order = TRUE),
-        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
-          keep_order =
-            TRUE
-        ),
+        paramcd_values = paramcd_values,
+        cov_var = teal.picks::variables(c("BASE", "AGE", "SEX", teal.picks::interaction_vars("BASE", "AVISIT")), NULL),
+        method = teal.picks::values(c("Satterthwaite", "Kenward-Roger", "Kenward-Roger-Linear"), "Satterthwaite"),
+        conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
         plot_height = c(700L, 200L, 2000L),
         plot_width = NULL,
         total_label = default_total_label(),
@@ -84,14 +72,13 @@ testthat::test_that(
     skip_if_too_deep(5)
 
     app_driver <- app_driver_tm_a_mmrm(FALSE)
+    withr::defer(app_driver$stop())
     app_driver$expect_no_shiny_error()
     app_driver$expect_no_validation_error()
 
     null_text <- app_driver$get_text(app_driver$namespaces(TRUE)$module("null_input_msg"))
 
     testthat::expect_match(null_text, "Please first specify 'Model Settings' and press 'Fit Model'")
-
-    app_driver$stop()
   }
 )
 
@@ -102,33 +89,33 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm(FALSE)
+    withr::defer(app_driver$stop())
 
     testthat::expect_equal(app_driver$get_text("a.nav-link.active"), "MMRM")
 
-    testthat::expect_equal(app_driver$get_active_module_input("aval_var-dataset_ADQS_singleextract-select"), "AVAL")
-
-    testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals"),
-      "FKSI-FWB"
+    exported_values <- app_driver$get_values()$export
+    names(exported_values) <- gsub(
+      sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+      fixed = TRUE
     )
 
-    testthat::expect_equal(app_driver$get_active_module_input("visit_var-dataset_ADQS_singleextract-select"), "AVISIT")
+    testthat::expect_equal(exported_values[["aval_var-picks_resolved"]]$variables$selected, "AVAL")
 
-    testthat::expect_null(app_driver$get_active_module_input("cov_var-dataset_ADQS_singleextract-select"))
+    testthat::expect_equal(exported_values[["paramcd-picks_resolved"]]$values$selected, "FKSI-FWB")
 
-    testthat::expect_equal(app_driver$get_active_module_input("arm_var-dataset_ADSL_singleextract-select"), "ARM")
+    testthat::expect_equal(exported_values[["visit_var-picks_resolved"]]$variables$selected, "AVISIT")
+    testthat::expect_null(exported_values[["cov_var-picks_resolved"]]$variables$selected)
+
+    testthat::expect_equal(exported_values[["arm_var-picks_resolved"]]$variables$selected, "ARM")
 
     testthat::expect_equal(
       app_driver$get_active_module_input("buckets"),
-      list(
-        Ref = list("A: Drug X"),
-        Comp = list("B: Placebo", "C: Combination")
-      )
+      list(Ref = list("A: Drug X"), Comp = list("B: Placebo", "C: Combination"))
     )
 
     testthat::expect_false(app_driver$get_active_module_input("combine_comp_arms"))
 
-    testthat::expect_equal(app_driver$get_active_module_input("id_var-dataset_ADQS_singleextract-select"), "USUBJID")
+    testthat::expect_equal(exported_values[["id_var-picks_resolved"]]$variables$selected, "USUBJID")
 
     testthat::expect_equal(app_driver$get_active_module_input("weights_emmeans"), "proportional")
 
@@ -141,22 +128,19 @@ testthat::test_that(
     testthat::expect_true(app_driver$get_active_module_input("parallel"))
 
     testthat::expect_equal(app_driver$get_active_module_input("output_function"), "t_mmrm_lsmeans")
-
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_a_mmrm: Click on fit model shows table for default selection.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_a_mmrm()
+  withr::defer(app_driver$stop())
   app_driver$expect_no_validation_error()
 
   table <- app_driver$get_active_module_table_output("mmrm_table-table-with-settings")
   col_val <- app_driver$get_active_module_input("buckets")
   testthat::expect_true(all(unlist(col_val, use.names = FALSE) %in% colnames(table)))
   testthat::expect_equal(nrow(table), 25)
-
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -165,6 +149,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
+    withr::defer(app_driver$stop())
 
     app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
@@ -176,7 +161,6 @@ testthat::test_that(
     testthat::expect_equal(app_driver$get_active_module_input("t_mmrm_lsmeans_show_relative"), "reduction")
     app_driver$set_active_module_input("t_mmrm_lsmeans_show_relative", "increase")
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -185,7 +169,9 @@ testthat::test_that(
   settings throws no validation errors and verify visibility of generated plots.",
   {
     skip_if_too_deep(5)
+
     app_driver <- app_driver_tm_a_mmrm()
+    withr::defer(app_driver$stop())
 
     app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
@@ -222,7 +208,6 @@ testthat::test_that(
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
-    app_driver$stop()
   }
 )
 
@@ -232,6 +217,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_a_mmrm()
+    withr::defer(app_driver$stop())
 
     app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
     app_driver$wait_for_idle()
@@ -254,11 +240,15 @@ testthat::test_that(
     testthat::expect_match(plot, "data:image/png;base64,")
 
     testthat::expect_false(identical(plot_before, plot))
-    app_driver$stop()
   }
 )
 
 for (func in output_functions) {
+  id_selector <- if (grepl("^g_", func)) {
+    "mmrm_plot-plot_out_main"
+  } else {
+    "mmrm_table-table_out_main"
+  }
   testthat::test_that(
     sprintf(
       "e2e - tm_a_mmrm: Deselection of aval_var throws validation error in method %s.",
@@ -267,11 +257,13 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      app_driver$set_active_module_input("aval_var-dataset_ADQS_singleextract-select", character(0L))
+      set_teal_picks_slot(app_driver, "aval_var", "variables", character(0L))
+
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
@@ -281,16 +273,11 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("aval_var", "ADQS", "select_input")
-          )
-        )),
-        "Analysis Variable' field is not selected"
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
+        "A analysis variable must be selected.",
+        fixed = TRUE
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -302,11 +289,12 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      app_driver$set_active_module_input("paramcd-dataset_ADQS_singleextract-filter1-vals", character(0L))
+      set_teal_picks_slot(app_driver, "paramcd", "values", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
@@ -316,16 +304,10 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("paramcd", "ADQS", "filter1-vals_input")
-          )
-        )),
-        "Select Endpoint' field is not selected"
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
+        "A select endpoint must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -337,11 +319,12 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      app_driver$set_active_module_input("visit_var-dataset_ADQS_singleextract-select", character(0L))
+      set_teal_picks_slot(app_driver, "visit_var", "variables", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
@@ -351,16 +334,10 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("visit_var", "ADQS", "select_input")
-          )
-        )),
-        "Visit Variable' field is not selected"
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
+        "A visit variable must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -372,11 +349,12 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      app_driver$set_active_module_input("arm_var-dataset_ADSL_singleextract-select", character(0L))
+      set_teal_picks_slot(app_driver, "arm_var", "variables", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
@@ -386,16 +364,10 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("arm_var", "ADSL", "select_input")
-          )
-        )),
-        "Treatment variable must be selected"
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
+        "A treatment variable must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -407,11 +379,12 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
 
-      app_driver$set_active_module_input("id_var-dataset_ADQS_singleextract-select", character(0L))
+      set_teal_picks_slot(app_driver, "id_var", "variables", character(0L))
       if (grepl("^g_", func)) {
         testthat::expect_identical(app_driver$get_active_module_plot_output("mmrm_plot"), character(0))
       } else {
@@ -421,16 +394,10 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            ns_des_input("id_var", "ADQS", "select_input")
-          )
-        )),
-        "Subject Identifier' field is not selected"
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
+        "A subject identifier must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 
@@ -442,6 +409,7 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -456,28 +424,22 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(app_driver$namespaces(TRUE)$module(
-          sprintf(
-            "%s .shiny-validation-message",
-            "conf_level_input"
-          )
-        )),
-        "Confidence Level' field is not selected"
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
+        "A confidence level must be selected."
       )
       app_driver$expect_validation_error()
-      app_driver$stop()
     }
   )
 }
 
 input_list <- list(
-  "aval_var-dataset_ADQS_singleextract-select" = "CHG",
-  "paramcd-dataset_ADQS_singleextract-filter1-vals" = "BFIALL",
-  "visit_var-dataset_ADQS_singleextract-select" = "AVISITN",
-  "cov_var-dataset_ADQS_singleextract-select" = "AGE",
-  "arm_var-dataset_ADSL_singleextract-select" = "ARMCD",
+  "aval_var" = quote(set_teal_picks_slot(app_driver, "aval_var", "variables", "CHG")),
+  "paramcd" = quote(set_teal_picks_slot(app_driver, "paramcd", "values", "BFIALL")),
+  "visit_var" = quote(set_teal_picks_slot(app_driver, "visit_var", "variables", "AVISITN")),
+  "cov_var" = quote(set_teal_picks_slot(app_driver, "cov_var", "variables", "AGE")),
+  "arm_var" = quote(set_teal_picks_slot(app_driver, "arm_var", "variables", "ARMCD")),
   "combine_comp_arms" = TRUE,
-  "id_var-dataset_ADQS_singleextract-select" = "SUBJID",
+  "id_var" = quote(set_teal_picks_slot(app_driver, "id_var", "variables", "SUBJID")),
   "weights_emmeans" = "equal",
   "cor_struct" = "ante-dependence",
   "conf_level" = "0.8",
@@ -485,10 +447,10 @@ input_list <- list(
 )
 
 non_responsive_conditions <- list(
-  "g_mmrm_lsmeans" = c("id_var-dataset_ADQS_singleextract-select"),
+  "g_mmrm_lsmeans" = c("id_var"),
   "g_mmrm_diagnostic" = c(
-    "arm_var-dataset_ADSL_singleextract-select",
-    "id_var-dataset_ADQS_singleextract-select",
+    "arm_var",
+    "id_var",
     "weights_emmeans",
     "cor_struct",
     "conf_level",
@@ -509,6 +471,7 @@ for (func in output_functions) {
     {
       skip_if_too_deep(5)
       app_driver <- app_driver_tm_a_mmrm()
+      withr::defer(app_driver$stop())
       # Set initial output function
       app_driver$set_active_module_input("output_function", func, wait_ = FALSE)
       app_driver$expect_no_validation_error()
@@ -528,7 +491,11 @@ for (func in output_functions) {
           next
         }
 
-        app_driver$set_active_module_input(input_name, input_list[[input_name]])
+        if (is.call(input_list[[input_name]])) {
+          eval(input_list[[input_name]])
+        } else {
+          app_driver$set_active_module_input(input_name, input_list[[input_name]])
+        }
         app_driver$click(selector = app_driver$namespaces(TRUE)$module("button_start"))
         app_driver$wait_for_idle()
         app_driver$expect_no_validation_error()
@@ -549,7 +516,6 @@ for (func in output_functions) {
           )
         }
       }
-      app_driver$stop()
     }
   )
 }
