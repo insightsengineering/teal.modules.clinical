@@ -11,7 +11,7 @@ tm_t_summary_by(
   arm_var = variables(choices = c("ARM", "ARMCD")),
   by_vars = variables(choices = c("PARAM", "AVISIT"), selected = "AVISIT"),
   summarize_vars = variables(choices = c("AVAL", "CHG"), selected = "AVAL"),
-  id_var = variables(choices = "USUBJID"),
+  id_var = variables(choices = "USUBJID", fixed = TRUE),
   paramcd = NULL,
   add_total = TRUE,
   total_label = default_total_label(),

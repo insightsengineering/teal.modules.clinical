@@ -429,7 +429,7 @@ tm_t_summary_by <- function(label,
                               choices = c("AVAL", "CHG"),
                               selected = "AVAL"
                             ),
-                            id_var = variables(choices = "USUBJID"),
+                            id_var = variables(choices = "USUBJID", fixed = TRUE),
                             paramcd = NULL,
                             add_total = TRUE,
                             total_label = default_total_label(),
