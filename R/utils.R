@@ -1158,13 +1158,13 @@ deprecate_pick_values_arg <- function(x, arg_name) {
         call. = FALSE
       )
     }
-    ch <- as.character(x$choices)
-    se <- as.character(unlist(x$selected, use.names = FALSE))
-    checkmate::assert_character(ch, min.len = 1L)
-    checkmate::assert_character(se, min.len = 1L)
+    choices <- as.character(x$choices)
+    selected <- as.character(unlist(x$selected, use.names = FALSE))
+    checkmate::assert_character(choices, min.len = 1L)
+    checkmate::assert_character(selected, min.len = 1L)
     fixed <- isTRUE(x$fixed)
-    multiple <- length(se) > 1L
-    x <- teal.picks::values(ch, se, multiple = multiple, fixed = fixed)
+    multiple <- length(selected) > 1L
+    x <- teal.picks::values(choices, selected, multiple = multiple, fixed = fixed)
   }
   checkmate::assert_class(x, "values", .var.name = arg_name)
   x
