@@ -43,12 +43,15 @@ tm_a_mmrm.default <- function(label,
   checkmate::assert_class(visit_var, "variables")
   checkmate::assert_class(cov_var, "variables")
   if (!missing(paramcd)) {
+    if (!missing(paramcd_var) || !missing(paramcd_value)) {
+      stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_value`, not both.")
+    }
     lifecycle::deprecate_warn(
       when = "0.13.0",
       what = "tm_a_mmrm(paramcd)",
       details = "Use of paramcd was removed in `tm_a_mmrm` module usage with teal.picks"
     )
-    paramcd_values <- deprecate_pick_values_arg(paramcd, "paramcd_var")
+    paramcd_values <- deprecate_pick_values_arg(paramcd, "paramcd")
   }
   checkmate::assert_class(paramcd_var, "variables")
   checkmate::assert_class(paramcd_values, "values")
