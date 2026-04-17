@@ -596,8 +596,8 @@ tm_a_mmrm <- function(label,
   checkmate::assert_class(visit_var, "variables")
   checkmate::assert_class(cov_var, "variables")
   if (!missing(paramcd)) {
-    if (!missing(paramcd_var) || !missing(paramcd_value)) {
-      stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_value`, not both.")
+    if (!missing(paramcd_var) || !missing(paramcd_values)) {
+      stop("Please provide either `paramcd` or `paramcd_var` with `paramcd_values`, not both.")
     }
     lifecycle::deprecate_warn(
       when = "0.13.0",
