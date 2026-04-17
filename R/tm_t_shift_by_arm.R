@@ -391,7 +391,7 @@ ui_shift_by_arm <- function(id,
             choices = treatment_flag$choices,
             selected = treatment_flag$selected,
             multiple = FALSE,
-            fixed = treatment_flag$fixed
+            fixed = teal.picks::is_picks_fixed(teatment_flag)
           )
         )
       )
