@@ -100,8 +100,8 @@ tm_t_pp_basic_info <- function(label,
                                dataname = "ADSL",
                                patient_col = "USUBJID",
                                vars = teal.picks::variables(
-                                selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
-                                multiple = TRUE
+                                 selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
+                                 multiple = TRUE
                                ),
                                pre_output = NULL,
                                post_output = NULL,
