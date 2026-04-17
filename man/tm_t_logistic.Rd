@@ -7,21 +7,20 @@
 tm_t_logistic(
   label,
   dataname,
-  parentname = ifelse(inherits(arm_var, "data_extract_spec"),
-    teal.transform::datanames_input(arm_var), "ADSL"),
+  parentname = "ADSL",
   arm_var = NULL,
   arm_ref_comp = NULL,
-  paramcd,
-  cov_var = NULL,
-  avalc_var = teal.transform::choices_selected(teal.transform::variable_choices(dataname,
-    "AVALC"), "AVALC", fixed = TRUE),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  paramcd_var = teal.picks::variables("PARAMCD", "PARAMCD"),
+  paramcd_values = teal.picks::values(multiple = FALSE),
+  cov_var = teal.picks::variables(selected = NULL),
+  avalc_var = teal.picks::variables("AVALC", fixed = TRUE),
+  conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95", keep_order = TRUE),
   pre_output = NULL,
   post_output = NULL,
   basic_table_args = teal.widgets::basic_table_args(),
   transformators = list(),
-  decorators = list()
+  decorators = list(),
+  paramcd
 )
 }
 \arguments{
@@ -42,9 +41,6 @@ an arm variable in \code{ADSL} and the element must be another list (possibly
 with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variable_choices()}} or delayed \code{\link[teal.transform:value_choices]{teal.transform::value_choices()}}
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
-
-\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
-available choices and preselected option for the parameter code variable from \code{dataname}.}
 
 \item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the covariates variables.}
@@ -75,6 +71,9 @@ decorator for tables or plots included in the module output reported.
 The decorators are applied to the respective output objects.
 
 See section "Decorating Module" below for more details.}
+
+\item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+available choices and preselected option for the parameter code variable from \code{dataname}.}
 }
 \value{
 a \code{teal_module} object.
