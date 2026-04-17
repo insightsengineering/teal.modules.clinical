@@ -16,7 +16,7 @@ tm_t_abnormality(
   id_var = variables(choices = "USUBJID"),
   baseline_var = variables(choices = "BNRIND"),
   treatment_flag_var = variables(choices = "ONTRTFL"),
-  treatment_flag = teal.picks::values(tidyselect::everything(), "Y", multiple = TRUE),
+  treatment_flag = values("Y", "Y", multiple = TRUE),
   add_total = TRUE,
   total_label = default_total_label(),
   exclude_base_abn = FALSE,
