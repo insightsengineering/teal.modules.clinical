@@ -11,8 +11,8 @@ tm_t_events_patyear(
   arm_var = variables(choices = c("ARM", "ARMCD")),
   events_var = variables(choices = "n_events"),
   paramcd = variables(choices = "PARAMCD"),
-  aval_var = variables(choices = "AVAL"),
-  avalu_var = variables(choices = "AVALU"),
+  aval_var = variables(choices = "AVAL", fixed = TRUE),
+  avalu_var = variables(choices = "AVALU", fixed = TRUE),
   add_total = TRUE,
   total_label = default_total_label(),
   na_level = tern::default_na_str(),
@@ -166,8 +166,8 @@ app <- init(
       add_total = TRUE,
       events_var = variables(choices = "n_events"),
       paramcd = variables(choices = "PARAMCD"),
-      aval_var = variables(choices = "AVAL"),
-      avalu_var = variables(choices = "AVALU")
+      aval_var = variables(choices = "AVAL", fixed = TRUE),
+      avalu_var = variables(choices = "AVALU", fixed = TRUE)
     )
   )
 )
@@ -190,8 +190,8 @@ app <- init(
       add_total = TRUE,
       events_var = variables(choices = "n_events"),
       paramcd = variables(choices = "PARAMCD"),
-      aval_var = variables(choices = "AVAL"),
-      avalu_var = variables(choices = "AVALU")
+      aval_var = variables(choices = "AVAL", fixed = TRUE),
+      avalu_var = variables(choices = "AVALU", fixed = TRUE)
     )
   )
 )
