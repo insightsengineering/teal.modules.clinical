@@ -250,11 +250,10 @@ testthat::test_that(
 
 for (func in output_functions) {
   id_selector <- if (grepl("^g_", func)) {
-    app_driver$namespaces(TRUE)$module("mmrm_plot-plot_out_main")
+    "mmrm_plot-plot_out_main"
   } else {
-    app_driver$namespaces(TRUE)$module("mmrm_table-table_out_main")
+    "mmrm_table-table_out_main"
   }
-
   testthat::test_that(
     sprintf(
       "e2e - tm_a_mmrm: Deselection of aval_var throws validation error in method %s.",
@@ -279,7 +278,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(id_selector),
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A analysis variable must be selected.",
         fixed = TRUE
       )
@@ -310,7 +309,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(id_selector),
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A select endpoint must be selected."
       )
       app_driver$expect_validation_error()
@@ -340,7 +339,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(id_selector),
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A visit variable must be selected."
       )
       app_driver$expect_validation_error()
@@ -370,7 +369,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(id_selector),
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A treatment variable must be selected."
       )
       app_driver$expect_validation_error()
@@ -400,7 +399,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(id_selector),
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A subject identifier must be selected."
       )
       app_driver$expect_validation_error()
@@ -430,7 +429,7 @@ for (func in output_functions) {
       }
 
       testthat::expect_match(
-        app_driver$get_text(id_selector),
+        app_driver$get_text(app_driver$namespaces(TRUE)$module(id_selector)),
         "A confidence level must be selected."
       )
       app_driver$expect_validation_error()
