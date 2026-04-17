@@ -1,10 +1,5 @@
 app_driver_tm_a_mmrm <- function(fit_model = TRUE) {
-  arm_ref_comp <- list(
-    ARMCD = list(
-      ref = "ARM B",
-      comp = c("ARM A", "ARM C")
-    )
-  )
+  arm_ref_comp <- list(ARMCD = list(ref = "ARM B", comp = c("ARM A", "ARM C")))
 
   data <- teal.data::teal_data()
   data <- within(data, {
