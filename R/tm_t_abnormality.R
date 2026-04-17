@@ -261,8 +261,7 @@ template_abnormality <- function(parentname,
 #' @param baseline_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for baseline abnormality grade.
 #' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr on-treatment flag variable.
 #' @param treatment_flag ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
-#'   value(s) indicating on-treatment records in `treatment_flag_var` (e.g. `"Y"`). Typically
-#'   `teal.picks::values(tidyselect::everything(), "Y", multiple = TRUE)` so choices follow the column.
+#'   value(s) indicating on-treatment records in `treatment_flag_var` (e.g. `"Y"`).
 #' @param na_level (`character`)\cr the NA level in the input dataset, default to `"<Missing>"`.
 #'
 #' @inherit module_arguments return seealso
@@ -336,8 +335,8 @@ template_abnormality <- function(parentname,
 #'         multiple = TRUE,
 #'         ordered = TRUE
 #'       ),
-#'       baseline_var = variables(choices = "BNRIND"),
-#'       grade = variables(choices = "ANRIND"),
+#'       baseline_var = variables(choices = "BNRIND", fixed = TRUE),
+#'       grade = variables(choices = "ANRIND", fixed = TRUE),
 #'       abnormal = list(low = "LOW", high = "HIGH"),
 #'       exclude_base_abn = FALSE
 #'     )
@@ -358,11 +357,11 @@ tm_t_abnormality <- function(label,
                                multiple = TRUE,
                                ordered = TRUE
                              ),
-                             grade = variables(choices = "ANRIND"),
+                             grade = variables(choices = "ANRIND", fixed = TRUE),
                              abnormal = list(low = c("LOW", "LOW LOW"), high = c("HIGH", "HIGH HIGH")),
-                             id_var = variables(choices = "USUBJID"),
-                             baseline_var = variables(choices = "BNRIND"),
-                             treatment_flag_var = variables(choices = "ONTRTFL"),
+                             id_var = variables(choices = "USUBJID", fixed = TRUE),
+                             baseline_var = variables(choices = "BNRIND", fixed = TRUE),
+                             treatment_flag_var = variables(choices = "ONTRTFL", fixed = TRUE),
                              treatment_flag = values("Y", "Y", multiple = TRUE),
                              add_total = TRUE,
                              total_label = default_total_label(),
@@ -406,6 +405,14 @@ tm_t_abnormality <- function(label,
     treatment_flag_var,
     treatment_flag
   )
+
+  checkmate::assert_true(teal.picks::is_pick_multiple(by_vars$variables))
+  checkmate::assert_false(teal.picks::is_pick_multiple(arm_var$variables))
+  checkmate::assert_false(teal.picks::is_pick_multiple(grade$variables))
+  checkmate::assert_false(teal.picks::is_pick_multiple(id_var$variables))
+  checkmate::assert_false(teal.picks::is_pick_multiple(baseline_var$variables))
+  checkmate::assert_false(teal.picks::is_pick_multiple(treatment_flag_var$variables))
+  checkmate::assert_true(teal.picks::is_pick_multiple(treatment_flag_var$values))
 
   args <- as.list(environment())
 
@@ -483,8 +490,8 @@ ui_t_abnormality <- function(id,
             teal.picks::picks_ui(ns("baseline_var"), baseline_var)
           ),
           tags$div(
-            tags$label("On Treatment Flag Variable"),
-            teal.picks::picks_ui(ns("treatment_flag_var"), treatment_flag_var)
+            tags$label("On-treatment flag (variable and values)"),
+            teal.picks::picks_ui(ns("treatment_flag"), treatment_flag_var)
           )
         )
       )
@@ -527,7 +534,7 @@ srv_t_abnormality <- function(id,
         by_vars = by_vars,
         grade = grade,
         baseline_var = baseline_var,
-        treatment_flag_var = treatment_flag_var
+        treatment_flag = treatment_flag_var
       ),
       data = data
     )
@@ -577,11 +584,11 @@ srv_t_abnormality <- function(id,
           "Please select a baseline grade variable."
         ),
         need(
-          length(anl_selectors$treatment_flag_var()$variables$selected) >= 1L,
-          "Please select indicator value for on treatment records."
+          length(anl_selectors$treatment_flag()$variables$selected) >= 1L,
+          "Please select the on-treatment flag variable."
         ),
         need(
-          length(anl_selectors$treatment_flag_var()$values$selected) >= 1L,
+          length(anl_selectors$treatment_flag()$values$selected) >= 1L,
           "Please select at least one on-treatment flag value."
         )
       )
@@ -594,7 +601,7 @@ srv_t_abnormality <- function(id,
       input_by_vars <- as.vector(anl_selectors$by_vars()$variables$selected)
       input_grade <- as.vector(anl_selectors$grade()$variables$selected)
       input_baseline_var <- as.vector(anl_selectors$baseline_var()$variables$selected)
-      input_treatment_flag_var <- as.vector(anl_selectors$treatment_flag_var()$variables$selected)
+      input_treatment_flag_var <- as.vector(anl_selectors$treatment_flag()$variables$selected)
 
       validate_standard_inputs(
         adsl = adsl_filtered,
@@ -628,8 +635,8 @@ srv_t_abnormality <- function(id,
         abnormal = abnormal,
         grade = as.vector(anl_selectors$grade()$variables$selected),
         baseline_var = as.vector(anl_selectors$baseline_var()$variables$selected),
-        treatment_flag_var = as.vector(anl_selectors$treatment_flag_var()$variables$selected),
-        treatment_flag = as.vector(anl_selectors$treatment_flag_var()$values$selected),
+        treatment_flag_var = as.vector(anl_selectors$treatment_flag()$variables$selected),
+        treatment_flag = as.vector(anl_selectors$treatment_flag()$values$selected),
         add_total = input$add_total,
         total_label = total_label,
         exclude_base_abn = input$exclude_base_abn,

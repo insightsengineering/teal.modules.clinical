@@ -2,6 +2,7 @@ app_driver_tm_t_abnormality <- function() {
   data <- teal.data::teal_data()
   data <- within(data, {
     library(dplyr)
+    library(formatters)
 
     ADSL <- teal.data::rADSL
     ADLB <- teal.data::rADLB %>%
@@ -29,13 +30,13 @@ app_driver_tm_t_abnormality <- function() {
           multiple = TRUE,
           ordered = TRUE
         ),
-        baseline_var = teal.picks::variables(choices = "BNRIND"),
-        grade = teal.picks::variables(choices = "ANRIND"),
+        baseline_var = teal.picks::variables(choices = "BNRIND", fixed = TRUE),
+        grade = teal.picks::variables(choices = "ANRIND", fixed = TRUE),
         abnormal = list(low = "LOW", high = "HIGH"),
-        id_var = teal.picks::variables(choices = "USUBJID"),
+        id_var = teal.picks::variables(choices = "USUBJID", fixed = TRUE),
         exclude_base_abn = FALSE,
-        treatment_flag_var = teal.picks::variables(choices = "ONTRTFL"),
-        treatment_flag = teal.picks::values(tidyselect::everything(), "Y", multiple = TRUE),
+        treatment_flag_var = teal.picks::variables(choices = "ONTRTFL", fixed = TRUE),
+        treatment_flag = teal.picks::values("Y", "Y", multiple = TRUE),
         total_label = default_total_label(),
         drop_arm_levels = TRUE,
         pre_output = NULL,
@@ -86,6 +87,14 @@ testthat::test_that(
     testthat::expect_equal(
       get_teal_picks_slot(app_driver, "grade", "variables"),
       "ANRIND"
+    )
+    testthat::expect_equal(
+      get_teal_picks_slot(app_driver, "treatment_flag", "variables"),
+      "ONTRTFL"
+    )
+    testthat::expect_equal(
+      get_teal_picks_slot(app_driver, "treatment_flag", "values"),
+      "Y"
     )
     app_driver$stop()
   }

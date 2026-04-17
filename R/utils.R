@@ -1169,4 +1169,3 @@ deprecate_pick_values_arg <- function(x, arg_name) {
   checkmate::assert_class(x, "values", .var.name = arg_name)
   x
 }
-
