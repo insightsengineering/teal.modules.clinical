@@ -136,6 +136,14 @@ tm_t_pp_prior_medication <- function(label,
                                      pre_output = NULL,
                                      post_output = NULL,
                                      transformators = list()) {
+  if (lifecycle::is_present(decorators)) {
+    lifecycle::deprecate_warn(
+      when = "0.11.0",
+      what = "tm_t_pp_laboratory(decorators)",
+      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
+    )
+  }
+  
   message("Initializing tm_t_pp_prior_medication")
 
   # Compatibility: accept choices_selected and convert
