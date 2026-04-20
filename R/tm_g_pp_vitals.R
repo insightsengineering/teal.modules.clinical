@@ -278,10 +278,9 @@ tm_g_pp_vitals <- function(label,
                            dataname = "ADVS",
                            parentname = "ADSL",
                            patient_col = "USUBJID",
-                           paramcd = NULL,
-                           aval = lifecycle::deprecated(),
-                           aval_var = NULL,
-                           xaxis = NULL,
+                           paramcd = teal.picks::variables("PARAMCD"),
+                           aval_var = teal.picks::variables("AVAL"),
+                           xaxis = teal.picks::variables("ADY"),
                            font_size = c(12L, 12L, 25L),
                            plot_height = c(700L, 200L, 2000L),
                            plot_width = NULL,
@@ -290,22 +289,19 @@ tm_g_pp_vitals <- function(label,
                            ggplot2_args = teal.widgets::ggplot2_args(),
                            transformators = list(),
                            decorators = list()) {
-  if (lifecycle::is_present(aval)) {
-    lifecycle::deprecate_stop(
-      when = "0.8.16",
-      what = "tm_g_pp_vitals(aval)",
-      with = "tm_g_pp_vitals(aval_var)"
-    )
-  }
-
   message("Initializing tm_g_pp_vitals")
+
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
+  xaxis <- deprecate_pick_variables_arg(xaxis, "xaxis")
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(paramcd, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(aval_var, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(xaxis, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(paramcd, "variables", null.ok = TRUE)
+  checkmate::assert_class(aval_var, "variables", null.ok = TRUE)
+  checkmate::assert_class(xaxis, "variables", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -318,120 +314,97 @@ tm_g_pp_vitals <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  checkmate::assert_multi_class(paramcd, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
-  checkmate::assert_multi_class(aval_var, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
-  checkmate::assert_multi_class(xaxis, c("choices_selected", "data_extract_spec"), null.ok = TRUE)
-  teal::assert_decorators(decorators, "plot")
+  assert_decorators(decorators, "plot")
+
+  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd)
+  aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
+  xaxis <- teal.picks::picks(teal.picks::datasets(dataname, dataname), xaxis)
 
   args <- as.list(environment())
-  data_extract_list <- list(
-    paramcd = `if`(is.null(paramcd), NULL, cs_to_des_select(paramcd, dataname = dataname)),
-    aval_var = `if`(is.null(aval_var), NULL, cs_to_des_select(aval_var, dataname = dataname)),
-    xaxis = `if`(is.null(xaxis), NULL, cs_to_des_select(xaxis, dataname = dataname))
-  )
 
   module(
     label = label,
-    ui = ui_g_vitals,
-    ui_args = c(data_extract_list, args),
-    server = srv_g_vitals,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        patient_col = patient_col,
-        plot_height = plot_height,
-        plot_width = plot_width,
-        ggplot2_args = ggplot2_args,
-        decorators = decorators
-      )
-    ),
+    ui = ui_g_pp_vitals,
+    ui_args = args[names(args) %in% names(formals(ui_g_pp_vitals))],
+    server = srv_g_pp_vitals,
+    server_args = args[names(args) %in% names(formals(srv_g_pp_vitals))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_g_vitals <- function(id, ...) {
-  ui_args <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    ui_args$paramcd,
-    ui_args$aval_var,
-    ui_args$xaxis
-  )
-
+ui_g_pp_vitals <- function(id,
+                           paramcd,
+                           aval_var,
+                           xaxis,
+                           font_size,
+                           pre_output,
+                           post_output,
+                           decorators) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = teal.widgets::plot_with_settings_ui(id = ns("vitals_plot")),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(ui_args[c("paramcd", "aval_var", "xaxis")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("paramcd"),
-        label = "Select PARAMCD variable:",
-        data_extract_spec = ui_args$paramcd,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select PARAMCD variable:"),
+        teal.picks::picks_ui(ns("paramcd"), paramcd)
       ),
       uiOutput(ns("paramcd_levels")),
-      teal.transform::data_extract_ui(
-        id = ns("xaxis"),
-        label = "Select vital plot x-axis:",
-        data_extract_spec = ui_args$xaxis,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select vital plot x-axis:"),
+        teal.picks::picks_ui(ns("xaxis"), xaxis)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("aval_var"),
-        label = "Select AVAL variable:",
-        data_extract_spec = ui_args$aval_var,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select AVAL variable:"),
+        teal.picks::picks_ui(ns("aval_var"), aval_var)
       ),
-      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(ui_args$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("decorator"), transformators = select_decorators(decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
           title = "Plot settings",
           teal.widgets::optionalSliderInputValMinMax(
-            ns("font_size"), "Font Size", ui_args$font_size,
+            ns("font_size"), "Font Size", font_size,
             ticks = FALSE, step = 1
           )
         )
       )
     ),
-    pre_output = ui_args$pre_output,
-    post_output = ui_args$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
 #' @keywords internal
-srv_g_vitals <- function(id,
-                         data,
-                         dataname,
-                         parentname,
-                         patient_col,
-                         paramcd,
-                         aval_var,
-                         xaxis,
-                         plot_height,
-                         plot_width,
-                         label,
-                         ggplot2_args,
-                         decorators) {
+srv_g_pp_vitals <- function(id,
+                            data,
+                            dataname,
+                            parentname,
+                            patient_col,
+                            paramcd,
+                            aval_var,
+                            xaxis,
+                            plot_height,
+                            plot_width,
+                            label,
+                            ggplot2_args,
+                            decorators) {
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
-    # Init
+    # Init patient selector
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
@@ -456,117 +429,116 @@ srv_g_vitals <- function(id,
       ignoreInit = TRUE
     )
 
-    # Vitals tab ----
+    selectors <- teal.picks::picks_srv(
+      picks = list(
+        paramcd = paramcd,
+        aval_var = aval_var,
+        xaxis = xaxis
+      ),
+      data = data
+    )
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(paramcd = paramcd, xaxis = xaxis, aval_var = aval_var),
-      datasets = data,
-      select_validation_rule = list(
-        paramcd = shinyvalidate::sv_required(
-          "Please select PARAMCD variable."
-        ),
-        xaxis = shinyvalidate::sv_required(
-          "Please select Vitals x-axis variable."
-        ),
-        aval_var = shinyvalidate::sv_required(
-          "Please select AVAL variable."
-        )
+    validated_q <- reactive({
+      obj <- req(data())
+      validate_input(
+        inputId = "patient_id",
+        condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
+        message = "Please select a patient."
       )
-    )
-
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("patient_id", shinyvalidate::sv_required(
-        "Please select a patient."
-      ))
-      iv$add_rule("paramcd_levels_vals", shinyvalidate::sv_required(
-        "Please select PARAMCD variable levels."
-      ))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
+      validate_input(
+        inputId = "paramcd-variables-selected",
+        condition = !is.null(selectors$paramcd()$variables$selected),
+        message = "Please select PARAMCD variable."
+      )
+      validate_input(
+        inputId = "xaxis-variables-selected",
+        condition = !is.null(selectors$xaxis()$variables$selected),
+        message = "Please select Vitals x-axis variable."
+      )
+      validate_input(
+        inputId = "aval_var-variables-selected",
+        condition = !is.null(selectors$aval_var()$variables$selected),
+        message = "Please select AVAL variable."
+      )
+      obj
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::left_join"
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::left_join",
+      output_name = "ANL"
     )
-
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>% teal.code::eval_code(code = as.expression(anl_inputs()$expr))
-    })
-
-    merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
     output$paramcd_levels <- renderUI({
-      paramcd_var <- input[[extract_input("paramcd", dataname)]]
-
+      paramcd_var <- selectors$paramcd()$variables$selected
       req(paramcd_var)
       req(input$patient_id)
 
-      vitals_dat <- merged$anl_q()[["ANL"]]
+      vitals_dat <- anl_inputs$data()[["ANL"]]
       vitals_dat_sub <- vitals_dat[vitals_dat[[patient_col]] == patient_id(), ]
       paramcd_col <- vitals_dat_sub[[paramcd_var]]
       paramcd_col_levels <- unique(paramcd_col)
 
       cur_selected <- isolate(input$paramcd_levels_vals)
+      selected <- if (length(cur_selected) > 0) cur_selected else paramcd_col_levels
 
-      selected <- if (length(cur_selected) > 0) {
-        cur_selected
-      } else {
-        paramcd_col_levels
-      }
-
-      tagList(
-        selectInput(
-          session$ns("paramcd_levels_vals"),
-          "Select PARAMCD variable levels:",
-          selected = selected,
-          choices = paramcd_col_levels,
-          multiple = TRUE
-        )
+      selectInput(
+        session$ns("paramcd_levels_vals"),
+        "Select PARAMCD variable levels:",
+        selected = selected,
+        choices = paramcd_col_levels,
+        multiple = TRUE
       )
     })
 
     all_q <- reactive({
-      teal::validate_has_data(merged$anl_q()[["ANL"]], 1)
+      obj <- anl_inputs$data()
 
-      teal::validate_inputs(iv_r())
+      teal::validate_has_data(obj[["ANL"]], 1)
+
+      validate_input(
+        inputId = "paramcd_levels_vals",
+        condition = !is.null(input$paramcd_levels_vals) && length(input$paramcd_levels_vals) > 0,
+        message = "Please select PARAMCD variable levels."
+      )
 
       validate(
         need(
-          nrow(merged$anl_q()[["ANL"]][input$patient_id == merged$anl_q()[["ANL"]][, patient_col], ]) > 0,
+          nrow(obj[["ANL"]][input$patient_id == obj[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )
 
+      paramcd_var <- selectors$paramcd()$variables$selected
+      aval_var_sel <- selectors$aval_var()$variables$selected
+      xaxis_sel <- selectors$xaxis()$variables$selected
+
       my_calls <- template_vitals(
         dataname = "ANL",
-        paramcd = input[[extract_input("paramcd", dataname)]],
+        paramcd = paramcd_var,
         paramcd_levels = input[["paramcd_levels_vals"]],
-        xaxis = input[[extract_input("xaxis", dataname)]],
-        aval_var = input[[extract_input("aval_var", dataname)]],
+        xaxis = xaxis_sel,
+        aval_var = aval_var_sel,
         patient_id = patient_id(),
         font_size = input[["font_size"]],
         ggplot2_args = ggplot2_args
       )
 
       obj <- teal.code::eval_code(
-        merged$anl_q(),
+        obj,
         substitute(
           expr = {
             ANL <- ANL[ANL[[patient_col]] == patient_id, ]
-          }, env = list(
+          },
+          env = list(
             patient_col = patient_col,
             patient_id = patient_id()
           )
         )
       )
+
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Plot")
       teal.code::eval_code(obj, as.expression(unlist(my_calls)))
     })
@@ -577,6 +549,7 @@ srv_g_vitals <- function(id,
       transformators = select_decorators(decorators, "plot"),
       expr = quote(plot)
     )
+
     plot_r <- reactive(decorated_all_q()[["plot"]])
 
     pws <- teal.widgets::plot_with_settings_srv(
