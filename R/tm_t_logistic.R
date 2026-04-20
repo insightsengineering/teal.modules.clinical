@@ -487,7 +487,7 @@ srv_t_logistic <- function(id,
       session,
       input,
       output,
-      id_arm_var =  "arm_var-variables-selected",
+      id_arm_var = "arm_var-variables-selected",
       data = reactive(data()[[parentname]]),
       arm_ref_comp = arm_ref_comp,
       module = "tm_t_logistic",
@@ -742,5 +742,5 @@ srv_t_logistic <- function(id,
     )
 
     decorated_table_q
-    })
+  })
 }
