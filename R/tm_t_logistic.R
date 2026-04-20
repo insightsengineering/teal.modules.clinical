@@ -213,8 +213,10 @@ template_logistic <- function(dataname,
 #'   logistic model.
 #' @param avalc_var ([teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the analysis variable (categorical).
-#' @param paramcd_var ([teal.picks::variables()])\cr object with all available choices and preselected option for the parameter code variable.
-#' @param paramcd_values ([teal.picks::values()])\cr object with all available choices and preselected option for the parameter code values.
+#' @param paramcd_var ([teal.picks::variables()])\cr object with all available choices and
+#' preselected option for the parameter code variable.
+#' @param paramcd_values ([teal.picks::values()])\cr object with all available choices and preselected
+#' option for the parameter code values.
 #'
 #' @inherit module_arguments return seealso
 #'
