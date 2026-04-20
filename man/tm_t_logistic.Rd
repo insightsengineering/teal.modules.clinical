@@ -42,6 +42,12 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
+\item{paramcd_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}})\cr object with all available choices and
+preselected option for the parameter code variable.}
+
+\item{paramcd_values}{(\code{\link[teal.picks:picks]{teal.picks::values()}})\cr object with all available choices and preselected
+option for the parameter code values.}
+
 \item{cov_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the covariates variables.}
 
