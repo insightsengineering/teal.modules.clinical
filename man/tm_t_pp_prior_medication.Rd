@@ -9,14 +9,13 @@ tm_t_pp_prior_medication(
   dataname = "ADCM",
   parentname = "ADSL",
   patient_col = "USUBJID",
-  atirel = NULL,
-  cmdecod = NULL,
-  cmindc = NULL,
-  cmstdy = NULL,
+  atirel = teal.picks::variables("ATIREL", fixed = TRUE),
+  cmdecod = teal.picks::variables("CMDECOD", fixed = TRUE),
+  cmindc = teal.picks::variables("CMINDC", fixed = TRUE),
+  cmstdy = teal.picks::variables("ASTDY", fixed = TRUE),
   pre_output = NULL,
   post_output = NULL,
-  transformators = list(),
-  decorators = lifecycle::deprecated()
+  transformators = list()
 )
 }
 \arguments{
@@ -48,13 +47,6 @@ For example the \code{\link[shiny:helpText]{shiny::helpText()}} elements are use
 
 \item{transformators}{(\code{list} of \code{teal_transform_module}) that will be applied to transform module's data input.
 To learn more check \code{vignette("transform-input-data", package = "teal")}.}
-
-\item{decorators}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-(named \code{list} of lists of \code{teal_transform_module}) optional,
-decorator for tables or plots included in the module output reported.
-The decorators are applied to the respective output objects.
-
-See section "Decorating Module" below for more details.}
 }
 \value{
 a \code{teal_module} object.
