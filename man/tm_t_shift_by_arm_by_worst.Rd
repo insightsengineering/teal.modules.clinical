@@ -10,9 +10,9 @@ tm_t_shift_by_arm_by_worst(
   parentname = "ADSL",
   arm_var = variables(choices = c("ARM", "ARMCD")),
   paramcd = variables(choices = "PARAMCD"),
-  aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "AVALC"),
+  aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
   base_var = lifecycle::deprecated(),
-  baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BASEC"),
+  baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
   worst_flag_var = variables(choices = c("WORS01FL", "WORS02FL"), selected = "WORS02FL"),
   worst_flag = teal.transform::choices_selected(c("Y", "N"), selected = "Y", fixed =
     TRUE),
@@ -54,7 +54,7 @@ variable for baseline reference range indicator.}
 \item{worst_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 variable for the worst post-baseline flag.}
 
-\item{worst_flag}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr
+\item{worst_flag}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
 value(s) indicating worst post-baseline records.}
 
 \item{treatment_flag_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr
@@ -165,8 +165,8 @@ app <- init(
         choices = c("WORS01FL", "WORS02FL"),
         selected = "WORS02FL"
       ),
-      aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "AVALC"),
-      baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BASEC"),
+      aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
+      baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
       useNA = "ifany"
     )
   )
@@ -179,8 +179,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYH5YX4IkRGKJSECQSDqFB6HBqL8FGBclDSDpYVkEXY8SJie9gdjXqEjroXsSci16Q1sSxEZoWL8BYxaLTAQQYmMCGJfgR7mBMlgALL0nQc5UAYWyxLkcgZTJ0qBYsA2QpYovo33YEqlMvZYAACorMkqtTr9UzUei1sZcT0-MKzSKxbMeUybTI7To5cSAOoAeSwuQADABGABi+VVccTKYATJn3WHsaICXB1HB+ESwAmk8mC1mwMWdHrm1ABf5Ay9hRarRHpT8XjGFQA1TL5DXZhUAOSwAElp9qwHqdKWRBWq-bMmOJ0XGdj6FA1-E4AHBd3zSHrZLI4Po-KAEKZXJOSd4NVgB+zhdLldr8vkJuH5Pi+b6tvuIKCKW06ZNWtDLBArDEmGQwZEMQzwTo7DxOQagaNo1g2GkjKQvErCZOg7BoKgAAkgi0Ck1E0aWjDaIwQz9EoYD9GcQA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYH5YX4IkRGKJSECQSDqFB6HBqL8FGBclDSDpYVkEXY8SJie9gdjXqEjroXsSci16Q1sSxEZoWL8BYxaLTAQQYmMCGJfgR7mBMlgALL0nQc5UAYWyxLkcgZTJ0qBYsA2QpYovo33YEqlMvZYAACorMkqtTr9UzUei1sZcT0-MKzSKxbMeUybTI7To5cSAOoAeSwuQADABGABi+VVccTKYATJn3WHsaICXB1HB+ESwAmk8mC1mwMWdHrm1ABf5Ay9hRarRHpT8XjGFQA1TL5DXZhUAOSwAElp9qwHqdKWRBWq-bMmOJ0XGdj6FA1-E4AHBd3zSHrZLI4Po-KAEKZXJOSd4NVgB+zhdLldr8vkJuH5Pi+b6tvuIKCKW06ZNWtDLBArDEmGQwZEMQzwTo7DxOQagaNo1g2GkjKQvErCZOg7BoKgAAkgi0Ck1E0aWjDaIwQz9EoYD9GcQA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYH5YX4IkRGKJSECQSDqFB6HBqL8FGBclDSDpYVkEXY8SJie9gdjXqEjroXsSci16Q1sSxEZoWL8BYxaLTAQQYmMCGJfgR7mBMlgALL0nQc5UAYWyxLkcgZTJ0qBYsA2QpYovo33YEqlMvZYAACorMkqtTr9UzUei1sZcT0-MKzSKxbMeUybTI7To5cSAOoAeSwuQADABGABi+VVccTKYATJn3WHsaICXB1HB+ESwAmk8mC1mwMWdHrm1ABf5Ay9hRarRHpT8XjGFQA1TL5DXZhUAOSwAElp9qwHqdKWRBWq-bMrOF0vW4zsfQoGv4nAA4Lu+aQ9bJZHB9H5QAhTK5JyTvBqsCPneL92rssbtW37zr+y4etigiltOmTVrQywQKwxJhkMGRDEMcE6Ow8TkGoGjaNYNhpIykLxKwmToOwaCoAAJIItApFR1Glow2iMEM-RKGA-RnEAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOynAHEikrLK6v44AHMlAF9FCAArIni-AGs4VlFE0Jtw7uMoYVI-An5aUTLR8amZ4Gh4WaS5AF1XaHQi+Oj2BqSdAF4dJNwGviERUWedT+ExPcIBkMiU-GtRHFjGt6KxqowYH5YX4IkRGKJSECQSDqFB6HBqL8FGBclDSDpYVkEXY8SJie9gdjXqEjroXsSci16Q1sSxEZoWL8BYxaLTAQQYmMCGJfgR7mBMlgALL0nQc5UAYWyxLkcgZTJ0qBYsA2QpYovo33YEqlMvZYAACorMkqtTr9UzUei1sZcT0-MKzSKxbMeUybTI7To5cSAOoAeSwuQADABGABi+VVccTKYATJn3WHsaICXB1HB+ESwAmk8mC1mwMWdHrm1ABf5Ay9hRarRHpT8XjGFQA1TL5DXZhUAOSwAElp9qwHqdKWRBWq-bMrOF0vW4zsfQoGv4nAA4Lu+aQ9bJZHB9H5QAhTK5JyTvBqsCPneL92rssbtW37zr+y4etigiltOmTVrQywQKwxJhkMGRDEMcE6Ow8TkGoGjaNYNhpIykLxKwmToOwaCoAAJIItApFR1Glow2iMEM-RKGA-RnEAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
