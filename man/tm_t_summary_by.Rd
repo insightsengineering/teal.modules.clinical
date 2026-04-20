@@ -51,8 +51,8 @@ second variable will be nested under the first variable.}
 \item{id_var}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr variable for subject identifier.}
 
 \item{paramcd}{(\code{\link[teal.picks:picks]{teal.picks::variables()}}; legacy \code{teal.transform} objects are deprecated but still accepted)\cr optional variable for parameter code filter.
-When provided, a \code{values()} selector is added to allow users to filter
-the parameter values interactively.}
+When provided, a \code{values()} selector is added with \code{multiple = FALSE}, so one parameter
+level is selected by default.}
 
 \item{add_total}{(\code{logical})\cr whether to include column with total number of patients.}
 
