@@ -322,7 +322,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
   teal::assert_decorators(decorators, "table")
 
   arm_var <- teal.picks::picks(teal.picks::datasets(parentname, parentname), arm_var)
-  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
+  paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values(multiple = FALSE))
   aval_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), aval_var)
   baseline_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), baseline_var)
   worst_flag_var <- teal.picks::picks(teal.picks::datasets(dataname, dataname), worst_flag_var)
