@@ -196,7 +196,6 @@ template_shift_by_arm_by_worst <- function(dataname,
 #' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for the worst post-baseline flag.
 #' @param worst_flag ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
-value(s) indicating worst post-baseline records.
 #'   value(s) indicating worst post-baseline records.
 #' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for on-treatment flag.
@@ -256,8 +255,8 @@ value(s) indicating worst post-baseline records.
 #'         choices = c("WORS01FL", "WORS02FL"),
 #'         selected = "WORS02FL"
 #'       ),
-#'       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "AVALC"),
-#'       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BASEC"),
+#'       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
+#'       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
 #'       useNA = "ifany"
 #'     )
 #'   )
@@ -272,9 +271,9 @@ tm_t_shift_by_arm_by_worst <- function(label,
                                        parentname = "ADSL",
                                        arm_var = variables(choices = c("ARM", "ARMCD")),
                                        paramcd = variables(choices = "PARAMCD"),
-                                       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "AVALC"),
+                                       aval_var = variables(choices = c("AVALC", "ANRIND"), selected = "ANRIND"),
                                        base_var = lifecycle::deprecated(),
-                                       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BASEC"),
+                                       baseline_var = variables(choices = c("BASEC", "BNRIND"), selected = "BNRIND"),
                                        worst_flag_var = variables(
                                          choices = c("WORS01FL", "WORS02FL"),
                                          selected = "WORS02FL"
@@ -310,6 +309,7 @@ tm_t_shift_by_arm_by_worst <- function(label,
   worst_flag_var <- deprecate_pick_variables_arg(worst_flag_var, "worst_flag_var")
   treatment_flag_var <- deprecate_pick_variables_arg(treatment_flag_var, "treatment_flag_var")
   treatment_flag <- deprecate_pick_values_arg(treatment_flag, "treatment_flag")
+  checkmate::assert_false(teal.picks::is_pick_multiple(treatment_flag))
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
@@ -413,7 +413,7 @@ ui_shift_by_arm_by_worst <- function(id,
             choices = treatment_flag$choices,
             selected = treatment_flag$selected,
             multiple = FALSE,
-            fixed = isTRUE(treatment_flag$fixed)
+            fixed = teal.picks::is_pick_fixed(treatment_flag)
           )
         )
       )
