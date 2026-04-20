@@ -337,6 +337,9 @@ template_binary_outcome <- function(dataname,
 #' @inheritParams teal::module
 #' @inheritParams template_binary_outcome
 #' @param rsp_table (`logical`)\cr whether the initial set-up of the module should match `RSPT01`. Defaults to `FALSE`.
+#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#'   available confidence levels and default selection in (0, 1). Choice order follows the vector passed to
+#'   [teal.picks::values()] (there is no `keep_order` argument).
 #' @param control (named `list`)\cr named list containing 3 named lists as follows:
 #'   * `global`: a list of settings for overall analysis with 2 named elements `method` and `conf_level`.
 #'   * `unstrat`: a list of settings for unstratified analysis with 3 named elements `method_ci` and `method_test`, and
@@ -468,10 +471,7 @@ tm_t_binary_outcome <- function(label,
                                   selected = "AVALC",
                                   fixed = FALSE
                                 ),
-                                conf_level = teal.transform::choices_selected(
-                                  c(0.95, 0.9, 0.8), 0.95,
-                                  keep_order = TRUE
-                                ),
+                                conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
                                 default_responses =
                                   c("CR", "PR", "Y", "Complete Response (CR)", "Partial Response (PR)", "M"),
                                 rsp_table = FALSE,
@@ -501,10 +501,11 @@ tm_t_binary_outcome <- function(label,
   paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
   strata_var <- deprecate_pick_variables_arg(strata_var, "strata_var")
   aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
+  conf_level <- deprecate_pick_values_arg(conf_level, "conf_level")
+  checkmate::assert_false(teal.picks::is_pick_multiple(conf_level))
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_string(total_label)
   checkmate::assert_string(na_level)
@@ -711,7 +712,7 @@ ui_t_binary_outcome <- function(id,
             conf_level$choices,
             conf_level$selected,
             multiple = FALSE,
-            fixed = conf_level$fixed
+            fixed = teal.picks::is_pick_fixed(conf_level)
           ),
           bslib::input_switch(
             id = ns("show_rsp_cat"),

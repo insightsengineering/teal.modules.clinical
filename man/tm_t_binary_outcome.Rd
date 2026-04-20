@@ -13,8 +13,7 @@ tm_t_binary_outcome(
   paramcd,
   strata_var,
   aval_var = variables(choices = c("AVALC", "SEX"), selected = "AVALC", fixed = FALSE),
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
   default_responses = c("CR", "PR", "Y", "Complete Response (CR)",
     "Partial Response (PR)", "M"),
   rsp_table = FALSE,
@@ -59,8 +58,9 @@ the variables for stratified analysis.}
 \item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
-all available choices and pre-selected option for the confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.picks:picks]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+available confidence levels and default selection in (0, 1). Choice order follows the vector passed to
+\code{\link[teal.picks:picks]{teal.picks::values()}} (there is no \code{keep_order} argument).}
 
 \item{default_responses}{(\code{list} or \code{character})\cr defines
 the default codes for the response variable in the module per value of \code{paramcd}.

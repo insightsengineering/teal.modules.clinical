@@ -38,10 +38,7 @@ app_driver_tm_t_binary_outcome <- function() {
           selected = "AVALC",
           fixed = FALSE
         ),
-        conf_level = teal.transform::choices_selected(
-          c(2, 0.95, 0.9, 0.8), 0.95,
-          keep_order = TRUE
-        ),
+        conf_level = teal.picks::values(c(2, 0.95, 0.9, 0.8), 0.95, multiple = FALSE),
         default_responses = list(
           BESRSPI = list(
             rsp = c("Complete Response (CR)", "Partial Response (PR)"),
