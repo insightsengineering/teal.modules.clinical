@@ -16,8 +16,7 @@ tm_t_glm_counts(
   offset_var,
   cov_var,
   arm_ref_comp = NULL,
-  conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order =
-    TRUE),
+  conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
   add_total = FALSE,
   pre_output = NULL,
   post_output = NULL,
@@ -55,8 +54,8 @@ with delayed \code{\link[teal.transform:variable_choices]{teal.transform::variab
 with the elements named \code{ref} and \code{comp} that the defined the default
 reference and comparison arms when the arm variable is changed.}
 
-\item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all available choices and
-pre-selected option for confidence level, each within range of (0, 1).}
+\item{conf_level}{(\code{\link[teal.picks:picks]{teal.picks::values()}}; legacy \code{teal.transform::choices_selected()} is deprecated but still accepted)\cr
+available confidence levels and default selection, each in the range (0, 1).}
 
 \item{add_total}{(\code{logical})\cr initial value for the \dQuote{Add All Patients column} checkbox when comparing arms.}
 

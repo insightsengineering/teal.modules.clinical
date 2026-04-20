@@ -11,8 +11,8 @@
 #' @param strata_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional stratification columns (`dataname`).
 #' @param offset_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional offset column (`dataname`).
 #' @param cov_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional covariate columns (`dataname`).
-#' @param conf_level ([teal.transform::choices_selected()])\cr object with all available choices and
-#'   pre-selected option for confidence level, each within range of (0, 1).
+#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#'   available confidence levels and default selection, each in the range (0, 1).
 #' @param add_total (`logical`)\cr initial value for the \dQuote{Add All Patients column} checkbox when comparing arms.
 #' @param rate_mean_method (`character`) method used to estimate the mean odds ratio. Either "emmeans" or "ppmeans"
 #' (as in `summarize_glm_count()`).
@@ -111,7 +111,7 @@ tm_t_glm_counts <- function(label = "Counts Module",
                             offset_var,
                             cov_var,
                             arm_ref_comp = NULL,
-                            conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                            conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
                             add_total = FALSE,
                             pre_output = NULL,
                             post_output = NULL,
@@ -124,6 +124,8 @@ tm_t_glm_counts <- function(label = "Counts Module",
   strata_var <- deprecate_pick_variables_arg(strata_var, "strata_var")
   offset_var <- deprecate_pick_variables_arg(offset_var, "offset_var")
   cov_var <- deprecate_pick_variables_arg(cov_var, "cov_var")
+  conf_level <- deprecate_pick_values_arg(conf_level, "conf_level")
+  checkmate::assert_false(teal.picks::is_pick_multiple(conf_level))
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   distribution_choices <- c("negbin", "quasipoisson", "poisson")
@@ -131,7 +133,6 @@ tm_t_glm_counts <- function(label = "Counts Module",
   rate_mean_method <- match.arg(rate_mean_method, rate_mean_method_choices)
   distribution <- match.arg(distribution, distribution_choices)
   checkmate::assert_string(parentname)
-  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_flag(add_total)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
@@ -212,7 +213,7 @@ ui_t_glm_counts <- function(id,
           choices = conf_level$choices,
           selected = conf_level$selected,
           multiple = FALSE,
-          fixed = conf_level$fixed
+          fixed = teal.picks::is_pick_fixed(conf_level)
         ),
       )
     )
