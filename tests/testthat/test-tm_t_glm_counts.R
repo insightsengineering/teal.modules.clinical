@@ -34,7 +34,8 @@ app_driver_tm_t_glm_counts <- function() { # nolint: object_length.
         aval_var = teal.picks::variables(choices = "AVAL"),
         strata_var = teal.picks::variables(choices = "SEX", selected = NULL),
         offset_var = teal.picks::variables(choices = "AGE", selected = NULL),
-        cov_var = teal.picks::variables(choices = "SITEID", selected = NULL)
+        cov_var = teal.picks::variables(choices = "SITEID", selected = NULL),
+        conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE)
       )
     )
   )
