@@ -143,7 +143,7 @@ tm_t_pp_prior_medication <- function(label,
       details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
     )
   }
-  
+
   message("Initializing tm_t_pp_prior_medication")
 
   # Compatibility: accept choices_selected and convert
