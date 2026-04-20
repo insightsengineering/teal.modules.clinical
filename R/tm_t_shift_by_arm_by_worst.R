@@ -195,7 +195,8 @@ template_shift_by_arm_by_worst <- function(dataname,
 #'   variable for baseline reference range indicator.
 #' @param worst_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for the worst post-baseline flag.
-#' @param worst_flag ([teal.transform::choices_selected()])\cr
+#' @param worst_flag ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
+value(s) indicating worst post-baseline records.
 #'   value(s) indicating worst post-baseline records.
 #' @param treatment_flag_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr
 #'   variable for on-treatment flag.
