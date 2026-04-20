@@ -35,30 +35,12 @@ app_driver_tm_t_pp_laboratory <- function() {
         dataname = "ADLB",
         parentname = "ADSL",
         patient_col = "USUBJID",
-        paramcd = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADLB"]], c("PARAMCD", "STUDYID")),
-          selected = "PARAMCD"
-        ),
-        param = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADLB"]], c("PARAM", "SEX")),
-          selected = "PARAM"
-        ),
-        timepoints = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADLB"]], c("ADY", "AGE")),
-          selected = "ADY"
-        ),
-        anrind = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADLB"]], c("ANRIND", "AGEU")),
-          selected = "ANRIND"
-        ),
-        aval_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADLB"]], c("AVAL", "AGE")),
-          selected = "AVAL"
-        ),
-        avalu_var = teal.transform::choices_selected(
-          choices = teal.transform::variable_choices(data[["ADLB"]], c("AVALU", "SEX")),
-          selected = "AVALU"
-        ),
+        paramcd = teal.picks::variables(c("PARAMCD", "STUDYID"), multiple = FALSE),
+        param = teal.picks::variables(c("PARAM", "SEX"), multiple = FALSE),
+        timepoints = teal.picks::variables(c("ADY", "AGE"), multiple = FALSE),
+        anrind = teal.picks::variables(c("ANRIND", "AGEU"), multiple = FALSE),
+        aval_var = teal.picks::variables(c("AVAL", "AGE"), multiple = FALSE),
+        avalu_var = teal.picks::variables(c("AVALU", "SEX"), multiple = FALSE),
         pre_output = NULL,
         post_output = NULL
       )
@@ -73,7 +55,6 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Module initializes in teal withou
   app_driver$expect_no_shiny_error()
   app_driver$expect_no_validation_error()
   app_driver$expect_visible(app_driver$namespaces(TRUE)$module("lab_values_table"))
-  app_driver$stop()
 })
 
 testthat::test_that(
@@ -82,6 +63,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    withr::defer(app_driver$stop())
 
     testthat::expect_equal(
       app_driver$get_text("a.nav-link.active"),
@@ -91,35 +73,41 @@ testthat::test_that(
       app_driver$get_active_module_input("patient_id"),
       "AB12345-CHN-3-id-128"
     )
+
+    exported_values <- app_driver$get_values()$export
+    names(exported_values) <- gsub(
+      sprintf("%s-", app_driver$namespaces()$module(NULL)), "", names(exported_values),
+      fixed = TRUE
+    )
+
     testthat::expect_equal(
-      app_driver$get_active_module_input("paramcd-dataset_ADLB_singleextract-select"),
+      exported_values[["paramcd-picks_resolved"]]$variables$selected,
       "PARAMCD"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("param-dataset_ADLB_singleextract-select"),
+      exported_values[["param-picks_resolved"]]$variables$selected,
       "PARAM"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("timepoints-dataset_ADLB_singleextract-select"),
+      exported_values[["timepoints-picks_resolved"]]$variables$selected,
       "ADY"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("aval_var-dataset_ADLB_singleextract-select"),
+      exported_values[["aval_var-picks_resolved"]]$variables$selected,
       "AVAL"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("avalu_var-dataset_ADLB_singleextract-select"),
+      exported_values[["avalu_var-picks_resolved"]]$variables$selected,
       "AVALU"
     )
     testthat::expect_equal(
-      app_driver$get_active_module_input("anrind-dataset_ADLB_singleextract-select"),
+      exported_values[["anrind-picks_resolved"]]$variables$selected,
       "ANRIND"
     )
     testthat::expect_equal(
       app_driver$get_active_module_input("round_value"),
       "4"
     )
-    app_driver$stop()
   }
 )
 
@@ -128,6 +116,7 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
     app_driver$set_active_module_input("patient_id", "AB12345-USA-1-id-261")
@@ -139,13 +128,13 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
+  withr::defer(app_driver$stop())
   app_driver$set_active_module_input("patient_id", NULL)
   app_driver$expect_hidden(
     app_driver$namespaces(TRUE)$module("lab_values_table"),
@@ -156,18 +145,17 @@ testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of patient_id throws 
     app_driver$get_text(app_driver$namespaces(TRUE)$module("patient_id_input .shiny-validation-message")),
     "Please select a patient"
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting paramcd changes the table
-  and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting paramcd changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
-    app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", "STUDYID")
+    set_teal_picks_slot(app_driver, "paramcd", "variables", "STUDYID")
     app_driver$wait_for_idle()
     testthat::expect_false(
       identical(
@@ -176,37 +164,35 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of paramcd throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
-  app_driver$set_active_module_input("paramcd-dataset_ADLB_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "paramcd", "variables", character(0L))
   app_driver$expect_hidden(
     app_driver$namespaces(TRUE)$module("lab_values_table"),
     visibility_property = TRUE
   )
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("paramcd-dataset_ADLB_singleextract-select_input .shiny-validation-message")
-    ),
-    "Please select PARAMCD variable."
+  testthat::expect_match(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    "Please select PARAMCD variable.",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting param changes the table
-  and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting param changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
-    app_driver$set_active_module_input("param-dataset_ADLB_singleextract-select", "SEX")
+    set_teal_picks_slot(app_driver, "param", "variables", "SEX")
     app_driver$wait_for_idle()
     testthat::expect_false(
       identical(
@@ -215,7 +201,6 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
@@ -224,31 +209,30 @@ testthat::test_that(
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
-    app_driver$set_active_module_input("param-dataset_ADLB_singleextract-select", NULL)
+    withr::defer(app_driver$stop())
+    set_teal_picks_slot(app_driver, "param", "variables", character(0L))
     app_driver$expect_hidden(
       app_driver$namespaces(TRUE)$module("lab_values_table"),
       visibility_property = TRUE
     )
     app_driver$expect_validation_error()
-    testthat::expect_equal(
-      app_driver$get_text(
-        app_driver$namespaces(TRUE)$module("param-dataset_ADLB_singleextract-select_input .shiny-validation-message")
-      ),
-      "Please select PARAM variable."
+    testthat::expect_match(
+      app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+      "Please select PARAM variable.",
+      fixed = TRUE
     )
-    app_driver$stop()
   }
 )
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting timepoints changes the table
-  and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting timepoints changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
-    app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", "AGE")
+    set_teal_picks_slot(app_driver, "timepoints", "variables", "AGE")
     app_driver$wait_for_idle()
     testthat::expect_false(
       identical(
@@ -257,37 +241,35 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of timepoints throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
-  app_driver$set_active_module_input("timepoints-dataset_ADLB_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "timepoints", "variables", character(0L))
   app_driver$expect_hidden(
     app_driver$namespaces(TRUE)$module("lab_values_table"),
     visibility_property = TRUE
   )
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "timepoints-dataset_ADLB_singleextract-select_input .shiny-validation-message"
-    )),
-    "Please select timepoints variable."
+  testthat::expect_match(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    "Please select timepoints variable.",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting avalu changes the table
-  and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting avalu_var changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
-    app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", "SEX")
+    set_teal_picks_slot(app_driver, "avalu_var", "variables", "SEX")
     app_driver$wait_for_idle()
     testthat::expect_false(
       identical(
@@ -296,37 +278,35 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of avalu_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
-  app_driver$set_active_module_input("avalu_var-dataset_ADLB_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "avalu_var", "variables", character(0L))
   app_driver$expect_hidden(
     app_driver$namespaces(TRUE)$module("lab_values_table"),
     visibility_property = TRUE
   )
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(app_driver$namespaces(TRUE)$module(
-      "avalu_var-dataset_ADLB_singleextract-select_input .shiny-validation-message"
-    )),
-    "Please select AVALU variable."
+  testthat::expect_match(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    "Please select AVALU variable.",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting aval_var changes the table
-  and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting aval_var changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
-    app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", "AGE")
+    set_teal_picks_slot(app_driver, "aval_var", "variables", "AGE")
     app_driver$wait_for_idle()
     testthat::expect_false(
       identical(
@@ -335,36 +315,35 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
 testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of aval_var throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
-  app_driver$set_active_module_input("aval_var-dataset_ADLB_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "aval_var", "variables", character(0L))
   app_driver$expect_hidden(
     app_driver$namespaces(TRUE)$module("lab_values_table"),
     visibility_property = TRUE
   )
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("aval_var-dataset_ADLB_singleextract-select_input .shiny-validation-message")
-    ),
-    "Please select AVAL variable."
+  testthat::expect_match(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    "Please select AVAL variable.",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
 
 testthat::test_that(
-  "e2e - tm_t_pp_laboratory: Selecting arind changes the table and does not throw validation errors.",
+  "e2e - tm_t_pp_laboratory: Selecting anrind changes the table and does not throw validation errors.",
   {
     skip_if_too_deep(5)
     app_driver <- app_driver_tm_t_pp_laboratory()
+    withr::defer(app_driver$stop())
     app_driver$wait_for_idle()
     table_before <- app_driver$get_active_module_table_output("lab_values_table", which = 2)
-    app_driver$set_active_module_input("anrind-dataset_ADLB_singleextract-select", "AGEU")
+    set_teal_picks_slot(app_driver, "anrind", "variables", "AGEU")
     app_driver$wait_for_idle()
     testthat::expect_false(
       identical(
@@ -373,24 +352,22 @@ testthat::test_that(
       )
     )
     app_driver$expect_no_validation_error()
-    app_driver$stop()
   }
 )
 
-testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of arind throws validation error.", {
+testthat::test_that("e2e - tm_t_pp_laboratory: Deselection of anrind throws validation error.", {
   skip_if_too_deep(5)
   app_driver <- app_driver_tm_t_pp_laboratory()
-  app_driver$set_active_module_input("anrind-dataset_ADLB_singleextract-select", NULL)
+  withr::defer(app_driver$stop())
+  set_teal_picks_slot(app_driver, "anrind", "variables", character(0L))
   app_driver$expect_hidden(
     app_driver$namespaces(TRUE)$module("lab_values_table"),
     visibility_property = TRUE
   )
   app_driver$expect_validation_error()
-  testthat::expect_equal(
-    app_driver$get_text(
-      app_driver$namespaces(TRUE)$module("anrind-dataset_ADLB_singleextract-select_input .shiny-validation-message")
-    ),
-    "Please select ANRIND variable."
+  testthat::expect_match(
+    app_driver$get_text(app_driver$namespaces(TRUE)$module("lab_values_table")),
+    "Please select ANRIND variable.",
+    fixed = TRUE
   )
-  app_driver$stop()
 })
