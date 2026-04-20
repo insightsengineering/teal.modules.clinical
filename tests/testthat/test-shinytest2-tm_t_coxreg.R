@@ -44,10 +44,7 @@ app_driver_tm_t_coxreg <- function() {
         aval_var = variables(choices = "AVAL"),
         cnsr_var = variables(choices = "CNSR"),
         na_level = default_na_str(),
-        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95,
-          keep_order =
-            TRUE
-        ),
+        conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
         pre_output = NULL,
         post_output = NULL,
         basic_table_args = teal.widgets::basic_table_args()

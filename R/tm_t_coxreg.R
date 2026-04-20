@@ -341,6 +341,9 @@ template_coxreg_m <- function(dataname,
 #' @inheritParams template_coxreg_m
 #' @param multivariate (`logical`)\cr if `FALSE`, the univariable approach is used instead of the
 #'   multi-variable model.
+#' @param conf_level ([teal.picks::values()]; legacy `teal.transform::choices_selected()` is deprecated but still accepted)\cr
+#'   available confidence levels and default selection, each in the range (0, 1). Choice order follows
+#'   the vector passed to [teal.picks::values()] (there is no `keep_order` argument).
 #'
 #' @details
 #' The Cox Proportional Hazards (PH) model is the most commonly used method to
@@ -545,7 +548,7 @@ tm_t_coxreg <- function(label,
                         cnsr_var = variables(choices = "CNSR", fixed = TRUE),
                         multivariate = TRUE,
                         na_level = tern::default_na_str(),
-                        conf_level = teal.transform::choices_selected(c(0.95, 0.9, 0.8), 0.95, keep_order = TRUE),
+                        conf_level = teal.picks::values(c(0.95, 0.9, 0.8), 0.95, multiple = FALSE),
                         pre_output = NULL,
                         post_output = NULL,
                         basic_table_args = teal.widgets::basic_table_args(),
@@ -558,11 +561,12 @@ tm_t_coxreg <- function(label,
   strata_var <- deprecate_pick_variables_arg(strata_var, "strata_var")
   aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
   cnsr_var <- deprecate_pick_variables_arg(cnsr_var, "cnsr_var")
+  conf_level <- deprecate_pick_values_arg(conf_level, "conf_level")
+  checkmate::assert_false(teal.picks::is_pick_multiple(conf_level))
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(na_level)
-  checkmate::assert_class(conf_level, "choices_selected")
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(basic_table_args, "basic_table_args")
@@ -681,7 +685,7 @@ ui_t_coxreg <- function(id,
             conf_level$choices,
             conf_level$selected,
             multiple = FALSE,
-            fixed = conf_level$fixed
+            fixed = teal.picks::is_pick_fixed(conf_level)
           )
         )
       ),
