@@ -9,10 +9,9 @@ tm_g_pp_vitals(
   dataname = "ADVS",
   parentname = "ADSL",
   patient_col = "USUBJID",
-  paramcd = NULL,
-  aval = lifecycle::deprecated(),
-  aval_var = NULL,
-  xaxis = NULL,
+  paramcd = teal.picks::variables("PARAMCD"),
+  aval_var = teal.picks::variables("AVAL"),
+  xaxis = teal.picks::variables("ADY"),
   font_size = c(12L, 12L, 25L),
   plot_height = c(700L, 200L, 2000L),
   plot_width = NULL,
@@ -34,8 +33,6 @@ tm_g_pp_vitals(
 
 \item{paramcd}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the parameter code variable from \code{dataname}.}
-
-\item{aval}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use the \code{aval_var} argument instead.}
 
 \item{aval_var}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the analysis variable.}
