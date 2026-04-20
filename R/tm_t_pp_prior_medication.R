@@ -129,72 +129,59 @@ tm_t_pp_prior_medication <- function(label,
                                      dataname = "ADCM",
                                      parentname = "ADSL",
                                      patient_col = "USUBJID",
-                                     atirel = NULL,
-                                     cmdecod = NULL,
-                                     cmindc = NULL,
-                                     cmstdy = NULL,
+                                     atirel = teal.picks::variables("ATIREL", fixed = TRUE),
+                                     cmdecod = teal.picks::variables("CMDECOD", fixed = TRUE),
+                                     cmindc = teal.picks::variables("CMINDC", fixed = TRUE),
+                                     cmstdy = teal.picks::variables("ASTDY", fixed = TRUE),
                                      pre_output = NULL,
                                      post_output = NULL,
-                                     transformators = list(),
-                                     decorators = lifecycle::deprecated()) {
-  if (lifecycle::is_present(decorators)) {
-    lifecycle::deprecate_warn(
-      when = "0.11.0",
-      what = "tm_t_pp_laboratory(decorators)",
-      details = "Decorators functionality was removed from this module. The `decorators` argument will be ignored."
-    )
-  }
-
-
+                                     transformators = list()) {
   message("Initializing tm_t_pp_prior_medication")
+
+  # Compatibility: accept choices_selected and convert
+  atirel <- deprecate_pick_variables_arg(atirel, "atirel")
+  cmdecod <- deprecate_pick_variables_arg(cmdecod, "cmdecod")
+  cmindc <- deprecate_pick_variables_arg(cmindc, "cmindc")
+  cmstdy <- deprecate_pick_variables_arg(cmstdy, "cmstdy")
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmindc, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmstdy, "choices_selected", null.ok = TRUE)
+  checkmate::assert_class(atirel, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmindc, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmstdy, "variables", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
+  # Build picks bound to the dataset
+  if (!is.null(atirel))  atirel  <- teal.picks::picks(datasets(dataname, dataname), atirel)
+  if (!is.null(cmdecod)) cmdecod <- teal.picks::picks(datasets(dataname, dataname), cmdecod)
+  if (!is.null(cmindc))  cmindc  <- teal.picks::picks(datasets(dataname, dataname), cmindc)
+  if (!is.null(cmstdy))  cmstdy  <- teal.picks::picks(datasets(dataname, dataname), cmstdy)
+
   args <- as.list(environment())
-  data_extract_list <- list(
-    atirel = `if`(is.null(atirel), NULL, cs_to_des_select(atirel, dataname = dataname)),
-    cmdecod = `if`(is.null(cmdecod), NULL, cs_to_des_select(cmdecod, dataname = dataname)),
-    cmindc = `if`(is.null(cmindc), NULL, cs_to_des_select(cmindc, dataname = dataname)),
-    cmstdy = `if`(is.null(cmstdy), NULL, cs_to_des_select(cmstdy, dataname = dataname))
-  )
 
   module(
     label = label,
     ui = ui_t_prior_medication,
-    ui_args = c(data_extract_list, args),
+    ui_args = args[names(args) %in% names(formals(ui_t_prior_medication))],
     server = srv_t_prior_medication,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        patient_col = patient_col
-      )
-    ),
+    server_args = args[names(args) %in% names(formals(srv_t_prior_medication))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_t_prior_medication <- function(id, ...) {
-  ui_args <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    ui_args$atirel,
-    ui_args$cmdecod,
-    ui_args$cmindc,
-    ui_args$cmstdy
-  )
-
+ui_t_prior_medication <- function(id,
+                                  atirel,
+                                  cmdecod,
+                                  cmindc,
+                                  cmstdy,
+                                  pre_output,
+                                  post_output) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = tags$div(
@@ -202,40 +189,31 @@ ui_t_prior_medication <- function(id, ...) {
     ),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(ui_args[c("atirel", "cmdecod", "cmindc", "cmstdy")]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmdecod"),
-        label = "Select the medication decoding column:",
-        data_extract_spec = ui_args$cmdecod,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(cmdecod)) tags$div(
+        tags$label("Select the medication decoding column:"),
+        teal.picks::picks_ui(ns("cmdecod"), cmdecod)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("atirel"),
-        label = "Select ATIREL variable:",
-        data_extract_spec = ui_args$atirel,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(atirel)) tags$div(
+        tags$label("Select ATIREL variable:"),
+        teal.picks::picks_ui(ns("atirel"), atirel)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmindc"),
-        label = "Select CMINDC variable:",
-        data_extract_spec = ui_args$cmindc,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(cmindc)) tags$div(
+        tags$label("Select CMINDC variable:"),
+        teal.picks::picks_ui(ns("cmindc"), cmindc)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmstdy"),
-        label = "Select CMSTDY variable:",
-        data_extract_spec = ui_args$cmstdy,
-        is_single_dataset = is_single_dataset_value
+      if (!is.null(cmstdy)) tags$div(
+        tags$label("Select CMSTDY variable:"),
+        teal.picks::picks_ui(ns("cmstdy"), cmstdy)
       )
     ),
-    pre_output = ui_args$pre_output,
-    post_output = ui_args$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
@@ -257,29 +235,7 @@ srv_t_prior_medication <- function(id,
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        atirel = atirel,
-        cmdecod = cmdecod,
-        cmindc = cmindc,
-        cmstdy = cmstdy
-      ),
-      datasets = data,
-      select_validation_rule = list(
-        atirel = shinyvalidate::sv_required("An ATIREL variable is required"),
-        cmdecod = shinyvalidate::sv_required("A medication decoding variable is required"),
-        cmindc = shinyvalidate::sv_required("A CMINDC variable is required"),
-        cmstdy = shinyvalidate::sv_required("A CMSTDY variable is required")
-      )
-    )
-
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select patient id"))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
-    })
-
-    # Init
+    # Patient selector initialisation
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session,
@@ -304,66 +260,98 @@ srv_t_prior_medication <- function(id,
       ignoreInit = TRUE
     )
 
-    # Prior medication tab ----
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::left_join"
+    # Build selector list — only include non-NULL picks
+    picks_list <- Filter(Negate(is.null), list(
+      atirel  = atirel,
+      cmdecod = cmdecod,
+      cmindc  = cmindc,
+      cmstdy  = cmstdy
+    ))
+
+    selectors <- teal.picks::picks_srv(
+      picks = picks_list,
+      data = data
     )
 
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      obj %>%
-        teal.code::eval_code(as.expression(anl_inputs()$expr))
+    validated_q <- reactive({
+      obj <- req(data())
+
+      teal:::validate_input(
+        inputId = "cmdecod-variables-selected",
+        condition = !is.null(selectors$cmdecod()$variables$selected),
+        message = "A medication decoding variable is required"
+      )
+      teal:::validate_input(
+        inputId = "atirel-variables-selected",
+        condition = !is.null(selectors$atirel()$variables$selected),
+        message = "An ATIREL variable is required"
+      )
+      teal:::validate_input(
+        inputId = "cmindc-variables-selected",
+        condition = !is.null(selectors$cmindc()$variables$selected),
+        message = "A CMINDC variable is required"
+      )
+      teal:::validate_input(
+        inputId = "cmstdy-variables-selected",
+        condition = !is.null(selectors$cmstdy()$variables$selected),
+        message = "A CMSTDY variable is required"
+      )
+      teal:::validate_input(
+        inputId = "patient_id",
+        condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
+        message = "Please select patient id"
+      )
+
+      teal.reporter::teal_card(obj) <- c(
+        teal.reporter::teal_card(obj),
+        teal.reporter::teal_card("## Module's output(s)")
+      )
+      obj
     })
 
-    # Generate r code for the analysis.
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::left_join",
+      output_name = "ANL"
+    )
+
     all_q <- reactive({
-      teal::validate_inputs(iv_r())
+      obj <- anl_inputs$data()
 
       my_calls <- template_prior_medication(
         dataname = "ANL",
-        atirel = input[[extract_input("atirel", dataname)]],
-        cmdecod = input[[extract_input("cmdecod", dataname)]],
-        cmindc = input[[extract_input("cmindc", dataname)]],
-        cmstdy = input[[extract_input("cmstdy", dataname)]]
+        atirel  = anl_inputs$variables()$atirel,
+        cmdecod = anl_inputs$variables()$cmdecod,
+        cmindc  = anl_inputs$variables()$cmindc,
+        cmstdy  = anl_inputs$variables()$cmstdy
       )
 
-      obj <- anl_q() %>%
-        teal.code::eval_code(
-          substitute(
-            expr = {
-              ANL <- ANL[ANL[[patient_col]] == patient_id, ]
-            }, env = list(
-              patient_col = patient_col,
-              patient_id = patient_id()
-            )
+      obj <- teal.code::eval_code(
+        obj,
+        substitute(
+          expr = {
+            ANL <- ANL[ANL[[patient_col]] == patient_id, ]
+          },
+          env = list(
+            patient_col = patient_col,
+            patient_id = patient_id()
           )
         )
+      )
       teal.reporter::teal_card(obj) <- c(teal.reporter::teal_card(obj), "### Table")
-      obj %>% teal.code::eval_code(as.expression(unlist(my_calls)))
+      obj |> teal.code::eval_code(as.expression(unlist(my_calls)))
     })
 
-    # Outputs to render.
-    table_r <- reactive({
-      q <- all_q()
-
-      table_html <- DT::datatable(
-        data = q[["table"]],
+    output$prior_medication_table <- DT::renderDataTable(
+      expr = DT::datatable(
+        data = all_q()[["table"]],
         options = list(
           lengthMenu = list(list(-1, 5, 10, 25), list("All", "5", "10", "25"))
         )
       )
-
-      list(html = table_html, report = q[["table"]])
-    })
-
-    output$prior_medication_table <- DT::renderDataTable(expr = table_r()$html)
+    )
 
     all_q
   })
