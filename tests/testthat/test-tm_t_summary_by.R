@@ -96,3 +96,71 @@ testthat::test_that("template_summary_by generates correct expressions for `drop
   res <- testthat::expect_silent(result)
   testthat::expect_snapshot(res)
 })
+
+testthat::describe("template_summary_by rtables output for different statistics", {
+  data <- within(teal.data::teal_data(), {
+    ADSL <- teal.modules.clinical::tmc_ex_adsl
+    ADLB <- teal.modules.clinical::tmc_ex_adlb
+    ADLB$AVALC <- ifelse(abs(rnorm(nrow(ADLB))) >= 0.5, "Y", "N")
+    ADLB <- teal.data::col_relabel(ADLB, AVALC = "Analysis Value Category")
+  })
+  teal.data::join_keys(data) <- teal.data::default_cdisc_join_keys[c("ADSL", "ADLB")]
+
+  mod <- suppressWarnings(tm_t_summary_by(
+    label = "Summary by Row Groups",
+    dataname = "ADLB",
+    parentname = "ADSL",
+    arm_var = teal.picks::variables(choices = "ARM", selected = "ARM", fixed = TRUE),
+    by_vars = teal.picks::variables(choices = "AVISIT", selected = "AVISIT", fixed = TRUE),
+    summarize_vars = teal.picks::variables(choices = "AVALC", selected = "AVALC", fixed = TRUE),
+    categorical_stats = "count",
+    paramcd = teal.picks::variables(choices = "PARAMCD")
+  ))
+
+  it("adds 'fraction' to the statistics", {
+    suppressWarnings(
+      shiny::testServer(
+        mod$server,
+        args = c(list(id = "test_data", data = reactive(data)), mod$server_args),
+        expr = {
+          session$setInputs(
+            drop_zero_levels = TRUE,
+            add_total = TRUE,
+            row_groups = FALSE,
+            parallel_vars = FALSE,
+            drop_arm_levels = TRUE,
+            useNA = "ifany",
+            denominator = "omit",
+            categorical_stats = "fraction"
+          )
+          testthat::expect_true(
+            all(c("fraction.N", "fraction.Y") %in% rtables::as_result_df(session$returned()$table)$row_name)
+          )
+        }
+      )
+    )
+  })
+  it("adds 'count' to the statistics", {
+    suppressWarnings(
+      shiny::testServer(
+        mod$server,
+        args = c(list(id = "test_data", data = reactive(data)), mod$server_args),
+        expr = {
+          session$setInputs(
+            drop_zero_levels = TRUE,
+            add_total = TRUE,
+            row_groups = FALSE,
+            parallel_vars = FALSE,
+            drop_arm_levels = TRUE,
+            useNA = "ifany",
+            denominator = "omit",
+            categorical_stats = "count"
+          )
+          testthat::expect_true(
+            all(c("count.N", "count.Y") %in% rtables::as_result_df(session$returned()$table)$row_name)
+          )
+        }
+      )
+    )
+  })
+})

@@ -353,8 +353,8 @@ template_summary_by <- function(parentname,
 #' @param summarize_vars ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable(s) to summarize.
 #' @param id_var ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr variable for subject identifier.
 #' @param paramcd ([teal.picks::variables()]; legacy `teal.transform` objects are deprecated but still accepted)\cr optional variable for parameter code filter.
-#'   When provided, a `values()` selector is added to allow users to filter
-#'   the parameter values interactively.
+#'   When provided, a `values()` selector is added with `multiple = FALSE`, so one parameter
+#'   level is selected by default.
 #'
 #' @inherit module_arguments return seealso
 #'
@@ -485,7 +485,11 @@ tm_t_summary_by <- function(label,
   by_vars <- teal.picks::picks(teal.picks::datasets(dataname, dataname), by_vars)
   summarize_vars <- teal.picks::picks(teal.picks::datasets(dataname, dataname), summarize_vars)
   if (!is.null(paramcd)) {
-    paramcd <- teal.picks::picks(teal.picks::datasets(dataname, dataname), paramcd, values())
+    paramcd <- teal.picks::picks(
+      teal.picks::datasets(dataname, dataname),
+      paramcd,
+      teal.picks::values(multiple = FALSE)
+    )
   }
 
   args <- as.list(environment())
