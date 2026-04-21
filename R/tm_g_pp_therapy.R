@@ -79,7 +79,7 @@ template_therapy <- function(dataname = "ANL",
         dplyr::select(-cmtrt) %>%
         dplyr::arrange(cmindc, cmdecod, cmstdy) %>%
         dplyr::distinct() %>%
-        dplyr::mutate(!!cmstdy_char := as.character(cmstdy), !!cmendy_char := as.character(cmendy)) %>%
+        dplyr::mutate(!!cmstdy_char := as.character(cmstdy_char), !!cmendy_char := as.character(cmendy_char)) %>%
         `colnames<-`(c(
           teal.data::col_labels(dataname, fill = TRUE)[c(cmindc_char, cmdecod_char)], "Dosage",
           teal.data::col_labels(dataname, fill = TRUE)[c(cmstdy_char, cmendy_char)]
@@ -349,16 +349,16 @@ tm_g_pp_therapy <- function(label,
                             dataname = "ADCM",
                             parentname = "ADSL",
                             patient_col = "USUBJID",
-                            atirel = NULL,
-                            cmdecod = NULL,
-                            cmindc = NULL,
-                            cmdose = NULL,
-                            cmtrt = NULL,
-                            cmdosu = NULL,
-                            cmroute = NULL,
-                            cmdosfrq = NULL,
-                            cmstdy = NULL,
-                            cmendy = NULL,
+                            atirel = teal.picks::variables("ATIREL"),
+                            cmdecod = teal.picks::variables("CMDECOD"),
+                            cmindc = teal.picks::variables("CMINDC"),
+                            cmdose = teal.picks::variables("CMDOSE"),
+                            cmtrt = teal.picks::variables("CMTRT"),
+                            cmdosu = teal.picks::variables("CMDOSU"),
+                            cmroute = teal.picks::variables("CMROUTE"),
+                            cmdosfrq = teal.picks::variables("CMDOSFRQ"),
+                            cmstdy = teal.picks::variables("CMSTDY"),
+                            cmendy = teal.picks::variables("CMENDY"),
                             font_size = c(12L, 12L, 25L),
                             plot_height = c(700L, 200L, 2000L),
                             plot_width = NULL,
@@ -368,20 +368,31 @@ tm_g_pp_therapy <- function(label,
                             transformators = list(),
                             decorators = list()) {
   message("Initializing tm_g_pp_therapy")
-  checkmate::assert_class(atirel, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmdecod, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmindc, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmdose, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmtrt, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmdosu, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmroute, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmdosfrq, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmstdy, "choices_selected", null.ok = TRUE)
-  checkmate::assert_class(cmendy, "choices_selected", null.ok = TRUE)
+
+  # Compatibility layer: convert choices_selected to teal.picks variables
+  for (arg in c(
+    "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
+    "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
+  )) {
+    if (inherits(get(arg), "choices_selected")) {
+      assign(arg, teal.picks::as.picks(get(arg)))
+    }
+  }
+
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
+  checkmate::assert_class(atirel, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmdecod, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmindc, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmdose, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmtrt, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmdosu, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmroute, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmdosfrq, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmstdy, "variables", null.ok = TRUE)
+  checkmate::assert_class(cmendy, "variables", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
@@ -394,61 +405,49 @@ tm_g_pp_therapy <- function(label,
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(ggplot2_args, "ggplot2_args")
-  teal::assert_decorators(decorators, names = "plot")
+  assert_decorators(decorators, names = "plot")
+
+  # Build picks objects from variable specs
+  atirel <- teal.picks::picks(teal.picks::datasets(dataname), atirel)
+  cmdecod <- teal.picks::picks(teal.picks::datasets(dataname), cmdecod)
+  cmindc <- teal.picks::picks(teal.picks::datasets(dataname), cmindc)
+  cmdose <- teal.picks::picks(teal.picks::datasets(dataname), cmdose)
+  cmtrt <- teal.picks::picks(teal.picks::datasets(dataname), cmtrt)
+  cmdosu <- teal.picks::picks(teal.picks::datasets(dataname), cmdosu)
+  cmroute <- teal.picks::picks(teal.picks::datasets(dataname), cmroute)
+  cmdosfrq <- teal.picks::picks(teal.picks::datasets(dataname), cmdosfrq)
+  cmstdy <- teal.picks::picks(teal.picks::datasets(dataname), cmstdy)
+  cmendy <- teal.picks::picks(teal.picks::datasets(dataname), cmendy)
 
   args <- as.list(environment())
-  data_extract_list <- list(
-    atirel = `if`(is.null(atirel), NULL, cs_to_des_select(atirel, dataname = dataname)),
-    cmdecod = `if`(is.null(cmdecod), NULL, cs_to_des_select(cmdecod, dataname = dataname)),
-    cmindc = `if`(is.null(cmindc), NULL, cs_to_des_select(cmindc, dataname = dataname)),
-    cmdose = `if`(is.null(cmdose), NULL, cs_to_des_select(cmdose, dataname = dataname)),
-    cmtrt = `if`(is.null(cmtrt), NULL, cs_to_des_select(cmtrt, dataname = dataname)),
-    cmdosu = `if`(is.null(cmdosu), NULL, cs_to_des_select(cmdosu, dataname = dataname)),
-    cmdosfrq = `if`(is.null(cmdosfrq), NULL, cs_to_des_select(cmdosfrq, dataname = dataname)),
-    cmroute = `if`(is.null(cmroute), NULL, cs_to_des_select(cmroute, dataname = dataname)),
-    cmstdy = `if`(is.null(cmstdy), NULL, cs_to_des_select(cmstdy, dataname = dataname)),
-    cmendy = `if`(is.null(cmendy), NULL, cs_to_des_select(cmendy, dataname = dataname))
-  )
 
   module(
     label = label,
-    ui = ui_g_therapy,
-    ui_args = c(data_extract_list, args),
-    server = srv_g_therapy,
-    server_args = c(
-      data_extract_list,
-      list(
-        dataname = dataname,
-        parentname = parentname,
-        label = label,
-        patient_col = patient_col,
-        plot_height = plot_height,
-        plot_width = plot_width,
-        ggplot2_args = ggplot2_args,
-        decorators = decorators
-      )
-    ),
+    ui = ui_g_pp_therapy,
+    ui_args = args[names(args) %in% names(formals(ui_g_pp_therapy))],
+    server = srv_g_pp_therapy,
+    server_args = args[names(args) %in% names(formals(srv_g_pp_therapy))],
     transformators = transformators,
     datanames = c(dataname, parentname)
   )
 }
 
 #' @keywords internal
-ui_g_therapy <- function(id, ...) {
-  ui_args <- list(...)
-  is_single_dataset_value <- teal.transform::is_single_dataset(
-    ui_args$atirel,
-    ui_args$cmdecod,
-    ui_args$cmindc,
-    ui_args$cmdose,
-    ui_args$cmtrt,
-    ui_args$cmdosu,
-    ui_args$cmdosfrq,
-    ui_args$cmroute,
-    ui_args$cmstdy,
-    ui_args$cmendy
-  )
-
+ui_g_pp_therapy <- function(id,
+                            atirel,
+                            cmdecod,
+                            cmindc,
+                            cmdose,
+                            cmtrt,
+                            cmdosu,
+                            cmroute,
+                            cmdosfrq,
+                            cmstdy,
+                            cmendy,
+                            font_size,
+                            pre_output,
+                            post_output,
+                            decorators) {
   ns <- NS(id)
   teal.widgets::standard_layout(
     output = tags$div(
@@ -459,77 +458,53 @@ ui_g_therapy <- function(id, ...) {
     ),
     encoding = tags$div(
       tags$label("Encodings", class = "text-primary"), tags$br(),
-      teal.transform::datanames_input(ui_args[c(
-        "atirel", "cmdecod", "cmindc", "cmdose", "cmtrt",
-        "cmdosu", "cmroute", "cmdosfrq", "cmstdy", "cmendy"
-      )]),
       teal.widgets::optionalSelectInput(
         ns("patient_id"),
         "Select Patient:",
         multiple = FALSE,
         options = shinyWidgets::pickerOptions(`liveSearch` = TRUE)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmdecod"),
-        label = "Select the medication decoding column:",
-        data_extract_spec = ui_args$cmdecod,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select the medication decoding column:"),
+        teal.picks::picks_ui(ns("cmdecod"), cmdecod)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("atirel"),
-        label = "Select ATIREL variable:",
-        data_extract_spec = ui_args$atirel,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select ATIREL variable:"),
+        teal.picks::picks_ui(ns("atirel"), atirel)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmindc"),
-        label = "Select CMINDC variable:",
-        data_extract_spec = ui_args$cmindc,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select CMINDC variable:"),
+        teal.picks::picks_ui(ns("cmindc"), cmindc)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmdose"),
-        label = "Select CMDOSE variable:",
-        data_extract_spec = ui_args$cmdose,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select CMDOSE variable:"),
+        teal.picks::picks_ui(ns("cmdose"), cmdose)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmtrt"),
-        label = "Select CMTRT variable:",
-        data_extract_spec = ui_args$cmtrt,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select CMTRT variable:"),
+        teal.picks::picks_ui(ns("cmtrt"), cmtrt)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmdosu"),
-        label = "Select CMDOSU variable:",
-        data_extract_spec = ui_args$cmdosu,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select CMDOSU variable:"),
+        teal.picks::picks_ui(ns("cmdosu"), cmdosu)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmroute"),
-        label = "Select CMROUTE variable:",
-        data_extract_spec = ui_args$cmroute,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select CMROUTE variable:"),
+        teal.picks::picks_ui(ns("cmroute"), cmroute)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmdosfrq"),
-        label = "Select CMDOSFRQ variable:",
-        data_extract_spec = ui_args$cmdosfrq,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select CMDOSFRQ variable:"),
+        teal.picks::picks_ui(ns("cmdosfrq"), cmdosfrq)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmstdy"),
-        label = "Select CMSTDY variable:",
-        data_extract_spec = ui_args$cmstdy,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select CMSTDY variable:"),
+        teal.picks::picks_ui(ns("cmstdy"), cmstdy)
       ),
-      teal.transform::data_extract_ui(
-        id = ns("cmendy"),
-        label = "Select CMENDY variable:",
-        data_extract_spec = ui_args$cmendy,
-        is_single_dataset = is_single_dataset_value
+      tags$div(
+        tags$label("Select CMENDY variable:"),
+        teal.picks::picks_ui(ns("cmendy"), cmendy)
       ),
-      teal::ui_transform_teal_data(ns("d_plot"), transformators = select_decorators(ui_args$decorators, "plot")),
+      teal::ui_transform_teal_data(ns("d_plot"), transformators = select_decorators(decorators, "plot")),
       bslib::accordion(
         open = TRUE,
         bslib::accordion_panel(
@@ -537,47 +512,47 @@ ui_g_therapy <- function(id, ...) {
           teal.widgets::optionalSliderInputValMinMax(
             ns("font_size"),
             "Font Size",
-            ui_args$font_size,
+            font_size,
             ticks = FALSE,
             step = 1
           )
         )
       )
     ),
-    pre_output = ui_args$pre_output,
-    post_output = ui_args$post_output
+    pre_output = pre_output,
+    post_output = post_output
   )
 }
 
 #' @keywords internal
-srv_g_therapy <- function(id,
-                          data,
-                          dataname,
-                          parentname,
-                          patient_col,
-                          atirel,
-                          cmdecod,
-                          cmindc,
-                          cmdose,
-                          cmtrt,
-                          cmdosu,
-                          cmdosfrq,
-                          cmroute,
-                          cmstdy,
-                          cmendy,
-                          plot_height,
-                          plot_width,
-                          label,
-                          ggplot2_args,
-                          decorators) {
+srv_g_pp_therapy <- function(id,
+                             data,
+                             dataname,
+                             parentname,
+                             patient_col,
+                             atirel,
+                             cmdecod,
+                             cmindc,
+                             cmdose,
+                             cmtrt,
+                             cmdosu,
+                             cmroute,
+                             cmdosfrq,
+                             cmstdy,
+                             cmendy,
+                             plot_height,
+                             plot_width,
+                             label,
+                             ggplot2_args,
+                             decorators) {
   checkmate::assert_class(data, "reactive")
-  checkmate::assert_class(isolate(data()), "teal_data")
+  checkmate::assert_class(shiny::isolate(data()), "teal_data")
 
   moduleServer(id, function(input, output, session) {
     teal.logger::log_shiny_input_changes(input, namespace = "teal.modules.clinical")
     patient_id <- reactive(input$patient_id)
 
-    # Init
+    # Init patient selector
     patient_data_base <- reactive(unique(data()[[parentname]][[patient_col]]))
     teal.widgets::updateOptionalSelectInput(
       session, "patient_id",
@@ -600,88 +575,127 @@ srv_g_therapy <- function(id,
       ignoreInit = TRUE
     )
 
-    # Therapy tab ----
-    selector_list <- teal.transform::data_extract_multiple_srv(
-      data_extract = list(
-        atirel = atirel, cmdecod = cmdecod, cmindc = cmindc,
-        cmdose = cmdose, cmtrt = cmtrt, cmdosu = cmdosu,
-        cmroute = cmroute, cmdosfrq = cmdosfrq, cmstdy = cmstdy, cmendy = cmendy
+    selectors <- teal.picks::picks_srv(
+      picks = list(
+        atirel = atirel,
+        cmdecod = cmdecod,
+        cmindc = cmindc,
+        cmdose = cmdose,
+        cmtrt = cmtrt,
+        cmdosu = cmdosu,
+        cmroute = cmroute,
+        cmdosfrq = cmdosfrq,
+        cmstdy = cmstdy,
+        cmendy = cmendy
       ),
-      datasets = data,
-      select_validation_rule = list(
-        atirel = shinyvalidate::sv_required("Please select ATIREL variable."),
-        cmdecod = shinyvalidate::sv_required("Please select medication decoding variable."),
-        cmindc = shinyvalidate::sv_required("Please select CMINDC variable."),
-        cmdose = shinyvalidate::sv_required("Please select CMDOSE variable."),
-        cmtrt = shinyvalidate::sv_required("Please select CMTRT variable."),
-        cmdosu = shinyvalidate::sv_required("Please select CMDOSU variable."),
-        cmroute = shinyvalidate::sv_required("Please select CMROUTE variable."),
-        cmdosfrq = shinyvalidate::sv_required("Please select CMDOSFRQ variable."),
-        cmstdy = shinyvalidate::sv_required("Please select CMSTDY variable."),
-        cmendy = shinyvalidate::sv_required("Please select CMENDY variable.")
+      data = data
+    )
+
+    validated_q <- reactive({
+      obj <- req(data())
+      validate_input(
+        inputId = "patient_id",
+        condition = !is.null(input$patient_id) && length(input$patient_id) > 0,
+        message = "Please select a patient."
       )
-    )
-
-    iv_r <- reactive({
-      iv <- shinyvalidate::InputValidator$new()
-      iv$add_rule("patient_id", shinyvalidate::sv_required("Please select a patient."))
-      teal.transform::compose_and_enable_validators(iv, selector_list)
+      validate_input(
+        inputId = "atirel-variables-selected",
+        condition = !is.null(selectors$atirel()$variables$selected),
+        message = "Please select ATIREL variable."
+      )
+      validate_input(
+        inputId = "cmdecod-variables-selected",
+        condition = !is.null(selectors$cmdecod()$variables$selected),
+        message = "Please select medication decoding variable."
+      )
+      validate_input(
+        inputId = "cmindc-variables-selected",
+        condition = !is.null(selectors$cmindc()$variables$selected),
+        message = "Please select CMINDC variable."
+      )
+      validate_input(
+        inputId = "cmdose-variables-selected",
+        condition = !is.null(selectors$cmdose()$variables$selected),
+        message = "Please select CMDOSE variable."
+      )
+      validate_input(
+        inputId = "cmtrt-variables-selected",
+        condition = !is.null(selectors$cmtrt()$variables$selected),
+        message = "Please select CMTRT variable."
+      )
+      validate_input(
+        inputId = "cmdosu-variables-selected",
+        condition = !is.null(selectors$cmdosu()$variables$selected),
+        message = "Please select CMDOSU variable."
+      )
+      validate_input(
+        inputId = "cmroute-variables-selected",
+        condition = !is.null(selectors$cmroute()$variables$selected),
+        message = "Please select CMROUTE variable."
+      )
+      validate_input(
+        inputId = "cmdosfrq-variables-selected",
+        condition = !is.null(selectors$cmdosfrq()$variables$selected),
+        message = "Please select CMDOSFRQ variable."
+      )
+      validate_input(
+        inputId = "cmstdy-variables-selected",
+        condition = !is.null(selectors$cmstdy()$variables$selected),
+        message = "Please select CMSTDY variable."
+      )
+      validate_input(
+        inputId = "cmendy-variables-selected",
+        condition = !is.null(selectors$cmendy()$variables$selected),
+        message = "Please select CMENDY variable."
+      )
+      obj
     })
 
-    anl_inputs <- teal.transform::merge_expression_srv(
-      datasets = data,
-      selector_list = selector_list,
-      merge_function = "dplyr::left_join"
+    anl_inputs <- teal.picks::merge_srv(
+      "anl_inputs",
+      data = validated_q,
+      selectors = selectors,
+      join_fun = "dplyr::left_join",
+      output_name = "ANL"
     )
-
-    anl_q <- reactive({
-      obj <- data()
-      teal.reporter::teal_card(obj) <-
-        c(
-          teal.reporter::teal_card(obj),
-          teal.reporter::teal_card("## Module's output(s)")
-        )
-      teal.code::eval_code(obj, as.expression(anl_inputs()$expr))
-    })
-
-    merged <- list(anl_input_r = anl_inputs, anl_q = anl_q)
 
     all_q <- reactive({
-      teal::validate_has_data(merged$anl_q()[["ANL"]], 1)
+      obj <- anl_inputs$data()
 
-      teal::validate_inputs(iv_r())
+      teal::validate_has_data(obj[["ANL"]], 1)
 
       validate(
         need(
-          nrow(merged$anl_q()[["ANL"]][input$patient_id == merged$anl_q()[["ANL"]][, patient_col], ]) > 0,
+          nrow(obj[["ANL"]][input$patient_id == obj[["ANL"]][, patient_col], ]) > 0,
           "Selected patient is not in dataset (either due to filtering or missing values). Consider relaxing filters."
         )
       )
 
       my_calls <- template_therapy(
         dataname = "ANL",
-        atirel = input[[extract_input("atirel", dataname)]],
-        cmdecod = input[[extract_input("cmdecod", dataname)]],
-        cmtrt = input[[extract_input("cmtrt", dataname)]],
-        cmdosu = input[[extract_input("cmdosu", dataname)]],
-        cmroute = input[[extract_input("cmroute", dataname)]],
-        cmdosfrq = input[[extract_input("cmdosfrq", dataname)]],
-        cmstdy = input[[extract_input("cmstdy", dataname)]],
-        cmendy = input[[extract_input("cmendy", dataname)]],
-        cmindc = input[[extract_input("cmindc", dataname)]],
-        cmdose = input[[extract_input("cmdose", dataname)]],
+        atirel = selectors$atirel()$variables$selected,
+        cmdecod = selectors$cmdecod()$variables$selected,
+        cmtrt = selectors$cmtrt()$variables$selected,
+        cmdosu = selectors$cmdosu()$variables$selected,
+        cmroute = selectors$cmroute()$variables$selected,
+        cmdosfrq = selectors$cmdosfrq()$variables$selected,
+        cmstdy = selectors$cmstdy()$variables$selected,
+        cmendy = selectors$cmendy()$variables$selected,
+        cmindc = selectors$cmindc()$variables$selected,
+        cmdose = selectors$cmdose()$variables$selected,
         patient_id = patient_id(),
         font_size = input[["font_size"]],
         ggplot2_args = ggplot2_args
       )
 
       obj <- teal.code::eval_code(
-        merged$anl_q(),
+        obj,
         substitute(
           expr = {
             pt_id <- patient_id
             ANL <- ANL[ANL[[patient_col]] == patient_id, ]
-          }, env = list(
+          },
+          env = list(
             patient_col = patient_col,
             patient_id = patient_id()
           )
@@ -697,7 +711,6 @@ srv_g_therapy <- function(id,
 
     table_r <- reactive({
       q <- req(all_q())
-
       list(
         html = DT::datatable(
           data = q[["table_data"]],
@@ -717,7 +730,6 @@ srv_g_therapy <- function(id,
     )
 
     plot_r <- reactive({
-      req(iv_r()$is_valid())
       req(decorated_all_q_plot())[["plot"]]
     })
 
