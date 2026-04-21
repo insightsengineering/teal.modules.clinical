@@ -9,9 +9,9 @@ tm_t_pp_medical_history(
   dataname = "ADMH",
   parentname = "ADSL",
   patient_col = "USUBJID",
-  mhterm = teal.picks::variables("MHTERM", fixed = TRUE),
-  mhbodsys = teal.picks::variables("MHBODSYS", fixed = TRUE),
-  mhdistat = teal.picks::variables("MHDISTAT", fixed = TRUE),
+  mhterm = NULL,
+  mhbodsys = NULL,
+  mhdistat = NULL,
   pre_output = NULL,
   post_output = NULL,
   transformators = list(),
@@ -27,13 +27,13 @@ tm_t_pp_medical_history(
 
 \item{patient_col}{(\code{character})\cr name of patient ID variable.}
 
-\item{mhterm}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{mhterm}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{MHTERM} variable from \code{dataname}.}
 
-\item{mhbodsys}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{mhbodsys}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{MHBODSYS} variable from \code{dataname}.}
 
-\item{mhdistat}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
+\item{mhdistat}{(\link[teal.picks:picks]{teal.picks::variables} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with all
 available choices and preselected option for the \code{MHDISTAT} variable from \code{dataname}.}
 
 \item{pre_output}{(\code{shiny.tag}) optional,\cr with text placed before the output to put the output into context.
@@ -120,18 +120,9 @@ app <- init(
       dataname = "ADMH",
       parentname = "ADSL",
       patient_col = "USUBJID",
-      mhterm = choices_selected(
-        choices = variable_choices(ADMH, c("MHTERM")),
-        selected = "MHTERM"
-      ),
-      mhbodsys = choices_selected(
-        choices = variable_choices(ADMH, "MHBODSYS"),
-        selected = "MHBODSYS"
-      ),
-      mhdistat = choices_selected(
-        choices = variable_choices(ADMH, "MHDISTAT"),
-        selected = "MHDISTAT"
-      )
+      mhterm = teal.picks::variables("MHTERM", fixed = TRUE),
+      mhbodsys = teal.picks::variables("MHBODSYS", fixed = TRUE),
+      mhdistat = teal.picks::variables("MHDISTAT", fixed = TRUE),
     )
   )
 )
@@ -143,8 +134,8 @@ if (interactive()) {
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDEEGJjAhiPyiVlwdRc+mijJuj1iDGaFi0ZkiDbumQ4gEtFIEKFgVq2JxYJpPORyYVBjI+kT+-iq9OZ7NgLUZPPVzExegCUQzV1xz2ib2+kuBoMh+Po+ERxhR+gxvvt9iJlIclpmgDyeQAmrkc-mC0W-eRS0bWvOlyuq-b8bWjxleltqR5W6GOxvu3Xg22w4PI9G4LGb5OvtO0y1slbclsTJbFXB8dDvLcyz-ACgJAw8gyGBlEJ0IYhloYwdHYeInSgCxtGsGw0hFUQ4ggVhMnQdhQQAEkEWgUhon1GG0Rghn6JQwH6c4gA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDEEGJjAhiPyiVlwdRc+mijJuj1iDGaFi0ZkiDbumQ4gEtFIEKFgVq2JxYJpPORyYVBjI+kT+-iq9OZ7NgLUZPPVzExegCUQzV1xz2ib2+kuBoMh+Po+ERxhR+gxvvt9iJlIclpmgDyeQAmrkc-mC0W-eRS0bWvOlyuq-b8bWjxleltqR5W6GOxvu3Xg22w4PI9G4LGb5OvtO0y1slbclsTJbFXB8dDvLcyz-ACgJAw8gyGBlEJ0IYhloYwdHYeInSgCxtGsGw0hFUQ4ggVhMnQdhQQAEkEWgUhon1GG0Rghn6JQwH6c4gA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDG+DCoGQTUSIRCaFi0ZloqFgVq2JxYJpCky0CpcjH2ZxyYWizExegCUQzV1wbjuz3e33+wM4jktM0AeTyAE1clHjDG4-CE04k1qMr0ttSPNncx6CF6fX7GAH6EHS9krblbJlbHWG-x444W8n8UMMkMhrRjDp2PEnVALNprDY0iLRHEIKxMuh2KCACSCWgpe+iVTaRhDfpKMD9c5AA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiSpfyiko+o12oB9d09rNw8vQx0Ad1pSAAtaCHZAqFwdECUdHQBBABEAZQAZbx1SGAI-OAAPPyh+UWp0rOyAWQAJIpKyyur+GBilAF9FCAArIni-AGs4VlFE0Jtw-jhjKGFSPwJ+WlEy0fGpmeBoeFmkuQBdVwgcgqKk4GAFMBv8p-PL6+a2xdCHp5zWm8Pko0KgivFouwGkkdABeHRJXANPhCESiOE6FHCMRQiAZDIlPzrdB+eBbWT+OKiUhENi4-H46hQehwagYp5NODk7g6FrbGlsJ5IvEMhGhY66eH-L5ChoM1AsCikCXs555V54OX4hUaJUbIhsqVgBy5BwAIQAUgBJbKykUM3rkRgwDG+DCoGQTUSIRCaFi0ZloqFgVq2JxYJpCky0CpcjH2ZxyYWizExegCUQzV1wbjuz3e33+wM4jktM0AeTyAE1clHjDG4-CE04k1qMr0ttSPNncx6CF6fX7GAH6EHS9krblbJlbHWG-x444W8n8UMMkMhrRjDp2PEnVALNprDY0iLRHEIKxMuh2KCACSCWgpe+iVTaRhDfpKMD9c5AA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
