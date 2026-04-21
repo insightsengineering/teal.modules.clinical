@@ -88,19 +88,6 @@ template_summary <- function(dataname,
   })
   data_list <- Reduce(add_expr, prepare_arm_levels_call, init = data_list)
 
-  if (!na.rm) {
-    data_list <- add_expr(
-      data_list,
-      substitute(
-        expr = parentname <- tern::df_explicit_na(parentname, na_level = na_str),
-        env = list(
-          parentname = as.name(parentname),
-          na_str = na_level
-        )
-      )
-    )
-  }
-
   y$data <- bracket_expr(data_list)
 
   # Only add the footer about NA if needed
