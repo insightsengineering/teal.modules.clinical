@@ -196,7 +196,7 @@ template_vitals <- function(dataname = "ANL",
 #' @inheritParams teal::module
 #' @inheritParams template_vitals
 #' @inheritParams template_arguments
-#' @param xaxis ([teal.transform::choices_selected()])\cr object with all
+#' @param xaxis ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname` to be put on the plot x-axis.
 #'
 #' @inherit module_arguments return
@@ -254,18 +254,9 @@ template_vitals <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       paramcd = choices_selected(
-#'         choices = variable_choices(ADVS, "PARAMCD"),
-#'         selected = "PARAMCD"
-#'       ),
-#'       xaxis = choices_selected(
-#'         choices = variable_choices(ADVS, "ADY"),
-#'         selected = "ADY"
-#'       ),
-#'       aval_var = choices_selected(
-#'         choices = variable_choices(ADVS, "AVAL"),
-#'         selected = "AVAL"
-#'       )
+#'       paramcd = teal.picks::variables("PARAMCD"),
+#'       aval_var = teal.picks::variables("AVAL"),
+#'       xaxis = teal.picks::variables("ADY"),
 #'     )
 #'   )
 #' )
@@ -278,9 +269,10 @@ tm_g_pp_vitals <- function(label,
                            dataname = "ADVS",
                            parentname = "ADSL",
                            patient_col = "USUBJID",
-                           paramcd = teal.picks::variables("PARAMCD"),
-                           aval_var = teal.picks::variables("AVAL"),
-                           xaxis = teal.picks::variables("ADY"),
+                           paramcd = NULL,
+                           aval = lifecycle::deprecated(),
+                           aval_var = NULL,
+                           xaxis = NULL,
                            font_size = c(12L, 12L, 25L),
                            plot_height = c(700L, 200L, 2000L),
                            plot_width = NULL,
@@ -291,17 +283,14 @@ tm_g_pp_vitals <- function(label,
                            decorators = list()) {
   message("Initializing tm_g_pp_vitals")
 
-  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
-  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
-  xaxis <- deprecate_pick_variables_arg(xaxis, "xaxis")
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd", null.ok = TRUE)
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var", null.ok = TRUE)
+  xaxis <- deprecate_pick_variables_arg(xaxis, "xaxis", null.ok = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(paramcd, "variables", null.ok = TRUE)
-  checkmate::assert_class(aval_var, "variables", null.ok = TRUE)
-  checkmate::assert_class(xaxis, "variables", null.ok = TRUE)
   checkmate::assert_numeric(font_size, len = 3, any.missing = FALSE, finite = TRUE)
   checkmate::assert_numeric(font_size[1], lower = font_size[2], upper = font_size[3], .var.name = "font_size")
   checkmate::assert_numeric(plot_height, len = 3, any.missing = FALSE, finite = TRUE)
