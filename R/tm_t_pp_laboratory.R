@@ -114,11 +114,11 @@ template_laboratory <- function(dataname = "ANL",
 #' @inheritParams teal::module
 #' @inheritParams template_laboratory
 #' @inheritParams template_arguments
-#' @param param ([teal.transform::choices_selected()])\cr object with all
+#' @param param ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `PARAM` variable from `dataname`.
-#' @param timepoints ([teal.transform::choices_selected()])\cr object with all
+#' @param timepoints ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the time variable from `dataname`.
-#' @param anrind ([teal.transform::choices_selected()])\cr object with all
+#' @param anrind ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `ANRIND` variable from `dataname`. Variable should have the
 #'   following 3 levels: `"HIGH"`, `"LOW"`, and `"NORMAL"`.
 #'
@@ -149,30 +149,13 @@ template_laboratory <- function(dataname = "ANL",
 #'       label = "Vitals",
 #'       dataname = "ADLB",
 #'       patient_col = "USUBJID",
-#'       paramcd = choices_selected(
-#'         choices = variable_choices(ADLB, "PARAMCD"),
-#'         selected = "PARAMCD"
-#'       ),
-#'       param = choices_selected(
-#'         choices = variable_choices(ADLB, "PARAM"),
-#'         selected = "PARAM"
-#'       ),
-#'       timepoints = choices_selected(
-#'         choices = variable_choices(ADLB, "ADY"),
-#'         selected = "ADY"
-#'       ),
-#'       anrind = choices_selected(
-#'         choices = variable_choices(ADLB, "ANRIND"),
-#'         selected = "ANRIND"
-#'       ),
-#'       aval_var = choices_selected(
-#'         choices = variable_choices(ADLB, "AVAL"),
-#'         selected = "AVAL"
-#'       ),
-#'       avalu_var = choices_selected(
-#'         choices = variable_choices(ADLB, "AVALU"),
-#'         selected = "AVALU"
-#'       )
+#'        timepoints = teal.picks::variables("ADY", fixed = TRUE),
+#'        aval_var = teal.picks::variables("AVAL", fixed = TRUE),
+#'        avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
+#'        param = teal.picks::variables("PARAM", fixed = TRUE),
+#'        paramcd = teal.picks::variables("PARAMCD", fixed = TRUE),
+#'        anrind = teal.picks::variables("ANRIND", fixed = TRUE),
+#'
 #'     )
 #'   )
 #' )
@@ -185,34 +168,28 @@ tm_t_pp_laboratory <- function(label,
                                dataname = "ADLB",
                                parentname = "ADSL",
                                patient_col = "USUBJID",
-                               timepoints = teal.picks::variables("ADY", fixed = TRUE),
-                               aval_var = teal.picks::variables("AVAL", fixed = TRUE),
-                               avalu_var = teal.picks::variables("AVALU", fixed = TRUE),
-                               param = teal.picks::variables("PARAM", fixed = TRUE),
-                               paramcd = teal.picks::variables("PARAMCD", fixed = TRUE),
-                               anrind = teal.picks::variables("ANRIND", fixed = TRUE),
+                               timepoints = NULL,
+                               aval_var = NULL,
+                               avalu_var = NULL,
+                               param = NULL,
+                               paramcd = NULL,
+                               anrind = NULL,
                                pre_output = NULL,
                                post_output = NULL,
                                transformators = list()) {
   message("Initializing tm_t_pp_laboratory")
 
-  timepoints <- deprecate_pick_variables_arg(timepoints, "timepoints")
-  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var")
-  avalu_var <- deprecate_pick_variables_arg(avalu_var, "avalu_var")
-  param <- deprecate_pick_variables_arg(param, "param")
-  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd")
-  anrind <- deprecate_pick_variables_arg(anrind, "anrind")
+  timepoints <- deprecate_pick_variables_arg(timepoints, "timepoints", null.ok = TRUE)
+  aval_var <- deprecate_pick_variables_arg(aval_var, "aval_var", null.ok = TRUE)
+  avalu_var <- deprecate_pick_variables_arg(avalu_var, "avalu_var", null.ok = TRUE)
+  param <- deprecate_pick_variables_arg(param, "param", null.ok = TRUE)
+  paramcd <- deprecate_pick_variables_arg(paramcd, "paramcd", null.ok = TRUE)
+  anrind <- deprecate_pick_variables_arg(anrind, "anrind", null.ok = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(parentname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(timepoints, "variables", null.ok = TRUE)
-  checkmate::assert_class(aval_var, "variables", null.ok = TRUE)
-  checkmate::assert_class(avalu_var, "variables", null.ok = TRUE)
-  checkmate::assert_class(param, "variables", null.ok = TRUE)
-  checkmate::assert_class(paramcd, "variables", null.ok = TRUE)
-  checkmate::assert_class(anrind, "variables", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
