@@ -254,9 +254,9 @@ template_vitals <- function(dataname = "ANL",
 #'       parentname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
-#'       paramcd = teal.picks::variables("PARAMCD"),
-#'       aval_var = teal.picks::variables("AVAL"),
-#'       xaxis = teal.picks::variables("ADY"),
+#'       paramcd = variables("PARAMCD"),
+#'       aval_var = variables("AVAL"),
+#'       xaxis = variables("ADY"),
 #'     )
 #'   )
 #' )
