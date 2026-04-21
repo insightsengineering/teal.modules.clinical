@@ -8,15 +8,15 @@ tm_a_mmrm(
   label,
   dataname,
   parentname = "ADSL",
-  aval_var = teal.picks::variables(c("AVAL", "CHG"), multiple = FALSE),
-  id_var = teal.picks::variables(c("USUBJID", "SUBJID"), multiple = FALSE),
-  arm_var = teal.picks::variables(c("ARM", "ARMCD")),
-  visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
-  cov_var = teal.picks::variables(selected = NULL),
+  aval_var,
+  id_var,
+  arm_var,
+  visit_var,
+  cov_var,
   arm_ref_comp = NULL,
   paramcd = lifecycle::deprecated(),
-  paramcd_var = teal.picks::variables(c("PARAMCD", "PARAM"), multiple = FALSE),
-  paramcd_values = teal.picks::values(multiple = FALSE),
+  paramcd_var,
+  paramcd_values,
   method = teal.picks::values(c("Satterthwaite", "Kenward-Roger",
     "Kenward-Roger-Linear"), "Satterthwaite"),
   conf_level = teal.picks::values(c("0.95", "0.9", "0.8"), "0.95"),
@@ -70,7 +70,7 @@ ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{tea
 \item{paramcd_values}{(\code{NULL} or \code{\link[teal.picks:picks]{teal.picks::values()}})\cr used only by the \code{teal.picks} method;
 ignored when \code{aval_var} is \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}}.}
 
-\item{method}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
+\item{method}{(\link[teal.picks:picks]{teal.picks::values} or \code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
 all available choices and pre-selected option for the adjustment method.}
 
 \item{conf_level}{(\code{\link[teal.transform:choices_selected]{teal.transform::choices_selected()}})\cr object with
@@ -211,10 +211,10 @@ app <- init(
     tm_a_mmrm(
       label = "MMRM",
       dataname = "ADQS",
-      aval_var = variables(c("AVAL", "CHG"), 1L),
-      id_var = variables(c("USUBJID", "SUBJID"), 1L),
-      arm_var = variables(c("ARM", "ARMCD"), 1L),
-      visit_var = variables(c("AVISIT", "AVISITN"), 1L),
+      aval_var = teal.picks::variables(c("AVAL", "CHG"), multiple = FALSE),
+      id_var = teal.picks::variables(c("USUBJID", "SUBJID"), multiple = FALSE),
+      arm_var = teal.picks::variables(c("ARM", "ARMCD")),
+      visit_var = teal.picks::variables(c("AVISIT", "AVISITN")),
       arm_ref_comp = arm_ref_comp,
       paramcd_var = variables("PARAMCD"),
       paramcd_values = values(selected = "FKSI-FWB"),
@@ -234,8 +234,8 @@ apps implementing this module can be found.
 \section{Examples in Shinylive}{
 \describe{
   \item{example-1}{
-    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS19EYwA+ozjHPxGFR9IzpRUnYlHR0AQSwAWQBhABEdAF4dUPDIqJ0fYzSdBTBYuJ0AISLcbKiAoPSCCOL4mMrCptKEosUIKO7upX4oUihgnS5qT0Hh6wGhkcMdAHdaUgALWgh2KahcHRBsuiYWDnHeAWExCSkZeQOGZjYt1GpWRm6o6KSAZQAZUdIYARPHAAB6eKD8UTUbKfACKX3+gOBYIhAEdRDoAKQAPkx1RMtGo5EY7GiZR+ADE-gBCdJFACaRR0ADIYuSqQAmHS0tqMsA2HF4no5YyE4mkgBqAEkvlLbFiNpidA0igB1JxOADSOgAjDoktF6ToABytNUa7Vcg1GnUAVjNYHVWp0AGZ9YadByOV0Bbj8TBBMNyBFhTkYtLZfL0lBxMYoOoiCTohG5XIqqGcsmZXKAHIFZgQADWkuzthzvqFYbDMYwcYTJIr+Or4gggngjBk1ixfozzdr8dIia7AGIdDAoIWNgBzZUkURwAiBrS6VvtmQmAeJ-HdAC+3QAVkQNp5C3BWKItnMbAt+L4oMJSP5+LRREDD8fT+fgNB4BftnIAF03DQIIFg2FYQyibYCm2dMoj4IQRAxdIEIuC98QBcFPBgGAPEgqtqCgeg4GoAoijiOJ4kqJsdG2H9dDpYoknhajex0KBNG4TxOMYAoeNoIikPYFViglaIfgdBIAAkAHEul2HUfjTGjaH4biWD4lgBPoISRIcL4HDKAApKUkgdAzjNM+TdSUuCqxYLweM0jtBLEYTGhKB0SmSazFOUtjNBfFZ1N49J+Nci8RKzSMvJTMtfNsmiHO8Xx-CIQICmSvI0sCOyw1QFhYAINSnLCrSIsaAAFWJokSMz+TynICuYQESu4QQxE06gOovecRHUOB+DIsAKU1WUDApVUKgamjiE0ELnO03TGjKaIvhcPA2miGSNt2Ip1oADVaDZiQHSwIBC9CwFW9bYtLH1dhzBwfiU7dsj6JRaHydgTtUM7tGsGx9mFUR1ggVhonQdgQIAEkEWhdlh+dGG0N4lB3JQwB3ACgA}{Open in Shinylive}
-    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS19EYwA+ozjHPxGFR9IzpRUnYlHR0AQSwAWQBhABEdAF4dUPDIqJ0fYzSdBTBYuJ0AISLcbKiAoPSCCOL4mMrCptKEosUIKO7upX4oUihgnS5qT0Hh6wGhkcMdAHdaUgALWgh2KahcHRBsuiYWDnHeAWExCSkZeQOGZjYt1GpWRm6o6KSAZQAZUdIYARPHAAB6eKD8UTUbKfACKX3+gOBYIhAEdRDoAKQAPkx1RMtGo5EY7GiZR+ADE-gBCdJFACaRR0ADIYuSqQAmHS0tqMsA2HF4no5YyE4mkgBqAEkvlLbFiNpidA0igB1JxOADSOgAjDoktF6ToABytNUa7Vcg1GnUAVjNYHVWp0AGZ9YadByOV0Bbj8TBBMNyBFhTkYtLZfL0lBxMYoOoiCTohG5XIqqGcsmZXKAHIFZgQADWkuzthzvqFYbDMYwcYTJIr+Or4gggngjBk1ixfozzdr8dIia7AGIdDAoIWNgBzZUkURwAiBrS6VvtmQmAeJ-HdAC+3QAVkQNp5C3BWKItnMbAt+L4oMJSP5+LRREDD8fT+fgNB4BftnIAF03DQIIFg2FYQyibYCm2dMoj4IQRAxdIEIuC98QBcFPBgGAPEgqtqCgeg4GoAoijiOJ4kqJsdG2H9dDpYoknhajex0KBNG4TxOMYAoeNoIikPYFViglaIfgdBIAAkAHEul2HUfjTGjaH4biWD4lgBPoISRIcL4HDKAApKUkgdAzjNM+TdSUuCqxYLweM0jtBLEYTGhKB0SmSazFOUtjNBfFZ1N49J+Nci8RKzSMvJTMtfNsmiHO8Xx-CIQICmSvI0sCOyw1QFhYAINSnLCrSIsaAAFWJokSMz+TynICuYQESu4QQxE06gOovecRHUOB+DIsAKU1WUDApVUKgamjiE0ELnO03TGjKaIvhcPA2miGSNt2Ip1oADVaDZiQHSwIBC9CwFW9bYtLH1dhzBwfiU7dsj6JRaHydgTtUM7tGsGx9mFUR1ggVhonQdgQIAEkEWhdlh+dGG0N4lB3JQwB3ACgA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
+    \href{https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS19EYwA+ozjHPxGFR9IzpRUnYlHR0AQSwAWQBhABEdAF4dUPDIqJ0fYzSdBTBYuJ0AISLcbKiAoPSCCOL4mMrCptKEosUIKO7upX4oUihgnS5qT0Hh6wGhkcMdAHdaUgALWgh2KahcHRBsuiYWDnHeAWExCSkZeQOGZjYt1GpWRm6o6KSAZQAZUdIYARPHAAB6eKD8UTUbKfACKX3+gOBYIhAEdRDoAKQAPkx1RMtGo5EY7GiZR+ADE-gBCdJFACaRR0ADIYuSqQAmHS0tqMsA2HF4no5YyE4mkgBqAEkvlLbFiNpidA0igB1JxOADSOgAjDoktF6ToABytNUa7Vcg1GnUAVjNYHVWp0AGZ9YadByOV0Bbj8TBBMNyBFhTkYtLZfL0lBxMYoOoiCTohG5XIqqGcsmZXKAHIFZgQADWkuzthzvqFYbDMYwcYTJIr+Or4gggngjBk1ixfozzdr8dIia7AGIdDAoIWNgBzZUkURwAiBrS6VvtmQmAeJ-HdAC+3QAVkQNp5C3BWKItnMbAt+L4oMJSP5+LRREDD8fT+fgNB4BftnIAF03DQIIFg2FYQyibYCm2dMoj4IQRAxdIEIuC98QBcFPBgGAPEgqtqCgeg4GoAoijiOJ4kqJsdG2H9dDpYoknhajex0KBNG4TxOMYApTlQGRC1ERBEB42giKQ9gVWKCVoh+B0EgACQAcS6XYAyJWhngYnQKTkr4nDTGjaH4biWD4uBuAwASCCEkSxIksQpMaBwvgcMoACkpSSB03M87y1LHB8tJEAo9J+AyjLYlgvB4iyrJsuzRJYcT6Ek6SSgdEpkh9OCq00F8VjM3j0n4wThOSjtHIvDKU1sLK6pzXKaJi7xfH8IhAgKVq8g6wI8rDVAWFgAhTLi9IHLSpyigABViaJEh8-kBpyIbmEBMbuEEMQCk46htovecRHUOB+DIsAKU1WUDApVUKmWmjiE0YrdpS6rnKKMpogMrLlJcPA2gMgANVoNmJAdLAgYr0LAL6foBoos0jXKdBzBwfh+d4cixvolFofJ2DB1QIe0awbH2YVRHWCBWGidB2BAgASQRaF2Jn50YbQ3iUHclDAHcAKAA}{Open in Shinylive}
+    \if{html}{\out{<iframe class="iframe_shinylive" src="https://shinylive.io/r/app/#code=NobwRAdghgtgpmAXGKAHVA6ASmANGAYwHsIAXOMpMAGwEsAjAJykYE8AKcqajGIgEwCu1OAGcMBOhFoFuASgA60snGYFStAG5wABAB4AtDoBmgiOtol2cnQBUsAVQCiS19EYwA+ozjHPxGFR9IzpRUnYlHR0AQSwAWQBhABEdAF4dUPDIqJ0fYzSdBTBYuJ0AISLcbKiAoPSCCOL4mMrCptKEosUIKO7upX4oUihgnS5qT0Hh6wGhkcMdAHdaUgALWgh2KahcHRBsuiYWDnHeAWExCSkZeQOGZjYt1GpWRm6o6KSAZQAZUdIYARPHAAB6eKD8UTUbKfACKX3+gOBYIhAEdRDoAKQAPkx1RMtGo5EY7GiZR+ADE-gBCdJFACaRR0ADIYuSqQAmHS0tqMsA2HF4no5YyE4mkgBqAEkvlLbFiNpidA0igB1JxOADSOgAjDoktF6ToABytNUa7Vcg1GnUAVjNYHVWp0AGZ9YadByOV0Bbj8TBBMNyBFhTkYtLZfL0lBxMYoOoiCTohG5XIqqGcsmZXKAHIFZgQADWkuzthzvqFYbDMYwcYTJIr+Or4gggngjBk1ixfozzdr8dIia7AGIdDAoIWNgBzZUkURwAiBrS6VvtmQmAeJ-HdAC+3QAVkQNp5C3BWKItnMbAt+L4oMJSP5+LRREDD8fT+fgNB4BftnIAF03DQIIFg2FYQyibYCm2dMoj4IQRAxdIEIuC98QBcFPBgGAPEgqtqCgeg4GoAoijiOJ4kqJsdG2H9dDpYoknhajex0KBNG4TxOMYApTlQGRC1ERBEB42giKQ9gVWKCVoh+B0EgACQAcS6XYAyJWhngYnQKTkr4nDTGjaH4biWD4uBuAwASCCEkSxIksQpMaBwvgcMoACkpSSB03M87y1LHB8tJEAo9J+AyjLYlgvB4iyrJsuzRJYcT6Ek6SSgdEpkh9OCq00F8VjM3j0n4wThOSjtHIvDKU1sLK6pzXKaJi7xfH8IhAgKVq8g6wI8rDVAWFgAhTLi9IHLSpyigABViaJEh8-kBpyIbmEBMbuEEMQCk46htovecRHUOB+DIsAKU1WUDApVUKmWmjiE0YrdpS6rnKKMpogMrLlJcPA2gMgANVoNmJAdLAgYr0LAL6foBoos0jXKdBzBwfh+d4cixvolFofJ2DB1QIe0awbH2YVRHWCBWGidB2BAgASQRaF2Jn50YbQ3iUHclDAHcAKAA" style="height: 800px; width: 100vw; max-width: 1400px; border: 1px solid rgba(0,0,0,0.175); border-radius: .375rem; position: absolute; left: 50\%; margin-top: 30px; transform: translateX(-50\%); z-index: 1"></iframe>}}
     \if{html}{\out{<a style='height: 800px; display: block;'></a>}}
   }
 }
