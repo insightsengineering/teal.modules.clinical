@@ -123,7 +123,8 @@ tm_t_pp_prior_medication <- function(label,
                                      cmstdy = NULL,
                                      pre_output = NULL,
                                      post_output = NULL,
-                                     transformators = list()) {
+                                     transformators = list(),
+                                     decorators = lifecycle::deprecated()) {
   if (lifecycle::is_present(decorators)) {
     lifecycle::deprecate_warn(
       when = "0.11.0",
