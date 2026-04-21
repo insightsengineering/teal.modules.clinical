@@ -234,11 +234,11 @@ template_adverse_events <- function(dataname = "ANL",
 #'       patient_col = "USUBJID",
 #'       plot_height = c(600L, 200L, 2000L),
 #'       aeterm = teal.picks::variables("AETERM"),
-#'        tox_grade = teal.picks::variables("AETOXGR"),
-#'        causality = teal.picks::variables("AEREL"),
-#'        outcome = teal.picks::variables("AEOUT"),
-#'        action = teal.picks::variables("AEACN"),
-#'        time = teal.picks::variables("ASTDY"),
+#'       tox_grade = teal.picks::variables("AETOXGR"),
+#'       causality = teal.picks::variables("AEREL"),
+#'       outcome = teal.picks::variables("AEOUT"),
+#'       action = teal.picks::variables("AEACN"),
+#'       time = teal.picks::variables("ASTDY"),
 #'       decod = NULL
 #'     )
 #'   )
