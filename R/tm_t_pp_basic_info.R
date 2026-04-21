@@ -86,8 +86,9 @@ template_basic_info <- function(dataname = "ANL",
 #'       dataname = "ADSL",
 #'       patient_col = "USUBJID",
 #'       vars = teal.picks::variables(
-#'         selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT")
-#'       )
+#'        selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
+#'        multiple = TRUE
+#'      )
 #'     )
 #'   )
 #' )
@@ -99,20 +100,16 @@ template_basic_info <- function(dataname = "ANL",
 tm_t_pp_basic_info <- function(label,
                                dataname = "ADSL",
                                patient_col = "USUBJID",
-                               vars = teal.picks::variables(
-                                 selected = c("ARM", "AGE", "SEX", "COUNTRY", "RACE", "EOSSTT"),
-                                 multiple = TRUE
-                               ),
+                               vars = NULL,
                                pre_output = NULL,
                                post_output = NULL,
                                transformators = list()) {
   message("Initializing tm_t_pp_basic_info")
-  vars <- deprecate_pick_variables_arg(vars, "vars")
+  vars <- deprecate_pick_variables_arg(vars, "vars", null.ok = TRUE)
 
   checkmate::assert_string(label)
   checkmate::assert_string(dataname)
   checkmate::assert_string(patient_col)
-  checkmate::assert_class(vars, "variables", null.ok = TRUE)
   checkmate::assert_class(pre_output, classes = "shiny.tag", null.ok = TRUE)
   checkmate::assert_class(post_output, classes = "shiny.tag", null.ok = TRUE)
 
