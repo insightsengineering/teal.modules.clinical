@@ -79,11 +79,11 @@ template_medical_history <- function(dataname = "ANL",
 #' @inheritParams module_arguments
 #' @inheritParams teal::module
 #' @inheritParams template_medical_history
-#' @param mhterm ([teal.transform::choices_selected()])\cr object with all
+#' @param mhterm ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHTERM` variable from `dataname`.
-#' @param mhbodsys ([teal.transform::choices_selected()])\cr object with all
+#' @param mhbodsys ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHBODSYS` variable from `dataname`.
-#' @param mhdistat ([teal.transform::choices_selected()])\cr object with all
+#' @param mhdistat ([teal.picks::variables] or [teal.transform::choices_selected()])\cr object with all
 #'   available choices and preselected option for the `MHDISTAT` variable from `dataname`.
 #'
 #' @inherit module_arguments return
