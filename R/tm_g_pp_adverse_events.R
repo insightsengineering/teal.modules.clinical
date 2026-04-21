@@ -478,7 +478,7 @@ srv_g_adverse_events <- function(id,
         time = time,
         decod = decod
       ),
-      data  = data
+      data = data
     )
 
     validated_q <- reactive({
